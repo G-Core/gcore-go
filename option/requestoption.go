@@ -231,13 +231,29 @@ func WithRequestTimeout(dur time.Duration) RequestOption {
 // environment to be the "production" environment. An environment specifies which base URL
 // to use by default.
 func WithEnvironmentProduction() RequestOption {
-	return WithBaseURL("https://api.___serverHost___/")
+	return WithBaseURL("https://api.gcore.com/")
 }
 
 // WithAPIKey returns a RequestOption that sets the client setting "api_key".
 func WithAPIKey(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.APIKey = value
-		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.APIKey)))
+		return r.Apply(WithHeader("authorization", fmt.Sprintf("APIKey %s", r.APIKey)))
+	})
+}
+
+// WithProjectID returns a RequestOption that sets the client setting "project_id".
+func WithProjectID(value int64) RequestOption {
+	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		r.ProjectID = &value
+		return nil
+	})
+}
+
+// WithRegionID returns a RequestOption that sets the client setting "region_id".
+func WithRegionID(value int64) RequestOption {
+	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		r.RegionID = &value
+		return nil
 	})
 }

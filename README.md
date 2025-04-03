@@ -44,46 +44,95 @@ func main() {
 	client := gcore.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("GCORE_API_KEY")
 	)
-	baremetalCapacity, err := client.Cloud.V1.GetBmCapacity(
-		context.TODO(),
-		int64(0),
-		int64(0),
-	)
+	project, err := client.Cloud.V1.Projects.New(context.TODO(), gcore.CloudV1ProjectNewParams{
+		Name: "New Project",
+	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", baremetalCapacity.Capacity)
+	fmt.Printf("%+v\n", project.ID)
 }
 
 ```
 
 ### Request fields
 
-All request parameters are wrapped in a generic `Field` type,
-which we use to distinguish zero values from null or omitted fields.
+The gcore library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
+semantics from the Go 1.24+ `encoding/json` release for request fields.
 
-This prevents accidentally sending a zero value if you forget a required parameter,
-and enables explicitly sending `null`, `false`, `''`, or `0` on optional parameters.
-Any field not specified is not sent.
+Required primitive fields (`int64`, `string`, etc.) feature the tag <code>\`json:...,required\`</code>. These
+fields are always serialized, even their zero values.
 
-To construct fields with values, use the helpers `String()`, `Int()`, `Float()`, or most commonly, the generic `F[T]()`.
-To send a null, use `Null[T]()`, and to send a nonconforming value, use `Raw[T](any)`. For example:
+Optional primitive types are wrapped in a `param.Opt[T]`. Use the provided constructors set `param.Opt[T]` fields such as `gcore.String(string)`, `gcore.Int(int64)`, etc.
+
+Optional primitives, maps, slices and structs and string enums (represented as `string`) always feature the
+tag <code>\`json:"...,omitzero"\`</code>. Their zero values are considered omitted.
+
+Any non-nil slice of length zero will serialize as an empty JSON array, `"[]"`. Similarly, any non-nil map with length zero with serialize as an empty JSON object, `"{}"`.
+
+To send `null` instead of an `param.Opt[T]`, use `param.NullOpt[T]()`.
+To send `null` instead of a struct, use `param.NullObj[T]()`, where `T` is a struct.
+To send a custom value instead of a struct, use `param.OverrideObj[T](value)`.
+
+To override request structs contain a `.WithExtraFields(map[string]any)` method which can be used to
+send non-conforming fields in the request body. Extra fields overwrite any struct fields with a matching
+key, so only use with trusted data.
 
 ```go
 params := FooParams{
-	Name: gcore.F("hello"),
+	ID: "id_xxx",                          // required property
+	Name: gcore.String("hello"), // optional property
+	Description: param.NullOpt[string](),  // explicit null property
 
-	// Explicitly send `"description": null`
-	Description: gcore.Null[string](),
-
-	Point: gcore.F(gcore.Point{
-		X: gcore.Int(0),
-		Y: gcore.Int(1),
-
-		// In cases where the API specifies a given type,
-		// but you want to send something else, use `Raw`:
-		Z: gcore.Raw[int64](0.01), // sends a float
+	Point: gcore.Point{
+		X: 0, // required field will serialize as 0
+		Y: gcore.Int(1), // optional field will serialize as 1
+	  // ... omitted non-required fields will not be serialized
 	}),
+
+	Origin: gcore.Origin{}, // the zero value of [Origin] is considered omitted
+}
+
+// In cases where the API specifies a given type,
+// but you want to send something else, use [WithExtraFields]:
+params.WithExtraFields(map[string]any{
+	"x": 0.01, // send "x" as a float instead of int
+})
+
+// Send a number instead of an object
+custom := param.OverrideObj[gcore.FooParams](12)
+```
+
+When available, use the `.IsPresent()` method to check if an optional parameter is not omitted or `null`.
+Otherwise, the `param.IsOmitted(any)` function can confirm the presence of any `omitzero` field.
+
+### Request unions
+
+Unions are represented as a struct with fields prefixed by "Of" for each of it's variants,
+only one field can be non-zero. The non-zero field will be serialized.
+
+Sub-properties of the union can be accessed via methods on the union struct.
+These methods return a mutable pointer to the underlying data, if present.
+
+```go
+// Only one field can be non-zero, use param.IsOmitted() to check if a field is set
+type AnimalUnionParam struct {
+	OfCat 	 *Cat              `json:",omitzero,inline`
+	OfDog    *Dog              `json:",omitzero,inline`
+}
+
+animal := AnimalUnionParam{
+	OfCat: &Cat{
+		Name: "Whiskers",
+		Owner: PersonParam{
+			Address: AddressParam{Street: "3333 Coyote Hill Rd", Zip: 0},
+		},
+	},
+}
+
+// Mutating a field
+if address := animal.GetOwner().GetAddress(); address != nil {
+	address.ZipCode = 94304
 }
 ```
 
@@ -99,14 +148,14 @@ information about each property, which you can use like so:
 
 ```go
 if res.Name == "" {
-	// true if `"name"` is either not present or explicitly null
-	res.JSON.Name.IsNull()
+	// true if `"name"` was unmarshalled successfully
+	res.JSON.Name.IsPresent()
 
-	// true if the `"name"` key was not present in the response JSON at all
-	res.JSON.Name.IsMissing()
+	res.JSON.Name.IsExplicitNull() // true if `"name"` is explicitly null
+	res.JSON.Name.Raw() == ""          // true if `"name"` field does not exist
 
 	// When the API returns data that cannot be coerced to the expected type:
-	if res.JSON.Name.IsInvalid() {
+	if !res.JSON.Name.IsPresent() && res.JSON.Name.Raw() != "" {
 		raw := res.JSON.Name.Raw()
 
 		legacyName := struct{
@@ -119,13 +168,56 @@ if res.Name == "" {
 }
 ```
 
-These `.JSON` structs also include an `Extras` map containing
+These `.JSON` structs also include an `ExtraFields` map containing
 any properties in the json response that were not specified
 in the struct. This can be useful for API features not yet
 present in the SDK.
 
 ```go
 body := res.JSON.ExtraFields["my_unexpected_field"].Raw()
+```
+
+### Response Unions
+
+In responses, unions are represented by a flattened struct containing all possible fields from each of the
+object variants.
+To convert it to a variant use the `.AsFooVariant()` method or the `.AsAny()` method if present.
+
+If a response value union contains primitive values, primitive fields will be alongside
+the properties but prefixed with `Of` and feature the tag `json:"...,inline"`.
+
+```go
+type AnimalUnion struct {
+	OfString string `json:",inline"`
+	Name     string `json:"name"`
+	Owner    Person `json:"owner"`
+	// ...
+	JSON struct {
+		OfString resp.Field
+		Name     resp.Field
+		Owner    resp.Field
+		// ...
+	}
+}
+
+// If animal variant
+if animal.Owner.Address.JSON.ZipCode == "" {
+	panic("missing zip code")
+}
+
+// If string variant
+if !animal.OfString == "" {
+	panic("expected a name")
+}
+
+// Switch on the variant
+switch variant := animalOrName.AsAny().(type) {
+case string:
+case Dog:
+case Cat:
+default:
+	panic("unexpected type")
+}
 ```
 
 ### RequestOptions
@@ -141,7 +233,7 @@ client := gcore.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Cloud.V1.GetBmCapacity(context.TODO(), ...,
+client.Cloud.V1.Projects.New(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -170,18 +262,16 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Cloud.V1.GetBmCapacity(
-	context.TODO(),
-	int64(0),
-	int64(0),
-)
+_, err := client.Cloud.V1.Projects.New(context.TODO(), gcore.CloudV1ProjectNewParams{
+	Name: "New Project",
+})
 if err != nil {
 	var apierr *gcore.Error
 	if errors.As(err, &apierr) {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/cloud/v1/bmcapacity/{project_id}/{region_id}": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/cloud/v1/projects": 400 Bad Request { ... }
 }
 ```
 
@@ -199,10 +289,11 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Cloud.V1.GetBmCapacity(
+client.Cloud.V1.Projects.New(
 	ctx,
-	int64(0),
-	int64(0),
+	gcore.CloudV1ProjectNewParams{
+		Name: "New Project",
+	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -211,14 +302,14 @@ client.Cloud.V1.GetBmCapacity(
 ### File uploads
 
 Request parameters that correspond to file uploads in multipart requests are typed as
-`param.Field[io.Reader]`. The contents of the `io.Reader` will by default be sent as a multipart form
+`io.Reader`. The contents of the `io.Reader` will by default be sent as a multipart form
 part with the file name of "anonymous_file" and content-type of "application/octet-stream".
 
 The file name and content-type can be customized by implementing `Name() string` or `ContentType()
 string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
 file returned by `os.Open` will be sent with the file name on disk.
 
-We also provide a helper `gcore.FileParam(reader io.Reader, filename string, contentType string)`
+We also provide a helper `gcore.File(reader io.Reader, filename string, contentType string)`
 which can be used to wrap any `io.Reader` with the appropriate file name and content type.
 
 ### Retries
@@ -236,10 +327,11 @@ client := gcore.NewClient(
 )
 
 // Override per-request:
-client.Cloud.V1.GetBmCapacity(
+client.Cloud.V1.Projects.New(
 	context.TODO(),
-	int64(0),
-	int64(0),
+	gcore.CloudV1ProjectNewParams{
+		Name: "New Project",
+	},
 	option.WithMaxRetries(5),
 )
 ```
@@ -252,16 +344,17 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-baremetalCapacity, err := client.Cloud.V1.GetBmCapacity(
+project, err := client.Cloud.V1.Projects.New(
 	context.TODO(),
-	int64(0),
-	int64(0),
+	gcore.CloudV1ProjectNewParams{
+		Name: "New Project",
+	},
 	option.WithResponseInto(&response),
 )
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", baremetalCapacity)
+fmt.Printf("%+v\n", project)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)
@@ -300,10 +393,10 @@ or the `option.WithJSONSet()` methods.
 
 ```go
 params := FooNewParams{
-    ID:   gcore.F("id_xxxx"),
-    Data: gcore.F(FooNewParamsData{
-        FirstName: gcore.F("John"),
-    }),
+    ID:   "id_xxxx",
+    Data: FooNewParamsData{
+        FirstName: gcore.String("John"),
+    },
 }
 client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name", "Doe"))
 ```
