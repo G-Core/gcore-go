@@ -44,7 +44,7 @@ func main() {
 	client := gcore.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("GCORE_API_KEY")
 	)
-	project, err := client.Cloud.V1.Projects.New(context.TODO(), gcore.CloudV1ProjectNewParams{
+	project, err := client.Cloud.Projects.V1.New(context.TODO(), gcore.CloudProjectV1NewParams{
 		Name: "New Project",
 	})
 	if err != nil {
@@ -233,7 +233,7 @@ client := gcore.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Cloud.V1.Projects.New(context.TODO(), ...,
+client.Cloud.Projects.V1.New(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -262,7 +262,7 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Cloud.V1.Projects.New(context.TODO(), gcore.CloudV1ProjectNewParams{
+_, err := client.Cloud.Projects.V1.New(context.TODO(), gcore.CloudProjectV1NewParams{
 	Name: "New Project",
 })
 if err != nil {
@@ -289,9 +289,9 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Cloud.V1.Projects.New(
+client.Cloud.Projects.V1.New(
 	ctx,
-	gcore.CloudV1ProjectNewParams{
+	gcore.CloudProjectV1NewParams{
 		Name: "New Project",
 	},
 	// This sets the per-retry timeout
@@ -327,9 +327,9 @@ client := gcore.NewClient(
 )
 
 // Override per-request:
-client.Cloud.V1.Projects.New(
+client.Cloud.Projects.V1.New(
 	context.TODO(),
-	gcore.CloudV1ProjectNewParams{
+	gcore.CloudProjectV1NewParams{
 		Name: "New Project",
 	},
 	option.WithMaxRetries(5),
@@ -344,9 +344,9 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-project, err := client.Cloud.V1.Projects.New(
+project, err := client.Cloud.Projects.V1.New(
 	context.TODO(),
-	gcore.CloudV1ProjectNewParams{
+	gcore.CloudProjectV1NewParams{
 		Name: "New Project",
 	},
 	option.WithResponseInto(&response),

@@ -24,7 +24,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	project, err := client.Cloud.V1.Projects.New(context.TODO(), gcore.CloudV1ProjectNewParams{
+	project, err := client.Cloud.Projects.V1.New(context.TODO(), gcore.CloudProjectV1NewParams{
 		Name: "New Project",
 	})
 	if err != nil {
