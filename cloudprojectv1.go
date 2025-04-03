@@ -260,7 +260,7 @@ func (f CloudProjectV1ListParams) IsPresent() bool { return !param.IsOmitted(f) 
 func (r CloudProjectV1ListParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
+		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
 
