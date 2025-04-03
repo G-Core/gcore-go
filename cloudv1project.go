@@ -4,6 +4,7 @@ package gcore
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -11,9 +12,10 @@ import (
 
 	"github.com/stainless-sdks/gcore-go/internal/apijson"
 	"github.com/stainless-sdks/gcore-go/internal/apiquery"
-	"github.com/stainless-sdks/gcore-go/internal/param"
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
+	"github.com/stainless-sdks/gcore-go/packages/param"
+	"github.com/stainless-sdks/gcore-go/packages/resp"
 )
 
 // CloudV1ProjectService contains methods and other services that help with
@@ -29,8 +31,8 @@ type CloudV1ProjectService struct {
 // NewCloudV1ProjectService generates a new service that applies the given options
 // to each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewCloudV1ProjectService(opts ...option.RequestOption) (r *CloudV1ProjectService) {
-	r = &CloudV1ProjectService{}
+func NewCloudV1ProjectService(opts ...option.RequestOption) (r CloudV1ProjectService) {
+	r = CloudV1ProjectService{}
 	r.Options = opts
 	return
 }
@@ -44,18 +46,36 @@ func (r *CloudV1ProjectService) New(ctx context.Context, body CloudV1ProjectNewP
 }
 
 // Get Project
-func (r *CloudV1ProjectService) Get(ctx context.Context, projectID int64, opts ...option.RequestOption) (res *Project, err error) {
+func (r *CloudV1ProjectService) Get(ctx context.Context, query CloudV1ProjectGetParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("cloud/v1/projects/%v", projectID)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.ProjectID, precfg.ProjectID)
+	if !query.ProjectID.IsPresent() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/projects/%v", query.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Update Project
-func (r *CloudV1ProjectService) Update(ctx context.Context, projectID int64, body CloudV1ProjectUpdateParams, opts ...option.RequestOption) (res *Project, err error) {
+func (r *CloudV1ProjectService) Update(ctx context.Context, params CloudV1ProjectUpdateParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("cloud/v1/projects/%v", projectID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
+	if !params.ProjectID.IsPresent() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/projects/%v", params.ProjectID.Value)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -69,9 +89,18 @@ func (r *CloudV1ProjectService) List(ctx context.Context, query CloudV1ProjectLi
 
 // All cloud resources in all regions that belong to the project will be deleted
 // and will not be recoverable
-func (r *CloudV1ProjectService) Delete(ctx context.Context, projectID int64, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *CloudV1ProjectService) Delete(ctx context.Context, body CloudV1ProjectDeleteParams, opts ...option.RequestOption) (res *CloudV1ProjectDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("cloud/v1/projects/%v", projectID)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.ProjectID, precfg.ProjectID)
+	if !body.ProjectID.IsPresent() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/projects/%v", body.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -96,117 +125,151 @@ type Project struct {
 	// Description of the project.
 	Description string `json:"description,nullable"`
 	// ID of the Task entity responsible for handling the project's state transition.
-	TaskID string      `json:"task_id,nullable"`
-	JSON   projectJSON `json:"-"`
+	TaskID string `json:"task_id,nullable"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		ID          resp.Field
+		ClientID    resp.Field
+		CreatedAt   resp.Field
+		IsDefault   resp.Field
+		Name        resp.Field
+		State       resp.Field
+		DeletedAt   resp.Field
+		Description resp.Field
+		TaskID      resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
 }
 
-// projectJSON contains the JSON metadata for the struct [Project]
-type projectJSON struct {
-	ID          apijson.Field
-	ClientID    apijson.Field
-	CreatedAt   apijson.Field
-	IsDefault   apijson.Field
-	Name        apijson.Field
-	State       apijson.Field
-	DeletedAt   apijson.Field
-	Description apijson.Field
-	TaskID      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *Project) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r Project) RawJSON() string { return r.JSON.raw }
+func (r *Project) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r projectJSON) RawJSON() string {
-	return r.raw
 }
 
 type CloudV1ProjectListResponse struct {
 	// Number of objects
 	Count int64 `json:"count,required"`
 	// Objects
-	Results []Project                      `json:"results,required"`
-	JSON    cloudV1ProjectListResponseJSON `json:"-"`
+	Results []Project `json:"results,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Count       resp.Field
+		Results     resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
 }
 
-// cloudV1ProjectListResponseJSON contains the JSON metadata for the struct
-// [CloudV1ProjectListResponse]
-type cloudV1ProjectListResponseJSON struct {
-	Count       apijson.Field
-	Results     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CloudV1ProjectListResponse) UnmarshalJSON(data []byte) (err error) {
+// Returns the unmodified JSON received from the API
+func (r CloudV1ProjectListResponse) RawJSON() string { return r.JSON.raw }
+func (r *CloudV1ProjectListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r cloudV1ProjectListResponseJSON) RawJSON() string {
-	return r.raw
+// Task ID list object
+type CloudV1ProjectDeleteResponse struct {
+	// Task list
+	Tasks []string `json:"tasks"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Tasks       resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CloudV1ProjectDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *CloudV1ProjectDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CloudV1ProjectNewParams struct {
 	// Unique project name for a client. Each client always has one "default" project.
-	Name param.Field[string] `json:"name,required"`
+	Name string `json:"name,required"`
 	// ID associated with the client.
-	ClientID param.Field[int64] `json:"client_id"`
+	ClientID param.Opt[int64] `json:"client_id,omitzero"`
 	// Description of the project.
-	Description param.Field[string] `json:"description"`
+	Description param.Opt[string] `json:"description,omitzero"`
 	// State of the project.
-	State param.Field[string] `json:"state"`
+	State param.Opt[string] `json:"state,omitzero"`
+	paramObj
 }
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f CloudV1ProjectNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r CloudV1ProjectNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow CloudV1ProjectNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
+
+type CloudV1ProjectGetParams struct {
+	// Use [option.WithProjectID] on the client to set a global default for this field.
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f CloudV1ProjectGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type CloudV1ProjectUpdateParams struct {
+	// Use [option.WithProjectID] on the client to set a global default for this field.
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Name of the entity, following a specific format.
-	Name param.Field[string] `json:"name,required"`
+	Name string `json:"name,required"`
 	// Description of the project.
-	Description param.Field[string] `json:"description"`
+	Description param.Opt[string] `json:"description,omitzero"`
+	paramObj
 }
 
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f CloudV1ProjectUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+
 func (r CloudV1ProjectUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	type shadow CloudV1ProjectUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 type CloudV1ProjectListParams struct {
 	// Client ID filter for administrators.
-	ClientID param.Field[int64] `query:"client_id"`
-	// Whether to include deleted entries in the response.
-	IncludeDeleted param.Field[bool] `query:"include_deleted"`
+	ClientID param.Opt[int64] `query:"client_id,omitzero" json:"-"`
 	// Name to filter the results by.
-	Name param.Field[string] `query:"name"`
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
+	// Whether to include deleted entries in the response.
+	IncludeDeleted param.Opt[bool] `query:"include_deleted,omitzero" json:"-"`
 	// Order by field and direction. Supports multiple values.
-	OrderBy param.Field[[]CloudV1ProjectListParamsOrderBy] `query:"order_by"`
+	OrderBy []string `query:"order_by,omitzero" json:"-"`
+	paramObj
 }
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f CloudV1ProjectListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [CloudV1ProjectListParams]'s query parameters as
 // `url.Values`.
 func (r CloudV1ProjectListParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-type CloudV1ProjectListParamsOrderBy string
-
-const (
-	CloudV1ProjectListParamsOrderByCreatedAtAsc  CloudV1ProjectListParamsOrderBy = "created_at.asc"
-	CloudV1ProjectListParamsOrderByCreatedAtDesc CloudV1ProjectListParamsOrderBy = "created_at.desc"
-	CloudV1ProjectListParamsOrderByNameAsc       CloudV1ProjectListParamsOrderBy = "name.asc"
-	CloudV1ProjectListParamsOrderByNameDesc      CloudV1ProjectListParamsOrderBy = "name.desc"
-)
-
-func (r CloudV1ProjectListParamsOrderBy) IsKnown() bool {
-	switch r {
-	case CloudV1ProjectListParamsOrderByCreatedAtAsc, CloudV1ProjectListParamsOrderByCreatedAtDesc, CloudV1ProjectListParamsOrderByNameAsc, CloudV1ProjectListParamsOrderByNameDesc:
-		return true
-	}
-	return false
+type CloudV1ProjectDeleteParams struct {
+	// Use [option.WithProjectID] on the client to set a global default for this field.
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	paramObj
 }
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f CloudV1ProjectDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

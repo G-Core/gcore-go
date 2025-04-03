@@ -24,14 +24,11 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	baremetalCapacity, err := client.Cloud.V1.GetBmCapacity(
-		context.TODO(),
-		int64(0),
-		int64(0),
-	)
+	project, err := client.Cloud.V1.Projects.New(context.TODO(), gcore.CloudV1ProjectNewParams{
+		Name: "New Project",
+	})
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", baremetalCapacity.Capacity)
+	t.Logf("%+v\n", project.ID)
 }

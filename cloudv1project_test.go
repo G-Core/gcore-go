@@ -27,10 +27,10 @@ func TestCloudV1ProjectNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.V1.Projects.New(context.TODO(), gcore.CloudV1ProjectNewParams{
-		Name:        gcore.F("New Project"),
-		ClientID:    gcore.F(int64(3)),
-		Description: gcore.F("Project description"),
-		State:       gcore.F("ACTIVE"),
+		Name:        "New Project",
+		ClientID:    gcore.Int(3),
+		Description: gcore.String("Project description"),
+		State:       gcore.String("ACTIVE"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -54,7 +54,9 @@ func TestCloudV1ProjectGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.V1.Projects.Get(context.TODO(), int64(0))
+	_, err := client.Cloud.V1.Projects.Get(context.TODO(), gcore.CloudV1ProjectGetParams{
+		ProjectID: gcore.Int(0),
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -77,14 +79,11 @@ func TestCloudV1ProjectUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.V1.Projects.Update(
-		context.TODO(),
-		int64(0),
-		gcore.CloudV1ProjectUpdateParams{
-			Name:        gcore.F("New Project"),
-			Description: gcore.F("Project description"),
-		},
-	)
+	_, err := client.Cloud.V1.Projects.Update(context.TODO(), gcore.CloudV1ProjectUpdateParams{
+		ProjectID:   gcore.Int(0),
+		Name:        "New Project",
+		Description: gcore.String("Project description"),
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -108,10 +107,10 @@ func TestCloudV1ProjectListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.V1.Projects.List(context.TODO(), gcore.CloudV1ProjectListParams{
-		ClientID:       gcore.F(int64(123)),
-		IncludeDeleted: gcore.F(false),
-		Name:           gcore.F("my-project"),
-		OrderBy:        gcore.F([]gcore.CloudV1ProjectListParamsOrderBy{gcore.CloudV1ProjectListParamsOrderByCreatedAtAsc}),
+		ClientID:       gcore.Int(123),
+		IncludeDeleted: gcore.Bool(false),
+		Name:           gcore.String("my-project"),
+		OrderBy:        []string{"created_at.asc"},
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -135,7 +134,9 @@ func TestCloudV1ProjectDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.V1.Projects.Delete(context.TODO(), int64(0))
+	_, err := client.Cloud.V1.Projects.Delete(context.TODO(), gcore.CloudV1ProjectDeleteParams{
+		ProjectID: gcore.Int(0),
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

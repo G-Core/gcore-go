@@ -14,21 +14,15 @@ import (
 // the [NewCloudService] method instead.
 type CloudService struct {
 	Options []option.RequestOption
-	V1      *CloudV1Service
-	V2      *CloudV2Service
-	V3      *CloudV3Service
-	Public  *CloudPublicService
+	V1      CloudV1Service
 }
 
 // NewCloudService generates a new service that applies the given options to each
 // request. These options are applied after the parent client's options (if there
 // is one), and before any request-specific options.
-func NewCloudService(opts ...option.RequestOption) (r *CloudService) {
-	r = &CloudService{}
+func NewCloudService(opts ...option.RequestOption) (r CloudService) {
+	r = CloudService{}
 	r.Options = opts
 	r.V1 = NewCloudV1Service(opts...)
-	r.V2 = NewCloudV2Service(opts...)
-	r.V3 = NewCloudV3Service(opts...)
-	r.Public = NewCloudPublicService(opts...)
 	return
 }

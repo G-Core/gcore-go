@@ -22,7 +22,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/apierror"
 	"github.com/stainless-sdks/gcore-go/internal/apiform"
 	"github.com/stainless-sdks/gcore-go/internal/apiquery"
-	"github.com/stainless-sdks/gcore-go/internal/param"
+	"github.com/stainless-sdks/gcore-go/packages/param"
 )
 
 func getDefaultHeaders() map[string]string {
@@ -185,10 +185,9 @@ func NewRequestConfig(ctx context.Context, method string, u string, body interfa
 	return &cfg, nil
 }
 
-func UseDefaultParam[T any](dst *param.Field[T], src *T) {
-	if !dst.Present && src != nil {
-		dst.Value = *src
-		dst.Present = true
+func UseDefaultParam[T comparable](dst *param.Opt[T], src *T) {
+	if param.IsOmitted(*dst) && src != nil {
+		*dst = param.NewOpt(*src)
 	}
 }
 
@@ -205,6 +204,8 @@ type RequestConfig struct {
 	HTTPClient     *http.Client
 	Middlewares    []middleware
 	APIKey         string
+	ProjectID      *int64
+	RegionID       *int64
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
 	// ResponseBodyInto. If Destination is a []byte, then it will return the body as
 	// is.
@@ -564,6 +565,8 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		HTTPClient:     cfg.HTTPClient,
 		Middlewares:    cfg.Middlewares,
 		APIKey:         cfg.APIKey,
+		ProjectID:      cfg.ProjectID,
+		RegionID:       cfg.RegionID,
 	}
 
 	return new
