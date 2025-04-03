@@ -13,7 +13,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 )
 
-func TestCloudV1ProjectNewWithOptionalParams(t *testing.T) {
+func TestCloudProjectV1NewWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestCloudV1ProjectNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.V1.Projects.New(context.TODO(), gcore.CloudV1ProjectNewParams{
+	_, err := client.Cloud.Projects.V1.New(context.TODO(), gcore.CloudProjectV1NewParams{
 		Name:        "New Project",
 		ClientID:    gcore.Int(3),
 		Description: gcore.String("Project description"),
@@ -41,7 +41,7 @@ func TestCloudV1ProjectNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCloudV1ProjectGet(t *testing.T) {
+func TestCloudProjectV1Get(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -54,7 +54,7 @@ func TestCloudV1ProjectGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.V1.Projects.Get(context.TODO(), gcore.CloudV1ProjectGetParams{
+	_, err := client.Cloud.Projects.V1.Get(context.TODO(), gcore.CloudProjectV1GetParams{
 		ProjectID: gcore.Int(0),
 	})
 	if err != nil {
@@ -66,7 +66,7 @@ func TestCloudV1ProjectGet(t *testing.T) {
 	}
 }
 
-func TestCloudV1ProjectUpdateWithOptionalParams(t *testing.T) {
+func TestCloudProjectV1UpdateWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -79,7 +79,7 @@ func TestCloudV1ProjectUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.V1.Projects.Update(context.TODO(), gcore.CloudV1ProjectUpdateParams{
+	_, err := client.Cloud.Projects.V1.Update(context.TODO(), gcore.CloudProjectV1UpdateParams{
 		ProjectID:   gcore.Int(0),
 		Name:        "New Project",
 		Description: gcore.String("Project description"),
@@ -93,7 +93,7 @@ func TestCloudV1ProjectUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCloudV1ProjectListWithOptionalParams(t *testing.T) {
+func TestCloudProjectV1ListWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -106,7 +106,7 @@ func TestCloudV1ProjectListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.V1.Projects.List(context.TODO(), gcore.CloudV1ProjectListParams{
+	_, err := client.Cloud.Projects.V1.List(context.TODO(), gcore.CloudProjectV1ListParams{
 		ClientID:       gcore.Int(123),
 		IncludeDeleted: gcore.Bool(false),
 		Name:           gcore.String("my-project"),
@@ -121,7 +121,7 @@ func TestCloudV1ProjectListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCloudV1ProjectDelete(t *testing.T) {
+func TestCloudProjectV1Delete(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -134,7 +134,7 @@ func TestCloudV1ProjectDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.V1.Projects.Delete(context.TODO(), gcore.CloudV1ProjectDeleteParams{
+	_, err := client.Cloud.Projects.V1.Delete(context.TODO(), gcore.CloudProjectV1DeleteParams{
 		ProjectID: gcore.Int(0),
 	})
 	if err != nil {

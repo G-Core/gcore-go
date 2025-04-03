@@ -13,8 +13,8 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewCloudService] method instead.
 type CloudService struct {
-	Options []option.RequestOption
-	V1      CloudV1Service
+	Options  []option.RequestOption
+	Projects CloudProjectService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -23,6 +23,6 @@ type CloudService struct {
 func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r = CloudService{}
 	r.Options = opts
-	r.V1 = NewCloudV1Service(opts...)
+	r.Projects = NewCloudProjectService(opts...)
 	return
 }
