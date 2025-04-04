@@ -10,6 +10,7 @@ import (
 	"github.com/stainless-sdks/gcore-go"
 	"github.com/stainless-sdks/gcore-go/internal/testutil"
 	"github.com/stainless-sdks/gcore-go/option"
+	"github.com/stainless-sdks/gcore-go/projects"
 )
 
 func TestUsage(t *testing.T) {
@@ -24,7 +25,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	project, err := client.Cloud.Projects.V1.New(context.TODO(), gcore.CloudProjectV1NewParams{
+	project, err := client.Cloud.Projects.V1.New(context.TODO(), projects.V1NewParams{
 		Name: "New Project",
 	})
 	if err != nil {
