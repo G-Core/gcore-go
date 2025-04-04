@@ -256,7 +256,7 @@ type V1ListParams struct {
 func (f V1ListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [V1ListParams]'s query parameters as `url.Values`.
-func (r V1ListParams) URLQuery() (v url.Values) {
+func (r V1ListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
