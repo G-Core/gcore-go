@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package gcore
+package cloud
 
 import (
 	"github.com/stainless-sdks/gcore-go/option"
@@ -14,7 +14,7 @@ import (
 // the [NewCloudService] method instead.
 type CloudService struct {
 	Options  []option.RequestOption
-	Projects CloudProjectService
+	Projects ProjectService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -23,6 +23,6 @@ type CloudService struct {
 func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r = CloudService{}
 	r.Options = opts
-	r.Projects = NewCloudProjectService(opts...)
+	r.Projects = NewProjectService(opts...)
 	return
 }

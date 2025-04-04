@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/stainless-sdks/gcore-go/cloud"
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
 )
@@ -17,7 +18,7 @@ import (
 // and instead use the [NewClient] method instead.
 type Client struct {
 	Options []option.RequestOption
-	Cloud   CloudService
+	Cloud   cloud.CloudService
 }
 
 // DefaultClientOptions read from the environment (GCORE_API_KEY, GCORE_PROJECT_ID,
@@ -53,7 +54,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r = Client{Options: opts}
 
-	r.Cloud = NewCloudService(opts...)
+	r.Cloud = cloud.NewCloudService(opts...)
 
 	return
 }

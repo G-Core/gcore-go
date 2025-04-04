@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package gcore_test
+package projects_test
 
 import (
 	"context"
@@ -11,9 +11,10 @@ import (
 	"github.com/stainless-sdks/gcore-go"
 	"github.com/stainless-sdks/gcore-go/internal/testutil"
 	"github.com/stainless-sdks/gcore-go/option"
+	"github.com/stainless-sdks/gcore-go/projects"
 )
 
-func TestCloudProjectV1NewWithOptionalParams(t *testing.T) {
+func TestV1NewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,7 +26,7 @@ func TestCloudProjectV1NewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Projects.V1.New(context.TODO(), gcore.CloudProjectV1NewParams{
+	_, err := client.Cloud.Projects.V1.New(context.TODO(), projects.V1NewParams{
 		Name:        "New Project",
 		ClientID:    gcore.Int(3),
 		Description: gcore.String("Project description"),
@@ -40,7 +41,7 @@ func TestCloudProjectV1NewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCloudProjectV1Get(t *testing.T) {
+func TestV1Get(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -52,7 +53,7 @@ func TestCloudProjectV1Get(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Projects.V1.Get(context.TODO(), gcore.CloudProjectV1GetParams{
+	_, err := client.Cloud.Projects.V1.Get(context.TODO(), projects.V1GetParams{
 		ProjectID: gcore.Int(0),
 	})
 	if err != nil {
@@ -64,7 +65,7 @@ func TestCloudProjectV1Get(t *testing.T) {
 	}
 }
 
-func TestCloudProjectV1UpdateWithOptionalParams(t *testing.T) {
+func TestV1UpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -76,7 +77,7 @@ func TestCloudProjectV1UpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Projects.V1.Update(context.TODO(), gcore.CloudProjectV1UpdateParams{
+	_, err := client.Cloud.Projects.V1.Update(context.TODO(), projects.V1UpdateParams{
 		ProjectID:   gcore.Int(0),
 		Name:        "New Project",
 		Description: gcore.String("Project description"),
@@ -90,7 +91,7 @@ func TestCloudProjectV1UpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCloudProjectV1ListWithOptionalParams(t *testing.T) {
+func TestV1ListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -102,7 +103,7 @@ func TestCloudProjectV1ListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Projects.V1.List(context.TODO(), gcore.CloudProjectV1ListParams{
+	_, err := client.Cloud.Projects.V1.List(context.TODO(), projects.V1ListParams{
 		ClientID:       gcore.Int(123),
 		IncludeDeleted: gcore.Bool(false),
 		Name:           gcore.String("my-project"),
@@ -117,7 +118,7 @@ func TestCloudProjectV1ListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCloudProjectV1Delete(t *testing.T) {
+func TestV1Delete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -129,7 +130,7 @@ func TestCloudProjectV1Delete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Projects.V1.Delete(context.TODO(), gcore.CloudProjectV1DeleteParams{
+	_, err := client.Cloud.Projects.V1.Delete(context.TODO(), projects.V1DeleteParams{
 		ProjectID: gcore.Int(0),
 	})
 	if err != nil {
