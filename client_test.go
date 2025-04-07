@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"github.com/stainless-sdks/gcore-go"
+	"github.com/stainless-sdks/gcore-go/cloud"
 	"github.com/stainless-sdks/gcore-go/internal"
 	"github.com/stainless-sdks/gcore-go/option"
-	"github.com/stainless-sdks/gcore-go/projects"
 )
 
 type closureTransport struct {
@@ -39,7 +39,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Cloud.Projects.V1.New(context.Background(), projects.V1NewParams{
+	client.Cloud.Projects.New(context.Background(), cloud.ProjectNewParams{
 		Name: "New Project",
 	})
 	if userAgent != fmt.Sprintf("Gcore/Go %s", internal.PackageVersion) {
@@ -65,7 +65,7 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Cloud.Projects.V1.New(context.Background(), projects.V1NewParams{
+	_, err := client.Cloud.Projects.New(context.Background(), cloud.ProjectNewParams{
 		Name: "New Project",
 	})
 	if err == nil {
@@ -102,7 +102,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
-	_, err := client.Cloud.Projects.V1.New(context.Background(), projects.V1NewParams{
+	_, err := client.Cloud.Projects.New(context.Background(), cloud.ProjectNewParams{
 		Name: "New Project",
 	})
 	if err == nil {
@@ -134,7 +134,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
-	_, err := client.Cloud.Projects.V1.New(context.Background(), projects.V1NewParams{
+	_, err := client.Cloud.Projects.New(context.Background(), cloud.ProjectNewParams{
 		Name: "New Project",
 	})
 	if err == nil {
@@ -165,7 +165,7 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Cloud.Projects.V1.New(context.Background(), projects.V1NewParams{
+	_, err := client.Cloud.Projects.New(context.Background(), cloud.ProjectNewParams{
 		Name: "New Project",
 	})
 	if err == nil {
@@ -190,7 +190,7 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	_, err := client.Cloud.Projects.V1.New(cancelCtx, projects.V1NewParams{
+	_, err := client.Cloud.Projects.New(cancelCtx, cloud.ProjectNewParams{
 		Name: "New Project",
 	})
 	if err == nil {
@@ -212,7 +212,7 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	_, err := client.Cloud.Projects.V1.New(cancelCtx, projects.V1NewParams{
+	_, err := client.Cloud.Projects.New(cancelCtx, cloud.ProjectNewParams{
 		Name: "New Project",
 	})
 	if err == nil {
@@ -240,7 +240,7 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		_, err := client.Cloud.Projects.V1.New(deadlineCtx, projects.V1NewParams{
+		_, err := client.Cloud.Projects.New(deadlineCtx, cloud.ProjectNewParams{
 			Name: "New Project",
 		})
 		if err == nil {
