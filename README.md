@@ -37,15 +37,15 @@ import (
 	"fmt"
 
 	"github.com/stainless-sdks/gcore-go"
+	"github.com/stainless-sdks/gcore-go/cloud"
 	"github.com/stainless-sdks/gcore-go/option"
-	"github.com/stainless-sdks/gcore-go/projects"
 )
 
 func main() {
 	client := gcore.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("GCORE_API_KEY")
 	)
-	project, err := client.Cloud.Projects.V1.New(context.TODO(), projects.V1NewParams{
+	project, err := client.Cloud.Projects.New(context.TODO(), cloud.ProjectNewParams{
 		Name: "New Project",
 	})
 	if err != nil {
@@ -234,7 +234,7 @@ client := gcore.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Cloud.Projects.V1.New(context.TODO(), ...,
+client.Cloud.Projects.New(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -263,7 +263,7 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Cloud.Projects.V1.New(context.TODO(), projects.V1NewParams{
+_, err := client.Cloud.Projects.New(context.TODO(), cloud.ProjectNewParams{
 	Name: "New Project",
 })
 if err != nil {
@@ -290,9 +290,9 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Cloud.Projects.V1.New(
+client.Cloud.Projects.New(
 	ctx,
-	projects.V1NewParams{
+	cloud.ProjectNewParams{
 		Name: "New Project",
 	},
 	// This sets the per-retry timeout
@@ -328,9 +328,9 @@ client := gcore.NewClient(
 )
 
 // Override per-request:
-client.Cloud.Projects.V1.New(
+client.Cloud.Projects.New(
 	context.TODO(),
-	projects.V1NewParams{
+	cloud.ProjectNewParams{
 		Name: "New Project",
 	},
 	option.WithMaxRetries(5),
@@ -345,9 +345,9 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-project, err := client.Cloud.Projects.V1.New(
+project, err := client.Cloud.Projects.New(
 	context.TODO(),
-	projects.V1NewParams{
+	cloud.ProjectNewParams{
 		Name: "New Project",
 	},
 	option.WithResponseInto(&response),
