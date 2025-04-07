@@ -124,7 +124,9 @@ type Project struct {
 	DeletedAt time.Time `json:"deleted_at,nullable" format:"date-time"`
 	// Description of the project.
 	Description string `json:"description,nullable"`
-	// ID of the Task entity responsible for handling the project's state transition.
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -242,12 +244,14 @@ func (r ProjectUpdateParams) MarshalJSON() (data []byte, err error) {
 type ProjectListParams struct {
 	// Client ID filter for administrators.
 	ClientID param.Opt[int64] `query:"client_id,omitzero" json:"-"`
+	// Whether to include deleted projects in the response.
+	IncludeDeleted param.Opt[bool] `query:"include_deleted,omitzero" json:"-"`
 	// Name to filter the results by.
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
-	// Whether to include deleted entries in the response.
-	IncludeDeleted param.Opt[bool] `query:"include_deleted,omitzero" json:"-"`
-	// Order by field and direction. Supports multiple values.
-	OrderBy []string `query:"order_by,omitzero" json:"-"`
+	// Order by field and direction.
+	//
+	// Any of "created_at.asc", "created_at.desc", "name.asc", "name.desc".
+	OrderBy ProjectListParamsOrderBy `query:"order_by,omitzero" json:"-"`
 	paramObj
 }
 
@@ -262,6 +266,16 @@ func (r ProjectListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Order by field and direction.
+type ProjectListParamsOrderBy string
+
+const (
+	ProjectListParamsOrderByCreatedAtAsc  ProjectListParamsOrderBy = "created_at.asc"
+	ProjectListParamsOrderByCreatedAtDesc ProjectListParamsOrderBy = "created_at.desc"
+	ProjectListParamsOrderByNameAsc       ProjectListParamsOrderBy = "name.asc"
+	ProjectListParamsOrderByNameDesc      ProjectListParamsOrderBy = "name.desc"
+)
 
 type ProjectDeleteParams struct {
 	// Use [option.WithProjectID] on the client to set a global default for this field.

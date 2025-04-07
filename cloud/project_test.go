@@ -104,10 +104,10 @@ func TestProjectListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Projects.List(context.TODO(), cloud.ProjectListParams{
-		ClientID:       gcore.Int(123),
+		ClientID:       gcore.Int(1),
 		IncludeDeleted: gcore.Bool(false),
 		Name:           gcore.String("my-project"),
-		OrderBy:        []string{"created_at.asc"},
+		OrderBy:        cloud.ProjectListParamsOrderByCreatedAtAsc,
 	})
 	if err != nil {
 		var apierr *gcore.Error
