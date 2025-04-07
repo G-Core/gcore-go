@@ -21,21 +21,21 @@ type Client struct {
 	Cloud   cloud.CloudService
 }
 
-// DefaultClientOptions read from the environment (GCORE_API_KEY, GCORE_PROJECT_ID,
-// GCORE_REGION_ID). This should be used to initialize new clients.
+// DefaultClientOptions read from the environment (GCORE_API_KEY, GCORE_PROJECT,
+// GCORE_REGION). This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("GCORE_API_KEY"); ok {
 		defaults = append(defaults, option.WithAPIKey(o))
 	}
-	if o, ok := os.LookupEnv("GCORE_PROJECT_ID"); ok {
+	if o, ok := os.LookupEnv("GCORE_PROJECT"); ok {
 		parsed, err := strconv.ParseInt(o, 10, 64)
 		if err != nil {
 			panic(err)
 		}
 		defaults = append(defaults, option.WithProjectID(parsed))
 	}
-	if o, ok := os.LookupEnv("GCORE_REGION_ID"); ok {
+	if o, ok := os.LookupEnv("GCORE_REGION"); ok {
 		parsed, err := strconv.ParseInt(o, 10, 64)
 		if err != nil {
 			panic(err)
@@ -46,9 +46,9 @@ func DefaultClientOptions() []option.RequestOption {
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (GCORE_API_KEY, GCORE_PROJECT_ID, GCORE_REGION_ID). The option
-// passed in as arguments are applied after these default arguments, and all option
-// will be passed down to the services and requests that this client makes.
+// environment (GCORE_API_KEY, GCORE_PROJECT, GCORE_REGION). The option passed in
+// as arguments are applied after these default arguments, and all option will be
+// passed down to the services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 
