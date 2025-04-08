@@ -107,7 +107,7 @@ func TestProjectListWithOptionalParams(t *testing.T) {
 		ClientID:       gcore.Int(1),
 		IncludeDeleted: gcore.Bool(false),
 		Name:           gcore.String("my-project"),
-		OrderBy:        cloud.ProjectListParamsOrderByCreatedAtAsc,
+		OrderBy:        cloud.ProjectListParamsOrderByNameDesc,
 	})
 	if err != nil {
 		var apierr *gcore.Error
