@@ -15,6 +15,7 @@ import (
 type CloudService struct {
 	Options  []option.RequestOption
 	Projects ProjectService
+	Regions  RegionService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -24,5 +25,6 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r = CloudService{}
 	r.Options = opts
 	r.Projects = NewProjectService(opts...)
+	r.Regions = NewRegionService(opts...)
 	return
 }
