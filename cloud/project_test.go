@@ -65,32 +65,6 @@ func TestProjectGet(t *testing.T) {
 	}
 }
 
-func TestProjectUpdateWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Cloud.Projects.Update(context.TODO(), cloud.ProjectUpdateParams{
-		ProjectID:   gcore.Int(0),
-		Name:        "New Project",
-		Description: gcore.String("Project description"),
-	})
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
 func TestProjectListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -132,6 +106,32 @@ func TestProjectDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.Projects.Delete(context.TODO(), cloud.ProjectDeleteParams{
 		ProjectID: gcore.Int(0),
+	})
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestProjectReplaceWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.Projects.Replace(context.TODO(), cloud.ProjectReplaceParams{
+		ProjectID:   gcore.Int(0),
+		Name:        "New Project",
+		Description: gcore.String("Project description"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
