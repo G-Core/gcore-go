@@ -62,23 +62,6 @@ func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts .
 	return
 }
 
-// Update Project
-func (r *ProjectService) Update(ctx context.Context, params ProjectUpdateParams, opts ...option.RequestOption) (res *Project, err error) {
-	opts = append(r.Options[:], opts...)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	if !params.ProjectID.IsPresent() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v1/projects/%v", params.ProjectID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
-}
-
 // List projects
 func (r *ProjectService) List(ctx context.Context, query ProjectListParams, opts ...option.RequestOption) (res *ProjectListResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -102,6 +85,23 @@ func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, o
 	}
 	path := fmt.Sprintf("cloud/v1/projects/%v", body.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
+}
+
+// Update Project
+func (r *ProjectService) Replace(ctx context.Context, params ProjectReplaceParams, opts ...option.RequestOption) (res *Project, err error) {
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
+	if !params.ProjectID.IsPresent() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/projects/%v", params.ProjectID.Value)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -222,25 +222,6 @@ type ProjectGetParams struct {
 // "null". To check if this field is omitted, use [param.IsOmitted].
 func (f ProjectGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
-type ProjectUpdateParams struct {
-	// Use [option.WithProjectID] on the client to set a global default for this field.
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// Name of the entity, following a specific format.
-	Name string `json:"name,required"`
-	// Description of the project.
-	Description param.Opt[string] `json:"description,omitzero"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ProjectUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
-func (r ProjectUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow ProjectUpdateParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
 type ProjectListParams struct {
 	// Client ID filter for administrators.
 	ClientID param.Opt[int64] `query:"client_id,omitzero" json:"-"`
@@ -286,3 +267,22 @@ type ProjectDeleteParams struct {
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
 func (f ProjectDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+
+type ProjectReplaceParams struct {
+	// Use [option.WithProjectID] on the client to set a global default for this field.
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Name of the entity, following a specific format.
+	Name string `json:"name,required"`
+	// Description of the project.
+	Description param.Opt[string] `json:"description,omitzero"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f ProjectReplaceParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+
+func (r ProjectReplaceParams) MarshalJSON() (data []byte, err error) {
+	type shadow ProjectReplaceParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
