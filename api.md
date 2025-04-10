@@ -16,6 +16,17 @@ Methods:
 - <code title="delete /cloud/v1/projects/{project_id}">client.Cloud.Projects.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#ProjectService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#ProjectDeleteParams">ProjectDeleteParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#ProjectDeleteResponse">ProjectDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="put /cloud/v1/projects/{project_id}">client.Cloud.Projects.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#ProjectService.Replace">Replace</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#ProjectReplaceParams">ProjectReplaceParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Project">Project</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## Tasks
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Task">Task</a>
+
+Methods:
+
+- <code title="get /cloud/v1/tasks/{task_id}">client.Cloud.Tasks.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#TaskService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, taskID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Task">Task</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /cloud/v1/tasks">client.Cloud.Tasks.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#TaskService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#TaskListParams">TaskListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Task">Task</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## Regions
 
 Response Types:
