@@ -227,8 +227,12 @@ type ProjectListParams struct {
 	ClientID param.Opt[int64] `query:"client_id,omitzero" json:"-"`
 	// Whether to include deleted projects in the response.
 	IncludeDeleted param.Opt[bool] `query:"include_deleted,omitzero" json:"-"`
+	// Limit value is used to limit the number of records in the result
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Name to filter the results by.
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
+	// Offset value is used to exclude the first set of records from the result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Order by field and direction.
 	//
 	// Any of "created_at.asc", "created_at.desc", "name.asc", "name.desc".
