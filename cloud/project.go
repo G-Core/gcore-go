@@ -14,6 +14,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/apiquery"
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
+	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
 	"github.com/stainless-sdks/gcore-go/packages/resp"
 )
@@ -45,29 +46,27 @@ func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ..
 	return
 }
 
-// Get Project
-func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts ...option.RequestOption) (res *Project, err error) {
+// List projects
+func (r *ProjectService) List(ctx context.Context, query ProjectListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Project], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := "cloud/v1/projects"
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.ProjectID)
-	if !query.ProjectID.IsPresent() {
-		err = errors.New("missing required project_id parameter")
-		return
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/projects/%v", query.ProjectID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	res.SetPageConfig(cfg, raw)
+	return res, nil
 }
 
 // List projects
-func (r *ProjectService) List(ctx context.Context, query ProjectListParams, opts ...option.RequestOption) (res *ProjectListResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "cloud/v1/projects"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+func (r *ProjectService) ListAutoPaging(ctx context.Context, query ProjectListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Project] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // All cloud resources in all regions that belong to the project will be deleted
@@ -85,6 +84,23 @@ func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, o
 	}
 	path := fmt.Sprintf("cloud/v1/projects/%v", body.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
+}
+
+// Get Project
+func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts ...option.RequestOption) (res *Project, err error) {
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&query.ProjectID, precfg.ProjectID)
+	if !query.ProjectID.IsPresent() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/projects/%v", query.ProjectID.Value)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
@@ -151,27 +167,6 @@ func (r *Project) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ProjectListResponse struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []Project `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ProjectListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ProjectListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Task ID list object
 type ProjectDeleteResponse struct {
 	// Task list
@@ -211,16 +206,6 @@ func (r ProjectNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow ProjectNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-
-type ProjectGetParams struct {
-	// Use [option.WithProjectID] on the client to set a global default for this field.
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ProjectGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type ProjectListParams struct {
 	// Client ID filter for administrators.
@@ -271,6 +256,16 @@ type ProjectDeleteParams struct {
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
 func (f ProjectDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+
+type ProjectGetParams struct {
+	// Use [option.WithProjectID] on the client to set a global default for this field.
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f ProjectGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type ProjectReplaceParams struct {
 	// Use [option.WithProjectID] on the client to set a global default for this field.
