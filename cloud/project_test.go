@@ -80,7 +80,9 @@ func TestProjectListWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.Projects.List(context.TODO(), cloud.ProjectListParams{
 		ClientID:       gcore.Int(1),
 		IncludeDeleted: gcore.Bool(false),
+		Limit:          gcore.Int(100),
 		Name:           gcore.String("my-project"),
+		Offset:         gcore.Int(0),
 		OrderBy:        cloud.ProjectListParamsOrderByNameDesc,
 	})
 	if err != nil {
