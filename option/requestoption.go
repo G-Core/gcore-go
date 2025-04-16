@@ -280,3 +280,11 @@ func WithRegionID(value int64) RequestOption {
 		return nil
 	})
 }
+
+// WithPollingIntervalMs returns a RequestOption that sets the client setting "polling_interval_ms".
+func WithPollingIntervalMs(value int64) RequestOption {
+	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		r.PollingIntervalMs = value
+		return nil
+	})
+}
