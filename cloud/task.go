@@ -73,6 +73,43 @@ func (r *TaskService) ListAutoPaging(ctx context.Context, query TaskListParams, 
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
+// Poll for task status until it is finished, an error occurs or the context is done. It uses a default polling interval
+// of 1 second which can be overridden.
+func (r *TaskService) Poll(ctx context.Context, taskID string, opts ...requestconfig.RequestOption) (*Task, error) {
+	// extract polling interval from options, if not explicitly set, the default value is used
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	pollingInterval := time.Duration(precfg.PollingIntervalMs) * time.Millisecond
+
+	// poll the task status until it is finished or an error occurs
+	for {
+		task, err := r.Get(ctx, taskID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get task status: %w", err)
+		}
+
+		if task.State == "FINISHED" {
+			return task, nil
+		}
+
+		if task.State == "ERROR" {
+			return nil, fmt.Errorf("task %s failed with error: %s", taskID, task.Error)
+		}
+
+		time.Sleep(pollingInterval)
+
+		// check if the context is done, if so return the error
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		default:
+		}
+	}
+}
+
 type Task struct {
 	// The task ID
 	ID string `json:"id,required"`
