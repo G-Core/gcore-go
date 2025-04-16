@@ -79,7 +79,9 @@ type Task struct {
 	// Created timestamp
 	CreatedOn string `json:"created_on,required"`
 	// The task state
-	State string `json:"state,required"`
+	//
+	// Any of "ERROR", "FINISHED", "NEW", "RUNNING".
+	State TaskState `json:"state,required"`
 	// The task type
 	TaskType string `json:"task_type,required"`
 	// The user ID that initiated the task
@@ -154,6 +156,16 @@ func (r Task) RawJSON() string { return r.JSON.raw }
 func (r *Task) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// The task state
+type TaskState string
+
+const (
+	TaskStateError    TaskState = "ERROR"
+	TaskStateFinished TaskState = "FINISHED"
+	TaskStateNew      TaskState = "NEW"
+	TaskStateRunning  TaskState = "RUNNING"
+)
 
 // If the task creates resources, this field will contain their IDs
 type TaskCreatedResources struct {
