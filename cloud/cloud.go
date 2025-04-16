@@ -17,6 +17,7 @@ type CloudService struct {
 	Projects ProjectService
 	Tasks    TaskService
 	Regions  RegionService
+	Quotas   QuotaService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -28,5 +29,6 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.Projects = NewProjectService(opts...)
 	r.Tasks = NewTaskService(opts...)
 	r.Regions = NewRegionService(opts...)
+	r.Quotas = NewQuotaService(opts...)
 	return
 }
