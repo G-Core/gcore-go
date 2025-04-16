@@ -93,7 +93,7 @@ type Task struct {
 	// If the task creates resources, this field will contain their IDs
 	CreatedResources TaskCreatedResources `json:"created_resources,nullable"`
 	// Task parameters
-	Data interface{} `json:"data"`
+	Data any `json:"data"`
 	// Task detailed state that is more specific to task type
 	//
 	// Any of "CLUSTER_CLEAN_UP", "CLUSTER_RESIZE", "CLUSTER_RESUME",
