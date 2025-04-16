@@ -206,17 +206,18 @@ type HTTPDoer interface {
 // Editing the variables inside RequestConfig directly is unstable api. Prefer
 // composing the RequestOption instead if possible.
 type RequestConfig struct {
-	MaxRetries     int
-	RequestTimeout time.Duration
-	Context        context.Context
-	Request        *http.Request
-	BaseURL        *url.URL
-	CustomHTTPDoer HTTPDoer
-	HTTPClient     *http.Client
-	Middlewares    []middleware
-	APIKey         string
-	ProjectID      *int64
-	RegionID       *int64
+	MaxRetries        int
+	RequestTimeout    time.Duration
+	Context           context.Context
+	Request           *http.Request
+	BaseURL           *url.URL
+	CustomHTTPDoer    HTTPDoer
+	HTTPClient        *http.Client
+	Middlewares       []middleware
+	APIKey            string
+	PollingIntervalMs int64
+	ProjectID         *int64
+	RegionID          *int64
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
 	// ResponseBodyInto. If Destination is a []byte, then it will return the body as
 	// is.
@@ -571,16 +572,17 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		return nil
 	}
 	new := &RequestConfig{
-		MaxRetries:     cfg.MaxRetries,
-		RequestTimeout: cfg.RequestTimeout,
-		Context:        ctx,
-		Request:        req,
-		BaseURL:        cfg.BaseURL,
-		HTTPClient:     cfg.HTTPClient,
-		Middlewares:    cfg.Middlewares,
-		APIKey:         cfg.APIKey,
-		ProjectID:      cfg.ProjectID,
-		RegionID:       cfg.RegionID,
+		MaxRetries:        cfg.MaxRetries,
+		RequestTimeout:    cfg.RequestTimeout,
+		Context:           ctx,
+		Request:           req,
+		BaseURL:           cfg.BaseURL,
+		HTTPClient:        cfg.HTTPClient,
+		Middlewares:       cfg.Middlewares,
+		APIKey:            cfg.APIKey,
+		ProjectID:         cfg.ProjectID,
+		RegionID:          cfg.RegionID,
+		PollingIntervalMs: cfg.PollingIntervalMs,
 	}
 
 	return new

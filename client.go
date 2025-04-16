@@ -28,6 +28,7 @@ func DefaultClientOptions() []option.RequestOption {
 	if o, ok := os.LookupEnv("GCORE_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
+	defaults = append(defaults, option.WithPollingIntervalMs(1000))
 	if o, ok := os.LookupEnv("GCORE_API_KEY"); ok {
 		defaults = append(defaults, option.WithAPIKey(o))
 	}
