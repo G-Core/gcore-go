@@ -20,6 +20,7 @@ type CloudService struct {
 	Quotas   QuotaService
 	Secrets  SecretService
 	SSHKeys  SSHKeyService
+	IPRanges IPRangeService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -34,5 +35,6 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.Quotas = NewQuotaService(opts...)
 	r.Secrets = NewSecretService(opts...)
 	r.SSHKeys = NewSSHKeyService(opts...)
+	r.IPRanges = NewIPRangeService(opts...)
 	return
 }
