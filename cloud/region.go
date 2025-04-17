@@ -109,6 +109,10 @@ type Region struct {
 	EndpointType RegionEndpointType `json:"endpoint_type,required"`
 	// External network ID for Neutron
 	ExternalNetworkID string `json:"external_network_id,required"`
+	// List of available file share types
+	//
+	// Any of "standard", "vast".
+	FileShareTypes []string `json:"file_share_types,required"`
 	// Region has AI capability
 	HasAI bool `json:"has_ai,required"`
 	// Region has AI GPU capability
@@ -161,6 +165,7 @@ type Region struct {
 		DisplayName          resp.Field
 		EndpointType         resp.Field
 		ExternalNetworkID    resp.Field
+		FileShareTypes       resp.Field
 		HasAI                resp.Field
 		HasAIGPU             resp.Field
 		HasBaremetal         resp.Field
