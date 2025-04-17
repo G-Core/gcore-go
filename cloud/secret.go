@@ -24,6 +24,7 @@ import (
 // the [NewSecretService] method instead.
 type SecretService struct {
 	Options []option.RequestOption
+	task    TaskService
 }
 
 // NewSecretService generates a new service that applies the given options to each
@@ -32,6 +33,7 @@ type SecretService struct {
 func NewSecretService(opts ...option.RequestOption) (r SecretService) {
 	r = SecretService{}
 	r.Options = opts
+	r.task = NewTaskService(opts...)
 	return
 }
 
@@ -55,6 +57,46 @@ func (r *SecretService) New(ctx context.Context, params SecretNewParams, opts ..
 	path := fmt.Sprintf("cloud/v1/secrets/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// Create secret and poll for the result
+func (r *SecretService) NewAndPoll(ctx context.Context, params SecretNewParams, opts ...option.RequestOption) (v *Secret, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams SecretGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	if !params.ProjectID.IsPresent() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !params.RegionID.IsPresent() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.task.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	if task.JSON.CreatedResources.IsPresent() || len(task.CreatedResources.Secrets) != 1 {
+		return nil, errors.New("expected exactly one secret to be created in a task")
+	}
+	resourceID := task.CreatedResources.Secrets[0]
+	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
 // List secrets
