@@ -38,18 +38,6 @@ func NewTaskService(opts ...option.RequestOption) (r TaskService) {
 	return
 }
 
-// Get task
-func (r *TaskService) Get(ctx context.Context, taskID string, opts ...option.RequestOption) (res *Task, err error) {
-	opts = append(r.Options[:], opts...)
-	if taskID == "" {
-		err = errors.New("missing required task_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v1/tasks/%s", taskID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
 // List tasks
 func (r *TaskService) List(ctx context.Context, query TaskListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Task], err error) {
 	var raw *http.Response
@@ -71,6 +59,39 @@ func (r *TaskService) List(ctx context.Context, query TaskListParams, opts ...op
 // List tasks
 func (r *TaskService) ListAutoPaging(ctx context.Context, query TaskListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Task] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
+}
+
+// Acknowledge all client tasks in project or region
+func (r *TaskService) AcknowledgeAll(ctx context.Context, body TaskAcknowledgeAllParams, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	path := "cloud/v1/tasks/acknowledge_all"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	return
+}
+
+// Acknowledge one task on project scope
+func (r *TaskService) AcknowledgeOne(ctx context.Context, taskID string, opts ...option.RequestOption) (res *Task, err error) {
+	opts = append(r.Options[:], opts...)
+	if taskID == "" {
+		err = errors.New("missing required task_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/tasks/%s/acknowledge", taskID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return
+}
+
+// Get task
+func (r *TaskService) Get(ctx context.Context, taskID string, opts ...option.RequestOption) (res *Task, err error) {
+	opts = append(r.Options[:], opts...)
+	if taskID == "" {
+		err = errors.New("missing required task_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/tasks/%s", taskID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
 }
 
 // Poll for task status until it is finished, an error occurs or the context is done. It uses a default polling interval
@@ -431,3 +452,28 @@ const (
 	TaskListParamsSortingAsc  TaskListParamsSorting = "asc"
 	TaskListParamsSortingDesc TaskListParamsSorting = "desc"
 )
+
+type TaskAcknowledgeAllParams struct {
+	// Project ID
+	//
+	// Use [option.WithProjectID] on the client to set a global default for this field.
+	ProjectID param.Opt[int64] `query:"project_id,omitzero" json:"-"`
+	// Region ID
+	//
+	// Use [option.WithRegionID] on the client to set a global default for this field.
+	RegionID param.Opt[int64] `query:"region_id,omitzero" json:"-"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f TaskAcknowledgeAllParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+
+// URLQuery serializes [TaskAcknowledgeAllParams]'s query parameters as
+// `url.Values`.
+func (r TaskAcknowledgeAllParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
