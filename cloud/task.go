@@ -94,54 +94,76 @@ func (r *TaskService) Get(ctx context.Context, taskID string, opts ...option.Req
 	return
 }
 
+// '#/components/schemas/TaskSerializer' "$.components.schemas.TaskSerializer"
 type Task struct {
-	// The task ID
+	// '#/components/schemas/TaskSerializer/properties/id'
+	// "$.components.schemas.TaskSerializer.properties.id"
 	ID string `json:"id,required"`
-	// Created timestamp
+	// '#/components/schemas/TaskSerializer/properties/created_on/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.created_on.anyOf[0]"
 	CreatedOn string `json:"created_on,required"`
-	// The task state
+	// '#/components/schemas/TaskSerializer/properties/state'
+	// "$.components.schemas.TaskSerializer.properties.state"
 	//
 	// Any of "ERROR", "FINISHED", "NEW", "RUNNING".
 	State TaskState `json:"state,required"`
-	// The task type
+	// '#/components/schemas/TaskSerializer/properties/task_type'
+	// "$.components.schemas.TaskSerializer.properties.task_type"
 	TaskType string `json:"task_type,required"`
-	// The user ID that initiated the task
+	// '#/components/schemas/TaskSerializer/properties/user_id'
+	// "$.components.schemas.TaskSerializer.properties.user_id"
 	UserID int64 `json:"user_id,required"`
-	// If task was acknowledged, this field stores acknowledge timestamp
+	// '#/components/schemas/TaskSerializer/properties/acknowledged_at/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.acknowledged_at.anyOf[0]"
 	AcknowledgedAt string `json:"acknowledged_at,nullable"`
-	// If task was acknowledged, this field stores user_id of the person
+	// '#/components/schemas/TaskSerializer/properties/acknowledged_by/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.acknowledged_by.anyOf[0]"
 	AcknowledgedBy int64 `json:"acknowledged_by,nullable"`
-	// The client ID
+	// '#/components/schemas/TaskSerializer/properties/client_id/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.client_id.anyOf[0]"
 	ClientID int64 `json:"client_id,nullable"`
-	// If the task creates resources, this field will contain their IDs
+	// '#/components/schemas/TaskSerializer/properties/created_resources/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.created_resources.anyOf[0]"
 	CreatedResources TaskCreatedResources `json:"created_resources,nullable"`
-	// Task parameters
+	// '#/components/schemas/TaskSerializer/properties/data/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.data.anyOf[0]"
 	Data any `json:"data"`
-	// Task detailed state that is more specific to task type
+	// '#/components/schemas/TaskSerializer/properties/detailed_state/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.detailed_state.anyOf[0]"
 	//
 	// Any of "CLUSTER_CLEAN_UP", "CLUSTER_RESIZE", "CLUSTER_RESUME",
 	// "CLUSTER_SUSPEND", "ERROR", "FINISHED", "IPU_SERVERS", "NETWORK",
 	// "POPLAR_SERVERS", "POST_DEPLOY_SETUP", "VIPU_CONTROLLER".
 	DetailedState TaskDetailedState `json:"detailed_state,nullable"`
-	// The error value
+	// '#/components/schemas/TaskSerializer/properties/error/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.error.anyOf[0]"
 	Error string `json:"error,nullable"`
-	// Finished timestamp
+	// '#/components/schemas/TaskSerializer/properties/finished_on/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.finished_on.anyOf[0]"
 	FinishedOn string `json:"finished_on,nullable"`
-	// Job ID
+	// '#/components/schemas/TaskSerializer/properties/job_id/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.job_id.anyOf[0]"
 	JobID string `json:"job_id,nullable"`
-	// Lifecycle policy ID
+	// '#/components/schemas/TaskSerializer/properties/lifecycle_policy_id/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.lifecycle_policy_id.anyOf[0]"
 	LifecyclePolicyID int64 `json:"lifecycle_policy_id,nullable"`
-	// The project ID
+	// '#/components/schemas/TaskSerializer/properties/project_id/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.project_id.anyOf[0]"
 	ProjectID int64 `json:"project_id,nullable"`
-	// The region ID
+	// '#/components/schemas/TaskSerializer/properties/region_id/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.region_id.anyOf[0]"
 	RegionID int64 `json:"region_id,nullable"`
-	// The request ID
+	// '#/components/schemas/TaskSerializer/properties/request_id/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.request_id.anyOf[0]"
 	RequestID string `json:"request_id,nullable"`
-	// Schedule ID
+	// '#/components/schemas/TaskSerializer/properties/schedule_id/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.schedule_id.anyOf[0]"
 	ScheduleID string `json:"schedule_id,nullable"`
-	// Last updated timestamp
+	// '#/components/schemas/TaskSerializer/properties/updated_on/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.updated_on.anyOf[0]"
 	UpdatedOn string `json:"updated_on,nullable"`
-	// Client, specified in user's JWT
+	// '#/components/schemas/TaskSerializer/properties/user_client_id/anyOf/0'
+	// "$.components.schemas.TaskSerializer.properties.user_client_id.anyOf[0]"
 	UserClientID int64 `json:"user_client_id,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -178,7 +200,8 @@ func (r *Task) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The task state
+// '#/components/schemas/TaskSerializer/properties/state'
+// "$.components.schemas.TaskSerializer.properties.state"
 type TaskState string
 
 const (
@@ -188,75 +211,110 @@ const (
 	TaskStateRunning  TaskState = "RUNNING"
 )
 
-// If the task creates resources, this field will contain their IDs
+// '#/components/schemas/TaskSerializer/properties/created_resources/anyOf/0'
+// "$.components.schemas.TaskSerializer.properties.created_resources.anyOf[0]"
 type TaskCreatedResources struct {
-	// IDs of created AI clusters
+	// '#/components/schemas/CreatedResources/properties/ai_clusters'
+	// "$.components.schemas.CreatedResources.properties.ai_clusters"
 	AIClusters []string `json:"ai_clusters"`
-	// IDs of created API keys
+	// '#/components/schemas/CreatedResources/properties/api_keys'
+	// "$.components.schemas.CreatedResources.properties.api_keys"
 	APIKeys []string `json:"api_keys"`
-	// IDs of created CaaS containers
+	// '#/components/schemas/CreatedResources/properties/caas_containers'
+	// "$.components.schemas.CreatedResources.properties.caas_containers"
 	CaasContainers []string `json:"caas_containers"`
-	// IDs of created ddos protection profiles
+	// '#/components/schemas/CreatedResources/properties/ddos_profiles'
+	// "$.components.schemas.CreatedResources.properties.ddos_profiles"
 	DDOSProfiles []int64 `json:"ddos_profiles"`
-	// IDs of created FaaS functions
+	// '#/components/schemas/CreatedResources/properties/faas_functions'
+	// "$.components.schemas.CreatedResources.properties.faas_functions"
 	FaasFunctions []string `json:"faas_functions"`
-	// IDs of created FaaS namespaces
+	// '#/components/schemas/CreatedResources/properties/faas_namespaces'
+	// "$.components.schemas.CreatedResources.properties.faas_namespaces"
 	FaasNamespaces []string `json:"faas_namespaces"`
-	// IDs of created file shares
+	// '#/components/schemas/CreatedResources/properties/file_shares'
+	// "$.components.schemas.CreatedResources.properties.file_shares"
 	FileShares []string `json:"file_shares"`
-	// IDs of created floating IPs
+	// '#/components/schemas/CreatedResources/properties/floatingips'
+	// "$.components.schemas.CreatedResources.properties.floatingips"
 	Floatingips []string `json:"floatingips"`
-	// IDs of created health monitors
+	// '#/components/schemas/CreatedResources/properties/healthmonitors'
+	// "$.components.schemas.CreatedResources.properties.healthmonitors"
 	Healthmonitors []string `json:"healthmonitors"`
-	// IDs of created heat resources
+	// '#/components/schemas/CreatedResources/properties/heat'
+	// "$.components.schemas.CreatedResources.properties.heat"
 	Heat []string `json:"heat"`
-	// IDs of created images
+	// '#/components/schemas/CreatedResources/properties/images'
+	// "$.components.schemas.CreatedResources.properties.images"
 	Images []string `json:"images"`
-	// IDs of created inference instances
+	// '#/components/schemas/CreatedResources/properties/inference_instances'
+	// "$.components.schemas.CreatedResources.properties.inference_instances"
 	InferenceInstances []string `json:"inference_instances"`
-	// IDs of created instances
+	// '#/components/schemas/CreatedResources/properties/instances'
+	// "$.components.schemas.CreatedResources.properties.instances"
 	Instances []string `json:"instances"`
-	// IDs of created Kubernetes clusters
+	// '#/components/schemas/CreatedResources/properties/k8s_clusters'
+	// "$.components.schemas.CreatedResources.properties.k8s_clusters"
 	K8sClusters []string `json:"k8s_clusters"`
-	// IDs of created Kubernetes pools
+	// '#/components/schemas/CreatedResources/properties/k8s_pools'
+	// "$.components.schemas.CreatedResources.properties.k8s_pools"
 	K8sPools []string `json:"k8s_pools"`
-	// IDs of created L7 policies
+	// '#/components/schemas/CreatedResources/properties/l7polices'
+	// "$.components.schemas.CreatedResources.properties.l7polices"
 	L7polices []string `json:"l7polices"`
-	// IDs of created L7 rules
+	// '#/components/schemas/CreatedResources/properties/l7rules'
+	// "$.components.schemas.CreatedResources.properties.l7rules"
 	L7rules []string `json:"l7rules"`
-	// IDs of created LaaS topics
+	// '#/components/schemas/CreatedResources/properties/laas_topic'
+	// "$.components.schemas.CreatedResources.properties.laas_topic"
 	LaasTopic []string `json:"laas_topic"`
-	// IDs of created load balancer listeners
+	// '#/components/schemas/CreatedResources/properties/listeners'
+	// "$.components.schemas.CreatedResources.properties.listeners"
 	Listeners []string `json:"listeners"`
-	// IDs of created load balancers
+	// '#/components/schemas/CreatedResources/properties/loadbalancers'
+	// "$.components.schemas.CreatedResources.properties.loadbalancers"
 	Loadbalancers []string `json:"loadbalancers"`
-	// IDs of created pool members
+	// '#/components/schemas/CreatedResources/properties/members'
+	// "$.components.schemas.CreatedResources.properties.members"
 	Members []string `json:"members"`
-	// IDs of created networks
+	// '#/components/schemas/CreatedResources/properties/networks'
+	// "$.components.schemas.CreatedResources.properties.networks"
 	Networks []string `json:"networks"`
-	// IDs of created load balancer pools
+	// '#/components/schemas/CreatedResources/properties/pools'
+	// "$.components.schemas.CreatedResources.properties.pools"
 	Pools []string `json:"pools"`
-	// IDs of created ports
+	// '#/components/schemas/CreatedResources/properties/ports'
+	// "$.components.schemas.CreatedResources.properties.ports"
 	Ports []string `json:"ports"`
-	// IDs of created postgres clusters
+	// '#/components/schemas/CreatedResources/properties/postgresql_clusters'
+	// "$.components.schemas.CreatedResources.properties.postgresql_clusters"
 	PostgreSQLClusters []string `json:"postgresql_clusters"`
-	// IDs of created projects
+	// '#/components/schemas/CreatedResources/properties/projects'
+	// "$.components.schemas.CreatedResources.properties.projects"
 	Projects []int64 `json:"projects"`
-	// IDs of created registry registries
+	// '#/components/schemas/CreatedResources/properties/registry_registries'
+	// "$.components.schemas.CreatedResources.properties.registry_registries"
 	RegistryRegistries []string `json:"registry_registries"`
-	// IDs of created registry users
+	// '#/components/schemas/CreatedResources/properties/registry_users'
+	// "$.components.schemas.CreatedResources.properties.registry_users"
 	RegistryUsers []string `json:"registry_users"`
-	// IDs of created routers
+	// '#/components/schemas/CreatedResources/properties/routers'
+	// "$.components.schemas.CreatedResources.properties.routers"
 	Routers []string `json:"routers"`
-	// IDs of created secrets
+	// '#/components/schemas/CreatedResources/properties/secrets'
+	// "$.components.schemas.CreatedResources.properties.secrets"
 	Secrets []string `json:"secrets"`
-	// IDs of created server groups
+	// '#/components/schemas/CreatedResources/properties/servergroups'
+	// "$.components.schemas.CreatedResources.properties.servergroups"
 	Servergroups []string `json:"servergroups"`
-	// IDs of created volume snapshots
+	// '#/components/schemas/CreatedResources/properties/snapshots'
+	// "$.components.schemas.CreatedResources.properties.snapshots"
 	Snapshots []string `json:"snapshots"`
-	// IDs of created subnets
+	// '#/components/schemas/CreatedResources/properties/subnets'
+	// "$.components.schemas.CreatedResources.properties.subnets"
 	Subnets []string `json:"subnets"`
-	// IDs of created volumes
+	// '#/components/schemas/CreatedResources/properties/volumes'
+	// "$.components.schemas.CreatedResources.properties.volumes"
 	Volumes []string `json:"volumes"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -306,7 +364,8 @@ func (r *TaskCreatedResources) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Task detailed state that is more specific to task type
+// '#/components/schemas/TaskSerializer/properties/detailed_state/anyOf/0'
+// "$.components.schemas.TaskSerializer.properties.detailed_state.anyOf[0]"
 type TaskDetailedState string
 
 const (
@@ -324,72 +383,37 @@ const (
 )
 
 type TaskListParams struct {
-	// ISO formatted datetime string. Filter the tasks by creation date greater than or
-	// equal to from_timestamp
+	// '#/paths/%2Fcloud%2Fv1%2Ftasks/get/parameters/0/schema/anyOf/0'
+	// "$.paths['/cloud/v1/tasks'].get.parameters[0].schema.anyOf[0]"
 	FromTimestamp param.Opt[time.Time] `query:"from_timestamp,omitzero" format:"date-time" json:"-"`
-	// Filter the tasks by their acknowledgement status
+	// '#/paths/%2Fcloud%2Fv1%2Ftasks/get/parameters/1/schema/anyOf/0'
+	// "$.paths['/cloud/v1/tasks'].get.parameters[1].schema.anyOf[0]"
 	IsAcknowledged param.Opt[bool] `query:"is_acknowledged,omitzero" json:"-"`
-	// Filter the tasks by their type one of ['activate_ddos_profile',
-	// 'attach_bm_to_reserved_fixed_ip', 'attach_vm_interface',
-	// 'attach_vm_to_reserved_fixed_ip', 'attach_volume', 'create_ai_cluster_gpu',
-	// 'create_bm', 'create_caas_container', 'create_dbaas_postgres_cluster',
-	// 'create_ddos_profile', 'create_faas_function', 'create_faas_namespace',
-	// 'create_fip', 'create_gpu_virtual_cluster', 'create_image',
-	// 'create_inference_instance', 'create_inference_instance_key',
-	// 'create_k8s_cluster_pool_v2', 'create_k8s_cluster_v2', 'create_l7policy',
-	// 'create_l7rule', 'create_lblistener', 'create_lbmember', 'create_lbpool',
-	// 'create_lbpool_health_monitor', 'create_loadbalancer', 'create_network',
-	// 'create_reserved_fixed_ip', 'create_router', 'create_secret',
-	// 'create_servergroup', 'create_sfs', 'create_snapshot', 'create_subnet',
-	// 'create_vm', 'create_volume', 'deactivate_ddos_profile',
-	// 'delete_ai_cluster_gpu', 'delete_caas_container',
-	// 'delete_dbaas_postgres_cluster', 'delete_ddos_profile', 'delete_faas_function',
-	// 'delete_faas_namespace', 'delete_fip', 'delete_gpu_virtual_cluster',
-	// 'delete_image', 'delete_inference_instance', 'delete_k8s_cluster_pool_v2',
-	// 'delete_k8s_cluster_v2', 'delete_l7policy', 'delete_l7rule',
-	// 'delete_lblistener', 'delete_lbmember', 'delete_lbmetadata', 'delete_lbpool',
-	// 'delete_loadbalancer', 'delete_network', 'delete_reserved_fixed_ip',
-	// 'delete_router', 'delete_secret', 'delete_servergroup', 'delete_sfs',
-	// 'delete_snapshot', 'delete_subnet', 'delete_vm', 'delete_volume',
-	// 'detach_vm_interface', 'detach_volume', 'download_image',
-	// 'downscale_ai_cluster_gpu', 'extend_sfs', 'extend_volume',
-	// 'failover_loadbalancer', 'hard_reboot_gpu_baremetal_server',
-	// 'hard_reboot_gpu_virtual_cluster', 'hard_reboot_gpu_virtual_server',
-	// 'hard_reboot_vm', 'patch_caas_container', 'patch_dbaas_postgres_cluster',
-	// 'patch_faas_function', 'patch_faas_namespace', 'patch_lblistener',
-	// 'patch_lbpool', 'put_into_server_group', 'put_l7policy', 'put_l7rule',
-	// 'rebuild_bm', 'rebuild_gpu_baremetal_node', 'remove_from_server_group',
-	// 'replace_lbmetadata', 'resize_k8s_cluster_v2', 'resize_loadbalancer',
-	// 'resize_vm', 'resume_vm', 'revert_volume', 'soft_reboot_gpu_baremetal_server',
-	// 'soft_reboot_gpu_virtual_cluster', 'soft_reboot_gpu_virtual_server',
-	// 'soft_reboot_vm', 'start_gpu_baremetal_server', 'start_gpu_virtual_cluster',
-	// 'start_gpu_virtual_server', 'start_vm', 'stop_gpu_baremetal_server',
-	// 'stop_gpu_virtual_cluster', 'stop_gpu_virtual_server', 'stop_vm', 'suspend_vm',
-	// 'sync_private_flavors', 'update_ddos_profile', 'update_inference_instance',
-	// 'update_inference_instance_key', 'update_k8s_cluster_v2', 'update_lbmetadata',
-	// 'update_port_allowed_address_pairs', 'update_tags_gpu_virtual_cluster',
-	// 'upgrade_k8s_cluster_v2', 'upscale_ai_cluster_gpu']
+	// '#/paths/%2Fcloud%2Fv1%2Ftasks/get/parameters/8/schema/anyOf/0'
+	// "$.paths['/cloud/v1/tasks'].get.parameters[8].schema.anyOf[0]"
 	TaskType param.Opt[string] `query:"task_type,omitzero" json:"-"`
-	// ISO formatted datetime string. Filter the tasks by creation date less than or
-	// equal to to_timestamp
+	// '#/paths/%2Fcloud%2Fv1%2Ftasks/get/parameters/9/schema/anyOf/0'
+	// "$.paths['/cloud/v1/tasks'].get.parameters[9].schema.anyOf[0]"
 	ToTimestamp param.Opt[time.Time] `query:"to_timestamp,omitzero" format:"date-time" json:"-"`
-	// Limit the number of returned tasks. Falls back to default of 10 if not
-	// specified. Limited by max limit value of 1000
+	// '#/paths/%2Fcloud%2Fv1%2Ftasks/get/parameters/2'
+	// "$.paths['/cloud/v1/tasks'].get.parameters[2]"
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result
+	// '#/paths/%2Fcloud%2Fv1%2Ftasks/get/parameters/3'
+	// "$.paths['/cloud/v1/tasks'].get.parameters[3]"
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// The project ID to filter the tasks by project. Supports multiple values of kind
-	// key=value1&key=value2
+	// '#/paths/%2Fcloud%2Fv1%2Ftasks/get/parameters/4/schema/anyOf/0'
+	// "$.paths['/cloud/v1/tasks'].get.parameters[4].schema.anyOf[0]"
 	ProjectID []int64 `query:"project_id,omitzero" json:"-"`
-	// The region ID to filter the tasks by region. Supports multiple values of kind
-	// key=value1&key=value2
+	// '#/paths/%2Fcloud%2Fv1%2Ftasks/get/parameters/5/schema/anyOf/0'
+	// "$.paths['/cloud/v1/tasks'].get.parameters[5].schema.anyOf[0]"
 	RegionID []int64 `query:"region_id,omitzero" json:"-"`
-	// Sorting by creation date. Oldest first, or most recent first
+	// '#/paths/%2Fcloud%2Fv1%2Ftasks/get/parameters/6/schema/anyOf/0'
+	// "$.paths['/cloud/v1/tasks'].get.parameters[6].schema.anyOf[0]"
 	//
 	// Any of "asc", "desc".
 	Sorting TaskListParamsSorting `query:"sorting,omitzero" json:"-"`
-	// Filter the tasks by state. Supports multiple values of kind
-	// key=value1&key=value2
+	// '#/paths/%2Fcloud%2Fv1%2Ftasks/get/parameters/7/schema/anyOf/0'
+	// "$.paths['/cloud/v1/tasks'].get.parameters[7].schema.anyOf[0]"
 	//
 	// Any of "ERROR", "FINISHED", "NEW", "RUNNING".
 	State []string `query:"state,omitzero" json:"-"`
@@ -408,7 +432,8 @@ func (r TaskListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Sorting by creation date. Oldest first, or most recent first
+// '#/paths/%2Fcloud%2Fv1%2Ftasks/get/parameters/6/schema/anyOf/0'
+// "$.paths['/cloud/v1/tasks'].get.parameters[6].schema.anyOf[0]"
 type TaskListParamsSorting string
 
 const (
@@ -417,11 +442,13 @@ const (
 )
 
 type TaskAcknowledgeAllParams struct {
-	// Project ID
+	// '#/paths/%2Fcloud%2Fv1%2Ftasks%2Facknowledge_all/post/parameters/0/schema/anyOf/0'
+	// "$.paths['/cloud/v1/tasks/acknowledge_all'].post.parameters[0].schema.anyOf[0]"
 	//
 	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `query:"project_id,omitzero" json:"-"`
-	// Region ID
+	// '#/paths/%2Fcloud%2Fv1%2Ftasks%2Facknowledge_all/post/parameters/1/schema/anyOf/0'
+	// "$.paths['/cloud/v1/tasks/acknowledge_all'].post.parameters[1].schema.anyOf[0]"
 	//
 	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `query:"region_id,omitzero" json:"-"`

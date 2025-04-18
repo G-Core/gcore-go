@@ -78,77 +78,106 @@ func (r *RegionService) ListAutoPaging(ctx context.Context, query RegionListPara
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
+// '#/components/schemas/RegionSerializer' "$.components.schemas.RegionSerializer"
 type Region struct {
-	// Region ID
+	// '#/components/schemas/RegionSerializer/properties/id'
+	// "$.components.schemas.RegionSerializer.properties.id"
 	ID int64 `json:"id,required"`
-	// The access level of the region.
+	// '#/components/schemas/RegionSerializer/properties/access_level'
+	// "$.components.schemas.RegionSerializer.properties.access_level"
 	//
 	// Any of "core", "edge".
 	AccessLevel RegionAccessLevel `json:"access_level,required"`
-	// AI service API endpoint ID
+	// '#/components/schemas/RegionSerializer/properties/ai_service_endpoint_id/anyOf/0'
+	// "$.components.schemas.RegionSerializer.properties.ai_service_endpoint_id.anyOf[0]"
 	AIServiceEndpointID int64 `json:"ai_service_endpoint_id,required"`
-	// List of available volume types, 'standard', 'ssd_hiiops', 'cold'].
+	// '#/components/schemas/RegionSerializer/properties/available_volume_types/anyOf/0'
+	// "$.components.schemas.RegionSerializer.properties.available_volume_types.anyOf[0]"
 	AvailableVolumeTypes []string `json:"available_volume_types,required"`
-	// Coordinates of the region
+	// '#/components/schemas/RegionSerializer/properties/coordinates/anyOf/0'
+	// "$.components.schemas.RegionSerializer.properties.coordinates.anyOf[0]"
 	Coordinates RegionCoordinates `json:"coordinates,required"`
-	// Country
+	// '#/components/schemas/RegionSerializer/properties/country/anyOf/0'
+	// "$.components.schemas.RegionSerializer.properties.country.anyOf[0]"
 	Country string `json:"country,required"`
-	// Region creation date and time
+	// '#/components/schemas/RegionSerializer/properties/created_at'
+	// "$.components.schemas.RegionSerializer.properties.created_at"
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// This field is deprecated. Use `created_at` instead.
+	// '#/components/schemas/RegionSerializer/properties/created_on'
+	// "$.components.schemas.RegionSerializer.properties.created_on"
 	//
 	// Deprecated: deprecated
 	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
-	// DDoS endpoint ID
+	// '#/components/schemas/RegionSerializer/properties/ddos_endpoint_id/anyOf/0'
+	// "$.components.schemas.RegionSerializer.properties.ddos_endpoint_id.anyOf[0]"
 	DDOSEndpointID int64 `json:"ddos_endpoint_id,required"`
-	// Human-readable region name
+	// '#/components/schemas/RegionSerializer/properties/display_name'
+	// "$.components.schemas.RegionSerializer.properties.display_name"
 	DisplayName string `json:"display_name,required"`
-	// Endpoint type
+	// '#/components/schemas/RegionSerializer/properties/endpoint_type'
+	// "$.components.schemas.RegionSerializer.properties.endpoint_type"
 	//
 	// Any of "admin", "internal", "public".
 	EndpointType RegionEndpointType `json:"endpoint_type,required"`
-	// External network ID for Neutron
+	// '#/components/schemas/RegionSerializer/properties/external_network_id/anyOf/0'
+	// "$.components.schemas.RegionSerializer.properties.external_network_id.anyOf[0]"
 	ExternalNetworkID string `json:"external_network_id,required"`
-	// List of available file share types
+	// '#/components/schemas/RegionSerializer/properties/file_share_types/anyOf/0'
+	// "$.components.schemas.RegionSerializer.properties.file_share_types.anyOf[0]"
 	//
 	// Any of "standard", "vast".
 	FileShareTypes []string `json:"file_share_types,required"`
-	// Region has AI capability
+	// '#/components/schemas/RegionSerializer/properties/has_ai'
+	// "$.components.schemas.RegionSerializer.properties.has_ai"
 	HasAI bool `json:"has_ai,required"`
-	// Region has AI GPU capability
+	// '#/components/schemas/RegionSerializer/properties/has_ai_gpu'
+	// "$.components.schemas.RegionSerializer.properties.has_ai_gpu"
 	HasAIGPU bool `json:"has_ai_gpu,required"`
-	// Region has bare metal capability
+	// '#/components/schemas/RegionSerializer/properties/has_baremetal'
+	// "$.components.schemas.RegionSerializer.properties.has_baremetal"
 	HasBaremetal bool `json:"has_baremetal,required"`
-	// Region has basic vm capability
+	// '#/components/schemas/RegionSerializer/properties/has_basic_vm'
+	// "$.components.schemas.RegionSerializer.properties.has_basic_vm"
 	HasBasicVm bool `json:"has_basic_vm,required"`
-	// Region has managed kubernetes capability
+	// '#/components/schemas/RegionSerializer/properties/has_k8s'
+	// "$.components.schemas.RegionSerializer.properties.has_k8s"
 	HasK8s bool `json:"has_k8s,required"`
-	// Region has KVM virtualization capability
+	// '#/components/schemas/RegionSerializer/properties/has_kvm'
+	// "$.components.schemas.RegionSerializer.properties.has_kvm"
 	HasKvm bool `json:"has_kvm,required"`
-	// Region has SFS capability
+	// '#/components/schemas/RegionSerializer/properties/has_sfs'
+	// "$.components.schemas.RegionSerializer.properties.has_sfs"
 	HasSfs bool `json:"has_sfs,required"`
-	// Foreign key to Keystone entity
+	// '#/components/schemas/RegionSerializer/properties/keystone_id'
+	// "$.components.schemas.RegionSerializer.properties.keystone_id"
 	KeystoneID int64 `json:"keystone_id,required"`
-	// Technical region name
+	// '#/components/schemas/RegionSerializer/properties/keystone_name'
+	// "$.components.schemas.RegionSerializer.properties.keystone_name"
 	KeystoneName string `json:"keystone_name,required"`
-	// Foreign key to Metrics database entity
+	// '#/components/schemas/RegionSerializer/properties/metrics_database_id/anyOf/0'
+	// "$.components.schemas.RegionSerializer.properties.metrics_database_id.anyOf[0]"
 	MetricsDatabaseID int64 `json:"metrics_database_id,required"`
-	// Region state
+	// '#/components/schemas/RegionSerializer/properties/state'
+	// "$.components.schemas.RegionSerializer.properties.state"
 	//
 	// Any of "ACTIVE", "DELETED", "DELETING", "DELETION_FAILED", "INACTIVE",
 	// "MAINTENANCE", "NEW".
 	State RegionState `json:"state,required"`
-	// This field is deprecated and can be ignored
+	// '#/components/schemas/RegionSerializer/properties/task_id/anyOf/0'
+	// "$.components.schemas.RegionSerializer.properties.task_id.anyOf[0]"
 	//
 	// Deprecated: deprecated
 	TaskID string `json:"task_id,required"`
-	// Physical network name to create vlan networks
+	// '#/components/schemas/RegionSerializer/properties/vlan_physical_network'
+	// "$.components.schemas.RegionSerializer.properties.vlan_physical_network"
 	VlanPhysicalNetwork string `json:"vlan_physical_network,required"`
-	// Geographical zone
+	// '#/components/schemas/RegionSerializer/properties/zone/anyOf/0'
+	// "$.components.schemas.RegionSerializer.properties.zone.anyOf[0]"
 	//
 	// Any of "AMERICAS", "APAC", "EMEA", "RUSSIA_AND_CIS".
 	Zone RegionZone `json:"zone,required"`
-	// Region has DBAAS service
+	// '#/components/schemas/RegionSerializer/properties/has_dbaas'
+	// "$.components.schemas.RegionSerializer.properties.has_dbaas"
 	HasDbaas bool `json:"has_dbaas"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -192,7 +221,8 @@ func (r *Region) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The access level of the region.
+// '#/components/schemas/RegionSerializer/properties/access_level'
+// "$.components.schemas.RegionSerializer.properties.access_level"
 type RegionAccessLevel string
 
 const (
@@ -200,9 +230,14 @@ const (
 	RegionAccessLevelEdge RegionAccessLevel = "edge"
 )
 
-// Coordinates of the region
+// '#/components/schemas/RegionSerializer/properties/coordinates/anyOf/0'
+// "$.components.schemas.RegionSerializer.properties.coordinates.anyOf[0]"
 type RegionCoordinates struct {
-	Latitude  float64 `json:"latitude,required"`
+	// '#/components/schemas/Coordinate/properties/latitude'
+	// "$.components.schemas.Coordinate.properties.latitude"
+	Latitude float64 `json:"latitude,required"`
+	// '#/components/schemas/Coordinate/properties/longitude'
+	// "$.components.schemas.Coordinate.properties.longitude"
 	Longitude float64 `json:"longitude,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -220,7 +255,8 @@ func (r *RegionCoordinates) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Endpoint type
+// '#/components/schemas/RegionSerializer/properties/endpoint_type'
+// "$.components.schemas.RegionSerializer.properties.endpoint_type"
 type RegionEndpointType string
 
 const (
@@ -229,7 +265,8 @@ const (
 	RegionEndpointTypePublic   RegionEndpointType = "public"
 )
 
-// Region state
+// '#/components/schemas/RegionSerializer/properties/state'
+// "$.components.schemas.RegionSerializer.properties.state"
 type RegionState string
 
 const (
@@ -242,7 +279,8 @@ const (
 	RegionStateNew            RegionState = "NEW"
 )
 
-// Geographical zone
+// '#/components/schemas/RegionSerializer/properties/zone/anyOf/0'
+// "$.components.schemas.RegionSerializer.properties.zone.anyOf[0]"
 type RegionZone string
 
 const (
@@ -253,12 +291,13 @@ const (
 )
 
 type RegionGetParams struct {
-	// Region ID
+	// '#/paths/%2Fcloud%2Fv1%2Fregions%2F%7Bregion_id%7D/get/parameters/0/schema'
+	// "$.paths['/cloud/v1/regions/{region_id}'].get.parameters[0].schema"
 	//
 	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// If true, null `available_volume_type` is replaced with a list of available
-	// volume types.
+	// '#/paths/%2Fcloud%2Fv1%2Fregions%2F%7Bregion_id%7D/get/parameters/1'
+	// "$.paths['/cloud/v1/regions/{region_id}'].get.parameters[1]"
 	ShowVolumeTypes param.Opt[bool] `query:"show_volume_types,omitzero" json:"-"`
 	paramObj
 }
@@ -276,20 +315,23 @@ func (r RegionGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type RegionListParams struct {
-	// Limit the number of returned regions. Falls back to default of 100 if not
-	// specified. Limited by max limit value of 1000
+	// '#/paths/%2Fcloud%2Fv1%2Fregions/get/parameters/0'
+	// "$.paths['/cloud/v1/regions'].get.parameters[0]"
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result
+	// '#/paths/%2Fcloud%2Fv1%2Fregions/get/parameters/1'
+	// "$.paths['/cloud/v1/regions'].get.parameters[1]"
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// If true, null `available_volume_type` is replaced with a list of available
-	// volume types.
+	// '#/paths/%2Fcloud%2Fv1%2Fregions/get/parameters/4'
+	// "$.paths['/cloud/v1/regions'].get.parameters[4]"
 	ShowVolumeTypes param.Opt[bool] `query:"show_volume_types,omitzero" json:"-"`
-	// Order by field and direction.
+	// '#/paths/%2Fcloud%2Fv1%2Fregions/get/parameters/2'
+	// "$.paths['/cloud/v1/regions'].get.parameters[2]"
 	//
 	// Any of "created_at.asc", "created_at.desc", "display_name.asc",
 	// "display_name.desc".
 	OrderBy RegionListParamsOrderBy `query:"order_by,omitzero" json:"-"`
-	// If defined then return only regions that support given product.
+	// '#/paths/%2Fcloud%2Fv1%2Fregions/get/parameters/3'
+	// "$.paths['/cloud/v1/regions'].get.parameters[3]"
 	//
 	// Any of "containers", "inference".
 	Product RegionListParamsProduct `query:"product,omitzero" json:"-"`
@@ -308,7 +350,8 @@ func (r RegionListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Order by field and direction.
+// '#/paths/%2Fcloud%2Fv1%2Fregions/get/parameters/2'
+// "$.paths['/cloud/v1/regions'].get.parameters[2]"
 type RegionListParamsOrderBy string
 
 const (
@@ -318,7 +361,8 @@ const (
 	RegionListParamsOrderByDisplayNameDesc RegionListParamsOrderBy = "display_name.desc"
 )
 
-// If defined then return only regions that support given product.
+// '#/paths/%2Fcloud%2Fv1%2Fregions/get/parameters/3'
+// "$.paths['/cloud/v1/regions'].get.parameters[3]"
 type RegionListParamsProduct string
 
 const (
