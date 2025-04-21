@@ -92,7 +92,7 @@ func (r *SecretService) NewAndPoll(ctx context.Context, params SecretNewParams, 
 		return nil, err
 	}
 
-	if task.JSON.CreatedResources.IsPresent() || len(task.CreatedResources.Secrets) != 1 {
+	if !task.JSON.CreatedResources.IsPresent() || len(task.CreatedResources.Secrets) != 1 {
 		return nil, errors.New("expected exactly one secret to be created in a task")
 	}
 	resourceID := task.CreatedResources.Secrets[0]
