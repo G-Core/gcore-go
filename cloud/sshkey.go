@@ -39,7 +39,7 @@ func NewSSHKeyService(opts ...option.RequestOption) (r SSHKeyService) {
 }
 
 // To generate a key, omit the public_key parameter from the request body
-func (r *SSHKeyService) New(ctx context.Context, params SSHKeyNewParams, opts ...option.RequestOption) (res *CreatedSSHKey, err error) {
+func (r *SSHKeyService) New(ctx context.Context, params SSHKeyNewParams, opts ...option.RequestOption) (res *SSHKeyCreated, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -151,70 +151,6 @@ func (r *SSHKeyService) Get(ctx context.Context, sshKeyID string, query SSHKeyGe
 	return
 }
 
-// '#/components/schemas/CreatedSSHKeySerializer'
-// "$.components.schemas.CreatedSSHKeySerializer"
-type CreatedSSHKey struct {
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/id'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.id"
-	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/created_at'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.created_at"
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/fingerprint'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.fingerprint"
-	Fingerprint string `json:"fingerprint,required"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/name'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.name"
-	Name string `json:"name,required"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/private_key/anyOf/0'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.private_key.anyOf[0]"
-	PrivateKey string `json:"private_key,required"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/project_id'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.project_id"
-	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/public_key'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.public_key"
-	PublicKey string `json:"public_key,required"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/shared_in_project'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.shared_in_project"
-	SharedInProject bool `json:"shared_in_project,required"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/state'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.state"
-	//
-	// Any of "ACTIVE", "DELETING".
-	State CreatedSSHKeyState `json:"state,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		ID              resp.Field
-		CreatedAt       resp.Field
-		Fingerprint     resp.Field
-		Name            resp.Field
-		PrivateKey      resp.Field
-		ProjectID       resp.Field
-		PublicKey       resp.Field
-		SharedInProject resp.Field
-		State           resp.Field
-		ExtraFields     map[string]resp.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CreatedSSHKey) RawJSON() string { return r.JSON.raw }
-func (r *CreatedSSHKey) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/CreatedSSHKeySerializer/properties/state'
-// "$.components.schemas.CreatedSSHKeySerializer.properties.state"
-type CreatedSSHKeyState string
-
-const (
-	CreatedSSHKeyStateActive   CreatedSSHKeyState = "ACTIVE"
-	CreatedSSHKeyStateDeleting CreatedSSHKeyState = "DELETING"
-)
-
 // '#/components/schemas/SSHKeySerializer' "$.components.schemas.SSHKeySerializer"
 type SSHKey struct {
 	// '#/components/schemas/SSHKeySerializer/properties/id'
@@ -272,6 +208,70 @@ type SSHKeyState string
 const (
 	SSHKeyStateActive   SSHKeyState = "ACTIVE"
 	SSHKeyStateDeleting SSHKeyState = "DELETING"
+)
+
+// '#/components/schemas/CreatedSSHKeySerializer'
+// "$.components.schemas.CreatedSSHKeySerializer"
+type SSHKeyCreated struct {
+	// '#/components/schemas/CreatedSSHKeySerializer/properties/id'
+	// "$.components.schemas.CreatedSSHKeySerializer.properties.id"
+	ID string `json:"id,required" format:"uuid4"`
+	// '#/components/schemas/CreatedSSHKeySerializer/properties/created_at'
+	// "$.components.schemas.CreatedSSHKeySerializer.properties.created_at"
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// '#/components/schemas/CreatedSSHKeySerializer/properties/fingerprint'
+	// "$.components.schemas.CreatedSSHKeySerializer.properties.fingerprint"
+	Fingerprint string `json:"fingerprint,required"`
+	// '#/components/schemas/CreatedSSHKeySerializer/properties/name'
+	// "$.components.schemas.CreatedSSHKeySerializer.properties.name"
+	Name string `json:"name,required"`
+	// '#/components/schemas/CreatedSSHKeySerializer/properties/private_key/anyOf/0'
+	// "$.components.schemas.CreatedSSHKeySerializer.properties.private_key.anyOf[0]"
+	PrivateKey string `json:"private_key,required"`
+	// '#/components/schemas/CreatedSSHKeySerializer/properties/project_id'
+	// "$.components.schemas.CreatedSSHKeySerializer.properties.project_id"
+	ProjectID int64 `json:"project_id,required"`
+	// '#/components/schemas/CreatedSSHKeySerializer/properties/public_key'
+	// "$.components.schemas.CreatedSSHKeySerializer.properties.public_key"
+	PublicKey string `json:"public_key,required"`
+	// '#/components/schemas/CreatedSSHKeySerializer/properties/shared_in_project'
+	// "$.components.schemas.CreatedSSHKeySerializer.properties.shared_in_project"
+	SharedInProject bool `json:"shared_in_project,required"`
+	// '#/components/schemas/CreatedSSHKeySerializer/properties/state'
+	// "$.components.schemas.CreatedSSHKeySerializer.properties.state"
+	//
+	// Any of "ACTIVE", "DELETING".
+	State SSHKeyCreatedState `json:"state,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		ID              resp.Field
+		CreatedAt       resp.Field
+		Fingerprint     resp.Field
+		Name            resp.Field
+		PrivateKey      resp.Field
+		ProjectID       resp.Field
+		PublicKey       resp.Field
+		SharedInProject resp.Field
+		State           resp.Field
+		ExtraFields     map[string]resp.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SSHKeyCreated) RawJSON() string { return r.JSON.raw }
+func (r *SSHKeyCreated) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/CreatedSSHKeySerializer/properties/state'
+// "$.components.schemas.CreatedSSHKeySerializer.properties.state"
+type SSHKeyCreatedState string
+
+const (
+	SSHKeyCreatedStateActive   SSHKeyCreatedState = "ACTIVE"
+	SSHKeyCreatedStateDeleting SSHKeyCreatedState = "DELETING"
 )
 
 type SSHKeyNewParams struct {
