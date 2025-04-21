@@ -71,7 +71,7 @@ func (r *ProjectService) ListAutoPaging(ctx context.Context, query ProjectListPa
 
 // All cloud resources in all regions that belong to the project will be deleted
 // and will not be recoverable
-func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, opts ...option.RequestOption) (res *ProjectDeleteResponse, err error) {
+func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -171,27 +171,6 @@ type Project struct {
 // Returns the unmodified JSON received from the API
 func (r Project) RawJSON() string { return r.JSON.raw }
 func (r *Project) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/paths/%2Fcloud%2Fv1%2Fprojects%2F%7Bproject_id%7D/delete/responses/200/content/application%2Fjson/schema'
-// "$.paths['/cloud/v1/projects/{project_id}']['delete'].responses[200].content['application/json'].schema"
-type ProjectDeleteResponse struct {
-	// '#/components/schemas/TaskIdListSchema/properties/tasks'
-	// "$.components.schemas.TaskIdListSchema.properties.tasks"
-	Tasks []string `json:"tasks"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Tasks       resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ProjectDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *ProjectDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
