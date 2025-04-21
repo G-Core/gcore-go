@@ -36,7 +36,7 @@ func NewSecretService(opts ...option.RequestOption) (r SecretService) {
 }
 
 // Create secret
-func (r *SecretService) New(ctx context.Context, params SecretNewParams, opts ...option.RequestOption) (res *SecretNewResponse, err error) {
+func (r *SecretService) New(ctx context.Context, params SecretNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -80,7 +80,7 @@ func (r *SecretService) List(ctx context.Context, query SecretListParams, opts .
 }
 
 // Delete secret
-func (r *SecretService) Delete(ctx context.Context, secretID string, body SecretDeleteParams, opts ...option.RequestOption) (res *SecretDeleteResponse, err error) {
+func (r *SecretService) Delete(ctx context.Context, secretID string, body SecretDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -132,7 +132,7 @@ func (r *SecretService) Get(ctx context.Context, secretID string, query SecretGe
 }
 
 // Create secret
-func (r *SecretService) UploadTlsCertificate(ctx context.Context, params SecretUploadTlsCertificateParams, opts ...option.RequestOption) (res *SecretUploadTlsCertificateResponse, err error) {
+func (r *SecretService) UploadTlsCertificate(ctx context.Context, params SecretUploadTlsCertificateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -224,27 +224,6 @@ const (
 	SecretSecretTypeSymmetric   SecretSecretType = "symmetric"
 )
 
-// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/responses/200/content/application%2Fjson/schema'
-// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}'].post.responses[200].content['application/json'].schema"
-type SecretNewResponse struct {
-	// '#/components/schemas/TaskIdListSchema/properties/tasks'
-	// "$.components.schemas.TaskIdListSchema.properties.tasks"
-	Tasks []string `json:"tasks"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Tasks       resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SecretNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *SecretNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/responses/200/content/application%2Fjson/schema'
 // "$.paths['/cloud/v1/secrets/{project_id}/{region_id}'].get.responses[200].content['application/json'].schema"
 type SecretListResponse struct {
@@ -267,48 +246,6 @@ type SecretListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SecretListResponse) RawJSON() string { return r.JSON.raw }
 func (r *SecretListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsecret_id%7D/delete/responses/200/content/application%2Fjson/schema'
-// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}/{secret_id}']['delete'].responses[200].content['application/json'].schema"
-type SecretDeleteResponse struct {
-	// '#/components/schemas/TaskIdListSchema/properties/tasks'
-	// "$.components.schemas.TaskIdListSchema.properties.tasks"
-	Tasks []string `json:"tasks"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Tasks       resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SecretDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *SecretDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/paths/%2Fcloud%2Fv2%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/responses/200/content/application%2Fjson/schema'
-// "$.paths['/cloud/v2/secrets/{project_id}/{region_id}'].post.responses[200].content['application/json'].schema"
-type SecretUploadTlsCertificateResponse struct {
-	// '#/components/schemas/TaskIdListSchema/properties/tasks'
-	// "$.components.schemas.TaskIdListSchema.properties.tasks"
-	Tasks []string `json:"tasks"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Tasks       resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SecretUploadTlsCertificateResponse) RawJSON() string { return r.JSON.raw }
-func (r *SecretUploadTlsCertificateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
