@@ -121,28 +121,35 @@ func (r *ProjectService) Replace(ctx context.Context, params ProjectReplaceParam
 	return
 }
 
+// '#/components/schemas/ProjectSerializer'
+// "$.components.schemas.ProjectSerializer"
 type Project struct {
-	// Project ID, which is automatically generated upon creation.
+	// '#/components/schemas/ProjectSerializer/properties/id'
+	// "$.components.schemas.ProjectSerializer.properties.id"
 	ID int64 `json:"id,required"`
-	// ID associated with the client.
+	// '#/components/schemas/ProjectSerializer/properties/client_id'
+	// "$.components.schemas.ProjectSerializer.properties.client_id"
 	ClientID int64 `json:"client_id,required"`
-	// Datetime of creation, which is automatically generated.
+	// '#/components/schemas/ProjectSerializer/properties/created_at'
+	// "$.components.schemas.ProjectSerializer.properties.created_at"
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Indicates if the project is the default one. Each client always has one default
-	// project.
+	// '#/components/schemas/ProjectSerializer/properties/is_default'
+	// "$.components.schemas.ProjectSerializer.properties.is_default"
 	IsDefault bool `json:"is_default,required"`
-	// Unique project name for a client.
+	// '#/components/schemas/ProjectSerializer/properties/name'
+	// "$.components.schemas.ProjectSerializer.properties.name"
 	Name string `json:"name,required"`
-	// The state of the project.
+	// '#/components/schemas/ProjectSerializer/properties/state'
+	// "$.components.schemas.ProjectSerializer.properties.state"
 	State string `json:"state,required"`
-	// Datetime of deletion, which is automatically generated if the project is
-	// deleted.
+	// '#/components/schemas/ProjectSerializer/properties/deleted_at/anyOf/0'
+	// "$.components.schemas.ProjectSerializer.properties.deleted_at.anyOf[0]"
 	DeletedAt time.Time `json:"deleted_at,nullable" format:"date-time"`
-	// Description of the project.
+	// '#/components/schemas/ProjectSerializer/properties/description/anyOf/0'
+	// "$.components.schemas.ProjectSerializer.properties.description.anyOf[0]"
 	Description string `json:"description,nullable"`
-	// The UUID of the active task that currently holds a lock on the resource. This
-	// lock prevents concurrent modifications to ensure consistency. If `null`, the
-	// resource is not locked.
+	// '#/components/schemas/ProjectSerializer/properties/task_id/anyOf/0'
+	// "$.components.schemas.ProjectSerializer.properties.task_id.anyOf[0]"
 	TaskID string `json:"task_id,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -167,9 +174,11 @@ func (r *Project) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Task ID list object
+// '#/paths/%2Fcloud%2Fv1%2Fprojects%2F%7Bproject_id%7D/delete/responses/200/content/application%2Fjson/schema'
+// "$.paths['/cloud/v1/projects/{project_id}']['delete'].responses[200].content['application/json'].schema"
 type ProjectDeleteResponse struct {
-	// Task list
+	// '#/components/schemas/TaskIdListSchema/properties/tasks'
+	// "$.components.schemas.TaskIdListSchema.properties.tasks"
 	Tasks []string `json:"tasks"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -187,13 +196,17 @@ func (r *ProjectDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ProjectNewParams struct {
-	// Unique project name for a client. Each client always has one "default" project.
+	// '#/components/schemas/CreateProjectSerializer/properties/name'
+	// "$.components.schemas.CreateProjectSerializer.properties.name"
 	Name string `json:"name,required"`
-	// ID associated with the client.
+	// '#/components/schemas/CreateProjectSerializer/properties/client_id/anyOf/0'
+	// "$.components.schemas.CreateProjectSerializer.properties.client_id.anyOf[0]"
 	ClientID param.Opt[int64] `json:"client_id,omitzero"`
-	// Description of the project.
+	// '#/components/schemas/CreateProjectSerializer/properties/description/anyOf/0'
+	// "$.components.schemas.CreateProjectSerializer.properties.description.anyOf[0]"
 	Description param.Opt[string] `json:"description,omitzero"`
-	// State of the project.
+	// '#/components/schemas/CreateProjectSerializer/properties/state/anyOf/0'
+	// "$.components.schemas.CreateProjectSerializer.properties.state.anyOf[0]"
 	State param.Opt[string] `json:"state,omitzero"`
 	paramObj
 }
@@ -208,17 +221,23 @@ func (r ProjectNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ProjectListParams struct {
-	// Client ID filter for administrators.
+	// '#/paths/%2Fcloud%2Fv1%2Fprojects/get/parameters/0'
+	// "$.paths['/cloud/v1/projects'].get.parameters[0]"
 	ClientID param.Opt[int64] `query:"client_id,omitzero" json:"-"`
-	// Whether to include deleted projects in the response.
+	// '#/paths/%2Fcloud%2Fv1%2Fprojects/get/parameters/1'
+	// "$.paths['/cloud/v1/projects'].get.parameters[1]"
 	IncludeDeleted param.Opt[bool] `query:"include_deleted,omitzero" json:"-"`
-	// Limit value is used to limit the number of records in the result
+	// '#/paths/%2Fcloud%2Fv1%2Fprojects/get/parameters/2'
+	// "$.paths['/cloud/v1/projects'].get.parameters[2]"
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Name to filter the results by.
+	// '#/paths/%2Fcloud%2Fv1%2Fprojects/get/parameters/3'
+	// "$.paths['/cloud/v1/projects'].get.parameters[3]"
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result
+	// '#/paths/%2Fcloud%2Fv1%2Fprojects/get/parameters/4'
+	// "$.paths['/cloud/v1/projects'].get.parameters[4]"
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Order by field and direction.
+	// '#/paths/%2Fcloud%2Fv1%2Fprojects/get/parameters/5'
+	// "$.paths['/cloud/v1/projects'].get.parameters[5]"
 	//
 	// Any of "created_at.asc", "created_at.desc", "name.asc", "name.desc".
 	OrderBy ProjectListParamsOrderBy `query:"order_by,omitzero" json:"-"`
@@ -237,7 +256,8 @@ func (r ProjectListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Order by field and direction.
+// '#/paths/%2Fcloud%2Fv1%2Fprojects/get/parameters/5'
+// "$.paths['/cloud/v1/projects'].get.parameters[5]"
 type ProjectListParamsOrderBy string
 
 const (
@@ -248,6 +268,9 @@ const (
 )
 
 type ProjectDeleteParams struct {
+	// '#/paths/%2Fcloud%2Fv1%2Fprojects%2F%7Bproject_id%7D/delete/parameters/0/schema'
+	// "$.paths['/cloud/v1/projects/{project_id}']['delete'].parameters[0].schema"
+	//
 	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
@@ -258,6 +281,9 @@ type ProjectDeleteParams struct {
 func (f ProjectDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type ProjectGetParams struct {
+	// '#/paths/%2Fcloud%2Fv1%2Fprojects%2F%7Bproject_id%7D/get/parameters/0/schema'
+	// "$.paths['/cloud/v1/projects/{project_id}'].get.parameters[0].schema"
+	//
 	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
@@ -268,11 +294,16 @@ type ProjectGetParams struct {
 func (f ProjectGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type ProjectReplaceParams struct {
+	// '#/paths/%2Fcloud%2Fv1%2Fprojects%2F%7Bproject_id%7D/put/parameters/0/schema'
+	// "$.paths['/cloud/v1/projects/{project_id}'].put.parameters[0].schema"
+	//
 	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// Name of the entity, following a specific format.
+	// '#/components/schemas/NameDescriptionSerializer/properties/name'
+	// "$.components.schemas.NameDescriptionSerializer.properties.name"
 	Name string `json:"name,required"`
-	// Description of the project.
+	// '#/components/schemas/NameDescriptionSerializer/properties/description/anyOf/0'
+	// "$.components.schemas.NameDescriptionSerializer.properties.description.anyOf[0]"
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
 }
