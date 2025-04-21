@@ -30,6 +30,7 @@ import (
 type ReservedFixedIPService struct {
 	Options []option.RequestOption
 	Vip     ReservedFixedIPVipService
+	task    TaskService
 }
 
 // NewReservedFixedIPService generates a new service that applies the given options
@@ -39,6 +40,7 @@ func NewReservedFixedIPService(opts ...option.RequestOption) (r ReservedFixedIPS
 	r = ReservedFixedIPService{}
 	r.Options = opts
 	r.Vip = NewReservedFixedIPVipService(opts...)
+	r.task = NewTaskService(opts...)
 	return
 }
 
@@ -62,6 +64,46 @@ func (r *ReservedFixedIPService) New(ctx context.Context, params ReservedFixedIP
 	path := fmt.Sprintf("cloud/v1/reserved_fixed_ips/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// Create reserved fixed IP and poll for the result
+func (r *ReservedFixedIPService) NewAndPoll(ctx context.Context, params ReservedFixedIPNewParams, opts ...option.RequestOption) (v *ReservedFixedIP, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams ReservedFixedIPGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	if !params.ProjectID.IsPresent() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !params.RegionID.IsPresent() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.task.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	if !task.JSON.CreatedResources.IsPresent() || len(task.CreatedResources.Ports) != 1 {
+		return nil, errors.New("expected exactly one port to be created in a task")
+	}
+	resourceID := task.CreatedResources.Ports[0]
+	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
 // List reserved fixed IPs
