@@ -18,11 +18,26 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
-type New string // Always "new"
+type AnySubnet string // Always "any_subnet"
+type External string  // Always "external"
+type IPAddress string // Always "ip_address"
+type New string       // Always "new"
+type Port string      // Always "port"
+type Subnet string    // Always "subnet"
 
-func (c New) Default() New { return "new" }
+func (c AnySubnet) Default() AnySubnet { return "any_subnet" }
+func (c External) Default() External   { return "external" }
+func (c IPAddress) Default() IPAddress { return "ip_address" }
+func (c New) Default() New             { return "new" }
+func (c Port) Default() Port           { return "port" }
+func (c Subnet) Default() Subnet       { return "subnet" }
 
-func (c New) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c AnySubnet) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c External) MarshalJSON() ([]byte, error)  { return marshalString(c) }
+func (c IPAddress) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c New) MarshalJSON() ([]byte, error)       { return marshalString(c) }
+func (c Port) MarshalJSON() ([]byte, error)      { return marshalString(c) }
+func (c Subnet) MarshalJSON() ([]byte, error)    { return marshalString(c) }
 
 type constant[T any] interface {
 	Constant[T]
