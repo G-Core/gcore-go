@@ -62,7 +62,7 @@ func (r *FloatingIPService) New(ctx context.Context, params FloatingIPNewParams,
 }
 
 // List floating IPs
-func (r *FloatingIPService) List(ctx context.Context, params FloatingIPListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[FloatingIPListResponse], err error) {
+func (r *FloatingIPService) List(ctx context.Context, params FloatingIPListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[FloatingIPDetailed], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -94,7 +94,7 @@ func (r *FloatingIPService) List(ctx context.Context, params FloatingIPListParam
 }
 
 // List floating IPs
-func (r *FloatingIPService) ListAutoPaging(ctx context.Context, params FloatingIPListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[FloatingIPListResponse] {
+func (r *FloatingIPService) ListAutoPaging(ctx context.Context, params FloatingIPListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[FloatingIPDetailed] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -202,9 +202,9 @@ func (r *FloatingIPService) Unassign(ctx context.Context, floatingIPID string, b
 	return
 }
 
-// '#/components/schemas/FloatingIPDetailedCollectionSerializer/properties/results/items'
-// "$.components.schemas.FloatingIPDetailedCollectionSerializer.properties.results.items"
-type FloatingIPListResponse struct {
+// '#/components/schemas/FloatingIPDetailedSerializer'
+// "$.components.schemas.FloatingIPDetailedSerializer"
+type FloatingIPDetailed struct {
 	// '#/components/schemas/FloatingIPDetailedSerializer/properties/id/anyOf/0'
 	// "$.components.schemas.FloatingIPDetailedSerializer.properties.id.anyOf[0]"
 	ID string `json:"id,required" format:"uuid4"`
@@ -232,7 +232,7 @@ type FloatingIPListResponse struct {
 	FloatingIPAddress string `json:"floating_ip_address,required" format:"ipvanyaddress"`
 	// '#/components/schemas/FloatingIPDetailedSerializer/properties/instance/anyOf/0'
 	// "$.components.schemas.FloatingIPDetailedSerializer.properties.instance.anyOf[0]"
-	Instance FloatingIPListResponseInstance `json:"instance,required"`
+	Instance FloatingIPDetailedInstance `json:"instance,required"`
 	// '#/components/schemas/FloatingIPDetailedSerializer/properties/loadbalancer/anyOf/0'
 	// "$.components.schemas.FloatingIPDetailedSerializer.properties.loadbalancer.anyOf[0]"
 	Loadbalancer LoadBalancer `json:"loadbalancer,required"`
@@ -304,23 +304,23 @@ type FloatingIPListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPListResponse) RawJSON() string { return r.JSON.raw }
-func (r *FloatingIPListResponse) UnmarshalJSON(data []byte) error {
+func (r FloatingIPDetailed) RawJSON() string { return r.JSON.raw }
+func (r *FloatingIPDetailed) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/FloatingIPDetailedSerializer/properties/instance/anyOf/0'
 // "$.components.schemas.FloatingIPDetailedSerializer.properties.instance.anyOf[0]"
-type FloatingIPListResponseInstance struct {
+type FloatingIPDetailedInstance struct {
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/addresses'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.addresses"
-	Addresses map[string][]FloatingIPListResponseInstanceAddressUnion `json:"addresses,required"`
+	Addresses map[string][]FloatingIPDetailedInstanceAddressUnion `json:"addresses,required"`
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/creator_task_id'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.creator_task_id"
 	CreatorTaskID string `json:"creator_task_id,required"`
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/flavor'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.flavor"
-	Flavor FloatingIPListResponseInstanceFlavor `json:"flavor,required"`
+	Flavor FloatingIPDetailedInstanceFlavor `json:"flavor,required"`
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/instance_created'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.instance_created"
 	InstanceCreated time.Time `json:"instance_created,required" format:"date-time"`
@@ -357,7 +357,7 @@ type FloatingIPListResponseInstance struct {
 	RegionID int64 `json:"region_id,required"`
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/security_groups'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.security_groups"
-	SecurityGroups []FloatingIPListResponseInstanceSecurityGroup `json:"security_groups,required"`
+	SecurityGroups []FloatingIPDetailedInstanceSecurityGroup `json:"security_groups,required"`
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/status'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.status"
 	//
@@ -383,7 +383,7 @@ type FloatingIPListResponseInstance struct {
 	VmState string `json:"vm_state,required"`
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/volumes'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.volumes"
-	Volumes []FloatingIPListResponseInstanceVolume `json:"volumes,required"`
+	Volumes []FloatingIPDetailedInstanceVolume `json:"volumes,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -413,26 +413,26 @@ type FloatingIPListResponseInstance struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPListResponseInstance) RawJSON() string { return r.JSON.raw }
-func (r *FloatingIPListResponseInstance) UnmarshalJSON(data []byte) error {
+func (r FloatingIPDetailedInstance) RawJSON() string { return r.JSON.raw }
+func (r *FloatingIPDetailedInstance) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// FloatingIPListResponseInstanceAddressUnion contains all possible properties and
-// values from [FloatingIPListResponseInstanceAddressSimpleAddressSerializer],
-// [FloatingIPListResponseInstanceAddressAddressInterfaceSerializer],
-// [FloatingIPListResponseInstanceAddressAddressDetailedSerializer].
+// FloatingIPDetailedInstanceAddressUnion contains all possible properties and
+// values from [FloatingIPDetailedInstanceAddressSimpleAddressSerializer],
+// [FloatingIPDetailedInstanceAddressAddressInterfaceSerializer],
+// [FloatingIPDetailedInstanceAddressAddressDetailedSerializer].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
-type FloatingIPListResponseInstanceAddressUnion struct {
+type FloatingIPDetailedInstanceAddressUnion struct {
 	Addr          string `json:"addr"`
 	Type          string `json:"type"`
 	InterfaceName string `json:"interface_name"`
 	// This field is from variant
-	// [FloatingIPListResponseInstanceAddressAddressDetailedSerializer].
+	// [FloatingIPDetailedInstanceAddressAddressDetailedSerializer].
 	SubnetID string `json:"subnet_id"`
 	// This field is from variant
-	// [FloatingIPListResponseInstanceAddressAddressDetailedSerializer].
+	// [FloatingIPDetailedInstanceAddressAddressDetailedSerializer].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
 		Addr          resp.Field
@@ -444,31 +444,31 @@ type FloatingIPListResponseInstanceAddressUnion struct {
 	} `json:"-"`
 }
 
-func (u FloatingIPListResponseInstanceAddressUnion) AsSimpleAddressSerializer() (v FloatingIPListResponseInstanceAddressSimpleAddressSerializer) {
+func (u FloatingIPDetailedInstanceAddressUnion) AsSimpleAddressSerializer() (v FloatingIPDetailedInstanceAddressSimpleAddressSerializer) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u FloatingIPListResponseInstanceAddressUnion) AsAddressInterfaceSerializer() (v FloatingIPListResponseInstanceAddressAddressInterfaceSerializer) {
+func (u FloatingIPDetailedInstanceAddressUnion) AsAddressInterfaceSerializer() (v FloatingIPDetailedInstanceAddressAddressInterfaceSerializer) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u FloatingIPListResponseInstanceAddressUnion) AsAddressDetailedSerializer() (v FloatingIPListResponseInstanceAddressAddressDetailedSerializer) {
+func (u FloatingIPDetailedInstanceAddressUnion) AsAddressDetailedSerializer() (v FloatingIPDetailedInstanceAddressAddressDetailedSerializer) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u FloatingIPListResponseInstanceAddressUnion) RawJSON() string { return u.JSON.raw }
+func (u FloatingIPDetailedInstanceAddressUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *FloatingIPListResponseInstanceAddressUnion) UnmarshalJSON(data []byte) error {
+func (r *FloatingIPDetailedInstanceAddressUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/0'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[0]"
-type FloatingIPListResponseInstanceAddressSimpleAddressSerializer struct {
+type FloatingIPDetailedInstanceAddressSimpleAddressSerializer struct {
 	// '#/components/schemas/SimpleAddressSerializer/properties/addr'
 	// "$.components.schemas.SimpleAddressSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -486,16 +486,14 @@ type FloatingIPListResponseInstanceAddressSimpleAddressSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPListResponseInstanceAddressSimpleAddressSerializer) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *FloatingIPListResponseInstanceAddressSimpleAddressSerializer) UnmarshalJSON(data []byte) error {
+func (r FloatingIPDetailedInstanceAddressSimpleAddressSerializer) RawJSON() string { return r.JSON.raw }
+func (r *FloatingIPDetailedInstanceAddressSimpleAddressSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/1'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
-type FloatingIPListResponseInstanceAddressAddressInterfaceSerializer struct {
+type FloatingIPDetailedInstanceAddressAddressInterfaceSerializer struct {
 	// '#/components/schemas/AddressInterfaceSerializer/properties/addr'
 	// "$.components.schemas.AddressInterfaceSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -517,16 +515,16 @@ type FloatingIPListResponseInstanceAddressAddressInterfaceSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPListResponseInstanceAddressAddressInterfaceSerializer) RawJSON() string {
+func (r FloatingIPDetailedInstanceAddressAddressInterfaceSerializer) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *FloatingIPListResponseInstanceAddressAddressInterfaceSerializer) UnmarshalJSON(data []byte) error {
+func (r *FloatingIPDetailedInstanceAddressAddressInterfaceSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/2'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[2]"
-type FloatingIPListResponseInstanceAddressAddressDetailedSerializer struct {
+type FloatingIPDetailedInstanceAddressAddressDetailedSerializer struct {
 	// '#/components/schemas/AddressDetailedSerializer/properties/addr'
 	// "$.components.schemas.AddressDetailedSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -556,16 +554,16 @@ type FloatingIPListResponseInstanceAddressAddressDetailedSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPListResponseInstanceAddressAddressDetailedSerializer) RawJSON() string {
+func (r FloatingIPDetailedInstanceAddressAddressDetailedSerializer) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *FloatingIPListResponseInstanceAddressAddressDetailedSerializer) UnmarshalJSON(data []byte) error {
+func (r *FloatingIPDetailedInstanceAddressAddressDetailedSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/flavor'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.flavor"
-type FloatingIPListResponseInstanceFlavor struct {
+type FloatingIPDetailedInstanceFlavor struct {
 	// '#/components/schemas/BaseFlavorSerializer/properties/flavor_id'
 	// "$.components.schemas.BaseFlavorSerializer.properties.flavor_id"
 	FlavorID string `json:"flavor_id,required"`
@@ -591,14 +589,14 @@ type FloatingIPListResponseInstanceFlavor struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPListResponseInstanceFlavor) RawJSON() string { return r.JSON.raw }
-func (r *FloatingIPListResponseInstanceFlavor) UnmarshalJSON(data []byte) error {
+func (r FloatingIPDetailedInstanceFlavor) RawJSON() string { return r.JSON.raw }
+func (r *FloatingIPDetailedInstanceFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/security_groups/items'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.security_groups.items"
-type FloatingIPListResponseInstanceSecurityGroup struct {
+type FloatingIPDetailedInstanceSecurityGroup struct {
 	// '#/components/schemas/NameSerializerPydantic/properties/name'
 	// "$.components.schemas.NameSerializerPydantic.properties.name"
 	Name string `json:"name,required"`
@@ -612,14 +610,14 @@ type FloatingIPListResponseInstanceSecurityGroup struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPListResponseInstanceSecurityGroup) RawJSON() string { return r.JSON.raw }
-func (r *FloatingIPListResponseInstanceSecurityGroup) UnmarshalJSON(data []byte) error {
+func (r FloatingIPDetailedInstanceSecurityGroup) RawJSON() string { return r.JSON.raw }
+func (r *FloatingIPDetailedInstanceSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/volumes/items'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.volumes.items"
-type FloatingIPListResponseInstanceVolume struct {
+type FloatingIPDetailedInstanceVolume struct {
 	// '#/components/schemas/InstanceVolumeSerializer/properties/id'
 	// "$.components.schemas.InstanceVolumeSerializer.properties.id"
 	ID string `json:"id,required"`
@@ -637,8 +635,8 @@ type FloatingIPListResponseInstanceVolume struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPListResponseInstanceVolume) RawJSON() string { return r.JSON.raw }
-func (r *FloatingIPListResponseInstanceVolume) UnmarshalJSON(data []byte) error {
+func (r FloatingIPDetailedInstanceVolume) RawJSON() string { return r.JSON.raw }
+func (r *FloatingIPDetailedInstanceVolume) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
