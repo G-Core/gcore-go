@@ -6,7 +6,9 @@ Params Types:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#int64">int64</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Network">Network</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#NeutronRoute">NeutronRoute</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Subnet">Subnet</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Tag">Tag</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#TaskIDList">TaskIDList</a>
