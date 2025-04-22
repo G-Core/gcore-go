@@ -55,6 +55,14 @@ const (
 	InterfaceIPFamilyIpv6 InterfaceIPFamily = "ipv6"
 )
 
+// '#/components/schemas/IPVersion' "$.components.schemas.IPVersion"
+type IPVersion int64
+
+const (
+	IPVersion4 IPVersion = 4
+	IPVersion6 IPVersion = 6
+)
+
 // '#/components/schemas/NetworkSerializer'
 // "$.components.schemas.NetworkSerializer"
 type Network struct {
@@ -150,6 +158,31 @@ func (r *Network) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// '#/components/schemas/NeutronRouteSerializer'
+// "$.components.schemas.NeutronRouteSerializer"
+type NeutronRoute struct {
+	// '#/components/schemas/NeutronRouteSerializer/properties/destination'
+	// "$.components.schemas.NeutronRouteSerializer.properties.destination"
+	Destination string `json:"destination,required" format:"ipvanynetwork"`
+	// '#/components/schemas/NeutronRouteSerializer/properties/nexthop'
+	// "$.components.schemas.NeutronRouteSerializer.properties.nexthop"
+	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Destination resp.Field
+		Nexthop     resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NeutronRoute) RawJSON() string { return r.JSON.raw }
+func (r *NeutronRoute) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // '#/components/schemas/SubnetSerializer' "$.components.schemas.SubnetSerializer"
 type Subnet struct {
 	// '#/components/schemas/SubnetSerializer/properties/cidr'
@@ -207,7 +240,7 @@ type Subnet struct {
 	HasRouter bool `json:"has_router"`
 	// '#/components/schemas/SubnetSerializer/properties/host_routes/anyOf/0'
 	// "$.components.schemas.SubnetSerializer.properties.host_routes.anyOf[0]"
-	HostRoutes []SubnetHostRoute `json:"host_routes,nullable"`
+	HostRoutes []NeutronRoute `json:"host_routes,nullable"`
 	// '#/components/schemas/SubnetSerializer/properties/metadata'
 	// "$.components.schemas.SubnetSerializer.properties.metadata"
 	//
@@ -251,31 +284,6 @@ type Subnet struct {
 // Returns the unmodified JSON received from the API
 func (r Subnet) RawJSON() string { return r.JSON.raw }
 func (r *Subnet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/SubnetSerializer/properties/host_routes/anyOf/0/items'
-// "$.components.schemas.SubnetSerializer.properties.host_routes.anyOf[0].items"
-type SubnetHostRoute struct {
-	// '#/components/schemas/NeutronRouteSerializer/properties/destination'
-	// "$.components.schemas.NeutronRouteSerializer.properties.destination"
-	Destination string `json:"destination,required" format:"ipvanynetwork"`
-	// '#/components/schemas/NeutronRouteSerializer/properties/nexthop'
-	// "$.components.schemas.NeutronRouteSerializer.properties.nexthop"
-	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Destination resp.Field
-		Nexthop     resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SubnetHostRoute) RawJSON() string { return r.JSON.raw }
-func (r *SubnetHostRoute) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
