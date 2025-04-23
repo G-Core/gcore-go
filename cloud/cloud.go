@@ -30,6 +30,7 @@ type CloudService struct {
 	Networks         NetworkService
 	Volumes          VolumeService
 	FloatingIPs      FloatingIPService
+	SecurityGroups   SecurityGroupService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -49,6 +50,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.Networks = NewNetworkService(opts...)
 	r.Volumes = NewVolumeService(opts...)
 	r.FloatingIPs = NewFloatingIPService(opts...)
+	r.SecurityGroups = NewSecurityGroupService(opts...)
 	return
 }
 
