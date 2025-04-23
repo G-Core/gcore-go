@@ -26,6 +26,7 @@ type CloudService struct {
 	SSHKeys          SSHKeyService
 	IPRanges         IPRangeService
 	ReservedFixedIPs ReservedFixedIPService
+	Volumes          VolumeService
 	FloatingIPs      FloatingIPService
 }
 
@@ -43,6 +44,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.SSHKeys = NewSSHKeyService(opts...)
 	r.IPRanges = NewIPRangeService(opts...)
 	r.ReservedFixedIPs = NewReservedFixedIPService(opts...)
+	r.Volumes = NewVolumeService(opts...)
 	r.FloatingIPs = NewFloatingIPService(opts...)
 	return
 }
