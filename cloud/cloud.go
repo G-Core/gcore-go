@@ -7,6 +7,7 @@ import (
 
 	"github.com/stainless-sdks/gcore-go/internal/apijson"
 	"github.com/stainless-sdks/gcore-go/option"
+	"github.com/stainless-sdks/gcore-go/packages/param"
 	"github.com/stainless-sdks/gcore-go/packages/resp"
 )
 
@@ -26,6 +27,7 @@ type CloudService struct {
 	SSHKeys          SSHKeyService
 	IPRanges         IPRangeService
 	ReservedFixedIPs ReservedFixedIPService
+	Networks         NetworkService
 	Volumes          VolumeService
 	FloatingIPs      FloatingIPService
 }
@@ -44,6 +46,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.SSHKeys = NewSSHKeyService(opts...)
 	r.IPRanges = NewIPRangeService(opts...)
 	r.ReservedFixedIPs = NewReservedFixedIPService(opts...)
+	r.Networks = NewNetworkService(opts...)
 	r.Volumes = NewVolumeService(opts...)
 	r.FloatingIPs = NewFloatingIPService(opts...)
 	return
@@ -886,6 +889,37 @@ type NeutronRoute struct {
 func (r NeutronRoute) RawJSON() string { return r.JSON.raw }
 func (r *NeutronRoute) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this NeutronRoute to a NeutronRouteParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// NeutronRouteParam.IsOverridden()
+func (r NeutronRoute) ToParam() NeutronRouteParam {
+	return param.OverrideObj[NeutronRouteParam](r.RawJSON())
+}
+
+// '#/components/schemas/NeutronRouteSerializer'
+// "$.components.schemas.NeutronRouteSerializer"
+//
+// The properties Destination, Nexthop are required.
+type NeutronRouteParam struct {
+	// '#/components/schemas/NeutronRouteSerializer/properties/destination'
+	// "$.components.schemas.NeutronRouteSerializer.properties.destination"
+	Destination string `json:"destination,required" format:"ipvanynetwork"`
+	// '#/components/schemas/NeutronRouteSerializer/properties/nexthop'
+	// "$.components.schemas.NeutronRouteSerializer.properties.nexthop"
+	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f NeutronRouteParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r NeutronRouteParam) MarshalJSON() (data []byte, err error) {
+	type shadow NeutronRouteParam
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // '#/components/schemas/ProvisioningStatusEnum'
