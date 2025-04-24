@@ -1069,8 +1069,6 @@ func (r *Tag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TagUpdateList map[string]string
-
 // '#/components/schemas/TaskIDsSerializer'
 // "$.components.schemas.TaskIDsSerializer"
 type TaskIDList struct {

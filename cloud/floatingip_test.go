@@ -30,8 +30,8 @@ func TestFloatingIPNewWithOptionalParams(t *testing.T) {
 		ProjectID:      gcore.Int(1),
 		RegionID:       gcore.Int(1),
 		FixedIPAddress: gcore.String("192.168.10.15"),
-		Metadata: cloud.TagUpdateList{
-			"foo": "my-tag-value",
+		Metadata: map[string]string{
+			"my-tag": "my-tag-value",
 		},
 		PortID: gcore.String("ee2402d0-f0cd-4503-9b75-69be1d11c5f1"),
 	})

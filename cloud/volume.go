@@ -587,7 +587,7 @@ type VolumeNewParamsBodyCreateVolumeFromImageSerializer struct {
 	LifecyclePolicyIDs []int64 `json:"lifecycle_policy_ids,omitzero"`
 	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/metadata'
 	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.metadata"
-	Metadata TagUpdateList `json:"metadata,omitzero"`
+	Metadata map[string]string `json:"metadata,omitzero"`
 	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/type_name'
 	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.type_name"
 	//
@@ -642,7 +642,7 @@ type VolumeNewParamsBodyCreateVolumeFromSnapshotSerializer struct {
 	LifecyclePolicyIDs []int64 `json:"lifecycle_policy_ids,omitzero"`
 	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/metadata'
 	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.metadata"
-	Metadata TagUpdateList `json:"metadata,omitzero"`
+	Metadata map[string]string `json:"metadata,omitzero"`
 	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/type_name'
 	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.type_name"
 	//
@@ -694,7 +694,7 @@ type VolumeNewParamsBodyCreateNewVolumeSerializer struct {
 	LifecyclePolicyIDs []int64 `json:"lifecycle_policy_ids,omitzero"`
 	// '#/components/schemas/CreateNewVolumeSerializer/properties/metadata'
 	// "$.components.schemas.CreateNewVolumeSerializer.properties.metadata"
-	Metadata TagUpdateList `json:"metadata,omitzero"`
+	Metadata map[string]string `json:"metadata,omitzero"`
 	// '#/components/schemas/CreateNewVolumeSerializer/properties/type_name'
 	// "$.components.schemas.CreateNewVolumeSerializer.properties.type_name"
 	//
