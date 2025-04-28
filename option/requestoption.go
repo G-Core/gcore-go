@@ -265,26 +265,26 @@ func WithAPIKey(value string) RequestOption {
 	})
 }
 
-// WithProjectID returns a RequestOption that sets the client setting "project_id".
-func WithProjectID(value int64) RequestOption {
+// WithCloudProjectID returns a RequestOption that sets the client setting "cloud_project_id".
+func WithCloudProjectID(value int64) RequestOption {
 	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.ProjectID = &value
+		r.CloudProjectID = &value
 		return nil
 	})
 }
 
-// WithRegionID returns a RequestOption that sets the client setting "region_id".
-func WithRegionID(value int64) RequestOption {
+// WithCloudRegionID returns a RequestOption that sets the client setting "cloud_region_id".
+func WithCloudRegionID(value int64) RequestOption {
 	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.RegionID = &value
+		r.CloudRegionID = &value
 		return nil
 	})
 }
 
-// WithPollingIntervalMs returns a RequestOption that sets the client setting "polling_interval_ms".
-func WithPollingIntervalMs(value int64) RequestOption {
+// WithCloudPollingIntervalMs returns a RequestOption that sets the client setting "cloud_polling_interval_ms".
+func WithCloudPollingIntervalMs(value int64) RequestOption {
 	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.PollingIntervalMs = value
+		r.CloudPollingIntervalMs = value
 		return nil
 	})
 }

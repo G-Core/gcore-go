@@ -206,13 +206,9 @@ func (r *AccessRuleList) UnmarshalJSON(data []byte) error {
 type FileShareAccessRuleNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule'].post.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule'].post.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/CreateAccessRuleSerializer/properties/access_mode'
 	// "$.components.schemas.CreateAccessRuleSerializer.properties.access_mode"
@@ -246,13 +242,9 @@ const (
 type FileShareAccessRuleListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -264,13 +256,9 @@ func (f FileShareAccessRuleListParams) IsPresent() bool { return !param.IsOmitte
 type FileShareAccessRuleDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule%2F%7Baccess_rule_id%7D/delete/parameters/0/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule/{access_rule_id}']['delete'].parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule%2F%7Baccess_rule_id%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule/{access_rule_id}']['delete'].parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }

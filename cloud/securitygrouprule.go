@@ -114,13 +114,9 @@ func (r *SecurityGroupRuleService) Replace(ctx context.Context, ruleID string, p
 type SecurityGroupRuleNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bgroup_id%7D%2Frules/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/securitygroups/{project_id}/{region_id}/{group_id}/rules'].post.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bgroup_id%7D%2Frules/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/securitygroups/{project_id}/{region_id}/{group_id}/rules'].post.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/CreateSecurityGroupRuleSerializer/properties/port_range_max/anyOf/0'
 	// "$.components.schemas.CreateSecurityGroupRuleSerializer.properties.port_range_max.anyOf[0]"
@@ -218,13 +214,9 @@ const (
 type SecurityGroupRuleDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygrouprules%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brule_id%7D/delete/parameters/0/schema'
 	// "$.paths['/cloud/v1/securitygrouprules/{project_id}/{region_id}/{rule_id}']['delete'].parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygrouprules%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brule_id%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/securitygrouprules/{project_id}/{region_id}/{rule_id}']['delete'].parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -236,13 +228,9 @@ func (f SecurityGroupRuleDeleteParams) IsPresent() bool { return !param.IsOmitte
 type SecurityGroupRuleReplaceParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygrouprules%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brule_id%7D/put/parameters/0/schema'
 	// "$.paths['/cloud/v1/securitygrouprules/{project_id}/{region_id}/{rule_id}'].put.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygrouprules%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brule_id%7D/put/parameters/1/schema'
 	// "$.paths['/cloud/v1/securitygrouprules/{project_id}/{region_id}/{rule_id}'].put.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/direction'
 	// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.direction"

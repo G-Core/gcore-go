@@ -60,13 +60,9 @@ func (r *BaremetalImageService) List(ctx context.Context, params BaremetalImageL
 type BaremetalImageListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fbmimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/bmimages/{project_id}/{region_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fbmimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/bmimages/{project_id}/{region_id}'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fbmimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
 	// "$.paths['/cloud/v1/bmimages/{project_id}/{region_id}'].get.parameters[2]"

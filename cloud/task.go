@@ -481,13 +481,9 @@ const (
 type TaskAcknowledgeAllParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ftasks%2Facknowledge_all/post/parameters/0/schema/anyOf/0'
 	// "$.paths['/cloud/v1/tasks/acknowledge_all'].post.parameters[0].schema.anyOf[0]"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `query:"project_id,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ftasks%2Facknowledge_all/post/parameters/1/schema/anyOf/0'
 	// "$.paths['/cloud/v1/tasks/acknowledge_all'].post.parameters[1].schema.anyOf[0]"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `query:"region_id,omitzero" json:"-"`
 	paramObj
 }

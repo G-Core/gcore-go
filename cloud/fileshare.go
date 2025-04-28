@@ -365,13 +365,9 @@ const (
 type FileShareNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].post.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].post.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/requestBody/content/application%2Fjson/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].post.requestBody.content['application/json'].schema"
@@ -544,13 +540,9 @@ func (r FileShareNewParamsBodyCreateVastFileShareSerializer) MarshalJSON() (data
 type FileShareUpdateParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D/patch/parameters/0/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}'].patch.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D/patch/parameters/1/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}'].patch.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/NameSerializer/properties/name'
 	// "$.components.schemas.NameSerializer.properties.name"
@@ -570,13 +562,9 @@ func (r FileShareUpdateParams) MarshalJSON() (data []byte, err error) {
 type FileShareListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].get.parameters[2]"
@@ -602,13 +590,9 @@ func (r FileShareListParams) URLQuery() (v url.Values, err error) {
 type FileShareDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D/delete/parameters/0/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}']['delete'].parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}']['delete'].parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -620,13 +604,9 @@ func (f FileShareDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && 
 type FileShareGetParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -638,13 +618,9 @@ func (f FileShareGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.
 type FileShareResizeParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Fextend/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/extend'].post.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Fextend/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/extend'].post.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/ResizeSfsSerializer/properties/size'
 	// "$.components.schemas.ResizeSfsSerializer.properties.size"

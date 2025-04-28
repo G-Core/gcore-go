@@ -320,13 +320,9 @@ func (r *IPAssignment) UnmarshalJSON(data []byte) error {
 type ReservedFixedIPVipListCandidatePortsParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Favailable_devices/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/available_devices'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Favailable_devices/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/available_devices'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -340,13 +336,9 @@ func (f ReservedFixedIPVipListCandidatePortsParams) IsPresent() bool {
 type ReservedFixedIPVipListConnectedPortsParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fconnected_devices/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/connected_devices'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fconnected_devices/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/connected_devices'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -360,13 +352,9 @@ func (f ReservedFixedIPVipListConnectedPortsParams) IsPresent() bool {
 type ReservedFixedIPVipReplaceConnectedPortsParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fconnected_devices/put/parameters/0/schema'
 	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/connected_devices'].put.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fconnected_devices/put/parameters/1/schema'
 	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/connected_devices'].put.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/PortIDsForVIPSerializer/properties/port_ids'
 	// "$.components.schemas.PortIDsForVIPSerializer.properties.port_ids"
@@ -388,13 +376,9 @@ func (r ReservedFixedIPVipReplaceConnectedPortsParams) MarshalJSON() (data []byt
 type ReservedFixedIPVipToggleParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D/patch/parameters/0/schema'
 	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}'].patch.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D/patch/parameters/1/schema'
 	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}'].patch.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/PatchReservedFixedIPSerializer/properties/is_vip'
 	// "$.components.schemas.PatchReservedFixedIPSerializer.properties.is_vip"
@@ -414,13 +398,9 @@ func (r ReservedFixedIPVipToggleParams) MarshalJSON() (data []byte, err error) {
 type ReservedFixedIPVipUpdateConnectedPortsParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fconnected_devices/patch/parameters/0/schema'
 	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/connected_devices'].patch.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fconnected_devices/patch/parameters/1/schema'
 	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/connected_devices'].patch.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/PortIDsForVIPSerializer/properties/port_ids'
 	// "$.components.schemas.PortIDsForVIPSerializer.properties.port_ids"

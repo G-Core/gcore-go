@@ -176,13 +176,9 @@ func (r *NetworkSubnetService) Get(ctx context.Context, subnetID string, query N
 type NetworkSubnetNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].post.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].post.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/CreateSubnetSerializer/properties/cidr'
 	// "$.components.schemas.CreateSubnetSerializer.properties.cidr"
@@ -234,13 +230,9 @@ func (r NetworkSubnetNewParams) MarshalJSON() (data []byte, err error) {
 type NetworkSubnetUpdateParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsubnet_id%7D/patch/parameters/0/schema'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}/{subnet_id}'].patch.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsubnet_id%7D/patch/parameters/1/schema'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}/{subnet_id}'].patch.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/PatchSubnetSerializer/properties/enable_dhcp/anyOf/0'
 	// "$.components.schemas.PatchSubnetSerializer.properties.enable_dhcp.anyOf[0]"
@@ -272,13 +264,9 @@ func (r NetworkSubnetUpdateParams) MarshalJSON() (data []byte, err error) {
 type NetworkSubnetListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[2]"
@@ -340,13 +328,9 @@ const (
 type NetworkSubnetDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsubnet_id%7D/delete/parameters/0/schema'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}/{subnet_id}']['delete'].parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsubnet_id%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}/{subnet_id}']['delete'].parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -358,13 +342,9 @@ func (f NetworkSubnetDeleteParams) IsPresent() bool { return !param.IsOmitted(f)
 type NetworkSubnetGetParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsubnet_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}/{subnet_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsubnet_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}/{subnet_id}'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }

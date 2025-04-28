@@ -21,38 +21,40 @@ type Client struct {
 	Cloud   cloud.CloudService
 }
 
-// DefaultClientOptions read from the environment (GCORE_API_KEY, GCORE_PROJECT,
-// GCORE_REGION, GCORE_BASE_URL). This should be used to initialize new clients.
+// DefaultClientOptions read from the environment (GCORE_API_KEY,
+// GCORE_CLOUD_PROJECT_ID, GCORE_CLOUD_REGION_ID, GCORE_BASE_URL). This should be
+// used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("GCORE_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
-	defaults = append(defaults, option.WithPollingIntervalMs(1000))
+	defaults = append(defaults, option.WithCloudPollingIntervalMs(1000))
 	if o, ok := os.LookupEnv("GCORE_API_KEY"); ok {
 		defaults = append(defaults, option.WithAPIKey(o))
 	}
-	if o, ok := os.LookupEnv("GCORE_PROJECT"); ok {
+	if o, ok := os.LookupEnv("GCORE_CLOUD_PROJECT_ID"); ok {
 		parsed, err := strconv.ParseInt(o, 10, 64)
 		if err != nil {
 			panic(err)
 		}
-		defaults = append(defaults, option.WithProjectID(parsed))
+		defaults = append(defaults, option.WithCloudProjectID(parsed))
 	}
-	if o, ok := os.LookupEnv("GCORE_REGION"); ok {
+	if o, ok := os.LookupEnv("GCORE_CLOUD_REGION_ID"); ok {
 		parsed, err := strconv.ParseInt(o, 10, 64)
 		if err != nil {
 			panic(err)
 		}
-		defaults = append(defaults, option.WithRegionID(parsed))
+		defaults = append(defaults, option.WithCloudRegionID(parsed))
 	}
 	return defaults
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (GCORE_API_KEY, GCORE_PROJECT, GCORE_REGION, GCORE_BASE_URL). The
-// option passed in as arguments are applied after these default arguments, and all
-// option will be passed down to the services and requests that this client makes.
+// environment (GCORE_API_KEY, GCORE_CLOUD_PROJECT_ID, GCORE_CLOUD_REGION_ID,
+// GCORE_BASE_URL). The option passed in as arguments are applied after these
+// default arguments, and all option will be passed down to the services and
+// requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 

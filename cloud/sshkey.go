@@ -277,8 +277,6 @@ const (
 type SSHKeyNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/ssh_keys/{project_id}'].post.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/components/schemas/CreateSSHKeySerializer/properties/name'
 	// "$.components.schemas.CreateSSHKeySerializer.properties.name"
@@ -304,8 +302,6 @@ func (r SSHKeyNewParams) MarshalJSON() (data []byte, err error) {
 type SSHKeyUpdateParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D%2F%7Bssh_key_id%7D/patch/parameters/0/schema'
 	// "$.paths['/cloud/v1/ssh_keys/{project_id}/{ssh_key_id}'].patch.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/components/schemas/ShareSSHKeySerializer/properties/shared_in_project'
 	// "$.components.schemas.ShareSSHKeySerializer.properties.shared_in_project"
@@ -325,8 +321,6 @@ func (r SSHKeyUpdateParams) MarshalJSON() (data []byte, err error) {
 type SSHKeyListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/ssh_keys/{project_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D/get/parameters/1'
 	// "$.paths['/cloud/v1/ssh_keys/{project_id}'].get.parameters[1]"
@@ -368,8 +362,6 @@ const (
 type SSHKeyDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D%2F%7Bssh_key_id%7D/delete/parameters/0/schema'
 	// "$.paths['/cloud/v1/ssh_keys/{project_id}/{ssh_key_id}']['delete'].parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -381,8 +373,6 @@ func (f SSHKeyDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.
 type SSHKeyGetParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D%2F%7Bssh_key_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/ssh_keys/{project_id}/{ssh_key_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }

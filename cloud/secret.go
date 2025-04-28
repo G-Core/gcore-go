@@ -294,13 +294,9 @@ func (r *SecretListResponse) UnmarshalJSON(data []byte) error {
 type SecretNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}'].post.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}'].post.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/CreateSecretSerializer/properties/name'
 	// "$.components.schemas.CreateSecretSerializer.properties.name"
@@ -369,13 +365,9 @@ const (
 type SecretListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -387,13 +379,9 @@ func (f SecretListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.Is
 type SecretDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsecret_id%7D/delete/parameters/0/schema'
 	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}/{secret_id}']['delete'].parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsecret_id%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}/{secret_id}']['delete'].parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -405,13 +393,9 @@ func (f SecretDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.
 type SecretGetParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsecret_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}/{secret_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsecret_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}/{secret_id}'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -423,13 +407,9 @@ func (f SecretGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsN
 type SecretUploadTlsCertificateParams struct {
 	// '#/paths/%2Fcloud%2Fv2%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
 	// "$.paths['/cloud/v2/secrets/{project_id}/{region_id}'].post.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv2%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
 	// "$.paths['/cloud/v2/secrets/{project_id}/{region_id}'].post.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/CreateSecretSerializerV2/properties/name'
 	// "$.components.schemas.CreateSecretSerializerV2.properties.name"

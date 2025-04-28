@@ -179,13 +179,9 @@ func (r *NetworkService) Get(ctx context.Context, networkID string, query Networ
 type NetworkNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].post.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].post.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/CreateNetworkSerializer/properties/name'
 	// "$.components.schemas.CreateNetworkSerializer.properties.name"
@@ -225,13 +221,9 @@ const (
 type NetworkUpdateParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bnetwork_id%7D/patch/parameters/0/schema'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}/{network_id}'].patch.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bnetwork_id%7D/patch/parameters/1/schema'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}/{network_id}'].patch.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/NameSerializerPydantic/properties/name'
 	// "$.components.schemas.NameSerializerPydantic.properties.name"
@@ -251,13 +243,9 @@ func (r NetworkUpdateParams) MarshalJSON() (data []byte, err error) {
 type NetworkListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[2]"
@@ -292,13 +280,9 @@ func (r NetworkListParams) URLQuery() (v url.Values, err error) {
 type NetworkDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bnetwork_id%7D/delete/parameters/0/schema'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}/{network_id}']['delete'].parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bnetwork_id%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}/{network_id}']['delete'].parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -310,13 +294,9 @@ func (f NetworkDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f
 type NetworkGetParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bnetwork_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}/{network_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bnetwork_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}/{network_id}'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
