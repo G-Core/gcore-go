@@ -210,7 +210,7 @@ type NetworkSubnetNewParams struct {
 	DNSNameservers []string `json:"dns_nameservers,omitzero" format:"ipvanyaddress"`
 	// '#/components/schemas/CreateSubnetSerializer/properties/host_routes/anyOf/0'
 	// "$.components.schemas.CreateSubnetSerializer.properties.host_routes.anyOf[0]"
-	HostRoutes []NetworkSubnetNewParamsHostRoute `json:"host_routes,omitzero"`
+	HostRoutes []NeutronRouteParam `json:"host_routes,omitzero"`
 	// '#/components/schemas/CreateSubnetSerializer/properties/metadata/anyOf/0'
 	// "$.components.schemas.CreateSubnetSerializer.properties.metadata.anyOf[0]"
 	Metadata map[string]string `json:"metadata,omitzero"`
@@ -228,28 +228,6 @@ func (f NetworkSubnetNewParams) IsPresent() bool { return !param.IsOmitted(f) &&
 
 func (r NetworkSubnetNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkSubnetNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// '#/components/schemas/CreateSubnetSerializer/properties/host_routes/anyOf/0/items'
-// "$.components.schemas.CreateSubnetSerializer.properties.host_routes.anyOf[0].items"
-//
-// The properties Destination, Nexthop are required.
-type NetworkSubnetNewParamsHostRoute struct {
-	// '#/components/schemas/RouteInSerializer/properties/destination'
-	// "$.components.schemas.RouteInSerializer.properties.destination"
-	Destination string `json:"destination,required" format:"ipvanynetwork"`
-	// '#/components/schemas/RouteInSerializer/properties/nexthop'
-	// "$.components.schemas.RouteInSerializer.properties.nexthop"
-	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkSubnetNewParamsHostRoute) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-func (r NetworkSubnetNewParamsHostRoute) MarshalJSON() (data []byte, err error) {
-	type shadow NetworkSubnetNewParamsHostRoute
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -278,7 +256,7 @@ type NetworkSubnetUpdateParams struct {
 	DNSNameservers []string `json:"dns_nameservers,omitzero" format:"ipvanyaddress"`
 	// '#/components/schemas/PatchSubnetSerializer/properties/host_routes/anyOf/0'
 	// "$.components.schemas.PatchSubnetSerializer.properties.host_routes.anyOf[0]"
-	HostRoutes []NetworkSubnetUpdateParamsHostRoute `json:"host_routes,omitzero"`
+	HostRoutes []NeutronRouteParam `json:"host_routes,omitzero"`
 	paramObj
 }
 
@@ -288,30 +266,6 @@ func (f NetworkSubnetUpdateParams) IsPresent() bool { return !param.IsOmitted(f)
 
 func (r NetworkSubnetUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkSubnetUpdateParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// '#/components/schemas/PatchSubnetSerializer/properties/host_routes/anyOf/0/items'
-// "$.components.schemas.PatchSubnetSerializer.properties.host_routes.anyOf[0].items"
-//
-// The properties Destination, Nexthop are required.
-type NetworkSubnetUpdateParamsHostRoute struct {
-	// '#/components/schemas/RouteInSerializer/properties/destination'
-	// "$.components.schemas.RouteInSerializer.properties.destination"
-	Destination string `json:"destination,required" format:"ipvanynetwork"`
-	// '#/components/schemas/RouteInSerializer/properties/nexthop'
-	// "$.components.schemas.RouteInSerializer.properties.nexthop"
-	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkSubnetUpdateParamsHostRoute) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r NetworkSubnetUpdateParamsHostRoute) MarshalJSON() (data []byte, err error) {
-	type shadow NetworkSubnetUpdateParamsHostRoute
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 

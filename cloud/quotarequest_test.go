@@ -111,7 +111,7 @@ func TestQuotaRequestListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Quotas.Requests.List(context.TODO(), cloud.QuotaRequestListParams{
+	err := client.Cloud.Quotas.Requests.List(context.TODO(), cloud.QuotaRequestListParams{
 		Limit:  gcore.Int(1000),
 		Offset: gcore.Int(0),
 		Status: []string{"done", "in progress"},

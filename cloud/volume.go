@@ -349,8 +349,7 @@ type Volume struct {
 	// Any of "attaching", "available", "awaiting-transfer", "backing-up", "creating",
 	// "deleting", "detaching", "downloading", "error", "error_backing-up",
 	// "error_deleting", "error_extending", "error_restoring", "extending", "in-use",
-	// "maintenance", "reserved", "restoring-backup", "retyping", "reverting",
-	// "uploading".
+	// "maintenance", "reserved", "restoring-backup", "retyping", "uploading".
 	Status VolumeStatus `json:"status,required"`
 	// '#/components/schemas/VolumeSerializer/properties/tags'
 	// "$.components.schemas.VolumeSerializer.properties.tags"
@@ -443,7 +442,6 @@ const (
 	VolumeStatusReserved         VolumeStatus = "reserved"
 	VolumeStatusRestoringBackup  VolumeStatus = "restoring-backup"
 	VolumeStatusRetyping         VolumeStatus = "retyping"
-	VolumeStatusReverting        VolumeStatus = "reverting"
 	VolumeStatusUploading        VolumeStatus = "uploading"
 )
 
