@@ -45,7 +45,7 @@ func (r *RegionService) Get(ctx context.Context, params RegionGetParams, opts ..
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.RegionID.IsPresent() {
 		err = errors.New("missing required region_id parameter")
 		return

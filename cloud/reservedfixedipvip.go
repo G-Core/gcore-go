@@ -41,8 +41,8 @@ func (r *ReservedFixedIPVipService) ListCandidatePorts(ctx context.Context, port
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -67,8 +67,8 @@ func (r *ReservedFixedIPVipService) ListConnectedPorts(ctx context.Context, port
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -93,8 +93,8 @@ func (r *ReservedFixedIPVipService) ReplaceConnectedPorts(ctx context.Context, p
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -119,8 +119,8 @@ func (r *ReservedFixedIPVipService) Toggle(ctx context.Context, portID string, p
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -145,8 +145,8 @@ func (r *ReservedFixedIPVipService) UpdateConnectedPorts(ctx context.Context, po
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return

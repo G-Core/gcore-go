@@ -44,8 +44,8 @@ func (r *SecretService) New(ctx context.Context, params SecretNewParams, opts ..
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -106,8 +106,8 @@ func (r *SecretService) List(ctx context.Context, query SecretListParams, opts .
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -128,8 +128,8 @@ func (r *SecretService) Delete(ctx context.Context, secretID string, body Secret
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&body.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&body.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -154,8 +154,8 @@ func (r *SecretService) Get(ctx context.Context, secretID string, query SecretGe
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -180,8 +180,8 @@ func (r *SecretService) UploadTlsCertificate(ctx context.Context, params SecretU
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return

@@ -42,8 +42,8 @@ func (r *NetworkSubnetService) New(ctx context.Context, params NetworkSubnetNewP
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -64,8 +64,8 @@ func (r *NetworkSubnetService) Update(ctx context.Context, subnetID string, para
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -92,8 +92,8 @@ func (r *NetworkSubnetService) List(ctx context.Context, params NetworkSubnetLis
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -128,8 +128,8 @@ func (r *NetworkSubnetService) Delete(ctx context.Context, subnetID string, body
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&body.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&body.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -154,8 +154,8 @@ func (r *NetworkSubnetService) Get(ctx context.Context, subnetID string, query N
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return

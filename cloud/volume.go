@@ -47,8 +47,8 @@ func (r *VolumeService) New(ctx context.Context, params VolumeNewParams, opts ..
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -69,8 +69,8 @@ func (r *VolumeService) Update(ctx context.Context, volumeID string, params Volu
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -97,8 +97,8 @@ func (r *VolumeService) List(ctx context.Context, params VolumeListParams, opts 
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -132,8 +132,8 @@ func (r *VolumeService) Delete(ctx context.Context, volumeID string, params Volu
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -159,8 +159,8 @@ func (r *VolumeService) AttachToInstance(ctx context.Context, volumeID string, p
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -185,8 +185,8 @@ func (r *VolumeService) ChangeType(ctx context.Context, volumeID string, params 
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -211,8 +211,8 @@ func (r *VolumeService) DetachFromInstance(ctx context.Context, volumeID string,
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -237,8 +237,8 @@ func (r *VolumeService) Get(ctx context.Context, volumeID string, query VolumeGe
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -263,8 +263,8 @@ func (r *VolumeService) Resize(ctx context.Context, volumeID string, params Volu
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -290,8 +290,8 @@ func (r *VolumeService) RevertToLastSnapshot(ctx context.Context, volumeID strin
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&body.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&body.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return

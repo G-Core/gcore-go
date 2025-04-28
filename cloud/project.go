@@ -77,7 +77,7 @@ func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, o
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&body.ProjectID, precfg.ProjectID)
+	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	if !body.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -94,7 +94,7 @@ func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts .
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.ProjectID)
+	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	if !query.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
@@ -111,7 +111,7 @@ func (r *ProjectService) Replace(ctx context.Context, params ProjectReplaceParam
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
