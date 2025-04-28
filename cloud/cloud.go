@@ -32,6 +32,7 @@ type CloudService struct {
 	SecurityGroups   SecurityGroupService
 	Baremetal        BaremetalService
 	Instances        InstanceService
+	FileShares       FileShareService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -54,6 +55,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.SecurityGroups = NewSecurityGroupService(opts...)
 	r.Baremetal = NewBaremetalService(opts...)
 	r.Instances = NewInstanceService(opts...)
+	r.FileShares = NewFileShareService(opts...)
 	return
 }
 
