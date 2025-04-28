@@ -256,7 +256,7 @@ type Router struct {
 	RegionID int64 `json:"region_id,required"`
 	// '#/components/schemas/RouterSerializer/properties/routes'
 	// "$.components.schemas.RouterSerializer.properties.routes"
-	Routes []NeutronRoute `json:"routes,required"`
+	Routes []RouterRoute `json:"routes,required"`
 	// '#/components/schemas/RouterSerializer/properties/status'
 	// "$.components.schemas.RouterSerializer.properties.status"
 	Status string `json:"status,required"`
@@ -355,6 +355,31 @@ type RouterInterfaceIPAssignment struct {
 // Returns the unmodified JSON received from the API
 func (r RouterInterfaceIPAssignment) RawJSON() string { return r.JSON.raw }
 func (r *RouterInterfaceIPAssignment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/RouterSerializer/properties/routes/items'
+// "$.components.schemas.RouterSerializer.properties.routes.items"
+type RouterRoute struct {
+	// '#/components/schemas/RouteOutSerializer/properties/destination'
+	// "$.components.schemas.RouteOutSerializer.properties.destination"
+	Destination string `json:"destination,required" format:"ipvanynetwork"`
+	// '#/components/schemas/RouteOutSerializer/properties/nexthop'
+	// "$.components.schemas.RouteOutSerializer.properties.nexthop"
+	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Destination resp.Field
+		Nexthop     resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RouterRoute) RawJSON() string { return r.JSON.raw }
+func (r *RouterRoute) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -478,7 +503,7 @@ type NetworkRouterNewParams struct {
 	Interfaces []NetworkRouterNewParamsInterface `json:"interfaces,omitzero"`
 	// '#/components/schemas/CreateRouterSerializer/properties/routes/anyOf/0'
 	// "$.components.schemas.CreateRouterSerializer.properties.routes.anyOf[0]"
-	Routes []NeutronRouteParam `json:"routes,omitzero"`
+	Routes []NetworkRouterNewParamsRoute `json:"routes,omitzero"`
 	paramObj
 }
 
@@ -641,6 +666,28 @@ func init() {
 	)
 }
 
+// '#/components/schemas/CreateRouterSerializer/properties/routes/anyOf/0/items'
+// "$.components.schemas.CreateRouterSerializer.properties.routes.anyOf[0].items"
+//
+// The properties Destination, Nexthop are required.
+type NetworkRouterNewParamsRoute struct {
+	// '#/components/schemas/RouteInSerializer/properties/destination'
+	// "$.components.schemas.RouteInSerializer.properties.destination"
+	Destination string `json:"destination,required" format:"ipvanynetwork"`
+	// '#/components/schemas/RouteInSerializer/properties/nexthop'
+	// "$.components.schemas.RouteInSerializer.properties.nexthop"
+	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f NetworkRouterNewParamsRoute) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r NetworkRouterNewParamsRoute) MarshalJSON() (data []byte, err error) {
+	type shadow NetworkRouterNewParamsRoute
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
 type NetworkRouterUpdateParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D/patch/parameters/0/schema'
 	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}'].patch.parameters[0].schema"
@@ -660,7 +707,7 @@ type NetworkRouterUpdateParams struct {
 	ExternalGatewayInfo NetworkRouterUpdateParamsExternalGatewayInfo `json:"external_gateway_info,omitzero"`
 	// '#/components/schemas/PatchRouterSerializer/properties/routes/anyOf/0'
 	// "$.components.schemas.PatchRouterSerializer.properties.routes.anyOf[0]"
-	Routes []NeutronRouteParam `json:"routes,omitzero"`
+	Routes []NetworkRouterUpdateParamsRoute `json:"routes,omitzero"`
 	paramObj
 }
 
@@ -706,6 +753,28 @@ func init() {
 	apijson.RegisterFieldValidator[NetworkRouterUpdateParamsExternalGatewayInfo](
 		"Type", false, "manual",
 	)
+}
+
+// '#/components/schemas/PatchRouterSerializer/properties/routes/anyOf/0/items'
+// "$.components.schemas.PatchRouterSerializer.properties.routes.anyOf[0].items"
+//
+// The properties Destination, Nexthop are required.
+type NetworkRouterUpdateParamsRoute struct {
+	// '#/components/schemas/RouteInSerializer/properties/destination'
+	// "$.components.schemas.RouteInSerializer.properties.destination"
+	Destination string `json:"destination,required" format:"ipvanynetwork"`
+	// '#/components/schemas/RouteInSerializer/properties/nexthop'
+	// "$.components.schemas.RouteInSerializer.properties.nexthop"
+	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f NetworkRouterUpdateParamsRoute) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r NetworkRouterUpdateParamsRoute) MarshalJSON() (data []byte, err error) {
+	type shadow NetworkRouterUpdateParamsRoute
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 type NetworkRouterListParams struct {
