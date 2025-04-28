@@ -40,7 +40,7 @@ func TestNetworkRouterNewWithOptionalParams(t *testing.T) {
 			SubnetID: "3ed9e2ce-f906-47fb-ba32-c25a3f63df4f",
 			Type:     "subnet",
 		}},
-		Routes: []cloud.NetworkRouterNewParamsRoute{{
+		Routes: []cloud.NeutronRouteParam{{
 			Destination: "10.0.3.0/24",
 			Nexthop:     "10.0.0.13",
 		}},
@@ -78,7 +78,7 @@ func TestNetworkRouterUpdateWithOptionalParams(t *testing.T) {
 				Type:       "manual",
 			},
 			Name: gcore.String("my_renamed_router"),
-			Routes: []cloud.NetworkRouterUpdateParamsRoute{{
+			Routes: []cloud.NeutronRouteParam{{
 				Destination: "10.0.3.0/24",
 				Nexthop:     "10.0.0.13",
 			}},
