@@ -51,7 +51,7 @@ func (r *QuotaService) GetByRegion(ctx context.Context, clientID int64, query Qu
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.RegionID.IsPresent() {
 		err = errors.New("missing required region_id parameter")
 		return
