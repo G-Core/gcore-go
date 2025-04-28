@@ -293,8 +293,6 @@ const (
 type RegionGetParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fregions%2F%7Bregion_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/regions/{region_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fregions%2F%7Bregion_id%7D/get/parameters/1'
 	// "$.paths['/cloud/v1/regions/{region_id}'].get.parameters[1]"

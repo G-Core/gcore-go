@@ -643,13 +643,9 @@ func (r *FloatingIPDetailedInstanceVolume) UnmarshalJSON(data []byte) error {
 type FloatingIPNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].post.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].post.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/CreateFloatingIPSerializer/properties/fixed_ip_address/anyOf/0'
 	// "$.components.schemas.CreateFloatingIPSerializer.properties.fixed_ip_address.anyOf[0]"
@@ -675,13 +671,9 @@ func (r FloatingIPNewParams) MarshalJSON() (data []byte, err error) {
 type FloatingIPListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[2]"
@@ -713,13 +705,9 @@ func (r FloatingIPListParams) URLQuery() (v url.Values, err error) {
 type FloatingIPDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D/delete/parameters/0/schema'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}']['delete'].parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}']['delete'].parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -731,13 +719,9 @@ func (f FloatingIPDeleteParams) IsPresent() bool { return !param.IsOmitted(f) &&
 type FloatingIPAssignParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D%2Fassign/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}/assign'].post.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D%2Fassign/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}/assign'].post.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/AssignFloatingIPSerializer/properties/port_id'
 	// "$.components.schemas.AssignFloatingIPSerializer.properties.port_id"
@@ -760,13 +744,9 @@ func (r FloatingIPAssignParams) MarshalJSON() (data []byte, err error) {
 type FloatingIPGetParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}'].get.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -778,13 +758,9 @@ func (f FloatingIPGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f
 type FloatingIPUnassignParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D%2Funassign/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}/unassign'].post.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D%2Funassign/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}/unassign'].post.parameters[1].schema"
-	//
-	// Use [option.WithRegionID] on the client to set a global default for this field.
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }

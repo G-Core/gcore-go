@@ -249,8 +249,6 @@ const (
 type ProjectDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fprojects%2F%7Bproject_id%7D/delete/parameters/0/schema'
 	// "$.paths['/cloud/v1/projects/{project_id}']['delete'].parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -262,8 +260,6 @@ func (f ProjectDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f
 type ProjectGetParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fprojects%2F%7Bproject_id%7D/get/parameters/0/schema'
 	// "$.paths['/cloud/v1/projects/{project_id}'].get.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -275,8 +271,6 @@ func (f ProjectGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.Is
 type ProjectReplaceParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fprojects%2F%7Bproject_id%7D/put/parameters/0/schema'
 	// "$.paths['/cloud/v1/projects/{project_id}'].put.parameters[0].schema"
-	//
-	// Use [option.WithProjectID] on the client to set a global default for this field.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/components/schemas/NameDescriptionSerializer/properties/name'
 	// "$.components.schemas.NameDescriptionSerializer.properties.name"
