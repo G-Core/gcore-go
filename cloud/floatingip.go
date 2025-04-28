@@ -419,15 +419,14 @@ func (r *FloatingIPDetailedInstance) UnmarshalJSON(data []byte) error {
 }
 
 // FloatingIPDetailedInstanceAddressUnion contains all possible properties and
-// values from [FloatingIPDetailedInstanceAddressSimpleAddressSerializer],
-// [FloatingIPDetailedInstanceAddressAddressInterfaceSerializer],
+// values from [FloatingIPDetailedInstanceAddressAddressSerializer],
 // [FloatingIPDetailedInstanceAddressAddressDetailedSerializer].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type FloatingIPDetailedInstanceAddressUnion struct {
 	Addr          string `json:"addr"`
-	Type          string `json:"type"`
 	InterfaceName string `json:"interface_name"`
+	Type          string `json:"type"`
 	// This field is from variant
 	// [FloatingIPDetailedInstanceAddressAddressDetailedSerializer].
 	SubnetID string `json:"subnet_id"`
@@ -436,25 +435,20 @@ type FloatingIPDetailedInstanceAddressUnion struct {
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
 		Addr          resp.Field
-		Type          resp.Field
 		InterfaceName resp.Field
+		Type          resp.Field
 		SubnetID      resp.Field
 		SubnetName    resp.Field
 		raw           string
 	} `json:"-"`
 }
 
-func (u FloatingIPDetailedInstanceAddressUnion) AsSimpleAddressSerializer() (v FloatingIPDetailedInstanceAddressSimpleAddressSerializer) {
+func (u FloatingIPDetailedInstanceAddressUnion) AsAddress() (v FloatingIPDetailedInstanceAddressAddressSerializer) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u FloatingIPDetailedInstanceAddressUnion) AsAddressInterfaceSerializer() (v FloatingIPDetailedInstanceAddressAddressInterfaceSerializer) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FloatingIPDetailedInstanceAddressUnion) AsAddressDetailedSerializer() (v FloatingIPDetailedInstanceAddressAddressDetailedSerializer) {
+func (u FloatingIPDetailedInstanceAddressUnion) AsDetailedAddress() (v FloatingIPDetailedInstanceAddressAddressDetailedSerializer) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -468,40 +462,15 @@ func (r *FloatingIPDetailedInstanceAddressUnion) UnmarshalJSON(data []byte) erro
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/0'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[0]"
-type FloatingIPDetailedInstanceAddressSimpleAddressSerializer struct {
-	// '#/components/schemas/SimpleAddressSerializer/properties/addr'
-	// "$.components.schemas.SimpleAddressSerializer.properties.addr"
+type FloatingIPDetailedInstanceAddressAddressSerializer struct {
+	// '#/components/schemas/AddressSerializer/properties/addr'
+	// "$.components.schemas.AddressSerializer.properties.addr"
 	Addr string `json:"addr,required"`
-	// '#/components/schemas/SimpleAddressSerializer/properties/type'
-	// "$.components.schemas.SimpleAddressSerializer.properties.type"
-	Type string `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Addr        resp.Field
-		Type        resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FloatingIPDetailedInstanceAddressSimpleAddressSerializer) RawJSON() string { return r.JSON.raw }
-func (r *FloatingIPDetailedInstanceAddressSimpleAddressSerializer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/1'
-// "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
-type FloatingIPDetailedInstanceAddressAddressInterfaceSerializer struct {
-	// '#/components/schemas/AddressInterfaceSerializer/properties/addr'
-	// "$.components.schemas.AddressInterfaceSerializer.properties.addr"
-	Addr string `json:"addr,required"`
-	// '#/components/schemas/AddressInterfaceSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.AddressInterfaceSerializer.properties.interface_name.anyOf[0]"
+	// '#/components/schemas/AddressSerializer/properties/interface_name/anyOf/0'
+	// "$.components.schemas.AddressSerializer.properties.interface_name.anyOf[0]"
 	InterfaceName string `json:"interface_name,required"`
-	// '#/components/schemas/AddressInterfaceSerializer/properties/type'
-	// "$.components.schemas.AddressInterfaceSerializer.properties.type"
+	// '#/components/schemas/AddressSerializer/properties/type'
+	// "$.components.schemas.AddressSerializer.properties.type"
 	Type string `json:"type,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -515,15 +484,13 @@ type FloatingIPDetailedInstanceAddressAddressInterfaceSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPDetailedInstanceAddressAddressInterfaceSerializer) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *FloatingIPDetailedInstanceAddressAddressInterfaceSerializer) UnmarshalJSON(data []byte) error {
+func (r FloatingIPDetailedInstanceAddressAddressSerializer) RawJSON() string { return r.JSON.raw }
+func (r *FloatingIPDetailedInstanceAddressAddressSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/2'
-// "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[2]"
+// '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/1'
+// "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
 type FloatingIPDetailedInstanceAddressAddressDetailedSerializer struct {
 	// '#/components/schemas/AddressDetailedSerializer/properties/addr'
 	// "$.components.schemas.AddressDetailedSerializer.properties.addr"

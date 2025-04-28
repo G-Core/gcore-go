@@ -14,6 +14,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/apiquery"
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
+	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
 	"github.com/stainless-sdks/gcore-go/packages/resp"
 )
@@ -47,12 +48,26 @@ func (r *QuotaRequestService) New(ctx context.Context, body QuotaRequestNewParam
 }
 
 // Returns a list of sent requests to change current quotas and their statuses
-func (r *QuotaRequestService) List(ctx context.Context, query QuotaRequestListParams, opts ...option.RequestOption) (err error) {
+func (r *QuotaRequestService) List(ctx context.Context, query QuotaRequestListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[QuotaRequestListResponse], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cloud/v2/limits_request"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of sent requests to change current quotas and their statuses
+func (r *QuotaRequestService) ListAutoPaging(ctx context.Context, query QuotaRequestListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[QuotaRequestListResponse] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete request to change quotas
@@ -78,6 +93,326 @@ func (r *QuotaRequestService) Get(ctx context.Context, requestID string, opts ..
 	path := fmt.Sprintf("cloud/v2/limits_request/%s", requestID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
+}
+
+// '#/components/schemas/LimitsRequestCollectionSerializer/properties/results/items'
+// "$.components.schemas.LimitsRequestCollectionSerializer.properties.results.items"
+type QuotaRequestListResponse struct {
+	// '#/components/schemas/LimitsRequestSerializer/properties/id'
+	// "$.components.schemas.LimitsRequestSerializer.properties.id"
+	ID int64 `json:"id,required"`
+	// '#/components/schemas/LimitsRequestSerializer/properties/client_id'
+	// "$.components.schemas.LimitsRequestSerializer.properties.client_id"
+	ClientID int64 `json:"client_id,required"`
+	// '#/components/schemas/LimitsRequestSerializer/properties/requested_limits'
+	// "$.components.schemas.LimitsRequestSerializer.properties.requested_limits"
+	RequestedLimits QuotaRequestListResponseRequestedLimits `json:"requested_limits,required"`
+	// '#/components/schemas/LimitsRequestSerializer/properties/status'
+	// "$.components.schemas.LimitsRequestSerializer.properties.status"
+	Status string `json:"status,required"`
+	// '#/components/schemas/LimitsRequestSerializer/properties/created_at'
+	// "$.components.schemas.LimitsRequestSerializer.properties.created_at"
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// '#/components/schemas/LimitsRequestSerializer/properties/description/anyOf/0'
+	// "$.components.schemas.LimitsRequestSerializer.properties.description.anyOf[0]"
+	Description string `json:"description,nullable"`
+	// '#/components/schemas/LimitsRequestSerializer/properties/updated_at/anyOf/0'
+	// "$.components.schemas.LimitsRequestSerializer.properties.updated_at.anyOf[0]"
+	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		ID              resp.Field
+		ClientID        resp.Field
+		RequestedLimits resp.Field
+		Status          resp.Field
+		CreatedAt       resp.Field
+		Description     resp.Field
+		UpdatedAt       resp.Field
+		ExtraFields     map[string]resp.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r QuotaRequestListResponse) RawJSON() string { return r.JSON.raw }
+func (r *QuotaRequestListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/LimitsRequestSerializer/properties/requested_limits'
+// "$.components.schemas.LimitsRequestSerializer.properties.requested_limits"
+type QuotaRequestListResponseRequestedLimits struct {
+	// '#/components/schemas/AllClientQuotasLimitsSerializer/properties/global_limits'
+	// "$.components.schemas.AllClientQuotasLimitsSerializer.properties.global_limits"
+	GlobalLimits QuotaRequestListResponseRequestedLimitsGlobalLimits `json:"global_limits"`
+	// '#/components/schemas/AllClientQuotasLimitsSerializer/properties/regional_limits'
+	// "$.components.schemas.AllClientQuotasLimitsSerializer.properties.regional_limits"
+	RegionalLimits []QuotaRequestListResponseRequestedLimitsRegionalLimit `json:"regional_limits"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		GlobalLimits   resp.Field
+		RegionalLimits resp.Field
+		ExtraFields    map[string]resp.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r QuotaRequestListResponseRequestedLimits) RawJSON() string { return r.JSON.raw }
+func (r *QuotaRequestListResponseRequestedLimits) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/AllClientQuotasLimitsSerializer/properties/global_limits'
+// "$.components.schemas.AllClientQuotasLimitsSerializer.properties.global_limits"
+type QuotaRequestListResponseRequestedLimitsGlobalLimits struct {
+	// '#/components/schemas/CreateGlobalQuotasLimitsSerializer/properties/inference_cpu_millicore_count_limit'
+	// "$.components.schemas.CreateGlobalQuotasLimitsSerializer.properties.inference_cpu_millicore_count_limit"
+	InferenceCPUMillicoreCountLimit int64 `json:"inference_cpu_millicore_count_limit"`
+	// '#/components/schemas/CreateGlobalQuotasLimitsSerializer/properties/inference_gpu_a100_count_limit'
+	// "$.components.schemas.CreateGlobalQuotasLimitsSerializer.properties.inference_gpu_a100_count_limit"
+	InferenceGPUA100CountLimit int64 `json:"inference_gpu_a100_count_limit"`
+	// '#/components/schemas/CreateGlobalQuotasLimitsSerializer/properties/inference_gpu_h100_count_limit'
+	// "$.components.schemas.CreateGlobalQuotasLimitsSerializer.properties.inference_gpu_h100_count_limit"
+	InferenceGPUH100CountLimit int64 `json:"inference_gpu_h100_count_limit"`
+	// '#/components/schemas/CreateGlobalQuotasLimitsSerializer/properties/inference_gpu_l40s_count_limit'
+	// "$.components.schemas.CreateGlobalQuotasLimitsSerializer.properties.inference_gpu_l40s_count_limit"
+	InferenceGPUL40sCountLimit int64 `json:"inference_gpu_l40s_count_limit"`
+	// '#/components/schemas/CreateGlobalQuotasLimitsSerializer/properties/inference_instance_count_limit'
+	// "$.components.schemas.CreateGlobalQuotasLimitsSerializer.properties.inference_instance_count_limit"
+	InferenceInstanceCountLimit int64 `json:"inference_instance_count_limit"`
+	// '#/components/schemas/CreateGlobalQuotasLimitsSerializer/properties/keypair_count_limit'
+	// "$.components.schemas.CreateGlobalQuotasLimitsSerializer.properties.keypair_count_limit"
+	KeypairCountLimit int64 `json:"keypair_count_limit"`
+	// '#/components/schemas/CreateGlobalQuotasLimitsSerializer/properties/project_count_limit'
+	// "$.components.schemas.CreateGlobalQuotasLimitsSerializer.properties.project_count_limit"
+	ProjectCountLimit int64 `json:"project_count_limit"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		InferenceCPUMillicoreCountLimit resp.Field
+		InferenceGPUA100CountLimit      resp.Field
+		InferenceGPUH100CountLimit      resp.Field
+		InferenceGPUL40sCountLimit      resp.Field
+		InferenceInstanceCountLimit     resp.Field
+		KeypairCountLimit               resp.Field
+		ProjectCountLimit               resp.Field
+		ExtraFields                     map[string]resp.Field
+		raw                             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r QuotaRequestListResponseRequestedLimitsGlobalLimits) RawJSON() string { return r.JSON.raw }
+func (r *QuotaRequestListResponseRequestedLimitsGlobalLimits) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/AllClientQuotasLimitsSerializer/properties/regional_limits/items'
+// "$.components.schemas.AllClientQuotasLimitsSerializer.properties.regional_limits.items"
+type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/baremetal_basic_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.baremetal_basic_count_limit"
+	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/baremetal_gpu_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.baremetal_gpu_count_limit"
+	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/baremetal_hf_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.baremetal_hf_count_limit"
+	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/baremetal_infrastructure_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.baremetal_infrastructure_count_limit"
+	BaremetalInfrastructureCountLimit int64 `json:"baremetal_infrastructure_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/baremetal_network_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.baremetal_network_count_limit"
+	BaremetalNetworkCountLimit int64 `json:"baremetal_network_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/baremetal_storage_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.baremetal_storage_count_limit"
+	BaremetalStorageCountLimit int64 `json:"baremetal_storage_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/caas_container_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.caas_container_count_limit"
+	CaasContainerCountLimit int64 `json:"caas_container_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/caas_cpu_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.caas_cpu_count_limit"
+	CaasCPUCountLimit int64 `json:"caas_cpu_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/caas_gpu_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.caas_gpu_count_limit"
+	CaasGPUCountLimit int64 `json:"caas_gpu_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/caas_ram_size_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.caas_ram_size_limit"
+	CaasRamSizeLimit int64 `json:"caas_ram_size_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/cluster_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.cluster_count_limit"
+	ClusterCountLimit int64 `json:"cluster_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/cpu_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.cpu_count_limit"
+	CPUCountLimit int64 `json:"cpu_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/dbaas_postgres_cluster_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.dbaas_postgres_cluster_count_limit"
+	DbaasPostgresClusterCountLimit int64 `json:"dbaas_postgres_cluster_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/external_ip_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.external_ip_count_limit"
+	ExternalIPCountLimit int64 `json:"external_ip_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/faas_cpu_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.faas_cpu_count_limit"
+	FaasCPUCountLimit int64 `json:"faas_cpu_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/faas_function_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.faas_function_count_limit"
+	FaasFunctionCountLimit int64 `json:"faas_function_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/faas_namespace_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.faas_namespace_count_limit"
+	FaasNamespaceCountLimit int64 `json:"faas_namespace_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/faas_ram_size_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.faas_ram_size_limit"
+	FaasRamSizeLimit int64 `json:"faas_ram_size_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/firewall_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.firewall_count_limit"
+	FirewallCountLimit int64 `json:"firewall_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/floating_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.floating_count_limit"
+	FloatingCountLimit int64 `json:"floating_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/gpu_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.gpu_count_limit"
+	GPUCountLimit int64 `json:"gpu_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/gpu_virtual_a100_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.gpu_virtual_a100_count_limit"
+	GPUVirtualA100CountLimit int64 `json:"gpu_virtual_a100_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/gpu_virtual_h100_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.gpu_virtual_h100_count_limit"
+	GPUVirtualH100CountLimit int64 `json:"gpu_virtual_h100_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/gpu_virtual_l40s_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.gpu_virtual_l40s_count_limit"
+	GPUVirtualL40sCountLimit int64 `json:"gpu_virtual_l40s_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/image_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.image_count_limit"
+	ImageCountLimit int64 `json:"image_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/image_size_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.image_size_limit"
+	ImageSizeLimit int64 `json:"image_size_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/ipu_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.ipu_count_limit"
+	IpuCountLimit int64 `json:"ipu_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/laas_topic_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.laas_topic_count_limit"
+	LaasTopicCountLimit int64 `json:"laas_topic_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/loadbalancer_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.loadbalancer_count_limit"
+	LoadbalancerCountLimit int64 `json:"loadbalancer_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/network_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.network_count_limit"
+	NetworkCountLimit int64 `json:"network_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/ram_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.ram_limit"
+	RamLimit int64 `json:"ram_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/region_id'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.region_id"
+	RegionID int64 `json:"region_id"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/registry_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.registry_count_limit"
+	RegistryCountLimit int64 `json:"registry_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/registry_storage_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.registry_storage_limit"
+	RegistryStorageLimit int64 `json:"registry_storage_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/router_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.router_count_limit"
+	RouterCountLimit int64 `json:"router_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/secret_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.secret_count_limit"
+	SecretCountLimit int64 `json:"secret_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/servergroup_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.servergroup_count_limit"
+	ServergroupCountLimit int64 `json:"servergroup_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/sfs_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.sfs_count_limit"
+	SfsCountLimit int64 `json:"sfs_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/sfs_size_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.sfs_size_limit"
+	SfsSizeLimit int64 `json:"sfs_size_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/shared_vm_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.shared_vm_count_limit"
+	SharedVmCountLimit int64 `json:"shared_vm_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/snapshot_schedule_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.snapshot_schedule_count_limit"
+	SnapshotScheduleCountLimit int64 `json:"snapshot_schedule_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/subnet_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.subnet_count_limit"
+	SubnetCountLimit int64 `json:"subnet_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/vm_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.vm_count_limit"
+	VmCountLimit int64 `json:"vm_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/volume_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.volume_count_limit"
+	VolumeCountLimit int64 `json:"volume_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/volume_size_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.volume_size_limit"
+	VolumeSizeLimit int64 `json:"volume_size_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/volume_snapshots_count_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.volume_snapshots_count_limit"
+	VolumeSnapshotsCountLimit int64 `json:"volume_snapshots_count_limit"`
+	// '#/components/schemas/RegionalQuotasLimitsSerializer/properties/volume_snapshots_size_limit'
+	// "$.components.schemas.RegionalQuotasLimitsSerializer.properties.volume_snapshots_size_limit"
+	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		BaremetalBasicCountLimit          resp.Field
+		BaremetalGPUCountLimit            resp.Field
+		BaremetalHfCountLimit             resp.Field
+		BaremetalInfrastructureCountLimit resp.Field
+		BaremetalNetworkCountLimit        resp.Field
+		BaremetalStorageCountLimit        resp.Field
+		CaasContainerCountLimit           resp.Field
+		CaasCPUCountLimit                 resp.Field
+		CaasGPUCountLimit                 resp.Field
+		CaasRamSizeLimit                  resp.Field
+		ClusterCountLimit                 resp.Field
+		CPUCountLimit                     resp.Field
+		DbaasPostgresClusterCountLimit    resp.Field
+		ExternalIPCountLimit              resp.Field
+		FaasCPUCountLimit                 resp.Field
+		FaasFunctionCountLimit            resp.Field
+		FaasNamespaceCountLimit           resp.Field
+		FaasRamSizeLimit                  resp.Field
+		FirewallCountLimit                resp.Field
+		FloatingCountLimit                resp.Field
+		GPUCountLimit                     resp.Field
+		GPUVirtualA100CountLimit          resp.Field
+		GPUVirtualH100CountLimit          resp.Field
+		GPUVirtualL40sCountLimit          resp.Field
+		ImageCountLimit                   resp.Field
+		ImageSizeLimit                    resp.Field
+		IpuCountLimit                     resp.Field
+		LaasTopicCountLimit               resp.Field
+		LoadbalancerCountLimit            resp.Field
+		NetworkCountLimit                 resp.Field
+		RamLimit                          resp.Field
+		RegionID                          resp.Field
+		RegistryCountLimit                resp.Field
+		RegistryStorageLimit              resp.Field
+		RouterCountLimit                  resp.Field
+		SecretCountLimit                  resp.Field
+		ServergroupCountLimit             resp.Field
+		SfsCountLimit                     resp.Field
+		SfsSizeLimit                      resp.Field
+		SharedVmCountLimit                resp.Field
+		SnapshotScheduleCountLimit        resp.Field
+		SubnetCountLimit                  resp.Field
+		VmCountLimit                      resp.Field
+		VolumeCountLimit                  resp.Field
+		VolumeSizeLimit                   resp.Field
+		VolumeSnapshotsCountLimit         resp.Field
+		VolumeSnapshotsSizeLimit          resp.Field
+		ExtraFields                       map[string]resp.Field
+		raw                               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r QuotaRequestListResponseRequestedLimitsRegionalLimit) RawJSON() string { return r.JSON.raw }
+func (r *QuotaRequestListResponseRequestedLimitsRegionalLimit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/paths/%2Fcloud%2Fv2%2Flimits_request%2F%7Brequest_id%7D/get/responses/200/content/application%2Fjson/schema'
