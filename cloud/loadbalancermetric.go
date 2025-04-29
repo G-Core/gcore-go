@@ -1,0 +1,86 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package cloud
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"net/http"
+
+	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
+	"github.com/stainless-sdks/gcore-go/option"
+	"github.com/stainless-sdks/gcore-go/packages/param"
+)
+
+// LoadBalancerMetricService contains methods and other services that help with
+// interacting with the gcore API.
+//
+// Note, unlike clients, this service does not read variables from the environment
+// automatically. You should not instantiate this service directly, and instead use
+// the [NewLoadBalancerMetricService] method instead.
+type LoadBalancerMetricService struct {
+	Options []option.RequestOption
+}
+
+// NewLoadBalancerMetricService generates a new service that applies the given
+// options to each request. These options are applied after the parent client's
+// options (if there is one), and before any request-specific options.
+func NewLoadBalancerMetricService(opts ...option.RequestOption) (r LoadBalancerMetricService) {
+	r = LoadBalancerMetricService{}
+	r.Options = opts
+	return
+}
+
+// Get loadbalancer metrics, including cpu, memory and network
+func (r *LoadBalancerMetricService) List(ctx context.Context, loadbalancerID string, params LoadBalancerMetricListParams, opts ...option.RequestOption) (res *LoadbalancerMetricsList, err error) {
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.IsPresent() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !params.RegionID.IsPresent() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	if loadbalancerID == "" {
+		err = errors.New("missing required loadbalancer_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/loadbalancers/%v/%v/%s/metrics", params.ProjectID.Value, params.RegionID.Value, loadbalancerID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return
+}
+
+type LoadBalancerMetricListParams struct {
+	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D%2Fmetrics/post/parameters/0/schema'
+	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}/metrics'].post.parameters[0].schema"
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D%2Fmetrics/post/parameters/1/schema'
+	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}/metrics'].post.parameters[1].schema"
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/components/schemas/LoadbalancerMetricsRequestSerializer/properties/time_interval'
+	// "$.components.schemas.LoadbalancerMetricsRequestSerializer.properties.time_interval"
+	TimeInterval int64 `json:"time_interval,required"`
+	// '#/components/schemas/LoadbalancerMetricsRequestSerializer/properties/time_unit'
+	// "$.components.schemas.LoadbalancerMetricsRequestSerializer.properties.time_unit"
+	//
+	// Any of "day", "hour".
+	TimeUnit InstanceMetricsTimeUnit `json:"time_unit,omitzero,required"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f LoadBalancerMetricListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+
+func (r LoadBalancerMetricListParams) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerMetricListParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
