@@ -72,8 +72,8 @@ func (r *SecretService) NewAndPoll(ctx context.Context, params SecretNewParams, 
 		return
 	}
 	var getParams SecretGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.ProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.RegionID)
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return

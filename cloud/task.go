@@ -104,7 +104,7 @@ func (r *TaskService) Poll(ctx context.Context, taskID string, opts ...requestco
 	if err != nil {
 		return nil, err
 	}
-	pollingInterval := time.Duration(precfg.PollingIntervalMs) * time.Millisecond
+	pollingInterval := time.Duration(precfg.CloudPollingIntervalMs) * time.Millisecond
 
 	// poll the task status until it is finished or an error occurs
 	for {
