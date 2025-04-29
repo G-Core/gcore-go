@@ -7,7 +7,6 @@ import (
 
 	"github.com/stainless-sdks/gcore-go/internal/apijson"
 	"github.com/stainless-sdks/gcore-go/option"
-	"github.com/stainless-sdks/gcore-go/packages/param"
 	"github.com/stainless-sdks/gcore-go/packages/resp"
 )
 
@@ -868,25 +867,25 @@ func (r *LoadBalancerListener) UnmarshalJSON(data []byte) error {
 // '#/components/schemas/LoadbalancerSerializer/properties/logging/anyOf/0'
 // "$.components.schemas.LoadbalancerSerializer.properties.logging.anyOf[0]"
 type LoadBalancerLogging struct {
-	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/destination_region_id/anyOf/0'
-	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.destination_region_id.anyOf[0]"
-	DestinationRegionID int64 `json:"destination_region_id,nullable"`
-	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/enabled'
-	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.enabled"
-	Enabled bool `json:"enabled"`
-	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/retention_policy/anyOf/0'
-	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.retention_policy.anyOf[0]"
+	// '#/components/schemas/LoggingOutSerializer/properties/destination_region_id/anyOf/0'
+	// "$.components.schemas.LoggingOutSerializer.properties.destination_region_id.anyOf[0]"
+	DestinationRegionID int64 `json:"destination_region_id,required"`
+	// '#/components/schemas/LoggingOutSerializer/properties/enabled'
+	// "$.components.schemas.LoggingOutSerializer.properties.enabled"
+	Enabled bool `json:"enabled,required"`
+	// '#/components/schemas/LoggingOutSerializer/properties/topic_name/anyOf/0'
+	// "$.components.schemas.LoggingOutSerializer.properties.topic_name.anyOf[0]"
+	TopicName string `json:"topic_name,required"`
+	// '#/components/schemas/LoggingOutSerializer/properties/retention_policy/anyOf/0'
+	// "$.components.schemas.LoggingOutSerializer.properties.retention_policy.anyOf[0]"
 	RetentionPolicy LoadBalancerLoggingRetentionPolicy `json:"retention_policy,nullable"`
-	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/topic_name/anyOf/0'
-	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.topic_name.anyOf[0]"
-	TopicName string `json:"topic_name,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
 		DestinationRegionID resp.Field
 		Enabled             resp.Field
-		RetentionPolicy     resp.Field
 		TopicName           resp.Field
+		RetentionPolicy     resp.Field
 		ExtraFields         map[string]resp.Field
 		raw                 string
 	} `json:"-"`
@@ -898,8 +897,8 @@ func (r *LoadBalancerLogging) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LoadbalancerLoggingSerializer/properties/retention_policy/anyOf/0'
-// "$.components.schemas.LoadbalancerLoggingSerializer.properties.retention_policy.anyOf[0]"
+// '#/components/schemas/LoggingOutSerializer/properties/retention_policy/anyOf/0'
+// "$.components.schemas.LoggingOutSerializer.properties.retention_policy.anyOf[0]"
 type LoadBalancerLoggingRetentionPolicy struct {
 	// '#/components/schemas/LaasIndexRetentionPolicyPydanticSerializer/properties/period/anyOf/0'
 	// "$.components.schemas.LaasIndexRetentionPolicyPydanticSerializer.properties.period.anyOf[0]"
@@ -1114,62 +1113,6 @@ func (r *Network) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/NeutronRouteSerializer'
-// "$.components.schemas.NeutronRouteSerializer"
-type NeutronRoute struct {
-	// '#/components/schemas/NeutronRouteSerializer/properties/destination'
-	// "$.components.schemas.NeutronRouteSerializer.properties.destination"
-	Destination string `json:"destination,required" format:"ipvanynetwork"`
-	// '#/components/schemas/NeutronRouteSerializer/properties/nexthop'
-	// "$.components.schemas.NeutronRouteSerializer.properties.nexthop"
-	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Destination resp.Field
-		Nexthop     resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NeutronRoute) RawJSON() string { return r.JSON.raw }
-func (r *NeutronRoute) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this NeutronRoute to a NeutronRouteParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// NeutronRouteParam.IsOverridden()
-func (r NeutronRoute) ToParam() NeutronRouteParam {
-	return param.OverrideObj[NeutronRouteParam](r.RawJSON())
-}
-
-// '#/components/schemas/NeutronRouteSerializer'
-// "$.components.schemas.NeutronRouteSerializer"
-//
-// The properties Destination, Nexthop are required.
-type NeutronRouteParam struct {
-	// '#/components/schemas/NeutronRouteSerializer/properties/destination'
-	// "$.components.schemas.NeutronRouteSerializer.properties.destination"
-	Destination string `json:"destination,required" format:"ipvanynetwork"`
-	// '#/components/schemas/NeutronRouteSerializer/properties/nexthop'
-	// "$.components.schemas.NeutronRouteSerializer.properties.nexthop"
-	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NeutronRouteParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-func (r NeutronRouteParam) MarshalJSON() (data []byte, err error) {
-	type shadow NeutronRouteParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
 // '#/components/schemas/ProvisioningStatusEnum'
 // "$.components.schemas.ProvisioningStatusEnum"
 type ProvisioningStatus string
@@ -1240,7 +1183,7 @@ type Subnet struct {
 	HasRouter bool `json:"has_router"`
 	// '#/components/schemas/SubnetSerializer/properties/host_routes/anyOf/0'
 	// "$.components.schemas.SubnetSerializer.properties.host_routes.anyOf[0]"
-	HostRoutes []NeutronRoute `json:"host_routes,nullable"`
+	HostRoutes []SubnetHostRoute `json:"host_routes,nullable"`
 	// '#/components/schemas/SubnetSerializer/properties/metadata'
 	// "$.components.schemas.SubnetSerializer.properties.metadata"
 	//
@@ -1284,6 +1227,31 @@ type Subnet struct {
 // Returns the unmodified JSON received from the API
 func (r Subnet) RawJSON() string { return r.JSON.raw }
 func (r *Subnet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/SubnetSerializer/properties/host_routes/anyOf/0/items'
+// "$.components.schemas.SubnetSerializer.properties.host_routes.anyOf[0].items"
+type SubnetHostRoute struct {
+	// '#/components/schemas/RouteOutSerializer/properties/destination'
+	// "$.components.schemas.RouteOutSerializer.properties.destination"
+	Destination string `json:"destination,required" format:"ipvanynetwork"`
+	// '#/components/schemas/RouteOutSerializer/properties/nexthop'
+	// "$.components.schemas.RouteOutSerializer.properties.nexthop"
+	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Destination resp.Field
+		Nexthop     resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SubnetHostRoute) RawJSON() string { return r.JSON.raw }
+func (r *SubnetHostRoute) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -20,6 +20,8 @@ func ValueOf[T Constant[T]]() T {
 
 type AnySubnet string     // Always "any_subnet"
 type External string      // Always "external"
+type Fixed string         // Always "fixed"
+type Floating string      // Always "floating"
 type Image string         // Always "image"
 type IPAddress string     // Always "ip_address"
 type NewVolume string     // Always "new-volume"
@@ -31,6 +33,8 @@ type VastShareType string // Always "vast_share_type"
 
 func (c AnySubnet) Default() AnySubnet         { return "any_subnet" }
 func (c External) Default() External           { return "external" }
+func (c Fixed) Default() Fixed                 { return "fixed" }
+func (c Floating) Default() Floating           { return "floating" }
 func (c Image) Default() Image                 { return "image" }
 func (c IPAddress) Default() IPAddress         { return "ip_address" }
 func (c NewVolume) Default() NewVolume         { return "new-volume" }
@@ -42,6 +46,8 @@ func (c VastShareType) Default() VastShareType { return "vast_share_type" }
 
 func (c AnySubnet) MarshalJSON() ([]byte, error)     { return marshalString(c) }
 func (c External) MarshalJSON() ([]byte, error)      { return marshalString(c) }
+func (c Fixed) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c Floating) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 func (c Image) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c IPAddress) MarshalJSON() ([]byte, error)     { return marshalString(c) }
 func (c NewVolume) MarshalJSON() ([]byte, error)     { return marshalString(c) }

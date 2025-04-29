@@ -36,7 +36,7 @@ func TestNetworkSubnetNewWithOptionalParams(t *testing.T) {
 		DNSNameservers:         []string{"8.8.4.4", "1.1.1.1"},
 		EnableDhcp:             gcore.Bool(true),
 		GatewayIP:              gcore.String("192.168.10.1"),
-		HostRoutes: []cloud.NeutronRouteParam{{
+		HostRoutes: []cloud.NetworkSubnetNewParamsHostRoute{{
 			Destination: "10.0.3.0/24",
 			Nexthop:     "10.0.0.13",
 		}},
@@ -76,7 +76,7 @@ func TestNetworkSubnetUpdateWithOptionalParams(t *testing.T) {
 			DNSNameservers: []string{"8.8.4.4", "1.1.1.1"},
 			EnableDhcp:     gcore.Bool(true),
 			GatewayIP:      gcore.String("192.168.10.1"),
-			HostRoutes: []cloud.NeutronRouteParam{{
+			HostRoutes: []cloud.NetworkSubnetUpdateParamsHostRoute{{
 				Destination: "10.0.3.0/24",
 				Nexthop:     "10.0.0.13",
 			}},
