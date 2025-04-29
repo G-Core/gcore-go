@@ -25,6 +25,7 @@ type CloudService struct {
 	Secrets             SecretService
 	SSHKeys             SSHKeyService
 	IPRanges            IPRangeService
+	LoadBalancers       LoadBalancerService
 	ReservedFixedIPs    ReservedFixedIPService
 	Networks            NetworkService
 	Volumes             VolumeService
@@ -50,6 +51,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.Secrets = NewSecretService(opts...)
 	r.SSHKeys = NewSSHKeyService(opts...)
 	r.IPRanges = NewIPRangeService(opts...)
+	r.LoadBalancers = NewLoadBalancerService(opts...)
 	r.ReservedFixedIPs = NewReservedFixedIPService(opts...)
 	r.Networks = NewNetworkService(opts...)
 	r.Volumes = NewVolumeService(opts...)
@@ -298,6 +300,55 @@ type DDOSProfileTemplateField struct {
 // Returns the unmodified JSON received from the API
 func (r DDOSProfileTemplateField) RawJSON() string { return r.JSON.raw }
 func (r *DDOSProfileTemplateField) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/FlavorHardwareDescriptionSerializer'
+// "$.components.schemas.FlavorHardwareDescriptionSerializer"
+type FlavorHardwareDescription struct {
+	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/cpu/anyOf/0'
+	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.cpu.anyOf[0]"
+	CPU string `json:"cpu,nullable"`
+	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/disk/anyOf/0'
+	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.disk.anyOf[0]"
+	Disk string `json:"disk,nullable"`
+	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/ephemeral/anyOf/0'
+	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.ephemeral.anyOf[0]"
+	Ephemeral string `json:"ephemeral,nullable"`
+	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/gpu/anyOf/0'
+	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.gpu.anyOf[0]"
+	GPU string `json:"gpu,nullable"`
+	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/ipu/anyOf/0'
+	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.ipu.anyOf[0]"
+	Ipu string `json:"ipu,nullable"`
+	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/network/anyOf/0'
+	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.network.anyOf[0]"
+	Network string `json:"network,nullable"`
+	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/poplar_count/anyOf/0'
+	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.poplar_count.anyOf[0]"
+	PoplarCount int64 `json:"poplar_count,nullable"`
+	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/ram/anyOf/0'
+	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.ram.anyOf[0]"
+	Ram string `json:"ram,nullable"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		CPU         resp.Field
+		Disk        resp.Field
+		Ephemeral   resp.Field
+		GPU         resp.Field
+		Ipu         resp.Field
+		Network     resp.Field
+		PoplarCount resp.Field
+		Ram         resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
+func (r *FlavorHardwareDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -644,6 +695,15 @@ func (r ImageList) RawJSON() string { return r.JSON.raw }
 func (r *ImageList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// '#/components/schemas/InstanceMetricsTimeUnitEnum'
+// "$.components.schemas.InstanceMetricsTimeUnitEnum"
+type InstanceMetricsTimeUnit string
+
+const (
+	InstanceMetricsTimeUnitDay  InstanceMetricsTimeUnit = "day"
+	InstanceMetricsTimeUnitHour InstanceMetricsTimeUnit = "hour"
+)
 
 // '#/components/schemas/InterfaceIPFamily'
 // "$.components.schemas.InterfaceIPFamily"
