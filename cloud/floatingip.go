@@ -18,6 +18,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
 	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/shared/constant"
 )
 
 // FloatingIPService contains methods and other services that help with interacting
@@ -419,9 +420,10 @@ func (r *FloatingIPDetailedInstance) UnmarshalJSON(data []byte) error {
 }
 
 // FloatingIPDetailedInstanceAddressUnion contains all possible properties and
-// values from [FloatingIPDetailedInstanceAddressSimpleAddressSerializer],
-// [FloatingIPDetailedInstanceAddressAddressInterfaceSerializer],
-// [FloatingIPDetailedInstanceAddressAddressDetailedSerializer].
+// values from
+// [FloatingIPDetailedInstanceAddressInstanceFloatingAddressSerializer],
+// [FloatingIPDetailedInstanceAddressInstanceFixedAddressShortSerializer],
+// [FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type FloatingIPDetailedInstanceAddressUnion struct {
@@ -429,10 +431,10 @@ type FloatingIPDetailedInstanceAddressUnion struct {
 	Type          string `json:"type"`
 	InterfaceName string `json:"interface_name"`
 	// This field is from variant
-	// [FloatingIPDetailedInstanceAddressAddressDetailedSerializer].
+	// [FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer].
 	SubnetID string `json:"subnet_id"`
 	// This field is from variant
-	// [FloatingIPDetailedInstanceAddressAddressDetailedSerializer].
+	// [FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
 		Addr          resp.Field
@@ -444,17 +446,17 @@ type FloatingIPDetailedInstanceAddressUnion struct {
 	} `json:"-"`
 }
 
-func (u FloatingIPDetailedInstanceAddressUnion) AsSimpleAddressSerializer() (v FloatingIPDetailedInstanceAddressSimpleAddressSerializer) {
+func (u FloatingIPDetailedInstanceAddressUnion) AsFloatingIPAddress() (v FloatingIPDetailedInstanceAddressInstanceFloatingAddressSerializer) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u FloatingIPDetailedInstanceAddressUnion) AsAddressInterfaceSerializer() (v FloatingIPDetailedInstanceAddressAddressInterfaceSerializer) {
+func (u FloatingIPDetailedInstanceAddressUnion) AsFixedIPAddressShort() (v FloatingIPDetailedInstanceAddressInstanceFixedAddressShortSerializer) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u FloatingIPDetailedInstanceAddressUnion) AsAddressDetailedSerializer() (v FloatingIPDetailedInstanceAddressAddressDetailedSerializer) {
+func (u FloatingIPDetailedInstanceAddressUnion) AsFixedIPAddress() (v FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -468,13 +470,13 @@ func (r *FloatingIPDetailedInstanceAddressUnion) UnmarshalJSON(data []byte) erro
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/0'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[0]"
-type FloatingIPDetailedInstanceAddressSimpleAddressSerializer struct {
-	// '#/components/schemas/SimpleAddressSerializer/properties/addr'
-	// "$.components.schemas.SimpleAddressSerializer.properties.addr"
+type FloatingIPDetailedInstanceAddressInstanceFloatingAddressSerializer struct {
+	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/addr'
+	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.addr"
 	Addr string `json:"addr,required"`
-	// '#/components/schemas/SimpleAddressSerializer/properties/type'
-	// "$.components.schemas.SimpleAddressSerializer.properties.type"
-	Type string `json:"type,required"`
+	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/type'
+	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.type"
+	Type constant.Floating `json:"type,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -486,23 +488,25 @@ type FloatingIPDetailedInstanceAddressSimpleAddressSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPDetailedInstanceAddressSimpleAddressSerializer) RawJSON() string { return r.JSON.raw }
-func (r *FloatingIPDetailedInstanceAddressSimpleAddressSerializer) UnmarshalJSON(data []byte) error {
+func (r FloatingIPDetailedInstanceAddressInstanceFloatingAddressSerializer) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *FloatingIPDetailedInstanceAddressInstanceFloatingAddressSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/1'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
-type FloatingIPDetailedInstanceAddressAddressInterfaceSerializer struct {
-	// '#/components/schemas/AddressInterfaceSerializer/properties/addr'
-	// "$.components.schemas.AddressInterfaceSerializer.properties.addr"
+type FloatingIPDetailedInstanceAddressInstanceFixedAddressShortSerializer struct {
+	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/addr'
+	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.addr"
 	Addr string `json:"addr,required"`
-	// '#/components/schemas/AddressInterfaceSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.AddressInterfaceSerializer.properties.interface_name.anyOf[0]"
+	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/interface_name/anyOf/0'
+	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.interface_name.anyOf[0]"
 	InterfaceName string `json:"interface_name,required"`
-	// '#/components/schemas/AddressInterfaceSerializer/properties/type'
-	// "$.components.schemas.AddressInterfaceSerializer.properties.type"
-	Type string `json:"type,required"`
+	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/type'
+	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.type"
+	Type constant.Fixed `json:"type,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -515,31 +519,31 @@ type FloatingIPDetailedInstanceAddressAddressInterfaceSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPDetailedInstanceAddressAddressInterfaceSerializer) RawJSON() string {
+func (r FloatingIPDetailedInstanceAddressInstanceFixedAddressShortSerializer) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *FloatingIPDetailedInstanceAddressAddressInterfaceSerializer) UnmarshalJSON(data []byte) error {
+func (r *FloatingIPDetailedInstanceAddressInstanceFixedAddressShortSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/2'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[2]"
-type FloatingIPDetailedInstanceAddressAddressDetailedSerializer struct {
-	// '#/components/schemas/AddressDetailedSerializer/properties/addr'
-	// "$.components.schemas.AddressDetailedSerializer.properties.addr"
+type FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer struct {
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/addr'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.addr"
 	Addr string `json:"addr,required"`
-	// '#/components/schemas/AddressDetailedSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.AddressDetailedSerializer.properties.interface_name.anyOf[0]"
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/interface_name/anyOf/0'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.interface_name.anyOf[0]"
 	InterfaceName string `json:"interface_name,required"`
-	// '#/components/schemas/AddressDetailedSerializer/properties/subnet_id'
-	// "$.components.schemas.AddressDetailedSerializer.properties.subnet_id"
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_id'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_id"
 	SubnetID string `json:"subnet_id,required"`
-	// '#/components/schemas/AddressDetailedSerializer/properties/subnet_name'
-	// "$.components.schemas.AddressDetailedSerializer.properties.subnet_name"
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_name'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_name"
 	SubnetName string `json:"subnet_name,required"`
-	// '#/components/schemas/AddressDetailedSerializer/properties/type'
-	// "$.components.schemas.AddressDetailedSerializer.properties.type"
-	Type string `json:"type,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/type'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.type"
+	Type constant.Fixed `json:"type,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -554,10 +558,10 @@ type FloatingIPDetailedInstanceAddressAddressDetailedSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPDetailedInstanceAddressAddressDetailedSerializer) RawJSON() string {
+func (r FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *FloatingIPDetailedInstanceAddressAddressDetailedSerializer) UnmarshalJSON(data []byte) error {
+func (r *FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -4,7 +4,6 @@ Params Types:
 
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#InterfaceIPFamily">InterfaceIPFamily</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#int64">int64</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#NeutronRouteParam">NeutronRouteParam</a>
 
 Response Types:
 
@@ -26,7 +25,6 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#LoadBalancerOperatingStatus">LoadBalancerOperatingStatus</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#LoadBalancerStatistics">LoadBalancerStatistics</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Network">Network</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#NeutronRoute">NeutronRoute</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#ProvisioningStatus">ProvisioningStatus</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Subnet">Subnet</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Tag">Tag</a>
@@ -88,12 +86,13 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#QuotaRequestListResponse">QuotaRequestListResponse</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#QuotaRequestGetResponse">QuotaRequestGetResponse</a>
 
 Methods:
 
 - <code title="post /cloud/v2/limits_request">client.Cloud.Quotas.Requests.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#QuotaRequestService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#QuotaRequestNewParams">QuotaRequestNewParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
-- <code title="get /cloud/v2/limits_request">client.Cloud.Quotas.Requests.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#QuotaRequestService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#QuotaRequestListParams">QuotaRequestListParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="get /cloud/v2/limits_request">client.Cloud.Quotas.Requests.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#QuotaRequestService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#QuotaRequestListParams">QuotaRequestListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#QuotaRequestListResponse">QuotaRequestListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /cloud/v2/limits_request/{request_id}">client.Cloud.Quotas.Requests.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#QuotaRequestService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, requestID <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 - <code title="get /cloud/v2/limits_request/{request_id}">client.Cloud.Quotas.Requests.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#QuotaRequestService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, requestID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#QuotaRequestGetResponse">QuotaRequestGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 

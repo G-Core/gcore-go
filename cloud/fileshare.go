@@ -261,11 +261,11 @@ type FileShare struct {
 	//
 	// Any of "available", "awaiting_transfer", "backup_creating", "backup_restoring",
 	// "backup_restoring_error", "creating", "creating_from_snapshot", "deleted",
-	// "deleting", "error", "error_deleting", "extending", "extending_error",
-	// "inactive", "manage_error", "manage_starting", "migrating", "migrating_to",
-	// "replication_change", "reverting", "reverting_error", "shrinking",
-	// "shrinking_error", "shrinking_possible_data_loss_error", "unmanage_error",
-	// "unmanage_starting", "unmanaged".
+	// "deleting", "ensuring", "error", "error_deleting", "extending",
+	// "extending_error", "inactive", "manage_error", "manage_starting", "migrating",
+	// "migrating_to", "replication_change", "reverting", "reverting_error",
+	// "shrinking", "shrinking_error", "shrinking_possible_data_loss_error",
+	// "unmanage_error", "unmanage_starting", "unmanaged".
 	Status FileShareStatus `json:"status,required"`
 	// '#/components/schemas/FileShareSerializer/properties/subnet_id'
 	// "$.components.schemas.FileShareSerializer.properties.subnet_id"
@@ -333,6 +333,7 @@ const (
 	FileShareStatusCreatingFromSnapshot           FileShareStatus = "creating_from_snapshot"
 	FileShareStatusDeleted                        FileShareStatus = "deleted"
 	FileShareStatusDeleting                       FileShareStatus = "deleting"
+	FileShareStatusEnsuring                       FileShareStatus = "ensuring"
 	FileShareStatusError                          FileShareStatus = "error"
 	FileShareStatusErrorDeleting                  FileShareStatus = "error_deleting"
 	FileShareStatusExtending                      FileShareStatus = "extending"
