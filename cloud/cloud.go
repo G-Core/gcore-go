@@ -18,22 +18,23 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewCloudService] method instead.
 type CloudService struct {
-	Options          []option.RequestOption
-	Projects         ProjectService
-	Tasks            TaskService
-	Regions          RegionService
-	Quotas           QuotaService
-	Secrets          SecretService
-	SSHKeys          SSHKeyService
-	IPRanges         IPRangeService
-	ReservedFixedIPs ReservedFixedIPService
-	Networks         NetworkService
-	Volumes          VolumeService
-	FloatingIPs      FloatingIPService
-	SecurityGroups   SecurityGroupService
-	Baremetal        BaremetalService
-	Instances        InstanceService
-	FileShares       FileShareService
+	Options             []option.RequestOption
+	Projects            ProjectService
+	Tasks               TaskService
+	Regions             RegionService
+	Quotas              QuotaService
+	Secrets             SecretService
+	SSHKeys             SSHKeyService
+	IPRanges            IPRangeService
+	ReservedFixedIPs    ReservedFixedIPService
+	Networks            NetworkService
+	Volumes             VolumeService
+	FloatingIPs         FloatingIPService
+	SecurityGroups      SecurityGroupService
+	Baremetal           BaremetalService
+	Instances           InstanceService
+	FileShares          FileShareService
+	BillingReservations BillingReservationService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -57,6 +58,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.Baremetal = NewBaremetalService(opts...)
 	r.Instances = NewInstanceService(opts...)
 	r.FileShares = NewFileShareService(opts...)
+	r.BillingReservations = NewBillingReservationService(opts...)
 	return
 }
 
