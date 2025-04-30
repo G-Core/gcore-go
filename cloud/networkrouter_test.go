@@ -149,7 +149,7 @@ func TestNetworkRouterDelete(t *testing.T) {
 	}
 }
 
-func TestNetworkRouterAttachSubnet(t *testing.T) {
+func TestNetworkRouterAttachSubnetWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -163,13 +163,12 @@ func TestNetworkRouterAttachSubnet(t *testing.T) {
 	)
 	_, err := client.Cloud.Networks.Routers.AttachSubnet(
 		context.TODO(),
-		"router_id",
+		"ccd5b925-e35c-4611-a511-67ab503104c8",
 		cloud.NetworkRouterAttachSubnetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			SubnetID: cloud.SubnetIDParam{
-				SubnetID: "subnet_id",
-			},
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			SubnetID:  "subnet_id",
+			IPAddress: gcore.String("ip_address"),
 		},
 	)
 	if err != nil {

@@ -175,11 +175,6 @@ type BaremetalServer struct {
 	// '#/components/schemas/BareMetalServerSerializer/properties/region_id'
 	// "$.components.schemas.BareMetalServerSerializer.properties.region_id"
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/security_groups'
-	// "$.components.schemas.BareMetalServerSerializer.properties.security_groups"
-	//
-	// Deprecated: deprecated
-	SecurityGroups []BaremetalServerSecurityGroup `json:"security_groups,required"`
 	// '#/components/schemas/BareMetalServerSerializer/properties/status'
 	// "$.components.schemas.BareMetalServerSerializer.properties.status"
 	//
@@ -203,21 +198,6 @@ type BaremetalServer struct {
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
 	VmState BaremetalServerVmState `json:"vm_state,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/volumes'
-	// "$.components.schemas.BareMetalServerSerializer.properties.volumes"
-	//
-	// Deprecated: deprecated
-	Volumes []BaremetalServerVolume `json:"volumes,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/metadata'
-	// "$.components.schemas.BareMetalServerSerializer.properties.metadata"
-	//
-	// Deprecated: deprecated
-	Metadata map[string]string `json:"metadata"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/metadata_detailed'
-	// "$.components.schemas.BareMetalServerSerializer.properties.metadata_detailed"
-	//
-	// Deprecated: deprecated
-	MetadataDetailed []Tag `json:"metadata_detailed"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -236,15 +216,11 @@ type BaremetalServer struct {
 		ProjectID           resp.Field
 		Region              resp.Field
 		RegionID            resp.Field
-		SecurityGroups      resp.Field
 		Status              resp.Field
 		Tags                resp.Field
 		TaskID              resp.Field
 		TaskState           resp.Field
 		VmState             resp.Field
-		Volumes             resp.Field
-		Metadata            resp.Field
-		MetadataDetailed    resp.Field
 		ExtraFields         map[string]resp.Field
 		raw                 string
 	} `json:"-"`
@@ -548,27 +524,6 @@ func (r *BaremetalServerInstanceIsolation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BareMetalServerSerializer/properties/security_groups/items'
-// "$.components.schemas.BareMetalServerSerializer.properties.security_groups.items"
-type BaremetalServerSecurityGroup struct {
-	// '#/components/schemas/NameSerializerPydantic/properties/name'
-	// "$.components.schemas.NameSerializerPydantic.properties.name"
-	Name string `json:"name,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Name        resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BaremetalServerSecurityGroup) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalServerSecurityGroup) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // '#/components/schemas/BareMetalServerSerializer/properties/status'
 // "$.components.schemas.BareMetalServerSerializer.properties.status"
 type BaremetalServerStatus string
@@ -615,31 +570,6 @@ const (
 	BaremetalServerVmStateSuspended        BaremetalServerVmState = "suspended"
 )
 
-// '#/components/schemas/BareMetalServerSerializer/properties/volumes/items'
-// "$.components.schemas.BareMetalServerSerializer.properties.volumes.items"
-type BaremetalServerVolume struct {
-	// '#/components/schemas/InstanceVolumeSerializer/properties/id'
-	// "$.components.schemas.InstanceVolumeSerializer.properties.id"
-	ID string `json:"id,required"`
-	// '#/components/schemas/InstanceVolumeSerializer/properties/delete_on_termination'
-	// "$.components.schemas.InstanceVolumeSerializer.properties.delete_on_termination"
-	DeleteOnTermination bool `json:"delete_on_termination,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		ID                  resp.Field
-		DeleteOnTermination resp.Field
-		ExtraFields         map[string]resp.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BaremetalServerVolume) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalServerVolume) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type BaremetalServerNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].post.parameters[0].schema"
@@ -677,15 +607,15 @@ type BaremetalServerNewParams struct {
 	// '#/components/schemas/CreateBareMetalServerSerializer/properties/ddos_profile'
 	// "$.components.schemas.CreateBareMetalServerSerializer.properties.ddos_profile"
 	DDOSProfile BaremetalServerNewParamsDDOSProfile `json:"ddos_profile,omitzero"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/metadata'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.metadata"
-	Metadata map[string]string `json:"metadata,omitzero"`
 	// '#/components/schemas/CreateBareMetalServerSerializer/properties/name_templates'
 	// "$.components.schemas.CreateBareMetalServerSerializer.properties.name_templates"
 	NameTemplates []string `json:"name_templates,omitzero"`
 	// '#/components/schemas/CreateBareMetalServerSerializer/properties/names'
 	// "$.components.schemas.CreateBareMetalServerSerializer.properties.names"
 	Names []string `json:"names,omitzero"`
+	// '#/components/schemas/CreateBareMetalServerSerializer/properties/tags'
+	// "$.components.schemas.CreateBareMetalServerSerializer.properties.tags"
+	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -1502,22 +1432,22 @@ type BaremetalServerListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/9'
 	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[9]"
-	MetadataKv param.Opt[string] `query:"metadata_kv,omitzero" json:"-"`
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/10'
+	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[10]"
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/11'
 	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[11]"
-	Name param.Opt[string] `query:"name,omitzero" json:"-"`
+	OnlyIsolated param.Opt[bool] `query:"only_isolated,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/12'
 	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[12]"
-	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/13'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[13]"
-	OnlyIsolated param.Opt[bool] `query:"only_isolated,omitzero" json:"-"`
+	OnlyWithFixedExternalIP param.Opt[bool] `query:"only_with_fixed_external_ip,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/14'
 	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[14]"
-	OnlyWithFixedExternalIP param.Opt[bool] `query:"only_with_fixed_external_ip,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/16'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[16]"
 	ProfileName param.Opt[string] `query:"profile_name,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/17'
+	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[17]"
+	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/20'
 	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[20]"
 	Uuid param.Opt[string] `query:"uuid,omitzero" json:"-"`
@@ -1527,26 +1457,26 @@ type BaremetalServerListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/22'
 	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[22]"
 	WithInterfacesName param.Opt[bool] `query:"with_interfaces_name,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/10'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[10]"
-	MetadataV []string `query:"metadata_v,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/15'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[15]"
+	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/13'
+	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[13]"
 	//
 	// Any of "created.asc", "created.desc", "name.asc", "name.desc", "status.asc",
 	// "status.desc".
 	OrderBy BaremetalServerListParamsOrderBy `query:"order_by,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/17'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[17]"
+	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/15'
+	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[15]"
 	//
 	// Any of "Active", "Queued", "Error".
 	ProtectionStatus BaremetalServerListParamsProtectionStatus `query:"protection_status,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/18'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[18]"
+	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/16'
+	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[16]"
 	//
 	// Any of "ACTIVE", "BUILD", "ERROR", "HARD_REBOOT", "REBOOT", "REBUILD", "RESCUE",
 	// "SHUTOFF", "SUSPENDED".
 	Status BaremetalServerListParamsStatus `query:"status,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/18'
+	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[18]"
+	TagValue []string `query:"tag_value,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/19'
 	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[19]"
 	//
@@ -1568,8 +1498,8 @@ func (r BaremetalServerListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/15'
-// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[15]"
+// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/13'
+// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[13]"
 type BaremetalServerListParamsOrderBy string
 
 const (
@@ -1581,8 +1511,8 @@ const (
 	BaremetalServerListParamsOrderByStatusDesc  BaremetalServerListParamsOrderBy = "status.desc"
 )
 
-// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/17'
-// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[17]"
+// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/15'
+// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[15]"
 type BaremetalServerListParamsProtectionStatus string
 
 const (
@@ -1591,8 +1521,8 @@ const (
 	BaremetalServerListParamsProtectionStatusError  BaremetalServerListParamsProtectionStatus = "Error"
 )
 
-// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/18'
-// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[18]"
+// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/16'
+// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[16]"
 type BaremetalServerListParamsStatus string
 
 const (

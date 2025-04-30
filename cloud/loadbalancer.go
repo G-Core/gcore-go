@@ -1294,11 +1294,6 @@ type LoadBalancerStatus struct {
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// '#/components/schemas/LoadBalancerStatusSerializer/properties/metadata'
-	// "$.components.schemas.LoadBalancerStatusSerializer.properties.metadata"
-	//
-	// Deprecated: deprecated
-	Metadata []Tag `json:"metadata"`
 	// '#/components/schemas/LoadBalancerStatusSerializer/properties/tags'
 	// "$.components.schemas.LoadBalancerStatusSerializer.properties.tags"
 	Tags []Tag `json:"tags"`
@@ -1310,7 +1305,6 @@ type LoadBalancerStatus struct {
 		Name               resp.Field
 		OperatingStatus    resp.Field
 		ProvisioningStatus resp.Field
-		Metadata           resp.Field
 		Tags               resp.Field
 		ExtraFields        map[string]resp.Field
 		raw                string
@@ -1550,17 +1544,14 @@ type LoadBalancerNewParams struct {
 	// '#/components/schemas/CreateLoadbalancerSerializer/properties/logging'
 	// "$.components.schemas.CreateLoadbalancerSerializer.properties.logging"
 	Logging LoadBalancerNewParamsLogging `json:"logging,omitzero"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/metadata'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.metadata"
-	Metadata map[string]string `json:"metadata,omitzero"`
 	// '#/components/schemas/CreateLoadbalancerSerializer/properties/preferred_connectivity'
 	// "$.components.schemas.CreateLoadbalancerSerializer.properties.preferred_connectivity"
 	//
 	// Any of "L2", "L3".
 	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity,omitzero"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/tag'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.tag"
-	Tag []string `json:"tag,omitzero"`
+	// '#/components/schemas/CreateLoadbalancerSerializer/properties/tags'
+	// "$.components.schemas.CreateLoadbalancerSerializer.properties.tags"
+	Tags map[string]string `json:"tags,omitzero"`
 	// '#/components/schemas/CreateLoadbalancerSerializer/properties/vip_ip_family'
 	// "$.components.schemas.CreateLoadbalancerSerializer.properties.vip_ip_family"
 	//
@@ -2096,25 +2087,25 @@ type LoadBalancerListParams struct {
 	LoggingEnabled param.Opt[bool] `query:"logging_enabled,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
 	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[5]"
-	MetadataK param.Opt[string] `query:"metadata_k,omitzero" json:"-"`
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
 	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[6]"
-	MetadataKv param.Opt[string] `query:"metadata_kv,omitzero" json:"-"`
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/7'
 	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[7]"
-	Name param.Opt[string] `query:"name,omitzero" json:"-"`
+	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/8'
 	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[8]"
-	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/9'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[9]"
-	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
+	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/10'
 	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[10]"
-	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
+	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/11'
 	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[11]"
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/9'
+	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[9]"
+	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
 

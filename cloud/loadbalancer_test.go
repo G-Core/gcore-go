@@ -108,17 +108,16 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 			},
 			TopicName: gcore.String("my-log-name"),
 		},
-		Metadata: map[string]string{
-			"my-tag": "my-tag-value",
-		},
 		Name:                  gcore.String("new_load_balancer"),
 		NameTemplate:          gcore.String("lb_name_template"),
 		PreferredConnectivity: cloud.LoadBalancerMemberConnectivityL2,
-		Tag:                   []string{"k8s"},
-		VipIPFamily:           cloud.InterfaceIPFamilyDual,
-		VipNetworkID:          gcore.String("ac307687-31a4-4a11-a949-6bea1b2878f5"),
-		VipPortID:             gcore.String("ff83e13a-b256-4be2-ba5d-028d3f0ab450"),
-		VipSubnetID:           gcore.String("4e7802d3-5023-44b8-b298-7726558fddf4"),
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
+		},
+		VipIPFamily:  cloud.InterfaceIPFamilyDual,
+		VipNetworkID: gcore.String("ac307687-31a4-4a11-a949-6bea1b2878f5"),
+		VipPortID:    gcore.String("ff83e13a-b256-4be2-ba5d-028d3f0ab450"),
+		VipSubnetID:  gcore.String("4e7802d3-5023-44b8-b298-7726558fddf4"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -186,12 +185,12 @@ func TestLoadBalancerListWithOptionalParams(t *testing.T) {
 		AssignedFloating: gcore.Bool(true),
 		Limit:            gcore.Int(0),
 		LoggingEnabled:   gcore.Bool(true),
-		MetadataK:        gcore.String("metadata_k"),
-		MetadataKv:       gcore.String("metadata_kv"),
 		Name:             gcore.String("name"),
 		Offset:           gcore.Int(0),
 		OrderBy:          gcore.String("order_by"),
 		ShowStats:        gcore.Bool(true),
+		TagKey:           []string{"string"},
+		TagKeyValue:      gcore.String("tag_key_value"),
 		WithDDOS:         gcore.Bool(true),
 	})
 	if err != nil {

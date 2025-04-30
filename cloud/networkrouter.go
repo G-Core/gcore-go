@@ -819,9 +819,12 @@ type NetworkRouterAttachSubnetParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D%2Fattach/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}/attach'].post.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D%2Fattach/post/requestBody/content/application%2Fjson/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}/attach'].post.requestBody.content['application/json'].schema"
-	SubnetID SubnetIDParam
+	// '#/components/schemas/AddRouterInterfaceSerializer/properties/subnet_id'
+	// "$.components.schemas.AddRouterInterfaceSerializer.properties.subnet_id"
+	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	// '#/components/schemas/AddRouterInterfaceSerializer/properties/ip_address'
+	// "$.components.schemas.AddRouterInterfaceSerializer.properties.ip_address"
+	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipvanyaddress"`
 	paramObj
 }
 
@@ -830,7 +833,8 @@ type NetworkRouterAttachSubnetParams struct {
 func (f NetworkRouterAttachSubnetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r NetworkRouterAttachSubnetParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.SubnetID)
+	type shadow NetworkRouterAttachSubnetParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 type NetworkRouterDetachSubnetParams struct {

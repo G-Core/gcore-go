@@ -189,9 +189,9 @@ type NetworkNewParams struct {
 	// '#/components/schemas/CreateNetworkSerializer/properties/create_router'
 	// "$.components.schemas.CreateNetworkSerializer.properties.create_router"
 	CreateRouter param.Opt[bool] `json:"create_router,omitzero"`
-	// '#/components/schemas/CreateNetworkSerializer/properties/metadata/anyOf/0'
-	// "$.components.schemas.CreateNetworkSerializer.properties.metadata.anyOf[0]"
-	Metadata map[string]string `json:"metadata,omitzero"`
+	// '#/components/schemas/CreateNetworkSerializer/properties/tags'
+	// "$.components.schemas.CreateNetworkSerializer.properties.tags"
+	Tags map[string]string `json:"tags,omitzero"`
 	// '#/components/schemas/CreateNetworkSerializer/properties/type'
 	// "$.components.schemas.CreateNetworkSerializer.properties.type"
 	//
@@ -252,16 +252,16 @@ type NetworkListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[3]"
-	MetadataK param.Opt[string] `query:"metadata_k,omitzero" json:"-"`
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[4]"
-	MetadataKv param.Opt[string] `query:"metadata_kv,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[5]"
-	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
 	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[6]"
-	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
+	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
+	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[5]"
+	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
 

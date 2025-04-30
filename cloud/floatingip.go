@@ -237,11 +237,6 @@ type FloatingIPDetailed struct {
 	// '#/components/schemas/FloatingIPDetailedSerializer/properties/loadbalancer/anyOf/0'
 	// "$.components.schemas.FloatingIPDetailedSerializer.properties.loadbalancer.anyOf[0]"
 	Loadbalancer LoadBalancer `json:"loadbalancer,required"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/metadata'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.metadata"
-	//
-	// Deprecated: deprecated
-	Metadata []Tag `json:"metadata,required"`
 	// '#/components/schemas/FloatingIPDetailedSerializer/properties/port_id/anyOf/0'
 	// "$.components.schemas.FloatingIPDetailedSerializer.properties.port_id.anyOf[0]"
 	PortID string `json:"port_id,required" format:"uuid4"`
@@ -288,7 +283,6 @@ type FloatingIPDetailed struct {
 		FloatingIPAddress resp.Field
 		Instance          resp.Field
 		Loadbalancer      resp.Field
-		Metadata          resp.Field
 		PortID            resp.Field
 		ProjectID         resp.Field
 		Region            resp.Field
@@ -337,16 +331,6 @@ type FloatingIPDetailedInstance struct {
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/keypair_name/anyOf/0'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.keypair_name.anyOf[0]"
 	KeypairName string `json:"keypair_name,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/metadata'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.metadata"
-	//
-	// Deprecated: deprecated
-	Metadata map[string]string `json:"metadata,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/metadata_detailed'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.metadata_detailed"
-	//
-	// Deprecated: deprecated
-	MetadataDetailed []Tag `json:"metadata_detailed,required"`
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/project_id'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.project_id"
 	ProjectID int64 `json:"project_id,required"`
@@ -396,8 +380,6 @@ type FloatingIPDetailedInstance struct {
 		InstanceID          resp.Field
 		InstanceName        resp.Field
 		KeypairName         resp.Field
-		Metadata            resp.Field
-		MetadataDetailed    resp.Field
 		ProjectID           resp.Field
 		Region              resp.Field
 		RegionID            resp.Field
@@ -657,9 +639,9 @@ type FloatingIPNewParams struct {
 	// '#/components/schemas/CreateFloatingIPSerializer/properties/port_id/anyOf/0'
 	// "$.components.schemas.CreateFloatingIPSerializer.properties.port_id.anyOf[0]"
 	PortID param.Opt[string] `json:"port_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateFloatingIPSerializer/properties/metadata'
-	// "$.components.schemas.CreateFloatingIPSerializer.properties.metadata"
-	Metadata map[string]string `json:"metadata,omitzero"`
+	// '#/components/schemas/CreateFloatingIPSerializer/properties/tags'
+	// "$.components.schemas.CreateFloatingIPSerializer.properties.tags"
+	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -682,15 +664,15 @@ type FloatingIPListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[2]"
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[4]"
-	MetadataKv param.Opt[string] `query:"metadata_kv,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[5]"
-	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
 	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[3]"
-	MetadataK []string `query:"metadata_k,omitzero" json:"-"`
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
+	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[5]"
+	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
+	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[4]"
+	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
 

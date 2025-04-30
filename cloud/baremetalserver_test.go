@@ -52,16 +52,16 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 			}},
 			ProfileTemplateName: gcore.String("profile_template_name"),
 		},
-		ImageID:     gcore.String("image_id"),
-		KeypairName: gcore.String("my-keypair"),
-		Metadata: map[string]string{
-			"my-tag": "my-tag-value",
-		},
+		ImageID:       gcore.String("image_id"),
+		KeypairName:   gcore.String("my-keypair"),
 		NameTemplates: []string{"my-bare-metal-{ip_octets}"},
 		Names:         []string{"my-bare-metal"},
 		Password:      gcore.String("password"),
-		UserData:      gcore.String("user_data"),
-		Username:      gcore.String("username"),
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
+		},
+		UserData: gcore.String("user_data"),
+		Username: gcore.String("username"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -94,8 +94,6 @@ func TestBaremetalServerListWithOptionalParams(t *testing.T) {
 		IncludeK8s:              gcore.Bool(true),
 		IP:                      gcore.String("192.168.0.1"),
 		Limit:                   gcore.Int(1000),
-		MetadataKv:              gcore.String("metadata_kv"),
-		MetadataV:               []string{"value1", "value2"},
 		Name:                    gcore.String("name"),
 		Offset:                  gcore.Int(0),
 		OnlyIsolated:            gcore.Bool(true),
@@ -104,6 +102,8 @@ func TestBaremetalServerListWithOptionalParams(t *testing.T) {
 		ProfileName:             gcore.String("profile_name"),
 		ProtectionStatus:        cloud.BaremetalServerListParamsProtectionStatusActive,
 		Status:                  cloud.BaremetalServerListParamsStatusActive,
+		TagKeyValue:             gcore.String("tag_key_value"),
+		TagValue:                []string{"value1", "value2"},
 		TypeDDOSProfile:         cloud.BaremetalServerListParamsTypeDDOSProfileAdvanced,
 		Uuid:                    gcore.String("b5b4d65d-945f-4b98-ab6f-332319c724ef"),
 		WithDDOS:                gcore.Bool(true),

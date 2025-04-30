@@ -36,8 +36,8 @@ func TestVolumeNewWithOptionalParams(t *testing.T) {
 			AttachmentTag:        gcore.String("device-tag"),
 			InstanceIDToAttachTo: gcore.String("88f3e0bd-ca86-4cf7-be8b-dd2988e23c2d"),
 			LifecyclePolicyIDs:   []int64{1, 2},
-			Metadata: map[string]string{
-				"foo": "my-tag-value",
+			Tags: map[string]string{
+				"my-tag": "my-tag-value",
 			},
 			TypeName: "standard",
 		},
@@ -102,10 +102,10 @@ func TestVolumeListWithOptionalParams(t *testing.T) {
 		IDPart:         gcore.String("726ecfcc-7fd0-4e30-a86e-7892524aa483"),
 		InstanceID:     gcore.String("169942e0-9b53-42df-95ef-1a8b6525c2bd"),
 		Limit:          gcore.Int(1000),
-		MetadataK:      []string{"key1", "key2"},
-		MetadataKv:     gcore.String("metadata_kv"),
 		NamePart:       gcore.String("test"),
 		Offset:         gcore.Int(0),
+		TagKey:         []string{"key1", "key2"},
+		TagKeyValue:    gcore.String("tag_key_value"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
