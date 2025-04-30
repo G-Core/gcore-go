@@ -31,6 +31,7 @@ type CloudService struct {
 	Volumes             VolumeService
 	FloatingIPs         FloatingIPService
 	SecurityGroups      SecurityGroupService
+	Inference           InferenceService
 	PlacementGroups     PlacementGroupService
 	Baremetal           BaremetalService
 	Instances           InstanceService
@@ -57,6 +58,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.Volumes = NewVolumeService(opts...)
 	r.FloatingIPs = NewFloatingIPService(opts...)
 	r.SecurityGroups = NewSecurityGroupService(opts...)
+	r.Inference = NewInferenceService(opts...)
 	r.PlacementGroups = NewPlacementGroupService(opts...)
 	r.Baremetal = NewBaremetalService(opts...)
 	r.Instances = NewInstanceService(opts...)
@@ -775,7 +777,7 @@ type LoadBalancer struct {
 	Listeners []LoadBalancerListener `json:"listeners"`
 	// '#/components/schemas/LoadbalancerSerializer/properties/logging/anyOf/0'
 	// "$.components.schemas.LoadbalancerSerializer.properties.logging.anyOf[0]"
-	Logging LoadBalancerLogging `json:"logging,nullable"`
+	Logging Logging `json:"logging,nullable"`
 	// '#/components/schemas/LoadbalancerSerializer/properties/metadata'
 	// "$.components.schemas.LoadbalancerSerializer.properties.metadata"
 	Metadata []Tag `json:"metadata"`
@@ -921,60 +923,6 @@ type LoadBalancerListener struct {
 // Returns the unmodified JSON received from the API
 func (r LoadBalancerListener) RawJSON() string { return r.JSON.raw }
 func (r *LoadBalancerListener) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/LoadbalancerSerializer/properties/logging/anyOf/0'
-// "$.components.schemas.LoadbalancerSerializer.properties.logging.anyOf[0]"
-type LoadBalancerLogging struct {
-	// '#/components/schemas/LoggingOutSerializer/properties/destination_region_id/anyOf/0'
-	// "$.components.schemas.LoggingOutSerializer.properties.destination_region_id.anyOf[0]"
-	DestinationRegionID int64 `json:"destination_region_id,required"`
-	// '#/components/schemas/LoggingOutSerializer/properties/enabled'
-	// "$.components.schemas.LoggingOutSerializer.properties.enabled"
-	Enabled bool `json:"enabled,required"`
-	// '#/components/schemas/LoggingOutSerializer/properties/topic_name/anyOf/0'
-	// "$.components.schemas.LoggingOutSerializer.properties.topic_name.anyOf[0]"
-	TopicName string `json:"topic_name,required"`
-	// '#/components/schemas/LoggingOutSerializer/properties/retention_policy/anyOf/0'
-	// "$.components.schemas.LoggingOutSerializer.properties.retention_policy.anyOf[0]"
-	RetentionPolicy LoadBalancerLoggingRetentionPolicy `json:"retention_policy,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		DestinationRegionID resp.Field
-		Enabled             resp.Field
-		TopicName           resp.Field
-		RetentionPolicy     resp.Field
-		ExtraFields         map[string]resp.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerLogging) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerLogging) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/LoggingOutSerializer/properties/retention_policy/anyOf/0'
-// "$.components.schemas.LoggingOutSerializer.properties.retention_policy.anyOf[0]"
-type LoadBalancerLoggingRetentionPolicy struct {
-	// '#/components/schemas/LaasIndexRetentionPolicyPydanticSerializer/properties/period/anyOf/0'
-	// "$.components.schemas.LaasIndexRetentionPolicyPydanticSerializer.properties.period.anyOf[0]"
-	Period int64 `json:"period,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Period      resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerLoggingRetentionPolicy) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerLoggingRetentionPolicy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
