@@ -52,15 +52,21 @@ func NewGPUBaremetalClusterService(opts ...option.RequestOption) (r GPUBaremetal
 // Create a new GPU cluster.
 func (r *GPUBaremetalClusterService) New(ctx context.Context, params GPUBaremetalClusterNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	if params.ProjectID == "" {
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if params.RegionID == "" {
+	if !params.RegionID.IsPresent() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%s/%s", params.ProjectID, params.RegionID)
+	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
@@ -236,11 +242,17 @@ func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID stri
 // Resize an existing AI GPU cluster.
 func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID string, params GPUBaremetalClusterResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	if params.ProjectID == "" {
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if params.RegionID == "" {
+	if !params.RegionID.IsPresent() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -248,7 +260,7 @@ func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID strin
 		err = errors.New("missing required cluster_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%s/%s/%s/resize", params.ProjectID, params.RegionID, clusterID)
+	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%v/%v/%s/resize", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
@@ -809,10 +821,10 @@ func (r *GPUBaremetalFlavorList) UnmarshalJSON(data []byte) error {
 type GPUBaremetalClusterNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}'].post.parameters[0].schema"
-	ProjectID string `path:"project_id,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID string `path:"region_id,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/flavor'
 	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.flavor"
 	Flavor string `json:"flavor,required"`
@@ -1813,10 +1825,10 @@ func (r GPUBaremetalClusterRebuildParams) MarshalJSON() (data []byte, err error)
 type GPUBaremetalClusterResizeParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fresize/post/parameters/0/schema'
 	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/resize'].post.parameters[0].schema"
-	ProjectID string `path:"project_id,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fresize/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/resize'].post.parameters[1].schema"
-	RegionID string `path:"region_id,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/components/schemas/ResizeAIClusterGPUSerializerV1/properties/instances_count'
 	// "$.components.schemas.ResizeAIClusterGPUSerializerV1.properties.instances_count"
 	InstancesCount int64 `json:"instances_count,required"`

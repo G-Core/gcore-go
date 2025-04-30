@@ -32,8 +32,8 @@ func TestGPUBaremetalClusterServerDeleteWithOptionalParams(t *testing.T) {
 		"cluster_id",
 		"instance_id",
 		cloud.GPUBaremetalClusterServerDeleteParams{
-			ProjectID:       "project_id",
-			RegionID:        "region_id",
+			ProjectID:       gcore.Int(0),
+			RegionID:        gcore.Int(0),
 			DeleteFloatings: gcore.Bool(true),
 		},
 	)
