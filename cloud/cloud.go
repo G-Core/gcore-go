@@ -31,6 +31,7 @@ type CloudService struct {
 	Volumes             VolumeService
 	FloatingIPs         FloatingIPService
 	SecurityGroups      SecurityGroupService
+	Users               UserService
 	Inference           InferenceService
 	PlacementGroups     PlacementGroupService
 	Baremetal           BaremetalService
@@ -58,6 +59,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.Volumes = NewVolumeService(opts...)
 	r.FloatingIPs = NewFloatingIPService(opts...)
 	r.SecurityGroups = NewSecurityGroupService(opts...)
+	r.Users = NewUserService(opts...)
 	r.Inference = NewInferenceService(opts...)
 	r.PlacementGroups = NewPlacementGroupService(opts...)
 	r.Baremetal = NewBaremetalService(opts...)
