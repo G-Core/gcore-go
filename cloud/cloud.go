@@ -3,11 +3,13 @@
 package cloud
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/stainless-sdks/gcore-go/internal/apijson"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/shared/constant"
 )
 
 // CloudService contains methods and other services that help with interacting with
@@ -17,28 +19,29 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewCloudService] method instead.
 type CloudService struct {
-	Options             []option.RequestOption
-	Projects            ProjectService
-	Tasks               TaskService
-	Regions             RegionService
-	Quotas              QuotaService
-	Secrets             SecretService
-	SSHKeys             SSHKeyService
-	IPRanges            IPRangeService
-	LoadBalancers       LoadBalancerService
-	ReservedFixedIPs    ReservedFixedIPService
-	Networks            NetworkService
-	Volumes             VolumeService
-	FloatingIPs         FloatingIPService
-	SecurityGroups      SecurityGroupService
-	Users               UserService
-	Inference           InferenceService
-	PlacementGroups     PlacementGroupService
-	Baremetal           BaremetalService
-	Instances           InstanceService
-	Registries          RegistryService
-	FileShares          FileShareService
-	BillingReservations BillingReservationService
+	Options              []option.RequestOption
+	Projects             ProjectService
+	Tasks                TaskService
+	Regions              RegionService
+	Quotas               QuotaService
+	Secrets              SecretService
+	SSHKeys              SSHKeyService
+	IPRanges             IPRangeService
+	LoadBalancers        LoadBalancerService
+	ReservedFixedIPs     ReservedFixedIPService
+	Networks             NetworkService
+	Volumes              VolumeService
+	FloatingIPs          FloatingIPService
+	SecurityGroups       SecurityGroupService
+	Users                UserService
+	Inference            InferenceService
+	PlacementGroups      PlacementGroupService
+	Baremetal            BaremetalService
+	Instances            InstanceService
+	Registries           RegistryService
+	FileShares           FileShareService
+	BillingReservations  BillingReservationService
+	GPUBaremetalClusters GPUBaremetalClusterService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -68,7 +71,58 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.Registries = NewRegistryService(opts...)
 	r.FileShares = NewFileShareService(opts...)
 	r.BillingReservations = NewBillingReservationService(opts...)
+	r.GPUBaremetalClusters = NewGPUBaremetalClusterService(opts...)
 	return
+}
+
+// '#/components/schemas/RemoteConsoleSerializer'
+// "$.components.schemas.RemoteConsoleSerializer"
+type Console struct {
+	// '#/components/schemas/RemoteConsoleSerializer/properties/remote_console'
+	// "$.components.schemas.RemoteConsoleSerializer.properties.remote_console"
+	RemoteConsole ConsoleRemoteConsole `json:"remote_console,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		RemoteConsole resp.Field
+		ExtraFields   map[string]resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Console) RawJSON() string { return r.JSON.raw }
+func (r *Console) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/RemoteConsoleSerializer/properties/remote_console'
+// "$.components.schemas.RemoteConsoleSerializer.properties.remote_console"
+type ConsoleRemoteConsole struct {
+	// '#/components/schemas/RemoteConsoleData/properties/protocol'
+	// "$.components.schemas.RemoteConsoleData.properties.protocol"
+	Protocol string `json:"protocol,required"`
+	// '#/components/schemas/RemoteConsoleData/properties/type'
+	// "$.components.schemas.RemoteConsoleData.properties.type"
+	Type string `json:"type,required"`
+	// '#/components/schemas/RemoteConsoleData/properties/url'
+	// "$.components.schemas.RemoteConsoleData.properties.url"
+	URL string `json:"url,required" format:"uri"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Protocol    resp.Field
+		Type        resp.Field
+		URL         resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsoleRemoteConsole) RawJSON() string { return r.JSON.raw }
+func (r *ConsoleRemoteConsole) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/GetClientProfileSerializer'
@@ -459,6 +513,644 @@ const (
 	FloatingIPStatusDown   FloatingIPStatus = "DOWN"
 	FloatingIPStatusError  FloatingIPStatus = "ERROR"
 )
+
+// '#/components/schemas/GPUClusterServerSerializer'
+// "$.components.schemas.GPUClusterServerSerializer"
+type GPUClusterServer struct {
+	// '#/components/schemas/GPUClusterServerSerializer/properties/addresses'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.addresses"
+	Addresses map[string][]GPUClusterServerAddressUnion `json:"addresses,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/blackhole_ports'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.blackhole_ports"
+	BlackholePorts []GPUClusterServerBlackholePort `json:"blackhole_ports,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/creator_task_id/anyOf/0'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.creator_task_id.anyOf[0]"
+	CreatorTaskID string `json:"creator_task_id,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/ddos_profile/anyOf/0'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.ddos_profile.anyOf[0]"
+	DDOSProfile DDOSProfile `json:"ddos_profile,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/fixed_ip_assignments/anyOf/0'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.fixed_ip_assignments.anyOf[0]"
+	FixedIPAssignments []GPUClusterServerFixedIPAssignment `json:"fixed_ip_assignments,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/flavor'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.flavor"
+	Flavor GPUClusterServerFlavor `json:"flavor,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/instance_created'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.instance_created"
+	InstanceCreated time.Time `json:"instance_created,required" format:"date-time"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/instance_description/anyOf/0'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.instance_description.anyOf[0]"
+	InstanceDescription string `json:"instance_description,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/instance_id'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.instance_id"
+	InstanceID string `json:"instance_id,required" format:"uuid4"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/instance_isolation/anyOf/0'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.instance_isolation.anyOf[0]"
+	InstanceIsolation GPUClusterServerInstanceIsolation `json:"instance_isolation,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/instance_name'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.instance_name"
+	InstanceName string `json:"instance_name,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/keypair_name/anyOf/0'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.keypair_name.anyOf[0]"
+	KeypairName string `json:"keypair_name,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/project_id'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.project_id"
+	ProjectID int64 `json:"project_id,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/region'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.region"
+	Region string `json:"region,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/region_id'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.region_id"
+	RegionID int64 `json:"region_id,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/security_groups'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.security_groups"
+	SecurityGroups []GPUClusterServerSecurityGroup `json:"security_groups,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/status'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.status"
+	//
+	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
+	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
+	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
+	// "UNKNOWN", "VERIFY_RESIZE".
+	Status GPUClusterServerStatus `json:"status,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/tags'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.tags"
+	Tags []Tag `json:"tags,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/task_id/anyOf/0'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.task_id.anyOf[0]"
+	TaskID string `json:"task_id,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/task_state/anyOf/0'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.task_state.anyOf[0]"
+	TaskState string `json:"task_state,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/vm_state'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.vm_state"
+	//
+	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
+	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
+	VmState GPUClusterServerVmState `json:"vm_state,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addresses           resp.Field
+		BlackholePorts      resp.Field
+		CreatorTaskID       resp.Field
+		DDOSProfile         resp.Field
+		FixedIPAssignments  resp.Field
+		Flavor              resp.Field
+		InstanceCreated     resp.Field
+		InstanceDescription resp.Field
+		InstanceID          resp.Field
+		InstanceIsolation   resp.Field
+		InstanceName        resp.Field
+		KeypairName         resp.Field
+		ProjectID           resp.Field
+		Region              resp.Field
+		RegionID            resp.Field
+		SecurityGroups      resp.Field
+		Status              resp.Field
+		Tags                resp.Field
+		TaskID              resp.Field
+		TaskState           resp.Field
+		VmState             resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUClusterServer) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GPUClusterServerAddressUnion contains all possible properties and values from
+// [GPUClusterServerAddressInstanceFloatingAddressSerializer],
+// [GPUClusterServerAddressInstanceFixedAddressShortSerializer],
+// [GPUClusterServerAddressInstanceFixedAddressSerializer].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type GPUClusterServerAddressUnion struct {
+	Addr          string `json:"addr"`
+	Type          string `json:"type"`
+	InterfaceName string `json:"interface_name"`
+	// This field is from variant
+	// [GPUClusterServerAddressInstanceFixedAddressSerializer].
+	SubnetID string `json:"subnet_id"`
+	// This field is from variant
+	// [GPUClusterServerAddressInstanceFixedAddressSerializer].
+	SubnetName string `json:"subnet_name"`
+	JSON       struct {
+		Addr          resp.Field
+		Type          resp.Field
+		InterfaceName resp.Field
+		SubnetID      resp.Field
+		SubnetName    resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+func (u GPUClusterServerAddressUnion) AsFloatingIPAddress() (v GPUClusterServerAddressInstanceFloatingAddressSerializer) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u GPUClusterServerAddressUnion) AsFixedIPAddressShort() (v GPUClusterServerAddressInstanceFixedAddressShortSerializer) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u GPUClusterServerAddressUnion) AsFixedIPAddress() (v GPUClusterServerAddressInstanceFixedAddressSerializer) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u GPUClusterServerAddressUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *GPUClusterServerAddressUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/GPUClusterServerSerializer/properties/addresses/additionalProperties/items/anyOf/0'
+// "$.components.schemas.GPUClusterServerSerializer.properties.addresses.additionalProperties.items.anyOf[0]"
+type GPUClusterServerAddressInstanceFloatingAddressSerializer struct {
+	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/addr'
+	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.addr"
+	Addr string `json:"addr,required"`
+	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/type'
+	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.type"
+	Type constant.Floating `json:"type,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addr        resp.Field
+		Type        resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUClusterServerAddressInstanceFloatingAddressSerializer) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServerAddressInstanceFloatingAddressSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/GPUClusterServerSerializer/properties/addresses/additionalProperties/items/anyOf/1'
+// "$.components.schemas.GPUClusterServerSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
+type GPUClusterServerAddressInstanceFixedAddressShortSerializer struct {
+	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/addr'
+	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.addr"
+	Addr string `json:"addr,required"`
+	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/interface_name/anyOf/0'
+	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.interface_name.anyOf[0]"
+	InterfaceName string `json:"interface_name,required"`
+	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/type'
+	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.type"
+	Type constant.Fixed `json:"type,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addr          resp.Field
+		InterfaceName resp.Field
+		Type          resp.Field
+		ExtraFields   map[string]resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUClusterServerAddressInstanceFixedAddressShortSerializer) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *GPUClusterServerAddressInstanceFixedAddressShortSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/GPUClusterServerSerializer/properties/addresses/additionalProperties/items/anyOf/2'
+// "$.components.schemas.GPUClusterServerSerializer.properties.addresses.additionalProperties.items.anyOf[2]"
+type GPUClusterServerAddressInstanceFixedAddressSerializer struct {
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/addr'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.addr"
+	Addr string `json:"addr,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/interface_name/anyOf/0'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.interface_name.anyOf[0]"
+	InterfaceName string `json:"interface_name,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_id'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_id"
+	SubnetID string `json:"subnet_id,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_name'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_name"
+	SubnetName string `json:"subnet_name,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/type'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.type"
+	Type constant.Fixed `json:"type,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addr          resp.Field
+		InterfaceName resp.Field
+		SubnetID      resp.Field
+		SubnetName    resp.Field
+		Type          resp.Field
+		ExtraFields   map[string]resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUClusterServerAddressInstanceFixedAddressSerializer) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServerAddressInstanceFixedAddressSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/GPUClusterServerSerializer/properties/blackhole_ports/items'
+// "$.components.schemas.GPUClusterServerSerializer.properties.blackhole_ports.items"
+type GPUClusterServerBlackholePort struct {
+	// '#/components/schemas/BlackholePortSerializer/properties/AlarmEnd'
+	// "$.components.schemas.BlackholePortSerializer.properties.AlarmEnd"
+	AlarmEnd time.Time `json:"AlarmEnd,required" format:"date-time"`
+	// '#/components/schemas/BlackholePortSerializer/properties/AlarmStart'
+	// "$.components.schemas.BlackholePortSerializer.properties.AlarmStart"
+	AlarmStart time.Time `json:"AlarmStart,required" format:"date-time"`
+	// '#/components/schemas/BlackholePortSerializer/properties/AlarmState'
+	// "$.components.schemas.BlackholePortSerializer.properties.AlarmState"
+	//
+	// Any of "ACK_REQ", "ALARM", "ARCHIVED", "CLEAR", "CLEARING", "CLEARING_FAIL",
+	// "END_GRACE", "END_WAIT", "MANUAL_CLEAR", "MANUAL_CLEARING",
+	// "MANUAL_CLEARING_FAIL", "MANUAL_MITIGATING", "MANUAL_STARTING",
+	// "MANUAL_STARTING_FAIL", "MITIGATING", "STARTING", "STARTING_FAIL", "START_WAIT",
+	// "ack_req", "alarm", "archived", "clear", "clearing", "clearing_fail",
+	// "end_grace", "end_wait", "manual_clear", "manual_clearing",
+	// "manual_clearing_fail", "manual_mitigating", "manual_starting",
+	// "manual_starting_fail", "mitigating", "start_wait", "starting", "starting_fail".
+	AlarmState string `json:"AlarmState,required"`
+	// '#/components/schemas/BlackholePortSerializer/properties/AlertDuration'
+	// "$.components.schemas.BlackholePortSerializer.properties.AlertDuration"
+	AlertDuration string `json:"AlertDuration,required"`
+	// '#/components/schemas/BlackholePortSerializer/properties/DestinationIP'
+	// "$.components.schemas.BlackholePortSerializer.properties.DestinationIP"
+	DestinationIP string `json:"DestinationIP,required"`
+	// '#/components/schemas/BlackholePortSerializer/properties/ID'
+	// "$.components.schemas.BlackholePortSerializer.properties.ID"
+	ID int64 `json:"ID,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		AlarmEnd      resp.Field
+		AlarmStart    resp.Field
+		AlarmState    resp.Field
+		AlertDuration resp.Field
+		DestinationIP resp.Field
+		ID            resp.Field
+		ExtraFields   map[string]resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUClusterServerBlackholePort) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServerBlackholePort) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/GPUClusterServerSerializer/properties/fixed_ip_assignments/anyOf/0/items'
+// "$.components.schemas.GPUClusterServerSerializer.properties.fixed_ip_assignments.anyOf[0].items"
+type GPUClusterServerFixedIPAssignment struct {
+	// '#/components/schemas/IpAssignmentsSerializer/properties/external'
+	// "$.components.schemas.IpAssignmentsSerializer.properties.external"
+	External bool `json:"external,required"`
+	// '#/components/schemas/IpAssignmentsSerializer/properties/ip_address'
+	// "$.components.schemas.IpAssignmentsSerializer.properties.ip_address"
+	IPAddress string `json:"ip_address,required"`
+	// '#/components/schemas/IpAssignmentsSerializer/properties/subnet_id'
+	// "$.components.schemas.IpAssignmentsSerializer.properties.subnet_id"
+	SubnetID string `json:"subnet_id,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		External    resp.Field
+		IPAddress   resp.Field
+		SubnetID    resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUClusterServerFixedIPAssignment) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServerFixedIPAssignment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/GPUClusterServerSerializer/properties/flavor'
+// "$.components.schemas.GPUClusterServerSerializer.properties.flavor"
+type GPUClusterServerFlavor struct {
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/architecture'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.architecture"
+	Architecture string `json:"architecture,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/flavor_id'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.flavor_id"
+	FlavorID string `json:"flavor_id,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/flavor_name'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.flavor_name"
+	FlavorName string `json:"flavor_name,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/hardware_description'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.hardware_description"
+	HardwareDescription GPUClusterServerFlavorHardwareDescription `json:"hardware_description,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/os_type'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.os_type"
+	OsType string `json:"os_type,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/ram'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.ram"
+	Ram int64 `json:"ram,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/resource_class'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.resource_class"
+	ResourceClass string `json:"resource_class,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/vcpus'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.vcpus"
+	Vcpus int64 `json:"vcpus,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Architecture        resp.Field
+		FlavorID            resp.Field
+		FlavorName          resp.Field
+		HardwareDescription resp.Field
+		OsType              resp.Field
+		Ram                 resp.Field
+		ResourceClass       resp.Field
+		Vcpus               resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUClusterServerFlavor) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServerFlavor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/hardware_description'
+// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.hardware_description"
+type GPUClusterServerFlavorHardwareDescription struct {
+	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/cpu'
+	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.cpu"
+	CPU string `json:"cpu,required"`
+	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/disk'
+	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.disk"
+	Disk string `json:"disk,required"`
+	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/gpu'
+	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.gpu"
+	GPU string `json:"gpu,required"`
+	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/license'
+	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.license"
+	License string `json:"license,required"`
+	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/network'
+	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.network"
+	Network string `json:"network,required"`
+	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/ram'
+	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.ram"
+	Ram string `json:"ram,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		CPU         resp.Field
+		Disk        resp.Field
+		GPU         resp.Field
+		License     resp.Field
+		Network     resp.Field
+		Ram         resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUClusterServerFlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServerFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/GPUClusterServerSerializer/properties/instance_isolation/anyOf/0'
+// "$.components.schemas.GPUClusterServerSerializer.properties.instance_isolation.anyOf[0]"
+type GPUClusterServerInstanceIsolation struct {
+	// '#/components/schemas/IsolationSerializer/properties/reason/anyOf/0'
+	// "$.components.schemas.IsolationSerializer.properties.reason.anyOf[0]"
+	Reason string `json:"reason,nullable"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Reason      resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUClusterServerInstanceIsolation) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServerInstanceIsolation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/GPUClusterServerSerializer/properties/security_groups/items'
+// "$.components.schemas.GPUClusterServerSerializer.properties.security_groups.items"
+type GPUClusterServerSecurityGroup struct {
+	// '#/components/schemas/NameSerializerPydantic/properties/name'
+	// "$.components.schemas.NameSerializerPydantic.properties.name"
+	Name string `json:"name,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Name        resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUClusterServerSecurityGroup) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServerSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/GPUClusterServerSerializer/properties/status'
+// "$.components.schemas.GPUClusterServerSerializer.properties.status"
+type GPUClusterServerStatus string
+
+const (
+	GPUClusterServerStatusActive           GPUClusterServerStatus = "ACTIVE"
+	GPUClusterServerStatusBuild            GPUClusterServerStatus = "BUILD"
+	GPUClusterServerStatusDeleted          GPUClusterServerStatus = "DELETED"
+	GPUClusterServerStatusError            GPUClusterServerStatus = "ERROR"
+	GPUClusterServerStatusHardReboot       GPUClusterServerStatus = "HARD_REBOOT"
+	GPUClusterServerStatusMigrating        GPUClusterServerStatus = "MIGRATING"
+	GPUClusterServerStatusPassword         GPUClusterServerStatus = "PASSWORD"
+	GPUClusterServerStatusPaused           GPUClusterServerStatus = "PAUSED"
+	GPUClusterServerStatusReboot           GPUClusterServerStatus = "REBOOT"
+	GPUClusterServerStatusRebuild          GPUClusterServerStatus = "REBUILD"
+	GPUClusterServerStatusRescue           GPUClusterServerStatus = "RESCUE"
+	GPUClusterServerStatusResize           GPUClusterServerStatus = "RESIZE"
+	GPUClusterServerStatusRevertResize     GPUClusterServerStatus = "REVERT_RESIZE"
+	GPUClusterServerStatusShelved          GPUClusterServerStatus = "SHELVED"
+	GPUClusterServerStatusShelvedOffloaded GPUClusterServerStatus = "SHELVED_OFFLOADED"
+	GPUClusterServerStatusShutoff          GPUClusterServerStatus = "SHUTOFF"
+	GPUClusterServerStatusSoftDeleted      GPUClusterServerStatus = "SOFT_DELETED"
+	GPUClusterServerStatusSuspended        GPUClusterServerStatus = "SUSPENDED"
+	GPUClusterServerStatusUnknown          GPUClusterServerStatus = "UNKNOWN"
+	GPUClusterServerStatusVerifyResize     GPUClusterServerStatus = "VERIFY_RESIZE"
+)
+
+// '#/components/schemas/GPUClusterServerSerializer/properties/vm_state'
+// "$.components.schemas.GPUClusterServerSerializer.properties.vm_state"
+type GPUClusterServerVmState string
+
+const (
+	GPUClusterServerVmStateActive           GPUClusterServerVmState = "active"
+	GPUClusterServerVmStateBuilding         GPUClusterServerVmState = "building"
+	GPUClusterServerVmStateDeleted          GPUClusterServerVmState = "deleted"
+	GPUClusterServerVmStateError            GPUClusterServerVmState = "error"
+	GPUClusterServerVmStatePaused           GPUClusterServerVmState = "paused"
+	GPUClusterServerVmStateRescued          GPUClusterServerVmState = "rescued"
+	GPUClusterServerVmStateResized          GPUClusterServerVmState = "resized"
+	GPUClusterServerVmStateShelved          GPUClusterServerVmState = "shelved"
+	GPUClusterServerVmStateShelvedOffloaded GPUClusterServerVmState = "shelved_offloaded"
+	GPUClusterServerVmStateSoftDeleted      GPUClusterServerVmState = "soft-deleted"
+	GPUClusterServerVmStateStopped          GPUClusterServerVmState = "stopped"
+	GPUClusterServerVmStateSuspended        GPUClusterServerVmState = "suspended"
+)
+
+// '#/components/schemas/GPUClusterServerCollectionSerializer'
+// "$.components.schemas.GPUClusterServerCollectionSerializer"
+type GPUClusterServerList struct {
+	// '#/components/schemas/GPUClusterServerCollectionSerializer/properties/count'
+	// "$.components.schemas.GPUClusterServerCollectionSerializer.properties.count"
+	Count int64 `json:"count,required"`
+	// '#/components/schemas/GPUClusterServerCollectionSerializer/properties/results'
+	// "$.components.schemas.GPUClusterServerCollectionSerializer.properties.results"
+	Results []GPUClusterServer `json:"results,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Count       resp.Field
+		Results     resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUClusterServerList) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServerList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/GpuImageSerializer'
+// "$.components.schemas.GpuImageSerializer"
+type GPUImage struct {
+	// '#/components/schemas/GpuImageSerializer/properties/id'
+	// "$.components.schemas.GpuImageSerializer.properties.id"
+	ID string `json:"id,required" format:"uuid4"`
+	// '#/components/schemas/GpuImageSerializer/properties/created_at'
+	// "$.components.schemas.GpuImageSerializer.properties.created_at"
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// '#/components/schemas/GpuImageSerializer/properties/min_disk'
+	// "$.components.schemas.GpuImageSerializer.properties.min_disk"
+	MinDisk int64 `json:"min_disk,required"`
+	// '#/components/schemas/GpuImageSerializer/properties/min_ram'
+	// "$.components.schemas.GpuImageSerializer.properties.min_ram"
+	MinRam int64 `json:"min_ram,required"`
+	// '#/components/schemas/GpuImageSerializer/properties/name'
+	// "$.components.schemas.GpuImageSerializer.properties.name"
+	Name string `json:"name,required"`
+	// '#/components/schemas/GpuImageSerializer/properties/status'
+	// "$.components.schemas.GpuImageSerializer.properties.status"
+	Status string `json:"status,required"`
+	// '#/components/schemas/GpuImageSerializer/properties/tags'
+	// "$.components.schemas.GpuImageSerializer.properties.tags"
+	Tags []Tag `json:"tags,required"`
+	// '#/components/schemas/GpuImageSerializer/properties/updated_at'
+	// "$.components.schemas.GpuImageSerializer.properties.updated_at"
+	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	// '#/components/schemas/GpuImageSerializer/properties/visibility'
+	// "$.components.schemas.GpuImageSerializer.properties.visibility"
+	Visibility string `json:"visibility,required"`
+	// '#/components/schemas/GpuImageSerializer/properties/architecture/anyOf/0'
+	// "$.components.schemas.GpuImageSerializer.properties.architecture.anyOf[0]"
+	Architecture string `json:"architecture,nullable"`
+	// '#/components/schemas/GpuImageSerializer/properties/os_distro/anyOf/0'
+	// "$.components.schemas.GpuImageSerializer.properties.os_distro.anyOf[0]"
+	OsDistro string `json:"os_distro,nullable"`
+	// '#/components/schemas/GpuImageSerializer/properties/os_type/anyOf/0'
+	// "$.components.schemas.GpuImageSerializer.properties.os_type.anyOf[0]"
+	OsType string `json:"os_type,nullable"`
+	// '#/components/schemas/GpuImageSerializer/properties/os_version/anyOf/0'
+	// "$.components.schemas.GpuImageSerializer.properties.os_version.anyOf[0]"
+	OsVersion string `json:"os_version,nullable"`
+	// '#/components/schemas/GpuImageSerializer/properties/size'
+	// "$.components.schemas.GpuImageSerializer.properties.size"
+	Size int64 `json:"size"`
+	// '#/components/schemas/GpuImageSerializer/properties/ssh_key/anyOf/0'
+	// "$.components.schemas.GpuImageSerializer.properties.ssh_key.anyOf[0]"
+	SSHKey string `json:"ssh_key,nullable"`
+	// '#/components/schemas/GpuImageSerializer/properties/task_id/anyOf/0'
+	// "$.components.schemas.GpuImageSerializer.properties.task_id.anyOf[0]"
+	TaskID string `json:"task_id,nullable"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		ID           resp.Field
+		CreatedAt    resp.Field
+		MinDisk      resp.Field
+		MinRam       resp.Field
+		Name         resp.Field
+		Status       resp.Field
+		Tags         resp.Field
+		UpdatedAt    resp.Field
+		Visibility   resp.Field
+		Architecture resp.Field
+		OsDistro     resp.Field
+		OsType       resp.Field
+		OsVersion    resp.Field
+		Size         resp.Field
+		SSHKey       resp.Field
+		TaskID       resp.Field
+		ExtraFields  map[string]resp.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUImage) RawJSON() string { return r.JSON.raw }
+func (r *GPUImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/ListGpuImageSerializer'
+// "$.components.schemas.ListGpuImageSerializer"
+type GPUImageList struct {
+	// '#/components/schemas/ListGpuImageSerializer/properties/count'
+	// "$.components.schemas.ListGpuImageSerializer.properties.count"
+	Count int64 `json:"count,required"`
+	// '#/components/schemas/ListGpuImageSerializer/properties/results'
+	// "$.components.schemas.ListGpuImageSerializer.properties.results"
+	Results []GPUImage `json:"results,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Count       resp.Field
+		Results     resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUImageList) RawJSON() string { return r.JSON.raw }
+func (r *GPUImageList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // '#/components/schemas/ImageSerializer' "$.components.schemas.ImageSerializer"
 type Image struct {
@@ -1075,6 +1767,427 @@ type Network struct {
 // Returns the unmodified JSON received from the API
 func (r Network) RawJSON() string { return r.JSON.raw }
 func (r *Network) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceInterfaceTrunkSerializer'
+// "$.components.schemas.InstanceInterfaceTrunkSerializer"
+type NetworkInterface struct {
+	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/allowed_address_pairs'
+	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.allowed_address_pairs"
+	AllowedAddressPairs []NetworkInterfaceAllowedAddressPair `json:"allowed_address_pairs,required"`
+	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/floatingip_details'
+	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.floatingip_details"
+	FloatingipDetails []FloatingIP `json:"floatingip_details,required"`
+	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/ip_assignments'
+	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.ip_assignments"
+	IPAssignments []NetworkInterfaceIPAssignment `json:"ip_assignments,required"`
+	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/network_details'
+	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.network_details"
+	NetworkDetails NetworkInterfaceNetworkDetails `json:"network_details,required"`
+	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/network_id'
+	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.network_id"
+	NetworkID string `json:"network_id,required" format:"uuid4"`
+	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/port_id'
+	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.port_id"
+	PortID string `json:"port_id,required" format:"uuid4"`
+	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/port_security_enabled'
+	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.port_security_enabled"
+	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/sub_ports'
+	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.sub_ports"
+	SubPorts []NetworkInterfaceSubPort `json:"sub_ports,required"`
+	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/interface_name/anyOf/0'
+	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.interface_name.anyOf[0]"
+	InterfaceName string `json:"interface_name,nullable"`
+	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/mac_address/anyOf/0'
+	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.mac_address.anyOf[0]"
+	MacAddress string `json:"mac_address,nullable"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		AllowedAddressPairs resp.Field
+		FloatingipDetails   resp.Field
+		IPAssignments       resp.Field
+		NetworkDetails      resp.Field
+		NetworkID           resp.Field
+		PortID              resp.Field
+		PortSecurityEnabled resp.Field
+		SubPorts            resp.Field
+		InterfaceName       resp.Field
+		MacAddress          resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NetworkInterface) RawJSON() string { return r.JSON.raw }
+func (r *NetworkInterface) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/allowed_address_pairs/items'
+// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.allowed_address_pairs.items"
+type NetworkInterfaceAllowedAddressPair struct {
+	// '#/components/schemas/AllowedAddressPairsSerializer/properties/ip_address/anyOf/0'
+	// "$.components.schemas.AllowedAddressPairsSerializer.properties.ip_address.anyOf[0]"
+	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	// '#/components/schemas/AllowedAddressPairsSerializer/properties/mac_address/anyOf/0'
+	// "$.components.schemas.AllowedAddressPairsSerializer.properties.mac_address.anyOf[0]"
+	MacAddress string `json:"mac_address,nullable"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		IPAddress   resp.Field
+		MacAddress  resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NetworkInterfaceAllowedAddressPair) RawJSON() string { return r.JSON.raw }
+func (r *NetworkInterfaceAllowedAddressPair) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/ip_assignments/items'
+// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.ip_assignments.items"
+type NetworkInterfaceIPAssignment struct {
+	// '#/components/schemas/PortIpSubnetIdSerializer/properties/ip_address'
+	// "$.components.schemas.PortIpSubnetIdSerializer.properties.ip_address"
+	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	// '#/components/schemas/PortIpSubnetIdSerializer/properties/subnet_id'
+	// "$.components.schemas.PortIpSubnetIdSerializer.properties.subnet_id"
+	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		IPAddress   resp.Field
+		SubnetID    resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NetworkInterfaceIPAssignment) RawJSON() string { return r.JSON.raw }
+func (r *NetworkInterfaceIPAssignment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/network_details'
+// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.network_details"
+type NetworkInterfaceNetworkDetails struct {
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/id'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.id"
+	ID string `json:"id,required" format:"uuid4"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/created_at'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.created_at"
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/external'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.external"
+	External bool `json:"external,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/name'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.name"
+	Name string `json:"name,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/port_security_enabled'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.port_security_enabled"
+	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/region'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.region"
+	Region string `json:"region,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/region_id'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.region_id"
+	RegionID int64 `json:"region_id,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/shared'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.shared"
+	Shared bool `json:"shared,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/tags'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.tags"
+	Tags []Tag `json:"tags,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/type'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.type"
+	Type string `json:"type,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/updated_at'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.updated_at"
+	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/creator_task_id/anyOf/0'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.creator_task_id.anyOf[0]"
+	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/default/anyOf/0'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties['default'].anyOf[0]"
+	Default bool `json:"default,nullable"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/mtu'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.mtu"
+	Mtu int64 `json:"mtu"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/project_id/anyOf/0'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.project_id.anyOf[0]"
+	ProjectID int64 `json:"project_id,nullable"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/segmentation_id/anyOf/0'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.segmentation_id.anyOf[0]"
+	SegmentationID int64 `json:"segmentation_id,nullable"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/subnets/anyOf/0'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.subnets.anyOf[0]"
+	Subnets []Subnet `json:"subnets,nullable"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/task_id/anyOf/0'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.task_id.anyOf[0]"
+	TaskID string `json:"task_id,nullable" format:"uuid4"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		ID                  resp.Field
+		CreatedAt           resp.Field
+		External            resp.Field
+		Name                resp.Field
+		PortSecurityEnabled resp.Field
+		Region              resp.Field
+		RegionID            resp.Field
+		Shared              resp.Field
+		Tags                resp.Field
+		Type                resp.Field
+		UpdatedAt           resp.Field
+		CreatorTaskID       resp.Field
+		Default             resp.Field
+		Mtu                 resp.Field
+		ProjectID           resp.Field
+		SegmentationID      resp.Field
+		Subnets             resp.Field
+		TaskID              resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NetworkInterfaceNetworkDetails) RawJSON() string { return r.JSON.raw }
+func (r *NetworkInterfaceNetworkDetails) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/sub_ports/items'
+// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.sub_ports.items"
+type NetworkInterfaceSubPort struct {
+	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/allowed_address_pairs'
+	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.allowed_address_pairs"
+	AllowedAddressPairs []NetworkInterfaceSubPortAllowedAddressPair `json:"allowed_address_pairs,required"`
+	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/floatingip_details'
+	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.floatingip_details"
+	FloatingipDetails []FloatingIP `json:"floatingip_details,required"`
+	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/ip_assignments'
+	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.ip_assignments"
+	IPAssignments []NetworkInterfaceSubPortIPAssignment `json:"ip_assignments,required"`
+	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/network_details'
+	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.network_details"
+	NetworkDetails NetworkInterfaceSubPortNetworkDetails `json:"network_details,required"`
+	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/network_id'
+	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.network_id"
+	NetworkID string `json:"network_id,required" format:"uuid4"`
+	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/port_id'
+	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.port_id"
+	PortID string `json:"port_id,required" format:"uuid4"`
+	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/port_security_enabled'
+	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.port_security_enabled"
+	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/segmentation_id'
+	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.segmentation_id"
+	SegmentationID int64 `json:"segmentation_id,required"`
+	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/segmentation_type'
+	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.segmentation_type"
+	SegmentationType string `json:"segmentation_type,required"`
+	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/interface_name/anyOf/0'
+	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.interface_name.anyOf[0]"
+	InterfaceName string `json:"interface_name,nullable"`
+	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/mac_address/anyOf/0'
+	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.mac_address.anyOf[0]"
+	MacAddress string `json:"mac_address,nullable"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		AllowedAddressPairs resp.Field
+		FloatingipDetails   resp.Field
+		IPAssignments       resp.Field
+		NetworkDetails      resp.Field
+		NetworkID           resp.Field
+		PortID              resp.Field
+		PortSecurityEnabled resp.Field
+		SegmentationID      resp.Field
+		SegmentationType    resp.Field
+		InterfaceName       resp.Field
+		MacAddress          resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NetworkInterfaceSubPort) RawJSON() string { return r.JSON.raw }
+func (r *NetworkInterfaceSubPort) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/allowed_address_pairs/items'
+// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.allowed_address_pairs.items"
+type NetworkInterfaceSubPortAllowedAddressPair struct {
+	// '#/components/schemas/AllowedAddressPairsSerializer/properties/ip_address/anyOf/0'
+	// "$.components.schemas.AllowedAddressPairsSerializer.properties.ip_address.anyOf[0]"
+	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	// '#/components/schemas/AllowedAddressPairsSerializer/properties/mac_address/anyOf/0'
+	// "$.components.schemas.AllowedAddressPairsSerializer.properties.mac_address.anyOf[0]"
+	MacAddress string `json:"mac_address,nullable"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		IPAddress   resp.Field
+		MacAddress  resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NetworkInterfaceSubPortAllowedAddressPair) RawJSON() string { return r.JSON.raw }
+func (r *NetworkInterfaceSubPortAllowedAddressPair) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/ip_assignments/items'
+// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.ip_assignments.items"
+type NetworkInterfaceSubPortIPAssignment struct {
+	// '#/components/schemas/PortIpSubnetIdSerializer/properties/ip_address'
+	// "$.components.schemas.PortIpSubnetIdSerializer.properties.ip_address"
+	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	// '#/components/schemas/PortIpSubnetIdSerializer/properties/subnet_id'
+	// "$.components.schemas.PortIpSubnetIdSerializer.properties.subnet_id"
+	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		IPAddress   resp.Field
+		SubnetID    resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NetworkInterfaceSubPortIPAssignment) RawJSON() string { return r.JSON.raw }
+func (r *NetworkInterfaceSubPortIPAssignment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/network_details'
+// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.network_details"
+type NetworkInterfaceSubPortNetworkDetails struct {
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/id'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.id"
+	ID string `json:"id,required" format:"uuid4"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/created_at'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.created_at"
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/external'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.external"
+	External bool `json:"external,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/name'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.name"
+	Name string `json:"name,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/port_security_enabled'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.port_security_enabled"
+	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/region'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.region"
+	Region string `json:"region,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/region_id'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.region_id"
+	RegionID int64 `json:"region_id,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/shared'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.shared"
+	Shared bool `json:"shared,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/tags'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.tags"
+	Tags []Tag `json:"tags,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/type'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.type"
+	Type string `json:"type,required"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/updated_at'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.updated_at"
+	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/creator_task_id/anyOf/0'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.creator_task_id.anyOf[0]"
+	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/default/anyOf/0'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties['default'].anyOf[0]"
+	Default bool `json:"default,nullable"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/mtu'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.mtu"
+	Mtu int64 `json:"mtu"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/project_id/anyOf/0'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.project_id.anyOf[0]"
+	ProjectID int64 `json:"project_id,nullable"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/segmentation_id/anyOf/0'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.segmentation_id.anyOf[0]"
+	SegmentationID int64 `json:"segmentation_id,nullable"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/subnets/anyOf/0'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.subnets.anyOf[0]"
+	Subnets []Subnet `json:"subnets,nullable"`
+	// '#/components/schemas/NetworkSubnetworkSerializer/properties/task_id/anyOf/0'
+	// "$.components.schemas.NetworkSubnetworkSerializer.properties.task_id.anyOf[0]"
+	TaskID string `json:"task_id,nullable" format:"uuid4"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		ID                  resp.Field
+		CreatedAt           resp.Field
+		External            resp.Field
+		Name                resp.Field
+		PortSecurityEnabled resp.Field
+		Region              resp.Field
+		RegionID            resp.Field
+		Shared              resp.Field
+		Tags                resp.Field
+		Type                resp.Field
+		UpdatedAt           resp.Field
+		CreatorTaskID       resp.Field
+		Default             resp.Field
+		Mtu                 resp.Field
+		ProjectID           resp.Field
+		SegmentationID      resp.Field
+		Subnets             resp.Field
+		TaskID              resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NetworkInterfaceSubPortNetworkDetails) RawJSON() string { return r.JSON.raw }
+func (r *NetworkInterfaceSubPortNetworkDetails) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceInterfaceTrunkCollectionSerializer'
+// "$.components.schemas.InstanceInterfaceTrunkCollectionSerializer"
+type NetworkInterfaceList struct {
+	// '#/components/schemas/InstanceInterfaceTrunkCollectionSerializer/properties/count'
+	// "$.components.schemas.InstanceInterfaceTrunkCollectionSerializer.properties.count"
+	Count int64 `json:"count,required"`
+	// '#/components/schemas/InstanceInterfaceTrunkCollectionSerializer/properties/results'
+	// "$.components.schemas.InstanceInterfaceTrunkCollectionSerializer.properties.results"
+	Results []NetworkInterface `json:"results,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Count       resp.Field
+		Results     resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NetworkInterfaceList) RawJSON() string { return r.JSON.raw }
+func (r *NetworkInterfaceList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
