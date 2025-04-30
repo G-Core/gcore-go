@@ -544,6 +544,30 @@ Methods:
 
 - <code title="get /cloud/v1/bmimages/{project_id}/{region_id}">client.Cloud.Baremetal.Images.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalImageService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalImageListParams">BaremetalImageListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#ImageList">ImageList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+### Flavors
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListResponse">BaremetalFlavorListResponse</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListSuitableResponse">BaremetalFlavorListSuitableResponse</a>
+
+Methods:
+
+- <code title="get /cloud/v1/bmflavors/{project_id}/{region_id}">client.Cloud.Baremetal.Flavors.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListParams">BaremetalFlavorListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListResponse">BaremetalFlavorListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /cloud/v1/bminstances/{project_id}/{region_id}/available_flavors">client.Cloud.Baremetal.Flavors.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorService.ListSuitable">ListSuitable</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListSuitableParams">BaremetalFlavorListSuitableParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListSuitableResponse">BaremetalFlavorListSuitableResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+### Servers
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalServer">BaremetalServer</a>
+
+Methods:
+
+- <code title="post /cloud/v1/bminstances/{project_id}/{region_id}">client.Cloud.Baremetal.Servers.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalServerService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalServerNewParams">BaremetalServerNewParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#TaskIDList">TaskIDList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /cloud/v1/bminstances/{project_id}/{region_id}">client.Cloud.Baremetal.Servers.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalServerService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalServerListParams">BaremetalServerListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalServer">BaremetalServer</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /cloud/v1/bminstances/{project_id}/{region_id}/{server_id}/rebuild">client.Cloud.Baremetal.Servers.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalServerService.Rebuild">Rebuild</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, serverID <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalServerRebuildParams">BaremetalServerRebuildParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#TaskIDList">TaskIDList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## Instances
 
 ### Images
