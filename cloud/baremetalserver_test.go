@@ -57,8 +57,8 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 		NameTemplates: []string{"my-bare-metal-{ip_octets}"},
 		Names:         []string{"my-bare-metal"},
 		Password:      gcore.String("password"),
-		Tags: map[string]string{
-			"my-tag": "my-tag-value",
+		Tags: cloud.TagUpdateList{
+			"foo": "my-tag-value",
 		},
 		UserData: gcore.String("user_data"),
 		Username: gcore.String("username"),

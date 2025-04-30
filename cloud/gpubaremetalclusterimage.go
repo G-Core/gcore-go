@@ -220,7 +220,7 @@ type GPUBaremetalClusterImageUploadParams struct {
 	SSHKey GPUBaremetalClusterImageUploadParamsSSHKey `json:"ssh_key,omitzero"`
 	// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/tags'
 	// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.tags"
-	Tags map[string]string `json:"tags,omitzero"`
+	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
 

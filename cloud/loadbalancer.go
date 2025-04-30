@@ -1551,7 +1551,7 @@ type LoadBalancerNewParams struct {
 	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity,omitzero"`
 	// '#/components/schemas/CreateLoadbalancerSerializer/properties/tags'
 	// "$.components.schemas.CreateLoadbalancerSerializer.properties.tags"
-	Tags map[string]string `json:"tags,omitzero"`
+	Tags TagUpdateList `json:"tags,omitzero"`
 	// '#/components/schemas/CreateLoadbalancerSerializer/properties/vip_ip_family'
 	// "$.components.schemas.CreateLoadbalancerSerializer.properties.vip_ip_family"
 	//

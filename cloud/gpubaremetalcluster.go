@@ -842,7 +842,7 @@ type GPUBaremetalClusterNewParams struct {
 	Username param.Opt[string] `json:"username,omitzero"`
 	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/tags'
 	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.tags"
-	Tags map[string]string `json:"tags,omitzero"`
+	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
 

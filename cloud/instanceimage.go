@@ -214,7 +214,7 @@ type InstanceImageUpdateParams struct {
 	SSHKey InstanceImageUpdateParamsSSHKey `json:"ssh_key,omitzero"`
 	// '#/components/schemas/UpdateImageSerializer/properties/tags'
 	// "$.components.schemas.UpdateImageSerializer.properties.tags"
-	Tags map[string]string `json:"tags,omitzero"`
+	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -376,7 +376,7 @@ type InstanceImageNewFromVolumeParams struct {
 	SSHKey InstanceImageNewFromVolumeParamsSSHKey `json:"ssh_key,omitzero"`
 	// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/tags'
 	// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.tags"
-	Tags map[string]string `json:"tags,omitzero"`
+	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -520,7 +520,7 @@ type InstanceImageUploadParams struct {
 	SSHKey InstanceImageUploadParamsSSHKey `json:"ssh_key,omitzero"`
 	// '#/components/schemas/ImageDownloadSerializer/properties/tags'
 	// "$.components.schemas.ImageDownloadSerializer.properties.tags"
-	Tags map[string]string `json:"tags,omitzero"`
+	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
 

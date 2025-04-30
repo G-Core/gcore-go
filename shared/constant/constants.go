@@ -31,6 +31,7 @@ type Nfs string             // Always "NFS"
 type Port string            // Always "port"
 type ReservedFixedIP string // Always "reserved_fixed_ip"
 type Snapshot string        // Always "snapshot"
+type Start string           // Always "start"
 type Subnet string          // Always "subnet"
 type VastShareType string   // Always "vast_share_type"
 
@@ -47,6 +48,7 @@ func (c Nfs) Default() Nfs                         { return "NFS" }
 func (c Port) Default() Port                       { return "port" }
 func (c ReservedFixedIP) Default() ReservedFixedIP { return "reserved_fixed_ip" }
 func (c Snapshot) Default() Snapshot               { return "snapshot" }
+func (c Start) Default() Start                     { return "start" }
 func (c Subnet) Default() Subnet                   { return "subnet" }
 func (c VastShareType) Default() VastShareType     { return "vast_share_type" }
 
@@ -63,6 +65,7 @@ func (c Nfs) MarshalJSON() ([]byte, error)             { return marshalString(c)
 func (c Port) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c ReservedFixedIP) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Snapshot) MarshalJSON() ([]byte, error)        { return marshalString(c) }
+func (c Start) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Subnet) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c VastShareType) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 

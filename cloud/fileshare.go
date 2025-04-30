@@ -403,7 +403,7 @@ type FileShareNewParamsBodyCreateStandardFileShareSerializer struct {
 	Access []FileShareNewParamsBodyCreateStandardFileShareSerializerAccess `json:"access,omitzero"`
 	// '#/components/schemas/CreateStandardFileShareSerializer/properties/tags'
 	// "$.components.schemas.CreateStandardFileShareSerializer.properties.tags"
-	Tags map[string]string `json:"tags,omitzero"`
+	Tags TagUpdateList `json:"tags,omitzero"`
 	// '#/components/schemas/CreateStandardFileShareSerializer/properties/volume_type'
 	// "$.components.schemas.CreateStandardFileShareSerializer.properties.volume_type"
 	//
@@ -502,7 +502,7 @@ type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
 	Size int64 `json:"size,required"`
 	// '#/components/schemas/CreateVastFileShareSerializer/properties/tags'
 	// "$.components.schemas.CreateVastFileShareSerializer.properties.tags"
-	Tags map[string]string `json:"tags,omitzero"`
+	Tags TagUpdateList `json:"tags,omitzero"`
 	// '#/components/schemas/CreateVastFileShareSerializer/properties/protocol'
 	// "$.components.schemas.CreateVastFileShareSerializer.properties.protocol"
 	//
