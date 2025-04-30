@@ -15,6 +15,8 @@ import (
 type BaremetalService struct {
 	Options []option.RequestOption
 	Images  BaremetalImageService
+	Flavors BaremetalFlavorService
+	Servers BaremetalServerService
 }
 
 // NewBaremetalService generates a new service that applies the given options to
@@ -24,5 +26,7 @@ func NewBaremetalService(opts ...option.RequestOption) (r BaremetalService) {
 	r = BaremetalService{}
 	r.Options = opts
 	r.Images = NewBaremetalImageService(opts...)
+	r.Flavors = NewBaremetalFlavorService(opts...)
+	r.Servers = NewBaremetalServerService(opts...)
 	return
 }
