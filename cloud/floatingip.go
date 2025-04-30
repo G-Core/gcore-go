@@ -641,7 +641,7 @@ type FloatingIPNewParams struct {
 	PortID param.Opt[string] `json:"port_id,omitzero" format:"uuid4"`
 	// '#/components/schemas/CreateFloatingIPSerializer/properties/tags'
 	// "$.components.schemas.CreateFloatingIPSerializer.properties.tags"
-	Tags map[string]string `json:"tags,omitzero"`
+	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
 

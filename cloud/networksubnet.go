@@ -214,7 +214,7 @@ type NetworkSubnetNewParams struct {
 	IPVersion int64 `json:"ip_version,omitzero"`
 	// '#/components/schemas/CreateSubnetSerializer/properties/tags'
 	// "$.components.schemas.CreateSubnetSerializer.properties.tags"
-	Tags map[string]string `json:"tags,omitzero"`
+	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
 

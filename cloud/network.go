@@ -191,7 +191,7 @@ type NetworkNewParams struct {
 	CreateRouter param.Opt[bool] `json:"create_router,omitzero"`
 	// '#/components/schemas/CreateNetworkSerializer/properties/tags'
 	// "$.components.schemas.CreateNetworkSerializer.properties.tags"
-	Tags map[string]string `json:"tags,omitzero"`
+	Tags TagUpdateList `json:"tags,omitzero"`
 	// '#/components/schemas/CreateNetworkSerializer/properties/type'
 	// "$.components.schemas.CreateNetworkSerializer.properties.type"
 	//

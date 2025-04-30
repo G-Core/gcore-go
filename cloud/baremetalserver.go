@@ -615,7 +615,7 @@ type BaremetalServerNewParams struct {
 	Names []string `json:"names,omitzero"`
 	// '#/components/schemas/CreateBareMetalServerSerializer/properties/tags'
 	// "$.components.schemas.CreateBareMetalServerSerializer.properties.tags"
-	Tags map[string]string `json:"tags,omitzero"`
+	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
 

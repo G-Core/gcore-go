@@ -37,11 +37,11 @@ type CloudService struct {
 	Inference            InferenceService
 	PlacementGroups      PlacementGroupService
 	Baremetal            BaremetalService
-	Instances            InstanceService
 	Registries           RegistryService
 	FileShares           FileShareService
 	BillingReservations  BillingReservationService
 	GPUBaremetalClusters GPUBaremetalClusterService
+	Instances            InstanceService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -67,11 +67,11 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.Inference = NewInferenceService(opts...)
 	r.PlacementGroups = NewPlacementGroupService(opts...)
 	r.Baremetal = NewBaremetalService(opts...)
-	r.Instances = NewInstanceService(opts...)
 	r.Registries = NewRegistryService(opts...)
 	r.FileShares = NewFileShareService(opts...)
 	r.BillingReservations = NewBillingReservationService(opts...)
 	r.GPUBaremetalClusters = NewGPUBaremetalClusterService(opts...)
+	r.Instances = NewInstanceService(opts...)
 	return
 }
 
@@ -1353,6 +1353,813 @@ func (r *ImageList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// '#/components/schemas/InstanceSerializer'
+// "$.components.schemas.InstanceSerializer"
+type Instance struct {
+	// '#/components/schemas/InstanceSerializer/properties/addresses'
+	// "$.components.schemas.InstanceSerializer.properties.addresses"
+	Addresses map[string][]InstanceAddressUnion `json:"addresses,required"`
+	// '#/components/schemas/InstanceSerializer/properties/blackhole_ports'
+	// "$.components.schemas.InstanceSerializer.properties.blackhole_ports"
+	BlackholePorts []InstanceBlackholePort `json:"blackhole_ports,required"`
+	// '#/components/schemas/InstanceSerializer/properties/creator_task_id/anyOf/0'
+	// "$.components.schemas.InstanceSerializer.properties.creator_task_id.anyOf[0]"
+	CreatorTaskID string `json:"creator_task_id,required"`
+	// '#/components/schemas/InstanceSerializer/properties/ddos_profile/anyOf/0'
+	// "$.components.schemas.InstanceSerializer.properties.ddos_profile.anyOf[0]"
+	DDOSProfile DDOSProfile `json:"ddos_profile,required"`
+	// '#/components/schemas/InstanceSerializer/properties/fixed_ip_assignments/anyOf/0'
+	// "$.components.schemas.InstanceSerializer.properties.fixed_ip_assignments.anyOf[0]"
+	FixedIPAssignments []InstanceFixedIPAssignment `json:"fixed_ip_assignments,required"`
+	// '#/components/schemas/InstanceSerializer/properties/flavor'
+	// "$.components.schemas.InstanceSerializer.properties.flavor"
+	Flavor InstanceFlavorUnion `json:"flavor,required"`
+	// '#/components/schemas/InstanceSerializer/properties/instance_created'
+	// "$.components.schemas.InstanceSerializer.properties.instance_created"
+	InstanceCreated time.Time `json:"instance_created,required" format:"date-time"`
+	// '#/components/schemas/InstanceSerializer/properties/instance_description/anyOf/0'
+	// "$.components.schemas.InstanceSerializer.properties.instance_description.anyOf[0]"
+	InstanceDescription string `json:"instance_description,required"`
+	// '#/components/schemas/InstanceSerializer/properties/instance_id'
+	// "$.components.schemas.InstanceSerializer.properties.instance_id"
+	InstanceID string `json:"instance_id,required" format:"uuid4"`
+	// '#/components/schemas/InstanceSerializer/properties/instance_isolation/anyOf/0'
+	// "$.components.schemas.InstanceSerializer.properties.instance_isolation.anyOf[0]"
+	InstanceIsolation InstanceInstanceIsolation `json:"instance_isolation,required"`
+	// '#/components/schemas/InstanceSerializer/properties/instance_name'
+	// "$.components.schemas.InstanceSerializer.properties.instance_name"
+	InstanceName string `json:"instance_name,required"`
+	// '#/components/schemas/InstanceSerializer/properties/keypair_name/anyOf/0'
+	// "$.components.schemas.InstanceSerializer.properties.keypair_name.anyOf[0]"
+	KeypairName string `json:"keypair_name,required"`
+	// '#/components/schemas/InstanceSerializer/properties/project_id'
+	// "$.components.schemas.InstanceSerializer.properties.project_id"
+	ProjectID int64 `json:"project_id,required"`
+	// '#/components/schemas/InstanceSerializer/properties/region'
+	// "$.components.schemas.InstanceSerializer.properties.region"
+	Region string `json:"region,required"`
+	// '#/components/schemas/InstanceSerializer/properties/region_id'
+	// "$.components.schemas.InstanceSerializer.properties.region_id"
+	RegionID int64 `json:"region_id,required"`
+	// '#/components/schemas/InstanceSerializer/properties/security_groups'
+	// "$.components.schemas.InstanceSerializer.properties.security_groups"
+	SecurityGroups []InstanceSecurityGroup `json:"security_groups,required"`
+	// '#/components/schemas/InstanceSerializer/properties/status'
+	// "$.components.schemas.InstanceSerializer.properties.status"
+	//
+	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
+	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
+	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
+	// "UNKNOWN", "VERIFY_RESIZE".
+	Status InstanceStatus `json:"status,required"`
+	// '#/components/schemas/InstanceSerializer/properties/tags'
+	// "$.components.schemas.InstanceSerializer.properties.tags"
+	Tags []Tag `json:"tags,required"`
+	// '#/components/schemas/InstanceSerializer/properties/task_id/anyOf/0'
+	// "$.components.schemas.InstanceSerializer.properties.task_id.anyOf[0]"
+	TaskID string `json:"task_id,required"`
+	// '#/components/schemas/InstanceSerializer/properties/task_state/anyOf/0'
+	// "$.components.schemas.InstanceSerializer.properties.task_state.anyOf[0]"
+	TaskState string `json:"task_state,required"`
+	// '#/components/schemas/InstanceSerializer/properties/vm_state'
+	// "$.components.schemas.InstanceSerializer.properties.vm_state"
+	//
+	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
+	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
+	VmState InstanceVmState `json:"vm_state,required"`
+	// '#/components/schemas/InstanceSerializer/properties/volumes'
+	// "$.components.schemas.InstanceSerializer.properties.volumes"
+	Volumes []InstanceVolume `json:"volumes,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addresses           resp.Field
+		BlackholePorts      resp.Field
+		CreatorTaskID       resp.Field
+		DDOSProfile         resp.Field
+		FixedIPAssignments  resp.Field
+		Flavor              resp.Field
+		InstanceCreated     resp.Field
+		InstanceDescription resp.Field
+		InstanceID          resp.Field
+		InstanceIsolation   resp.Field
+		InstanceName        resp.Field
+		KeypairName         resp.Field
+		ProjectID           resp.Field
+		Region              resp.Field
+		RegionID            resp.Field
+		SecurityGroups      resp.Field
+		Status              resp.Field
+		Tags                resp.Field
+		TaskID              resp.Field
+		TaskState           resp.Field
+		VmState             resp.Field
+		Volumes             resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Instance) RawJSON() string { return r.JSON.raw }
+func (r *Instance) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InstanceAddressUnion contains all possible properties and values from
+// [InstanceAddressInstanceFloatingAddressSerializer],
+// [InstanceAddressInstanceFixedAddressShortSerializer],
+// [InstanceAddressInstanceFixedAddressSerializer].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InstanceAddressUnion struct {
+	Addr          string `json:"addr"`
+	Type          string `json:"type"`
+	InterfaceName string `json:"interface_name"`
+	// This field is from variant [InstanceAddressInstanceFixedAddressSerializer].
+	SubnetID string `json:"subnet_id"`
+	// This field is from variant [InstanceAddressInstanceFixedAddressSerializer].
+	SubnetName string `json:"subnet_name"`
+	JSON       struct {
+		Addr          resp.Field
+		Type          resp.Field
+		InterfaceName resp.Field
+		SubnetID      resp.Field
+		SubnetName    resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+func (u InstanceAddressUnion) AsFloatingIPAddress() (v InstanceAddressInstanceFloatingAddressSerializer) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InstanceAddressUnion) AsFixedIPAddressShort() (v InstanceAddressInstanceFixedAddressShortSerializer) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InstanceAddressUnion) AsFixedIPAddress() (v InstanceAddressInstanceFixedAddressSerializer) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InstanceAddressUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *InstanceAddressUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceSerializer/properties/addresses/additionalProperties/items/anyOf/0'
+// "$.components.schemas.InstanceSerializer.properties.addresses.additionalProperties.items.anyOf[0]"
+type InstanceAddressInstanceFloatingAddressSerializer struct {
+	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/addr'
+	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.addr"
+	Addr string `json:"addr,required"`
+	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/type'
+	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.type"
+	Type constant.Floating `json:"type,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addr        resp.Field
+		Type        resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceAddressInstanceFloatingAddressSerializer) RawJSON() string { return r.JSON.raw }
+func (r *InstanceAddressInstanceFloatingAddressSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceSerializer/properties/addresses/additionalProperties/items/anyOf/1'
+// "$.components.schemas.InstanceSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
+type InstanceAddressInstanceFixedAddressShortSerializer struct {
+	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/addr'
+	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.addr"
+	Addr string `json:"addr,required"`
+	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/interface_name/anyOf/0'
+	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.interface_name.anyOf[0]"
+	InterfaceName string `json:"interface_name,required"`
+	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/type'
+	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.type"
+	Type constant.Fixed `json:"type,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addr          resp.Field
+		InterfaceName resp.Field
+		Type          resp.Field
+		ExtraFields   map[string]resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceAddressInstanceFixedAddressShortSerializer) RawJSON() string { return r.JSON.raw }
+func (r *InstanceAddressInstanceFixedAddressShortSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceSerializer/properties/addresses/additionalProperties/items/anyOf/2'
+// "$.components.schemas.InstanceSerializer.properties.addresses.additionalProperties.items.anyOf[2]"
+type InstanceAddressInstanceFixedAddressSerializer struct {
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/addr'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.addr"
+	Addr string `json:"addr,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/interface_name/anyOf/0'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.interface_name.anyOf[0]"
+	InterfaceName string `json:"interface_name,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_id'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_id"
+	SubnetID string `json:"subnet_id,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_name'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_name"
+	SubnetName string `json:"subnet_name,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/type'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.type"
+	Type constant.Fixed `json:"type,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addr          resp.Field
+		InterfaceName resp.Field
+		SubnetID      resp.Field
+		SubnetName    resp.Field
+		Type          resp.Field
+		ExtraFields   map[string]resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceAddressInstanceFixedAddressSerializer) RawJSON() string { return r.JSON.raw }
+func (r *InstanceAddressInstanceFixedAddressSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceSerializer/properties/blackhole_ports/items'
+// "$.components.schemas.InstanceSerializer.properties.blackhole_ports.items"
+type InstanceBlackholePort struct {
+	// '#/components/schemas/BlackholePortSerializer/properties/AlarmEnd'
+	// "$.components.schemas.BlackholePortSerializer.properties.AlarmEnd"
+	AlarmEnd time.Time `json:"AlarmEnd,required" format:"date-time"`
+	// '#/components/schemas/BlackholePortSerializer/properties/AlarmStart'
+	// "$.components.schemas.BlackholePortSerializer.properties.AlarmStart"
+	AlarmStart time.Time `json:"AlarmStart,required" format:"date-time"`
+	// '#/components/schemas/BlackholePortSerializer/properties/AlarmState'
+	// "$.components.schemas.BlackholePortSerializer.properties.AlarmState"
+	//
+	// Any of "ACK_REQ", "ALARM", "ARCHIVED", "CLEAR", "CLEARING", "CLEARING_FAIL",
+	// "END_GRACE", "END_WAIT", "MANUAL_CLEAR", "MANUAL_CLEARING",
+	// "MANUAL_CLEARING_FAIL", "MANUAL_MITIGATING", "MANUAL_STARTING",
+	// "MANUAL_STARTING_FAIL", "MITIGATING", "STARTING", "STARTING_FAIL", "START_WAIT",
+	// "ack_req", "alarm", "archived", "clear", "clearing", "clearing_fail",
+	// "end_grace", "end_wait", "manual_clear", "manual_clearing",
+	// "manual_clearing_fail", "manual_mitigating", "manual_starting",
+	// "manual_starting_fail", "mitigating", "start_wait", "starting", "starting_fail".
+	AlarmState string `json:"AlarmState,required"`
+	// '#/components/schemas/BlackholePortSerializer/properties/AlertDuration'
+	// "$.components.schemas.BlackholePortSerializer.properties.AlertDuration"
+	AlertDuration string `json:"AlertDuration,required"`
+	// '#/components/schemas/BlackholePortSerializer/properties/DestinationIP'
+	// "$.components.schemas.BlackholePortSerializer.properties.DestinationIP"
+	DestinationIP string `json:"DestinationIP,required"`
+	// '#/components/schemas/BlackholePortSerializer/properties/ID'
+	// "$.components.schemas.BlackholePortSerializer.properties.ID"
+	ID int64 `json:"ID,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		AlarmEnd      resp.Field
+		AlarmStart    resp.Field
+		AlarmState    resp.Field
+		AlertDuration resp.Field
+		DestinationIP resp.Field
+		ID            resp.Field
+		ExtraFields   map[string]resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceBlackholePort) RawJSON() string { return r.JSON.raw }
+func (r *InstanceBlackholePort) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceSerializer/properties/fixed_ip_assignments/anyOf/0/items'
+// "$.components.schemas.InstanceSerializer.properties.fixed_ip_assignments.anyOf[0].items"
+type InstanceFixedIPAssignment struct {
+	// '#/components/schemas/IpAssignmentsSerializer/properties/external'
+	// "$.components.schemas.IpAssignmentsSerializer.properties.external"
+	External bool `json:"external,required"`
+	// '#/components/schemas/IpAssignmentsSerializer/properties/ip_address'
+	// "$.components.schemas.IpAssignmentsSerializer.properties.ip_address"
+	IPAddress string `json:"ip_address,required"`
+	// '#/components/schemas/IpAssignmentsSerializer/properties/subnet_id'
+	// "$.components.schemas.IpAssignmentsSerializer.properties.subnet_id"
+	SubnetID string `json:"subnet_id,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		External    resp.Field
+		IPAddress   resp.Field
+		SubnetID    resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceFixedIPAssignment) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFixedIPAssignment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InstanceFlavorUnion contains all possible properties and values from
+// [InstanceFlavorInstanceFlavorSerializer],
+// [InstanceFlavorBareMetalFlavorSerializer],
+// [InstanceFlavorDeprecatedGPUClusterFlavorSerializer].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InstanceFlavorUnion struct {
+	Architecture string `json:"architecture"`
+	FlavorID     string `json:"flavor_id"`
+	FlavorName   string `json:"flavor_name"`
+	// This field is a union of
+	// [InstanceFlavorInstanceFlavorSerializerHardwareDescription],
+	// [InstanceFlavorBareMetalFlavorSerializerHardwareDescription],
+	// [InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription]
+	HardwareDescription InstanceFlavorUnionHardwareDescription `json:"hardware_description"`
+	OsType              string                                 `json:"os_type"`
+	Ram                 int64                                  `json:"ram"`
+	Vcpus               int64                                  `json:"vcpus"`
+	ResourceClass       string                                 `json:"resource_class"`
+	JSON                struct {
+		Architecture        resp.Field
+		FlavorID            resp.Field
+		FlavorName          resp.Field
+		HardwareDescription resp.Field
+		OsType              resp.Field
+		Ram                 resp.Field
+		Vcpus               resp.Field
+		ResourceClass       resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+func (u InstanceFlavorUnion) AsInstanceFlavor() (v InstanceFlavorInstanceFlavorSerializer) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InstanceFlavorUnion) AsBareMetalFlavor() (v InstanceFlavorBareMetalFlavorSerializer) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InstanceFlavorUnion) AsGPUClusterFlavor() (v InstanceFlavorDeprecatedGPUClusterFlavorSerializer) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InstanceFlavorUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *InstanceFlavorUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InstanceFlavorUnionHardwareDescription is an implicit subunion of
+// [InstanceFlavorUnion]. InstanceFlavorUnionHardwareDescription provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [InstanceFlavorUnion].
+type InstanceFlavorUnionHardwareDescription struct {
+	Ram string `json:"ram"`
+	// This field is from variant
+	// [InstanceFlavorInstanceFlavorSerializerHardwareDescription].
+	Vcpus   string `json:"vcpus"`
+	CPU     string `json:"cpu"`
+	Disk    string `json:"disk"`
+	License string `json:"license"`
+	Network string `json:"network"`
+	// This field is from variant
+	// [InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription].
+	GPU  string `json:"gpu"`
+	JSON struct {
+		Ram     resp.Field
+		Vcpus   resp.Field
+		CPU     resp.Field
+		Disk    resp.Field
+		License resp.Field
+		Network resp.Field
+		GPU     resp.Field
+		raw     string
+	} `json:"-"`
+}
+
+func (r *InstanceFlavorUnionHardwareDescription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceSerializer/properties/flavor/anyOf/0'
+// "$.components.schemas.InstanceSerializer.properties.flavor.anyOf[0]"
+type InstanceFlavorInstanceFlavorSerializer struct {
+	// '#/components/schemas/InstanceFlavorSerializer/properties/architecture'
+	// "$.components.schemas.InstanceFlavorSerializer.properties.architecture"
+	Architecture string `json:"architecture,required"`
+	// '#/components/schemas/InstanceFlavorSerializer/properties/flavor_id'
+	// "$.components.schemas.InstanceFlavorSerializer.properties.flavor_id"
+	FlavorID string `json:"flavor_id,required"`
+	// '#/components/schemas/InstanceFlavorSerializer/properties/flavor_name'
+	// "$.components.schemas.InstanceFlavorSerializer.properties.flavor_name"
+	FlavorName string `json:"flavor_name,required"`
+	// '#/components/schemas/InstanceFlavorSerializer/properties/hardware_description'
+	// "$.components.schemas.InstanceFlavorSerializer.properties.hardware_description"
+	HardwareDescription InstanceFlavorInstanceFlavorSerializerHardwareDescription `json:"hardware_description,required"`
+	// '#/components/schemas/InstanceFlavorSerializer/properties/os_type'
+	// "$.components.schemas.InstanceFlavorSerializer.properties.os_type"
+	OsType string `json:"os_type,required"`
+	// '#/components/schemas/InstanceFlavorSerializer/properties/ram'
+	// "$.components.schemas.InstanceFlavorSerializer.properties.ram"
+	Ram int64 `json:"ram,required"`
+	// '#/components/schemas/InstanceFlavorSerializer/properties/vcpus'
+	// "$.components.schemas.InstanceFlavorSerializer.properties.vcpus"
+	Vcpus int64 `json:"vcpus,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Architecture        resp.Field
+		FlavorID            resp.Field
+		FlavorName          resp.Field
+		HardwareDescription resp.Field
+		OsType              resp.Field
+		Ram                 resp.Field
+		Vcpus               resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceFlavorInstanceFlavorSerializer) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorInstanceFlavorSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceFlavorSerializer/properties/hardware_description'
+// "$.components.schemas.InstanceFlavorSerializer.properties.hardware_description"
+type InstanceFlavorInstanceFlavorSerializerHardwareDescription struct {
+	// '#/components/schemas/InstanceFlavorHardwareDescriptionSerializer/properties/ram'
+	// "$.components.schemas.InstanceFlavorHardwareDescriptionSerializer.properties.ram"
+	Ram string `json:"ram,required"`
+	// '#/components/schemas/InstanceFlavorHardwareDescriptionSerializer/properties/vcpus'
+	// "$.components.schemas.InstanceFlavorHardwareDescriptionSerializer.properties.vcpus"
+	Vcpus string `json:"vcpus,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Ram         resp.Field
+		Vcpus       resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceFlavorInstanceFlavorSerializerHardwareDescription) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InstanceFlavorInstanceFlavorSerializerHardwareDescription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceSerializer/properties/flavor/anyOf/1'
+// "$.components.schemas.InstanceSerializer.properties.flavor.anyOf[1]"
+type InstanceFlavorBareMetalFlavorSerializer struct {
+	// '#/components/schemas/BareMetalFlavorSerializer/properties/architecture'
+	// "$.components.schemas.BareMetalFlavorSerializer.properties.architecture"
+	Architecture string `json:"architecture,required"`
+	// '#/components/schemas/BareMetalFlavorSerializer/properties/flavor_id'
+	// "$.components.schemas.BareMetalFlavorSerializer.properties.flavor_id"
+	FlavorID string `json:"flavor_id,required"`
+	// '#/components/schemas/BareMetalFlavorSerializer/properties/flavor_name'
+	// "$.components.schemas.BareMetalFlavorSerializer.properties.flavor_name"
+	FlavorName string `json:"flavor_name,required"`
+	// '#/components/schemas/BareMetalFlavorSerializer/properties/hardware_description'
+	// "$.components.schemas.BareMetalFlavorSerializer.properties.hardware_description"
+	HardwareDescription InstanceFlavorBareMetalFlavorSerializerHardwareDescription `json:"hardware_description,required"`
+	// '#/components/schemas/BareMetalFlavorSerializer/properties/os_type'
+	// "$.components.schemas.BareMetalFlavorSerializer.properties.os_type"
+	OsType string `json:"os_type,required"`
+	// '#/components/schemas/BareMetalFlavorSerializer/properties/ram'
+	// "$.components.schemas.BareMetalFlavorSerializer.properties.ram"
+	Ram int64 `json:"ram,required"`
+	// '#/components/schemas/BareMetalFlavorSerializer/properties/resource_class'
+	// "$.components.schemas.BareMetalFlavorSerializer.properties.resource_class"
+	ResourceClass string `json:"resource_class,required"`
+	// '#/components/schemas/BareMetalFlavorSerializer/properties/vcpus'
+	// "$.components.schemas.BareMetalFlavorSerializer.properties.vcpus"
+	Vcpus int64 `json:"vcpus,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Architecture        resp.Field
+		FlavorID            resp.Field
+		FlavorName          resp.Field
+		HardwareDescription resp.Field
+		OsType              resp.Field
+		Ram                 resp.Field
+		ResourceClass       resp.Field
+		Vcpus               resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceFlavorBareMetalFlavorSerializer) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorBareMetalFlavorSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/BareMetalFlavorSerializer/properties/hardware_description'
+// "$.components.schemas.BareMetalFlavorSerializer.properties.hardware_description"
+type InstanceFlavorBareMetalFlavorSerializerHardwareDescription struct {
+	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/cpu'
+	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.cpu"
+	CPU string `json:"cpu,required"`
+	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/disk'
+	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.disk"
+	Disk string `json:"disk,required"`
+	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/license'
+	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.license"
+	License string `json:"license,required"`
+	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/network'
+	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.network"
+	Network string `json:"network,required"`
+	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/ram'
+	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.ram"
+	Ram string `json:"ram,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		CPU         resp.Field
+		Disk        resp.Field
+		License     resp.Field
+		Network     resp.Field
+		Ram         resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceFlavorBareMetalFlavorSerializerHardwareDescription) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InstanceFlavorBareMetalFlavorSerializerHardwareDescription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceSerializer/properties/flavor/anyOf/2'
+// "$.components.schemas.InstanceSerializer.properties.flavor.anyOf[2]"
+type InstanceFlavorDeprecatedGPUClusterFlavorSerializer struct {
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/architecture'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.architecture"
+	Architecture string `json:"architecture,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/flavor_id'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.flavor_id"
+	FlavorID string `json:"flavor_id,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/flavor_name'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.flavor_name"
+	FlavorName string `json:"flavor_name,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/hardware_description'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.hardware_description"
+	HardwareDescription InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription `json:"hardware_description,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/os_type'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.os_type"
+	OsType string `json:"os_type,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/ram'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.ram"
+	Ram int64 `json:"ram,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/resource_class'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.resource_class"
+	ResourceClass string `json:"resource_class,required"`
+	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/vcpus'
+	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.vcpus"
+	Vcpus int64 `json:"vcpus,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Architecture        resp.Field
+		FlavorID            resp.Field
+		FlavorName          resp.Field
+		HardwareDescription resp.Field
+		OsType              resp.Field
+		Ram                 resp.Field
+		ResourceClass       resp.Field
+		Vcpus               resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceFlavorDeprecatedGPUClusterFlavorSerializer) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorDeprecatedGPUClusterFlavorSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/hardware_description'
+// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.hardware_description"
+type InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription struct {
+	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/cpu'
+	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.cpu"
+	CPU string `json:"cpu,required"`
+	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/disk'
+	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.disk"
+	Disk string `json:"disk,required"`
+	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/gpu'
+	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.gpu"
+	GPU string `json:"gpu,required"`
+	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/license'
+	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.license"
+	License string `json:"license,required"`
+	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/network'
+	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.network"
+	Network string `json:"network,required"`
+	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/ram'
+	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.ram"
+	Ram string `json:"ram,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		CPU         resp.Field
+		Disk        resp.Field
+		GPU         resp.Field
+		License     resp.Field
+		Network     resp.Field
+		Ram         resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceSerializer/properties/instance_isolation/anyOf/0'
+// "$.components.schemas.InstanceSerializer.properties.instance_isolation.anyOf[0]"
+type InstanceInstanceIsolation struct {
+	// '#/components/schemas/IsolationSerializer/properties/reason/anyOf/0'
+	// "$.components.schemas.IsolationSerializer.properties.reason.anyOf[0]"
+	Reason string `json:"reason,nullable"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Reason      resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceInstanceIsolation) RawJSON() string { return r.JSON.raw }
+func (r *InstanceInstanceIsolation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceSerializer/properties/security_groups/items'
+// "$.components.schemas.InstanceSerializer.properties.security_groups.items"
+type InstanceSecurityGroup struct {
+	// '#/components/schemas/NameSerializerPydantic/properties/name'
+	// "$.components.schemas.NameSerializerPydantic.properties.name"
+	Name string `json:"name,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Name        resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceSecurityGroup) RawJSON() string { return r.JSON.raw }
+func (r *InstanceSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceSerializer/properties/status'
+// "$.components.schemas.InstanceSerializer.properties.status"
+type InstanceStatus string
+
+const (
+	InstanceStatusActive           InstanceStatus = "ACTIVE"
+	InstanceStatusBuild            InstanceStatus = "BUILD"
+	InstanceStatusDeleted          InstanceStatus = "DELETED"
+	InstanceStatusError            InstanceStatus = "ERROR"
+	InstanceStatusHardReboot       InstanceStatus = "HARD_REBOOT"
+	InstanceStatusMigrating        InstanceStatus = "MIGRATING"
+	InstanceStatusPassword         InstanceStatus = "PASSWORD"
+	InstanceStatusPaused           InstanceStatus = "PAUSED"
+	InstanceStatusReboot           InstanceStatus = "REBOOT"
+	InstanceStatusRebuild          InstanceStatus = "REBUILD"
+	InstanceStatusRescue           InstanceStatus = "RESCUE"
+	InstanceStatusResize           InstanceStatus = "RESIZE"
+	InstanceStatusRevertResize     InstanceStatus = "REVERT_RESIZE"
+	InstanceStatusShelved          InstanceStatus = "SHELVED"
+	InstanceStatusShelvedOffloaded InstanceStatus = "SHELVED_OFFLOADED"
+	InstanceStatusShutoff          InstanceStatus = "SHUTOFF"
+	InstanceStatusSoftDeleted      InstanceStatus = "SOFT_DELETED"
+	InstanceStatusSuspended        InstanceStatus = "SUSPENDED"
+	InstanceStatusUnknown          InstanceStatus = "UNKNOWN"
+	InstanceStatusVerifyResize     InstanceStatus = "VERIFY_RESIZE"
+)
+
+// '#/components/schemas/InstanceSerializer/properties/vm_state'
+// "$.components.schemas.InstanceSerializer.properties.vm_state"
+type InstanceVmState string
+
+const (
+	InstanceVmStateActive           InstanceVmState = "active"
+	InstanceVmStateBuilding         InstanceVmState = "building"
+	InstanceVmStateDeleted          InstanceVmState = "deleted"
+	InstanceVmStateError            InstanceVmState = "error"
+	InstanceVmStatePaused           InstanceVmState = "paused"
+	InstanceVmStateRescued          InstanceVmState = "rescued"
+	InstanceVmStateResized          InstanceVmState = "resized"
+	InstanceVmStateShelved          InstanceVmState = "shelved"
+	InstanceVmStateShelvedOffloaded InstanceVmState = "shelved_offloaded"
+	InstanceVmStateSoftDeleted      InstanceVmState = "soft-deleted"
+	InstanceVmStateStopped          InstanceVmState = "stopped"
+	InstanceVmStateSuspended        InstanceVmState = "suspended"
+)
+
+// '#/components/schemas/InstanceSerializer/properties/volumes/items'
+// "$.components.schemas.InstanceSerializer.properties.volumes.items"
+type InstanceVolume struct {
+	// '#/components/schemas/InstanceVolumeSerializer/properties/id'
+	// "$.components.schemas.InstanceVolumeSerializer.properties.id"
+	ID string `json:"id,required"`
+	// '#/components/schemas/InstanceVolumeSerializer/properties/delete_on_termination'
+	// "$.components.schemas.InstanceVolumeSerializer.properties.delete_on_termination"
+	DeleteOnTermination bool `json:"delete_on_termination,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		ID                  resp.Field
+		DeleteOnTermination resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceVolume) RawJSON() string { return r.JSON.raw }
+func (r *InstanceVolume) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceCollectionSerializer'
+// "$.components.schemas.InstanceCollectionSerializer"
+type InstanceList struct {
+	// '#/components/schemas/InstanceCollectionSerializer/properties/count'
+	// "$.components.schemas.InstanceCollectionSerializer.properties.count"
+	Count int64 `json:"count,required"`
+	// '#/components/schemas/InstanceCollectionSerializer/properties/results'
+	// "$.components.schemas.InstanceCollectionSerializer.properties.results"
+	Results []Instance `json:"results,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Count       resp.Field
+		Results     resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceList) RawJSON() string { return r.JSON.raw }
+func (r *InstanceList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // '#/components/schemas/InstanceMetricsTimeUnitEnum'
 // "$.components.schemas.InstanceMetricsTimeUnitEnum"
 type InstanceMetricsTimeUnit string
@@ -2354,6 +3161,8 @@ func (r Tag) RawJSON() string { return r.JSON.raw }
 func (r *Tag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type TagUpdateList map[string]string
 
 // '#/components/schemas/TaskIDsSerializer'
 // "$.components.schemas.TaskIDsSerializer"

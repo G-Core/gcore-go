@@ -49,8 +49,8 @@ func TestGPUBaremetalClusterNewWithOptionalParams(t *testing.T) {
 		InstancesCount: gcore.Int(1),
 		KeypairName:    gcore.String("my-keypair"),
 		Password:       gcore.String("password"),
-		Tags: map[string]string{
-			"my-tag": "my-tag-value",
+		Tags: cloud.TagUpdateList{
+			"foo": "my-tag-value",
 		},
 		UserData: gcore.String("user_data"),
 		Username: gcore.String("username"),
