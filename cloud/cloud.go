@@ -36,6 +36,7 @@ type CloudService struct {
 	PlacementGroups     PlacementGroupService
 	Baremetal           BaremetalService
 	Instances           InstanceService
+	Registries          RegistryService
 	FileShares          FileShareService
 	BillingReservations BillingReservationService
 }
@@ -64,6 +65,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.PlacementGroups = NewPlacementGroupService(opts...)
 	r.Baremetal = NewBaremetalService(opts...)
 	r.Instances = NewInstanceService(opts...)
+	r.Registries = NewRegistryService(opts...)
 	r.FileShares = NewFileShareService(opts...)
 	r.BillingReservations = NewBillingReservationService(opts...)
 	return
