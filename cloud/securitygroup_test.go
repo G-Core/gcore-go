@@ -32,9 +32,6 @@ func TestSecurityGroupNewWithOptionalParams(t *testing.T) {
 		SecurityGroup: cloud.SecurityGroupNewParamsSecurityGroup{
 			Name:        "my_security_group",
 			Description: gcore.String("Some description"),
-			Metadata: map[string]any{
-				"my-tag": "bar",
-			},
 			SecurityGroupRules: []cloud.SecurityGroupNewParamsSecurityGroupSecurityGroupRule{{
 				Description:    gcore.String("Some description"),
 				Direction:      "ingress",
@@ -45,7 +42,9 @@ func TestSecurityGroupNewWithOptionalParams(t *testing.T) {
 				RemoteGroupID:  gcore.String("00000000-0000-4000-8000-000000000000"),
 				RemoteIPPrefix: gcore.String("10.0.0.0/8"),
 			}},
-			Tags: []string{"string"},
+			Tags: map[string]any{
+				"my-tag": "bar",
+			},
 		},
 		Instances: []string{"00000000-0000-4000-8000-000000000000"},
 	})
@@ -113,12 +112,12 @@ func TestSecurityGroupListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.SecurityGroups.List(context.TODO(), cloud.SecurityGroupListParams{
-		ProjectID:  gcore.Int(0),
-		RegionID:   gcore.Int(0),
-		Limit:      gcore.Int(0),
-		MetadataK:  gcore.String("metadata_k"),
-		MetadataKv: gcore.String("metadata_kv"),
-		Offset:     gcore.Int(0),
+		ProjectID:   gcore.Int(0),
+		RegionID:    gcore.Int(0),
+		Limit:       gcore.Int(0),
+		Offset:      gcore.Int(0),
+		TagKey:      []string{"string"},
+		TagKeyValue: gcore.String("tag_key_value"),
 	})
 	if err != nil {
 		var apierr *gcore.Error

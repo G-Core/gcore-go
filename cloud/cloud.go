@@ -384,11 +384,6 @@ type FloatingIP struct {
 	// '#/components/schemas/FloatingIPSerializer/properties/floating_ip_address/anyOf/0'
 	// "$.components.schemas.FloatingIPSerializer.properties.floating_ip_address.anyOf[0]"
 	FloatingIPAddress string `json:"floating_ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/FloatingIPSerializer/properties/metadata'
-	// "$.components.schemas.FloatingIPSerializer.properties.metadata"
-	//
-	// Deprecated: deprecated
-	Metadata []Tag `json:"metadata,required"`
 	// '#/components/schemas/FloatingIPSerializer/properties/port_id/anyOf/0'
 	// "$.components.schemas.FloatingIPSerializer.properties.port_id.anyOf[0]"
 	PortID string `json:"port_id,required" format:"uuid4"`
@@ -433,7 +428,6 @@ type FloatingIP struct {
 		DNSName           resp.Field
 		FixedIPAddress    resp.Field
 		FloatingIPAddress resp.Field
-		Metadata          resp.Field
 		PortID            resp.Field
 		ProjectID         resp.Field
 		Region            resp.Field
@@ -463,242 +457,6 @@ const (
 	FloatingIPStatusDown   FloatingIPStatus = "DOWN"
 	FloatingIPStatusError  FloatingIPStatus = "ERROR"
 )
-
-// '#/components/schemas/ImageSchema' "$.components.schemas.ImageSchema"
-type Image struct {
-	// '#/components/schemas/ImageSchema/properties/name'
-	// "$.components.schemas.ImageSchema.properties.name"
-	Name string `json:"name,required"`
-	// '#/components/schemas/ImageSchema/properties/id'
-	// "$.components.schemas.ImageSchema.properties.id"
-	ID string `json:"id"`
-	// '#/components/schemas/ImageSchema/properties/architecture'
-	// "$.components.schemas.ImageSchema.properties.architecture"
-	//
-	// Any of "aarch64", "x86_64".
-	Architecture ImageArchitecture `json:"architecture"`
-	// '#/components/schemas/ImageSchema/properties/created_at'
-	// "$.components.schemas.ImageSchema.properties.created_at"
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// '#/components/schemas/ImageSchema/properties/creator_task_id'
-	// "$.components.schemas.ImageSchema.properties.creator_task_id"
-	CreatorTaskID string `json:"creator_task_id"`
-	// '#/components/schemas/ImageSchema/properties/currency_code'
-	// "$.components.schemas.ImageSchema.properties.currency_code"
-	CurrencyCode string `json:"currency_code"`
-	// '#/components/schemas/ImageSchema/properties/description'
-	// "$.components.schemas.ImageSchema.properties.description"
-	Description string `json:"description"`
-	// '#/components/schemas/ImageSchema/properties/disk_format'
-	// "$.components.schemas.ImageSchema.properties.disk_format"
-	DiskFormat string `json:"disk_format"`
-	// '#/components/schemas/ImageSchema/properties/display_order'
-	// "$.components.schemas.ImageSchema.properties.display_order"
-	DisplayOrder int64 `json:"display_order"`
-	// '#/components/schemas/ImageSchema/properties/hw_firmware_type'
-	// "$.components.schemas.ImageSchema.properties.hw_firmware_type"
-	//
-	// Any of "bios", "uefi".
-	HwFirmwareType ImageHwFirmwareType `json:"hw_firmware_type"`
-	// '#/components/schemas/ImageSchema/properties/hw_machine_type'
-	// "$.components.schemas.ImageSchema.properties.hw_machine_type"
-	//
-	// Any of "i440", "q35".
-	HwMachineType ImageHwMachineType `json:"hw_machine_type"`
-	// '#/components/schemas/ImageSchema/properties/internally_shared'
-	// "$.components.schemas.ImageSchema.properties.internally_shared"
-	InternallyShared bool `json:"internally_shared"`
-	// '#/components/schemas/ImageSchema/properties/is_baremetal'
-	// "$.components.schemas.ImageSchema.properties.is_baremetal"
-	IsBaremetal bool `json:"is_baremetal"`
-	// '#/components/schemas/ImageSchema/properties/metadata'
-	// "$.components.schemas.ImageSchema.properties.metadata"
-	Metadata any `json:"metadata"`
-	// '#/components/schemas/ImageSchema/properties/metadata_detailed'
-	// "$.components.schemas.ImageSchema.properties.metadata_detailed"
-	MetadataDetailed any `json:"metadata_detailed"`
-	// '#/components/schemas/ImageSchema/properties/min_disk'
-	// "$.components.schemas.ImageSchema.properties.min_disk"
-	MinDisk int64 `json:"min_disk"`
-	// '#/components/schemas/ImageSchema/properties/min_ram'
-	// "$.components.schemas.ImageSchema.properties.min_ram"
-	MinRam int64 `json:"min_ram"`
-	// '#/components/schemas/ImageSchema/properties/os_distro'
-	// "$.components.schemas.ImageSchema.properties.os_distro"
-	OsDistro string `json:"os_distro"`
-	// '#/components/schemas/ImageSchema/properties/os_type'
-	// "$.components.schemas.ImageSchema.properties.os_type"
-	//
-	// Any of "linux", "windows".
-	OsType ImageOsType `json:"os_type"`
-	// '#/components/schemas/ImageSchema/properties/os_version'
-	// "$.components.schemas.ImageSchema.properties.os_version"
-	OsVersion string `json:"os_version"`
-	// '#/components/schemas/ImageSchema/properties/price_per_hour'
-	// "$.components.schemas.ImageSchema.properties.price_per_hour"
-	PricePerHour float64 `json:"price_per_hour"`
-	// '#/components/schemas/ImageSchema/properties/price_per_month'
-	// "$.components.schemas.ImageSchema.properties.price_per_month"
-	PricePerMonth float64 `json:"price_per_month"`
-	// '#/components/schemas/ImageSchema/properties/price_status'
-	// "$.components.schemas.ImageSchema.properties.price_status"
-	//
-	// Any of "error", "hide", "show".
-	PriceStatus ImagePriceStatus `json:"price_status"`
-	// '#/components/schemas/ImageSchema/properties/project_id'
-	// "$.components.schemas.ImageSchema.properties.project_id"
-	ProjectID int64 `json:"project_id"`
-	// '#/components/schemas/ImageSchema/properties/region'
-	// "$.components.schemas.ImageSchema.properties.region"
-	Region string `json:"region"`
-	// '#/components/schemas/ImageSchema/properties/region_id'
-	// "$.components.schemas.ImageSchema.properties.region_id"
-	RegionID int64 `json:"region_id"`
-	// '#/components/schemas/ImageSchema/properties/size'
-	// "$.components.schemas.ImageSchema.properties.size"
-	Size int64 `json:"size"`
-	// '#/components/schemas/ImageSchema/properties/ssh_key'
-	// "$.components.schemas.ImageSchema.properties.ssh_key"
-	//
-	// Any of "allow", "deny", "required".
-	SSHKey ImageSSHKey `json:"ssh_key"`
-	// '#/components/schemas/ImageSchema/properties/status'
-	// "$.components.schemas.ImageSchema.properties.status"
-	Status string `json:"status"`
-	// '#/components/schemas/ImageSchema/properties/task_id'
-	// "$.components.schemas.ImageSchema.properties.task_id"
-	TaskID string `json:"task_id"`
-	// '#/components/schemas/ImageSchema/properties/updated_at'
-	// "$.components.schemas.ImageSchema.properties.updated_at"
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// '#/components/schemas/ImageSchema/properties/visibility'
-	// "$.components.schemas.ImageSchema.properties.visibility"
-	Visibility string `json:"visibility"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Name             resp.Field
-		ID               resp.Field
-		Architecture     resp.Field
-		CreatedAt        resp.Field
-		CreatorTaskID    resp.Field
-		CurrencyCode     resp.Field
-		Description      resp.Field
-		DiskFormat       resp.Field
-		DisplayOrder     resp.Field
-		HwFirmwareType   resp.Field
-		HwMachineType    resp.Field
-		InternallyShared resp.Field
-		IsBaremetal      resp.Field
-		Metadata         resp.Field
-		MetadataDetailed resp.Field
-		MinDisk          resp.Field
-		MinRam           resp.Field
-		OsDistro         resp.Field
-		OsType           resp.Field
-		OsVersion        resp.Field
-		PricePerHour     resp.Field
-		PricePerMonth    resp.Field
-		PriceStatus      resp.Field
-		ProjectID        resp.Field
-		Region           resp.Field
-		RegionID         resp.Field
-		Size             resp.Field
-		SSHKey           resp.Field
-		Status           resp.Field
-		TaskID           resp.Field
-		UpdatedAt        resp.Field
-		Visibility       resp.Field
-		ExtraFields      map[string]resp.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Image) RawJSON() string { return r.JSON.raw }
-func (r *Image) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/ImageSchema/properties/architecture'
-// "$.components.schemas.ImageSchema.properties.architecture"
-type ImageArchitecture string
-
-const (
-	ImageArchitectureAarch64 ImageArchitecture = "aarch64"
-	ImageArchitectureX86_64  ImageArchitecture = "x86_64"
-)
-
-// '#/components/schemas/ImageSchema/properties/hw_firmware_type'
-// "$.components.schemas.ImageSchema.properties.hw_firmware_type"
-type ImageHwFirmwareType string
-
-const (
-	ImageHwFirmwareTypeBios ImageHwFirmwareType = "bios"
-	ImageHwFirmwareTypeUefi ImageHwFirmwareType = "uefi"
-)
-
-// '#/components/schemas/ImageSchema/properties/hw_machine_type'
-// "$.components.schemas.ImageSchema.properties.hw_machine_type"
-type ImageHwMachineType string
-
-const (
-	ImageHwMachineTypeI440 ImageHwMachineType = "i440"
-	ImageHwMachineTypeQ35  ImageHwMachineType = "q35"
-)
-
-// '#/components/schemas/ImageSchema/properties/os_type'
-// "$.components.schemas.ImageSchema.properties.os_type"
-type ImageOsType string
-
-const (
-	ImageOsTypeLinux   ImageOsType = "linux"
-	ImageOsTypeWindows ImageOsType = "windows"
-)
-
-// '#/components/schemas/ImageSchema/properties/price_status'
-// "$.components.schemas.ImageSchema.properties.price_status"
-type ImagePriceStatus string
-
-const (
-	ImagePriceStatusError ImagePriceStatus = "error"
-	ImagePriceStatusHide  ImagePriceStatus = "hide"
-	ImagePriceStatusShow  ImagePriceStatus = "show"
-)
-
-// '#/components/schemas/ImageSchema/properties/ssh_key'
-// "$.components.schemas.ImageSchema.properties.ssh_key"
-type ImageSSHKey string
-
-const (
-	ImageSSHKeyAllow    ImageSSHKey = "allow"
-	ImageSSHKeyDeny     ImageSSHKey = "deny"
-	ImageSSHKeyRequired ImageSSHKey = "required"
-)
-
-// '#/components/schemas/ImageListSchema' "$.components.schemas.ImageListSchema"
-type ImageList struct {
-	// '#/components/schemas/ImageListSchema/properties/count'
-	// "$.components.schemas.ImageListSchema.properties.count"
-	Count int64 `json:"count"`
-	// '#/components/schemas/ImageListSchema/properties/results'
-	// "$.components.schemas.ImageListSchema.properties.results"
-	Results []Image `json:"results"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ImageList) RawJSON() string { return r.JSON.raw }
-func (r *ImageList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 // '#/components/schemas/InstanceMetricsTimeUnitEnum'
 // "$.components.schemas.InstanceMetricsTimeUnitEnum"
@@ -759,6 +517,9 @@ type LoadBalancer struct {
 	// '#/components/schemas/LoadbalancerSerializer/properties/region_id'
 	// "$.components.schemas.LoadbalancerSerializer.properties.region_id"
 	RegionID int64 `json:"region_id,required"`
+	// '#/components/schemas/LoadbalancerSerializer/properties/tags_v2'
+	// "$.components.schemas.LoadbalancerSerializer.properties.tags_v2"
+	TagsV2 []Tag `json:"tags_v2,required"`
 	// '#/components/schemas/LoadbalancerSerializer/properties/additional_vips'
 	// "$.components.schemas.LoadbalancerSerializer.properties.additional_vips"
 	AdditionalVips []LoadBalancerAdditionalVip `json:"additional_vips"`
@@ -780,9 +541,6 @@ type LoadBalancer struct {
 	// '#/components/schemas/LoadbalancerSerializer/properties/logging/anyOf/0'
 	// "$.components.schemas.LoadbalancerSerializer.properties.logging.anyOf[0]"
 	Logging Logging `json:"logging,nullable"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/metadata'
-	// "$.components.schemas.LoadbalancerSerializer.properties.metadata"
-	Metadata []Tag `json:"metadata"`
 	// '#/components/schemas/LoadbalancerSerializer/properties/preferred_connectivity'
 	// "$.components.schemas.LoadbalancerSerializer.properties.preferred_connectivity"
 	//
@@ -822,6 +580,7 @@ type LoadBalancer struct {
 		ProvisioningStatus    resp.Field
 		Region                resp.Field
 		RegionID              resp.Field
+		TagsV2                resp.Field
 		AdditionalVips        resp.Field
 		CreatorTaskID         resp.Field
 		DDOSProfile           resp.Field
@@ -829,7 +588,6 @@ type LoadBalancer struct {
 		FloatingIPs           resp.Field
 		Listeners             resp.Field
 		Logging               resp.Field
-		Metadata              resp.Field
 		PreferredConnectivity resp.Field
 		Stats                 resp.Field
 		TaskID                resp.Field
@@ -1040,11 +798,6 @@ type Network struct {
 	// '#/components/schemas/NetworkSerializer/properties/external'
 	// "$.components.schemas.NetworkSerializer.properties.external"
 	External bool `json:"external,required"`
-	// '#/components/schemas/NetworkSerializer/properties/metadata'
-	// "$.components.schemas.NetworkSerializer.properties.metadata"
-	//
-	// Deprecated: deprecated
-	Metadata []Tag `json:"metadata,required"`
 	// '#/components/schemas/NetworkSerializer/properties/name'
 	// "$.components.schemas.NetworkSerializer.properties.name"
 	Name string `json:"name,required"`
@@ -1096,7 +849,6 @@ type Network struct {
 		ID                  resp.Field
 		CreatedAt           resp.Field
 		External            resp.Field
-		Metadata            resp.Field
 		Name                resp.Field
 		PortSecurityEnabled resp.Field
 		Region              resp.Field
@@ -1194,11 +946,6 @@ type Subnet struct {
 	// '#/components/schemas/SubnetSerializer/properties/host_routes/anyOf/0'
 	// "$.components.schemas.SubnetSerializer.properties.host_routes.anyOf[0]"
 	HostRoutes []SubnetHostRoute `json:"host_routes,nullable"`
-	// '#/components/schemas/SubnetSerializer/properties/metadata'
-	// "$.components.schemas.SubnetSerializer.properties.metadata"
-	//
-	// Deprecated: deprecated
-	Metadata []Tag `json:"metadata"`
 	// '#/components/schemas/SubnetSerializer/properties/task_id/anyOf/0'
 	// "$.components.schemas.SubnetSerializer.properties.task_id.anyOf[0]"
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
@@ -1226,7 +973,6 @@ type Subnet struct {
 		GatewayIP      resp.Field
 		HasRouter      resp.Field
 		HostRoutes     resp.Field
-		Metadata       resp.Field
 		TaskID         resp.Field
 		TotalIPs       resp.Field
 		ExtraFields    map[string]resp.Field

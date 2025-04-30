@@ -31,7 +31,7 @@ func TestNetworkNewWithOptionalParams(t *testing.T) {
 		RegionID:     gcore.Int(0),
 		Name:         "my network",
 		CreateRouter: gcore.Bool(true),
-		Metadata: map[string]string{
+		Tags: map[string]string{
 			"my-tag": "my-tag-value",
 		},
 		Type: cloud.NetworkNewParamsTypeVxlan,
@@ -88,13 +88,13 @@ func TestNetworkListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Networks.List(context.TODO(), cloud.NetworkListParams{
-		ProjectID:  gcore.Int(0),
-		RegionID:   gcore.Int(0),
-		Limit:      gcore.Int(0),
-		MetadataK:  gcore.String("metadata_k"),
-		MetadataKv: gcore.String("metadata_kv"),
-		Offset:     gcore.Int(0),
-		OrderBy:    gcore.String("order_by"),
+		ProjectID:   gcore.Int(0),
+		RegionID:    gcore.Int(0),
+		Limit:       gcore.Int(0),
+		Offset:      gcore.Int(0),
+		OrderBy:     gcore.String("order_by"),
+		TagKey:      []string{"string"},
+		TagKeyValue: gcore.String("tag_key_value"),
 	})
 	if err != nil {
 		var apierr *gcore.Error

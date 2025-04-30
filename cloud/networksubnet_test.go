@@ -40,11 +40,11 @@ func TestNetworkSubnetNewWithOptionalParams(t *testing.T) {
 			Destination: "10.0.3.0/24",
 			Nexthop:     "10.0.0.13",
 		}},
-		IPVersion: 4,
-		Metadata: map[string]string{
+		IPVersion:         4,
+		RouterIDToConnect: gcore.String("00000000-0000-4000-8000-000000000000"),
+		Tags: map[string]string{
 			"my-tag": "my-tag-value",
 		},
-		RouterIDToConnect: gcore.String("00000000-0000-4000-8000-000000000000"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -105,14 +105,14 @@ func TestNetworkSubnetListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Networks.Subnets.List(context.TODO(), cloud.NetworkSubnetListParams{
-		ProjectID:  gcore.Int(1),
-		RegionID:   gcore.Int(1),
-		Limit:      gcore.Int(1000),
-		MetadataK:  []string{"key1", "key2"},
-		MetadataKv: gcore.String("metadata_kv"),
-		NetworkID:  gcore.String("b30d0de7-bca2-4c83-9c57-9e645bd2cc92"),
-		Offset:     gcore.Int(0),
-		OrderBy:    cloud.NetworkSubnetListParamsOrderByNameAsc,
+		ProjectID:   gcore.Int(1),
+		RegionID:    gcore.Int(1),
+		Limit:       gcore.Int(1000),
+		NetworkID:   gcore.String("b30d0de7-bca2-4c83-9c57-9e645bd2cc92"),
+		Offset:      gcore.Int(0),
+		OrderBy:     cloud.NetworkSubnetListParamsOrderByNameAsc,
+		TagKey:      []string{"key1", "key2"},
+		TagKeyValue: gcore.String("tag_key_value"),
 	})
 	if err != nil {
 		var apierr *gcore.Error

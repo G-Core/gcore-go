@@ -323,11 +323,6 @@ type Volume struct {
 	// '#/components/schemas/VolumeSerializer/properties/is_root_volume'
 	// "$.components.schemas.VolumeSerializer.properties.is_root_volume"
 	IsRootVolume bool `json:"is_root_volume,required"`
-	// '#/components/schemas/VolumeSerializer/properties/metadata_detailed'
-	// "$.components.schemas.VolumeSerializer.properties.metadata_detailed"
-	//
-	// Deprecated: deprecated
-	MetadataDetailed []Tag `json:"metadata_detailed,required"`
 	// '#/components/schemas/VolumeSerializer/properties/name'
 	// "$.components.schemas.VolumeSerializer.properties.name"
 	Name string `json:"name,required"`
@@ -367,11 +362,6 @@ type Volume struct {
 	// '#/components/schemas/VolumeSerializer/properties/limiter_stats/anyOf/0'
 	// "$.components.schemas.VolumeSerializer.properties.limiter_stats.anyOf[0]"
 	LimiterStats VolumeLimiterStats `json:"limiter_stats,nullable"`
-	// '#/components/schemas/VolumeSerializer/properties/metadata/anyOf/0'
-	// "$.components.schemas.VolumeSerializer.properties.metadata.anyOf[0]"
-	//
-	// Deprecated: deprecated
-	Metadata map[string]string `json:"metadata,nullable"`
 	// '#/components/schemas/VolumeSerializer/properties/snapshot_ids/anyOf/0'
 	// "$.components.schemas.VolumeSerializer.properties.snapshot_ids.anyOf[0]"
 	SnapshotIDs []string `json:"snapshot_ids,nullable"`
@@ -391,7 +381,6 @@ type Volume struct {
 		Bootable            resp.Field
 		CreatedAt           resp.Field
 		IsRootVolume        resp.Field
-		MetadataDetailed    resp.Field
 		Name                resp.Field
 		ProjectID           resp.Field
 		Region              resp.Field
@@ -403,7 +392,6 @@ type Volume struct {
 		Attachments         resp.Field
 		CreatorTaskID       resp.Field
 		LimiterStats        resp.Field
-		Metadata            resp.Field
 		SnapshotIDs         resp.Field
 		TaskID              resp.Field
 		UpdatedAt           resp.Field
@@ -583,9 +571,9 @@ type VolumeNewParamsBodyCreateVolumeFromImageSerializer struct {
 	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/lifecycle_policy_ids'
 	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.lifecycle_policy_ids"
 	LifecyclePolicyIDs []int64 `json:"lifecycle_policy_ids,omitzero"`
-	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/metadata'
-	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.metadata"
-	Metadata map[string]string `json:"metadata,omitzero"`
+	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/tags'
+	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.tags"
+	Tags map[string]string `json:"tags,omitzero"`
 	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/type_name'
 	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.type_name"
 	//
@@ -638,9 +626,9 @@ type VolumeNewParamsBodyCreateVolumeFromSnapshotSerializer struct {
 	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/lifecycle_policy_ids'
 	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.lifecycle_policy_ids"
 	LifecyclePolicyIDs []int64 `json:"lifecycle_policy_ids,omitzero"`
-	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/metadata'
-	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.metadata"
-	Metadata map[string]string `json:"metadata,omitzero"`
+	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/tags'
+	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.tags"
+	Tags map[string]string `json:"tags,omitzero"`
 	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/type_name'
 	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.type_name"
 	//
@@ -690,9 +678,9 @@ type VolumeNewParamsBodyCreateNewVolumeSerializer struct {
 	// '#/components/schemas/CreateNewVolumeSerializer/properties/lifecycle_policy_ids'
 	// "$.components.schemas.CreateNewVolumeSerializer.properties.lifecycle_policy_ids"
 	LifecyclePolicyIDs []int64 `json:"lifecycle_policy_ids,omitzero"`
-	// '#/components/schemas/CreateNewVolumeSerializer/properties/metadata'
-	// "$.components.schemas.CreateNewVolumeSerializer.properties.metadata"
-	Metadata map[string]string `json:"metadata,omitzero"`
+	// '#/components/schemas/CreateNewVolumeSerializer/properties/tags'
+	// "$.components.schemas.CreateNewVolumeSerializer.properties.tags"
+	Tags map[string]string `json:"tags,omitzero"`
 	// '#/components/schemas/CreateNewVolumeSerializer/properties/type_name'
 	// "$.components.schemas.CreateNewVolumeSerializer.properties.type_name"
 	//
@@ -769,18 +757,18 @@ type VolumeListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/7'
 	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[7]"
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/9'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[9]"
-	MetadataKv param.Opt[string] `query:"metadata_kv,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/10'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[10]"
-	NamePart param.Opt[string] `query:"name_part,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/11'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[11]"
-	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/8'
 	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[8]"
-	MetadataK []string `query:"metadata_k,omitzero" json:"-"`
+	NamePart param.Opt[string] `query:"name_part,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/9'
+	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[9]"
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/11'
+	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[11]"
+	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/10'
+	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[10]"
+	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
 

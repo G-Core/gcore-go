@@ -207,14 +207,14 @@ type NetworkSubnetNewParams struct {
 	// '#/components/schemas/CreateSubnetSerializer/properties/host_routes/anyOf/0'
 	// "$.components.schemas.CreateSubnetSerializer.properties.host_routes.anyOf[0]"
 	HostRoutes []NetworkSubnetNewParamsHostRoute `json:"host_routes,omitzero"`
-	// '#/components/schemas/CreateSubnetSerializer/properties/metadata/anyOf/0'
-	// "$.components.schemas.CreateSubnetSerializer.properties.metadata.anyOf[0]"
-	Metadata map[string]string `json:"metadata,omitzero"`
 	// '#/components/schemas/CreateSubnetSerializer/properties/ip_version'
 	// "$.components.schemas.CreateSubnetSerializer.properties.ip_version"
 	//
 	// Any of 4, 6.
 	IPVersion int64 `json:"ip_version,omitzero"`
+	// '#/components/schemas/CreateSubnetSerializer/properties/tags'
+	// "$.components.schemas.CreateSubnetSerializer.properties.tags"
+	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -317,25 +317,25 @@ type NetworkSubnetListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[2]"
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[4]"
-	MetadataKv param.Opt[string] `query:"metadata_kv,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[5]"
-	NetworkID param.Opt[string] `query:"network_id,omitzero" format:"uuid4" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[6]"
-	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[3]"
-	MetadataK []string `query:"metadata_k,omitzero" json:"-"`
+	NetworkID param.Opt[string] `query:"network_id,omitzero" format:"uuid4" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
+	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[4]"
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/7'
 	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[7]"
+	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
+	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[5]"
 	//
 	// Any of "available_ips.asc", "available_ips.desc", "cidr.asc", "cidr.desc",
 	// "created_at.asc", "created_at.desc", "name.asc", "name.desc", "total_ips.asc",
 	// "total_ips.desc", "updated_at.asc", "updated_at.desc".
 	OrderBy NetworkSubnetListParamsOrderBy `query:"order_by,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
+	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[6]"
+	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
 
@@ -352,8 +352,8 @@ func (r NetworkSubnetListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/7'
-// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[7]"
+// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
+// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[5]"
 type NetworkSubnetListParamsOrderBy string
 
 const (

@@ -219,16 +219,6 @@ type FileShare struct {
 	// '#/components/schemas/FileShareSerializer/properties/creator_task_id'
 	// "$.components.schemas.FileShareSerializer.properties.creator_task_id"
 	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
-	// '#/components/schemas/FileShareSerializer/properties/metadata'
-	// "$.components.schemas.FileShareSerializer.properties.metadata"
-	//
-	// Deprecated: deprecated
-	Metadata map[string]string `json:"metadata,required"`
-	// '#/components/schemas/FileShareSerializer/properties/metadata_detailed'
-	// "$.components.schemas.FileShareSerializer.properties.metadata_detailed"
-	//
-	// Deprecated: deprecated
-	MetadataDetailed []Tag `json:"metadata_detailed,required"`
 	// '#/components/schemas/FileShareSerializer/properties/name'
 	// "$.components.schemas.FileShareSerializer.properties.name"
 	Name string `json:"name,required"`
@@ -291,8 +281,6 @@ type FileShare struct {
 		ConnectionPoint  resp.Field
 		CreatedAt        resp.Field
 		CreatorTaskID    resp.Field
-		Metadata         resp.Field
-		MetadataDetailed resp.Field
 		Name             resp.Field
 		NetworkID        resp.Field
 		NetworkName      resp.Field
@@ -413,9 +401,9 @@ type FileShareNewParamsBodyCreateStandardFileShareSerializer struct {
 	// '#/components/schemas/CreateStandardFileShareSerializer/properties/access'
 	// "$.components.schemas.CreateStandardFileShareSerializer.properties.access"
 	Access []FileShareNewParamsBodyCreateStandardFileShareSerializerAccess `json:"access,omitzero"`
-	// '#/components/schemas/CreateStandardFileShareSerializer/properties/metadata'
-	// "$.components.schemas.CreateStandardFileShareSerializer.properties.metadata"
-	Metadata map[string]string `json:"metadata,omitzero"`
+	// '#/components/schemas/CreateStandardFileShareSerializer/properties/tags'
+	// "$.components.schemas.CreateStandardFileShareSerializer.properties.tags"
+	Tags map[string]string `json:"tags,omitzero"`
 	// '#/components/schemas/CreateStandardFileShareSerializer/properties/volume_type'
 	// "$.components.schemas.CreateStandardFileShareSerializer.properties.volume_type"
 	//
@@ -512,9 +500,9 @@ type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
 	// '#/components/schemas/CreateVastFileShareSerializer/properties/size'
 	// "$.components.schemas.CreateVastFileShareSerializer.properties.size"
 	Size int64 `json:"size,required"`
-	// '#/components/schemas/CreateVastFileShareSerializer/properties/metadata'
-	// "$.components.schemas.CreateVastFileShareSerializer.properties.metadata"
-	Metadata map[string]string `json:"metadata,omitzero"`
+	// '#/components/schemas/CreateVastFileShareSerializer/properties/tags'
+	// "$.components.schemas.CreateVastFileShareSerializer.properties.tags"
+	Tags map[string]string `json:"tags,omitzero"`
 	// '#/components/schemas/CreateVastFileShareSerializer/properties/protocol'
 	// "$.components.schemas.CreateVastFileShareSerializer.properties.protocol"
 	//

@@ -30,10 +30,10 @@ func TestFloatingIPNewWithOptionalParams(t *testing.T) {
 		ProjectID:      gcore.Int(1),
 		RegionID:       gcore.Int(1),
 		FixedIPAddress: gcore.String("192.168.10.15"),
-		Metadata: map[string]string{
+		PortID:         gcore.String("ee2402d0-f0cd-4503-9b75-69be1d11c5f1"),
+		Tags: map[string]string{
 			"my-tag": "my-tag-value",
 		},
-		PortID: gcore.String("ee2402d0-f0cd-4503-9b75-69be1d11c5f1"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -57,12 +57,12 @@ func TestFloatingIPListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.FloatingIPs.List(context.TODO(), cloud.FloatingIPListParams{
-		ProjectID:  gcore.Int(1),
-		RegionID:   gcore.Int(1),
-		Limit:      gcore.Int(1000),
-		MetadataK:  []string{"key1", "key2"},
-		MetadataKv: gcore.String("metadata_kv"),
-		Offset:     gcore.Int(0),
+		ProjectID:   gcore.Int(1),
+		RegionID:    gcore.Int(1),
+		Limit:       gcore.Int(1000),
+		Offset:      gcore.Int(0),
+		TagKey:      []string{"key1", "key2"},
+		TagKeyValue: gcore.String("tag_key_value"),
 	})
 	if err != nil {
 		var apierr *gcore.Error

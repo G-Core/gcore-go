@@ -33,12 +33,14 @@ func TestInstanceImageUpdateWithOptionalParams(t *testing.T) {
 			ProjectID:      gcore.Int(0),
 			RegionID:       gcore.Int(0),
 			HwFirmwareType: cloud.InstanceImageUpdateParamsHwFirmwareTypeBios,
-			HwMachineType:  cloud.InstanceImageUpdateParamsHwMachineTypeI440,
-			IsBaremetal:    gcore.Bool(true),
-			Metadata:       map[string]interface{}{},
-			Name:           gcore.String("string"),
+			HwMachineType:  cloud.InstanceImageUpdateParamsHwMachineTypeQ35,
+			IsBaremetal:    gcore.Bool(false),
+			Name:           gcore.String("my-image"),
 			OsType:         cloud.InstanceImageUpdateParamsOsTypeLinux,
 			SSHKey:         cloud.InstanceImageUpdateParamsSSHKeyAllow,
+			Tags: map[string]string{
+				"my-tag": "my-tag-value",
+			},
 		},
 	)
 	if err != nil {
@@ -66,9 +68,9 @@ func TestInstanceImageListWithOptionalParams(t *testing.T) {
 		ProjectID:     gcore.Int(0),
 		RegionID:      gcore.Int(0),
 		IncludePrices: gcore.Bool(true),
-		MetadataK:     gcore.String("metadata_k"),
-		MetadataKv:    gcore.String("metadata_kv"),
 		Private:       gcore.String("private"),
+		TagKey:        []string{"string"},
+		TagKeyValue:   gcore.String("tag_key_value"),
 		Visibility:    cloud.InstanceImageListParamsVisibilityPrivate,
 	})
 	if err != nil {
@@ -124,18 +126,18 @@ func TestInstanceImageNewFromVolumeWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.Instances.Images.NewFromVolume(context.TODO(), cloud.InstanceImageNewFromVolumeParams{
 		ProjectID:      gcore.Int(0),
 		RegionID:       gcore.Int(0),
-		Name:           "test_image",
+		Name:           "my-image",
 		VolumeID:       "d478ae29-dedc-4869-82f0-96104425f565",
 		Architecture:   cloud.InstanceImageNewFromVolumeParamsArchitectureX86_64,
 		HwFirmwareType: cloud.InstanceImageNewFromVolumeParamsHwFirmwareTypeBios,
 		HwMachineType:  cloud.InstanceImageNewFromVolumeParamsHwMachineTypeQ35,
 		IsBaremetal:    gcore.Bool(false),
-		Metadata: map[string]interface{}{
-			"key": "value",
+		OsType:         cloud.InstanceImageNewFromVolumeParamsOsTypeLinux,
+		Source:         cloud.InstanceImageNewFromVolumeParamsSourceVolume,
+		SSHKey:         cloud.InstanceImageNewFromVolumeParamsSSHKeyAllow,
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
 		},
-		OsType: cloud.InstanceImageNewFromVolumeParamsOsTypeLinux,
-		Source: gcore.String("volume"),
-		SSHKey: cloud.InstanceImageNewFromVolumeParamsSSHKeyAllow,
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -165,10 +167,6 @@ func TestInstanceImageGetWithOptionalParams(t *testing.T) {
 			ProjectID:     gcore.Int(0),
 			RegionID:      gcore.Int(0),
 			IncludePrices: gcore.Bool(true),
-			MetadataK:     gcore.String("metadata_k"),
-			MetadataKv:    gcore.String("metadata_kv"),
-			Private:       gcore.String("private"),
-			Visibility:    cloud.InstanceImageGetParamsVisibilityPrivate,
 		},
 	)
 	if err != nil {
@@ -195,20 +193,20 @@ func TestInstanceImageUploadWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.Instances.Images.Upload(context.TODO(), cloud.InstanceImageUploadParams{
 		ProjectID:      gcore.Int(0),
 		RegionID:       gcore.Int(0),
-		Name:           "image_name",
+		Name:           "my-image",
 		URL:            "http://mirror.noris.net/cirros/0.4.0/cirros-0.4.0-x86_64-disk.img",
 		Architecture:   cloud.InstanceImageUploadParamsArchitectureX86_64,
 		CowFormat:      gcore.Bool(false),
 		HwFirmwareType: cloud.InstanceImageUploadParamsHwFirmwareTypeBios,
 		HwMachineType:  cloud.InstanceImageUploadParamsHwMachineTypeQ35,
 		IsBaremetal:    gcore.Bool(false),
-		Metadata: map[string]interface{}{
-			"key": "value",
+		OsDistro:       gcore.String("ubuntu"),
+		OsType:         cloud.InstanceImageUploadParamsOsTypeLinux,
+		OsVersion:      gcore.String("22.04"),
+		SSHKey:         cloud.InstanceImageUploadParamsSSHKeyAllow,
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
 		},
-		OsDistro:  gcore.String("os_distro"),
-		OsType:    cloud.InstanceImageUploadParamsOsTypeLinux,
-		OsVersion: gcore.String("os_version"),
-		SSHKey:    cloud.InstanceImageUploadParamsSSHKeyAllow,
 	})
 	if err != nil {
 		var apierr *gcore.Error

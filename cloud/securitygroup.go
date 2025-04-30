@@ -255,21 +255,18 @@ type SecurityGroup struct {
 	// '#/components/schemas/SecurityGroupSerializer/properties/revision_number'
 	// "$.components.schemas.SecurityGroupSerializer.properties.revision_number"
 	RevisionNumber int64 `json:"revision_number,required"`
+	// '#/components/schemas/SecurityGroupSerializer/properties/tags_v2'
+	// "$.components.schemas.SecurityGroupSerializer.properties.tags_v2"
+	TagsV2 []Tag `json:"tags_v2,required"`
 	// '#/components/schemas/SecurityGroupSerializer/properties/updated_at'
 	// "$.components.schemas.SecurityGroupSerializer.properties.updated_at"
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// '#/components/schemas/SecurityGroupSerializer/properties/description/anyOf/0'
 	// "$.components.schemas.SecurityGroupSerializer.properties.description.anyOf[0]"
 	Description string `json:"description,nullable"`
-	// '#/components/schemas/SecurityGroupSerializer/properties/metadata'
-	// "$.components.schemas.SecurityGroupSerializer.properties.metadata"
-	Metadata []Tag `json:"metadata"`
 	// '#/components/schemas/SecurityGroupSerializer/properties/security_group_rules'
 	// "$.components.schemas.SecurityGroupSerializer.properties.security_group_rules"
 	SecurityGroupRules []SecurityGroupRule `json:"security_group_rules"`
-	// '#/components/schemas/SecurityGroupSerializer/properties/tags/anyOf/0'
-	// "$.components.schemas.SecurityGroupSerializer.properties.tags.anyOf[0]"
-	Tags []string `json:"tags,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -280,11 +277,10 @@ type SecurityGroup struct {
 		Region             resp.Field
 		RegionID           resp.Field
 		RevisionNumber     resp.Field
+		TagsV2             resp.Field
 		UpdatedAt          resp.Field
 		Description        resp.Field
-		Metadata           resp.Field
 		SecurityGroupRules resp.Field
-		Tags               resp.Field
 		ExtraFields        map[string]resp.Field
 		raw                string
 	} `json:"-"`
@@ -458,15 +454,12 @@ type SecurityGroupNewParamsSecurityGroup struct {
 	// '#/components/schemas/SingleCreateSecurityGroupSerializer/properties/description/anyOf/0'
 	// "$.components.schemas.SingleCreateSecurityGroupSerializer.properties.description.anyOf[0]"
 	Description param.Opt[string] `json:"description,omitzero"`
-	// '#/components/schemas/SingleCreateSecurityGroupSerializer/properties/tags/anyOf/0'
-	// "$.components.schemas.SingleCreateSecurityGroupSerializer.properties.tags.anyOf[0]"
-	Tags []string `json:"tags,omitzero"`
-	// '#/components/schemas/SingleCreateSecurityGroupSerializer/properties/metadata'
-	// "$.components.schemas.SingleCreateSecurityGroupSerializer.properties.metadata"
-	Metadata map[string]any `json:"metadata,omitzero"`
 	// '#/components/schemas/SingleCreateSecurityGroupSerializer/properties/security_group_rules'
 	// "$.components.schemas.SingleCreateSecurityGroupSerializer.properties.security_group_rules"
 	SecurityGroupRules []SecurityGroupNewParamsSecurityGroupSecurityGroupRule `json:"security_group_rules,omitzero"`
+	// '#/components/schemas/SingleCreateSecurityGroupSerializer/properties/tags'
+	// "$.components.schemas.SingleCreateSecurityGroupSerializer.properties.tags"
+	Tags map[string]any `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -650,13 +643,13 @@ type SecurityGroupListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
 	// "$.paths['/cloud/v1/securitygroups/{project_id}/{region_id}'].get.parameters[3]"
-	MetadataK param.Opt[string] `query:"metadata_k,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/securitygroups/{project_id}/{region_id}'].get.parameters[4]"
-	MetadataKv param.Opt[string] `query:"metadata_kv,omitzero" json:"-"`
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
 	// "$.paths['/cloud/v1/securitygroups/{project_id}/{region_id}'].get.parameters[5]"
-	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
+	// "$.paths['/cloud/v1/securitygroups/{project_id}/{region_id}'].get.parameters[4]"
+	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
 

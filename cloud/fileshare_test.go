@@ -40,7 +40,7 @@ func TestFileShareNewWithOptionalParams(t *testing.T) {
 				AccessMode: "ro",
 				IPAddress:  "10.0.0.1",
 			}},
-			Metadata: map[string]string{
+			Tags: map[string]string{
 				"my-tag": "my-tag-value",
 			},
 			VolumeType: "default_share_type",

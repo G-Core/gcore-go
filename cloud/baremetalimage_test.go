@@ -30,9 +30,9 @@ func TestBaremetalImageListWithOptionalParams(t *testing.T) {
 		ProjectID:     gcore.Int(0),
 		RegionID:      gcore.Int(0),
 		IncludePrices: gcore.Bool(true),
-		MetadataK:     gcore.String("metadata_k"),
-		MetadataKv:    gcore.String("metadata_kv"),
 		Private:       gcore.String("private"),
+		TagKey:        []string{"string"},
+		TagKeyValue:   gcore.String("tag_key_value"),
 		Visibility:    cloud.BaremetalImageListParamsVisibilityPrivate,
 	})
 	if err != nil {
