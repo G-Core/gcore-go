@@ -39,11 +39,17 @@ func NewGPUBaremetalClusterServerService(opts ...option.RequestOption) (r GPUBar
 // Remove single node from GPU cluster.
 func (r *GPUBaremetalClusterServerService) Delete(ctx context.Context, clusterID string, instanceID string, params GPUBaremetalClusterServerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	if params.ProjectID == "" {
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.IsPresent() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if params.RegionID == "" {
+	if !params.RegionID.IsPresent() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -55,7 +61,7 @@ func (r *GPUBaremetalClusterServerService) Delete(ctx context.Context, clusterID
 		err = errors.New("missing required instance_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%s/%s/%s/node/%s", params.ProjectID, params.RegionID, clusterID, instanceID)
+	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%v/%v/%s/node/%s", params.ProjectID.Value, params.RegionID.Value, clusterID, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
 	return
 }
@@ -193,10 +199,10 @@ func (r *GPUBaremetalClusterServerService) Reboot(ctx context.Context, instanceI
 type GPUBaremetalClusterServerDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fnode%2F%7Binstance_id%7D/delete/parameters/0/schema'
 	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/node/{instance_id}']['delete'].parameters[0].schema"
-	ProjectID string `path:"project_id,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fnode%2F%7Binstance_id%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/node/{instance_id}']['delete'].parameters[1].schema"
-	RegionID string `path:"region_id,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fnode%2F%7Binstance_id%7D/delete/parameters/4'
 	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/node/{instance_id}']['delete'].parameters[4]"
 	DeleteFloatings param.Opt[bool] `query:"delete_floatings,omitzero" json:"-"`

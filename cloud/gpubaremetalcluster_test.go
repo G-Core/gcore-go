@@ -27,8 +27,8 @@ func TestGPUBaremetalClusterNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.GPUBaremetalClusters.New(context.TODO(), cloud.GPUBaremetalClusterNewParams{
-		ProjectID: "project_id",
-		RegionID:  "region_id",
+		ProjectID: gcore.Int(0),
+		RegionID:  gcore.Int(0),
 		Flavor:    "bm3-ai-1xlarge-h100-80-8",
 		ImageID:   "f01fd9a0-9548-48ba-82dc-a8c8b2d6f2f1",
 		Interfaces: []cloud.GPUBaremetalClusterNewParamsInterfaceUnion{{
@@ -258,8 +258,8 @@ func TestGPUBaremetalClusterResize(t *testing.T) {
 		context.TODO(),
 		"cluster_id",
 		cloud.GPUBaremetalClusterResizeParams{
-			ProjectID:      "project_id",
-			RegionID:       "region_id",
+			ProjectID:      gcore.Int(0),
+			RegionID:       gcore.Int(0),
 			InstancesCount: 1,
 		},
 	)
