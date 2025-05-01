@@ -45,7 +45,7 @@ func (r *QuotaService) GetAll(ctx context.Context, opts ...option.RequestOption)
 }
 
 // Get a quota by region
-func (r *QuotaService) GetByRegion(ctx context.Context, clientID int64, query QuotaGetByRegionParams, opts ...option.RequestOption) (res *QuotaGetByRegionResponse, err error) {
+func (r *QuotaService) GetByRegion(ctx context.Context, query QuotaGetByRegionParams, opts ...option.RequestOption) (res *QuotaGetByRegionResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -56,7 +56,7 @@ func (r *QuotaService) GetByRegion(ctx context.Context, clientID int64, query Qu
 		err = errors.New("missing required region_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v2/regional_quotas/%v/%v", clientID, query.RegionID.Value)
+	path := fmt.Sprintf("cloud/v2/regional_quotas/%v/%v", query.ClientID, query.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -1022,6 +1022,9 @@ type QuotaGetByRegionParams struct {
 	// '#/paths/%2Fcloud%2Fv2%2Fregional_quotas%2F%7Bclient_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v2/regional_quotas/{client_id}/{region_id}'].get.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv2%2Fregional_quotas%2F%7Bclient_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
+	// "$.paths['/cloud/v2/regional_quotas/{client_id}/{region_id}'].get.parameters[0].schema"
+	ClientID int64 `path:"client_id,required" json:"-"`
 	paramObj
 }
 

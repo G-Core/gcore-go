@@ -92,11 +92,11 @@ func TestLoadBalancerL7PolicyRuleDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.Rules.Delete(
 		context.TODO(),
-		"l7policy_id",
 		"l7rule_id",
 		cloud.LoadBalancerL7PolicyRuleDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID:  gcore.Int(0),
+			RegionID:   gcore.Int(0),
+			L7policyID: "l7policy_id",
 		},
 	)
 	if err != nil {
@@ -122,11 +122,11 @@ func TestLoadBalancerL7PolicyRuleGet(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.Rules.Get(
 		context.TODO(),
-		"l7policy_id",
 		"l7rule_id",
 		cloud.LoadBalancerL7PolicyRuleGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID:  gcore.Int(0),
+			RegionID:   gcore.Int(0),
+			L7policyID: "l7policy_id",
 		},
 	)
 	if err != nil {
@@ -152,11 +152,11 @@ func TestLoadBalancerL7PolicyRuleReplaceWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.Rules.Replace(
 		context.TODO(),
-		"l7policy_id",
 		"l7rule_id",
 		cloud.LoadBalancerL7PolicyRuleReplaceParams{
 			ProjectID:   gcore.Int(0),
 			RegionID:    gcore.Int(0),
+			L7policyID:  "l7policy_id",
 			CompareType: cloud.LoadBalancerL7PolicyRuleReplaceParamsCompareTypeContains,
 			Invert:      gcore.Bool(true),
 			Key:         gcore.String("key"),

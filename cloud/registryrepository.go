@@ -58,7 +58,7 @@ func (r *RegistryRepositoryService) List(ctx context.Context, registryID int64, 
 }
 
 // Delete a repository
-func (r *RegistryRepositoryService) Delete(ctx context.Context, registryID int64, repositoryName string, body RegistryRepositoryDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *RegistryRepositoryService) Delete(ctx context.Context, repositoryName string, body RegistryRepositoryDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -79,7 +79,7 @@ func (r *RegistryRepositoryService) Delete(ctx context.Context, registryID int64
 		err = errors.New("missing required repository_name parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories/%s", body.ProjectID.Value, body.RegionID.Value, registryID, repositoryName)
+	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories/%s", body.ProjectID.Value, body.RegionID.Value, body.RegistryID, repositoryName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
@@ -175,6 +175,9 @@ type RegistryRepositoryDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}']['delete'].parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D/delete/parameters/2/schema'
+	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}']['delete'].parameters[2].schema"
+	RegistryID int64 `path:"registry_id,required" json:"-"`
 	paramObj
 }
 

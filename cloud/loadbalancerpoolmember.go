@@ -59,7 +59,7 @@ func (r *LoadBalancerPoolMemberService) Add(ctx context.Context, poolID string, 
 }
 
 // Delete load balancer pool member
-func (r *LoadBalancerPoolMemberService) Remove(ctx context.Context, poolID string, memberID string, body LoadBalancerPoolMemberRemoveParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *LoadBalancerPoolMemberService) Remove(ctx context.Context, memberID string, body LoadBalancerPoolMemberRemoveParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -75,7 +75,7 @@ func (r *LoadBalancerPoolMemberService) Remove(ctx context.Context, poolID strin
 		err = errors.New("missing required region_id parameter")
 		return
 	}
-	if poolID == "" {
+	if body.PoolID == "" {
 		err = errors.New("missing required pool_id parameter")
 		return
 	}
@@ -83,7 +83,7 @@ func (r *LoadBalancerPoolMemberService) Remove(ctx context.Context, poolID strin
 		err = errors.New("missing required member_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/lbpools/%v/%v/%s/member/%s", body.ProjectID.Value, body.RegionID.Value, poolID, memberID)
+	path := fmt.Sprintf("cloud/v1/lbpools/%v/%v/%s/member/%s", body.ProjectID.Value, body.RegionID.Value, body.PoolID, memberID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -138,6 +138,9 @@ type LoadBalancerPoolMemberRemoveParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D%2Fmember%2F%7Bmember_id%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}/member/{member_id}']['delete'].parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D%2Fmember%2F%7Bmember_id%7D/delete/parameters/2/schema'
+	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}/member/{member_id}']['delete'].parameters[2].schema"
+	PoolID string `path:"pool_id,required" json:"-"`
 	paramObj
 }
 

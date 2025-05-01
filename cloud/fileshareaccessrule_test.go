@@ -88,11 +88,11 @@ func TestFileShareAccessRuleDelete(t *testing.T) {
 	)
 	err := client.Cloud.FileShares.AccessRules.Delete(
 		context.TODO(),
-		"bd8c47ee-e565-4e26-8840-b537e6827b08",
 		"4f09d7dd-f1f8-4352-b015-741b2192db47",
 		cloud.FileShareAccessRuleDeleteParams{
-			ProjectID: gcore.Int(1),
-			RegionID:  gcore.Int(1),
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(1),
+			FileShareID: "bd8c47ee-e565-4e26-8840-b537e6827b08",
 		},
 	)
 	if err != nil {

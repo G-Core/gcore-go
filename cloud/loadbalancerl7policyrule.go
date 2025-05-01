@@ -85,7 +85,7 @@ func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID s
 }
 
 // Delete load balancer L7 rule
-func (r *LoadBalancerL7PolicyRuleService) Delete(ctx context.Context, l7policyID string, l7ruleID string, body LoadBalancerL7PolicyRuleDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *LoadBalancerL7PolicyRuleService) Delete(ctx context.Context, l7ruleID string, body LoadBalancerL7PolicyRuleDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -101,7 +101,7 @@ func (r *LoadBalancerL7PolicyRuleService) Delete(ctx context.Context, l7policyID
 		err = errors.New("missing required region_id parameter")
 		return
 	}
-	if l7policyID == "" {
+	if body.L7policyID == "" {
 		err = errors.New("missing required l7policy_id parameter")
 		return
 	}
@@ -109,13 +109,13 @@ func (r *LoadBalancerL7PolicyRuleService) Delete(ctx context.Context, l7policyID
 		err = errors.New("missing required l7rule_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules/%s", body.ProjectID.Value, body.RegionID.Value, l7policyID, l7ruleID)
+	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules/%s", body.ProjectID.Value, body.RegionID.Value, body.L7policyID, l7ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 // Get load balancer L7 rule
-func (r *LoadBalancerL7PolicyRuleService) Get(ctx context.Context, l7policyID string, l7ruleID string, query LoadBalancerL7PolicyRuleGetParams, opts ...option.RequestOption) (res *L7Rule, err error) {
+func (r *LoadBalancerL7PolicyRuleService) Get(ctx context.Context, l7ruleID string, query LoadBalancerL7PolicyRuleGetParams, opts ...option.RequestOption) (res *L7Rule, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -131,7 +131,7 @@ func (r *LoadBalancerL7PolicyRuleService) Get(ctx context.Context, l7policyID st
 		err = errors.New("missing required region_id parameter")
 		return
 	}
-	if l7policyID == "" {
+	if query.L7policyID == "" {
 		err = errors.New("missing required l7policy_id parameter")
 		return
 	}
@@ -139,13 +139,13 @@ func (r *LoadBalancerL7PolicyRuleService) Get(ctx context.Context, l7policyID st
 		err = errors.New("missing required l7rule_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules/%s", query.ProjectID.Value, query.RegionID.Value, l7policyID, l7ruleID)
+	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules/%s", query.ProjectID.Value, query.RegionID.Value, query.L7policyID, l7ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Replace load balancer L7 rule properties
-func (r *LoadBalancerL7PolicyRuleService) Replace(ctx context.Context, l7policyID string, l7ruleID string, params LoadBalancerL7PolicyRuleReplaceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *LoadBalancerL7PolicyRuleService) Replace(ctx context.Context, l7ruleID string, params LoadBalancerL7PolicyRuleReplaceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -161,7 +161,7 @@ func (r *LoadBalancerL7PolicyRuleService) Replace(ctx context.Context, l7policyI
 		err = errors.New("missing required region_id parameter")
 		return
 	}
-	if l7policyID == "" {
+	if params.L7policyID == "" {
 		err = errors.New("missing required l7policy_id parameter")
 		return
 	}
@@ -169,7 +169,7 @@ func (r *LoadBalancerL7PolicyRuleService) Replace(ctx context.Context, l7policyI
 		err = errors.New("missing required l7rule_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules/%s", params.ProjectID.Value, params.RegionID.Value, l7policyID, l7ruleID)
+	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules/%s", params.ProjectID.Value, params.RegionID.Value, params.L7policyID, l7ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
@@ -268,6 +268,9 @@ type LoadBalancerL7PolicyRuleDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}']['delete'].parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/delete/parameters/2/schema'
+	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}']['delete'].parameters[2].schema"
+	L7policyID string `path:"l7policy_id,required" json:"-"`
 	paramObj
 }
 
@@ -284,6 +287,9 @@ type LoadBalancerL7PolicyRuleGetParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}'].get.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/get/parameters/2/schema'
+	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}'].get.parameters[2].schema"
+	L7policyID string `path:"l7policy_id,required" json:"-"`
 	paramObj
 }
 
@@ -300,6 +306,9 @@ type LoadBalancerL7PolicyRuleReplaceParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/put/parameters/1/schema'
 	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}'].put.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/put/parameters/2/schema'
+	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}'].put.parameters[2].schema"
+	L7policyID string `path:"l7policy_id,required" json:"-"`
 	// '#/components/schemas/UpdateL7RuleSchema/properties/invert'
 	// "$.components.schemas.UpdateL7RuleSchema.properties.invert"
 	Invert param.Opt[bool] `json:"invert,omitzero"`

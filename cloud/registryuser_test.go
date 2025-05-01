@@ -62,12 +62,12 @@ func TestRegistryUserUpdateWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.Registries.Users.Update(
 		context.TODO(),
 		0,
-		0,
 		cloud.RegistryUserUpdateParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			Duration:  14,
-			ReadOnly:  gcore.Bool(false),
+			ProjectID:  gcore.Int(0),
+			RegionID:   gcore.Int(0),
+			RegistryID: 0,
+			Duration:   14,
+			ReadOnly:   gcore.Bool(false),
 		},
 	)
 	if err != nil {
@@ -123,10 +123,10 @@ func TestRegistryUserDelete(t *testing.T) {
 	err := client.Cloud.Registries.Users.Delete(
 		context.TODO(),
 		0,
-		0,
 		cloud.RegistryUserDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID:  gcore.Int(0),
+			RegionID:   gcore.Int(0),
+			RegistryID: 0,
 		},
 	)
 	if err != nil {
@@ -188,10 +188,10 @@ func TestRegistryUserRefreshSecret(t *testing.T) {
 	err := client.Cloud.Registries.Users.RefreshSecret(
 		context.TODO(),
 		0,
-		0,
 		cloud.RegistryUserRefreshSecretParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID:  gcore.Int(0),
+			RegionID:   gcore.Int(0),
+			RegistryID: 0,
 		},
 	)
 	if err != nil {
