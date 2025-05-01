@@ -1630,15 +1630,20 @@ func init() {
 	)
 }
 
+func NewLoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer() LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer {
+	return LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+		Source: "new",
+	}
+}
+
 // '#/components/schemas/CreateLoadbalancerSerializer/properties/floating_ip/anyOf/0'
 // "$.components.schemas.CreateLoadbalancerSerializer.properties.floating_ip.anyOf[0]"
 //
-// The property Source is required.
+// This struct has a constant value, construct it with
+// [NewLoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer].
 type LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
-	//
-	// This field can be elided, and will marshal its zero value as "new".
 	Source constant.New `json:"source,required"`
 	paramObj
 }

@@ -1095,15 +1095,20 @@ func init() {
 	)
 }
 
+func NewInstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer() InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer {
+	return InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+		Source: "new",
+	}
+}
+
 // '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
 // "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
 //
-// The property Source is required.
+// This struct has a constant value, construct it with
+// [NewInstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer].
 type InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
-	//
-	// This field can be elided, and will marshal its zero value as "new".
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1272,15 +1277,20 @@ func init() {
 	)
 }
 
+func NewInstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer() InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer {
+	return InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+		Source: "new",
+	}
+}
+
 // '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
 // "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
 //
-// The property Source is required.
+// This struct has a constant value, construct it with
+// [NewInstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer].
 type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
-	//
-	// This field can be elided, and will marshal its zero value as "new".
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1442,15 +1452,20 @@ func init() {
 	)
 }
 
+func NewInstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer() InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer {
+	return InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+		Source: "new",
+	}
+}
+
 // '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/0'
 // "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[0]"
 //
-// The property Source is required.
+// This struct has a constant value, construct it with
+// [NewInstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer].
 type InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
-	//
-	// This field can be elided, and will marshal its zero value as "new".
 	Source constant.New `json:"source,required"`
 	paramObj
 }

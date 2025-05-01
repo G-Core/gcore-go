@@ -1270,15 +1270,20 @@ func init() {
 	)
 }
 
+func NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer() GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer {
+	return GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+		Source: "new",
+	}
+}
+
 // '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
 // "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
 //
-// The property Source is required.
+// This struct has a constant value, construct it with
+// [NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer].
 type GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
-	//
-	// This field can be elided, and will marshal its zero value as "new".
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1447,15 +1452,20 @@ func init() {
 	)
 }
 
+func NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer() GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer {
+	return GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+		Source: "new",
+	}
+}
+
 // '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
 // "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
 //
-// The property Source is required.
+// This struct has a constant value, construct it with
+// [NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer].
 type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
-	//
-	// This field can be elided, and will marshal its zero value as "new".
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1617,15 +1627,20 @@ func init() {
 	)
 }
 
+func NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer() GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer {
+	return GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+		Source: "new",
+	}
+}
+
 // '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/0'
 // "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[0]"
 //
-// The property Source is required.
+// This struct has a constant value, construct it with
+// [NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer].
 type GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
-	//
-	// This field can be elided, and will marshal its zero value as "new".
 	Source constant.New `json:"source,required"`
 	paramObj
 }
