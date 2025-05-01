@@ -48,13 +48,10 @@ func TestQuotaGetByRegion(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Quotas.GetByRegion(
-		context.TODO(),
-		3,
-		cloud.QuotaGetByRegionParams{
-			RegionID: gcore.Int(1),
-		},
-	)
+	_, err := client.Cloud.Quotas.GetByRegion(context.TODO(), cloud.QuotaGetByRegionParams{
+		ClientID: 3,
+		RegionID: gcore.Int(1),
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

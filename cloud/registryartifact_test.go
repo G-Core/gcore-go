@@ -28,11 +28,11 @@ func TestRegistryArtifactList(t *testing.T) {
 	)
 	_, err := client.Cloud.Registries.Artifacts.List(
 		context.TODO(),
-		0,
 		"repository_name",
 		cloud.RegistryArtifactListParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID:  gcore.Int(0),
+			RegionID:   gcore.Int(0),
+			RegistryID: 0,
 		},
 	)
 	if err != nil {
@@ -58,12 +58,12 @@ func TestRegistryArtifactDelete(t *testing.T) {
 	)
 	err := client.Cloud.Registries.Artifacts.Delete(
 		context.TODO(),
-		0,
-		"repository_name",
 		"digest",
 		cloud.RegistryArtifactDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID:      gcore.Int(0),
+			RegionID:       gcore.Int(0),
+			RegistryID:     0,
+			RepositoryName: "repository_name",
 		},
 	)
 	if err != nil {

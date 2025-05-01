@@ -87,7 +87,7 @@ func (r *FileShareAccessRuleService) List(ctx context.Context, fileShareID strin
 }
 
 // Delete file share access rule
-func (r *FileShareAccessRuleService) Delete(ctx context.Context, fileShareID string, accessRuleID string, body FileShareAccessRuleDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *FileShareAccessRuleService) Delete(ctx context.Context, accessRuleID string, body FileShareAccessRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -104,7 +104,7 @@ func (r *FileShareAccessRuleService) Delete(ctx context.Context, fileShareID str
 		err = errors.New("missing required region_id parameter")
 		return
 	}
-	if fileShareID == "" {
+	if body.FileShareID == "" {
 		err = errors.New("missing required file_share_id parameter")
 		return
 	}
@@ -112,7 +112,7 @@ func (r *FileShareAccessRuleService) Delete(ctx context.Context, fileShareID str
 		err = errors.New("missing required access_rule_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/file_shares/%v/%v/%s/access_rule/%s", body.ProjectID.Value, body.RegionID.Value, fileShareID, accessRuleID)
+	path := fmt.Sprintf("cloud/v1/file_shares/%v/%v/%s/access_rule/%s", body.ProjectID.Value, body.RegionID.Value, body.FileShareID, accessRuleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
@@ -260,6 +260,9 @@ type FileShareAccessRuleDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule%2F%7Baccess_rule_id%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule/{access_rule_id}']['delete'].parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule%2F%7Baccess_rule_id%7D/delete/parameters/2/schema'
+	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule/{access_rule_id}']['delete'].parameters[2].schema"
+	FileShareID string `path:"file_share_id,required" format:"uuid4" json:"-"`
 	paramObj
 }
 

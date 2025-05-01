@@ -36,7 +36,7 @@ func NewRegistryArtifactService(opts ...option.RequestOption) (r RegistryArtifac
 }
 
 // List artifacts
-func (r *RegistryArtifactService) List(ctx context.Context, registryID int64, repositoryName string, query RegistryArtifactListParams, opts ...option.RequestOption) (res *RegistryArtifactList, err error) {
+func (r *RegistryArtifactService) List(ctx context.Context, repositoryName string, query RegistryArtifactListParams, opts ...option.RequestOption) (res *RegistryArtifactList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -56,13 +56,13 @@ func (r *RegistryArtifactService) List(ctx context.Context, registryID int64, re
 		err = errors.New("missing required repository_name parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories/%s/artifacts", query.ProjectID.Value, query.RegionID.Value, registryID, repositoryName)
+	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories/%s/artifacts", query.ProjectID.Value, query.RegionID.Value, query.RegistryID, repositoryName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Delete an artifact
-func (r *RegistryArtifactService) Delete(ctx context.Context, registryID int64, repositoryName string, digest string, body RegistryArtifactDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *RegistryArtifactService) Delete(ctx context.Context, digest string, body RegistryArtifactDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -79,7 +79,7 @@ func (r *RegistryArtifactService) Delete(ctx context.Context, registryID int64, 
 		err = errors.New("missing required region_id parameter")
 		return
 	}
-	if repositoryName == "" {
+	if body.RepositoryName == "" {
 		err = errors.New("missing required repository_name parameter")
 		return
 	}
@@ -87,7 +87,7 @@ func (r *RegistryArtifactService) Delete(ctx context.Context, registryID int64, 
 		err = errors.New("missing required digest parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories/%s/artifacts/%s", body.ProjectID.Value, body.RegionID.Value, registryID, repositoryName, digest)
+	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories/%s/artifacts/%s", body.ProjectID.Value, body.RegionID.Value, body.RegistryID, body.RepositoryName, digest)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
@@ -173,6 +173,9 @@ type RegistryArtifactListParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts/get/parameters/1/schema'
 	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts'].get.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts/get/parameters/2/schema'
+	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts'].get.parameters[2].schema"
+	RegistryID int64 `path:"registry_id,required" json:"-"`
 	paramObj
 }
 
@@ -187,6 +190,12 @@ type RegistryArtifactDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts%2F%7Bdigest%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts/{digest}']['delete'].parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts%2F%7Bdigest%7D/delete/parameters/2/schema'
+	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts/{digest}']['delete'].parameters[2].schema"
+	RegistryID int64 `path:"registry_id,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts%2F%7Bdigest%7D/delete/parameters/3/schema'
+	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts/{digest}']['delete'].parameters[3].schema"
+	RepositoryName string `path:"repository_name,required" json:"-"`
 	paramObj
 }
 

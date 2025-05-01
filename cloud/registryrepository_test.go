@@ -57,11 +57,11 @@ func TestRegistryRepositoryDelete(t *testing.T) {
 	)
 	err := client.Cloud.Registries.Repositories.Delete(
 		context.TODO(),
-		0,
 		"repository_name",
 		cloud.RegistryRepositoryDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID:  gcore.Int(0),
+			RegionID:   gcore.Int(0),
+			RegistryID: 0,
 		},
 	)
 	if err != nil {

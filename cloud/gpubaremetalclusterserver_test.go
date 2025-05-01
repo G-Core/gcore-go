@@ -29,11 +29,11 @@ func TestGPUBaremetalClusterServerDeleteWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetalClusters.Servers.Delete(
 		context.TODO(),
-		"cluster_id",
 		"instance_id",
 		cloud.GPUBaremetalClusterServerDeleteParams{
 			ProjectID:       gcore.Int(0),
 			RegionID:        gcore.Int(0),
+			ClusterID:       "cluster_id",
 			DeleteFloatings: gcore.Bool(true),
 		},
 	)

@@ -65,11 +65,11 @@ func TestLoadBalancerPoolMemberRemove(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Pools.Members.Remove(
 		context.TODO(),
-		"pool_id",
 		"member_id",
 		cloud.LoadBalancerPoolMemberRemoveParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
+			PoolID:    "pool_id",
 		},
 	)
 	if err != nil {

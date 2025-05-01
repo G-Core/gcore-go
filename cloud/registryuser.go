@@ -58,7 +58,7 @@ func (r *RegistryUserService) New(ctx context.Context, registryID int64, params 
 }
 
 // Update a user
-func (r *RegistryUserService) Update(ctx context.Context, registryID int64, userID int64, params RegistryUserUpdateParams, opts ...option.RequestOption) (res *RegistryUser, err error) {
+func (r *RegistryUserService) Update(ctx context.Context, userID int64, params RegistryUserUpdateParams, opts ...option.RequestOption) (res *RegistryUser, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -74,7 +74,7 @@ func (r *RegistryUserService) Update(ctx context.Context, registryID int64, user
 		err = errors.New("missing required region_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/users/%v", params.ProjectID.Value, params.RegionID.Value, registryID, userID)
+	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/users/%v", params.ProjectID.Value, params.RegionID.Value, params.RegistryID, userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
 }
@@ -102,7 +102,7 @@ func (r *RegistryUserService) List(ctx context.Context, registryID int64, query 
 }
 
 // Delete a user
-func (r *RegistryUserService) Delete(ctx context.Context, registryID int64, userID int64, body RegistryUserDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *RegistryUserService) Delete(ctx context.Context, userID int64, body RegistryUserDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -119,7 +119,7 @@ func (r *RegistryUserService) Delete(ctx context.Context, registryID int64, user
 		err = errors.New("missing required region_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/users/%v", body.ProjectID.Value, body.RegionID.Value, registryID, userID)
+	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/users/%v", body.ProjectID.Value, body.RegionID.Value, body.RegistryID, userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
@@ -147,7 +147,7 @@ func (r *RegistryUserService) NewMultiple(ctx context.Context, registryID int64,
 }
 
 // Refresh a secret
-func (r *RegistryUserService) RefreshSecret(ctx context.Context, registryID int64, userID int64, body RegistryUserRefreshSecretParams, opts ...option.RequestOption) (err error) {
+func (r *RegistryUserService) RefreshSecret(ctx context.Context, userID int64, body RegistryUserRefreshSecretParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -164,7 +164,7 @@ func (r *RegistryUserService) RefreshSecret(ctx context.Context, registryID int6
 		err = errors.New("missing required region_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/users/%v/refresh_secret", body.ProjectID.Value, body.RegionID.Value, registryID, userID)
+	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/users/%v/refresh_secret", body.ProjectID.Value, body.RegionID.Value, body.RegistryID, userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return
 }
@@ -318,6 +318,9 @@ type RegistryUserUpdateParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D/patch/parameters/1/schema'
 	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}'].patch.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D/patch/parameters/2/schema'
+	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}'].patch.parameters[2].schema"
+	RegistryID int64 `path:"registry_id,required" json:"-"`
 	// '#/components/schemas/RegistryUserUpdateSerializer/properties/duration'
 	// "$.components.schemas.RegistryUserUpdateSerializer.properties.duration"
 	Duration int64 `json:"duration,required"`
@@ -357,6 +360,9 @@ type RegistryUserDeleteParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D/delete/parameters/1/schema'
 	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}']['delete'].parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D/delete/parameters/2/schema'
+	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}']['delete'].parameters[2].schema"
+	RegistryID int64 `path:"registry_id,required" json:"-"`
 	paramObj
 }
 
@@ -423,6 +429,9 @@ type RegistryUserRefreshSecretParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D%2Frefresh_secret/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}/refresh_secret'].post.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D%2Frefresh_secret/post/parameters/2/schema'
+	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}/refresh_secret'].post.parameters[2].schema"
+	RegistryID int64 `path:"registry_id,required" json:"-"`
 	paramObj
 }
 
