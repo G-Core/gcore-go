@@ -698,9 +698,17 @@ func (r InstanceNewParams) MarshalJSON() (data []byte, err error) {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InstanceNewParamsInterfaceUnion struct {
-	OfNewInterfaceExternalSerializerPydantic           *InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydantic           `json:",omitzero,inline"`
-	OfNewInterfaceSpecificSubnetFipSerializerPydantic  *InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic  `json:",omitzero,inline"`
-	OfNewInterfaceAnySubnetFipSerializerPydantic       *InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic       `json:",omitzero,inline"`
+	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/0'
+	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[0]"
+	OfNewInterfaceExternalSerializerPydantic *InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydantic `json:",omitzero,inline"`
+	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/1'
+	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[1]"
+	OfNewInterfaceSpecificSubnetFipSerializerPydantic *InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic `json:",omitzero,inline"`
+	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/2'
+	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[2]"
+	OfNewInterfaceAnySubnetFipSerializerPydantic *InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic `json:",omitzero,inline"`
+	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/3'
+	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[3]"
 	OfNewInterfaceReservedFixedIPFipSerializerPydantic *InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1038,7 +1046,11 @@ func (r InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanti
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion struct {
-	OfNewFloatingIP      *InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer      `json:",omitzero,inline"`
+	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
+	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
+	OfNewFloatingIP *InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
+	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
 	OfExistingFloatingIP *InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1220,7 +1232,11 @@ func (r InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic) Ma
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion struct {
-	OfNewFloatingIP      *InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer      `json:",omitzero,inline"`
+	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
+	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
+	OfNewFloatingIP *InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
+	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
 	OfExistingFloatingIP *InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1395,7 +1411,11 @@ func (r InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydant
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion struct {
-	OfNewFloatingIP      *InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer      `json:",omitzero,inline"`
+	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/0'
+	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[0]"
+	OfNewFloatingIP *InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/1'
+	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[1]"
 	OfExistingFloatingIP *InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
 	paramUnion
 }
