@@ -55,7 +55,10 @@ func (r *OffsetPage[T]) GetNextPage() (res *OffsetPage[T], err error) {
 	next := offset + length
 
 	if next < r.Count && next != 0 {
-		cfg.Apply(option.WithQuery("offset", strconv.FormatInt(next, 10)))
+		err = cfg.Apply(option.WithQuery("offset", strconv.FormatInt(next, 10)))
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		return nil, nil
 	}
