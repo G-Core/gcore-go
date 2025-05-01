@@ -632,9 +632,17 @@ func (r BaremetalServerNewParams) MarshalJSON() (data []byte, err error) {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type BaremetalServerNewParamsInterfaceUnion struct {
-	OfCreateBareMetalExternalInterfaceSerializer        *BaremetalServerNewParamsInterfaceCreateBareMetalExternalInterfaceSerializer        `json:",omitzero,inline"`
-	OfCreateBareMetalSubnetInterfaceSerializer          *BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializer          `json:",omitzero,inline"`
-	OfCreateBareMetalAnySubnetInterfaceSerializer       *BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializer       `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/0'
+	// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[0]"
+	OfCreateBareMetalExternalInterfaceSerializer *BaremetalServerNewParamsInterfaceCreateBareMetalExternalInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/1'
+	// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[1]"
+	OfCreateBareMetalSubnetInterfaceSerializer *BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/2'
+	// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[2]"
+	OfCreateBareMetalAnySubnetInterfaceSerializer *BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/3'
+	// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[3]"
 	OfCreateBareMetalReservedFixedIPInterfaceSerializer *BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializer `json:",omitzero,inline"`
 	paramUnion
 }
@@ -912,7 +920,11 @@ func (r BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerialize
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPUnion struct {
-	OfNewFloatingIP      *BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer      `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/floating_ip/anyOf/0'
+	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip.anyOf[0]"
+	OfNewFloatingIP *BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/floating_ip/anyOf/1'
+	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip.anyOf[1]"
 	OfExistingFloatingIP *BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1070,7 +1082,11 @@ func (r BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerial
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPUnion struct {
-	OfNewFloatingIP      *BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer      `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/floating_ip/anyOf/0'
+	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip.anyOf[0]"
+	OfNewFloatingIP *BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/floating_ip/anyOf/1'
+	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip.anyOf[1]"
 	OfExistingFloatingIP *BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1221,7 +1237,11 @@ func (r BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterface
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPUnion struct {
-	OfNewFloatingIP      *BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer      `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/floating_ip/anyOf/0'
+	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip.anyOf[0]"
+	OfNewFloatingIP *BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/floating_ip/anyOf/1'
+	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip.anyOf[1]"
 	OfExistingFloatingIP *BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1391,9 +1411,15 @@ func (r BaremetalServerNewParamsDDOSProfileField) MarshalJSON() (data []byte, er
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion struct {
-	OfBaremetalServerNewsDDOSProfileFieldFieldValueArray []any             `json:",omitzero,inline"`
-	OfInt                                                param.Opt[int64]  `json:",omitzero,inline"`
-	OfString                                             param.Opt[string] `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalDDoSProfileFieldSerializer/properties/field_value/anyOf/0'
+	// "$.components.schemas.CreateBareMetalDDoSProfileFieldSerializer.properties.field_value.anyOf[0]"
+	OfBaremetalServerNewsDDOSProfileFieldFieldValueArray []any `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalDDoSProfileFieldSerializer/properties/field_value/anyOf/1'
+	// "$.components.schemas.CreateBareMetalDDoSProfileFieldSerializer.properties.field_value.anyOf[1]"
+	OfInt param.Opt[int64] `json:",omitzero,inline"`
+	// '#/components/schemas/CreateBareMetalDDoSProfileFieldSerializer/properties/field_value/anyOf/2'
+	// "$.components.schemas.CreateBareMetalDDoSProfileFieldSerializer.properties.field_value.anyOf[2]"
+	OfString param.Opt[string] `json:",omitzero,inline"`
 	paramUnion
 }
 

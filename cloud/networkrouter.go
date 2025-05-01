@@ -516,7 +516,11 @@ func (r NetworkRouterNewParams) MarshalJSON() (data []byte, err error) {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type NetworkRouterNewParamsExternalGatewayInfoUnion struct {
-	OfRouterExternalManualGwSerializer  *NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer  `json:",omitzero,inline"`
+	// '#/components/schemas/CreateRouterSerializer/properties/external_gateway_info/anyOf/0'
+	// "$.components.schemas.CreateRouterSerializer.properties.external_gateway_info.anyOf[0]"
+	OfRouterExternalManualGwSerializer *NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/CreateRouterSerializer/properties/external_gateway_info/anyOf/1'
+	// "$.components.schemas.CreateRouterSerializer.properties.external_gateway_info.anyOf[1]"
 	OfRouterExternalDefaultGwSerializer *NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer `json:",omitzero,inline"`
 	paramUnion
 }

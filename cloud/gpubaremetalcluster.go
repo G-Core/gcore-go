@@ -871,9 +871,17 @@ func (r GPUBaremetalClusterNewParams) MarshalJSON() (data []byte, err error) {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type GPUBaremetalClusterNewParamsInterfaceUnion struct {
-	OfNewInterfaceExternalSerializerPydantic           *GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydantic           `json:",omitzero,inline"`
-	OfNewInterfaceSpecificSubnetFipSerializerPydantic  *GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic  `json:",omitzero,inline"`
-	OfNewInterfaceAnySubnetFipSerializerPydantic       *GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic       `json:",omitzero,inline"`
+	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/0'
+	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[0]"
+	OfNewInterfaceExternalSerializerPydantic *GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydantic `json:",omitzero,inline"`
+	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/1'
+	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[1]"
+	OfNewInterfaceSpecificSubnetFipSerializerPydantic *GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic `json:",omitzero,inline"`
+	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/2'
+	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[2]"
+	OfNewInterfaceAnySubnetFipSerializerPydantic *GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic `json:",omitzero,inline"`
+	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/3'
+	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[3]"
 	OfNewInterfaceReservedFixedIPFipSerializerPydantic *GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1213,7 +1221,11 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerial
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion struct {
-	OfNewFloatingIP      *GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer      `json:",omitzero,inline"`
+	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
+	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
+	OfNewFloatingIP *GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
+	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
 	OfExistingFloatingIP *GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1395,7 +1407,11 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerP
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion struct {
-	OfNewFloatingIP      *GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer      `json:",omitzero,inline"`
+	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
+	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
+	OfNewFloatingIP *GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
+	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
 	OfExistingFloatingIP *GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1570,7 +1586,11 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSeria
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion struct {
-	OfNewFloatingIP      *GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer      `json:",omitzero,inline"`
+	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/0'
+	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[0]"
+	OfNewFloatingIP *GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/1'
+	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[1]"
 	OfExistingFloatingIP *GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
 	paramUnion
 }

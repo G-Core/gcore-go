@@ -1573,7 +1573,11 @@ func (r LoadBalancerNewParams) MarshalJSON() (data []byte, err error) {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type LoadBalancerNewParamsFloatingIPUnion struct {
-	OfNewFloatingIP      *LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer      `json:",omitzero,inline"`
+	// '#/components/schemas/CreateLoadbalancerSerializer/properties/floating_ip/anyOf/0'
+	// "$.components.schemas.CreateLoadbalancerSerializer.properties.floating_ip.anyOf[0]"
+	OfNewFloatingIP *LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	// '#/components/schemas/CreateLoadbalancerSerializer/properties/floating_ip/anyOf/1'
+	// "$.components.schemas.CreateLoadbalancerSerializer.properties.floating_ip.anyOf[1]"
 	OfExistingFloatingIP *LoadBalancerNewParamsFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
 	paramUnion
 }
