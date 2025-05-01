@@ -969,15 +969,20 @@ func init() {
 	)
 }
 
+func NewBaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer() BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer {
+	return BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+		Source: "new",
+	}
+}
+
 // '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/floating_ip/anyOf/0'
 // "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip.anyOf[0]"
 //
-// The property Source is required.
+// This struct has a constant value, construct it with
+// [NewBaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer].
 type BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
-	//
-	// This field can be elided, and will marshal its zero value as "new".
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1122,15 +1127,20 @@ func init() {
 	)
 }
 
+func NewBaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer() BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer {
+	return BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+		Source: "new",
+	}
+}
+
 // '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/floating_ip/anyOf/0'
 // "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip.anyOf[0]"
 //
-// The property Source is required.
+// This struct has a constant value, construct it with
+// [NewBaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer].
 type BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
-	//
-	// This field can be elided, and will marshal its zero value as "new".
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1268,15 +1278,20 @@ func init() {
 	)
 }
 
+func NewBaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer() BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer {
+	return BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+		Source: "new",
+	}
+}
+
 // '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/floating_ip/anyOf/0'
 // "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip.anyOf[0]"
 //
-// The property Source is required.
+// This struct has a constant value, construct it with
+// [NewBaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer].
 type BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
-	//
-	// This field can be elided, and will marshal its zero value as "new".
 	Source constant.New `json:"source,required"`
 	paramObj
 }
