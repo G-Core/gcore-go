@@ -38,23 +38,6 @@ func NewRegionService(opts ...option.RequestOption) (r RegionService) {
 	return
 }
 
-// Get region
-func (r *RegionService) Get(ctx context.Context, params RegionGetParams, opts ...option.RequestOption) (res *Region, err error) {
-	opts = append(r.Options[:], opts...)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.RegionID.IsPresent() {
-		err = errors.New("missing required region_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v1/regions/%v", params.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
-}
-
 // List regions
 func (r *RegionService) List(ctx context.Context, query RegionListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Region], err error) {
 	var raw *http.Response
@@ -76,6 +59,23 @@ func (r *RegionService) List(ctx context.Context, query RegionListParams, opts .
 // List regions
 func (r *RegionService) ListAutoPaging(ctx context.Context, query RegionListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Region] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
+}
+
+// Get region
+func (r *RegionService) Get(ctx context.Context, params RegionGetParams, opts ...option.RequestOption) (res *Region, err error) {
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.RegionID.IsPresent() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/regions/%v", params.RegionID.Value)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
+	return
 }
 
 type Region struct {
@@ -252,27 +252,6 @@ const (
 	RegionZoneRussiaAndCis RegionZone = "RUSSIA_AND_CIS"
 )
 
-type RegionGetParams struct {
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// If true, null `available_volume_type` is replaced with a list of available
-	// volume types.
-	ShowVolumeTypes param.Opt[bool] `query:"show_volume_types,omitzero" json:"-"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegionGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
-// URLQuery serializes [RegionGetParams]'s query parameters as `url.Values`.
-func (r RegionGetParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
-	})
-}
-
 type RegionListParams struct {
 	// Limit the number of returned regions. Falls back to default of 100 if not
 	// specified. Limited by max limit value of 1000
@@ -323,3 +302,24 @@ const (
 	RegionListParamsProductContainers RegionListParamsProduct = "containers"
 	RegionListParamsProductInference  RegionListParamsProduct = "inference"
 )
+
+type RegionGetParams struct {
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// If true, null `available_volume_type` is replaced with a list of available
+	// volume types.
+	ShowVolumeTypes param.Opt[bool] `query:"show_volume_types,omitzero" json:"-"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f RegionGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+
+// URLQuery serializes [RegionGetParams]'s query parameters as `url.Values`.
+func (r RegionGetParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
