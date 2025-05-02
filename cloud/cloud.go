@@ -624,20 +624,18 @@ func (r *GPUClusterServer) UnmarshalJSON(data []byte) error {
 }
 
 // GPUClusterServerAddressUnion contains all possible properties and values from
-// [GPUClusterServerAddressInstanceFloatingAddressSerializer],
-// [GPUClusterServerAddressInstanceFixedAddressShortSerializer],
-// [GPUClusterServerAddressInstanceFixedAddressSerializer].
+// [GPUClusterServerAddressFloatingIPAddress],
+// [GPUClusterServerAddressFixedIPAddressShort],
+// [GPUClusterServerAddressFixedIPAddress].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type GPUClusterServerAddressUnion struct {
 	Addr          string `json:"addr"`
 	Type          string `json:"type"`
 	InterfaceName string `json:"interface_name"`
-	// This field is from variant
-	// [GPUClusterServerAddressInstanceFixedAddressSerializer].
+	// This field is from variant [GPUClusterServerAddressFixedIPAddress].
 	SubnetID string `json:"subnet_id"`
-	// This field is from variant
-	// [GPUClusterServerAddressInstanceFixedAddressSerializer].
+	// This field is from variant [GPUClusterServerAddressFixedIPAddress].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
 		Addr          resp.Field
@@ -649,17 +647,17 @@ type GPUClusterServerAddressUnion struct {
 	} `json:"-"`
 }
 
-func (u GPUClusterServerAddressUnion) AsFloatingIPAddress() (v GPUClusterServerAddressInstanceFloatingAddressSerializer) {
+func (u GPUClusterServerAddressUnion) AsFloatingIPAddress() (v GPUClusterServerAddressFloatingIPAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u GPUClusterServerAddressUnion) AsFixedIPAddressShort() (v GPUClusterServerAddressInstanceFixedAddressShortSerializer) {
+func (u GPUClusterServerAddressUnion) AsFixedIPAddressShort() (v GPUClusterServerAddressFixedIPAddressShort) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u GPUClusterServerAddressUnion) AsFixedIPAddress() (v GPUClusterServerAddressInstanceFixedAddressSerializer) {
+func (u GPUClusterServerAddressUnion) AsFixedIPAddress() (v GPUClusterServerAddressFixedIPAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -673,7 +671,7 @@ func (r *GPUClusterServerAddressUnion) UnmarshalJSON(data []byte) error {
 
 // '#/components/schemas/GPUClusterServerSerializer/properties/addresses/additionalProperties/items/anyOf/0'
 // "$.components.schemas.GPUClusterServerSerializer.properties.addresses.additionalProperties.items.anyOf[0]"
-type GPUClusterServerAddressInstanceFloatingAddressSerializer struct {
+type GPUClusterServerAddressFloatingIPAddress struct {
 	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/addr'
 	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -691,14 +689,14 @@ type GPUClusterServerAddressInstanceFloatingAddressSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r GPUClusterServerAddressInstanceFloatingAddressSerializer) RawJSON() string { return r.JSON.raw }
-func (r *GPUClusterServerAddressInstanceFloatingAddressSerializer) UnmarshalJSON(data []byte) error {
+func (r GPUClusterServerAddressFloatingIPAddress) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServerAddressFloatingIPAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/GPUClusterServerSerializer/properties/addresses/additionalProperties/items/anyOf/1'
 // "$.components.schemas.GPUClusterServerSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
-type GPUClusterServerAddressInstanceFixedAddressShortSerializer struct {
+type GPUClusterServerAddressFixedIPAddressShort struct {
 	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/addr'
 	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -720,16 +718,14 @@ type GPUClusterServerAddressInstanceFixedAddressShortSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r GPUClusterServerAddressInstanceFixedAddressShortSerializer) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *GPUClusterServerAddressInstanceFixedAddressShortSerializer) UnmarshalJSON(data []byte) error {
+func (r GPUClusterServerAddressFixedIPAddressShort) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServerAddressFixedIPAddressShort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/GPUClusterServerSerializer/properties/addresses/additionalProperties/items/anyOf/2'
 // "$.components.schemas.GPUClusterServerSerializer.properties.addresses.additionalProperties.items.anyOf[2]"
-type GPUClusterServerAddressInstanceFixedAddressSerializer struct {
+type GPUClusterServerAddressFixedIPAddress struct {
 	// '#/components/schemas/InstanceFixedAddressSerializer/properties/addr'
 	// "$.components.schemas.InstanceFixedAddressSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -759,8 +755,8 @@ type GPUClusterServerAddressInstanceFixedAddressSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r GPUClusterServerAddressInstanceFixedAddressSerializer) RawJSON() string { return r.JSON.raw }
-func (r *GPUClusterServerAddressInstanceFixedAddressSerializer) UnmarshalJSON(data []byte) error {
+func (r GPUClusterServerAddressFixedIPAddress) RawJSON() string { return r.JSON.raw }
+func (r *GPUClusterServerAddressFixedIPAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1467,18 +1463,17 @@ func (r *Instance) UnmarshalJSON(data []byte) error {
 }
 
 // InstanceAddressUnion contains all possible properties and values from
-// [InstanceAddressInstanceFloatingAddressSerializer],
-// [InstanceAddressInstanceFixedAddressShortSerializer],
-// [InstanceAddressInstanceFixedAddressSerializer].
+// [InstanceAddressFloatingIPAddress], [InstanceAddressFixedIPAddressShort],
+// [InstanceAddressFixedIPAddress].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type InstanceAddressUnion struct {
 	Addr          string `json:"addr"`
 	Type          string `json:"type"`
 	InterfaceName string `json:"interface_name"`
-	// This field is from variant [InstanceAddressInstanceFixedAddressSerializer].
+	// This field is from variant [InstanceAddressFixedIPAddress].
 	SubnetID string `json:"subnet_id"`
-	// This field is from variant [InstanceAddressInstanceFixedAddressSerializer].
+	// This field is from variant [InstanceAddressFixedIPAddress].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
 		Addr          resp.Field
@@ -1490,17 +1485,17 @@ type InstanceAddressUnion struct {
 	} `json:"-"`
 }
 
-func (u InstanceAddressUnion) AsFloatingIPAddress() (v InstanceAddressInstanceFloatingAddressSerializer) {
+func (u InstanceAddressUnion) AsFloatingIPAddress() (v InstanceAddressFloatingIPAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InstanceAddressUnion) AsFixedIPAddressShort() (v InstanceAddressInstanceFixedAddressShortSerializer) {
+func (u InstanceAddressUnion) AsFixedIPAddressShort() (v InstanceAddressFixedIPAddressShort) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InstanceAddressUnion) AsFixedIPAddress() (v InstanceAddressInstanceFixedAddressSerializer) {
+func (u InstanceAddressUnion) AsFixedIPAddress() (v InstanceAddressFixedIPAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1514,7 +1509,7 @@ func (r *InstanceAddressUnion) UnmarshalJSON(data []byte) error {
 
 // '#/components/schemas/InstanceSerializer/properties/addresses/additionalProperties/items/anyOf/0'
 // "$.components.schemas.InstanceSerializer.properties.addresses.additionalProperties.items.anyOf[0]"
-type InstanceAddressInstanceFloatingAddressSerializer struct {
+type InstanceAddressFloatingIPAddress struct {
 	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/addr'
 	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -1532,14 +1527,14 @@ type InstanceAddressInstanceFloatingAddressSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceAddressInstanceFloatingAddressSerializer) RawJSON() string { return r.JSON.raw }
-func (r *InstanceAddressInstanceFloatingAddressSerializer) UnmarshalJSON(data []byte) error {
+func (r InstanceAddressFloatingIPAddress) RawJSON() string { return r.JSON.raw }
+func (r *InstanceAddressFloatingIPAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceSerializer/properties/addresses/additionalProperties/items/anyOf/1'
 // "$.components.schemas.InstanceSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
-type InstanceAddressInstanceFixedAddressShortSerializer struct {
+type InstanceAddressFixedIPAddressShort struct {
 	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/addr'
 	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -1561,14 +1556,14 @@ type InstanceAddressInstanceFixedAddressShortSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceAddressInstanceFixedAddressShortSerializer) RawJSON() string { return r.JSON.raw }
-func (r *InstanceAddressInstanceFixedAddressShortSerializer) UnmarshalJSON(data []byte) error {
+func (r InstanceAddressFixedIPAddressShort) RawJSON() string { return r.JSON.raw }
+func (r *InstanceAddressFixedIPAddressShort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceSerializer/properties/addresses/additionalProperties/items/anyOf/2'
 // "$.components.schemas.InstanceSerializer.properties.addresses.additionalProperties.items.anyOf[2]"
-type InstanceAddressInstanceFixedAddressSerializer struct {
+type InstanceAddressFixedIPAddress struct {
 	// '#/components/schemas/InstanceFixedAddressSerializer/properties/addr'
 	// "$.components.schemas.InstanceFixedAddressSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -1598,8 +1593,8 @@ type InstanceAddressInstanceFixedAddressSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceAddressInstanceFixedAddressSerializer) RawJSON() string { return r.JSON.raw }
-func (r *InstanceAddressInstanceFixedAddressSerializer) UnmarshalJSON(data []byte) error {
+func (r InstanceAddressFixedIPAddress) RawJSON() string { return r.JSON.raw }
+func (r *InstanceAddressFixedIPAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1683,19 +1678,17 @@ func (r *InstanceFixedIPAssignment) UnmarshalJSON(data []byte) error {
 }
 
 // InstanceFlavorUnion contains all possible properties and values from
-// [InstanceFlavorInstanceFlavorSerializer],
-// [InstanceFlavorBareMetalFlavorSerializer],
-// [InstanceFlavorDeprecatedGPUClusterFlavorSerializer].
+// [InstanceFlavorInstanceFlavor], [InstanceFlavorBareMetalFlavor],
+// [InstanceFlavorGPUClusterFlavor].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type InstanceFlavorUnion struct {
 	Architecture string `json:"architecture"`
 	FlavorID     string `json:"flavor_id"`
 	FlavorName   string `json:"flavor_name"`
-	// This field is a union of
-	// [InstanceFlavorInstanceFlavorSerializerHardwareDescription],
-	// [InstanceFlavorBareMetalFlavorSerializerHardwareDescription],
-	// [InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription]
+	// This field is a union of [InstanceFlavorInstanceFlavorHardwareDescription],
+	// [InstanceFlavorBareMetalFlavorHardwareDescription],
+	// [InstanceFlavorGPUClusterFlavorHardwareDescription]
 	HardwareDescription InstanceFlavorUnionHardwareDescription `json:"hardware_description"`
 	OsType              string                                 `json:"os_type"`
 	Ram                 int64                                  `json:"ram"`
@@ -1714,17 +1707,17 @@ type InstanceFlavorUnion struct {
 	} `json:"-"`
 }
 
-func (u InstanceFlavorUnion) AsInstanceFlavor() (v InstanceFlavorInstanceFlavorSerializer) {
+func (u InstanceFlavorUnion) AsInstanceFlavor() (v InstanceFlavorInstanceFlavor) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InstanceFlavorUnion) AsBareMetalFlavor() (v InstanceFlavorBareMetalFlavorSerializer) {
+func (u InstanceFlavorUnion) AsBareMetalFlavor() (v InstanceFlavorBareMetalFlavor) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InstanceFlavorUnion) AsGPUClusterFlavor() (v InstanceFlavorDeprecatedGPUClusterFlavorSerializer) {
+func (u InstanceFlavorUnion) AsGPUClusterFlavor() (v InstanceFlavorGPUClusterFlavor) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1744,15 +1737,13 @@ func (r *InstanceFlavorUnion) UnmarshalJSON(data []byte) error {
 // [InstanceFlavorUnion].
 type InstanceFlavorUnionHardwareDescription struct {
 	Ram string `json:"ram"`
-	// This field is from variant
-	// [InstanceFlavorInstanceFlavorSerializerHardwareDescription].
+	// This field is from variant [InstanceFlavorInstanceFlavorHardwareDescription].
 	Vcpus   string `json:"vcpus"`
 	CPU     string `json:"cpu"`
 	Disk    string `json:"disk"`
 	License string `json:"license"`
 	Network string `json:"network"`
-	// This field is from variant
-	// [InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription].
+	// This field is from variant [InstanceFlavorGPUClusterFlavorHardwareDescription].
 	GPU  string `json:"gpu"`
 	JSON struct {
 		Ram     resp.Field
@@ -1772,7 +1763,7 @@ func (r *InstanceFlavorUnionHardwareDescription) UnmarshalJSON(data []byte) erro
 
 // '#/components/schemas/InstanceSerializer/properties/flavor/anyOf/0'
 // "$.components.schemas.InstanceSerializer.properties.flavor.anyOf[0]"
-type InstanceFlavorInstanceFlavorSerializer struct {
+type InstanceFlavorInstanceFlavor struct {
 	// '#/components/schemas/InstanceFlavorSerializer/properties/architecture'
 	// "$.components.schemas.InstanceFlavorSerializer.properties.architecture"
 	Architecture string `json:"architecture,required"`
@@ -1784,7 +1775,7 @@ type InstanceFlavorInstanceFlavorSerializer struct {
 	FlavorName string `json:"flavor_name,required"`
 	// '#/components/schemas/InstanceFlavorSerializer/properties/hardware_description'
 	// "$.components.schemas.InstanceFlavorSerializer.properties.hardware_description"
-	HardwareDescription InstanceFlavorInstanceFlavorSerializerHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription InstanceFlavorInstanceFlavorHardwareDescription `json:"hardware_description,required"`
 	// '#/components/schemas/InstanceFlavorSerializer/properties/os_type'
 	// "$.components.schemas.InstanceFlavorSerializer.properties.os_type"
 	OsType string `json:"os_type,required"`
@@ -1810,14 +1801,14 @@ type InstanceFlavorInstanceFlavorSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorInstanceFlavorSerializer) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorInstanceFlavorSerializer) UnmarshalJSON(data []byte) error {
+func (r InstanceFlavorInstanceFlavor) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorInstanceFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceFlavorSerializer/properties/hardware_description'
 // "$.components.schemas.InstanceFlavorSerializer.properties.hardware_description"
-type InstanceFlavorInstanceFlavorSerializerHardwareDescription struct {
+type InstanceFlavorInstanceFlavorHardwareDescription struct {
 	// '#/components/schemas/InstanceFlavorHardwareDescriptionSerializer/properties/ram'
 	// "$.components.schemas.InstanceFlavorHardwareDescriptionSerializer.properties.ram"
 	Ram string `json:"ram,required"`
@@ -1835,16 +1826,14 @@ type InstanceFlavorInstanceFlavorSerializerHardwareDescription struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorInstanceFlavorSerializerHardwareDescription) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *InstanceFlavorInstanceFlavorSerializerHardwareDescription) UnmarshalJSON(data []byte) error {
+func (r InstanceFlavorInstanceFlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorInstanceFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceSerializer/properties/flavor/anyOf/1'
 // "$.components.schemas.InstanceSerializer.properties.flavor.anyOf[1]"
-type InstanceFlavorBareMetalFlavorSerializer struct {
+type InstanceFlavorBareMetalFlavor struct {
 	// '#/components/schemas/BareMetalFlavorSerializer/properties/architecture'
 	// "$.components.schemas.BareMetalFlavorSerializer.properties.architecture"
 	Architecture string `json:"architecture,required"`
@@ -1856,7 +1845,7 @@ type InstanceFlavorBareMetalFlavorSerializer struct {
 	FlavorName string `json:"flavor_name,required"`
 	// '#/components/schemas/BareMetalFlavorSerializer/properties/hardware_description'
 	// "$.components.schemas.BareMetalFlavorSerializer.properties.hardware_description"
-	HardwareDescription InstanceFlavorBareMetalFlavorSerializerHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription InstanceFlavorBareMetalFlavorHardwareDescription `json:"hardware_description,required"`
 	// '#/components/schemas/BareMetalFlavorSerializer/properties/os_type'
 	// "$.components.schemas.BareMetalFlavorSerializer.properties.os_type"
 	OsType string `json:"os_type,required"`
@@ -1886,14 +1875,14 @@ type InstanceFlavorBareMetalFlavorSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorBareMetalFlavorSerializer) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorBareMetalFlavorSerializer) UnmarshalJSON(data []byte) error {
+func (r InstanceFlavorBareMetalFlavor) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorBareMetalFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/BareMetalFlavorSerializer/properties/hardware_description'
 // "$.components.schemas.BareMetalFlavorSerializer.properties.hardware_description"
-type InstanceFlavorBareMetalFlavorSerializerHardwareDescription struct {
+type InstanceFlavorBareMetalFlavorHardwareDescription struct {
 	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/cpu'
 	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.cpu"
 	CPU string `json:"cpu,required"`
@@ -1923,16 +1912,14 @@ type InstanceFlavorBareMetalFlavorSerializerHardwareDescription struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorBareMetalFlavorSerializerHardwareDescription) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *InstanceFlavorBareMetalFlavorSerializerHardwareDescription) UnmarshalJSON(data []byte) error {
+func (r InstanceFlavorBareMetalFlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorBareMetalFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceSerializer/properties/flavor/anyOf/2'
 // "$.components.schemas.InstanceSerializer.properties.flavor.anyOf[2]"
-type InstanceFlavorDeprecatedGPUClusterFlavorSerializer struct {
+type InstanceFlavorGPUClusterFlavor struct {
 	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/architecture'
 	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.architecture"
 	Architecture string `json:"architecture,required"`
@@ -1944,7 +1931,7 @@ type InstanceFlavorDeprecatedGPUClusterFlavorSerializer struct {
 	FlavorName string `json:"flavor_name,required"`
 	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/hardware_description'
 	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.hardware_description"
-	HardwareDescription InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription InstanceFlavorGPUClusterFlavorHardwareDescription `json:"hardware_description,required"`
 	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/os_type'
 	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.os_type"
 	OsType string `json:"os_type,required"`
@@ -1974,14 +1961,14 @@ type InstanceFlavorDeprecatedGPUClusterFlavorSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorDeprecatedGPUClusterFlavorSerializer) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorDeprecatedGPUClusterFlavorSerializer) UnmarshalJSON(data []byte) error {
+func (r InstanceFlavorGPUClusterFlavor) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorGPUClusterFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/hardware_description'
 // "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.hardware_description"
-type InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription struct {
+type InstanceFlavorGPUClusterFlavorHardwareDescription struct {
 	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/cpu'
 	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.cpu"
 	CPU string `json:"cpu,required"`
@@ -2015,10 +2002,8 @@ type InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription struc
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *InstanceFlavorDeprecatedGPUClusterFlavorSerializerHardwareDescription) UnmarshalJSON(data []byte) error {
+func (r InstanceFlavorGPUClusterFlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorGPUClusterFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -4,7 +4,6 @@ package cloud
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -358,9 +357,20 @@ type FileShareNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].post.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/requestBody/content/application%2Fjson/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].post.requestBody.content['application/json'].schema"
-	Body FileShareNewParamsBodyUnion
+
+	//
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	// '#/components/schemas/CreateFileShareSerializer/anyOf/0'
+	// "$.components.schemas.CreateFileShareSerializer.anyOf[0]"
+	OfCreateStandardFileShareSerializer *FileShareNewParamsBodyCreateStandardFileShareSerializer `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/components/schemas/CreateFileShareSerializer/anyOf/1'
+	// "$.components.schemas.CreateFileShareSerializer.anyOf[1]"
+	OfCreateVastFileShareSerializer *FileShareNewParamsBodyCreateVastFileShareSerializer `json:",inline"`
+
 	paramObj
 }
 
@@ -368,21 +378,9 @@ type FileShareNewParams struct {
 // "null". To check if this field is omitted, use [param.IsOmitted].
 func (f FileShareNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
-func (r FileShareNewParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Body)
+func (u FileShareNewParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[FileShareNewParams](u.OfCreateStandardFileShareSerializer, u.OfCreateVastFileShareSerializer)
 }
-
-// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/requestBody/content/application%2Fjson/schema'
-// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].post.requestBody.content['application/json'].schema"
-//
-// Satisfied by [FileShareNewParamsBodyCreateStandardFileShareSerializer] and
-// [FileShareNewParamsBodyCreateVastFileShareSerializer]
-type FileShareNewParamsBodyUnion interface {
-	implFileShareNewParamsBodyUnion()
-}
-
-func (FileShareNewParamsBodyCreateStandardFileShareSerializer) implFileShareNewParamsBodyUnion() {}
-func (FileShareNewParamsBodyCreateVastFileShareSerializer) implFileShareNewParamsBodyUnion()     {}
 
 // '#/components/schemas/CreateFileShareSerializer/anyOf/0'
 // "$.components.schemas.CreateFileShareSerializer.anyOf[0]"

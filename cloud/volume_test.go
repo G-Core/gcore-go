@@ -29,7 +29,7 @@ func TestVolumeNewWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.Volumes.New(context.TODO(), cloud.VolumeNewParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(1),
-		Body: cloud.VolumeNewParamsBodyCreateVolumeFromImageSerializer{
+		OfImage: &cloud.VolumeNewParamsBodyImage{
 			ImageID:              "169942e0-9b53-42df-95ef-1a8b6525c2bd",
 			Name:                 "volume-1",
 			Size:                 10,

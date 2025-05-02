@@ -31,7 +31,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 		RegionID:  gcore.Int(0),
 		Flavor:    gcore.String("lb1-1-2"),
 		FloatingIP: cloud.LoadBalancerNewParamsFloatingIPUnion{
-			OfExistingFloatingIP: &cloud.LoadBalancerNewParamsFloatingIPExistingInstanceFloatingIPInterfaceSerializer{
+			OfExisting: &cloud.LoadBalancerNewParamsFloatingIPExisting{
 				ExistingFloatingID: "c64e5db1-5f1f-43ec-a8d9-5090df85b82d",
 			},
 		},

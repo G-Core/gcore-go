@@ -4,7 +4,6 @@ package cloud
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -520,9 +519,24 @@ type VolumeNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].post.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/requestBody/content/application%2Fjson/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].post.requestBody.content['application/json'].schema"
-	Body VolumeNewParamsBodyUnion
+
+	//
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	// '#/components/schemas/CreateVolumeSerializer/anyOf/0'
+	// "$.components.schemas.CreateVolumeSerializer.anyOf[0]"
+	OfImage *VolumeNewParamsBodyImage `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/components/schemas/CreateVolumeSerializer/anyOf/1'
+	// "$.components.schemas.CreateVolumeSerializer.anyOf[1]"
+	OfSnapshot *VolumeNewParamsBodySnapshot `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/components/schemas/CreateVolumeSerializer/anyOf/2'
+	// "$.components.schemas.CreateVolumeSerializer.anyOf[2]"
+	OfNewVolume *VolumeNewParamsBodyNewVolume `json:",inline"`
+
 	paramObj
 }
 
@@ -530,29 +544,15 @@ type VolumeNewParams struct {
 // "null". To check if this field is omitted, use [param.IsOmitted].
 func (f VolumeNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
-func (r VolumeNewParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Body)
+func (u VolumeNewParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[VolumeNewParams](u.OfImage, u.OfSnapshot, u.OfNewVolume)
 }
-
-// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/requestBody/content/application%2Fjson/schema'
-// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].post.requestBody.content['application/json'].schema"
-//
-// Satisfied by [VolumeNewParamsBodyCreateVolumeFromImageSerializer],
-// [VolumeNewParamsBodyCreateVolumeFromSnapshotSerializer] and
-// [VolumeNewParamsBodyCreateNewVolumeSerializer]
-type VolumeNewParamsBodyUnion interface {
-	implVolumeNewParamsBodyUnion()
-}
-
-func (VolumeNewParamsBodyCreateVolumeFromImageSerializer) implVolumeNewParamsBodyUnion()    {}
-func (VolumeNewParamsBodyCreateVolumeFromSnapshotSerializer) implVolumeNewParamsBodyUnion() {}
-func (VolumeNewParamsBodyCreateNewVolumeSerializer) implVolumeNewParamsBodyUnion()          {}
 
 // '#/components/schemas/CreateVolumeSerializer/anyOf/0'
 // "$.components.schemas.CreateVolumeSerializer.anyOf[0]"
 //
 // The properties ImageID, Name, Size, Source are required.
-type VolumeNewParamsBodyCreateVolumeFromImageSerializer struct {
+type VolumeNewParamsBodyImage struct {
 	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/image_id'
 	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.image_id"
 	ImageID string `json:"image_id,required" format:"uuid4"`
@@ -589,16 +589,14 @@ type VolumeNewParamsBodyCreateVolumeFromImageSerializer struct {
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeNewParamsBodyCreateVolumeFromImageSerializer) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r VolumeNewParamsBodyCreateVolumeFromImageSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow VolumeNewParamsBodyCreateVolumeFromImageSerializer
+func (f VolumeNewParamsBodyImage) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r VolumeNewParamsBodyImage) MarshalJSON() (data []byte, err error) {
+	type shadow VolumeNewParamsBodyImage
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 func init() {
-	apijson.RegisterFieldValidator[VolumeNewParamsBodyCreateVolumeFromImageSerializer](
+	apijson.RegisterFieldValidator[VolumeNewParamsBodyImage](
 		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
 	)
 }
@@ -607,7 +605,7 @@ func init() {
 // "$.components.schemas.CreateVolumeSerializer.anyOf[1]"
 //
 // The properties Name, SnapshotID, Source are required.
-type VolumeNewParamsBodyCreateVolumeFromSnapshotSerializer struct {
+type VolumeNewParamsBodySnapshot struct {
 	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/name'
 	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.name"
 	Name string `json:"name,required"`
@@ -644,16 +642,14 @@ type VolumeNewParamsBodyCreateVolumeFromSnapshotSerializer struct {
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeNewParamsBodyCreateVolumeFromSnapshotSerializer) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r VolumeNewParamsBodyCreateVolumeFromSnapshotSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow VolumeNewParamsBodyCreateVolumeFromSnapshotSerializer
+func (f VolumeNewParamsBodySnapshot) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r VolumeNewParamsBodySnapshot) MarshalJSON() (data []byte, err error) {
+	type shadow VolumeNewParamsBodySnapshot
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 func init() {
-	apijson.RegisterFieldValidator[VolumeNewParamsBodyCreateVolumeFromSnapshotSerializer](
+	apijson.RegisterFieldValidator[VolumeNewParamsBodySnapshot](
 		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
 	)
 }
@@ -662,7 +658,7 @@ func init() {
 // "$.components.schemas.CreateVolumeSerializer.anyOf[2]"
 //
 // The properties Name, Size, Source are required.
-type VolumeNewParamsBodyCreateNewVolumeSerializer struct {
+type VolumeNewParamsBodyNewVolume struct {
 	// '#/components/schemas/CreateNewVolumeSerializer/properties/name'
 	// "$.components.schemas.CreateNewVolumeSerializer.properties.name"
 	Name string `json:"name,required"`
@@ -696,16 +692,14 @@ type VolumeNewParamsBodyCreateNewVolumeSerializer struct {
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeNewParamsBodyCreateNewVolumeSerializer) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r VolumeNewParamsBodyCreateNewVolumeSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow VolumeNewParamsBodyCreateNewVolumeSerializer
+func (f VolumeNewParamsBodyNewVolume) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r VolumeNewParamsBodyNewVolume) MarshalJSON() (data []byte, err error) {
+	type shadow VolumeNewParamsBodyNewVolume
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 func init() {
-	apijson.RegisterFieldValidator[VolumeNewParamsBodyCreateNewVolumeSerializer](
+	apijson.RegisterFieldValidator[VolumeNewParamsBodyNewVolume](
 		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
 	)
 }

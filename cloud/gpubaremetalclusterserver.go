@@ -4,7 +4,6 @@ package cloud
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -234,9 +233,28 @@ type GPUBaremetalClusterServerAttachInterfaceParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema"
-	Body GPUBaremetalClusterServerAttachInterfaceParamsBodyUnion
+
+	//
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/0'
+	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[0]"
+	OfNewInterfaceExternalExtendSchemaWithDDOS *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOS `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/1'
+	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[1]"
+	OfNewInterfaceSpecificSubnetSchema *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchema `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/2'
+	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[2]"
+	OfNewInterfaceAnySubnetSchema *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchema `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/3'
+	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[3]"
+	OfNewInterfaceReservedFixedIPSchema *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchema `json:",inline"`
+
 	paramObj
 }
 
@@ -246,30 +264,8 @@ func (f GPUBaremetalClusterServerAttachInterfaceParams) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
 
-func (r GPUBaremetalClusterServerAttachInterfaceParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Body)
-}
-
-// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema'
-// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema"
-//
-// Satisfied by
-// [GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOS],
-// [GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchema],
-// [GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchema]
-// and
-// [GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchema]
-type GPUBaremetalClusterServerAttachInterfaceParamsBodyUnion interface {
-	implGPUBaremetalClusterServerAttachInterfaceParamsBodyUnion()
-}
-
-func (GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOS) implGPUBaremetalClusterServerAttachInterfaceParamsBodyUnion() {
-}
-func (GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchema) implGPUBaremetalClusterServerAttachInterfaceParamsBodyUnion() {
-}
-func (GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchema) implGPUBaremetalClusterServerAttachInterfaceParamsBodyUnion() {
-}
-func (GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchema) implGPUBaremetalClusterServerAttachInterfaceParamsBodyUnion() {
+func (u GPUBaremetalClusterServerAttachInterfaceParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[GPUBaremetalClusterServerAttachInterfaceParams](u.OfNewInterfaceExternalExtendSchemaWithDDOS, u.OfNewInterfaceSpecificSubnetSchema, u.OfNewInterfaceAnySubnetSchema, u.OfNewInterfaceReservedFixedIPSchema)
 }
 
 // '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/0'

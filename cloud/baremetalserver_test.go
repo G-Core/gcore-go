@@ -32,7 +32,7 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 		RegionID:  gcore.Int(1),
 		Flavor:    "bm2-hf-medium",
 		Interfaces: []cloud.BaremetalServerNewParamsInterfaceUnion{{
-			OfCreateBareMetalExternalInterfaceSerializer: &cloud.BaremetalServerNewParamsInterfaceCreateBareMetalExternalInterfaceSerializer{
+			OfExternal: &cloud.BaremetalServerNewParamsInterfaceExternal{
 				InterfaceName: gcore.String("eth0"),
 				IPFamily:      cloud.InterfaceIPFamilyIpv4,
 				PortGroup:     gcore.Int(0),
@@ -46,7 +46,7 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 				BaseField: gcore.Int(10),
 				FieldName: gcore.String("field_name"),
 				FieldValue: cloud.BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion{
-					OfBaremetalServerNewsDDOSProfileFieldFieldValueArray: []any{45046, 45047},
+					OfAnyArray: []any{45046, 45047},
 				},
 				Value: gcore.String("value"),
 			}},

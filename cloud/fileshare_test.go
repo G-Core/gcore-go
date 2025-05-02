@@ -29,7 +29,7 @@ func TestFileShareNewWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.FileShares.New(context.TODO(), cloud.FileShareNewParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(1),
-		Body: cloud.FileShareNewParamsBodyCreateStandardFileShareSerializer{
+		OfCreateStandardFileShareSerializer: &cloud.FileShareNewParamsBodyCreateStandardFileShareSerializer{
 			Name: "test-share-file-system",
 			Network: cloud.FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork{
 				NetworkID: "024a29e9-b4b7-4c91-9a46-505be123d9f8",

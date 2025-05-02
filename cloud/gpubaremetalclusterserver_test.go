@@ -64,7 +64,7 @@ func TestGPUBaremetalClusterServerAttachInterfaceWithOptionalParams(t *testing.T
 		cloud.GPUBaremetalClusterServerAttachInterfaceParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
-			Body: cloud.GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOS{
+			OfNewInterfaceExternalExtendSchemaWithDDOS: &cloud.GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOS{
 				DDOSProfile: cloud.GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile{
 					ProfileTemplate: 29,
 					Fields: []cloud.GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField{{

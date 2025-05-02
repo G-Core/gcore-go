@@ -4,7 +4,6 @@ package cloud
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -133,9 +132,28 @@ type InstanceInterfaceAttachParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/attach_interface'].post.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema"
-	Body InstanceInterfaceAttachParamsBodyUnion
+
+	//
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/0'
+	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[0]"
+	OfNewInterfaceExternalExtendSchemaWithDDOS *InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/1'
+	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[1]"
+	OfNewInterfaceSpecificSubnetSchema *InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/2'
+	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[2]"
+	OfNewInterfaceAnySubnetSchema *InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/3'
+	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[3]"
+	OfNewInterfaceReservedFixedIPSchema *InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema `json:",inline"`
+
 	paramObj
 }
 
@@ -143,29 +161,8 @@ type InstanceInterfaceAttachParams struct {
 // "null". To check if this field is omitted, use [param.IsOmitted].
 func (f InstanceInterfaceAttachParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
-func (r InstanceInterfaceAttachParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Body)
-}
-
-// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema'
-// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema"
-//
-// Satisfied by
-// [InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS],
-// [InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema],
-// [InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema] and
-// [InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema]
-type InstanceInterfaceAttachParamsBodyUnion interface {
-	implInstanceInterfaceAttachParamsBodyUnion()
-}
-
-func (InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS) implInstanceInterfaceAttachParamsBodyUnion() {
-}
-func (InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema) implInstanceInterfaceAttachParamsBodyUnion() {
-}
-func (InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema) implInstanceInterfaceAttachParamsBodyUnion() {
-}
-func (InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema) implInstanceInterfaceAttachParamsBodyUnion() {
+func (u InstanceInterfaceAttachParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[InstanceInterfaceAttachParams](u.OfNewInterfaceExternalExtendSchemaWithDDOS, u.OfNewInterfaceSpecificSubnetSchema, u.OfNewInterfaceAnySubnetSchema, u.OfNewInterfaceReservedFixedIPSchema)
 }
 
 // '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/0'

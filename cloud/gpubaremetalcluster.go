@@ -431,8 +431,8 @@ const (
 )
 
 // GPUBaremetalFlavorUnion contains all possible properties and values from
-// [GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPrice],
-// [GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPrices].
+// [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice],
+// [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type GPUBaremetalFlavorUnion struct {
@@ -440,17 +440,17 @@ type GPUBaremetalFlavorUnion struct {
 	Capacity     int64  `json:"capacity"`
 	Disabled     bool   `json:"disabled"`
 	// This field is a union of
-	// [GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPriceHardwareDescription],
-	// [GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesHardwareDescription]
+	// [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareDescription],
+	// [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareDescription]
 	HardwareDescription GPUBaremetalFlavorUnionHardwareDescription `json:"hardware_description"`
 	// This field is a union of
-	// [GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPriceHardwareProperties],
-	// [GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesHardwareProperties]
+	// [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties],
+	// [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties]
 	HardwareProperties GPUBaremetalFlavorUnionHardwareProperties `json:"hardware_properties"`
 	Name               string                                    `json:"name"`
 	// This field is from variant
-	// [GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPrices].
-	Price GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesPrice `json:"price"`
+	// [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice].
+	Price GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice `json:"price"`
 	JSON  struct {
 		Architecture        resp.Field
 		Capacity            resp.Field
@@ -463,12 +463,12 @@ type GPUBaremetalFlavorUnion struct {
 	} `json:"-"`
 }
 
-func (u GPUBaremetalFlavorUnion) AsBareMetalGPUFlavorsChemaWithoutPrice() (v GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPrice) {
+func (u GPUBaremetalFlavorUnion) AsBareMetalGPUFlavorsChemaWithoutPrice() (v GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u GPUBaremetalFlavorUnion) AsBareMetalGPUFlavorsChemaWithPrice() (v GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPrices) {
+func (u GPUBaremetalFlavorUnion) AsBareMetalGPUFlavorsChemaWithPrice() (v GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -530,7 +530,7 @@ func (r *GPUBaremetalFlavorUnionHardwareProperties) UnmarshalJSON(data []byte) e
 
 // '#/components/schemas/GpuBaremetalFlavorSerializer/anyOf/0'
 // "$.components.schemas.GpuBaremetalFlavorSerializer.anyOf[0]"
-type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPrice struct {
+type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice struct {
 	// '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/architecture/anyOf/0'
 	// "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.architecture.anyOf[0]"
 	Architecture string `json:"architecture,required"`
@@ -542,10 +542,10 @@ type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPrice struct {
 	Disabled bool `json:"disabled,required"`
 	// '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/hardware_description'
 	// "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.hardware_description"
-	HardwareDescription GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPriceHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareDescription `json:"hardware_description,required"`
 	// '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/hardware_properties'
 	// "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.hardware_properties"
-	HardwareProperties GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPriceHardwareProperties `json:"hardware_properties,required"`
+	HardwareProperties GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties `json:"hardware_properties,required"`
 	// '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/name'
 	// "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.name"
 	Name string `json:"name,required"`
@@ -564,16 +564,14 @@ type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPrice struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPrice) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPrice) UnmarshalJSON(data []byte) error {
+func (r GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice) RawJSON() string { return r.JSON.raw }
+func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/hardware_description'
 // "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.hardware_description"
-type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPriceHardwareDescription struct {
+type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareDescription struct {
 	// '#/components/schemas/GpuBaremetalFlavorHardwareDescriptionSerializer/properties/cpu'
 	// "$.components.schemas.GpuBaremetalFlavorHardwareDescriptionSerializer.properties.cpu"
 	CPU string `json:"cpu,required"`
@@ -603,16 +601,16 @@ type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPriceHardwareDescripti
 }
 
 // Returns the unmodified JSON received from the API
-func (r GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPriceHardwareDescription) RawJSON() string {
+func (r GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareDescription) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPriceHardwareDescription) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/hardware_properties'
 // "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.hardware_properties"
-type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPriceHardwareProperties struct {
+type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties struct {
 	// '#/components/schemas/GpuFlavorHardwareProperties/properties/gpu_count/anyOf/0'
 	// "$.components.schemas.GpuFlavorHardwareProperties.properties.gpu_count.anyOf[0]"
 	GPUCount int64 `json:"gpu_count,required"`
@@ -634,16 +632,16 @@ type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPriceHardwarePropertie
 }
 
 // Returns the unmodified JSON received from the API
-func (r GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPriceHardwareProperties) RawJSON() string {
+func (r GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithoutPriceHardwareProperties) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/GpuBaremetalFlavorSerializer/anyOf/1'
 // "$.components.schemas.GpuBaremetalFlavorSerializer.anyOf[1]"
-type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPrices struct {
+type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice struct {
 	// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/architecture/anyOf/0'
 	// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.architecture.anyOf[0]"
 	Architecture string `json:"architecture,required"`
@@ -655,16 +653,16 @@ type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPrices struct {
 	Disabled bool `json:"disabled,required"`
 	// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/hardware_description'
 	// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.hardware_description"
-	HardwareDescription GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareDescription `json:"hardware_description,required"`
 	// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/hardware_properties'
 	// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.hardware_properties"
-	HardwareProperties GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesHardwareProperties `json:"hardware_properties,required"`
+	HardwareProperties GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties `json:"hardware_properties,required"`
 	// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/name'
 	// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.name"
 	Name string `json:"name,required"`
 	// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/price'
 	// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.price"
-	Price GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesPrice `json:"price,required"`
+	Price GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice `json:"price,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -681,14 +679,14 @@ type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPrices struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPrices) RawJSON() string { return r.JSON.raw }
-func (r *GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPrices) UnmarshalJSON(data []byte) error {
+func (r GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice) RawJSON() string { return r.JSON.raw }
+func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/hardware_description'
 // "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.hardware_description"
-type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesHardwareDescription struct {
+type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareDescription struct {
 	// '#/components/schemas/GpuBaremetalFlavorHardwareDescriptionSerializer/properties/cpu'
 	// "$.components.schemas.GpuBaremetalFlavorHardwareDescriptionSerializer.properties.cpu"
 	CPU string `json:"cpu,required"`
@@ -718,16 +716,16 @@ type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesHardwareDescription
 }
 
 // Returns the unmodified JSON received from the API
-func (r GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesHardwareDescription) RawJSON() string {
+func (r GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareDescription) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesHardwareDescription) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/hardware_properties'
 // "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.hardware_properties"
-type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesHardwareProperties struct {
+type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties struct {
 	// '#/components/schemas/GpuFlavorHardwareProperties/properties/gpu_count/anyOf/0'
 	// "$.components.schemas.GpuFlavorHardwareProperties.properties.gpu_count.anyOf[0]"
 	GPUCount int64 `json:"gpu_count,required"`
@@ -749,16 +747,16 @@ type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesHardwareProperties 
 }
 
 // Returns the unmodified JSON received from the API
-func (r GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesHardwareProperties) RawJSON() string {
+func (r GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesHardwareProperties) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/price'
 // "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.price"
-type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesPrice struct {
+type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice struct {
 	// '#/components/schemas/FlavorPrice/properties/currency_code/anyOf/0'
 	// "$.components.schemas.FlavorPrice.properties.currency_code.anyOf[0]"
 	CurrencyCode string `json:"currency_code,required"`
@@ -786,10 +784,8 @@ type GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesPrice struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesPrice) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *GPUBaremetalFlavorGPUBaremetalFlavorSerializerWithPricesPrice) UnmarshalJSON(data []byte) error {
+func (r GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice) RawJSON() string { return r.JSON.raw }
+func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -873,16 +869,16 @@ func (r GPUBaremetalClusterNewParams) MarshalJSON() (data []byte, err error) {
 type GPUBaremetalClusterNewParamsInterfaceUnion struct {
 	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/0'
 	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[0]"
-	OfNewInterfaceExternalSerializerPydantic *GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydantic `json:",omitzero,inline"`
+	OfExternal *GPUBaremetalClusterNewParamsInterfaceExternal `json:",omitzero,inline"`
 	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/1'
 	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[1]"
-	OfNewInterfaceSpecificSubnetFipSerializerPydantic *GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic `json:",omitzero,inline"`
+	OfSubnet *GPUBaremetalClusterNewParamsInterfaceSubnet `json:",omitzero,inline"`
 	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/2'
 	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[2]"
-	OfNewInterfaceAnySubnetFipSerializerPydantic *GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic `json:",omitzero,inline"`
+	OfAnySubnet *GPUBaremetalClusterNewParamsInterfaceAnySubnet `json:",omitzero,inline"`
 	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/3'
 	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[3]"
-	OfNewInterfaceReservedFixedIPFipSerializerPydantic *GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic `json:",omitzero,inline"`
+	OfReservedFixedIP *GPUBaremetalClusterNewParamsInterfaceReservedFixedIP `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -892,25 +888,25 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceUnion](u.OfNewInterfaceExternalSerializerPydantic, u.OfNewInterfaceSpecificSubnetFipSerializerPydantic, u.OfNewInterfaceAnySubnetFipSerializerPydantic, u.OfNewInterfaceReservedFixedIPFipSerializerPydantic)
+	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
 }
 
 func (u *GPUBaremetalClusterNewParamsInterfaceUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewInterfaceExternalSerializerPydantic) {
-		return u.OfNewInterfaceExternalSerializerPydantic
-	} else if !param.IsOmitted(u.OfNewInterfaceSpecificSubnetFipSerializerPydantic) {
-		return u.OfNewInterfaceSpecificSubnetFipSerializerPydantic
-	} else if !param.IsOmitted(u.OfNewInterfaceAnySubnetFipSerializerPydantic) {
-		return u.OfNewInterfaceAnySubnetFipSerializerPydantic
-	} else if !param.IsOmitted(u.OfNewInterfaceReservedFixedIPFipSerializerPydantic) {
-		return u.OfNewInterfaceReservedFixedIPFipSerializerPydantic
+	if !param.IsOmitted(u.OfExternal) {
+		return u.OfExternal
+	} else if !param.IsOmitted(u.OfSubnet) {
+		return u.OfSubnet
+	} else if !param.IsOmitted(u.OfAnySubnet) {
+		return u.OfAnySubnet
+	} else if !param.IsOmitted(u.OfReservedFixedIP) {
+		return u.OfReservedFixedIP
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetSubnetID() *string {
-	if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil {
+	if vt := u.OfSubnet; vt != nil {
 		return &vt.SubnetID
 	}
 	return nil
@@ -918,7 +914,7 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetSubnetID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetIPAddress() *string {
-	if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil && vt.IPAddress.IsPresent() {
+	if vt := u.OfAnySubnet; vt != nil && vt.IPAddress.IsPresent() {
 		return &vt.IPAddress.Value
 	}
 	return nil
@@ -926,7 +922,7 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetIPAddress() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetPortID() *string {
-	if vt := u.OfNewInterfaceReservedFixedIPFipSerializerPydantic; vt != nil {
+	if vt := u.OfReservedFixedIP; vt != nil {
 		return &vt.PortID
 	}
 	return nil
@@ -934,13 +930,13 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetPortID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetType() *string {
-	if vt := u.OfNewInterfaceExternalSerializerPydantic; vt != nil {
+	if vt := u.OfExternal; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfSubnet; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfNewInterfaceReservedFixedIPFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfReservedFixedIP; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -948,13 +944,13 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetInterfaceName() *string {
-	if vt := u.OfNewInterfaceExternalSerializerPydantic; vt != nil && vt.InterfaceName.IsPresent() {
+	if vt := u.OfExternal; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfSubnet; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfAnySubnet; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfNewInterfaceReservedFixedIPFipSerializerPydantic; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfReservedFixedIP; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
 	}
 	return nil
@@ -962,9 +958,9 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetInterfaceName() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetIPFamily() *string {
-	if vt := u.OfNewInterfaceExternalSerializerPydantic; vt != nil {
+	if vt := u.OfExternal; vt != nil {
 		return (*string)(&vt.IPFamily)
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		return (*string)(&vt.IPFamily)
 	}
 	return nil
@@ -972,13 +968,13 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetIPFamily() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetPortGroup() *int64 {
-	if vt := u.OfNewInterfaceExternalSerializerPydantic; vt != nil && vt.PortGroup.IsPresent() {
+	if vt := u.OfExternal; vt != nil && vt.PortGroup.IsPresent() {
 		return &vt.PortGroup.Value
-	} else if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil && vt.PortGroup.IsPresent() {
+	} else if vt := u.OfSubnet; vt != nil && vt.PortGroup.IsPresent() {
 		return &vt.PortGroup.Value
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil && vt.PortGroup.IsPresent() {
+	} else if vt := u.OfAnySubnet; vt != nil && vt.PortGroup.IsPresent() {
 		return &vt.PortGroup.Value
-	} else if vt := u.OfNewInterfaceReservedFixedIPFipSerializerPydantic; vt != nil && vt.PortGroup.IsPresent() {
+	} else if vt := u.OfReservedFixedIP; vt != nil && vt.PortGroup.IsPresent() {
 		return &vt.PortGroup.Value
 	}
 	return nil
@@ -986,9 +982,9 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetPortGroup() *int64 {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetNetworkID() *string {
-	if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil {
+	if vt := u.OfSubnet; vt != nil {
 		return (*string)(&vt.NetworkID)
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		return (*string)(&vt.NetworkID)
 	}
 	return nil
@@ -998,32 +994,32 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetNetworkID() *string {
 //
 // Or use AsAny() to get the underlying value
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetSecurityGroups() (res gpuBaremetalClusterNewParamsInterfaceUnionSecurityGroups) {
-	if vt := u.OfNewInterfaceExternalSerializerPydantic; vt != nil {
+	if vt := u.OfExternal; vt != nil {
 		res.any = &vt.SecurityGroups
-	} else if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfSubnet; vt != nil {
 		res.any = &vt.SecurityGroups
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		res.any = &vt.SecurityGroups
-	} else if vt := u.OfNewInterfaceReservedFixedIPFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfReservedFixedIP; vt != nil {
 		res.any = &vt.SecurityGroups
 	}
 	return
 }
 
 // Can have the runtime types
-// [_[]GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup],
-// [_[]GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup],
-// [_[]GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup],
-// [_[]GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup]
+// [_[]GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup],
+// [_[]GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup],
+// [_[]GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup],
+// [_[]GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup]
 type gpuBaremetalClusterNewParamsInterfaceUnionSecurityGroups struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
-//	case *[]cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup:
-//	case *[]cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup:
-//	case *[]cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup:
-//	case *[]cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup:
+//	case *[]cloud.GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup:
+//	case *[]cloud.GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup:
+//	case *[]cloud.GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup:
+//	case *[]cloud.GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -1033,34 +1029,34 @@ func (u gpuBaremetalClusterNewParamsInterfaceUnionSecurityGroups) AsAny() any { 
 //
 // Or use AsAny() to get the underlying value
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetFloatingIP() (res gpuBaremetalClusterNewParamsInterfaceUnionFloatingIP) {
-	if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil {
+	if vt := u.OfSubnet; vt != nil {
 		res.any = vt.FloatingIP.asAny()
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		res.any = vt.FloatingIP.asAny()
-	} else if vt := u.OfNewInterfaceReservedFixedIPFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfReservedFixedIP; vt != nil {
 		res.any = vt.FloatingIP.asAny()
 	}
 	return
 }
 
 // Can have the runtime types
-// [*GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer],
-// [*GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer],
-// [*GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer],
-// [*GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer],
-// [*GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer],
-// [*GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer]
+// [*GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew],
+// [*GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting],
+// [*GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew],
+// [*GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting],
+// [*GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew],
+// [*GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting]
 type gpuBaremetalClusterNewParamsInterfaceUnionFloatingIP struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
-//	case *cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer:
+//	case *cloud.GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew:
+//	case *cloud.GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting:
+//	case *cloud.GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew:
+//	case *cloud.GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting:
+//	case *cloud.GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew:
+//	case *cloud.GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -1069,11 +1065,11 @@ func (u gpuBaremetalClusterNewParamsInterfaceUnionFloatingIP) AsAny() any { retu
 // Returns a pointer to the underlying variant's property, if present.
 func (u gpuBaremetalClusterNewParamsInterfaceUnionFloatingIP) GetSource() *string {
 	switch vt := u.any.(type) {
-	case *GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion:
+	case *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion:
 		return vt.GetSource()
-	case *GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion:
+	case *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion:
 		return vt.GetSource()
-	case *GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion:
+	case *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion:
 		return vt.GetSource()
 	}
 	return nil
@@ -1082,11 +1078,11 @@ func (u gpuBaremetalClusterNewParamsInterfaceUnionFloatingIP) GetSource() *strin
 // Returns a pointer to the underlying variant's property, if present.
 func (u gpuBaremetalClusterNewParamsInterfaceUnionFloatingIP) GetExistingFloatingID() *string {
 	switch vt := u.any.(type) {
-	case *GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion:
+	case *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion:
 		return vt.GetExistingFloatingID()
-	case *GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion:
+	case *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion:
 		return vt.GetExistingFloatingID()
-	case *GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion:
+	case *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion:
 		return vt.GetExistingFloatingID()
 	}
 	return nil
@@ -1097,22 +1093,22 @@ func init() {
 		"type",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydantic{}),
+			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceExternal{}),
 			DiscriminatorValue: "external",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic{}),
+			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceSubnet{}),
 			DiscriminatorValue: "subnet",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic{}),
+			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceAnySubnet{}),
 			DiscriminatorValue: "any_subnet",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic{}),
+			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceReservedFixedIP{}),
 			DiscriminatorValue: "reserved_fixed_ip",
 		},
 	)
@@ -1122,7 +1118,7 @@ func init() {
 // "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[0]"
 //
 // The property Type is required.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydantic struct {
+type GPUBaremetalClusterNewParamsInterfaceExternal struct {
 	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/interface_name'
 	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.interface_name"
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
@@ -1136,7 +1132,7 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydantic
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
 	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/security_groups'
 	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.security_groups"
-	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup `json:"security_groups,omitzero"`
+	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup `json:"security_groups,omitzero"`
 	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/type'
 	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.type"
 	//
@@ -1147,11 +1143,11 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydantic
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydantic) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceExternal) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydantic) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydantic
+func (r GPUBaremetalClusterNewParamsInterfaceExternal) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceExternal
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1159,7 +1155,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydan
 // "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.security_groups.items"
 //
 // The property ID is required.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup struct {
+type GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup struct {
 	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
 	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
 	ID string `json:"id,required" format:"uuid4"`
@@ -1168,11 +1164,11 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydantic
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup
+func (r GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1180,7 +1176,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceExternalSerializerPydan
 // "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[1]"
 //
 // The properties NetworkID, SubnetID, Type are required.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic struct {
+type GPUBaremetalClusterNewParamsInterfaceSubnet struct {
 	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/network_id'
 	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.network_id"
 	NetworkID string `json:"network_id,required" format:"uuid4"`
@@ -1195,10 +1191,10 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerialize
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip'
 	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip"
-	FloatingIP GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion `json:"floating_ip,omitzero"`
+	FloatingIP GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion `json:"floating_ip,omitzero"`
 	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/security_groups'
 	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.security_groups"
-	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup `json:"security_groups,omitzero"`
+	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup `json:"security_groups,omitzero"`
 	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/type'
 	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.type"
 	//
@@ -1209,81 +1205,81 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerialize
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceSubnet) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic
+func (r GPUBaremetalClusterNewParamsInterfaceSubnet) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceSubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion struct {
+type GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion struct {
 	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
 	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-	OfNewFloatingIP *GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfNew *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew `json:",omitzero,inline"`
 	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
 	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
-	OfExistingFloatingIP *GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfExisting *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (u GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion) IsPresent() bool {
+func (u GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
-func (u GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion](u.OfNewFloatingIP, u.OfExistingFloatingIP)
+func (u GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion](u.OfNew, u.OfExisting)
 }
 
-func (u *GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewFloatingIP) {
-		return u.OfNewFloatingIP
-	} else if !param.IsOmitted(u.OfExistingFloatingIP) {
-		return u.OfExistingFloatingIP
+func (u *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion) asAny() any {
+	if !param.IsOmitted(u.OfNew) {
+		return u.OfNew
+	} else if !param.IsOmitted(u.OfExisting) {
+		return u.OfExisting
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExistingFloatingIP; vt != nil {
+func (u GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion) GetExistingFloatingID() *string {
+	if vt := u.OfExisting; vt != nil {
 		return &vt.ExistingFloatingID
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNewFloatingIP; vt != nil {
+func (u GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion) GetSource() *string {
+	if vt := u.OfNew; vt != nil {
 		return (*string)(&vt.Source)
-	} else if vt := u.OfExistingFloatingIP; vt != nil {
+	} else if vt := u.OfExisting; vt != nil {
 		return (*string)(&vt.Source)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion](
+	apijson.RegisterUnion[GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion](
 		"source",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew{}),
 			DiscriminatorValue: "new",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting{}),
 			DiscriminatorValue: "existing",
 		},
 	)
 }
 
-func NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer() GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer {
-	return GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+func NewGPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew() GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew {
+	return GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew{
 		Source: "new",
 	}
 }
@@ -1292,8 +1288,8 @@ func NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerial
 // "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
 //
 // This struct has a constant value, construct it with
-// [NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer].
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
+// [NewGPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew].
+type GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
 	Source constant.New `json:"source,required"`
@@ -1302,11 +1298,11 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerialize
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer
+func (r GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1314,7 +1310,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerial
 // "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
 //
 // The properties ExistingFloatingID, Source are required.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer struct {
+type GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting struct {
 	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
 	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
@@ -1328,11 +1324,11 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerialize
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer
+func (r GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1340,7 +1336,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerial
 // "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.security_groups.items"
 //
 // The property ID is required.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup struct {
+type GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup struct {
 	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
 	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
 	ID string `json:"id,required" format:"uuid4"`
@@ -1349,11 +1345,11 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerialize
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup
+func (r GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1361,7 +1357,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerial
 // "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[2]"
 //
 // The properties NetworkID, Type are required.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic struct {
+type GPUBaremetalClusterNewParamsInterfaceAnySubnet struct {
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/network_id'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.network_id"
 	NetworkID string `json:"network_id,required" format:"uuid4"`
@@ -1376,7 +1372,7 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPyda
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip"
-	FloatingIP GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion `json:"floating_ip,omitzero"`
+	FloatingIP GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion `json:"floating_ip,omitzero"`
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/ip_family/anyOf/0'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.ip_family.anyOf[0]"
 	//
@@ -1384,7 +1380,7 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPyda
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/security_groups'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.security_groups"
-	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup `json:"security_groups,omitzero"`
+	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup `json:"security_groups,omitzero"`
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/type'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.type"
 	//
@@ -1395,81 +1391,81 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPyda
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceAnySubnet) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic
+func (r GPUBaremetalClusterNewParamsInterfaceAnySubnet) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion struct {
+type GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion struct {
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-	OfNewFloatingIP *GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfNew *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew `json:",omitzero,inline"`
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
-	OfExistingFloatingIP *GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfExisting *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (u GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion) IsPresent() bool {
+func (u GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
-func (u GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion](u.OfNewFloatingIP, u.OfExistingFloatingIP)
+func (u GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion](u.OfNew, u.OfExisting)
 }
 
-func (u *GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewFloatingIP) {
-		return u.OfNewFloatingIP
-	} else if !param.IsOmitted(u.OfExistingFloatingIP) {
-		return u.OfExistingFloatingIP
+func (u *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion) asAny() any {
+	if !param.IsOmitted(u.OfNew) {
+		return u.OfNew
+	} else if !param.IsOmitted(u.OfExisting) {
+		return u.OfExisting
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExistingFloatingIP; vt != nil {
+func (u GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion) GetExistingFloatingID() *string {
+	if vt := u.OfExisting; vt != nil {
 		return &vt.ExistingFloatingID
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNewFloatingIP; vt != nil {
+func (u GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion) GetSource() *string {
+	if vt := u.OfNew; vt != nil {
 		return (*string)(&vt.Source)
-	} else if vt := u.OfExistingFloatingIP; vt != nil {
+	} else if vt := u.OfExisting; vt != nil {
 		return (*string)(&vt.Source)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion](
+	apijson.RegisterUnion[GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion](
 		"source",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew{}),
 			DiscriminatorValue: "new",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting{}),
 			DiscriminatorValue: "existing",
 		},
 	)
 }
 
-func NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer() GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer {
-	return GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+func NewGPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew() GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew {
+	return GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew{
 		Source: "new",
 	}
 }
@@ -1478,8 +1474,8 @@ func NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerP
 // "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
 //
 // This struct has a constant value, construct it with
-// [NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer].
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
+// [NewGPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew].
+type GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
 	Source constant.New `json:"source,required"`
@@ -1488,11 +1484,11 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPyda
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer
+func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1500,7 +1496,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerP
 // "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
 //
 // The properties ExistingFloatingID, Source are required.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer struct {
+type GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting struct {
 	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
 	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
@@ -1514,11 +1510,11 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPyda
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer
+func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1526,7 +1522,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerP
 // "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.security_groups.items"
 //
 // The property ID is required.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup struct {
+type GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup struct {
 	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
 	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
 	ID string `json:"id,required" format:"uuid4"`
@@ -1535,11 +1531,11 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPyda
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup
+func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1547,7 +1543,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceAnySubnetFipSerializerP
 // "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[3]"
 //
 // The properties PortID, Type are required.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic struct {
+type GPUBaremetalClusterNewParamsInterfaceReservedFixedIP struct {
 	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/port_id'
 	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.port_id"
 	PortID string `json:"port_id,required"`
@@ -1559,10 +1555,10 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializ
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip'
 	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip"
-	FloatingIP GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion `json:"floating_ip,omitzero"`
+	FloatingIP GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion `json:"floating_ip,omitzero"`
 	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/security_groups'
 	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.security_groups"
-	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup `json:"security_groups,omitzero"`
+	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup `json:"security_groups,omitzero"`
 	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/type'
 	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.type"
 	//
@@ -1574,81 +1570,81 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializ
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceReservedFixedIP) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic
+func (r GPUBaremetalClusterNewParamsInterfaceReservedFixedIP) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceReservedFixedIP
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion struct {
+type GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
 	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/0'
 	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-	OfNewFloatingIP *GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfNew *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew `json:",omitzero,inline"`
 	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/1'
 	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[1]"
-	OfExistingFloatingIP *GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfExisting *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (u GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion) IsPresent() bool {
+func (u GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
-func (u GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion](u.OfNewFloatingIP, u.OfExistingFloatingIP)
+func (u GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion](u.OfNew, u.OfExisting)
 }
 
-func (u *GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewFloatingIP) {
-		return u.OfNewFloatingIP
-	} else if !param.IsOmitted(u.OfExistingFloatingIP) {
-		return u.OfExistingFloatingIP
+func (u *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion) asAny() any {
+	if !param.IsOmitted(u.OfNew) {
+		return u.OfNew
+	} else if !param.IsOmitted(u.OfExisting) {
+		return u.OfExisting
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExistingFloatingIP; vt != nil {
+func (u GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetExistingFloatingID() *string {
+	if vt := u.OfExisting; vt != nil {
 		return &vt.ExistingFloatingID
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNewFloatingIP; vt != nil {
+func (u GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetSource() *string {
+	if vt := u.OfNew; vt != nil {
 		return (*string)(&vt.Source)
-	} else if vt := u.OfExistingFloatingIP; vt != nil {
+	} else if vt := u.OfExisting; vt != nil {
 		return (*string)(&vt.Source)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion](
+	apijson.RegisterUnion[GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion](
 		"source",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew{}),
 			DiscriminatorValue: "new",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting{}),
 			DiscriminatorValue: "existing",
 		},
 	)
 }
 
-func NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer() GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer {
-	return GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+func NewGPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew() GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew {
+	return GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew{
 		Source: "new",
 	}
 }
@@ -1657,8 +1653,8 @@ func NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSeria
 // "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[0]"
 //
 // This struct has a constant value, construct it with
-// [NewGPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer].
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
+// [NewGPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew].
+type GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
 	Source constant.New `json:"source,required"`
@@ -1667,11 +1663,11 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializ
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer
+func (r GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1679,7 +1675,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSeria
 // "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[1]"
 //
 // The properties ExistingFloatingID, Source are required.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer struct {
+type GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
 	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
 	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
@@ -1693,11 +1689,11 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializ
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer
+func (r GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1705,7 +1701,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSeria
 // "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.security_groups.items"
 //
 // The property ID is required.
-type GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup struct {
+type GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup struct {
 	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
 	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
 	ID string `json:"id,required" format:"uuid4"`
@@ -1714,11 +1710,11 @@ type GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializ
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup
+func (r GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 

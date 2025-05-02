@@ -402,21 +402,18 @@ func (r *FloatingIPDetailedInstance) UnmarshalJSON(data []byte) error {
 }
 
 // FloatingIPDetailedInstanceAddressUnion contains all possible properties and
-// values from
-// [FloatingIPDetailedInstanceAddressInstanceFloatingAddressSerializer],
-// [FloatingIPDetailedInstanceAddressInstanceFixedAddressShortSerializer],
-// [FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer].
+// values from [FloatingIPDetailedInstanceAddressFloatingIPAddress],
+// [FloatingIPDetailedInstanceAddressFixedIPAddressShort],
+// [FloatingIPDetailedInstanceAddressFixedIPAddress].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type FloatingIPDetailedInstanceAddressUnion struct {
 	Addr          string `json:"addr"`
 	Type          string `json:"type"`
 	InterfaceName string `json:"interface_name"`
-	// This field is from variant
-	// [FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer].
+	// This field is from variant [FloatingIPDetailedInstanceAddressFixedIPAddress].
 	SubnetID string `json:"subnet_id"`
-	// This field is from variant
-	// [FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer].
+	// This field is from variant [FloatingIPDetailedInstanceAddressFixedIPAddress].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
 		Addr          resp.Field
@@ -428,17 +425,17 @@ type FloatingIPDetailedInstanceAddressUnion struct {
 	} `json:"-"`
 }
 
-func (u FloatingIPDetailedInstanceAddressUnion) AsFloatingIPAddress() (v FloatingIPDetailedInstanceAddressInstanceFloatingAddressSerializer) {
+func (u FloatingIPDetailedInstanceAddressUnion) AsFloatingIPAddress() (v FloatingIPDetailedInstanceAddressFloatingIPAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u FloatingIPDetailedInstanceAddressUnion) AsFixedIPAddressShort() (v FloatingIPDetailedInstanceAddressInstanceFixedAddressShortSerializer) {
+func (u FloatingIPDetailedInstanceAddressUnion) AsFixedIPAddressShort() (v FloatingIPDetailedInstanceAddressFixedIPAddressShort) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u FloatingIPDetailedInstanceAddressUnion) AsFixedIPAddress() (v FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer) {
+func (u FloatingIPDetailedInstanceAddressUnion) AsFixedIPAddress() (v FloatingIPDetailedInstanceAddressFixedIPAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -452,7 +449,7 @@ func (r *FloatingIPDetailedInstanceAddressUnion) UnmarshalJSON(data []byte) erro
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/0'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[0]"
-type FloatingIPDetailedInstanceAddressInstanceFloatingAddressSerializer struct {
+type FloatingIPDetailedInstanceAddressFloatingIPAddress struct {
 	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/addr'
 	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -470,16 +467,14 @@ type FloatingIPDetailedInstanceAddressInstanceFloatingAddressSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPDetailedInstanceAddressInstanceFloatingAddressSerializer) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *FloatingIPDetailedInstanceAddressInstanceFloatingAddressSerializer) UnmarshalJSON(data []byte) error {
+func (r FloatingIPDetailedInstanceAddressFloatingIPAddress) RawJSON() string { return r.JSON.raw }
+func (r *FloatingIPDetailedInstanceAddressFloatingIPAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/1'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
-type FloatingIPDetailedInstanceAddressInstanceFixedAddressShortSerializer struct {
+type FloatingIPDetailedInstanceAddressFixedIPAddressShort struct {
 	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/addr'
 	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -501,16 +496,14 @@ type FloatingIPDetailedInstanceAddressInstanceFixedAddressShortSerializer struct
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPDetailedInstanceAddressInstanceFixedAddressShortSerializer) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *FloatingIPDetailedInstanceAddressInstanceFixedAddressShortSerializer) UnmarshalJSON(data []byte) error {
+func (r FloatingIPDetailedInstanceAddressFixedIPAddressShort) RawJSON() string { return r.JSON.raw }
+func (r *FloatingIPDetailedInstanceAddressFixedIPAddressShort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/InstanceInFloatingSerializer/properties/addresses/additionalProperties/items/anyOf/2'
 // "$.components.schemas.InstanceInFloatingSerializer.properties.addresses.additionalProperties.items.anyOf[2]"
-type FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer struct {
+type FloatingIPDetailedInstanceAddressFixedIPAddress struct {
 	// '#/components/schemas/InstanceFixedAddressSerializer/properties/addr'
 	// "$.components.schemas.InstanceFixedAddressSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -540,10 +533,8 @@ type FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *FloatingIPDetailedInstanceAddressInstanceFixedAddressSerializer) UnmarshalJSON(data []byte) error {
+func (r FloatingIPDetailedInstanceAddressFixedIPAddress) RawJSON() string { return r.JSON.raw }
+func (r *FloatingIPDetailedInstanceAddressFixedIPAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

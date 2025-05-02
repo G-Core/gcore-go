@@ -62,7 +62,7 @@ func TestInstanceInterfaceAttachWithOptionalParams(t *testing.T) {
 		cloud.InstanceInterfaceAttachParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
-			Body: cloud.InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS{
+			OfNewInterfaceExternalExtendSchemaWithDDOS: &cloud.InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS{
 				DDOSProfile: cloud.InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile{
 					ProfileTemplate: 29,
 					Fields: []cloud.InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField{{

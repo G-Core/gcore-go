@@ -233,21 +233,18 @@ func (r *BaremetalServer) UnmarshalJSON(data []byte) error {
 }
 
 // BaremetalServerAddressUnion contains all possible properties and values from
-// [BaremetalServerAddressBareMetalFloatingAddressSerializer],
-// [BaremetalServerAddressBareMetalFixedAddressSerializer].
+// [BaremetalServerAddressFloatingIPAddress],
+// [BaremetalServerAddressFixedIPAddress].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type BaremetalServerAddressUnion struct {
 	Addr string `json:"addr"`
 	Type string `json:"type"`
-	// This field is from variant
-	// [BaremetalServerAddressBareMetalFixedAddressSerializer].
+	// This field is from variant [BaremetalServerAddressFixedIPAddress].
 	InterfaceName string `json:"interface_name"`
-	// This field is from variant
-	// [BaremetalServerAddressBareMetalFixedAddressSerializer].
+	// This field is from variant [BaremetalServerAddressFixedIPAddress].
 	SubnetID string `json:"subnet_id"`
-	// This field is from variant
-	// [BaremetalServerAddressBareMetalFixedAddressSerializer].
+	// This field is from variant [BaremetalServerAddressFixedIPAddress].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
 		Addr          resp.Field
@@ -259,12 +256,12 @@ type BaremetalServerAddressUnion struct {
 	} `json:"-"`
 }
 
-func (u BaremetalServerAddressUnion) AsFloatingIPAddress() (v BaremetalServerAddressBareMetalFloatingAddressSerializer) {
+func (u BaremetalServerAddressUnion) AsFloatingIPAddress() (v BaremetalServerAddressFloatingIPAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u BaremetalServerAddressUnion) AsFixedIPAddress() (v BaremetalServerAddressBareMetalFixedAddressSerializer) {
+func (u BaremetalServerAddressUnion) AsFixedIPAddress() (v BaremetalServerAddressFixedIPAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -278,7 +275,7 @@ func (r *BaremetalServerAddressUnion) UnmarshalJSON(data []byte) error {
 
 // '#/components/schemas/BareMetalServerSerializer/properties/addresses/additionalProperties/items/anyOf/0'
 // "$.components.schemas.BareMetalServerSerializer.properties.addresses.additionalProperties.items.anyOf[0]"
-type BaremetalServerAddressBareMetalFloatingAddressSerializer struct {
+type BaremetalServerAddressFloatingIPAddress struct {
 	// '#/components/schemas/BareMetalFloatingAddressSerializer/properties/addr'
 	// "$.components.schemas.BareMetalFloatingAddressSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -296,14 +293,14 @@ type BaremetalServerAddressBareMetalFloatingAddressSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BaremetalServerAddressBareMetalFloatingAddressSerializer) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalServerAddressBareMetalFloatingAddressSerializer) UnmarshalJSON(data []byte) error {
+func (r BaremetalServerAddressFloatingIPAddress) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalServerAddressFloatingIPAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // '#/components/schemas/BareMetalServerSerializer/properties/addresses/additionalProperties/items/anyOf/1'
 // "$.components.schemas.BareMetalServerSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
-type BaremetalServerAddressBareMetalFixedAddressSerializer struct {
+type BaremetalServerAddressFixedIPAddress struct {
 	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/addr'
 	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.addr"
 	Addr string `json:"addr,required"`
@@ -333,8 +330,8 @@ type BaremetalServerAddressBareMetalFixedAddressSerializer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BaremetalServerAddressBareMetalFixedAddressSerializer) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalServerAddressBareMetalFixedAddressSerializer) UnmarshalJSON(data []byte) error {
+func (r BaremetalServerAddressFixedIPAddress) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalServerAddressFixedIPAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -634,16 +631,16 @@ func (r BaremetalServerNewParams) MarshalJSON() (data []byte, err error) {
 type BaremetalServerNewParamsInterfaceUnion struct {
 	// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/0'
 	// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[0]"
-	OfCreateBareMetalExternalInterfaceSerializer *BaremetalServerNewParamsInterfaceCreateBareMetalExternalInterfaceSerializer `json:",omitzero,inline"`
+	OfExternal *BaremetalServerNewParamsInterfaceExternal `json:",omitzero,inline"`
 	// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/1'
 	// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[1]"
-	OfCreateBareMetalSubnetInterfaceSerializer *BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializer `json:",omitzero,inline"`
+	OfSubnet *BaremetalServerNewParamsInterfaceSubnet `json:",omitzero,inline"`
 	// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/2'
 	// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[2]"
-	OfCreateBareMetalAnySubnetInterfaceSerializer *BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializer `json:",omitzero,inline"`
+	OfAnySubnet *BaremetalServerNewParamsInterfaceAnySubnet `json:",omitzero,inline"`
 	// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/3'
 	// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[3]"
-	OfCreateBareMetalReservedFixedIPInterfaceSerializer *BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializer `json:",omitzero,inline"`
+	OfReservedFixedIP *BaremetalServerNewParamsInterfaceReservedFixedIP `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -653,25 +650,25 @@ func (u BaremetalServerNewParamsInterfaceUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
 func (u BaremetalServerNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[BaremetalServerNewParamsInterfaceUnion](u.OfCreateBareMetalExternalInterfaceSerializer, u.OfCreateBareMetalSubnetInterfaceSerializer, u.OfCreateBareMetalAnySubnetInterfaceSerializer, u.OfCreateBareMetalReservedFixedIPInterfaceSerializer)
+	return param.MarshalUnion[BaremetalServerNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
 }
 
 func (u *BaremetalServerNewParamsInterfaceUnion) asAny() any {
-	if !param.IsOmitted(u.OfCreateBareMetalExternalInterfaceSerializer) {
-		return u.OfCreateBareMetalExternalInterfaceSerializer
-	} else if !param.IsOmitted(u.OfCreateBareMetalSubnetInterfaceSerializer) {
-		return u.OfCreateBareMetalSubnetInterfaceSerializer
-	} else if !param.IsOmitted(u.OfCreateBareMetalAnySubnetInterfaceSerializer) {
-		return u.OfCreateBareMetalAnySubnetInterfaceSerializer
-	} else if !param.IsOmitted(u.OfCreateBareMetalReservedFixedIPInterfaceSerializer) {
-		return u.OfCreateBareMetalReservedFixedIPInterfaceSerializer
+	if !param.IsOmitted(u.OfExternal) {
+		return u.OfExternal
+	} else if !param.IsOmitted(u.OfSubnet) {
+		return u.OfSubnet
+	} else if !param.IsOmitted(u.OfAnySubnet) {
+		return u.OfAnySubnet
+	} else if !param.IsOmitted(u.OfReservedFixedIP) {
+		return u.OfReservedFixedIP
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u BaremetalServerNewParamsInterfaceUnion) GetSubnetID() *string {
-	if vt := u.OfCreateBareMetalSubnetInterfaceSerializer; vt != nil {
+	if vt := u.OfSubnet; vt != nil {
 		return &vt.SubnetID
 	}
 	return nil
@@ -679,7 +676,7 @@ func (u BaremetalServerNewParamsInterfaceUnion) GetSubnetID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u BaremetalServerNewParamsInterfaceUnion) GetIPAddress() *string {
-	if vt := u.OfCreateBareMetalAnySubnetInterfaceSerializer; vt != nil && vt.IPAddress.IsPresent() {
+	if vt := u.OfAnySubnet; vt != nil && vt.IPAddress.IsPresent() {
 		return &vt.IPAddress.Value
 	}
 	return nil
@@ -687,7 +684,7 @@ func (u BaremetalServerNewParamsInterfaceUnion) GetIPAddress() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u BaremetalServerNewParamsInterfaceUnion) GetPortID() *string {
-	if vt := u.OfCreateBareMetalReservedFixedIPInterfaceSerializer; vt != nil {
+	if vt := u.OfReservedFixedIP; vt != nil {
 		return &vt.PortID
 	}
 	return nil
@@ -695,13 +692,13 @@ func (u BaremetalServerNewParamsInterfaceUnion) GetPortID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u BaremetalServerNewParamsInterfaceUnion) GetType() *string {
-	if vt := u.OfCreateBareMetalExternalInterfaceSerializer; vt != nil {
+	if vt := u.OfExternal; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfCreateBareMetalSubnetInterfaceSerializer; vt != nil {
+	} else if vt := u.OfSubnet; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfCreateBareMetalAnySubnetInterfaceSerializer; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfCreateBareMetalReservedFixedIPInterfaceSerializer; vt != nil {
+	} else if vt := u.OfReservedFixedIP; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -709,13 +706,13 @@ func (u BaremetalServerNewParamsInterfaceUnion) GetType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u BaremetalServerNewParamsInterfaceUnion) GetInterfaceName() *string {
-	if vt := u.OfCreateBareMetalExternalInterfaceSerializer; vt != nil && vt.InterfaceName.IsPresent() {
+	if vt := u.OfExternal; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfCreateBareMetalSubnetInterfaceSerializer; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfSubnet; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfCreateBareMetalAnySubnetInterfaceSerializer; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfAnySubnet; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfCreateBareMetalReservedFixedIPInterfaceSerializer; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfReservedFixedIP; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
 	}
 	return nil
@@ -723,9 +720,9 @@ func (u BaremetalServerNewParamsInterfaceUnion) GetInterfaceName() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u BaremetalServerNewParamsInterfaceUnion) GetIPFamily() *string {
-	if vt := u.OfCreateBareMetalExternalInterfaceSerializer; vt != nil {
+	if vt := u.OfExternal; vt != nil {
 		return (*string)(&vt.IPFamily)
-	} else if vt := u.OfCreateBareMetalAnySubnetInterfaceSerializer; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		return (*string)(&vt.IPFamily)
 	}
 	return nil
@@ -733,13 +730,13 @@ func (u BaremetalServerNewParamsInterfaceUnion) GetIPFamily() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u BaremetalServerNewParamsInterfaceUnion) GetPortGroup() *int64 {
-	if vt := u.OfCreateBareMetalExternalInterfaceSerializer; vt != nil && vt.PortGroup.IsPresent() {
+	if vt := u.OfExternal; vt != nil && vt.PortGroup.IsPresent() {
 		return &vt.PortGroup.Value
-	} else if vt := u.OfCreateBareMetalSubnetInterfaceSerializer; vt != nil && vt.PortGroup.IsPresent() {
+	} else if vt := u.OfSubnet; vt != nil && vt.PortGroup.IsPresent() {
 		return &vt.PortGroup.Value
-	} else if vt := u.OfCreateBareMetalAnySubnetInterfaceSerializer; vt != nil && vt.PortGroup.IsPresent() {
+	} else if vt := u.OfAnySubnet; vt != nil && vt.PortGroup.IsPresent() {
 		return &vt.PortGroup.Value
-	} else if vt := u.OfCreateBareMetalReservedFixedIPInterfaceSerializer; vt != nil && vt.PortGroup.IsPresent() {
+	} else if vt := u.OfReservedFixedIP; vt != nil && vt.PortGroup.IsPresent() {
 		return &vt.PortGroup.Value
 	}
 	return nil
@@ -747,9 +744,9 @@ func (u BaremetalServerNewParamsInterfaceUnion) GetPortGroup() *int64 {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u BaremetalServerNewParamsInterfaceUnion) GetNetworkID() *string {
-	if vt := u.OfCreateBareMetalSubnetInterfaceSerializer; vt != nil {
+	if vt := u.OfSubnet; vt != nil {
 		return (*string)(&vt.NetworkID)
-	} else if vt := u.OfCreateBareMetalAnySubnetInterfaceSerializer; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		return (*string)(&vt.NetworkID)
 	}
 	return nil
@@ -759,34 +756,34 @@ func (u BaremetalServerNewParamsInterfaceUnion) GetNetworkID() *string {
 //
 // Or use AsAny() to get the underlying value
 func (u BaremetalServerNewParamsInterfaceUnion) GetFloatingIP() (res baremetalServerNewParamsInterfaceUnionFloatingIP) {
-	if vt := u.OfCreateBareMetalSubnetInterfaceSerializer; vt != nil {
+	if vt := u.OfSubnet; vt != nil {
 		res.any = vt.FloatingIP.asAny()
-	} else if vt := u.OfCreateBareMetalAnySubnetInterfaceSerializer; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		res.any = vt.FloatingIP.asAny()
-	} else if vt := u.OfCreateBareMetalReservedFixedIPInterfaceSerializer; vt != nil {
+	} else if vt := u.OfReservedFixedIP; vt != nil {
 		res.any = vt.FloatingIP.asAny()
 	}
 	return
 }
 
 // Can have the runtime types
-// [*BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer],
-// [*BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer],
-// [*BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer],
-// [*BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer],
-// [*BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer],
-// [*BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer]
+// [*BaremetalServerNewParamsInterfaceSubnetFloatingIPNew],
+// [*BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting],
+// [*BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew],
+// [*BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting],
+// [*BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew],
+// [*BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting]
 type baremetalServerNewParamsInterfaceUnionFloatingIP struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
-//	case *cloud.BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer:
+//	case *cloud.BaremetalServerNewParamsInterfaceSubnetFloatingIPNew:
+//	case *cloud.BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting:
+//	case *cloud.BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew:
+//	case *cloud.BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting:
+//	case *cloud.BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew:
+//	case *cloud.BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -795,11 +792,11 @@ func (u baremetalServerNewParamsInterfaceUnionFloatingIP) AsAny() any { return u
 // Returns a pointer to the underlying variant's property, if present.
 func (u baremetalServerNewParamsInterfaceUnionFloatingIP) GetSource() *string {
 	switch vt := u.any.(type) {
-	case *BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPUnion:
+	case *BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion:
 		return vt.GetSource()
-	case *BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPUnion:
+	case *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion:
 		return vt.GetSource()
-	case *BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPUnion:
+	case *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion:
 		return vt.GetSource()
 	}
 	return nil
@@ -808,11 +805,11 @@ func (u baremetalServerNewParamsInterfaceUnionFloatingIP) GetSource() *string {
 // Returns a pointer to the underlying variant's property, if present.
 func (u baremetalServerNewParamsInterfaceUnionFloatingIP) GetExistingFloatingID() *string {
 	switch vt := u.any.(type) {
-	case *BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPUnion:
+	case *BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion:
 		return vt.GetExistingFloatingID()
-	case *BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPUnion:
+	case *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion:
 		return vt.GetExistingFloatingID()
-	case *BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPUnion:
+	case *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion:
 		return vt.GetExistingFloatingID()
 	}
 	return nil
@@ -823,22 +820,22 @@ func init() {
 		"type",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceCreateBareMetalExternalInterfaceSerializer{}),
+			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceExternal{}),
 			DiscriminatorValue: "external",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializer{}),
+			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceSubnet{}),
 			DiscriminatorValue: "subnet",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializer{}),
+			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceAnySubnet{}),
 			DiscriminatorValue: "any_subnet",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceReservedFixedIP{}),
 			DiscriminatorValue: "reserved_fixed_ip",
 		},
 	)
@@ -848,7 +845,7 @@ func init() {
 // "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[0]"
 //
 // The property Type is required.
-type BaremetalServerNewParamsInterfaceCreateBareMetalExternalInterfaceSerializer struct {
+type BaremetalServerNewParamsInterfaceExternal struct {
 	// '#/components/schemas/CreateBareMetalExternalInterfaceSerializer/properties/interface_name'
 	// "$.components.schemas.CreateBareMetalExternalInterfaceSerializer.properties.interface_name"
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
@@ -870,11 +867,11 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalExternalInterfaceSerializer
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceCreateBareMetalExternalInterfaceSerializer) IsPresent() bool {
+func (f BaremetalServerNewParamsInterfaceExternal) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r BaremetalServerNewParamsInterfaceCreateBareMetalExternalInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceCreateBareMetalExternalInterfaceSerializer
+func (r BaremetalServerNewParamsInterfaceExternal) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerNewParamsInterfaceExternal
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -882,7 +879,7 @@ func (r BaremetalServerNewParamsInterfaceCreateBareMetalExternalInterfaceSeriali
 // "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[1]"
 //
 // The properties NetworkID, SubnetID, Type are required.
-type BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializer struct {
+type BaremetalServerNewParamsInterfaceSubnet struct {
 	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/network_id'
 	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.network_id"
 	NetworkID string `json:"network_id,required" format:"uuid4"`
@@ -897,7 +894,7 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializer s
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/floating_ip'
 	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip"
-	FloatingIP BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPUnion `json:"floating_ip,omitzero"`
+	FloatingIP BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion `json:"floating_ip,omitzero"`
 	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/type'
 	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.type"
 	//
@@ -908,81 +905,81 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializer s
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializer) IsPresent() bool {
+func (f BaremetalServerNewParamsInterfaceSubnet) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializer
+func (r BaremetalServerNewParamsInterfaceSubnet) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerNewParamsInterfaceSubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPUnion struct {
+type BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion struct {
 	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/floating_ip/anyOf/0'
 	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip.anyOf[0]"
-	OfNewFloatingIP *BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfNew *BaremetalServerNewParamsInterfaceSubnetFloatingIPNew `json:",omitzero,inline"`
 	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/floating_ip/anyOf/1'
 	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip.anyOf[1]"
-	OfExistingFloatingIP *BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfExisting *BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (u BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPUnion) IsPresent() bool {
+func (u BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
-func (u BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPUnion](u.OfNewFloatingIP, u.OfExistingFloatingIP)
+func (u BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion](u.OfNew, u.OfExisting)
 }
 
-func (u *BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewFloatingIP) {
-		return u.OfNewFloatingIP
-	} else if !param.IsOmitted(u.OfExistingFloatingIP) {
-		return u.OfExistingFloatingIP
+func (u *BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) asAny() any {
+	if !param.IsOmitted(u.OfNew) {
+		return u.OfNew
+	} else if !param.IsOmitted(u.OfExisting) {
+		return u.OfExisting
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExistingFloatingIP; vt != nil {
+func (u BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) GetExistingFloatingID() *string {
+	if vt := u.OfExisting; vt != nil {
 		return &vt.ExistingFloatingID
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNewFloatingIP; vt != nil {
+func (u BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) GetSource() *string {
+	if vt := u.OfNew; vt != nil {
 		return (*string)(&vt.Source)
-	} else if vt := u.OfExistingFloatingIP; vt != nil {
+	} else if vt := u.OfExisting; vt != nil {
 		return (*string)(&vt.Source)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPUnion](
+	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion](
 		"source",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceSubnetFloatingIPNew{}),
 			DiscriminatorValue: "new",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting{}),
 			DiscriminatorValue: "existing",
 		},
 	)
 }
 
-func NewBaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer() BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer {
-	return BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+func NewBaremetalServerNewParamsInterfaceSubnetFloatingIPNew() BaremetalServerNewParamsInterfaceSubnetFloatingIPNew {
+	return BaremetalServerNewParamsInterfaceSubnetFloatingIPNew{
 		Source: "new",
 	}
 }
@@ -991,8 +988,8 @@ func NewBaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerialize
 // "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip.anyOf[0]"
 //
 // This struct has a constant value, construct it with
-// [NewBaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer].
-type BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
+// [NewBaremetalServerNewParamsInterfaceSubnetFloatingIPNew].
+type BaremetalServerNewParamsInterfaceSubnetFloatingIPNew struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
 	Source constant.New `json:"source,required"`
@@ -1001,11 +998,11 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFl
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f BaremetalServerNewParamsInterfaceSubnetFloatingIPNew) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer
+func (r BaremetalServerNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerNewParamsInterfaceSubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1013,7 +1010,7 @@ func (r BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerialize
 // "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip.anyOf[1]"
 //
 // The properties ExistingFloatingID, Source are required.
-type BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer struct {
+type BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting struct {
 	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
 	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
@@ -1027,11 +1024,11 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFl
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer
+func (r BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1039,7 +1036,7 @@ func (r BaremetalServerNewParamsInterfaceCreateBareMetalSubnetInterfaceSerialize
 // "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[2]"
 //
 // The properties NetworkID, Type are required.
-type BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializer struct {
+type BaremetalServerNewParamsInterfaceAnySubnet struct {
 	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/network_id'
 	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.network_id"
 	NetworkID string `json:"network_id,required" format:"uuid4"`
@@ -1054,7 +1051,7 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerialize
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/floating_ip'
 	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip"
-	FloatingIP BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPUnion `json:"floating_ip,omitzero"`
+	FloatingIP BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion `json:"floating_ip,omitzero"`
 	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/ip_family/anyOf/0'
 	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.ip_family.anyOf[0]"
 	//
@@ -1070,81 +1067,81 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerialize
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializer) IsPresent() bool {
+func (f BaremetalServerNewParamsInterfaceAnySubnet) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializer
+func (r BaremetalServerNewParamsInterfaceAnySubnet) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerNewParamsInterfaceAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPUnion struct {
+type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion struct {
 	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/floating_ip/anyOf/0'
 	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip.anyOf[0]"
-	OfNewFloatingIP *BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfNew *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew `json:",omitzero,inline"`
 	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/floating_ip/anyOf/1'
 	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip.anyOf[1]"
-	OfExistingFloatingIP *BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfExisting *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (u BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPUnion) IsPresent() bool {
+func (u BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
-func (u BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPUnion](u.OfNewFloatingIP, u.OfExistingFloatingIP)
+func (u BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion](u.OfNew, u.OfExisting)
 }
 
-func (u *BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewFloatingIP) {
-		return u.OfNewFloatingIP
-	} else if !param.IsOmitted(u.OfExistingFloatingIP) {
-		return u.OfExistingFloatingIP
+func (u *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) asAny() any {
+	if !param.IsOmitted(u.OfNew) {
+		return u.OfNew
+	} else if !param.IsOmitted(u.OfExisting) {
+		return u.OfExisting
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExistingFloatingIP; vt != nil {
+func (u BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) GetExistingFloatingID() *string {
+	if vt := u.OfExisting; vt != nil {
 		return &vt.ExistingFloatingID
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNewFloatingIP; vt != nil {
+func (u BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) GetSource() *string {
+	if vt := u.OfNew; vt != nil {
 		return (*string)(&vt.Source)
-	} else if vt := u.OfExistingFloatingIP; vt != nil {
+	} else if vt := u.OfExisting; vt != nil {
 		return (*string)(&vt.Source)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPUnion](
+	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion](
 		"source",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew{}),
 			DiscriminatorValue: "new",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting{}),
 			DiscriminatorValue: "existing",
 		},
 	)
 }
 
-func NewBaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer() BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer {
-	return BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+func NewBaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew() BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew {
+	return BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew{
 		Source: "new",
 	}
 }
@@ -1153,8 +1150,8 @@ func NewBaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerial
 // "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip.anyOf[0]"
 //
 // This struct has a constant value, construct it with
-// [NewBaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer].
-type BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
+// [NewBaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew].
+type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
 	Source constant.New `json:"source,required"`
@@ -1163,11 +1160,11 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerialize
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer
+func (r BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1175,7 +1172,7 @@ func (r BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerial
 // "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip.anyOf[1]"
 //
 // The properties ExistingFloatingID, Source are required.
-type BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer struct {
+type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting struct {
 	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
 	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
@@ -1189,11 +1186,11 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerialize
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer
+func (r BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1201,7 +1198,7 @@ func (r BaremetalServerNewParamsInterfaceCreateBareMetalAnySubnetInterfaceSerial
 // "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[3]"
 //
 // The properties PortID, Type are required.
-type BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializer struct {
+type BaremetalServerNewParamsInterfaceReservedFixedIP struct {
 	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/port_id'
 	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.port_id"
 	PortID string `json:"port_id,required"`
@@ -1213,7 +1210,7 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSer
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/floating_ip'
 	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip"
-	FloatingIP BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPUnion `json:"floating_ip,omitzero"`
+	FloatingIP BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion `json:"floating_ip,omitzero"`
 	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/type'
 	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.type"
 	//
@@ -1225,81 +1222,81 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSer
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializer) IsPresent() bool {
+func (f BaremetalServerNewParamsInterfaceReservedFixedIP) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializer
+func (r BaremetalServerNewParamsInterfaceReservedFixedIP) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerNewParamsInterfaceReservedFixedIP
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPUnion struct {
+type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
 	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/floating_ip/anyOf/0'
 	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip.anyOf[0]"
-	OfNewFloatingIP *BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfNew *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew `json:",omitzero,inline"`
 	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/floating_ip/anyOf/1'
 	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip.anyOf[1]"
-	OfExistingFloatingIP *BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfExisting *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (u BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPUnion) IsPresent() bool {
+func (u BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
-func (u BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPUnion](u.OfNewFloatingIP, u.OfExistingFloatingIP)
+func (u BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion](u.OfNew, u.OfExisting)
 }
 
-func (u *BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewFloatingIP) {
-		return u.OfNewFloatingIP
-	} else if !param.IsOmitted(u.OfExistingFloatingIP) {
-		return u.OfExistingFloatingIP
+func (u *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) asAny() any {
+	if !param.IsOmitted(u.OfNew) {
+		return u.OfNew
+	} else if !param.IsOmitted(u.OfExisting) {
+		return u.OfExisting
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExistingFloatingIP; vt != nil {
+func (u BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetExistingFloatingID() *string {
+	if vt := u.OfExisting; vt != nil {
 		return &vt.ExistingFloatingID
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNewFloatingIP; vt != nil {
+func (u BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetSource() *string {
+	if vt := u.OfNew; vt != nil {
 		return (*string)(&vt.Source)
-	} else if vt := u.OfExistingFloatingIP; vt != nil {
+	} else if vt := u.OfExisting; vt != nil {
 		return (*string)(&vt.Source)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPUnion](
+	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion](
 		"source",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew{}),
 			DiscriminatorValue: "new",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting{}),
 			DiscriminatorValue: "existing",
 		},
 	)
 }
 
-func NewBaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer() BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer {
-	return BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+func NewBaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew() BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew {
+	return BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew{
 		Source: "new",
 	}
 }
@@ -1308,8 +1305,8 @@ func NewBaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterface
 // "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip.anyOf[0]"
 //
 // This struct has a constant value, construct it with
-// [NewBaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer].
-type BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
+// [NewBaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew].
+type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
 	Source constant.New `json:"source,required"`
@@ -1318,11 +1315,11 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSer
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPNewInstanceFloatingIPInterfaceSerializer
+func (r BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1330,7 +1327,7 @@ func (r BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterface
 // "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip.anyOf[1]"
 //
 // The properties ExistingFloatingID, Source are required.
-type BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer struct {
+type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
 	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
 	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
@@ -1344,11 +1341,11 @@ type BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSer
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceCreateBareMetalReservedFixedIPInterfaceSerializerFloatingIPExistingInstanceFloatingIPInterfaceSerializer
+func (r BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1413,7 +1410,7 @@ func (r BaremetalServerNewParamsDDOSProfileField) MarshalJSON() (data []byte, er
 type BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion struct {
 	// '#/components/schemas/CreateBareMetalDDoSProfileFieldSerializer/properties/field_value/anyOf/0'
 	// "$.components.schemas.CreateBareMetalDDoSProfileFieldSerializer.properties.field_value.anyOf[0]"
-	OfBaremetalServerNewsDDOSProfileFieldFieldValueArray []any `json:",omitzero,inline"`
+	OfAnyArray []any `json:",omitzero,inline"`
 	// '#/components/schemas/CreateBareMetalDDoSProfileFieldSerializer/properties/field_value/anyOf/1'
 	// "$.components.schemas.CreateBareMetalDDoSProfileFieldSerializer.properties.field_value.anyOf[1]"
 	OfInt param.Opt[int64] `json:",omitzero,inline"`
@@ -1429,12 +1426,12 @@ func (u BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) IsPresent() boo
 	return !param.IsOmitted(u) && !u.IsNull()
 }
 func (u BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion](u.OfBaremetalServerNewsDDOSProfileFieldFieldValueArray, u.OfInt, u.OfString)
+	return param.MarshalUnion[BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion](u.OfAnyArray, u.OfInt, u.OfString)
 }
 
 func (u *BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) asAny() any {
-	if !param.IsOmitted(u.OfBaremetalServerNewsDDOSProfileFieldFieldValueArray) {
-		return &u.OfBaremetalServerNewsDDOSProfileFieldFieldValueArray
+	if !param.IsOmitted(u.OfAnyArray) {
+		return &u.OfAnyArray
 	} else if !param.IsOmitted(u.OfInt) {
 		return &u.OfInt.Value
 	} else if !param.IsOmitted(u.OfString) {
