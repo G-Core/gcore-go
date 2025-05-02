@@ -1575,10 +1575,10 @@ func (r LoadBalancerNewParams) MarshalJSON() (data []byte, err error) {
 type LoadBalancerNewParamsFloatingIPUnion struct {
 	// '#/components/schemas/CreateLoadbalancerSerializer/properties/floating_ip/anyOf/0'
 	// "$.components.schemas.CreateLoadbalancerSerializer.properties.floating_ip.anyOf[0]"
-	OfNewFloatingIP *LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfNew *LoadBalancerNewParamsFloatingIPNew `json:",omitzero,inline"`
 	// '#/components/schemas/CreateLoadbalancerSerializer/properties/floating_ip/anyOf/1'
 	// "$.components.schemas.CreateLoadbalancerSerializer.properties.floating_ip.anyOf[1]"
-	OfExistingFloatingIP *LoadBalancerNewParamsFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfExisting *LoadBalancerNewParamsFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1588,21 +1588,21 @@ func (u LoadBalancerNewParamsFloatingIPUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
 func (u LoadBalancerNewParamsFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[LoadBalancerNewParamsFloatingIPUnion](u.OfNewFloatingIP, u.OfExistingFloatingIP)
+	return param.MarshalUnion[LoadBalancerNewParamsFloatingIPUnion](u.OfNew, u.OfExisting)
 }
 
 func (u *LoadBalancerNewParamsFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewFloatingIP) {
-		return u.OfNewFloatingIP
-	} else if !param.IsOmitted(u.OfExistingFloatingIP) {
-		return u.OfExistingFloatingIP
+	if !param.IsOmitted(u.OfNew) {
+		return u.OfNew
+	} else if !param.IsOmitted(u.OfExisting) {
+		return u.OfExisting
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LoadBalancerNewParamsFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExistingFloatingIP; vt != nil {
+	if vt := u.OfExisting; vt != nil {
 		return &vt.ExistingFloatingID
 	}
 	return nil
@@ -1610,9 +1610,9 @@ func (u LoadBalancerNewParamsFloatingIPUnion) GetExistingFloatingID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LoadBalancerNewParamsFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNewFloatingIP; vt != nil {
+	if vt := u.OfNew; vt != nil {
 		return (*string)(&vt.Source)
-	} else if vt := u.OfExistingFloatingIP; vt != nil {
+	} else if vt := u.OfExisting; vt != nil {
 		return (*string)(&vt.Source)
 	}
 	return nil
@@ -1623,19 +1623,19 @@ func init() {
 		"source",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(LoadBalancerNewParamsFloatingIPNew{}),
 			DiscriminatorValue: "new",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(LoadBalancerNewParamsFloatingIPExistingInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(LoadBalancerNewParamsFloatingIPExisting{}),
 			DiscriminatorValue: "existing",
 		},
 	)
 }
 
-func NewLoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer() LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer {
-	return LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+func NewLoadBalancerNewParamsFloatingIPNew() LoadBalancerNewParamsFloatingIPNew {
+	return LoadBalancerNewParamsFloatingIPNew{
 		Source: "new",
 	}
 }
@@ -1644,8 +1644,8 @@ func NewLoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer(
 // "$.components.schemas.CreateLoadbalancerSerializer.properties.floating_ip.anyOf[0]"
 //
 // This struct has a constant value, construct it with
-// [NewLoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer].
-type LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
+// [NewLoadBalancerNewParamsFloatingIPNew].
+type LoadBalancerNewParamsFloatingIPNew struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
 	Source constant.New `json:"source,required"`
@@ -1654,11 +1654,11 @@ type LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer str
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f LoadBalancerNewParamsFloatingIPNew) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer
+func (r LoadBalancerNewParamsFloatingIPNew) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerNewParamsFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1666,7 +1666,7 @@ func (r LoadBalancerNewParamsFloatingIPNewInstanceFloatingIPInterfaceSerializer)
 // "$.components.schemas.CreateLoadbalancerSerializer.properties.floating_ip.anyOf[1]"
 //
 // The properties ExistingFloatingID, Source are required.
-type LoadBalancerNewParamsFloatingIPExistingInstanceFloatingIPInterfaceSerializer struct {
+type LoadBalancerNewParamsFloatingIPExisting struct {
 	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
 	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
@@ -1680,11 +1680,11 @@ type LoadBalancerNewParamsFloatingIPExistingInstanceFloatingIPInterfaceSerialize
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParamsFloatingIPExistingInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f LoadBalancerNewParamsFloatingIPExisting) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r LoadBalancerNewParamsFloatingIPExistingInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow LoadBalancerNewParamsFloatingIPExistingInstanceFloatingIPInterfaceSerializer
+func (r LoadBalancerNewParamsFloatingIPExisting) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerNewParamsFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 

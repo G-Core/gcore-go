@@ -32,15 +32,15 @@ func TestGPUBaremetalClusterNewWithOptionalParams(t *testing.T) {
 		Flavor:    "bm3-ai-1xlarge-h100-80-8",
 		ImageID:   "f01fd9a0-9548-48ba-82dc-a8c8b2d6f2f1",
 		Interfaces: []cloud.GPUBaremetalClusterNewParamsInterfaceUnion{{
-			OfNewInterfaceSpecificSubnetFipSerializerPydantic: &cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic{
+			OfSubnet: &cloud.GPUBaremetalClusterNewParamsInterfaceSubnet{
 				NetworkID: "024a29e9-b4b7-4c91-9a46-505be123d9f8",
 				SubnetID:  "91200a6c-07e0-42aa-98da-32d1f6545ae7",
-				FloatingIP: cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion{
-					OfNewFloatingIP: &cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{},
+				FloatingIP: cloud.GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion{
+					OfNew: &cloud.GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew{},
 				},
 				InterfaceName: gcore.String("interface_name"),
 				PortGroup:     gcore.Int(0),
-				SecurityGroups: []cloud.GPUBaremetalClusterNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup{{
+				SecurityGroups: []cloud.GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup{{
 					ID: "ae74714c-c380-48b4-87f8-758d656cdad6",
 				}},
 			},

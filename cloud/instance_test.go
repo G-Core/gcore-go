@@ -33,11 +33,11 @@ func TestInstanceNewWithOptionalParams(t *testing.T) {
 		RegionID:  gcore.Int(1),
 		Flavor:    "g2-standard-32-64",
 		Interfaces: []cloud.InstanceNewParamsInterfaceUnion{{
-			OfNewInterfaceExternalSerializerPydantic: &cloud.InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydantic{
+			OfExternal: &cloud.InstanceNewParamsInterfaceExternal{
 				InterfaceName: gcore.String("eth0"),
 				IPFamily:      cloud.InterfaceIPFamilyIpv4,
 				PortGroup:     gcore.Int(0),
-				SecurityGroups: []cloud.InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup{{
+				SecurityGroups: []cloud.InstanceNewParamsInterfaceExternalSecurityGroup{{
 					ID: "ae74714c-c380-48b4-87f8-758d656cdad6",
 				}},
 			},
@@ -215,7 +215,7 @@ func TestInstanceActionWithOptionalParams(t *testing.T) {
 		cloud.InstanceActionParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
-			Body: cloud.InstanceActionParamsBodyStartActionInstanceSerializer{
+			OfStartActionInstanceSerializer: &cloud.InstanceActionParamsBodyStartActionInstanceSerializer{
 				ActivateProfile: gcore.Bool(true),
 			},
 		},

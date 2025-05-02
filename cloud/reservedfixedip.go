@@ -4,7 +4,6 @@ package cloud
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -340,9 +339,32 @@ type ReservedFixedIPNewParams struct {
 	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
 	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].post.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/requestBody/content/application%2Fjson/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].post.requestBody.content['application/json'].schema"
-	Body ReservedFixedIPNewParamsBodyUnion
+
+	//
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/0'
+	// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[0]"
+	OfExternal *ReservedFixedIPNewParamsBodyExternal `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/1'
+	// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[1]"
+	OfSubnet *ReservedFixedIPNewParamsBodySubnet `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/2'
+	// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[2]"
+	OfAnySubnet *ReservedFixedIPNewParamsBodyAnySubnet `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/3'
+	// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[3]"
+	OfIPAddress *ReservedFixedIPNewParamsBodyIPAddress `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/4'
+	// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[4]"
+	OfPort *ReservedFixedIPNewParamsBodyPort `json:",inline"`
+
 	paramObj
 }
 
@@ -350,38 +372,19 @@ type ReservedFixedIPNewParams struct {
 // "null". To check if this field is omitted, use [param.IsOmitted].
 func (f ReservedFixedIPNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
-func (r ReservedFixedIPNewParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Body)
-}
-
-// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/requestBody/content/application%2Fjson/schema'
-// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].post.requestBody.content['application/json'].schema"
-//
-// Satisfied by [ReservedFixedIPNewParamsBodyNewReservedFixedIPExternalSerializer],
-// [ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificSubnetSerializer],
-// [ReservedFixedIPNewParamsBodyNewReservedFixedIPAnySubnetSerializer],
-// [ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificIPAddressSerializer] and
-// [ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificPortSerializer]
-type ReservedFixedIPNewParamsBodyUnion interface {
-	implReservedFixedIPNewParamsBodyUnion()
-}
-
-func (ReservedFixedIPNewParamsBodyNewReservedFixedIPExternalSerializer) implReservedFixedIPNewParamsBodyUnion() {
-}
-func (ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificSubnetSerializer) implReservedFixedIPNewParamsBodyUnion() {
-}
-func (ReservedFixedIPNewParamsBodyNewReservedFixedIPAnySubnetSerializer) implReservedFixedIPNewParamsBodyUnion() {
-}
-func (ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificIPAddressSerializer) implReservedFixedIPNewParamsBodyUnion() {
-}
-func (ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificPortSerializer) implReservedFixedIPNewParamsBodyUnion() {
+func (u ReservedFixedIPNewParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[ReservedFixedIPNewParams](u.OfExternal,
+		u.OfSubnet,
+		u.OfAnySubnet,
+		u.OfIPAddress,
+		u.OfPort)
 }
 
 // '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/0'
 // "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[0]"
 //
 // The property Type is required.
-type ReservedFixedIPNewParamsBodyNewReservedFixedIPExternalSerializer struct {
+type ReservedFixedIPNewParamsBodyExternal struct {
 	// '#/components/schemas/NewReservedFixedIpExternalSerializer/properties/is_vip'
 	// "$.components.schemas.NewReservedFixedIpExternalSerializer.properties.is_vip"
 	IsVip param.Opt[bool] `json:"is_vip,omitzero"`
@@ -400,11 +403,11 @@ type ReservedFixedIPNewParamsBodyNewReservedFixedIPExternalSerializer struct {
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPNewParamsBodyNewReservedFixedIPExternalSerializer) IsPresent() bool {
+func (f ReservedFixedIPNewParamsBodyExternal) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r ReservedFixedIPNewParamsBodyNewReservedFixedIPExternalSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow ReservedFixedIPNewParamsBodyNewReservedFixedIPExternalSerializer
+func (r ReservedFixedIPNewParamsBodyExternal) MarshalJSON() (data []byte, err error) {
+	type shadow ReservedFixedIPNewParamsBodyExternal
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -412,7 +415,7 @@ func (r ReservedFixedIPNewParamsBodyNewReservedFixedIPExternalSerializer) Marsha
 // "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[1]"
 //
 // The properties SubnetID, Type are required.
-type ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificSubnetSerializer struct {
+type ReservedFixedIPNewParamsBodySubnet struct {
 	// '#/components/schemas/NewReservedFixedIpSpecificSubnetSerializer/properties/subnet_id'
 	// "$.components.schemas.NewReservedFixedIpSpecificSubnetSerializer.properties.subnet_id"
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
@@ -429,11 +432,11 @@ type ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificSubnetSerializer stru
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificSubnetSerializer) IsPresent() bool {
+func (f ReservedFixedIPNewParamsBodySubnet) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificSubnetSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificSubnetSerializer
+func (r ReservedFixedIPNewParamsBodySubnet) MarshalJSON() (data []byte, err error) {
+	type shadow ReservedFixedIPNewParamsBodySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -441,7 +444,7 @@ func (r ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificSubnetSerializer) 
 // "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[2]"
 //
 // The properties NetworkID, Type are required.
-type ReservedFixedIPNewParamsBodyNewReservedFixedIPAnySubnetSerializer struct {
+type ReservedFixedIPNewParamsBodyAnySubnet struct {
 	// '#/components/schemas/NewReservedFixedIpAnySubnetSerializer/properties/network_id'
 	// "$.components.schemas.NewReservedFixedIpAnySubnetSerializer.properties.network_id"
 	NetworkID string `json:"network_id,required" format:"uuid4"`
@@ -463,11 +466,11 @@ type ReservedFixedIPNewParamsBodyNewReservedFixedIPAnySubnetSerializer struct {
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPNewParamsBodyNewReservedFixedIPAnySubnetSerializer) IsPresent() bool {
+func (f ReservedFixedIPNewParamsBodyAnySubnet) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r ReservedFixedIPNewParamsBodyNewReservedFixedIPAnySubnetSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow ReservedFixedIPNewParamsBodyNewReservedFixedIPAnySubnetSerializer
+func (r ReservedFixedIPNewParamsBodyAnySubnet) MarshalJSON() (data []byte, err error) {
+	type shadow ReservedFixedIPNewParamsBodyAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -475,7 +478,7 @@ func (r ReservedFixedIPNewParamsBodyNewReservedFixedIPAnySubnetSerializer) Marsh
 // "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[3]"
 //
 // The properties IPAddress, NetworkID, Type are required.
-type ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificIPAddressSerializer struct {
+type ReservedFixedIPNewParamsBodyIPAddress struct {
 	// '#/components/schemas/NewReservedFixedIpSpecificIpAddressSerializer/properties/ip_address'
 	// "$.components.schemas.NewReservedFixedIpSpecificIpAddressSerializer.properties.ip_address"
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
@@ -495,11 +498,11 @@ type ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificIPAddressSerializer s
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificIPAddressSerializer) IsPresent() bool {
+func (f ReservedFixedIPNewParamsBodyIPAddress) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificIPAddressSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificIPAddressSerializer
+func (r ReservedFixedIPNewParamsBodyIPAddress) MarshalJSON() (data []byte, err error) {
+	type shadow ReservedFixedIPNewParamsBodyIPAddress
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -507,7 +510,7 @@ func (r ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificIPAddressSerialize
 // "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[4]"
 //
 // The properties PortID, Type are required.
-type ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificPortSerializer struct {
+type ReservedFixedIPNewParamsBodyPort struct {
 	// '#/components/schemas/NewReservedFixedIpSpecificPortSerializer/properties/port_id'
 	// "$.components.schemas.NewReservedFixedIpSpecificPortSerializer.properties.port_id"
 	PortID string `json:"port_id,required" format:"uuid4"`
@@ -521,11 +524,9 @@ type ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificPortSerializer struct
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificPortSerializer) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificPortSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow ReservedFixedIPNewParamsBodyNewReservedFixedIPSpecificPortSerializer
+func (f ReservedFixedIPNewParamsBodyPort) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r ReservedFixedIPNewParamsBodyPort) MarshalJSON() (data []byte, err error) {
+	type shadow ReservedFixedIPNewParamsBodyPort
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 

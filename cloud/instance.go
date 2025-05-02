@@ -4,7 +4,6 @@ package cloud
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -700,16 +699,16 @@ func (r InstanceNewParams) MarshalJSON() (data []byte, err error) {
 type InstanceNewParamsInterfaceUnion struct {
 	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/0'
 	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[0]"
-	OfNewInterfaceExternalSerializerPydantic *InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydantic `json:",omitzero,inline"`
+	OfExternal *InstanceNewParamsInterfaceExternal `json:",omitzero,inline"`
 	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/1'
 	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[1]"
-	OfNewInterfaceSpecificSubnetFipSerializerPydantic *InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic `json:",omitzero,inline"`
+	OfSubnet *InstanceNewParamsInterfaceSubnet `json:",omitzero,inline"`
 	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/2'
 	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[2]"
-	OfNewInterfaceAnySubnetFipSerializerPydantic *InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic `json:",omitzero,inline"`
+	OfAnySubnet *InstanceNewParamsInterfaceAnySubnet `json:",omitzero,inline"`
 	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/3'
 	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[3]"
-	OfNewInterfaceReservedFixedIPFipSerializerPydantic *InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic `json:",omitzero,inline"`
+	OfReservedFixedIP *InstanceNewParamsInterfaceReservedFixedIP `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -717,25 +716,25 @@ type InstanceNewParamsInterfaceUnion struct {
 // "null". To check if this field is omitted, use [param.IsOmitted].
 func (u InstanceNewParamsInterfaceUnion) IsPresent() bool { return !param.IsOmitted(u) && !u.IsNull() }
 func (u InstanceNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[InstanceNewParamsInterfaceUnion](u.OfNewInterfaceExternalSerializerPydantic, u.OfNewInterfaceSpecificSubnetFipSerializerPydantic, u.OfNewInterfaceAnySubnetFipSerializerPydantic, u.OfNewInterfaceReservedFixedIPFipSerializerPydantic)
+	return param.MarshalUnion[InstanceNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
 }
 
 func (u *InstanceNewParamsInterfaceUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewInterfaceExternalSerializerPydantic) {
-		return u.OfNewInterfaceExternalSerializerPydantic
-	} else if !param.IsOmitted(u.OfNewInterfaceSpecificSubnetFipSerializerPydantic) {
-		return u.OfNewInterfaceSpecificSubnetFipSerializerPydantic
-	} else if !param.IsOmitted(u.OfNewInterfaceAnySubnetFipSerializerPydantic) {
-		return u.OfNewInterfaceAnySubnetFipSerializerPydantic
-	} else if !param.IsOmitted(u.OfNewInterfaceReservedFixedIPFipSerializerPydantic) {
-		return u.OfNewInterfaceReservedFixedIPFipSerializerPydantic
+	if !param.IsOmitted(u.OfExternal) {
+		return u.OfExternal
+	} else if !param.IsOmitted(u.OfSubnet) {
+		return u.OfSubnet
+	} else if !param.IsOmitted(u.OfAnySubnet) {
+		return u.OfAnySubnet
+	} else if !param.IsOmitted(u.OfReservedFixedIP) {
+		return u.OfReservedFixedIP
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsInterfaceUnion) GetSubnetID() *string {
-	if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil {
+	if vt := u.OfSubnet; vt != nil {
 		return &vt.SubnetID
 	}
 	return nil
@@ -743,7 +742,7 @@ func (u InstanceNewParamsInterfaceUnion) GetSubnetID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsInterfaceUnion) GetIPAddress() *string {
-	if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil && vt.IPAddress.IsPresent() {
+	if vt := u.OfAnySubnet; vt != nil && vt.IPAddress.IsPresent() {
 		return &vt.IPAddress.Value
 	}
 	return nil
@@ -751,7 +750,7 @@ func (u InstanceNewParamsInterfaceUnion) GetIPAddress() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsInterfaceUnion) GetPortID() *string {
-	if vt := u.OfNewInterfaceReservedFixedIPFipSerializerPydantic; vt != nil {
+	if vt := u.OfReservedFixedIP; vt != nil {
 		return &vt.PortID
 	}
 	return nil
@@ -759,13 +758,13 @@ func (u InstanceNewParamsInterfaceUnion) GetPortID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsInterfaceUnion) GetType() *string {
-	if vt := u.OfNewInterfaceExternalSerializerPydantic; vt != nil {
+	if vt := u.OfExternal; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfSubnet; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfNewInterfaceReservedFixedIPFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfReservedFixedIP; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -773,13 +772,13 @@ func (u InstanceNewParamsInterfaceUnion) GetType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsInterfaceUnion) GetInterfaceName() *string {
-	if vt := u.OfNewInterfaceExternalSerializerPydantic; vt != nil && vt.InterfaceName.IsPresent() {
+	if vt := u.OfExternal; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfSubnet; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfAnySubnet; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfNewInterfaceReservedFixedIPFipSerializerPydantic; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfReservedFixedIP; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
 	}
 	return nil
@@ -787,9 +786,9 @@ func (u InstanceNewParamsInterfaceUnion) GetInterfaceName() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsInterfaceUnion) GetIPFamily() *string {
-	if vt := u.OfNewInterfaceExternalSerializerPydantic; vt != nil {
+	if vt := u.OfExternal; vt != nil {
 		return (*string)(&vt.IPFamily)
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		return (*string)(&vt.IPFamily)
 	}
 	return nil
@@ -797,13 +796,13 @@ func (u InstanceNewParamsInterfaceUnion) GetIPFamily() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsInterfaceUnion) GetPortGroup() *int64 {
-	if vt := u.OfNewInterfaceExternalSerializerPydantic; vt != nil && vt.PortGroup.IsPresent() {
+	if vt := u.OfExternal; vt != nil && vt.PortGroup.IsPresent() {
 		return &vt.PortGroup.Value
-	} else if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil && vt.PortGroup.IsPresent() {
+	} else if vt := u.OfSubnet; vt != nil && vt.PortGroup.IsPresent() {
 		return &vt.PortGroup.Value
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil && vt.PortGroup.IsPresent() {
+	} else if vt := u.OfAnySubnet; vt != nil && vt.PortGroup.IsPresent() {
 		return &vt.PortGroup.Value
-	} else if vt := u.OfNewInterfaceReservedFixedIPFipSerializerPydantic; vt != nil && vt.PortGroup.IsPresent() {
+	} else if vt := u.OfReservedFixedIP; vt != nil && vt.PortGroup.IsPresent() {
 		return &vt.PortGroup.Value
 	}
 	return nil
@@ -811,9 +810,9 @@ func (u InstanceNewParamsInterfaceUnion) GetPortGroup() *int64 {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsInterfaceUnion) GetNetworkID() *string {
-	if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil {
+	if vt := u.OfSubnet; vt != nil {
 		return (*string)(&vt.NetworkID)
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		return (*string)(&vt.NetworkID)
 	}
 	return nil
@@ -823,32 +822,31 @@ func (u InstanceNewParamsInterfaceUnion) GetNetworkID() *string {
 //
 // Or use AsAny() to get the underlying value
 func (u InstanceNewParamsInterfaceUnion) GetSecurityGroups() (res instanceNewParamsInterfaceUnionSecurityGroups) {
-	if vt := u.OfNewInterfaceExternalSerializerPydantic; vt != nil {
+	if vt := u.OfExternal; vt != nil {
 		res.any = &vt.SecurityGroups
-	} else if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfSubnet; vt != nil {
 		res.any = &vt.SecurityGroups
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		res.any = &vt.SecurityGroups
-	} else if vt := u.OfNewInterfaceReservedFixedIPFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfReservedFixedIP; vt != nil {
 		res.any = &vt.SecurityGroups
 	}
 	return
 }
 
-// Can have the runtime types
-// [_[]InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup],
-// [_[]InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup],
-// [_[]InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup],
-// [_[]InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup]
+// Can have the runtime types [_[]InstanceNewParamsInterfaceExternalSecurityGroup],
+// [_[]InstanceNewParamsInterfaceSubnetSecurityGroup],
+// [_[]InstanceNewParamsInterfaceAnySubnetSecurityGroup],
+// [_[]InstanceNewParamsInterfaceReservedFixedIPSecurityGroup]
 type instanceNewParamsInterfaceUnionSecurityGroups struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
-//	case *[]cloud.InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup:
-//	case *[]cloud.InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup:
-//	case *[]cloud.InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup:
-//	case *[]cloud.InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup:
+//	case *[]cloud.InstanceNewParamsInterfaceExternalSecurityGroup:
+//	case *[]cloud.InstanceNewParamsInterfaceSubnetSecurityGroup:
+//	case *[]cloud.InstanceNewParamsInterfaceAnySubnetSecurityGroup:
+//	case *[]cloud.InstanceNewParamsInterfaceReservedFixedIPSecurityGroup:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -858,34 +856,33 @@ func (u instanceNewParamsInterfaceUnionSecurityGroups) AsAny() any { return u.an
 //
 // Or use AsAny() to get the underlying value
 func (u InstanceNewParamsInterfaceUnion) GetFloatingIP() (res instanceNewParamsInterfaceUnionFloatingIP) {
-	if vt := u.OfNewInterfaceSpecificSubnetFipSerializerPydantic; vt != nil {
+	if vt := u.OfSubnet; vt != nil {
 		res.any = vt.FloatingIP.asAny()
-	} else if vt := u.OfNewInterfaceAnySubnetFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfAnySubnet; vt != nil {
 		res.any = vt.FloatingIP.asAny()
-	} else if vt := u.OfNewInterfaceReservedFixedIPFipSerializerPydantic; vt != nil {
+	} else if vt := u.OfReservedFixedIP; vt != nil {
 		res.any = vt.FloatingIP.asAny()
 	}
 	return
 }
 
-// Can have the runtime types
-// [*InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer],
-// [*InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer],
-// [*InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer],
-// [*InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer],
-// [*InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer],
-// [*InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer]
+// Can have the runtime types [*InstanceNewParamsInterfaceSubnetFloatingIPNew],
+// [*InstanceNewParamsInterfaceSubnetFloatingIPExisting],
+// [*InstanceNewParamsInterfaceAnySubnetFloatingIPNew],
+// [*InstanceNewParamsInterfaceAnySubnetFloatingIPExisting],
+// [*InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew],
+// [*InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting]
 type instanceNewParamsInterfaceUnionFloatingIP struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
-//	case *cloud.InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer:
-//	case *cloud.InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer:
+//	case *cloud.InstanceNewParamsInterfaceSubnetFloatingIPNew:
+//	case *cloud.InstanceNewParamsInterfaceSubnetFloatingIPExisting:
+//	case *cloud.InstanceNewParamsInterfaceAnySubnetFloatingIPNew:
+//	case *cloud.InstanceNewParamsInterfaceAnySubnetFloatingIPExisting:
+//	case *cloud.InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew:
+//	case *cloud.InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -894,11 +891,11 @@ func (u instanceNewParamsInterfaceUnionFloatingIP) AsAny() any { return u.any }
 // Returns a pointer to the underlying variant's property, if present.
 func (u instanceNewParamsInterfaceUnionFloatingIP) GetSource() *string {
 	switch vt := u.any.(type) {
-	case *InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion:
+	case *InstanceNewParamsInterfaceSubnetFloatingIPUnion:
 		return vt.GetSource()
-	case *InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion:
+	case *InstanceNewParamsInterfaceAnySubnetFloatingIPUnion:
 		return vt.GetSource()
-	case *InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion:
+	case *InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion:
 		return vt.GetSource()
 	}
 	return nil
@@ -907,11 +904,11 @@ func (u instanceNewParamsInterfaceUnionFloatingIP) GetSource() *string {
 // Returns a pointer to the underlying variant's property, if present.
 func (u instanceNewParamsInterfaceUnionFloatingIP) GetExistingFloatingID() *string {
 	switch vt := u.any.(type) {
-	case *InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion:
+	case *InstanceNewParamsInterfaceSubnetFloatingIPUnion:
 		return vt.GetExistingFloatingID()
-	case *InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion:
+	case *InstanceNewParamsInterfaceAnySubnetFloatingIPUnion:
 		return vt.GetExistingFloatingID()
-	case *InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion:
+	case *InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion:
 		return vt.GetExistingFloatingID()
 	}
 	return nil
@@ -922,22 +919,22 @@ func init() {
 		"type",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydantic{}),
+			Type:               reflect.TypeOf(InstanceNewParamsInterfaceExternal{}),
 			DiscriminatorValue: "external",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic{}),
+			Type:               reflect.TypeOf(InstanceNewParamsInterfaceSubnet{}),
 			DiscriminatorValue: "subnet",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic{}),
+			Type:               reflect.TypeOf(InstanceNewParamsInterfaceAnySubnet{}),
 			DiscriminatorValue: "any_subnet",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic{}),
+			Type:               reflect.TypeOf(InstanceNewParamsInterfaceReservedFixedIP{}),
 			DiscriminatorValue: "reserved_fixed_ip",
 		},
 	)
@@ -947,7 +944,7 @@ func init() {
 // "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[0]"
 //
 // The property Type is required.
-type InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydantic struct {
+type InstanceNewParamsInterfaceExternal struct {
 	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/interface_name'
 	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.interface_name"
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
@@ -961,7 +958,7 @@ type InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydantic struct {
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
 	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/security_groups'
 	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.security_groups"
-	SecurityGroups []InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup `json:"security_groups,omitzero"`
+	SecurityGroups []InstanceNewParamsInterfaceExternalSecurityGroup `json:"security_groups,omitzero"`
 	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/type'
 	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.type"
 	//
@@ -972,11 +969,11 @@ type InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydantic struct {
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydantic) IsPresent() bool {
+func (f InstanceNewParamsInterfaceExternal) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydantic) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydantic
+func (r InstanceNewParamsInterfaceExternal) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceExternal
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -984,7 +981,7 @@ func (r InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydantic) Marsha
 // "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.security_groups.items"
 //
 // The property ID is required.
-type InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup struct {
+type InstanceNewParamsInterfaceExternalSecurityGroup struct {
 	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
 	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
 	ID string `json:"id,required" format:"uuid4"`
@@ -993,11 +990,11 @@ type InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGro
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup) IsPresent() bool {
+func (f InstanceNewParamsInterfaceExternalSecurityGroup) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurityGroup
+func (r InstanceNewParamsInterfaceExternalSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceExternalSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1005,7 +1002,7 @@ func (r InstanceNewParamsInterfaceNewInterfaceExternalSerializerPydanticSecurity
 // "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[1]"
 //
 // The properties NetworkID, SubnetID, Type are required.
-type InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic struct {
+type InstanceNewParamsInterfaceSubnet struct {
 	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/network_id'
 	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.network_id"
 	NetworkID string `json:"network_id,required" format:"uuid4"`
@@ -1020,10 +1017,10 @@ type InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic s
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip'
 	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip"
-	FloatingIP InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion `json:"floating_ip,omitzero"`
+	FloatingIP InstanceNewParamsInterfaceSubnetFloatingIPUnion `json:"floating_ip,omitzero"`
 	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/security_groups'
 	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.security_groups"
-	SecurityGroups []InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup `json:"security_groups,omitzero"`
+	SecurityGroups []InstanceNewParamsInterfaceSubnetSecurityGroup `json:"security_groups,omitzero"`
 	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/type'
 	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.type"
 	//
@@ -1034,81 +1031,79 @@ type InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic s
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydantic
+func (f InstanceNewParamsInterfaceSubnet) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r InstanceNewParamsInterfaceSubnet) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceSubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion struct {
+type InstanceNewParamsInterfaceSubnetFloatingIPUnion struct {
 	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
 	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-	OfNewFloatingIP *InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfNew *InstanceNewParamsInterfaceSubnetFloatingIPNew `json:",omitzero,inline"`
 	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
 	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
-	OfExistingFloatingIP *InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfExisting *InstanceNewParamsInterfaceSubnetFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (u InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion) IsPresent() bool {
+func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
-func (u InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion](u.OfNewFloatingIP, u.OfExistingFloatingIP)
+func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[InstanceNewParamsInterfaceSubnetFloatingIPUnion](u.OfNew, u.OfExisting)
 }
 
-func (u *InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewFloatingIP) {
-		return u.OfNewFloatingIP
-	} else if !param.IsOmitted(u.OfExistingFloatingIP) {
-		return u.OfExistingFloatingIP
+func (u *InstanceNewParamsInterfaceSubnetFloatingIPUnion) asAny() any {
+	if !param.IsOmitted(u.OfNew) {
+		return u.OfNew
+	} else if !param.IsOmitted(u.OfExisting) {
+		return u.OfExisting
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExistingFloatingIP; vt != nil {
+func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) GetExistingFloatingID() *string {
+	if vt := u.OfExisting; vt != nil {
 		return &vt.ExistingFloatingID
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNewFloatingIP; vt != nil {
+func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) GetSource() *string {
+	if vt := u.OfNew; vt != nil {
 		return (*string)(&vt.Source)
-	} else if vt := u.OfExistingFloatingIP; vt != nil {
+	} else if vt := u.OfExisting; vt != nil {
 		return (*string)(&vt.Source)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPUnion](
+	apijson.RegisterUnion[InstanceNewParamsInterfaceSubnetFloatingIPUnion](
 		"source",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(InstanceNewParamsInterfaceSubnetFloatingIPNew{}),
 			DiscriminatorValue: "new",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(InstanceNewParamsInterfaceSubnetFloatingIPExisting{}),
 			DiscriminatorValue: "existing",
 		},
 	)
 }
 
-func NewInstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer() InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer {
-	return InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+func NewInstanceNewParamsInterfaceSubnetFloatingIPNew() InstanceNewParamsInterfaceSubnetFloatingIPNew {
+	return InstanceNewParamsInterfaceSubnetFloatingIPNew{
 		Source: "new",
 	}
 }
@@ -1117,8 +1112,8 @@ func NewInstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanti
 // "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
 //
 // This struct has a constant value, construct it with
-// [NewInstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer].
-type InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
+// [NewInstanceNewParamsInterfaceSubnetFloatingIPNew].
+type InstanceNewParamsInterfaceSubnetFloatingIPNew struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
 	Source constant.New `json:"source,required"`
@@ -1127,11 +1122,11 @@ type InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFl
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f InstanceNewParamsInterfaceSubnetFloatingIPNew) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer
+func (r InstanceNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceSubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1139,7 +1134,7 @@ func (r InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanti
 // "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
 //
 // The properties ExistingFloatingID, Source are required.
-type InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer struct {
+type InstanceNewParamsInterfaceSubnetFloatingIPExisting struct {
 	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
 	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
@@ -1153,11 +1148,11 @@ type InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFl
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f InstanceNewParamsInterfaceSubnetFloatingIPExisting) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer
+func (r InstanceNewParamsInterfaceSubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceSubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1165,7 +1160,7 @@ func (r InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanti
 // "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.security_groups.items"
 //
 // The property ID is required.
-type InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup struct {
+type InstanceNewParamsInterfaceSubnetSecurityGroup struct {
 	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
 	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
 	ID string `json:"id,required" format:"uuid4"`
@@ -1174,11 +1169,11 @@ type InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSe
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup) IsPresent() bool {
+func (f InstanceNewParamsInterfaceSubnetSecurityGroup) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanticSecurityGroup
+func (r InstanceNewParamsInterfaceSubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceSubnetSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1186,7 +1181,7 @@ func (r InstanceNewParamsInterfaceNewInterfaceSpecificSubnetFipSerializerPydanti
 // "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[2]"
 //
 // The properties NetworkID, Type are required.
-type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic struct {
+type InstanceNewParamsInterfaceAnySubnet struct {
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/network_id'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.network_id"
 	NetworkID string `json:"network_id,required" format:"uuid4"`
@@ -1201,7 +1196,7 @@ type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic struct
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip"
-	FloatingIP InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion `json:"floating_ip,omitzero"`
+	FloatingIP InstanceNewParamsInterfaceAnySubnetFloatingIPUnion `json:"floating_ip,omitzero"`
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/ip_family/anyOf/0'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.ip_family.anyOf[0]"
 	//
@@ -1209,7 +1204,7 @@ type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic struct
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/security_groups'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.security_groups"
-	SecurityGroups []InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup `json:"security_groups,omitzero"`
+	SecurityGroups []InstanceNewParamsInterfaceAnySubnetSecurityGroup `json:"security_groups,omitzero"`
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/type'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.type"
 	//
@@ -1220,81 +1215,81 @@ type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic struct
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic) IsPresent() bool {
+func (f InstanceNewParamsInterfaceAnySubnet) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydantic
+func (r InstanceNewParamsInterfaceAnySubnet) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion struct {
+type InstanceNewParamsInterfaceAnySubnetFloatingIPUnion struct {
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-	OfNewFloatingIP *InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfNew *InstanceNewParamsInterfaceAnySubnetFloatingIPNew `json:",omitzero,inline"`
 	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
 	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
-	OfExistingFloatingIP *InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfExisting *InstanceNewParamsInterfaceAnySubnetFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (u InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion) IsPresent() bool {
+func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
-func (u InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion](u.OfNewFloatingIP, u.OfExistingFloatingIP)
+func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[InstanceNewParamsInterfaceAnySubnetFloatingIPUnion](u.OfNew, u.OfExisting)
 }
 
-func (u *InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewFloatingIP) {
-		return u.OfNewFloatingIP
-	} else if !param.IsOmitted(u.OfExistingFloatingIP) {
-		return u.OfExistingFloatingIP
+func (u *InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) asAny() any {
+	if !param.IsOmitted(u.OfNew) {
+		return u.OfNew
+	} else if !param.IsOmitted(u.OfExisting) {
+		return u.OfExisting
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExistingFloatingIP; vt != nil {
+func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) GetExistingFloatingID() *string {
+	if vt := u.OfExisting; vt != nil {
 		return &vt.ExistingFloatingID
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNewFloatingIP; vt != nil {
+func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) GetSource() *string {
+	if vt := u.OfNew; vt != nil {
 		return (*string)(&vt.Source)
-	} else if vt := u.OfExistingFloatingIP; vt != nil {
+	} else if vt := u.OfExisting; vt != nil {
 		return (*string)(&vt.Source)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPUnion](
+	apijson.RegisterUnion[InstanceNewParamsInterfaceAnySubnetFloatingIPUnion](
 		"source",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(InstanceNewParamsInterfaceAnySubnetFloatingIPNew{}),
 			DiscriminatorValue: "new",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(InstanceNewParamsInterfaceAnySubnetFloatingIPExisting{}),
 			DiscriminatorValue: "existing",
 		},
 	)
 }
 
-func NewInstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer() InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer {
-	return InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+func NewInstanceNewParamsInterfaceAnySubnetFloatingIPNew() InstanceNewParamsInterfaceAnySubnetFloatingIPNew {
+	return InstanceNewParamsInterfaceAnySubnetFloatingIPNew{
 		Source: "new",
 	}
 }
@@ -1303,8 +1298,8 @@ func NewInstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloa
 // "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
 //
 // This struct has a constant value, construct it with
-// [NewInstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer].
-type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
+// [NewInstanceNewParamsInterfaceAnySubnetFloatingIPNew].
+type InstanceNewParamsInterfaceAnySubnetFloatingIPNew struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
 	Source constant.New `json:"source,required"`
@@ -1313,11 +1308,11 @@ type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatin
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f InstanceNewParamsInterfaceAnySubnetFloatingIPNew) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer
+func (r InstanceNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceAnySubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1325,7 +1320,7 @@ func (r InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloa
 // "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
 //
 // The properties ExistingFloatingID, Source are required.
-type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer struct {
+type InstanceNewParamsInterfaceAnySubnetFloatingIPExisting struct {
 	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
 	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
@@ -1339,11 +1334,11 @@ type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatin
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f InstanceNewParamsInterfaceAnySubnetFloatingIPExisting) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer
+func (r InstanceNewParamsInterfaceAnySubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceAnySubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1351,7 +1346,7 @@ func (r InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticFloa
 // "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.security_groups.items"
 //
 // The property ID is required.
-type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup struct {
+type InstanceNewParamsInterfaceAnySubnetSecurityGroup struct {
 	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
 	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
 	ID string `json:"id,required" format:"uuid4"`
@@ -1360,11 +1355,11 @@ type InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurit
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup) IsPresent() bool {
+func (f InstanceNewParamsInterfaceAnySubnetSecurityGroup) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecurityGroup
+func (r InstanceNewParamsInterfaceAnySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceAnySubnetSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1372,7 +1367,7 @@ func (r InstanceNewParamsInterfaceNewInterfaceAnySubnetFipSerializerPydanticSecu
 // "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[3]"
 //
 // The properties PortID, Type are required.
-type InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic struct {
+type InstanceNewParamsInterfaceReservedFixedIP struct {
 	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/port_id'
 	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.port_id"
 	PortID string `json:"port_id,required"`
@@ -1384,10 +1379,10 @@ type InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic 
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip'
 	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip"
-	FloatingIP InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion `json:"floating_ip,omitzero"`
+	FloatingIP InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion `json:"floating_ip,omitzero"`
 	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/security_groups'
 	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.security_groups"
-	SecurityGroups []InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup `json:"security_groups,omitzero"`
+	SecurityGroups []InstanceNewParamsInterfaceReservedFixedIPSecurityGroup `json:"security_groups,omitzero"`
 	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/type'
 	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.type"
 	//
@@ -1399,81 +1394,81 @@ type InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic 
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic) IsPresent() bool {
+func (f InstanceNewParamsInterfaceReservedFixedIP) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydantic
+func (r InstanceNewParamsInterfaceReservedFixedIP) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceReservedFixedIP
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion struct {
+type InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
 	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/0'
 	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-	OfNewFloatingIP *InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfNew *InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew `json:",omitzero,inline"`
 	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/1'
 	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[1]"
-	OfExistingFloatingIP *InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer `json:",omitzero,inline"`
+	OfExisting *InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (u InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion) IsPresent() bool {
+func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
-func (u InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion](u.OfNewFloatingIP, u.OfExistingFloatingIP)
+func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion](u.OfNew, u.OfExisting)
 }
 
-func (u *InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewFloatingIP) {
-		return u.OfNewFloatingIP
-	} else if !param.IsOmitted(u.OfExistingFloatingIP) {
-		return u.OfExistingFloatingIP
+func (u *InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) asAny() any {
+	if !param.IsOmitted(u.OfNew) {
+		return u.OfNew
+	} else if !param.IsOmitted(u.OfExisting) {
+		return u.OfExisting
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExistingFloatingIP; vt != nil {
+func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetExistingFloatingID() *string {
+	if vt := u.OfExisting; vt != nil {
 		return &vt.ExistingFloatingID
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNewFloatingIP; vt != nil {
+func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetSource() *string {
+	if vt := u.OfNew; vt != nil {
 		return (*string)(&vt.Source)
-	} else if vt := u.OfExistingFloatingIP; vt != nil {
+	} else if vt := u.OfExisting; vt != nil {
 		return (*string)(&vt.Source)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPUnion](
+	apijson.RegisterUnion[InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion](
 		"source",
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew{}),
 			DiscriminatorValue: "new",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer{}),
+			Type:               reflect.TypeOf(InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting{}),
 			DiscriminatorValue: "existing",
 		},
 	)
 }
 
-func NewInstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer() InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer {
-	return InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer{
+func NewInstanceNewParamsInterfaceReservedFixedIPFloatingIPNew() InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew {
+	return InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew{
 		Source: "new",
 	}
 }
@@ -1482,8 +1477,8 @@ func NewInstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydant
 // "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[0]"
 //
 // This struct has a constant value, construct it with
-// [NewInstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer].
-type InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer struct {
+// [NewInstanceNewParamsInterfaceReservedFixedIPFloatingIPNew].
+type InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
 	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
 	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
 	Source constant.New `json:"source,required"`
@@ -1492,11 +1487,11 @@ type InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticF
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPNewInstanceFloatingIPInterfaceSerializer
+func (r InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1504,7 +1499,7 @@ func (r InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydant
 // "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[1]"
 //
 // The properties ExistingFloatingID, Source are required.
-type InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer struct {
+type InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
 	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
 	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
@@ -1518,11 +1513,11 @@ type InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticF
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer) IsPresent() bool {
+func (f InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticFloatingIPExistingInstanceFloatingIPInterfaceSerializer
+func (r InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1530,7 +1525,7 @@ func (r InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydant
 // "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.security_groups.items"
 //
 // The property ID is required.
-type InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup struct {
+type InstanceNewParamsInterfaceReservedFixedIPSecurityGroup struct {
 	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
 	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
 	ID string `json:"id,required" format:"uuid4"`
@@ -1539,11 +1534,11 @@ type InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticS
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup) IsPresent() bool {
+func (f InstanceNewParamsInterfaceReservedFixedIPSecurityGroup) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceNewInterfaceReservedFixedIPFipSerializerPydanticSecurityGroup
+func (r InstanceNewParamsInterfaceReservedFixedIPSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterfaceReservedFixedIPSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -1857,9 +1852,20 @@ type InstanceActionParams struct {
 	// '#/paths/%2Fcloud%2Fv2%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Faction/post/parameters/1/schema'
 	// "$.paths['/cloud/v2/instances/{project_id}/{region_id}/{instance_id}/action'].post.parameters[1].schema"
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Faction/post/requestBody/content/application%2Fjson/schema'
-	// "$.paths['/cloud/v2/instances/{project_id}/{region_id}/{instance_id}/action'].post.requestBody.content['application/json'].schema"
-	Body InstanceActionParamsBodyUnion
+
+	//
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	// '#/components/schemas/InstanceActionSerializerPydantic/anyOf/0'
+	// "$.components.schemas.InstanceActionSerializerPydantic.anyOf[0]"
+	OfStartActionInstanceSerializer *InstanceActionParamsBodyStartActionInstanceSerializer `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// '#/components/schemas/InstanceActionSerializerPydantic/anyOf/1'
+	// "$.components.schemas.InstanceActionSerializerPydantic.anyOf[1]"
+	OfBasicActionInstanceSerializer *InstanceActionParamsBodyBasicActionInstanceSerializer `json:",inline"`
+
 	paramObj
 }
 
@@ -1867,21 +1873,9 @@ type InstanceActionParams struct {
 // "null". To check if this field is omitted, use [param.IsOmitted].
 func (f InstanceActionParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
-func (r InstanceActionParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Body)
+func (u InstanceActionParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[InstanceActionParams](u.OfStartActionInstanceSerializer, u.OfBasicActionInstanceSerializer)
 }
-
-// '#/paths/%2Fcloud%2Fv2%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Faction/post/requestBody/content/application%2Fjson/schema'
-// "$.paths['/cloud/v2/instances/{project_id}/{region_id}/{instance_id}/action'].post.requestBody.content['application/json'].schema"
-//
-// Satisfied by [InstanceActionParamsBodyStartActionInstanceSerializer] and
-// [InstanceActionParamsBodyBasicActionInstanceSerializer]
-type InstanceActionParamsBodyUnion interface {
-	implInstanceActionParamsBodyUnion()
-}
-
-func (InstanceActionParamsBodyStartActionInstanceSerializer) implInstanceActionParamsBodyUnion() {}
-func (InstanceActionParamsBodyBasicActionInstanceSerializer) implInstanceActionParamsBodyUnion() {}
 
 // '#/components/schemas/InstanceActionSerializerPydantic/anyOf/0'
 // "$.components.schemas.InstanceActionSerializerPydantic.anyOf[0]"

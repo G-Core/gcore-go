@@ -29,7 +29,7 @@ func TestReservedFixedIPNewWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.ReservedFixedIPs.New(context.TODO(), cloud.ReservedFixedIPNewParams{
 		ProjectID: gcore.Int(0),
 		RegionID:  gcore.Int(0),
-		Body: cloud.ReservedFixedIPNewParamsBodyNewReservedFixedIPExternalSerializer{
+		OfExternal: &cloud.ReservedFixedIPNewParamsBodyExternal{
 			IPFamily: cloud.InterfaceIPFamilyDual,
 			IsVip:    gcore.Bool(false),
 		},
