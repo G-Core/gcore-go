@@ -203,6 +203,66 @@ func (r *ContainerProbeConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// '#/components/schemas/InferenceInstanceContainerProbeConfigurationSerializerV2'
+// "$.components.schemas.InferenceInstanceContainerProbeConfigurationSerializerV2"
+//
+// The property Enabled is required.
+type ContainerProbeConfigCreateParam struct {
+	// '#/components/schemas/InferenceInstanceContainerProbeConfigurationSerializerV2/properties/enabled'
+	// "$.components.schemas.InferenceInstanceContainerProbeConfigurationSerializerV2.properties.enabled"
+	Enabled bool `json:"enabled,required"`
+	// '#/components/schemas/InferenceInstanceContainerProbeConfigurationSerializerV2/properties/probe/anyOf/0'
+	// "$.components.schemas.InferenceInstanceContainerProbeConfigurationSerializerV2.properties.probe.anyOf[0]"
+	Probe ContainerProbeCreateParam `json:"probe,omitzero"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f ContainerProbeConfigCreateParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r ContainerProbeConfigCreateParam) MarshalJSON() (data []byte, err error) {
+	type shadow ContainerProbeConfigCreateParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+// '#/components/schemas/ContainerProbeSerializerV2'
+// "$.components.schemas.ContainerProbeSerializerV2"
+type ContainerProbeCreateParam struct {
+	// '#/components/schemas/ContainerProbeSerializerV2/properties/failure_threshold'
+	// "$.components.schemas.ContainerProbeSerializerV2.properties.failure_threshold"
+	FailureThreshold param.Opt[int64] `json:"failure_threshold,omitzero"`
+	// '#/components/schemas/ContainerProbeSerializerV2/properties/initial_delay_seconds'
+	// "$.components.schemas.ContainerProbeSerializerV2.properties.initial_delay_seconds"
+	InitialDelaySeconds param.Opt[int64] `json:"initial_delay_seconds,omitzero"`
+	// '#/components/schemas/ContainerProbeSerializerV2/properties/period_seconds'
+	// "$.components.schemas.ContainerProbeSerializerV2.properties.period_seconds"
+	PeriodSeconds param.Opt[int64] `json:"period_seconds,omitzero"`
+	// '#/components/schemas/ContainerProbeSerializerV2/properties/success_threshold'
+	// "$.components.schemas.ContainerProbeSerializerV2.properties.success_threshold"
+	SuccessThreshold param.Opt[int64] `json:"success_threshold,omitzero"`
+	// '#/components/schemas/ContainerProbeSerializerV2/properties/timeout_seconds'
+	// "$.components.schemas.ContainerProbeSerializerV2.properties.timeout_seconds"
+	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
+	// '#/components/schemas/ContainerProbeSerializerV2/properties/exec/anyOf/0'
+	// "$.components.schemas.ContainerProbeSerializerV2.properties.exec.anyOf[0]"
+	Exec ContainerProbeExecCreateParam `json:"exec,omitzero"`
+	// '#/components/schemas/ContainerProbeSerializerV2/properties/http_get/anyOf/0'
+	// "$.components.schemas.ContainerProbeSerializerV2.properties.http_get.anyOf[0]"
+	HTTPGet ContainerProbeHTTPGetCreateParam `json:"http_get,omitzero"`
+	// '#/components/schemas/ContainerProbeSerializerV2/properties/tcp_socket/anyOf/0'
+	// "$.components.schemas.ContainerProbeSerializerV2.properties.tcp_socket.anyOf[0]"
+	TcpSocket ContainerProbeTcpSocketCreateParam `json:"tcp_socket,omitzero"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f ContainerProbeCreateParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r ContainerProbeCreateParam) MarshalJSON() (data []byte, err error) {
+	type shadow ContainerProbeCreateParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
 // '#/components/schemas/ContainerProbeExecConfigOutSerializerV2'
 // "$.components.schemas.ContainerProbeExecConfigOutSerializerV2"
 type ContainerProbeExec struct {
@@ -222,6 +282,25 @@ type ContainerProbeExec struct {
 func (r ContainerProbeExec) RawJSON() string { return r.JSON.raw }
 func (r *ContainerProbeExec) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/ContainerProbeExecConfigSerializerV2'
+// "$.components.schemas.ContainerProbeExecConfigSerializerV2"
+//
+// The property Command is required.
+type ContainerProbeExecCreateParam struct {
+	// '#/components/schemas/ContainerProbeExecConfigSerializerV2/properties/command'
+	// "$.components.schemas.ContainerProbeExecConfigSerializerV2.properties.command"
+	Command []string `json:"command,omitzero,required"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f ContainerProbeExecCreateParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r ContainerProbeExecCreateParam) MarshalJSON() (data []byte, err error) {
+	type shadow ContainerProbeExecCreateParam
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // '#/components/schemas/ContainerProbeHttpGetConfigOutSerializerV2'
@@ -261,6 +340,37 @@ func (r *ContainerProbeHTTPGet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// '#/components/schemas/ContainerProbeHttpGetConfigSerializerV2'
+// "$.components.schemas.ContainerProbeHttpGetConfigSerializerV2"
+//
+// The property Port is required.
+type ContainerProbeHTTPGetCreateParam struct {
+	// '#/components/schemas/ContainerProbeHttpGetConfigSerializerV2/properties/port'
+	// "$.components.schemas.ContainerProbeHttpGetConfigSerializerV2.properties.port"
+	Port int64 `json:"port,required"`
+	// '#/components/schemas/ContainerProbeHttpGetConfigSerializerV2/properties/host/anyOf/0'
+	// "$.components.schemas.ContainerProbeHttpGetConfigSerializerV2.properties.host.anyOf[0]"
+	Host param.Opt[string] `json:"host,omitzero"`
+	// '#/components/schemas/ContainerProbeHttpGetConfigSerializerV2/properties/path'
+	// "$.components.schemas.ContainerProbeHttpGetConfigSerializerV2.properties.path"
+	Path param.Opt[string] `json:"path,omitzero"`
+	// '#/components/schemas/ContainerProbeHttpGetConfigSerializerV2/properties/schema'
+	// "$.components.schemas.ContainerProbeHttpGetConfigSerializerV2.properties.schema"
+	Schema param.Opt[string] `json:"schema,omitzero"`
+	// '#/components/schemas/ContainerProbeHttpGetConfigSerializerV2/properties/headers'
+	// "$.components.schemas.ContainerProbeHttpGetConfigSerializerV2.properties.headers"
+	Headers map[string]string `json:"headers,omitzero"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f ContainerProbeHTTPGetCreateParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r ContainerProbeHTTPGetCreateParam) MarshalJSON() (data []byte, err error) {
+	type shadow ContainerProbeHTTPGetCreateParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
 // '#/components/schemas/ContainerProbeTcpSocketConfigOutSerializerV2'
 // "$.components.schemas.ContainerProbeTcpSocketConfigOutSerializerV2"
 type ContainerProbeTcpSocket struct {
@@ -280,6 +390,27 @@ type ContainerProbeTcpSocket struct {
 func (r ContainerProbeTcpSocket) RawJSON() string { return r.JSON.raw }
 func (r *ContainerProbeTcpSocket) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/ContainerProbeTcpSocketConfigSerializerV2'
+// "$.components.schemas.ContainerProbeTcpSocketConfigSerializerV2"
+//
+// The property Port is required.
+type ContainerProbeTcpSocketCreateParam struct {
+	// '#/components/schemas/ContainerProbeTcpSocketConfigSerializerV2/properties/port'
+	// "$.components.schemas.ContainerProbeTcpSocketConfigSerializerV2.properties.port"
+	Port int64 `json:"port,required"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f ContainerProbeTcpSocketCreateParam) IsPresent() bool {
+	return !param.IsOmitted(f) && !f.IsNull()
+}
+func (r ContainerProbeTcpSocketCreateParam) MarshalJSON() (data []byte, err error) {
+	type shadow ContainerProbeTcpSocketCreateParam
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // '#/components/schemas/ContainerScaleOutSerializerV3'
@@ -544,60 +675,6 @@ type IngressOptsOut struct {
 // Returns the unmodified JSON received from the API
 func (r IngressOptsOut) RawJSON() string { return r.JSON.raw }
 func (r *IngressOptsOut) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/LoggingOutSerializer'
-// "$.components.schemas.LoggingOutSerializer"
-type Logging struct {
-	// '#/components/schemas/LoggingOutSerializer/properties/destination_region_id/anyOf/0'
-	// "$.components.schemas.LoggingOutSerializer.properties.destination_region_id.anyOf[0]"
-	DestinationRegionID int64 `json:"destination_region_id,required"`
-	// '#/components/schemas/LoggingOutSerializer/properties/enabled'
-	// "$.components.schemas.LoggingOutSerializer.properties.enabled"
-	Enabled bool `json:"enabled,required"`
-	// '#/components/schemas/LoggingOutSerializer/properties/topic_name/anyOf/0'
-	// "$.components.schemas.LoggingOutSerializer.properties.topic_name.anyOf[0]"
-	TopicName string `json:"topic_name,required"`
-	// '#/components/schemas/LoggingOutSerializer/properties/retention_policy/anyOf/0'
-	// "$.components.schemas.LoggingOutSerializer.properties.retention_policy.anyOf[0]"
-	RetentionPolicy LoggingRetentionPolicy `json:"retention_policy,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		DestinationRegionID resp.Field
-		Enabled             resp.Field
-		TopicName           resp.Field
-		RetentionPolicy     resp.Field
-		ExtraFields         map[string]resp.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Logging) RawJSON() string { return r.JSON.raw }
-func (r *Logging) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/LoggingOutSerializer/properties/retention_policy/anyOf/0'
-// "$.components.schemas.LoggingOutSerializer.properties.retention_policy.anyOf[0]"
-type LoggingRetentionPolicy struct {
-	// '#/components/schemas/LaasIndexRetentionPolicyPydanticSerializer/properties/period/anyOf/0'
-	// "$.components.schemas.LaasIndexRetentionPolicyPydanticSerializer.properties.period.anyOf[0]"
-	Period int64 `json:"period,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Period      resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoggingRetentionPolicy) RawJSON() string { return r.JSON.raw }
-func (r *LoggingRetentionPolicy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

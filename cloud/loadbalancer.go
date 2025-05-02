@@ -1968,7 +1968,7 @@ type LoadBalancerNewParamsLogging struct {
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/retention_policy/anyOf/0'
 	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.retention_policy.anyOf[0]"
-	RetentionPolicy LoadBalancerNewParamsLoggingRetentionPolicy `json:"retention_policy,omitzero"`
+	RetentionPolicy LaasIndexRetentionPolicyParam `json:"retention_policy,omitzero"`
 	paramObj
 }
 
@@ -1977,27 +1977,6 @@ type LoadBalancerNewParamsLogging struct {
 func (f LoadBalancerNewParamsLogging) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r LoadBalancerNewParamsLogging) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsLogging
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// '#/components/schemas/LoadbalancerLoggingSerializer/properties/retention_policy/anyOf/0'
-// "$.components.schemas.LoadbalancerLoggingSerializer.properties.retention_policy.anyOf[0]"
-//
-// The property Period is required.
-type LoadBalancerNewParamsLoggingRetentionPolicy struct {
-	// '#/components/schemas/LaasIndexRetentionPolicyPydanticSerializer/properties/period/anyOf/0'
-	// "$.components.schemas.LaasIndexRetentionPolicyPydanticSerializer.properties.period.anyOf[0]"
-	Period param.Opt[int64] `json:"period,omitzero,required"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParamsLoggingRetentionPolicy) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r LoadBalancerNewParamsLoggingRetentionPolicy) MarshalJSON() (data []byte, err error) {
-	type shadow LoadBalancerNewParamsLoggingRetentionPolicy
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
@@ -2045,7 +2024,7 @@ type LoadBalancerUpdateParamsLogging struct {
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/retention_policy/anyOf/0'
 	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.retention_policy.anyOf[0]"
-	RetentionPolicy LoadBalancerUpdateParamsLoggingRetentionPolicy `json:"retention_policy,omitzero"`
+	RetentionPolicy LaasIndexRetentionPolicyParam `json:"retention_policy,omitzero"`
 	paramObj
 }
 
@@ -2054,27 +2033,6 @@ type LoadBalancerUpdateParamsLogging struct {
 func (f LoadBalancerUpdateParamsLogging) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r LoadBalancerUpdateParamsLogging) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerUpdateParamsLogging
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// '#/components/schemas/LoadbalancerLoggingSerializer/properties/retention_policy/anyOf/0'
-// "$.components.schemas.LoadbalancerLoggingSerializer.properties.retention_policy.anyOf[0]"
-//
-// The property Period is required.
-type LoadBalancerUpdateParamsLoggingRetentionPolicy struct {
-	// '#/components/schemas/LaasIndexRetentionPolicyPydanticSerializer/properties/period/anyOf/0'
-	// "$.components.schemas.LaasIndexRetentionPolicyPydanticSerializer.properties.period.anyOf[0]"
-	Period param.Opt[int64] `json:"period,omitzero,required"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerUpdateParamsLoggingRetentionPolicy) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r LoadBalancerUpdateParamsLoggingRetentionPolicy) MarshalJSON() (data []byte, err error) {
-	type shadow LoadBalancerUpdateParamsLoggingRetentionPolicy
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 

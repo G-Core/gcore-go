@@ -83,20 +83,20 @@ func TestInferenceDeploymentNewWithOptionalParams(t *testing.T) {
 		Logging: cloud.InferenceDeploymentNewParamsLogging{
 			DestinationRegionID: gcore.Int(1),
 			Enabled:             gcore.Bool(true),
-			RetentionPolicy: cloud.InferenceDeploymentNewParamsLoggingRetentionPolicy{
+			RetentionPolicy: cloud.LaasIndexRetentionPolicyParam{
 				Period: gcore.Int(42),
 			},
 			TopicName: gcore.String("my-log-name"),
 		},
 		Probes: cloud.InferenceDeploymentNewParamsProbes{
-			LivenessProbe: cloud.InferenceDeploymentNewParamsProbesLivenessProbe{
+			LivenessProbe: cloud.ContainerProbeConfigCreateParam{
 				Enabled: true,
-				Probe: cloud.InferenceDeploymentNewParamsProbesLivenessProbeProbe{
-					Exec: cloud.InferenceDeploymentNewParamsProbesLivenessProbeProbeExec{
+				Probe: cloud.ContainerProbeCreateParam{
+					Exec: cloud.ContainerProbeExecCreateParam{
 						Command: []string{"ls", "-l"},
 					},
 					FailureThreshold: gcore.Int(3),
-					HTTPGet: cloud.InferenceDeploymentNewParamsProbesLivenessProbeProbeHTTPGet{
+					HTTPGet: cloud.ContainerProbeHTTPGetCreateParam{
 						Port: 80,
 						Headers: map[string]string{
 							"Authorization": "Bearer token 123",
@@ -108,20 +108,20 @@ func TestInferenceDeploymentNewWithOptionalParams(t *testing.T) {
 					InitialDelaySeconds: gcore.Int(0),
 					PeriodSeconds:       gcore.Int(5),
 					SuccessThreshold:    gcore.Int(1),
-					TcpSocket: cloud.InferenceDeploymentNewParamsProbesLivenessProbeProbeTcpSocket{
+					TcpSocket: cloud.ContainerProbeTcpSocketCreateParam{
 						Port: 80,
 					},
 					TimeoutSeconds: gcore.Int(1),
 				},
 			},
-			ReadinessProbe: cloud.InferenceDeploymentNewParamsProbesReadinessProbe{
+			ReadinessProbe: cloud.ContainerProbeConfigCreateParam{
 				Enabled: true,
-				Probe: cloud.InferenceDeploymentNewParamsProbesReadinessProbeProbe{
-					Exec: cloud.InferenceDeploymentNewParamsProbesReadinessProbeProbeExec{
+				Probe: cloud.ContainerProbeCreateParam{
+					Exec: cloud.ContainerProbeExecCreateParam{
 						Command: []string{"ls", "-l"},
 					},
 					FailureThreshold: gcore.Int(3),
-					HTTPGet: cloud.InferenceDeploymentNewParamsProbesReadinessProbeProbeHTTPGet{
+					HTTPGet: cloud.ContainerProbeHTTPGetCreateParam{
 						Port: 80,
 						Headers: map[string]string{
 							"Authorization": "Bearer token 123",
@@ -133,20 +133,20 @@ func TestInferenceDeploymentNewWithOptionalParams(t *testing.T) {
 					InitialDelaySeconds: gcore.Int(0),
 					PeriodSeconds:       gcore.Int(5),
 					SuccessThreshold:    gcore.Int(1),
-					TcpSocket: cloud.InferenceDeploymentNewParamsProbesReadinessProbeProbeTcpSocket{
+					TcpSocket: cloud.ContainerProbeTcpSocketCreateParam{
 						Port: 80,
 					},
 					TimeoutSeconds: gcore.Int(1),
 				},
 			},
-			StartupProbe: cloud.InferenceDeploymentNewParamsProbesStartupProbe{
+			StartupProbe: cloud.ContainerProbeConfigCreateParam{
 				Enabled: true,
-				Probe: cloud.InferenceDeploymentNewParamsProbesStartupProbeProbe{
-					Exec: cloud.InferenceDeploymentNewParamsProbesStartupProbeProbeExec{
+				Probe: cloud.ContainerProbeCreateParam{
+					Exec: cloud.ContainerProbeExecCreateParam{
 						Command: []string{"ls", "-l"},
 					},
 					FailureThreshold: gcore.Int(3),
-					HTTPGet: cloud.InferenceDeploymentNewParamsProbesStartupProbeProbeHTTPGet{
+					HTTPGet: cloud.ContainerProbeHTTPGetCreateParam{
 						Port: 80,
 						Headers: map[string]string{
 							"Authorization": "Bearer token 123",
@@ -158,7 +158,7 @@ func TestInferenceDeploymentNewWithOptionalParams(t *testing.T) {
 					InitialDelaySeconds: gcore.Int(0),
 					PeriodSeconds:       gcore.Int(5),
 					SuccessThreshold:    gcore.Int(1),
-					TcpSocket: cloud.InferenceDeploymentNewParamsProbesStartupProbeProbeTcpSocket{
+					TcpSocket: cloud.ContainerProbeTcpSocketCreateParam{
 						Port: 80,
 					},
 					TimeoutSeconds: gcore.Int(1),
@@ -247,20 +247,20 @@ func TestInferenceDeploymentUpdateWithOptionalParams(t *testing.T) {
 			Logging: cloud.InferenceDeploymentUpdateParamsLogging{
 				DestinationRegionID: gcore.Int(1),
 				Enabled:             gcore.Bool(true),
-				RetentionPolicy: cloud.InferenceDeploymentUpdateParamsLoggingRetentionPolicy{
+				RetentionPolicy: cloud.LaasIndexRetentionPolicyParam{
 					Period: gcore.Int(42),
 				},
 				TopicName: gcore.String("my-log-name"),
 			},
 			Probes: cloud.InferenceDeploymentUpdateParamsProbes{
-				LivenessProbe: cloud.InferenceDeploymentUpdateParamsProbesLivenessProbe{
+				LivenessProbe: cloud.ContainerProbeConfigCreateParam{
 					Enabled: true,
-					Probe: cloud.InferenceDeploymentUpdateParamsProbesLivenessProbeProbe{
-						Exec: cloud.InferenceDeploymentUpdateParamsProbesLivenessProbeProbeExec{
+					Probe: cloud.ContainerProbeCreateParam{
+						Exec: cloud.ContainerProbeExecCreateParam{
 							Command: []string{"ls", "-l"},
 						},
 						FailureThreshold: gcore.Int(3),
-						HTTPGet: cloud.InferenceDeploymentUpdateParamsProbesLivenessProbeProbeHTTPGet{
+						HTTPGet: cloud.ContainerProbeHTTPGetCreateParam{
 							Port: 80,
 							Headers: map[string]string{
 								"Authorization": "Bearer token 123",
@@ -272,20 +272,20 @@ func TestInferenceDeploymentUpdateWithOptionalParams(t *testing.T) {
 						InitialDelaySeconds: gcore.Int(0),
 						PeriodSeconds:       gcore.Int(5),
 						SuccessThreshold:    gcore.Int(1),
-						TcpSocket: cloud.InferenceDeploymentUpdateParamsProbesLivenessProbeProbeTcpSocket{
+						TcpSocket: cloud.ContainerProbeTcpSocketCreateParam{
 							Port: 80,
 						},
 						TimeoutSeconds: gcore.Int(1),
 					},
 				},
-				ReadinessProbe: cloud.InferenceDeploymentUpdateParamsProbesReadinessProbe{
+				ReadinessProbe: cloud.ContainerProbeConfigCreateParam{
 					Enabled: true,
-					Probe: cloud.InferenceDeploymentUpdateParamsProbesReadinessProbeProbe{
-						Exec: cloud.InferenceDeploymentUpdateParamsProbesReadinessProbeProbeExec{
+					Probe: cloud.ContainerProbeCreateParam{
+						Exec: cloud.ContainerProbeExecCreateParam{
 							Command: []string{"ls", "-l"},
 						},
 						FailureThreshold: gcore.Int(3),
-						HTTPGet: cloud.InferenceDeploymentUpdateParamsProbesReadinessProbeProbeHTTPGet{
+						HTTPGet: cloud.ContainerProbeHTTPGetCreateParam{
 							Port: 80,
 							Headers: map[string]string{
 								"Authorization": "Bearer token 123",
@@ -297,20 +297,20 @@ func TestInferenceDeploymentUpdateWithOptionalParams(t *testing.T) {
 						InitialDelaySeconds: gcore.Int(0),
 						PeriodSeconds:       gcore.Int(5),
 						SuccessThreshold:    gcore.Int(1),
-						TcpSocket: cloud.InferenceDeploymentUpdateParamsProbesReadinessProbeProbeTcpSocket{
+						TcpSocket: cloud.ContainerProbeTcpSocketCreateParam{
 							Port: 80,
 						},
 						TimeoutSeconds: gcore.Int(1),
 					},
 				},
-				StartupProbe: cloud.InferenceDeploymentUpdateParamsProbesStartupProbe{
+				StartupProbe: cloud.ContainerProbeConfigCreateParam{
 					Enabled: true,
-					Probe: cloud.InferenceDeploymentUpdateParamsProbesStartupProbeProbe{
-						Exec: cloud.InferenceDeploymentUpdateParamsProbesStartupProbeProbeExec{
+					Probe: cloud.ContainerProbeCreateParam{
+						Exec: cloud.ContainerProbeExecCreateParam{
 							Command: []string{"ls", "-l"},
 						},
 						FailureThreshold: gcore.Int(3),
-						HTTPGet: cloud.InferenceDeploymentUpdateParamsProbesStartupProbeProbeHTTPGet{
+						HTTPGet: cloud.ContainerProbeHTTPGetCreateParam{
 							Port: 80,
 							Headers: map[string]string{
 								"Authorization": "Bearer token 123",
@@ -322,7 +322,7 @@ func TestInferenceDeploymentUpdateWithOptionalParams(t *testing.T) {
 						InitialDelaySeconds: gcore.Int(0),
 						PeriodSeconds:       gcore.Int(5),
 						SuccessThreshold:    gcore.Int(1),
-						TcpSocket: cloud.InferenceDeploymentUpdateParamsProbesStartupProbeProbeTcpSocket{
+						TcpSocket: cloud.ContainerProbeTcpSocketCreateParam{
 							Port: 80,
 						},
 						TimeoutSeconds: gcore.Int(1),
