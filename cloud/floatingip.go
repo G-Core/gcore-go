@@ -328,9 +328,6 @@ type FloatingIPDetailedInstance struct {
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/instance_name'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.instance_name"
 	InstanceName string `json:"instance_name,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/keypair_name/anyOf/0'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.keypair_name.anyOf[0]"
-	KeypairName string `json:"keypair_name,required"`
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/project_id'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.project_id"
 	ProjectID int64 `json:"project_id,required"`
@@ -343,6 +340,9 @@ type FloatingIPDetailedInstance struct {
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/security_groups'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.security_groups"
 	SecurityGroups []FloatingIPDetailedInstanceSecurityGroup `json:"security_groups,required"`
+	// '#/components/schemas/InstanceInFloatingSerializer/properties/ssh_key_name/anyOf/0'
+	// "$.components.schemas.InstanceInFloatingSerializer.properties.ssh_key_name.anyOf[0]"
+	SSHKeyName string `json:"ssh_key_name,required"`
 	// '#/components/schemas/InstanceInFloatingSerializer/properties/status'
 	// "$.components.schemas.InstanceInFloatingSerializer.properties.status"
 	//
@@ -379,11 +379,11 @@ type FloatingIPDetailedInstance struct {
 		InstanceDescription resp.Field
 		InstanceID          resp.Field
 		InstanceName        resp.Field
-		KeypairName         resp.Field
 		ProjectID           resp.Field
 		Region              resp.Field
 		RegionID            resp.Field
 		SecurityGroups      resp.Field
+		SSHKeyName          resp.Field
 		Status              resp.Field
 		Tags                resp.Field
 		TaskID              resp.Field

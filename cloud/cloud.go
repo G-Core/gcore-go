@@ -550,9 +550,6 @@ type GPUClusterServer struct {
 	// '#/components/schemas/GPUClusterServerSerializer/properties/instance_name'
 	// "$.components.schemas.GPUClusterServerSerializer.properties.instance_name"
 	InstanceName string `json:"instance_name,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/keypair_name/anyOf/0'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.keypair_name.anyOf[0]"
-	KeypairName string `json:"keypair_name,required"`
 	// '#/components/schemas/GPUClusterServerSerializer/properties/project_id'
 	// "$.components.schemas.GPUClusterServerSerializer.properties.project_id"
 	ProjectID int64 `json:"project_id,required"`
@@ -565,6 +562,9 @@ type GPUClusterServer struct {
 	// '#/components/schemas/GPUClusterServerSerializer/properties/security_groups'
 	// "$.components.schemas.GPUClusterServerSerializer.properties.security_groups"
 	SecurityGroups []GPUClusterServerSecurityGroup `json:"security_groups,required"`
+	// '#/components/schemas/GPUClusterServerSerializer/properties/ssh_key_name/anyOf/0'
+	// "$.components.schemas.GPUClusterServerSerializer.properties.ssh_key_name.anyOf[0]"
+	SSHKeyName string `json:"ssh_key_name,required"`
 	// '#/components/schemas/GPUClusterServerSerializer/properties/status'
 	// "$.components.schemas.GPUClusterServerSerializer.properties.status"
 	//
@@ -602,11 +602,11 @@ type GPUClusterServer struct {
 		InstanceID          resp.Field
 		InstanceIsolation   resp.Field
 		InstanceName        resp.Field
-		KeypairName         resp.Field
 		ProjectID           resp.Field
 		Region              resp.Field
 		RegionID            resp.Field
 		SecurityGroups      resp.Field
+		SSHKeyName          resp.Field
 		Status              resp.Field
 		Tags                resp.Field
 		TaskID              resp.Field
@@ -1385,9 +1385,6 @@ type Instance struct {
 	// '#/components/schemas/InstanceSerializer/properties/instance_name'
 	// "$.components.schemas.InstanceSerializer.properties.instance_name"
 	InstanceName string `json:"instance_name,required"`
-	// '#/components/schemas/InstanceSerializer/properties/keypair_name/anyOf/0'
-	// "$.components.schemas.InstanceSerializer.properties.keypair_name.anyOf[0]"
-	KeypairName string `json:"keypair_name,required"`
 	// '#/components/schemas/InstanceSerializer/properties/project_id'
 	// "$.components.schemas.InstanceSerializer.properties.project_id"
 	ProjectID int64 `json:"project_id,required"`
@@ -1400,6 +1397,9 @@ type Instance struct {
 	// '#/components/schemas/InstanceSerializer/properties/security_groups'
 	// "$.components.schemas.InstanceSerializer.properties.security_groups"
 	SecurityGroups []InstanceSecurityGroup `json:"security_groups,required"`
+	// '#/components/schemas/InstanceSerializer/properties/ssh_key_name/anyOf/0'
+	// "$.components.schemas.InstanceSerializer.properties.ssh_key_name.anyOf[0]"
+	SSHKeyName string `json:"ssh_key_name,required"`
 	// '#/components/schemas/InstanceSerializer/properties/status'
 	// "$.components.schemas.InstanceSerializer.properties.status"
 	//
@@ -1440,11 +1440,11 @@ type Instance struct {
 		InstanceID          resp.Field
 		InstanceIsolation   resp.Field
 		InstanceName        resp.Field
-		KeypairName         resp.Field
 		ProjectID           resp.Field
 		Region              resp.Field
 		RegionID            resp.Field
 		SecurityGroups      resp.Field
+		SSHKeyName          resp.Field
 		Status              resp.Field
 		Tags                resp.Field
 		TaskID              resp.Field

@@ -648,9 +648,9 @@ type InstanceNewParams struct {
 	// '#/components/schemas/CreateInstanceSerializerV2/properties/volumes'
 	// "$.components.schemas.CreateInstanceSerializerV2.properties.volumes"
 	Volumes []InstanceNewParamsVolume `json:"volumes,omitzero,required"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/keypair_name/anyOf/0'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.keypair_name.anyOf[0]"
-	KeypairName param.Opt[string] `json:"keypair_name,omitzero"`
+	// '#/components/schemas/CreateInstanceSerializerV2/properties/ssh_key_name/anyOf/0'
+	// "$.components.schemas.CreateInstanceSerializerV2.properties.ssh_key_name.anyOf[0]"
+	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
 	// '#/components/schemas/CreateInstanceSerializerV2/properties/allow_app_ports'
 	// "$.components.schemas.CreateInstanceSerializerV2.properties.allow_app_ports"
 	AllowAppPorts param.Opt[bool] `json:"allow_app_ports,omitzero"`

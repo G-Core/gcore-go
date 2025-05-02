@@ -47,8 +47,8 @@ func TestGPUBaremetalClusterNewWithOptionalParams(t *testing.T) {
 		}},
 		Name:           "my-gpu-cluster",
 		InstancesCount: gcore.Int(1),
-		KeypairName:    gcore.String("my-keypair"),
 		Password:       gcore.String("password"),
+		SSHKeyName:     gcore.String("my-ssh-key"),
 		Tags: cloud.TagUpdateList{
 			"foo": "my-tag-value",
 		},

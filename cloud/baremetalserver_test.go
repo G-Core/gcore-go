@@ -53,10 +53,10 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 			ProfileTemplateName: gcore.String("profile_template_name"),
 		},
 		ImageID:       gcore.String("image_id"),
-		KeypairName:   gcore.String("my-keypair"),
 		NameTemplates: []string{"my-bare-metal-{ip_octets}"},
 		Names:         []string{"my-bare-metal"},
 		Password:      gcore.String("password"),
+		SSHKeyName:    gcore.String("my-ssh-key"),
 		Tags: cloud.TagUpdateList{
 			"foo": "my-tag-value",
 		},
