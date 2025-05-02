@@ -47,7 +47,7 @@ func createReservedFixedIP(client *gcore.Client) string {
 
 	// Example parameters for creating a Reserved Fixed IP
 	params := cloud.ReservedFixedIPNewParams{
-		Body: cloud.ReservedFixedIPNewParamsBodyNewReservedFixedIPExternalSerializer{
+		OfExternal: &cloud.ReservedFixedIPNewParamsBodyExternal{
 			IsVip:    param.NewOpt(false),
 			IPFamily: cloud.InterfaceIPFamilyIpv4,
 			Type:     constant.ValueOf[constant.External](),
