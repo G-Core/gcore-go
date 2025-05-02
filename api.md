@@ -27,6 +27,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#FlavorHardwareDescription">FlavorHardwareDescription</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#FloatingAddress">FloatingAddress</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#FloatingIP">FloatingIP</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#FloatingIPDetailedAddressUnion">FloatingIPDetailedAddressUnion</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#FloatingIPStatus">FloatingIPStatus</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#GPUClusterServer">GPUClusterServer</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#GPUClusterServerList">GPUClusterServerList</a>
