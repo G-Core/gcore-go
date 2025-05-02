@@ -196,17 +196,11 @@ func (r *GPUBaremetalClusterServerService) Reboot(ctx context.Context, instanceI
 }
 
 type GPUBaremetalClusterServerDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fnode%2F%7Binstance_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/node/{instance_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fnode%2F%7Binstance_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/node/{instance_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fnode%2F%7Binstance_id%7D/delete/parameters/2/schema'
-	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/node/{instance_id}']['delete'].parameters[2].schema"
-	ClusterID string `path:"cluster_id,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fnode%2F%7Binstance_id%7D/delete/parameters/4'
-	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/node/{instance_id}']['delete'].parameters[4]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ClusterID string           `path:"cluster_id,required" json:"-"`
+	// Set False if you do not want to delete assigned floating IPs. By default, it's
+	// True.
 	DeleteFloatings param.Opt[bool] `query:"delete_floatings,omitzero" json:"-"`
 	paramObj
 }
@@ -227,32 +221,26 @@ func (r GPUBaremetalClusterServerDeleteParams) URLQuery() (v url.Values, err err
 }
 
 type GPUBaremetalClusterServerAttachInterfaceParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 
 	//
 	// Request body variants
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/0'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[0]"
+	// Instance will be attached to default external network
 	OfNewInterfaceExternalExtendSchemaWithDDOS *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOS `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/1'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[1]"
+	// Instance will be attached to specified subnet
 	OfNewInterfaceSpecificSubnetSchema *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchema `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/2'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[2]"
+	// Instance will be attached to the network subnet with the largest count of
+	// available ips
 	OfNewInterfaceAnySubnetSchema *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchema `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/3'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[3]"
+	// Instance will be attached to the given port. Floating IP will be created and
+	// attached to that IP
 	OfNewInterfaceReservedFixedIPSchema *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchema `json:",inline"`
 
 	paramObj
@@ -268,28 +256,21 @@ func (u GPUBaremetalClusterServerAttachInterfaceParams) MarshalJSON() ([]byte, e
 	return param.MarshalUnion[GPUBaremetalClusterServerAttachInterfaceParams](u.OfNewInterfaceExternalExtendSchemaWithDDOS, u.OfNewInterfaceSpecificSubnetSchema, u.OfNewInterfaceAnySubnetSchema, u.OfNewInterfaceReservedFixedIPSchema)
 }
 
-// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/0'
-// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[0]"
+// Instance will be attached to default external network
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOS struct {
-	// '#/components/schemas/NewInterfaceExternalExtendSchemaWithDdos/properties/interface_name'
-	// "$.components.schemas.NewInterfaceExternalExtendSchemaWithDdos.properties.interface_name"
+	// Interface name
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalExtendSchemaWithDdos/properties/port_group'
-	// "$.components.schemas.NewInterfaceExternalExtendSchemaWithDdos.properties.port_group"
+	// Each group will be added to the separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalExtendSchemaWithDdos/properties/type'
-	// "$.components.schemas.NewInterfaceExternalExtendSchemaWithDdos.properties.type"
+	// Must be 'external'. Union tag
 	Type param.Opt[string] `json:"type,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalExtendSchemaWithDdos/properties/ddos_profile/allOf/0'
-	// "$.components.schemas.NewInterfaceExternalExtendSchemaWithDdos.properties.ddos_profile.allOf[0]"
+	// Advanced DDoS protection.
 	DDOSProfile GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile `json:"ddos_profile,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalExtendSchemaWithDdos/properties/ip_family'
-	// "$.components.schemas.NewInterfaceExternalExtendSchemaWithDdos.properties.ip_family"
+	// Which subnets should be selected: IPv4, IPv6 or use dual stack.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalExtendSchemaWithDdos/properties/security_groups'
-	// "$.components.schemas.NewInterfaceExternalExtendSchemaWithDdos.properties.security_groups"
+	// List of security group IDs
 	SecurityGroups []GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup `json:"security_groups,omitzero"`
 	paramObj
 }
@@ -310,19 +291,15 @@ func init() {
 	)
 }
 
-// '#/components/schemas/NewInterfaceExternalExtendSchemaWithDdos/properties/ddos_profile/allOf/0'
-// "$.components.schemas.NewInterfaceExternalExtendSchemaWithDdos.properties.ddos_profile.allOf[0]"
+// Advanced DDoS protection.
 //
 // The property ProfileTemplate is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile struct {
-	// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/profile_template'
-	// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.profile_template"
+	// DDoS profile template ID.
 	ProfileTemplate int64 `json:"profile_template,required"`
-	// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/profile_template_name'
-	// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.profile_template_name"
+	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
-	// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/fields'
-	// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.fields"
+	// Protection parameters.
 	Fields []GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
@@ -337,20 +314,14 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalEx
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/fields/items'
-// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.fields.items"
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField struct {
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/base_field'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.base_field"
+	// ID of DDoS profile field
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/field_name'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.field_name"
+	// Name of DDoS profile field
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/value'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.value"
+	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/field_value'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.field_value"
+	// Complex value. Only one of 'value' or 'field_value' must be specified.
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
@@ -365,13 +336,11 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalEx
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceExternalExtendSchemaWithDdos/properties/security_groups/items'
-// "$.components.schemas.NewInterfaceExternalExtendSchemaWithDdos.properties.security_groups.items"
+// MandatoryIdSchema schema
 //
 // The property ID is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSchema/properties/id'
-	// "$.components.schemas.MandatoryIdSchema.properties.id"
+	// Resource ID
 	ID string `json:"id,required"`
 	paramObj
 }
@@ -386,28 +355,21 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalEx
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/1'
-// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[1]"
+// Instance will be attached to specified subnet
 //
 // The property SubnetID is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchema struct {
-	// '#/components/schemas/NewInterfaceSpecificSubnetSchema/properties/subnet_id'
-	// "$.components.schemas.NewInterfaceSpecificSubnetSchema.properties.subnet_id"
+	// Port will get an IP address from this subnet
 	SubnetID string `json:"subnet_id,required"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetSchema/properties/interface_name'
-	// "$.components.schemas.NewInterfaceSpecificSubnetSchema.properties.interface_name"
+	// Interface name
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetSchema/properties/port_group'
-	// "$.components.schemas.NewInterfaceSpecificSubnetSchema.properties.port_group"
+	// Each group will be added to the separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetSchema/properties/type'
-	// "$.components.schemas.NewInterfaceSpecificSubnetSchema.properties.type"
+	// Must be 'subnet'
 	Type param.Opt[string] `json:"type,omitzero"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetSchema/properties/ddos_profile/allOf/0'
-	// "$.components.schemas.NewInterfaceSpecificSubnetSchema.properties.ddos_profile.allOf[0]"
+	// Advanced DDoS protection.
 	DDOSProfile GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile `json:"ddos_profile,omitzero"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetSchema/properties/security_groups'
-	// "$.components.schemas.NewInterfaceSpecificSubnetSchema.properties.security_groups"
+	// List of security group IDs
 	SecurityGroups []GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup `json:"security_groups,omitzero"`
 	paramObj
 }
@@ -422,19 +384,15 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSu
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceSpecificSubnetSchema/properties/ddos_profile/allOf/0'
-// "$.components.schemas.NewInterfaceSpecificSubnetSchema.properties.ddos_profile.allOf[0]"
+// Advanced DDoS protection.
 //
 // The property ProfileTemplate is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile struct {
-	// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/profile_template'
-	// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.profile_template"
+	// DDoS profile template ID.
 	ProfileTemplate int64 `json:"profile_template,required"`
-	// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/profile_template_name'
-	// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.profile_template_name"
+	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
-	// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/fields'
-	// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.fields"
+	// Protection parameters.
 	Fields []GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
@@ -449,20 +407,14 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSu
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/fields/items'
-// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.fields.items"
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField struct {
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/base_field'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.base_field"
+	// ID of DDoS profile field
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/field_name'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.field_name"
+	// Name of DDoS profile field
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/value'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.value"
+	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/field_value'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.field_value"
+	// Complex value. Only one of 'value' or 'field_value' must be specified.
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
@@ -477,13 +429,11 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSu
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceSpecificSubnetSchema/properties/security_groups/items'
-// "$.components.schemas.NewInterfaceSpecificSubnetSchema.properties.security_groups.items"
+// MandatoryIdSchema schema
 //
 // The property ID is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSchema/properties/id'
-	// "$.components.schemas.MandatoryIdSchema.properties.id"
+	// Resource ID
 	ID string `json:"id,required"`
 	paramObj
 }
@@ -498,33 +448,26 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSu
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/2'
-// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[2]"
+// Instance will be attached to the network subnet with the largest count of
+// available ips
 //
 // The property NetworkID is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchema struct {
-	// '#/components/schemas/NewInterfaceAnySubnetSchema/properties/network_id'
-	// "$.components.schemas.NewInterfaceAnySubnetSchema.properties.network_id"
+	// Port will get an IP address in this network subnet
 	NetworkID string `json:"network_id,required"`
-	// '#/components/schemas/NewInterfaceAnySubnetSchema/properties/interface_name'
-	// "$.components.schemas.NewInterfaceAnySubnetSchema.properties.interface_name"
+	// Interface name
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetSchema/properties/port_group'
-	// "$.components.schemas.NewInterfaceAnySubnetSchema.properties.port_group"
+	// Each group will be added to the separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetSchema/properties/type'
-	// "$.components.schemas.NewInterfaceAnySubnetSchema.properties.type"
+	// Must be 'any_subnet'
 	Type param.Opt[string] `json:"type,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetSchema/properties/ddos_profile/allOf/0'
-	// "$.components.schemas.NewInterfaceAnySubnetSchema.properties.ddos_profile.allOf[0]"
+	// Advanced DDoS protection.
 	DDOSProfile GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile `json:"ddos_profile,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetSchema/properties/ip_family'
-	// "$.components.schemas.NewInterfaceAnySubnetSchema.properties.ip_family"
+	// Which subnets should be selected: IPv4, IPv6 or use dual stack.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetSchema/properties/security_groups'
-	// "$.components.schemas.NewInterfaceAnySubnetSchema.properties.security_groups"
+	// List of security group IDs
 	SecurityGroups []GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup `json:"security_groups,omitzero"`
 	paramObj
 }
@@ -545,19 +488,15 @@ func init() {
 	)
 }
 
-// '#/components/schemas/NewInterfaceAnySubnetSchema/properties/ddos_profile/allOf/0'
-// "$.components.schemas.NewInterfaceAnySubnetSchema.properties.ddos_profile.allOf[0]"
+// Advanced DDoS protection.
 //
 // The property ProfileTemplate is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile struct {
-	// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/profile_template'
-	// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.profile_template"
+	// DDoS profile template ID.
 	ProfileTemplate int64 `json:"profile_template,required"`
-	// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/profile_template_name'
-	// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.profile_template_name"
+	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
-	// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/fields'
-	// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.fields"
+	// Protection parameters.
 	Fields []GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
@@ -572,20 +511,14 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetS
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/fields/items'
-// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.fields.items"
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField struct {
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/base_field'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.base_field"
+	// ID of DDoS profile field
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/field_name'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.field_name"
+	// Name of DDoS profile field
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/value'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.value"
+	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/field_value'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.field_value"
+	// Complex value. Only one of 'value' or 'field_value' must be specified.
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
@@ -600,13 +533,11 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetS
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceAnySubnetSchema/properties/security_groups/items'
-// "$.components.schemas.NewInterfaceAnySubnetSchema.properties.security_groups.items"
+// MandatoryIdSchema schema
 //
 // The property ID is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSchema/properties/id'
-	// "$.components.schemas.MandatoryIdSchema.properties.id"
+	// Resource ID
 	ID string `json:"id,required"`
 	paramObj
 }
@@ -621,28 +552,22 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetS
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fattach_interface/post/requestBody/content/application%2Fjson/schema/anyOf/3'
-// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/attach_interface'].post.requestBody.content['application/json'].schema.anyOf[3]"
+// Instance will be attached to the given port. Floating IP will be created and
+// attached to that IP
 //
 // The property PortID is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchema struct {
-	// '#/components/schemas/NewInterfaceReservedFixedIpSchema/properties/port_id'
-	// "$.components.schemas.NewInterfaceReservedFixedIpSchema.properties.port_id"
+	// Port ID
 	PortID string `json:"port_id,required"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpSchema/properties/interface_name'
-	// "$.components.schemas.NewInterfaceReservedFixedIpSchema.properties.interface_name"
+	// Interface name
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpSchema/properties/port_group'
-	// "$.components.schemas.NewInterfaceReservedFixedIpSchema.properties.port_group"
+	// Each group will be added to the separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpSchema/properties/type'
-	// "$.components.schemas.NewInterfaceReservedFixedIpSchema.properties.type"
+	// Must be 'reserved_fixed_ip'. Union tag
 	Type param.Opt[string] `json:"type,omitzero"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpSchema/properties/ddos_profile/allOf/0'
-	// "$.components.schemas.NewInterfaceReservedFixedIpSchema.properties.ddos_profile.allOf[0]"
+	// Advanced DDoS protection.
 	DDOSProfile GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile `json:"ddos_profile,omitzero"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpSchema/properties/security_groups'
-	// "$.components.schemas.NewInterfaceReservedFixedIpSchema.properties.security_groups"
+	// List of security group IDs
 	SecurityGroups []GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup `json:"security_groups,omitzero"`
 	paramObj
 }
@@ -657,19 +582,15 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFi
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceReservedFixedIpSchema/properties/ddos_profile/allOf/0'
-// "$.components.schemas.NewInterfaceReservedFixedIpSchema.properties.ddos_profile.allOf[0]"
+// Advanced DDoS protection.
 //
 // The property ProfileTemplate is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile struct {
-	// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/profile_template'
-	// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.profile_template"
+	// DDoS profile template ID.
 	ProfileTemplate int64 `json:"profile_template,required"`
-	// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/profile_template_name'
-	// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.profile_template_name"
+	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
-	// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/fields'
-	// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.fields"
+	// Protection parameters.
 	Fields []GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
@@ -684,20 +605,14 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFi
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/DeprecatedCreateDdosProfileSchema/properties/fields/items'
-// "$.components.schemas.DeprecatedCreateDdosProfileSchema.properties.fields.items"
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField struct {
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/base_field'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.base_field"
+	// ID of DDoS profile field
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/field_name'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.field_name"
+	// Name of DDoS profile field
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/value'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.value"
+	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// '#/components/schemas/DeprecatedCreateClientProfileFieldSchema/properties/field_value'
-	// "$.components.schemas.DeprecatedCreateClientProfileFieldSchema.properties.field_value"
+	// Complex value. Only one of 'value' or 'field_value' must be specified.
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
@@ -712,13 +627,11 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFi
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceReservedFixedIpSchema/properties/security_groups/items'
-// "$.components.schemas.NewInterfaceReservedFixedIpSchema.properties.security_groups.items"
+// MandatoryIdSchema schema
 //
 // The property ID is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSchema/properties/id'
-	// "$.components.schemas.MandatoryIdSchema.properties.id"
+	// Resource ID
 	ID string `json:"id,required"`
 	paramObj
 }
@@ -734,17 +647,11 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFi
 }
 
 type GPUBaremetalClusterServerDetachInterfaceParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fdetach_interface/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/detach_interface'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fdetach_interface/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/detach_interface'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/PortIdWithIpSchema/properties/ip_address'
-	// "$.components.schemas.PortIdWithIpSchema.properties.ip_address"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// IP address
 	IPAddress string `json:"ip_address,required"`
-	// '#/components/schemas/PortIdWithIpSchema/properties/port_id'
-	// "$.components.schemas.PortIdWithIpSchema.properties.port_id"
+	// ID of the port
 	PortID string `json:"port_id,required"`
 	paramObj
 }
@@ -761,12 +668,8 @@ func (r GPUBaremetalClusterServerDetachInterfaceParams) MarshalJSON() (data []by
 }
 
 type GPUBaremetalClusterServerGetConsoleParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fget_console/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/get_console'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fget_console/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/get_console'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -777,12 +680,8 @@ func (f GPUBaremetalClusterServerGetConsoleParams) IsPresent() bool {
 }
 
 type GPUBaremetalClusterServerPowercycleParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fpowercycle/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/powercycle'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fpowercycle/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/powercycle'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -793,12 +692,8 @@ func (f GPUBaremetalClusterServerPowercycleParams) IsPresent() bool {
 }
 
 type GPUBaremetalClusterServerRebootParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Freboot/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/reboot'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Freboot/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{instance_id}/reboot'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 

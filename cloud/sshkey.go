@@ -151,31 +151,24 @@ func (r *SSHKeyService) Get(ctx context.Context, sshKeyID string, query SSHKeyGe
 	return
 }
 
-// '#/components/schemas/SSHKeySerializer' "$.components.schemas.SSHKeySerializer"
 type SSHKey struct {
-	// '#/components/schemas/SSHKeySerializer/properties/id'
-	// "$.components.schemas.SSHKeySerializer.properties.id"
+	// SSH key ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/SSHKeySerializer/properties/created_at/anyOf/0'
-	// "$.components.schemas.SSHKeySerializer.properties.created_at.anyOf[0]"
+	// SSH key creation time
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/SSHKeySerializer/properties/fingerprint'
-	// "$.components.schemas.SSHKeySerializer.properties.fingerprint"
+	// Fingerprint
 	Fingerprint string `json:"fingerprint,required"`
-	// '#/components/schemas/SSHKeySerializer/properties/name'
-	// "$.components.schemas.SSHKeySerializer.properties.name"
+	// SSH key name
 	Name string `json:"name,required"`
-	// '#/components/schemas/SSHKeySerializer/properties/project_id/anyOf/0'
-	// "$.components.schemas.SSHKeySerializer.properties.project_id.anyOf[0]"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/SSHKeySerializer/properties/public_key'
-	// "$.components.schemas.SSHKeySerializer.properties.public_key"
+	// The public part of an SSH key is the shareable portion of an SSH key pair. It
+	// can be safely sent to servers or services to grant access. It does not contain
+	// sensitive information.
 	PublicKey string `json:"public_key,required"`
-	// '#/components/schemas/SSHKeySerializer/properties/shared_in_project'
-	// "$.components.schemas.SSHKeySerializer.properties.shared_in_project"
+	// SSH key will be visible to all users in the project
 	SharedInProject bool `json:"shared_in_project,required"`
-	// '#/components/schemas/SSHKeySerializer/properties/state'
-	// "$.components.schemas.SSHKeySerializer.properties.state"
+	// SSH key state
 	//
 	// Any of "ACTIVE", "DELETING".
 	State SSHKeyState `json:"state,required"`
@@ -201,8 +194,7 @@ func (r *SSHKey) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/SSHKeySerializer/properties/state'
-// "$.components.schemas.SSHKeySerializer.properties.state"
+// SSH key state
 type SSHKeyState string
 
 const (
@@ -210,35 +202,35 @@ const (
 	SSHKeyStateDeleting SSHKeyState = "DELETING"
 )
 
-// '#/components/schemas/CreatedSSHKeySerializer'
-// "$.components.schemas.CreatedSSHKeySerializer"
 type SSHKeyCreated struct {
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/id'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.id"
+	// SSH key ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/created_at'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.created_at"
+	// SSH key creation time
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/fingerprint'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.fingerprint"
+	// Fingerprint
 	Fingerprint string `json:"fingerprint,required"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/name'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.name"
+	// SSH key name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/private_key/anyOf/0'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.private_key.anyOf[0]"
+	// The private part of an SSH key is the confidential portion of the key pair. It
+	// should never be shared or exposed. This key is used to prove your identity when
+	// connecting to a server.
+	//
+	// If you omit the `public_key`, the platform will generate a key for you. The
+	// private_key will be returned **once** in the API response. Be sure to save it
+	// securely, as it cannot be retrieved again later.
+	//
+	// Best practice: Save the private key to a secure location on your machine (e.g.,
+	// `~/.ssh/id_ed25519`) and set the file permissions to be readable only by you.
 	PrivateKey string `json:"private_key,required"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/project_id'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/public_key'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.public_key"
+	// The public part of an SSH key is the shareable portion of an SSH key pair. It
+	// can be safely sent to servers or services to grant access. It does not contain
+	// sensitive information.
 	PublicKey string `json:"public_key,required"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/shared_in_project'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.shared_in_project"
+	// SSH key will be visible to all users in the project
 	SharedInProject bool `json:"shared_in_project,required"`
-	// '#/components/schemas/CreatedSSHKeySerializer/properties/state'
-	// "$.components.schemas.CreatedSSHKeySerializer.properties.state"
+	// SSH key state
 	//
 	// Any of "ACTIVE", "DELETING".
 	State SSHKeyCreatedState `json:"state,required"`
@@ -265,8 +257,7 @@ func (r *SSHKeyCreated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/CreatedSSHKeySerializer/properties/state'
-// "$.components.schemas.CreatedSSHKeySerializer.properties.state"
+// SSH key state
 type SSHKeyCreatedState string
 
 const (
@@ -275,17 +266,21 @@ const (
 )
 
 type SSHKeyNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/ssh_keys/{project_id}'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateSSHKeySerializer/properties/name'
-	// "$.components.schemas.CreateSSHKeySerializer.properties.name"
+	// SSH key name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateSSHKeySerializer/properties/public_key'
-	// "$.components.schemas.CreateSSHKeySerializer.properties.public_key"
+	// The public part of an SSH key is the shareable portion of an SSH key pair. It
+	// can be safely sent to servers or services to grant access. It does not contain
+	// sensitive information.
+	//
+	//   - If you’re uploading your own key, provide the public part here (usually found
+	//     in a file like `id_ed25519.pub`).
+	//   - If you want the platform to generate an Ed25519 key pair for you, leave this
+	//     field empty — the system will return the private key in the response **once
+	//     only**.
 	PublicKey param.Opt[string] `json:"public_key,omitzero"`
-	// '#/components/schemas/CreateSSHKeySerializer/properties/shared_in_project'
-	// "$.components.schemas.CreateSSHKeySerializer.properties.shared_in_project"
+	// SSH key is shared with all users in the project
 	SharedInProject param.Opt[bool] `json:"shared_in_project,omitzero"`
 	paramObj
 }
@@ -300,11 +295,9 @@ func (r SSHKeyNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type SSHKeyUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D%2F%7Bssh_key_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/ssh_keys/{project_id}/{ssh_key_id}'].patch.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/components/schemas/ShareSSHKeySerializer/properties/shared_in_project'
-	// "$.components.schemas.ShareSSHKeySerializer.properties.shared_in_project"
+	// Share your ssh key with all users in the project
 	SharedInProject bool `json:"shared_in_project,required"`
 	paramObj
 }
@@ -319,17 +312,13 @@ func (r SSHKeyUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type SSHKeyListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/ssh_keys/{project_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D/get/parameters/1'
-	// "$.paths['/cloud/v1/ssh_keys/{project_id}'].get.parameters[1]"
+	// Maximum number of SSH keys to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/ssh_keys/{project_id}'].get.parameters[2]"
+	// Offset for pagination
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/ssh_keys/{project_id}'].get.parameters[3]"
+	// Sort order for the SSH keys
 	//
 	// Any of "created_at.asc", "created_at.desc", "name.asc", "name.desc".
 	OrderBy SSHKeyListParamsOrderBy `query:"order_by,omitzero" json:"-"`
@@ -348,8 +337,7 @@ func (r SSHKeyListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D/get/parameters/3'
-// "$.paths['/cloud/v1/ssh_keys/{project_id}'].get.parameters[3]"
+// Sort order for the SSH keys
 type SSHKeyListParamsOrderBy string
 
 const (
@@ -360,8 +348,7 @@ const (
 )
 
 type SSHKeyDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D%2F%7Bssh_key_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/ssh_keys/{project_id}/{ssh_key_id}']['delete'].parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -371,8 +358,7 @@ type SSHKeyDeleteParams struct {
 func (f SSHKeyDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type SSHKeyGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fssh_keys%2F%7Bproject_id%7D%2F%7Bssh_key_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/ssh_keys/{project_id}/{ssh_key_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }

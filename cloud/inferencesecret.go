@@ -150,17 +150,12 @@ func (r *InferenceSecretService) Replace(ctx context.Context, secretName string,
 	return
 }
 
-// '#/components/schemas/InferenceBoxSecretsSerializer'
-// "$.components.schemas.InferenceBoxSecretsSerializer"
 type InferenceSecret struct {
-	// '#/components/schemas/InferenceBoxSecretsSerializer/properties/data'
-	// "$.components.schemas.InferenceBoxSecretsSerializer.properties.data"
+	// Secret data.
 	Data AwsIamData `json:"data,required"`
-	// '#/components/schemas/InferenceBoxSecretsSerializer/properties/name'
-	// "$.components.schemas.InferenceBoxSecretsSerializer.properties.name"
+	// Secret name.
 	Name string `json:"name,required"`
-	// '#/components/schemas/InferenceBoxSecretsSerializer/properties/type'
-	// "$.components.schemas.InferenceBoxSecretsSerializer.properties.type"
+	// Secret type.
 	Type string `json:"type,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -180,17 +175,13 @@ func (r *InferenceSecret) UnmarshalJSON(data []byte) error {
 }
 
 type InferenceSecretNewParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fsecrets/post/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/secrets'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/components/schemas/InferenceBoxSecretsInSerializer/properties/data'
-	// "$.components.schemas.InferenceBoxSecretsInSerializer.properties.data"
+	// Secret data.
 	Data AwsIamDataParam `json:"data,omitzero,required"`
-	// '#/components/schemas/InferenceBoxSecretsInSerializer/properties/name'
-	// "$.components.schemas.InferenceBoxSecretsInSerializer.properties.name"
+	// Secret name.
 	Name string `json:"name,required"`
-	// '#/components/schemas/InferenceBoxSecretsInSerializer/properties/type'
-	// "$.components.schemas.InferenceBoxSecretsInSerializer.properties.type"
+	// Secret type. Currently only `aws-iam` is supported.
 	Type string `json:"type,required"`
 	paramObj
 }
@@ -205,14 +196,12 @@ func (r InferenceSecretNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type InferenceSecretListParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fsecrets/get/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/secrets'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fsecrets/get/parameters/1'
-	// "$.paths['/cloud/v3/inference/{project_id}/secrets'].get.parameters[1]"
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fsecrets/get/parameters/2'
-	// "$.paths['/cloud/v3/inference/{project_id}/secrets'].get.parameters[2]"
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
@@ -231,8 +220,7 @@ func (r InferenceSecretListParams) URLQuery() (v url.Values, err error) {
 }
 
 type InferenceSecretDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fsecrets%2F%7Bsecret_name%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/secrets/{secret_name}']['delete'].parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -242,8 +230,7 @@ type InferenceSecretDeleteParams struct {
 func (f InferenceSecretDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type InferenceSecretGetParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fsecrets%2F%7Bsecret_name%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/secrets/{secret_name}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -253,14 +240,11 @@ type InferenceSecretGetParams struct {
 func (f InferenceSecretGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type InferenceSecretReplaceParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fsecrets%2F%7Bsecret_name%7D/put/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/secrets/{secret_name}'].put.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/components/schemas/InferenceSecretInUpdateSerializer/properties/data'
-	// "$.components.schemas.InferenceSecretInUpdateSerializer.properties.data"
+	// Secret data.
 	Data AwsIamDataParam `json:"data,omitzero,required"`
-	// '#/components/schemas/InferenceSecretInUpdateSerializer/properties/type'
-	// "$.components.schemas.InferenceSecretInUpdateSerializer.properties.type"
+	// Secret type.
 	Type string `json:"type,required"`
 	paramObj
 }

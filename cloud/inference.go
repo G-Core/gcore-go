@@ -50,13 +50,10 @@ func (r *InferenceService) GetCapacityByRegion(ctx context.Context, opts ...opti
 	return
 }
 
-// '#/components/schemas/AwsIamData' "$.components.schemas.AwsIamData"
 type AwsIamData struct {
-	// '#/components/schemas/AwsIamData/properties/aws_access_key_id'
-	// "$.components.schemas.AwsIamData.properties.aws_access_key_id"
+	// AWS IAM key ID.
 	AwsAccessKeyID string `json:"aws_access_key_id,required"`
-	// '#/components/schemas/AwsIamData/properties/aws_secret_access_key'
-	// "$.components.schemas.AwsIamData.properties.aws_secret_access_key"
+	// AWS IAM secret key.
 	AwsSecretAccessKey string `json:"aws_secret_access_key,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -83,15 +80,11 @@ func (r AwsIamData) ToParam() AwsIamDataParam {
 	return param.OverrideObj[AwsIamDataParam](r.RawJSON())
 }
 
-// '#/components/schemas/AwsIamData' "$.components.schemas.AwsIamData"
-//
 // The properties AwsAccessKeyID, AwsSecretAccessKey are required.
 type AwsIamDataParam struct {
-	// '#/components/schemas/AwsIamData/properties/aws_access_key_id'
-	// "$.components.schemas.AwsIamData.properties.aws_access_key_id"
+	// AWS IAM key ID.
 	AwsAccessKeyID string `json:"aws_access_key_id,required"`
-	// '#/components/schemas/AwsIamData/properties/aws_secret_access_key'
-	// "$.components.schemas.AwsIamData.properties.aws_secret_access_key"
+	// AWS IAM secret key.
 	AwsSecretAccessKey string `json:"aws_secret_access_key,required"`
 	paramObj
 }
@@ -104,14 +97,10 @@ func (r AwsIamDataParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CapacityDetailsSerializer'
-// "$.components.schemas.CapacityDetailsSerializer"
 type Capacity struct {
-	// '#/components/schemas/CapacityDetailsSerializer/properties/capacity'
-	// "$.components.schemas.CapacityDetailsSerializer.properties.capacity"
+	// Available capacity.
 	Capacity int64 `json:"capacity,required"`
-	// '#/components/schemas/CapacityDetailsSerializer/properties/flavor_name'
-	// "$.components.schemas.CapacityDetailsSerializer.properties.flavor_name"
+	// Flavor name.
 	FlavorName string `json:"flavor_name,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -129,32 +118,22 @@ func (r *Capacity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ContainerProbeOutSerializerV2'
-// "$.components.schemas.ContainerProbeOutSerializerV2"
 type ContainerProbe struct {
-	// '#/components/schemas/ContainerProbeOutSerializerV2/properties/exec/anyOf/0'
-	// "$.components.schemas.ContainerProbeOutSerializerV2.properties.exec.anyOf[0]"
+	// Exec probe configuration
 	Exec ContainerProbeExec `json:"exec,required"`
-	// '#/components/schemas/ContainerProbeOutSerializerV2/properties/failure_threshold'
-	// "$.components.schemas.ContainerProbeOutSerializerV2.properties.failure_threshold"
+	// The number of consecutive probe failures that mark the container as unhealthy.
 	FailureThreshold int64 `json:"failure_threshold,required"`
-	// '#/components/schemas/ContainerProbeOutSerializerV2/properties/http_get/anyOf/0'
-	// "$.components.schemas.ContainerProbeOutSerializerV2.properties.http_get.anyOf[0]"
+	// HTTP GET probe configuration
 	HTTPGet ContainerProbeHTTPGet `json:"http_get,required"`
-	// '#/components/schemas/ContainerProbeOutSerializerV2/properties/initial_delay_seconds'
-	// "$.components.schemas.ContainerProbeOutSerializerV2.properties.initial_delay_seconds"
+	// The initial delay before starting the first probe.
 	InitialDelaySeconds int64 `json:"initial_delay_seconds,required"`
-	// '#/components/schemas/ContainerProbeOutSerializerV2/properties/period_seconds'
-	// "$.components.schemas.ContainerProbeOutSerializerV2.properties.period_seconds"
+	// How often (in seconds) to perform the probe.
 	PeriodSeconds int64 `json:"period_seconds,required"`
-	// '#/components/schemas/ContainerProbeOutSerializerV2/properties/success_threshold'
-	// "$.components.schemas.ContainerProbeOutSerializerV2.properties.success_threshold"
+	// The number of consecutive successful probes that mark the container as healthy.
 	SuccessThreshold int64 `json:"success_threshold,required"`
-	// '#/components/schemas/ContainerProbeOutSerializerV2/properties/tcp_socket/anyOf/0'
-	// "$.components.schemas.ContainerProbeOutSerializerV2.properties.tcp_socket.anyOf[0]"
+	// TCP socket probe configuration
 	TcpSocket ContainerProbeTcpSocket `json:"tcp_socket,required"`
-	// '#/components/schemas/ContainerProbeOutSerializerV2/properties/timeout_seconds'
-	// "$.components.schemas.ContainerProbeOutSerializerV2.properties.timeout_seconds"
+	// The timeout for each probe.
 	TimeoutSeconds int64 `json:"timeout_seconds,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -178,14 +157,10 @@ func (r *ContainerProbe) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InferenceInstanceContainerProbeConfigurationOutSerializerV2'
-// "$.components.schemas.InferenceInstanceContainerProbeConfigurationOutSerializerV2"
 type ContainerProbeConfig struct {
-	// '#/components/schemas/InferenceInstanceContainerProbeConfigurationOutSerializerV2/properties/enabled'
-	// "$.components.schemas.InferenceInstanceContainerProbeConfigurationOutSerializerV2.properties.enabled"
+	// Whether the probe is enabled or not.
 	Enabled bool `json:"enabled,required"`
-	// '#/components/schemas/InferenceInstanceContainerProbeConfigurationOutSerializerV2/properties/probe/anyOf/0'
-	// "$.components.schemas.InferenceInstanceContainerProbeConfigurationOutSerializerV2.properties.probe.anyOf[0]"
+	// Probe configuration (exec, http_get or tcp_socket)
 	Probe ContainerProbe `json:"probe,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -203,16 +178,11 @@ func (r *ContainerProbeConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InferenceInstanceContainerProbeConfigurationSerializerV2'
-// "$.components.schemas.InferenceInstanceContainerProbeConfigurationSerializerV2"
-//
 // The property Enabled is required.
 type ContainerProbeConfigCreateParam struct {
-	// '#/components/schemas/InferenceInstanceContainerProbeConfigurationSerializerV2/properties/enabled'
-	// "$.components.schemas.InferenceInstanceContainerProbeConfigurationSerializerV2.properties.enabled"
+	// Whether the probe is enabled or not.
 	Enabled bool `json:"enabled,required"`
-	// '#/components/schemas/InferenceInstanceContainerProbeConfigurationSerializerV2/properties/probe/anyOf/0'
-	// "$.components.schemas.InferenceInstanceContainerProbeConfigurationSerializerV2.properties.probe.anyOf[0]"
+	// Probe configuration (exec, http_get or tcp_socket)
 	Probe ContainerProbeCreateParam `json:"probe,omitzero"`
 	paramObj
 }
@@ -225,32 +195,22 @@ func (r ContainerProbeConfigCreateParam) MarshalJSON() (data []byte, err error) 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerProbeSerializerV2'
-// "$.components.schemas.ContainerProbeSerializerV2"
 type ContainerProbeCreateParam struct {
-	// '#/components/schemas/ContainerProbeSerializerV2/properties/failure_threshold'
-	// "$.components.schemas.ContainerProbeSerializerV2.properties.failure_threshold"
+	// The number of consecutive probe failures that mark the container as unhealthy.
 	FailureThreshold param.Opt[int64] `json:"failure_threshold,omitzero"`
-	// '#/components/schemas/ContainerProbeSerializerV2/properties/initial_delay_seconds'
-	// "$.components.schemas.ContainerProbeSerializerV2.properties.initial_delay_seconds"
+	// The initial delay before starting the first probe.
 	InitialDelaySeconds param.Opt[int64] `json:"initial_delay_seconds,omitzero"`
-	// '#/components/schemas/ContainerProbeSerializerV2/properties/period_seconds'
-	// "$.components.schemas.ContainerProbeSerializerV2.properties.period_seconds"
+	// How often (in seconds) to perform the probe.
 	PeriodSeconds param.Opt[int64] `json:"period_seconds,omitzero"`
-	// '#/components/schemas/ContainerProbeSerializerV2/properties/success_threshold'
-	// "$.components.schemas.ContainerProbeSerializerV2.properties.success_threshold"
+	// The number of consecutive successful probes that mark the container as healthy.
 	SuccessThreshold param.Opt[int64] `json:"success_threshold,omitzero"`
-	// '#/components/schemas/ContainerProbeSerializerV2/properties/timeout_seconds'
-	// "$.components.schemas.ContainerProbeSerializerV2.properties.timeout_seconds"
+	// The timeout for each probe.
 	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
-	// '#/components/schemas/ContainerProbeSerializerV2/properties/exec/anyOf/0'
-	// "$.components.schemas.ContainerProbeSerializerV2.properties.exec.anyOf[0]"
+	// Exec probe configuration
 	Exec ContainerProbeExecCreateParam `json:"exec,omitzero"`
-	// '#/components/schemas/ContainerProbeSerializerV2/properties/http_get/anyOf/0'
-	// "$.components.schemas.ContainerProbeSerializerV2.properties.http_get.anyOf[0]"
+	// HTTP GET probe configuration
 	HTTPGet ContainerProbeHTTPGetCreateParam `json:"http_get,omitzero"`
-	// '#/components/schemas/ContainerProbeSerializerV2/properties/tcp_socket/anyOf/0'
-	// "$.components.schemas.ContainerProbeSerializerV2.properties.tcp_socket.anyOf[0]"
+	// TCP socket probe configuration
 	TcpSocket ContainerProbeTcpSocketCreateParam `json:"tcp_socket,omitzero"`
 	paramObj
 }
@@ -263,11 +223,8 @@ func (r ContainerProbeCreateParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerProbeExecConfigOutSerializerV2'
-// "$.components.schemas.ContainerProbeExecConfigOutSerializerV2"
 type ContainerProbeExec struct {
-	// '#/components/schemas/ContainerProbeExecConfigOutSerializerV2/properties/command'
-	// "$.components.schemas.ContainerProbeExecConfigOutSerializerV2.properties.command"
+	// Command to be executed inside the running container.
 	Command []string `json:"command,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -284,13 +241,9 @@ func (r *ContainerProbeExec) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ContainerProbeExecConfigSerializerV2'
-// "$.components.schemas.ContainerProbeExecConfigSerializerV2"
-//
 // The property Command is required.
 type ContainerProbeExecCreateParam struct {
-	// '#/components/schemas/ContainerProbeExecConfigSerializerV2/properties/command'
-	// "$.components.schemas.ContainerProbeExecConfigSerializerV2.properties.command"
+	// Command to be executed inside the running container.
 	Command []string `json:"command,omitzero,required"`
 	paramObj
 }
@@ -303,23 +256,16 @@ func (r ContainerProbeExecCreateParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerProbeHttpGetConfigOutSerializerV2'
-// "$.components.schemas.ContainerProbeHttpGetConfigOutSerializerV2"
 type ContainerProbeHTTPGet struct {
-	// '#/components/schemas/ContainerProbeHttpGetConfigOutSerializerV2/properties/headers'
-	// "$.components.schemas.ContainerProbeHttpGetConfigOutSerializerV2.properties.headers"
+	// HTTP headers to be sent with the request.
 	Headers map[string]string `json:"headers,required"`
-	// '#/components/schemas/ContainerProbeHttpGetConfigOutSerializerV2/properties/host/anyOf/0'
-	// "$.components.schemas.ContainerProbeHttpGetConfigOutSerializerV2.properties.host.anyOf[0]"
+	// Host name to send HTTP request to.
 	Host string `json:"host,required"`
-	// '#/components/schemas/ContainerProbeHttpGetConfigOutSerializerV2/properties/path'
-	// "$.components.schemas.ContainerProbeHttpGetConfigOutSerializerV2.properties.path"
+	// The endpoint to send the HTTP request to.
 	Path string `json:"path,required"`
-	// '#/components/schemas/ContainerProbeHttpGetConfigOutSerializerV2/properties/port'
-	// "$.components.schemas.ContainerProbeHttpGetConfigOutSerializerV2.properties.port"
+	// Port number the probe should connect to.
 	Port int64 `json:"port,required"`
-	// '#/components/schemas/ContainerProbeHttpGetConfigOutSerializerV2/properties/schema'
-	// "$.components.schemas.ContainerProbeHttpGetConfigOutSerializerV2.properties.schema"
+	// Schema to use for the HTTP request.
 	Schema string `json:"schema,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -340,25 +286,17 @@ func (r *ContainerProbeHTTPGet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ContainerProbeHttpGetConfigSerializerV2'
-// "$.components.schemas.ContainerProbeHttpGetConfigSerializerV2"
-//
 // The property Port is required.
 type ContainerProbeHTTPGetCreateParam struct {
-	// '#/components/schemas/ContainerProbeHttpGetConfigSerializerV2/properties/port'
-	// "$.components.schemas.ContainerProbeHttpGetConfigSerializerV2.properties.port"
+	// Port number the probe should connect to.
 	Port int64 `json:"port,required"`
-	// '#/components/schemas/ContainerProbeHttpGetConfigSerializerV2/properties/host/anyOf/0'
-	// "$.components.schemas.ContainerProbeHttpGetConfigSerializerV2.properties.host.anyOf[0]"
+	// Host name to send HTTP request to.
 	Host param.Opt[string] `json:"host,omitzero"`
-	// '#/components/schemas/ContainerProbeHttpGetConfigSerializerV2/properties/path'
-	// "$.components.schemas.ContainerProbeHttpGetConfigSerializerV2.properties.path"
+	// The endpoint to send the HTTP request to.
 	Path param.Opt[string] `json:"path,omitzero"`
-	// '#/components/schemas/ContainerProbeHttpGetConfigSerializerV2/properties/schema'
-	// "$.components.schemas.ContainerProbeHttpGetConfigSerializerV2.properties.schema"
+	// Schema to use for the HTTP request.
 	Schema param.Opt[string] `json:"schema,omitzero"`
-	// '#/components/schemas/ContainerProbeHttpGetConfigSerializerV2/properties/headers'
-	// "$.components.schemas.ContainerProbeHttpGetConfigSerializerV2.properties.headers"
+	// HTTP headers to be sent with the request.
 	Headers map[string]string `json:"headers,omitzero"`
 	paramObj
 }
@@ -371,11 +309,8 @@ func (r ContainerProbeHTTPGetCreateParam) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerProbeTcpSocketConfigOutSerializerV2'
-// "$.components.schemas.ContainerProbeTcpSocketConfigOutSerializerV2"
 type ContainerProbeTcpSocket struct {
-	// '#/components/schemas/ContainerProbeTcpSocketConfigOutSerializerV2/properties/port'
-	// "$.components.schemas.ContainerProbeTcpSocketConfigOutSerializerV2.properties.port"
+	// Port number to check if it's open.
 	Port int64 `json:"port,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -392,13 +327,9 @@ func (r *ContainerProbeTcpSocket) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ContainerProbeTcpSocketConfigSerializerV2'
-// "$.components.schemas.ContainerProbeTcpSocketConfigSerializerV2"
-//
 // The property Port is required.
 type ContainerProbeTcpSocketCreateParam struct {
-	// '#/components/schemas/ContainerProbeTcpSocketConfigSerializerV2/properties/port'
-	// "$.components.schemas.ContainerProbeTcpSocketConfigSerializerV2.properties.port"
+	// Port number to check if it's open.
 	Port int64 `json:"port,required"`
 	paramObj
 }
@@ -413,23 +344,16 @@ func (r ContainerProbeTcpSocketCreateParam) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleOutSerializerV3'
-// "$.components.schemas.ContainerScaleOutSerializerV3"
 type ContainerScale struct {
-	// '#/components/schemas/ContainerScaleOutSerializerV3/properties/cooldown_period/anyOf/0'
-	// "$.components.schemas.ContainerScaleOutSerializerV3.properties.cooldown_period.anyOf[0]"
+	// Cooldown period between scaling actions in seconds
 	CooldownPeriod int64 `json:"cooldown_period,required"`
-	// '#/components/schemas/ContainerScaleOutSerializerV3/properties/max'
-	// "$.components.schemas.ContainerScaleOutSerializerV3.properties.max"
+	// Maximum scale for the container
 	Max int64 `json:"max,required"`
-	// '#/components/schemas/ContainerScaleOutSerializerV3/properties/min'
-	// "$.components.schemas.ContainerScaleOutSerializerV3.properties.min"
+	// Minimum scale for the container
 	Min int64 `json:"min,required"`
-	// '#/components/schemas/ContainerScaleOutSerializerV3/properties/polling_interval/anyOf/0'
-	// "$.components.schemas.ContainerScaleOutSerializerV3.properties.polling_interval.anyOf[0]"
+	// Polling interval for scaling triggers in seconds
 	PollingInterval int64 `json:"polling_interval,required"`
-	// '#/components/schemas/ContainerScaleOutSerializerV3/properties/triggers'
-	// "$.components.schemas.ContainerScaleOutSerializerV3.properties.triggers"
+	// Triggers for scaling actions
 	Triggers ContainerScaleTriggers `json:"triggers,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -450,14 +374,10 @@ func (r *ContainerScale) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ContainerScaleTriggersRateOutSerializer'
-// "$.components.schemas.ContainerScaleTriggersRateOutSerializer"
 type ContainerScaleTriggerRate struct {
-	// '#/components/schemas/ContainerScaleTriggersRateOutSerializer/properties/rate'
-	// "$.components.schemas.ContainerScaleTriggersRateOutSerializer.properties.rate"
+	// Request count per 'window' seconds for the http trigger
 	Rate int64 `json:"rate,required"`
-	// '#/components/schemas/ContainerScaleTriggersRateOutSerializer/properties/window'
-	// "$.components.schemas.ContainerScaleTriggersRateOutSerializer.properties.window"
+	// Time window for rate calculation in seconds
 	Window int64 `json:"window,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -475,32 +395,22 @@ func (r *ContainerScaleTriggerRate) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ContainerScaleTriggersSqsOutSerializer'
-// "$.components.schemas.ContainerScaleTriggersSqsOutSerializer"
 type ContainerScaleTriggerSqs struct {
-	// '#/components/schemas/ContainerScaleTriggersSqsOutSerializer/properties/activation_queue_length'
-	// "$.components.schemas.ContainerScaleTriggersSqsOutSerializer.properties.activation_queue_length"
+	// Number of messages for activation
 	ActivationQueueLength int64 `json:"activation_queue_length,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsOutSerializer/properties/aws_endpoint/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSqsOutSerializer.properties.aws_endpoint.anyOf[0]"
+	// Custom AWS endpoint
 	AwsEndpoint string `json:"aws_endpoint,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsOutSerializer/properties/aws_region'
-	// "$.components.schemas.ContainerScaleTriggersSqsOutSerializer.properties.aws_region"
+	// AWS region
 	AwsRegion string `json:"aws_region,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsOutSerializer/properties/queue_length'
-	// "$.components.schemas.ContainerScaleTriggersSqsOutSerializer.properties.queue_length"
+	// Number of messages for one replica
 	QueueLength int64 `json:"queue_length,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsOutSerializer/properties/queue_url'
-	// "$.components.schemas.ContainerScaleTriggersSqsOutSerializer.properties.queue_url"
+	// SQS queue URL
 	QueueURL string `json:"queue_url,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsOutSerializer/properties/scale_on_delayed'
-	// "$.components.schemas.ContainerScaleTriggersSqsOutSerializer.properties.scale_on_delayed"
+	// Scale on delayed messages
 	ScaleOnDelayed bool `json:"scale_on_delayed,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsOutSerializer/properties/scale_on_flight'
-	// "$.components.schemas.ContainerScaleTriggersSqsOutSerializer.properties.scale_on_flight"
+	// Scale on in-flight messages
 	ScaleOnFlight bool `json:"scale_on_flight,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsOutSerializer/properties/secret_name'
-	// "$.components.schemas.ContainerScaleTriggersSqsOutSerializer.properties.secret_name"
+	// Auth secret name
 	SecretName string `json:"secret_name,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -524,11 +434,8 @@ func (r *ContainerScaleTriggerSqs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ContainerScaleTriggersThresholdOutSerializer'
-// "$.components.schemas.ContainerScaleTriggersThresholdOutSerializer"
 type ContainerScaleTriggerThreshold struct {
-	// '#/components/schemas/ContainerScaleTriggersThresholdOutSerializer/properties/threshold'
-	// "$.components.schemas.ContainerScaleTriggersThresholdOutSerializer.properties.threshold"
+	// Threshold value for the trigger in percentage
 	Threshold int64 `json:"threshold,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -545,26 +452,18 @@ func (r *ContainerScaleTriggerThreshold) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ContainerScaleTriggersOutSerializer'
-// "$.components.schemas.ContainerScaleTriggersOutSerializer"
 type ContainerScaleTriggers struct {
-	// '#/components/schemas/ContainerScaleTriggersOutSerializer/properties/cpu/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersOutSerializer.properties.cpu.anyOf[0]"
+	// CPU trigger configuration
 	CPU ContainerScaleTriggerThreshold `json:"cpu,required"`
-	// '#/components/schemas/ContainerScaleTriggersOutSerializer/properties/gpu_memory/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersOutSerializer.properties.gpu_memory.anyOf[0]"
+	// GPU memory trigger configuration. Calculated by DCGM_FI_DEV_MEM_COPY_UTIL metric
 	GPUMemory ContainerScaleTriggerThreshold `json:"gpu_memory,required"`
-	// '#/components/schemas/ContainerScaleTriggersOutSerializer/properties/gpu_utilization/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersOutSerializer.properties.gpu_utilization.anyOf[0]"
+	// GPU utilization trigger configuration. Calculated by DCGM_FI_DEV_GPU_UTIL metric
 	GPUUtilization ContainerScaleTriggerThreshold `json:"gpu_utilization,required"`
-	// '#/components/schemas/ContainerScaleTriggersOutSerializer/properties/http/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersOutSerializer.properties.http.anyOf[0]"
+	// HTTP trigger configuration
 	HTTP ContainerScaleTriggerRate `json:"http,required"`
-	// '#/components/schemas/ContainerScaleTriggersOutSerializer/properties/memory/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersOutSerializer.properties.memory.anyOf[0]"
+	// Memory trigger configuration
 	Memory ContainerScaleTriggerThreshold `json:"memory,required"`
-	// '#/components/schemas/ContainerScaleTriggersOutSerializer/properties/sqs/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersOutSerializer.properties.sqs.anyOf[0]"
+	// SQS trigger configuration
 	Sqs ContainerScaleTriggerSqs `json:"sqs,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -586,14 +485,10 @@ func (r *ContainerScaleTriggers) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/DeployStatusSerializer'
-// "$.components.schemas.DeployStatusSerializer"
 type DeployStatus struct {
-	// '#/components/schemas/DeployStatusSerializer/properties/ready'
-	// "$.components.schemas.DeployStatusSerializer.properties.ready"
+	// Number of ready instances
 	Ready int64 `json:"ready,required"`
-	// '#/components/schemas/DeployStatusSerializer/properties/total'
-	// "$.components.schemas.DeployStatusSerializer.properties.total"
+	// Total number of instances
 	Total int64 `json:"total,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -611,17 +506,12 @@ func (r *DeployStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InferenceInstanceProbesOutSerializerV2'
-// "$.components.schemas.InferenceInstanceProbesOutSerializerV2"
 type InferenceProbes struct {
-	// '#/components/schemas/InferenceInstanceProbesOutSerializerV2/properties/liveness_probe/anyOf/0'
-	// "$.components.schemas.InferenceInstanceProbesOutSerializerV2.properties.liveness_probe.anyOf[0]"
+	// Liveness probe configuration
 	LivenessProbe ContainerProbeConfig `json:"liveness_probe,required"`
-	// '#/components/schemas/InferenceInstanceProbesOutSerializerV2/properties/readiness_probe/anyOf/0'
-	// "$.components.schemas.InferenceInstanceProbesOutSerializerV2.properties.readiness_probe.anyOf[0]"
+	// Readiness probe configuration
 	ReadinessProbe ContainerProbeConfig `json:"readiness_probe,required"`
-	// '#/components/schemas/InferenceInstanceProbesOutSerializerV2/properties/startup_probe/anyOf/0'
-	// "$.components.schemas.InferenceInstanceProbesOutSerializerV2.properties.startup_probe.anyOf[0]"
+	// Startup probe configuration
 	StartupProbe ContainerProbeConfig `json:"startup_probe,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -640,11 +530,12 @@ func (r *InferenceProbes) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/IngressOptsSerializer'
-// "$.components.schemas.IngressOptsSerializer"
 type IngressOptsParam struct {
-	// '#/components/schemas/IngressOptsSerializer/properties/disable_response_buffering'
-	// "$.components.schemas.IngressOptsSerializer.properties.disable_response_buffering"
+	// Disable response buffering if true. A client usually has a much slower
+	// connection and can not consume the response data as fast as it is produced by an
+	// upstream application. Ingress tries to buffer the whole response in order to
+	// release the upstream application as soon as possible.By default, the response
+	// buffering is enabled.
 	DisableResponseBuffering param.Opt[bool] `json:"disable_response_buffering,omitzero"`
 	paramObj
 }
@@ -657,11 +548,12 @@ func (r IngressOptsParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/IngressOptsOutSerializer'
-// "$.components.schemas.IngressOptsOutSerializer"
 type IngressOptsOut struct {
-	// '#/components/schemas/IngressOptsOutSerializer/properties/disable_response_buffering'
-	// "$.components.schemas.IngressOptsOutSerializer.properties.disable_response_buffering"
+	// Disable response buffering if true. A client usually has a much slower
+	// connection and can not consume the response data as fast as it is produced by an
+	// upstream application. Ingress tries to buffer the whole response in order to
+	// release the upstream application as soon as possible.By default, the response
+	// buffering is enabled.
 	DisableResponseBuffering bool `json:"disable_response_buffering,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -678,14 +570,10 @@ func (r *IngressOptsOut) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/RegionCapacityOutSerializerV3'
-// "$.components.schemas.RegionCapacityOutSerializerV3"
 type RegionCapacity struct {
-	// '#/components/schemas/RegionCapacityOutSerializerV3/properties/capacity'
-	// "$.components.schemas.RegionCapacityOutSerializerV3.properties.capacity"
+	// List of capacities by flavor.
 	Capacity []Capacity `json:"capacity,required"`
-	// '#/components/schemas/RegionCapacityOutSerializerV3/properties/region_id'
-	// "$.components.schemas.RegionCapacityOutSerializerV3.properties.region_id"
+	// Region ID.
 	RegionID int64 `json:"region_id,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -703,14 +591,10 @@ func (r *RegionCapacity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/RegionCapacityOutSerializerV3List'
-// "$.components.schemas.RegionCapacityOutSerializerV3List"
 type RegionCapacityList struct {
-	// '#/components/schemas/RegionCapacityOutSerializerV3List/properties/count'
-	// "$.components.schemas.RegionCapacityOutSerializerV3List.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/RegionCapacityOutSerializerV3List/properties/results'
-	// "$.components.schemas.RegionCapacityOutSerializerV3List.properties.results"
+	// Objects
 	Results []RegionCapacity `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.

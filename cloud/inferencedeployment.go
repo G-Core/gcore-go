@@ -231,23 +231,16 @@ func (r *InferenceDeploymentService) Stop(ctx context.Context, deploymentName st
 	return
 }
 
-// '#/components/schemas/ContainerOutSerializerV3'
-// "$.components.schemas.ContainerOutSerializerV3"
 type Container struct {
-	// '#/components/schemas/ContainerOutSerializerV3/properties/address/anyOf/0'
-	// "$.components.schemas.ContainerOutSerializerV3.properties.address.anyOf[0]"
+	// Address of the inference instance
 	Address string `json:"address,required" format:"uri"`
-	// '#/components/schemas/ContainerOutSerializerV3/properties/deploy_status'
-	// "$.components.schemas.ContainerOutSerializerV3.properties.deploy_status"
+	// Status of the containers deployment
 	DeployStatus DeployStatus `json:"deploy_status,required"`
-	// '#/components/schemas/ContainerOutSerializerV3/properties/error_message/anyOf/0'
-	// "$.components.schemas.ContainerOutSerializerV3.properties.error_message.anyOf[0]"
+	// Error message if the container deployment failed
 	ErrorMessage string `json:"error_message,required"`
-	// '#/components/schemas/ContainerOutSerializerV3/properties/region_id'
-	// "$.components.schemas.ContainerOutSerializerV3.properties.region_id"
+	// Region name for the container
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/ContainerOutSerializerV3/properties/scale'
-	// "$.components.schemas.ContainerOutSerializerV3.properties.scale"
+	// Scale for the container
 	Scale ContainerScale `json:"scale,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -268,64 +261,64 @@ func (r *Container) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InferenceInstanceOutSerializerV3'
-// "$.components.schemas.InferenceInstanceOutSerializerV3"
 type Inference struct {
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/address/anyOf/0'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.address.anyOf[0]"
+	// Address of the inference instance
 	Address string `json:"address,required" format:"uri"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/auth_enabled'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.auth_enabled"
+	// `true` if instance uses API key authentication.
+	// `"Authorization": "Bearer *****"` or `"X-Api-Key": "*****"` header is required
+	// for the requests to the instance if enabled.
 	AuthEnabled bool `json:"auth_enabled,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/command/anyOf/0'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.command.anyOf[0]"
+	// Command to be executed when running a container from an image.
 	Command string `json:"command,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/containers'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.containers"
+	// List of containers for the inference instance
 	Containers []Container `json:"containers,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/created_at/anyOf/0'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.created_at.anyOf[0]"
+	// Inference instance creation date in ISO 8601 format.
 	CreatedAt string `json:"created_at,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/credentials_name'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.credentials_name"
+	// Registry credentials name
 	CredentialsName string `json:"credentials_name,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/description'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.description"
+	// Inference instance description.
 	Description string `json:"description,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/envs/anyOf/0'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.envs.anyOf[0]"
+	// Environment variables for the inference instance
 	Envs map[string]string `json:"envs,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/flavor_name'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.flavor_name"
+	// Flavor name for the inference instance
 	FlavorName string `json:"flavor_name,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/image'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.image"
+	// Docker image for the inference instance. This field should contain the image
+	// name and tag in the format 'name:tag', e.g., 'nginx:latest'. It defaults to
+	// Docker Hub as the image registry, but any accessible Docker image URL can be
+	// specified.
 	Image string `json:"image,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/ingress_opts/anyOf/0'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.ingress_opts.anyOf[0]"
+	// Ingress options for the inference instance
 	IngressOpts IngressOptsOut `json:"ingress_opts,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/listening_port'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.listening_port"
+	// Listening port for the inference instance.
 	ListeningPort int64 `json:"listening_port,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/logging/anyOf/0'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.logging.anyOf[0]"
+	// Logging configuration for the inference instance
 	Logging Logging `json:"logging,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/name'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.name"
+	// Inference instance name.
 	Name string `json:"name,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/probes/anyOf/0'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.probes.anyOf[0]"
+	// Probes configured for all containers of the inference instance.
 	Probes InferenceProbes `json:"probes,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/project_id'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.project_id"
+	// Project ID. If not provided, your default project ID will be used.
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/status'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.status"
+	// Inference instance status.
+	//
+	// Value can be one of the following:
+	//
+	//   - `DEPLOYING` - The instance is being deployed. Containers are not yet created.
+	//   - `PARTIALLYDEPLOYED` - All containers have been created, but some may not be
+	//     ready yet. Instances stuck in this state typically indicate either image being
+	//     pulled, or a failure of some kind. In the latter case, the `error_message`
+	//     field of the respective container object in the `containers` collection
+	//     explains the failure reason.
+	//   - `ACTIVE` - The instance is running and ready to accept requests.
+	//   - `DISABLED` - The instance is disabled and not accepting any requests.
+	//   - `DELETING` - The instance is being deleted.
 	//
 	// Any of "ACTIVE", "DELETING", "DEPLOYING", "DISABLED", "PARTIALLYDEPLOYED".
 	Status InferenceStatus `json:"status,required"`
-	// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/timeout/anyOf/0'
-	// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.timeout.anyOf[0]"
+	// Specifies the duration in seconds without any requests after which the
+	// containers will be downscaled to their minimum scale value as defined by
+	// `scale.min`. If set, this helps in optimizing resource usage by reducing the
+	// number of container instances during periods of inactivity.
 	Timeout int64 `json:"timeout,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -359,8 +352,19 @@ func (r *Inference) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InferenceInstanceOutSerializerV3/properties/status'
-// "$.components.schemas.InferenceInstanceOutSerializerV3.properties.status"
+// Inference instance status.
+//
+// Value can be one of the following:
+//
+//   - `DEPLOYING` - The instance is being deployed. Containers are not yet created.
+//   - `PARTIALLYDEPLOYED` - All containers have been created, but some may not be
+//     ready yet. Instances stuck in this state typically indicate either image being
+//     pulled, or a failure of some kind. In the latter case, the `error_message`
+//     field of the respective container object in the `containers` collection
+//     explains the failure reason.
+//   - `ACTIVE` - The instance is running and ready to accept requests.
+//   - `DISABLED` - The instance is disabled and not accepting any requests.
+//   - `DELETING` - The instance is being deleted.
 type InferenceStatus string
 
 const (
@@ -371,14 +375,10 @@ const (
 	InferenceStatusPartiallydeployed InferenceStatus = "PARTIALLYDEPLOYED"
 )
 
-// '#/components/schemas/InferenceInstanceApikeySecretSerializerV3'
-// "$.components.schemas.InferenceInstanceApikeySecretSerializerV3"
 type InferenceApikeySecret struct {
-	// '#/components/schemas/InferenceInstanceApikeySecretSerializerV3/properties/secret'
-	// "$.components.schemas.InferenceInstanceApikeySecretSerializerV3.properties.secret"
+	// API key secret
 	Secret string `json:"secret,required"`
-	// '#/components/schemas/InferenceInstanceApikeySecretSerializerV3/properties/status'
-	// "$.components.schemas.InferenceInstanceApikeySecretSerializerV3.properties.status"
+	// API key status
 	//
 	// Any of "PENDING", "READY".
 	Status InferenceApikeySecretStatus `json:"status,required"`
@@ -398,8 +398,7 @@ func (r *InferenceApikeySecret) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InferenceInstanceApikeySecretSerializerV3/properties/status'
-// "$.components.schemas.InferenceInstanceApikeySecretSerializerV3.properties.status"
+// API key status
 type InferenceApikeySecretStatus string
 
 const (
@@ -407,20 +406,14 @@ const (
 	InferenceApikeySecretStatusReady   InferenceApikeySecretStatus = "READY"
 )
 
-// '#/components/schemas/InferenceInstanceLogSerializerV3'
-// "$.components.schemas.InferenceInstanceLogSerializerV3"
 type InferenceLog struct {
-	// '#/components/schemas/InferenceInstanceLogSerializerV3/properties/message'
-	// "$.components.schemas.InferenceInstanceLogSerializerV3.properties.message"
+	// Log message.
 	Message string `json:"message,required"`
-	// '#/components/schemas/InferenceInstanceLogSerializerV3/properties/pod'
-	// "$.components.schemas.InferenceInstanceLogSerializerV3.properties.pod"
+	// Pod name.
 	Pod string `json:"pod,required"`
-	// '#/components/schemas/InferenceInstanceLogSerializerV3/properties/region_id'
-	// "$.components.schemas.InferenceInstanceLogSerializerV3.properties.region_id"
+	// Region ID where the container is deployed.
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/InferenceInstanceLogSerializerV3/properties/time'
-	// "$.components.schemas.InferenceInstanceLogSerializerV3.properties.time"
+	// Log message timestamp in ISO 8601 format.
 	Time time.Time `json:"time,required" format:"date-time"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -441,50 +434,46 @@ func (r *InferenceLog) UnmarshalJSON(data []byte) error {
 }
 
 type InferenceDeploymentNewParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments/post/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/containers'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.containers"
+	// List of containers for the inference instance.
 	Containers []InferenceDeploymentNewParamsContainer `json:"containers,omitzero,required"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/flavor_name'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.flavor_name"
+	// Flavor name for the inference instance.
 	FlavorName string `json:"flavor_name,required"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/image'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.image"
+	// Docker image for the inference instance. This field should contain the image
+	// name and tag in the format 'name:tag', e.g., 'nginx:latest'. It defaults to
+	// Docker Hub as the image registry, but any accessible Docker image URL can be
+	// specified.
 	Image string `json:"image,required"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/listening_port'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.listening_port"
+	// Listening port for the inference instance.
 	ListeningPort int64 `json:"listening_port,required"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/name'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.name"
+	// Inference instance name.
 	Name string `json:"name,required"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/credentials_name/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.credentials_name.anyOf[0]"
+	// Registry credentials name
 	CredentialsName param.Opt[string] `json:"credentials_name,omitzero"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/description/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.description.anyOf[0]"
+	// Inference instance description.
 	Description param.Opt[string] `json:"description,omitzero"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/timeout/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.timeout.anyOf[0]"
+	// Specifies the duration in seconds without any requests after which the
+	// containers will be downscaled to their minimum scale value as defined by
+	// `scale.min`. If set, this helps in optimizing resource usage by reducing the
+	// number of container instances during periods of inactivity. The default value
+	// when the parameter is not set is 120.
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/auth_enabled'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.auth_enabled"
+	// Set to `true` to enable API key authentication for the inference instance.
+	// `"Authorization": "Bearer *****"` or `"X-Api-Key": "*****"` header is required
+	// for the requests to the instance if enabled
 	AuthEnabled param.Opt[bool] `json:"auth_enabled,omitzero"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/command/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.command.anyOf[0]"
+	// Command to be executed when running a container from an image.
 	Command []string `json:"command,omitzero"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/logging/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.logging.anyOf[0]"
+	// Logging configuration for the inference instance
 	Logging InferenceDeploymentNewParamsLogging `json:"logging,omitzero"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/probes/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.probes.anyOf[0]"
+	// Probes configured for all containers of the inference instance. If probes are
+	// not provided, and the image_name is from a the Model Catalog registry, the
+	// default probes will be used.
 	Probes InferenceDeploymentNewParamsProbes `json:"probes,omitzero"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/envs'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.envs"
+	// Environment variables for the inference instance.
 	Envs map[string]string `json:"envs,omitzero"`
-	// '#/components/schemas/InferenceInstanceInSerializerV3/properties/ingress_opts/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInSerializerV3.properties.ingress_opts.anyOf[0]"
+	// Ingress options for the inference instance
 	IngressOpts IngressOptsParam `json:"ingress_opts,omitzero"`
 	paramObj
 }
@@ -498,16 +487,11 @@ func (r InferenceDeploymentNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/InferenceInstanceInSerializerV3/properties/containers/items'
-// "$.components.schemas.InferenceInstanceInSerializerV3.properties.containers.items"
-//
 // The properties RegionID, Scale are required.
 type InferenceDeploymentNewParamsContainer struct {
-	// '#/components/schemas/ContainerInSerializerV3/properties/region_id'
-	// "$.components.schemas.ContainerInSerializerV3.properties.region_id"
+	// Region id for the container
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/ContainerInSerializerV3/properties/scale'
-	// "$.components.schemas.ContainerInSerializerV3.properties.scale"
+	// Scale for the container
 	Scale InferenceDeploymentNewParamsContainerScale `json:"scale,omitzero,required"`
 	paramObj
 }
@@ -522,25 +506,19 @@ func (r InferenceDeploymentNewParamsContainer) MarshalJSON() (data []byte, err e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerInSerializerV3/properties/scale'
-// "$.components.schemas.ContainerInSerializerV3.properties.scale"
+// Scale for the container
 //
 // The properties Max, Min are required.
 type InferenceDeploymentNewParamsContainerScale struct {
-	// '#/components/schemas/ContainerScaleSerializerV3/properties/max'
-	// "$.components.schemas.ContainerScaleSerializerV3.properties.max"
+	// Maximum scale for the container
 	Max int64 `json:"max,required"`
-	// '#/components/schemas/ContainerScaleSerializerV3/properties/min'
-	// "$.components.schemas.ContainerScaleSerializerV3.properties.min"
+	// Minimum scale for the container
 	Min int64 `json:"min,required"`
-	// '#/components/schemas/ContainerScaleSerializerV3/properties/cooldown_period/anyOf/0'
-	// "$.components.schemas.ContainerScaleSerializerV3.properties.cooldown_period.anyOf[0]"
+	// Cooldown period between scaling actions in seconds
 	CooldownPeriod param.Opt[int64] `json:"cooldown_period,omitzero"`
-	// '#/components/schemas/ContainerScaleSerializerV3/properties/polling_interval/anyOf/0'
-	// "$.components.schemas.ContainerScaleSerializerV3.properties.polling_interval.anyOf[0]"
+	// Polling interval for scaling triggers in seconds
 	PollingInterval param.Opt[int64] `json:"polling_interval,omitzero"`
-	// '#/components/schemas/ContainerScaleSerializerV3/properties/triggers'
-	// "$.components.schemas.ContainerScaleSerializerV3.properties.triggers"
+	// Triggers for scaling actions
 	Triggers InferenceDeploymentNewParamsContainerScaleTriggers `json:"triggers,omitzero"`
 	paramObj
 }
@@ -555,26 +533,19 @@ func (r InferenceDeploymentNewParamsContainerScale) MarshalJSON() (data []byte, 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleSerializerV3/properties/triggers'
-// "$.components.schemas.ContainerScaleSerializerV3.properties.triggers"
+// Triggers for scaling actions
 type InferenceDeploymentNewParamsContainerScaleTriggers struct {
-	// '#/components/schemas/ContainerScaleTriggersSerializer/properties/cpu/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSerializer.properties.cpu.anyOf[0]"
+	// CPU trigger configuration
 	CPU InferenceDeploymentNewParamsContainerScaleTriggersCPU `json:"cpu,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSerializer/properties/gpu_memory/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSerializer.properties.gpu_memory.anyOf[0]"
+	// GPU memory trigger configuration. Calculated by DCGM_FI_DEV_MEM_COPY_UTIL metric
 	GPUMemory InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory `json:"gpu_memory,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSerializer/properties/gpu_utilization/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSerializer.properties.gpu_utilization.anyOf[0]"
+	// GPU utilization trigger configuration. Calculated by DCGM_FI_DEV_GPU_UTIL metric
 	GPUUtilization InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization `json:"gpu_utilization,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSerializer/properties/http/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSerializer.properties.http.anyOf[0]"
+	// HTTP trigger configuration
 	HTTP InferenceDeploymentNewParamsContainerScaleTriggersHTTP `json:"http,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSerializer/properties/memory/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSerializer.properties.memory.anyOf[0]"
+	// Memory trigger configuration
 	Memory InferenceDeploymentNewParamsContainerScaleTriggersMemory `json:"memory,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSerializer/properties/sqs/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSerializer.properties.sqs.anyOf[0]"
+	// SQS trigger configuration
 	Sqs InferenceDeploymentNewParamsContainerScaleTriggersSqs `json:"sqs,omitzero"`
 	paramObj
 }
@@ -589,13 +560,11 @@ func (r InferenceDeploymentNewParamsContainerScaleTriggers) MarshalJSON() (data 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleTriggersSerializer/properties/cpu/anyOf/0'
-// "$.components.schemas.ContainerScaleTriggersSerializer.properties.cpu.anyOf[0]"
+// CPU trigger configuration
 //
 // The property Threshold is required.
 type InferenceDeploymentNewParamsContainerScaleTriggersCPU struct {
-	// '#/components/schemas/ContainerScaleTriggersThresholdSerializer/properties/threshold'
-	// "$.components.schemas.ContainerScaleTriggersThresholdSerializer.properties.threshold"
+	// Threshold value for the trigger in percentage
 	Threshold int64 `json:"threshold,required"`
 	paramObj
 }
@@ -610,13 +579,11 @@ func (r InferenceDeploymentNewParamsContainerScaleTriggersCPU) MarshalJSON() (da
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleTriggersSerializer/properties/gpu_memory/anyOf/0'
-// "$.components.schemas.ContainerScaleTriggersSerializer.properties.gpu_memory.anyOf[0]"
+// GPU memory trigger configuration. Calculated by DCGM_FI_DEV_MEM_COPY_UTIL metric
 //
 // The property Threshold is required.
 type InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory struct {
-	// '#/components/schemas/ContainerScaleTriggersThresholdSerializer/properties/threshold'
-	// "$.components.schemas.ContainerScaleTriggersThresholdSerializer.properties.threshold"
+	// Threshold value for the trigger in percentage
 	Threshold int64 `json:"threshold,required"`
 	paramObj
 }
@@ -631,13 +598,11 @@ func (r InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory) MarshalJSON
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleTriggersSerializer/properties/gpu_utilization/anyOf/0'
-// "$.components.schemas.ContainerScaleTriggersSerializer.properties.gpu_utilization.anyOf[0]"
+// GPU utilization trigger configuration. Calculated by DCGM_FI_DEV_GPU_UTIL metric
 //
 // The property Threshold is required.
 type InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization struct {
-	// '#/components/schemas/ContainerScaleTriggersThresholdSerializer/properties/threshold'
-	// "$.components.schemas.ContainerScaleTriggersThresholdSerializer.properties.threshold"
+	// Threshold value for the trigger in percentage
 	Threshold int64 `json:"threshold,required"`
 	paramObj
 }
@@ -652,16 +617,13 @@ func (r InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization) Marsha
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleTriggersSerializer/properties/http/anyOf/0'
-// "$.components.schemas.ContainerScaleTriggersSerializer.properties.http.anyOf[0]"
+// HTTP trigger configuration
 //
 // The properties Rate, Window are required.
 type InferenceDeploymentNewParamsContainerScaleTriggersHTTP struct {
-	// '#/components/schemas/ContainerScaleTriggersRateSerializer/properties/rate'
-	// "$.components.schemas.ContainerScaleTriggersRateSerializer.properties.rate"
+	// Request count per 'window' seconds for the http trigger
 	Rate int64 `json:"rate,required"`
-	// '#/components/schemas/ContainerScaleTriggersRateSerializer/properties/window'
-	// "$.components.schemas.ContainerScaleTriggersRateSerializer.properties.window"
+	// Time window for rate calculation in seconds
 	Window int64 `json:"window,required"`
 	paramObj
 }
@@ -676,13 +638,11 @@ func (r InferenceDeploymentNewParamsContainerScaleTriggersHTTP) MarshalJSON() (d
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleTriggersSerializer/properties/memory/anyOf/0'
-// "$.components.schemas.ContainerScaleTriggersSerializer.properties.memory.anyOf[0]"
+// Memory trigger configuration
 //
 // The property Threshold is required.
 type InferenceDeploymentNewParamsContainerScaleTriggersMemory struct {
-	// '#/components/schemas/ContainerScaleTriggersThresholdSerializer/properties/threshold'
-	// "$.components.schemas.ContainerScaleTriggersThresholdSerializer.properties.threshold"
+	// Threshold value for the trigger in percentage
 	Threshold int64 `json:"threshold,required"`
 	paramObj
 }
@@ -697,35 +657,26 @@ func (r InferenceDeploymentNewParamsContainerScaleTriggersMemory) MarshalJSON() 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleTriggersSerializer/properties/sqs/anyOf/0'
-// "$.components.schemas.ContainerScaleTriggersSerializer.properties.sqs.anyOf[0]"
+// SQS trigger configuration
 //
 // The properties ActivationQueueLength, AwsRegion, QueueLength, QueueURL,
 // SecretName are required.
 type InferenceDeploymentNewParamsContainerScaleTriggersSqs struct {
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/activation_queue_length'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.activation_queue_length"
+	// Number of messages for activation
 	ActivationQueueLength int64 `json:"activation_queue_length,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/aws_region'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.aws_region"
+	// AWS region
 	AwsRegion string `json:"aws_region,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/queue_length'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.queue_length"
+	// Number of messages for one replica
 	QueueLength int64 `json:"queue_length,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/queue_url'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.queue_url"
+	// SQS queue URL
 	QueueURL string `json:"queue_url,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/secret_name'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.secret_name"
+	// Auth secret name
 	SecretName string `json:"secret_name,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/aws_endpoint/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.aws_endpoint.anyOf[0]"
+	// Custom AWS endpoint
 	AwsEndpoint param.Opt[string] `json:"aws_endpoint,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/scale_on_delayed'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.scale_on_delayed"
+	// Scale on delayed messages
 	ScaleOnDelayed param.Opt[bool] `json:"scale_on_delayed,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/scale_on_flight'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.scale_on_flight"
+	// Scale on in-flight messages
 	ScaleOnFlight param.Opt[bool] `json:"scale_on_flight,omitzero"`
 	paramObj
 }
@@ -740,20 +691,15 @@ func (r InferenceDeploymentNewParamsContainerScaleTriggersSqs) MarshalJSON() (da
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/InferenceInstanceInSerializerV3/properties/logging/anyOf/0'
-// "$.components.schemas.InferenceInstanceInSerializerV3.properties.logging.anyOf[0]"
+// Logging configuration for the inference instance
 type InferenceDeploymentNewParamsLogging struct {
-	// '#/components/schemas/LoggingInSerializer/properties/destination_region_id/anyOf/0'
-	// "$.components.schemas.LoggingInSerializer.properties.destination_region_id.anyOf[0]"
+	// ID of the region in which the logs will be stored
 	DestinationRegionID param.Opt[int64] `json:"destination_region_id,omitzero"`
-	// '#/components/schemas/LoggingInSerializer/properties/topic_name/anyOf/0'
-	// "$.components.schemas.LoggingInSerializer.properties.topic_name.anyOf[0]"
+	// The topic name to stream logs to
 	TopicName param.Opt[string] `json:"topic_name,omitzero"`
-	// '#/components/schemas/LoggingInSerializer/properties/enabled'
-	// "$.components.schemas.LoggingInSerializer.properties.enabled"
+	// Enable or disable log streaming
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// '#/components/schemas/LoggingInSerializer/properties/retention_policy/anyOf/0'
-	// "$.components.schemas.LoggingInSerializer.properties.retention_policy.anyOf[0]"
+	// Logs retention policy
 	RetentionPolicy LaasIndexRetentionPolicyParam `json:"retention_policy,omitzero"`
 	paramObj
 }
@@ -768,17 +714,15 @@ func (r InferenceDeploymentNewParamsLogging) MarshalJSON() (data []byte, err err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/InferenceInstanceInSerializerV3/properties/probes/anyOf/0'
-// "$.components.schemas.InferenceInstanceInSerializerV3.properties.probes.anyOf[0]"
+// Probes configured for all containers of the inference instance. If probes are
+// not provided, and the image_name is from a the Model Catalog registry, the
+// default probes will be used.
 type InferenceDeploymentNewParamsProbes struct {
-	// '#/components/schemas/InferenceInstanceProbesSerializerV2/properties/liveness_probe/anyOf/0'
-	// "$.components.schemas.InferenceInstanceProbesSerializerV2.properties.liveness_probe.anyOf[0]"
+	// Liveness probe configuration
 	LivenessProbe ContainerProbeConfigCreateParam `json:"liveness_probe,omitzero"`
-	// '#/components/schemas/InferenceInstanceProbesSerializerV2/properties/readiness_probe/anyOf/0'
-	// "$.components.schemas.InferenceInstanceProbesSerializerV2.properties.readiness_probe.anyOf[0]"
+	// Readiness probe configuration
 	ReadinessProbe ContainerProbeConfigCreateParam `json:"readiness_probe,omitzero"`
-	// '#/components/schemas/InferenceInstanceProbesSerializerV2/properties/startup_probe/anyOf/0'
-	// "$.components.schemas.InferenceInstanceProbesSerializerV2.properties.startup_probe.anyOf[0]"
+	// Startup probe configuration
 	StartupProbe ContainerProbeConfigCreateParam `json:"startup_probe,omitzero"`
 	paramObj
 }
@@ -794,47 +738,42 @@ func (r InferenceDeploymentNewParamsProbes) MarshalJSON() (data []byte, err erro
 }
 
 type InferenceDeploymentUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments%2F%7Bdeployment_name%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments/{deployment_name}'].patch.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/auth_enabled/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.auth_enabled.anyOf[0]"
+	// Set to `true` to enable API key authentication for the inference instance.
+	// `"Authorization": "Bearer *****"` or `"X-Api-Key": "*****"` header is required
+	// for the requests to the instance if enabled
 	AuthEnabled param.Opt[bool] `json:"auth_enabled,omitzero"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/credentials_name/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.credentials_name.anyOf[0]"
+	// Registry credentials name
 	CredentialsName param.Opt[string] `json:"credentials_name,omitzero"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/description/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.description.anyOf[0]"
+	// Inference instance description.
 	Description param.Opt[string] `json:"description,omitzero"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/flavor_name/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.flavor_name.anyOf[0]"
+	// Flavor name for the inference instance.
 	FlavorName param.Opt[string] `json:"flavor_name,omitzero"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/image/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.image.anyOf[0]"
+	// Docker image for the inference instance. This field should contain the image
+	// name and tag in the format 'name:tag', e.g., 'nginx:latest'. It defaults to
+	// Docker Hub as the image registry, but any accessible Docker image URL can be
+	// specified.
 	Image param.Opt[string] `json:"image,omitzero"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/listening_port/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.listening_port.anyOf[0]"
+	// Listening port for the inference instance.
 	ListeningPort param.Opt[int64] `json:"listening_port,omitzero"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/timeout/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.timeout.anyOf[0]"
+	// Specifies the duration in seconds without any requests after which the
+	// containers will be downscaled to their minimum scale value as defined by
+	// `scale.min`. If set, this helps in optimizing resource usage by reducing the
+	// number of container instances during periods of inactivity. The default value
+	// when the parameter is not set is 120.
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/command/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.command.anyOf[0]"
+	// Command to be executed when running a container from an image.
 	Command []string `json:"command,omitzero"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/containers/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.containers.anyOf[0]"
+	// List of containers for the inference instance.
 	Containers []InferenceDeploymentUpdateParamsContainer `json:"containers,omitzero"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/envs/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.envs.anyOf[0]"
+	// Environment variables for the inference instance.
 	Envs map[string]string `json:"envs,omitzero"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/logging/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.logging.anyOf[0]"
+	// Logging configuration for the inference instance
 	Logging InferenceDeploymentUpdateParamsLogging `json:"logging,omitzero"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/probes/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.probes.anyOf[0]"
+	// Probes configured for all containers of the inference instance.
 	Probes InferenceDeploymentUpdateParamsProbes `json:"probes,omitzero"`
-	// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/ingress_opts/anyOf/0'
-	// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.ingress_opts.anyOf[0]"
+	// Ingress options for the inference instance
 	IngressOpts IngressOptsParam `json:"ingress_opts,omitzero"`
 	paramObj
 }
@@ -848,16 +787,11 @@ func (r InferenceDeploymentUpdateParams) MarshalJSON() (data []byte, err error) 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/containers/anyOf/0/items'
-// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.containers.anyOf[0].items"
-//
 // The properties RegionID, Scale are required.
 type InferenceDeploymentUpdateParamsContainer struct {
-	// '#/components/schemas/ContainerInUpdateSerializerV3/properties/region_id/anyOf/0'
-	// "$.components.schemas.ContainerInUpdateSerializerV3.properties.region_id.anyOf[0]"
+	// Region id for the container
 	RegionID param.Opt[int64] `json:"region_id,omitzero,required"`
-	// '#/components/schemas/ContainerInUpdateSerializerV3/properties/scale/anyOf/0'
-	// "$.components.schemas.ContainerInUpdateSerializerV3.properties.scale.anyOf[0]"
+	// Scale for the container
 	Scale InferenceDeploymentUpdateParamsContainerScale `json:"scale,omitzero,required"`
 	paramObj
 }
@@ -872,25 +806,19 @@ func (r InferenceDeploymentUpdateParamsContainer) MarshalJSON() (data []byte, er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerInUpdateSerializerV3/properties/scale/anyOf/0'
-// "$.components.schemas.ContainerInUpdateSerializerV3.properties.scale.anyOf[0]"
+// Scale for the container
 //
 // The properties Max, Min are required.
 type InferenceDeploymentUpdateParamsContainerScale struct {
-	// '#/components/schemas/ContainerScaleUpdateSerializerV3/properties/max'
-	// "$.components.schemas.ContainerScaleUpdateSerializerV3.properties.max"
+	// Maximum scale for the container
 	Max int64 `json:"max,required"`
-	// '#/components/schemas/ContainerScaleUpdateSerializerV3/properties/min'
-	// "$.components.schemas.ContainerScaleUpdateSerializerV3.properties.min"
+	// Minimum scale for the container
 	Min int64 `json:"min,required"`
-	// '#/components/schemas/ContainerScaleUpdateSerializerV3/properties/cooldown_period'
-	// "$.components.schemas.ContainerScaleUpdateSerializerV3.properties.cooldown_period"
+	// Cooldown period between scaling actions in seconds
 	CooldownPeriod param.Opt[int64] `json:"cooldown_period,omitzero"`
-	// '#/components/schemas/ContainerScaleUpdateSerializerV3/properties/polling_interval'
-	// "$.components.schemas.ContainerScaleUpdateSerializerV3.properties.polling_interval"
+	// Polling interval for scaling triggers in seconds
 	PollingInterval param.Opt[int64] `json:"polling_interval,omitzero"`
-	// '#/components/schemas/ContainerScaleUpdateSerializerV3/properties/triggers'
-	// "$.components.schemas.ContainerScaleUpdateSerializerV3.properties.triggers"
+	// Triggers for scaling actions
 	Triggers InferenceDeploymentUpdateParamsContainerScaleTriggers `json:"triggers,omitzero"`
 	paramObj
 }
@@ -905,26 +833,19 @@ func (r InferenceDeploymentUpdateParamsContainerScale) MarshalJSON() (data []byt
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleUpdateSerializerV3/properties/triggers'
-// "$.components.schemas.ContainerScaleUpdateSerializerV3.properties.triggers"
+// Triggers for scaling actions
 type InferenceDeploymentUpdateParamsContainerScaleTriggers struct {
-	// '#/components/schemas/ContainerScaleTriggersSerializer/properties/cpu/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSerializer.properties.cpu.anyOf[0]"
+	// CPU trigger configuration
 	CPU InferenceDeploymentUpdateParamsContainerScaleTriggersCPU `json:"cpu,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSerializer/properties/gpu_memory/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSerializer.properties.gpu_memory.anyOf[0]"
+	// GPU memory trigger configuration. Calculated by DCGM_FI_DEV_MEM_COPY_UTIL metric
 	GPUMemory InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory `json:"gpu_memory,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSerializer/properties/gpu_utilization/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSerializer.properties.gpu_utilization.anyOf[0]"
+	// GPU utilization trigger configuration. Calculated by DCGM_FI_DEV_GPU_UTIL metric
 	GPUUtilization InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization `json:"gpu_utilization,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSerializer/properties/http/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSerializer.properties.http.anyOf[0]"
+	// HTTP trigger configuration
 	HTTP InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP `json:"http,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSerializer/properties/memory/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSerializer.properties.memory.anyOf[0]"
+	// Memory trigger configuration
 	Memory InferenceDeploymentUpdateParamsContainerScaleTriggersMemory `json:"memory,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSerializer/properties/sqs/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSerializer.properties.sqs.anyOf[0]"
+	// SQS trigger configuration
 	Sqs InferenceDeploymentUpdateParamsContainerScaleTriggersSqs `json:"sqs,omitzero"`
 	paramObj
 }
@@ -939,13 +860,11 @@ func (r InferenceDeploymentUpdateParamsContainerScaleTriggers) MarshalJSON() (da
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleTriggersSerializer/properties/cpu/anyOf/0'
-// "$.components.schemas.ContainerScaleTriggersSerializer.properties.cpu.anyOf[0]"
+// CPU trigger configuration
 //
 // The property Threshold is required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersCPU struct {
-	// '#/components/schemas/ContainerScaleTriggersThresholdSerializer/properties/threshold'
-	// "$.components.schemas.ContainerScaleTriggersThresholdSerializer.properties.threshold"
+	// Threshold value for the trigger in percentage
 	Threshold int64 `json:"threshold,required"`
 	paramObj
 }
@@ -960,13 +879,11 @@ func (r InferenceDeploymentUpdateParamsContainerScaleTriggersCPU) MarshalJSON() 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleTriggersSerializer/properties/gpu_memory/anyOf/0'
-// "$.components.schemas.ContainerScaleTriggersSerializer.properties.gpu_memory.anyOf[0]"
+// GPU memory trigger configuration. Calculated by DCGM_FI_DEV_MEM_COPY_UTIL metric
 //
 // The property Threshold is required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory struct {
-	// '#/components/schemas/ContainerScaleTriggersThresholdSerializer/properties/threshold'
-	// "$.components.schemas.ContainerScaleTriggersThresholdSerializer.properties.threshold"
+	// Threshold value for the trigger in percentage
 	Threshold int64 `json:"threshold,required"`
 	paramObj
 }
@@ -981,13 +898,11 @@ func (r InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory) MarshalJ
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleTriggersSerializer/properties/gpu_utilization/anyOf/0'
-// "$.components.schemas.ContainerScaleTriggersSerializer.properties.gpu_utilization.anyOf[0]"
+// GPU utilization trigger configuration. Calculated by DCGM_FI_DEV_GPU_UTIL metric
 //
 // The property Threshold is required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization struct {
-	// '#/components/schemas/ContainerScaleTriggersThresholdSerializer/properties/threshold'
-	// "$.components.schemas.ContainerScaleTriggersThresholdSerializer.properties.threshold"
+	// Threshold value for the trigger in percentage
 	Threshold int64 `json:"threshold,required"`
 	paramObj
 }
@@ -1002,16 +917,13 @@ func (r InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization) Mar
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleTriggersSerializer/properties/http/anyOf/0'
-// "$.components.schemas.ContainerScaleTriggersSerializer.properties.http.anyOf[0]"
+// HTTP trigger configuration
 //
 // The properties Rate, Window are required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP struct {
-	// '#/components/schemas/ContainerScaleTriggersRateSerializer/properties/rate'
-	// "$.components.schemas.ContainerScaleTriggersRateSerializer.properties.rate"
+	// Request count per 'window' seconds for the http trigger
 	Rate int64 `json:"rate,required"`
-	// '#/components/schemas/ContainerScaleTriggersRateSerializer/properties/window'
-	// "$.components.schemas.ContainerScaleTriggersRateSerializer.properties.window"
+	// Time window for rate calculation in seconds
 	Window int64 `json:"window,required"`
 	paramObj
 }
@@ -1026,13 +938,11 @@ func (r InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP) MarshalJSON()
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleTriggersSerializer/properties/memory/anyOf/0'
-// "$.components.schemas.ContainerScaleTriggersSerializer.properties.memory.anyOf[0]"
+// Memory trigger configuration
 //
 // The property Threshold is required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersMemory struct {
-	// '#/components/schemas/ContainerScaleTriggersThresholdSerializer/properties/threshold'
-	// "$.components.schemas.ContainerScaleTriggersThresholdSerializer.properties.threshold"
+	// Threshold value for the trigger in percentage
 	Threshold int64 `json:"threshold,required"`
 	paramObj
 }
@@ -1047,35 +957,26 @@ func (r InferenceDeploymentUpdateParamsContainerScaleTriggersMemory) MarshalJSON
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ContainerScaleTriggersSerializer/properties/sqs/anyOf/0'
-// "$.components.schemas.ContainerScaleTriggersSerializer.properties.sqs.anyOf[0]"
+// SQS trigger configuration
 //
 // The properties ActivationQueueLength, AwsRegion, QueueLength, QueueURL,
 // SecretName are required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersSqs struct {
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/activation_queue_length'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.activation_queue_length"
+	// Number of messages for activation
 	ActivationQueueLength int64 `json:"activation_queue_length,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/aws_region'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.aws_region"
+	// AWS region
 	AwsRegion string `json:"aws_region,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/queue_length'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.queue_length"
+	// Number of messages for one replica
 	QueueLength int64 `json:"queue_length,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/queue_url'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.queue_url"
+	// SQS queue URL
 	QueueURL string `json:"queue_url,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/secret_name'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.secret_name"
+	// Auth secret name
 	SecretName string `json:"secret_name,required"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/aws_endpoint/anyOf/0'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.aws_endpoint.anyOf[0]"
+	// Custom AWS endpoint
 	AwsEndpoint param.Opt[string] `json:"aws_endpoint,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/scale_on_delayed'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.scale_on_delayed"
+	// Scale on delayed messages
 	ScaleOnDelayed param.Opt[bool] `json:"scale_on_delayed,omitzero"`
-	// '#/components/schemas/ContainerScaleTriggersSqsSerializer/properties/scale_on_flight'
-	// "$.components.schemas.ContainerScaleTriggersSqsSerializer.properties.scale_on_flight"
+	// Scale on in-flight messages
 	ScaleOnFlight param.Opt[bool] `json:"scale_on_flight,omitzero"`
 	paramObj
 }
@@ -1090,20 +991,15 @@ func (r InferenceDeploymentUpdateParamsContainerScaleTriggersSqs) MarshalJSON() 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/logging/anyOf/0'
-// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.logging.anyOf[0]"
+// Logging configuration for the inference instance
 type InferenceDeploymentUpdateParamsLogging struct {
-	// '#/components/schemas/LoggingInSerializer/properties/destination_region_id/anyOf/0'
-	// "$.components.schemas.LoggingInSerializer.properties.destination_region_id.anyOf[0]"
+	// ID of the region in which the logs will be stored
 	DestinationRegionID param.Opt[int64] `json:"destination_region_id,omitzero"`
-	// '#/components/schemas/LoggingInSerializer/properties/topic_name/anyOf/0'
-	// "$.components.schemas.LoggingInSerializer.properties.topic_name.anyOf[0]"
+	// The topic name to stream logs to
 	TopicName param.Opt[string] `json:"topic_name,omitzero"`
-	// '#/components/schemas/LoggingInSerializer/properties/enabled'
-	// "$.components.schemas.LoggingInSerializer.properties.enabled"
+	// Enable or disable log streaming
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// '#/components/schemas/LoggingInSerializer/properties/retention_policy/anyOf/0'
-	// "$.components.schemas.LoggingInSerializer.properties.retention_policy.anyOf[0]"
+	// Logs retention policy
 	RetentionPolicy LaasIndexRetentionPolicyParam `json:"retention_policy,omitzero"`
 	paramObj
 }
@@ -1118,17 +1014,13 @@ func (r InferenceDeploymentUpdateParamsLogging) MarshalJSON() (data []byte, err 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/InferenceInstanceInUpdateSerializerV3/properties/probes/anyOf/0'
-// "$.components.schemas.InferenceInstanceInUpdateSerializerV3.properties.probes.anyOf[0]"
+// Probes configured for all containers of the inference instance.
 type InferenceDeploymentUpdateParamsProbes struct {
-	// '#/components/schemas/InferenceInstanceProbesSerializerV2/properties/liveness_probe/anyOf/0'
-	// "$.components.schemas.InferenceInstanceProbesSerializerV2.properties.liveness_probe.anyOf[0]"
+	// Liveness probe configuration
 	LivenessProbe ContainerProbeConfigCreateParam `json:"liveness_probe,omitzero"`
-	// '#/components/schemas/InferenceInstanceProbesSerializerV2/properties/readiness_probe/anyOf/0'
-	// "$.components.schemas.InferenceInstanceProbesSerializerV2.properties.readiness_probe.anyOf[0]"
+	// Readiness probe configuration
 	ReadinessProbe ContainerProbeConfigCreateParam `json:"readiness_probe,omitzero"`
-	// '#/components/schemas/InferenceInstanceProbesSerializerV2/properties/startup_probe/anyOf/0'
-	// "$.components.schemas.InferenceInstanceProbesSerializerV2.properties.startup_probe.anyOf[0]"
+	// Startup probe configuration
 	StartupProbe ContainerProbeConfigCreateParam `json:"startup_probe,omitzero"`
 	paramObj
 }
@@ -1144,14 +1036,12 @@ func (r InferenceDeploymentUpdateParamsProbes) MarshalJSON() (data []byte, err e
 }
 
 type InferenceDeploymentListParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments/get/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments/get/parameters/1'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments'].get.parameters[1]"
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments/get/parameters/2'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments'].get.parameters[2]"
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
@@ -1170,8 +1060,7 @@ func (r InferenceDeploymentListParams) URLQuery() (v url.Values, err error) {
 }
 
 type InferenceDeploymentDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments%2F%7Bdeployment_name%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments/{deployment_name}']['delete'].parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -1181,8 +1070,7 @@ type InferenceDeploymentDeleteParams struct {
 func (f InferenceDeploymentDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type InferenceDeploymentGetParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments%2F%7Bdeployment_name%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments/{deployment_name}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -1192,8 +1080,7 @@ type InferenceDeploymentGetParams struct {
 func (f InferenceDeploymentGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type InferenceDeploymentGetAPIKeyParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments%2F%7Bdeployment_name%7D%2Fapikey/get/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments/{deployment_name}/apikey'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -1205,8 +1092,7 @@ func (f InferenceDeploymentGetAPIKeyParams) IsPresent() bool {
 }
 
 type InferenceDeploymentStartParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments%2F%7Bdeployment_name%7D%2Fstart/post/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments/{deployment_name}/start'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -1216,8 +1102,7 @@ type InferenceDeploymentStartParams struct {
 func (f InferenceDeploymentStartParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type InferenceDeploymentStopParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments%2F%7Bdeployment_name%7D%2Fstop/post/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments/{deployment_name}/stop'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }

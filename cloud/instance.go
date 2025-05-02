@@ -440,35 +440,24 @@ func (r *InstanceService) UnassignSecurityGroup(ctx context.Context, instanceID 
 	return
 }
 
-// '#/components/schemas/InstanceInterfaceSerializer'
-// "$.components.schemas.InstanceInterfaceSerializer"
 type InstanceInterface struct {
-	// '#/components/schemas/InstanceInterfaceSerializer/properties/allowed_address_pairs'
-	// "$.components.schemas.InstanceInterfaceSerializer.properties.allowed_address_pairs"
+	// Group of subnet masks and/or IP addresses that share the current IP as VIP
 	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs,required"`
-	// '#/components/schemas/InstanceInterfaceSerializer/properties/floatingip_details'
-	// "$.components.schemas.InstanceInterfaceSerializer.properties.floatingip_details"
+	// Bodies of floating IPs that are NAT-ing IPs of this port
 	FloatingipDetails []FloatingIP `json:"floatingip_details,required"`
-	// '#/components/schemas/InstanceInterfaceSerializer/properties/ip_assignments'
-	// "$.components.schemas.InstanceInterfaceSerializer.properties.ip_assignments"
+	// IP addresses assigned to this port
 	IPAssignments []IPAssignment `json:"ip_assignments,required"`
-	// '#/components/schemas/InstanceInterfaceSerializer/properties/network_details'
-	// "$.components.schemas.InstanceInterfaceSerializer.properties.network_details"
+	// Body of the network this port is attached to
 	NetworkDetails NetworkDetails `json:"network_details,required"`
-	// '#/components/schemas/InstanceInterfaceSerializer/properties/network_id'
-	// "$.components.schemas.InstanceInterfaceSerializer.properties.network_id"
+	// ID of the network the port is attached to
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/InstanceInterfaceSerializer/properties/port_id'
-	// "$.components.schemas.InstanceInterfaceSerializer.properties.port_id"
+	// ID of virtual ethernet port object
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// '#/components/schemas/InstanceInterfaceSerializer/properties/port_security_enabled'
-	// "$.components.schemas.InstanceInterfaceSerializer.properties.port_security_enabled"
+	// Port security status
 	PortSecurityEnabled bool `json:"port_security_enabled,required"`
-	// '#/components/schemas/InstanceInterfaceSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.InstanceInterfaceSerializer.properties.interface_name.anyOf[0]"
+	// Interface name
 	InterfaceName string `json:"interface_name,nullable"`
-	// '#/components/schemas/InstanceInterfaceSerializer/properties/mac_address/anyOf/0'
-	// "$.components.schemas.InstanceInterfaceSerializer.properties.mac_address.anyOf[0]"
+	// MAC address of the virtual port
 	MacAddress string `json:"mac_address,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -494,53 +483,64 @@ func (r *InstanceInterface) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceNewParams struct {
-	// '#/paths/%2Fcloud%2Fv2%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v2/instances/{project_id}/{region_id}'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v2/instances/{project_id}/{region_id}'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/flavor'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.flavor"
+	// The flavor of the instance.
 	Flavor string `json:"flavor,required"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/interfaces'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.interfaces"
+	// A list of network interfaces for the instance. You can create one or more
+	// interfaces—private, public, or both.
 	Interfaces []InstanceNewParamsInterfaceUnion `json:"interfaces,omitzero,required"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/volumes'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.volumes"
+	// List of volumes for instances
 	Volumes []InstanceNewParamsVolume `json:"volumes,omitzero,required"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/ssh_key_name/anyOf/0'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.ssh_key_name.anyOf[0]"
+	// Specifies the name of the SSH keypair, created via the `/v1/ssh_keys` endpoint.
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/allow_app_ports'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.allow_app_ports"
+	// Set to `true` if creating the instance from an `apptemplate`. This allows
+	// application ports in the security group for instances created from a marketplace
+	// application template.
 	AllowAppPorts param.Opt[bool] `json:"allow_app_ports,omitzero"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/password'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.password"
+	// For Linux instances, 'username' and 'password' are used to create a new user.
+	// When only 'password' is provided, it is set as the password for the default user
+	// of the image. For Windows instances, 'username' cannot be specified. Use the
+	// 'password' field to set the password for the 'Admin' user on Windows. Use the
+	// 'user_data' field to provide a script to create new users on Windows. The
+	// password of the Admin user cannot be updated via 'user_data'.
 	Password param.Opt[string] `json:"password,omitzero"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/servergroup_id'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.servergroup_id"
+	// Server group ID for instance placement policy. Can be an anti-affinity,
+	// affinity, or soft-anti-affinity group. `anti-affinity` ensures instances are
+	// placed on different hosts for high availability. `affinity` places instances on
+	// the same host for low-latency communication. `soft-anti-affinity` tries to place
+	// instances on different hosts but allows sharing if needed.
 	ServergroupID param.Opt[string] `json:"servergroup_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/user_data'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.user_data"
+	// String in base64 format. For Linux instances, 'user_data' is ignored when
+	// 'password' field is provided. For Windows instances, Admin user password is set
+	// by 'password' field and cannot be updated via 'user_data'. Examples of the
+	// user_data: https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData param.Opt[string] `json:"user_data,omitzero"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/username'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.username"
+	// For Linux instances, 'username' and 'password' are used to create a new user.
+	// For Windows instances, 'username' cannot be specified. Use 'password' field to
+	// set the password for the 'Admin' user on Windows.
 	Username param.Opt[string] `json:"username,omitzero"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/configuration/anyOf/0'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.configuration.anyOf[0]"
+	// Parameters for the application template if creating the instance from an
+	// `apptemplate`.
 	Configuration any `json:"configuration,omitzero"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/name_templates'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.name_templates"
+	// If you want instance names to be automatically generated using IP octets, you
+	// can specify name templates instead of setting names manually.Provide a list of
+	// templated names that should be replaced using the selected template. The
+	// following template formats are supported: `{ip_octets}`, `{two_ip_octets}`, and
+	// `{one_ip_octet}`.
 	NameTemplates []string `json:"name_templates,omitzero"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/names'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.names"
+	// List of instance names. Specify one name to create a single instance.
 	Names []string `json:"names,omitzero"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/security_groups'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.security_groups"
+	// Applies only to instances and is ignored for bare metal. Specifies security
+	// group UUIDs to be applied to all instance network interfaces.
 	SecurityGroups []InstanceNewParamsSecurityGroup `json:"security_groups,omitzero"`
-	// '#/components/schemas/CreateInstanceSerializerV2/properties/tags'
-	// "$.components.schemas.CreateInstanceSerializerV2.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
@@ -558,17 +558,9 @@ func (r InstanceNewParams) MarshalJSON() (data []byte, err error) {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InstanceNewParamsInterfaceUnion struct {
-	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/0'
-	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[0]"
-	OfExternal *InstanceNewParamsInterfaceExternal `json:",omitzero,inline"`
-	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/1'
-	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[1]"
-	OfSubnet *InstanceNewParamsInterfaceSubnet `json:",omitzero,inline"`
-	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/2'
-	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[2]"
-	OfAnySubnet *InstanceNewParamsInterfaceAnySubnet `json:",omitzero,inline"`
-	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/3'
-	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[3]"
+	OfExternal        *InstanceNewParamsInterfaceExternal        `json:",omitzero,inline"`
+	OfSubnet          *InstanceNewParamsInterfaceSubnet          `json:",omitzero,inline"`
+	OfAnySubnet       *InstanceNewParamsInterfaceAnySubnet       `json:",omitzero,inline"`
 	OfReservedFixedIP *InstanceNewParamsInterfaceReservedFixedIP `json:",omitzero,inline"`
 	paramUnion
 }
@@ -801,27 +793,23 @@ func init() {
 	)
 }
 
-// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/0'
-// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[0]"
+// Instance will be attached to default external network
 //
 // The property Type is required.
 type InstanceNewParamsInterfaceExternal struct {
-	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/interface_name'
-	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.interface_name"
+	// Interface name. Defaults to `null` and is returned as `null` in the API response
+	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/port_group'
-	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.port_group"
+	// Applicable only to bare metal. Each group is added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/ip_family/anyOf/0'
-	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.ip_family.anyOf[0]"
+	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/security_groups'
-	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.security_groups"
+	// Applies only to instances and is ignored for bare metal. Specifies security
+	// group UUIDs to be applied to the instance network interface.
 	SecurityGroups []InstanceNewParamsInterfaceExternalSecurityGroup `json:"security_groups,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/type'
-	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.type"
+	// A public IP address will be assigned to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "external".
 	Type constant.External `json:"type,required"`
@@ -838,13 +826,9 @@ func (r InstanceNewParamsInterfaceExternal) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/security_groups/items'
-// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.security_groups.items"
-//
 // The property ID is required.
 type InstanceNewParamsInterfaceExternalSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
-	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
+	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
 	paramObj
 }
@@ -859,31 +843,29 @@ func (r InstanceNewParamsInterfaceExternalSecurityGroup) MarshalJSON() (data []b
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/1'
-// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[1]"
+// The instance will get an IP address from the selected network. If you choose to
+// add a floating IP, the instance will be reachable from the internet. Otherwise,
+// it will only have a private IP within the network.
 //
 // The properties NetworkID, SubnetID, Type are required.
 type InstanceNewParamsInterfaceSubnet struct {
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/network_id'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.network_id"
+	// The network where the instance will be connected.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/subnet_id'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.subnet_id"
+	// The instance will get an IP address from this subnet.
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/interface_name'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.interface_name"
+	// Interface name. Defaults to `null` and is returned as `null` in the API response
+	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/port_group'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.port_group"
+	// Applicable only to bare metal. Each group is added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip"
+	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP InstanceNewParamsInterfaceSubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/security_groups'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.security_groups"
+	// Applies only to instances and is ignored for bare metal. Specifies security
+	// group UUIDs to be applied to the instance network interface.
 	SecurityGroups []InstanceNewParamsInterfaceSubnetSecurityGroup `json:"security_groups,omitzero"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/type'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.type"
+	// The instance will get an IP address from the selected network. If you choose to
+	// add a floating IP, the instance will be reachable from the internet. Otherwise,
+	// it will only have a private IP within the network.
 	//
 	// This field can be elided, and will marshal its zero value as "subnet".
 	Type constant.Subnet `json:"type,required"`
@@ -902,11 +884,7 @@ func (r InstanceNewParamsInterfaceSubnet) MarshalJSON() (data []byte, err error)
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InstanceNewParamsInterfaceSubnetFloatingIPUnion struct {
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-	OfNew *InstanceNewParamsInterfaceSubnetFloatingIPNew `json:",omitzero,inline"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
+	OfNew      *InstanceNewParamsInterfaceSubnetFloatingIPNew      `json:",omitzero,inline"`
 	OfExisting *InstanceNewParamsInterfaceSubnetFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
@@ -969,14 +947,13 @@ func NewInstanceNewParamsInterfaceSubnetFloatingIPNew() InstanceNewParamsInterfa
 	}
 }
 
-// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
-// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-//
 // This struct has a constant value, construct it with
 // [NewInstanceNewParamsInterfaceSubnetFloatingIPNew].
 type InstanceNewParamsInterfaceSubnetFloatingIPNew struct {
-	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
+	// A new floating IP will be created and attached to the instance. A floating IP is
+	// a public IP that makes the instance accessible from the internet, even if it
+	// only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -991,16 +968,15 @@ func (r InstanceNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() (data []byt
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
-// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
-//
 // The properties ExistingFloatingID, Source are required.
 type InstanceNewParamsInterfaceSubnetFloatingIPExisting struct {
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
+	// An existing available floating IP id must be specified if the source is set to
+	// `existing`
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.source"
+	// An existing available floating IP will be attached to the instance. A floating
+	// IP is a public IP that makes the instance accessible from the internet, even if
+	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
 	Source constant.Existing `json:"source,required"`
@@ -1017,13 +993,9 @@ func (r InstanceNewParamsInterfaceSubnetFloatingIPExisting) MarshalJSON() (data 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/security_groups/items'
-// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.security_groups.items"
-//
 // The property ID is required.
 type InstanceNewParamsInterfaceSubnetSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
-	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
+	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
 	paramObj
 }
@@ -1038,36 +1010,27 @@ func (r InstanceNewParamsInterfaceSubnetSecurityGroup) MarshalJSON() (data []byt
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/2'
-// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[2]"
-//
 // The properties NetworkID, Type are required.
 type InstanceNewParamsInterfaceAnySubnet struct {
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/network_id'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.network_id"
+	// The network where the instance will be connected.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/interface_name'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.interface_name"
+	// Interface name. Defaults to `null` and is returned as `null` in the API response
+	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/ip_address'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.ip_address"
+	// You can specify a specific IP address from your subnet.
 	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipvanyaddress"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/port_group'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.port_group"
+	// Applicable only to bare metal. Each group is added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip"
+	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP InstanceNewParamsInterfaceAnySubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/ip_family/anyOf/0'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.ip_family.anyOf[0]"
+	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/security_groups'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.security_groups"
+	// Applies only to instances and is ignored for bare metal. Specifies security
+	// group UUIDs to be applied to the instance network interface.
 	SecurityGroups []InstanceNewParamsInterfaceAnySubnetSecurityGroup `json:"security_groups,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/type'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.type"
+	// Instance will be attached to a subnet with the largest count of free IPs.
 	//
 	// This field can be elided, and will marshal its zero value as "any_subnet".
 	Type constant.AnySubnet `json:"type,required"`
@@ -1088,11 +1051,7 @@ func (r InstanceNewParamsInterfaceAnySubnet) MarshalJSON() (data []byte, err err
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InstanceNewParamsInterfaceAnySubnetFloatingIPUnion struct {
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-	OfNew *InstanceNewParamsInterfaceAnySubnetFloatingIPNew `json:",omitzero,inline"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
+	OfNew      *InstanceNewParamsInterfaceAnySubnetFloatingIPNew      `json:",omitzero,inline"`
 	OfExisting *InstanceNewParamsInterfaceAnySubnetFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1155,14 +1114,13 @@ func NewInstanceNewParamsInterfaceAnySubnetFloatingIPNew() InstanceNewParamsInte
 	}
 }
 
-// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
-// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-//
 // This struct has a constant value, construct it with
 // [NewInstanceNewParamsInterfaceAnySubnetFloatingIPNew].
 type InstanceNewParamsInterfaceAnySubnetFloatingIPNew struct {
-	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
+	// A new floating IP will be created and attached to the instance. A floating IP is
+	// a public IP that makes the instance accessible from the internet, even if it
+	// only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1177,16 +1135,15 @@ func (r InstanceNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON() (data []
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
-// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
-//
 // The properties ExistingFloatingID, Source are required.
 type InstanceNewParamsInterfaceAnySubnetFloatingIPExisting struct {
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
+	// An existing available floating IP id must be specified if the source is set to
+	// `existing`
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.source"
+	// An existing available floating IP will be attached to the instance. A floating
+	// IP is a public IP that makes the instance accessible from the internet, even if
+	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
 	Source constant.Existing `json:"source,required"`
@@ -1203,13 +1160,9 @@ func (r InstanceNewParamsInterfaceAnySubnetFloatingIPExisting) MarshalJSON() (da
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/security_groups/items'
-// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.security_groups.items"
-//
 // The property ID is required.
 type InstanceNewParamsInterfaceAnySubnetSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
-	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
+	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
 	paramObj
 }
@@ -1224,28 +1177,23 @@ func (r InstanceNewParamsInterfaceAnySubnetSecurityGroup) MarshalJSON() (data []
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/3'
-// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[3]"
-//
 // The properties PortID, Type are required.
 type InstanceNewParamsInterfaceReservedFixedIP struct {
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/port_id'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.port_id"
+	// Network ID the subnet belongs to. Port will be plugged in this network.
 	PortID string `json:"port_id,required"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/interface_name'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.interface_name"
+	// Interface name. Defaults to `null` and is returned as `null` in the API response
+	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/port_group'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.port_group"
+	// Applicable only to bare metal. Each group is added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip"
+	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion `json:"floating_ip,omitzero"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/security_groups'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.security_groups"
+	// Applies only to instances and is ignored for bare metal. Specifies security
+	// group UUIDs to be applied to the instance network interface.
 	SecurityGroups []InstanceNewParamsInterfaceReservedFixedIPSecurityGroup `json:"security_groups,omitzero"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/type'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.type"
+	// An existing available reserved fixed IP will be attached to the instance. If the
+	// reserved IP is not public and you choose to add a floating IP, the instance will
+	// be accessible from the internet.
 	//
 	// This field can be elided, and will marshal its zero value as
 	// "reserved_fixed_ip".
@@ -1267,11 +1215,7 @@ func (r InstanceNewParamsInterfaceReservedFixedIP) MarshalJSON() (data []byte, e
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/0'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-	OfNew *InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew `json:",omitzero,inline"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/1'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[1]"
+	OfNew      *InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew      `json:",omitzero,inline"`
 	OfExisting *InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1334,14 +1278,13 @@ func NewInstanceNewParamsInterfaceReservedFixedIPFloatingIPNew() InstanceNewPara
 	}
 }
 
-// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/0'
-// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-//
 // This struct has a constant value, construct it with
 // [NewInstanceNewParamsInterfaceReservedFixedIPFloatingIPNew].
 type InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
-	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
+	// A new floating IP will be created and attached to the instance. A floating IP is
+	// a public IP that makes the instance accessible from the internet, even if it
+	// only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1356,16 +1299,15 @@ func (r InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew) MarshalJSON() (d
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/1'
-// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[1]"
-//
 // The properties ExistingFloatingID, Source are required.
 type InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
+	// An existing available floating IP id must be specified if the source is set to
+	// `existing`
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.source"
+	// An existing available floating IP will be attached to the instance. A floating
+	// IP is a public IP that makes the instance accessible from the internet, even if
+	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
 	Source constant.Existing `json:"source,required"`
@@ -1382,13 +1324,9 @@ func (r InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting) MarshalJSON
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/security_groups/items'
-// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.security_groups.items"
-//
 // The property ID is required.
 type InstanceNewParamsInterfaceReservedFixedIPSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
-	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
+	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
 	paramObj
 }
@@ -1403,48 +1341,50 @@ func (r InstanceNewParamsInterfaceReservedFixedIPSecurityGroup) MarshalJSON() (d
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateInstanceSerializerV2/properties/volumes/items'
-// "$.components.schemas.CreateInstanceSerializerV2.properties.volumes.items"
-//
 // The property Source is required.
 type InstanceNewParamsVolume struct {
-	// '#/components/schemas/CreateInstanceVolumeSerializerPydantic/properties/source'
-	// "$.components.schemas.CreateInstanceVolumeSerializerPydantic.properties.source"
+	// Volume source. For `image`, specify `image_id` and `size`. For `new-volume`,
+	// specify `size`. For `existing-volume`, specify `volume_id`. For `snapshot`,
+	// specify `snapshot_id`. For `apptemplate`, specify `apptemplate_id`.
 	//
 	// Any of "apptemplate", "existing-volume", "image", "new-volume", "snapshot".
 	Source string `json:"source,omitzero,required"`
-	// '#/components/schemas/CreateInstanceVolumeSerializerPydantic/properties/apptemplate_id'
-	// "$.components.schemas.CreateInstanceVolumeSerializerPydantic.properties.apptemplate_id"
+	// App template ID. Required if `source` is `apptemplate`
 	ApptemplateID param.Opt[string] `json:"apptemplate_id,omitzero"`
-	// '#/components/schemas/CreateInstanceVolumeSerializerPydantic/properties/attachment_tag'
-	// "$.components.schemas.CreateInstanceVolumeSerializerPydantic.properties.attachment_tag"
+	// Block device attachment tag (not exposed in the normal tags)
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// '#/components/schemas/CreateInstanceVolumeSerializerPydantic/properties/boot_index'
-	// "$.components.schemas.CreateInstanceVolumeSerializerPydantic.properties.boot_index"
+	// 0 means that this is the primary boot device. A unique positive value is set for
+	// the other bootable devices. A negative number means that the boot is prohibited.
 	BootIndex param.Opt[int64] `json:"boot_index,omitzero"`
-	// '#/components/schemas/CreateInstanceVolumeSerializerPydantic/properties/delete_on_termination'
-	// "$.components.schemas.CreateInstanceVolumeSerializerPydantic.properties.delete_on_termination"
+	// Whether the volume should be deleted along with the VM
 	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
-	// '#/components/schemas/CreateInstanceVolumeSerializerPydantic/properties/image_id'
-	// "$.components.schemas.CreateInstanceVolumeSerializerPydantic.properties.image_id"
+	// Image ID. Required if `source` is `image`
 	ImageID param.Opt[string] `json:"image_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateInstanceVolumeSerializerPydantic/properties/name'
-	// "$.components.schemas.CreateInstanceVolumeSerializerPydantic.properties.name"
+	// The name of the volume. If not specified, a name will be generated
+	// automatically.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/CreateInstanceVolumeSerializerPydantic/properties/size'
-	// "$.components.schemas.CreateInstanceVolumeSerializerPydantic.properties.size"
+	// Required when the `source` is either `new-volume` or `image`. If specified for
+	// the `snapshot` or `existing-volume` `source`, the value must match the size of
+	// the snapshot or the existing volume, respectively.
 	Size param.Opt[int64] `json:"size,omitzero"`
-	// '#/components/schemas/CreateInstanceVolumeSerializerPydantic/properties/snapshot_id'
-	// "$.components.schemas.CreateInstanceVolumeSerializerPydantic.properties.snapshot_id"
+	// Volume snapshot ID. Required if `source` is `snapshot`
 	SnapshotID param.Opt[string] `json:"snapshot_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateInstanceVolumeSerializerPydantic/properties/volume_id'
-	// "$.components.schemas.CreateInstanceVolumeSerializerPydantic.properties.volume_id"
+	// Volume ID. Required if `source` is `existing-volume`
 	VolumeID param.Opt[string] `json:"volume_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateInstanceVolumeSerializerPydantic/properties/tags'
-	// "$.components.schemas.CreateInstanceVolumeSerializerPydantic.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
-	// '#/components/schemas/CreateInstanceVolumeSerializerPydantic/properties/type_name'
-	// "$.components.schemas.CreateInstanceVolumeSerializerPydantic.properties.type_name"
+	// Volume type name. Supported values: `standard` – Network SSD block storage
+	// offering stable performance with high random I/O and data reliability (6 IOPS
+	// per 1 GiB, 0.4 MB/s per 1 GiB). Max IOPS: 4500. Max bandwidth: 300 MB/s.
+	// `ssd_hiiops` – High-performance SSD storage for latency-sensitive transactional
+	// workloads (60 IOPS per 1 GiB, 2.5 MB/s per 1 GiB). Max IOPS: 9000. Max
+	// bandwidth: 500 MB/s. `ssd_lowlatency` – SSD storage optimized for low-latency
+	// and real-time processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and
+	// volume resizing are not supported for `ssd_lowlatency`.
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`
@@ -1468,13 +1408,9 @@ func init() {
 	)
 }
 
-// '#/components/schemas/CreateInstanceSerializerV2/properties/security_groups/items'
-// "$.components.schemas.CreateInstanceSerializerV2.properties.security_groups.items"
-//
 // The property ID is required.
 type InstanceNewParamsSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
-	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
+	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
 	paramObj
 }
@@ -1488,14 +1424,11 @@ func (r InstanceNewParamsSecurityGroup) MarshalJSON() (data []byte, err error) {
 }
 
 type InstanceUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}'].patch.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}'].patch.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/NameSerializer/properties/name'
-	// "$.components.schemas.NameSerializer.properties.name"
+	// Name.
 	Name string `json:"name,required"`
 	paramObj
 }
@@ -1510,97 +1443,81 @@ func (r InstanceUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type InstanceListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[2]"
+	// Only show instances which are able to handle floating address
 	AvailableFloating param.Opt[bool] `query:"available_floating,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[3]"
+	// Filters the instances by a date and time stamp when the instances last changed.
 	ChangesBefore param.Opt[time.Time] `query:"changes-before,omitzero" format:"date-time" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[4]"
+	// Filters the instances by a date and time stamp when the instances last changed
+	// status.
 	ChangesSince param.Opt[time.Time] `query:"changes-since,omitzero" format:"date-time" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[5]"
+	// Exclude instances with specified flavor prefix
 	ExcludeFlavorPrefix param.Opt[string] `query:"exclude_flavor_prefix,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[6]"
+	// Exclude instances with specified security group name
 	ExcludeSecgroup param.Opt[string] `query:"exclude_secgroup,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/7'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[7]"
+	// Filter out instances by flavor_id. Flavor id must match exactly.
 	FlavorID param.Opt[string] `query:"flavor_id,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/8'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[8]"
+	// Filter out instances by flavor_prefix.
 	FlavorPrefix param.Opt[string] `query:"flavor_prefix,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/9'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[9]"
+	// Include GPU clusters' servers
 	IncludeAI param.Opt[bool] `query:"include_ai,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/10'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[10]"
+	// Include bare metal servers. Please, use `GET /v1/bminstances/` instead
 	IncludeBaremetal param.Opt[bool] `query:"include_baremetal,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/11'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[11]"
+	// Include managed k8s worker nodes
 	IncludeK8s param.Opt[bool] `query:"include_k8s,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/12'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[12]"
+	// An IPv4 address to filter results by. Note: partial matches are allowed. For
+	// example, searching for 192.168.0.1 will return 192.168.0.1, 192.168.0.10,
+	// 192.168.0.110, and so on.
 	IP param.Opt[string] `query:"ip,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/13'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[13]"
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/14'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[14]"
+	// Filter instances by name. You can provide a full or partial name, instances with
+	// matching names will be returned. For example, entering 'test' will return all
+	// instances that contain 'test' in their name.
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/15'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[15]"
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/16'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[16]"
+	// Include only isolated instances
 	OnlyIsolated param.Opt[bool] `query:"only_isolated,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/17'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[17]"
+	// Return bare metals only with external fixed IP addresses.
 	OnlyWithFixedExternalIP param.Opt[bool] `query:"only_with_fixed_external_ip,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/19'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[19]"
+	// Filter result by ddos protection profile name. Effective only with with_ddos set
+	// to true.
 	ProfileName param.Opt[string] `query:"profile_name,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/22'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[22]"
+	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
+	// "tag_key_value={"key": "value"}" --url
+	// "https://example.com/cloud/v1/resource/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/25'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[25]"
+	// Filter the server list result by the UUID of the server. Allowed UUID part
 	Uuid param.Opt[string] `query:"uuid,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/26'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[26]"
+	// Include DDoS profile information in the response when set to `true`. Otherwise,
+	// the `ddos_profile` field in the response is `null` by default.
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/27'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[27]"
+	// Include `interface_name` in the addresses
 	WithInterfacesName param.Opt[bool] `query:"with_interfaces_name,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/18'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[18]"
+	// Order by field and direction.
 	//
 	// Any of "created.asc", "created.desc", "name.asc", "name.desc".
 	OrderBy InstanceListParamsOrderBy `query:"order_by,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/20'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[20]"
+	// Filter result by DDoS protection_status. if parameter is provided. Effective
+	// only with with_ddos set to true. (Active, Queued or Error)
 	//
 	// Any of "Active", "Queued", "Error".
 	ProtectionStatus InstanceListParamsProtectionStatus `query:"protection_status,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/21'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[21]"
+	// Filters instances by status.
 	//
 	// Any of "ACTIVE", "BUILD", "ERROR", "HARD_REBOOT", "MIGRATING", "PAUSED",
 	// "REBOOT", "REBUILD", "RESIZE", "REVERT_RESIZE", "SHELVED", "SHELVED_OFFLOADED",
 	// "SHUTOFF", "SOFT_DELETED", "SUSPENDED", "VERIFY_RESIZE".
 	Status InstanceListParamsStatus `query:"status,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/23'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[23]"
+	// Optional. Filter by tag values. ?tag_value=value1&tag_value=value2
 	TagValue []string `query:"tag_value,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/24'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[24]"
+	// Return bare metals either only with advanced or only basic DDoS protection.
+	// Effective only with with_ddos set to true. (advanced or basic)
 	//
 	// Any of "basic", "advanced".
 	TypeDDOSProfile InstanceListParamsTypeDDOSProfile `query:"type_ddos_profile,omitzero" json:"-"`
@@ -1619,8 +1536,7 @@ func (r InstanceListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/18'
-// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[18]"
+// Order by field and direction.
 type InstanceListParamsOrderBy string
 
 const (
@@ -1630,8 +1546,8 @@ const (
 	InstanceListParamsOrderByNameDesc    InstanceListParamsOrderBy = "name.desc"
 )
 
-// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/20'
-// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[20]"
+// Filter result by DDoS protection_status. if parameter is provided. Effective
+// only with with_ddos set to true. (Active, Queued or Error)
 type InstanceListParamsProtectionStatus string
 
 const (
@@ -1640,8 +1556,7 @@ const (
 	InstanceListParamsProtectionStatusError  InstanceListParamsProtectionStatus = "Error"
 )
 
-// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/21'
-// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[21]"
+// Filters instances by status.
 type InstanceListParamsStatus string
 
 const (
@@ -1663,8 +1578,8 @@ const (
 	InstanceListParamsStatusVerifyResize     InstanceListParamsStatus = "VERIFY_RESIZE"
 )
 
-// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/24'
-// "$.paths['/cloud/v1/instances/{project_id}/{region_id}'].get.parameters[24]"
+// Return bare metals either only with advanced or only basic DDoS protection.
+// Effective only with with_ddos set to true. (advanced or basic)
 type InstanceListParamsTypeDDOSProfile string
 
 const (
@@ -1673,23 +1588,19 @@ const (
 )
 
 type InstanceDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}']['delete'].parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}']['delete'].parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D/delete/parameters/3'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}']['delete'].parameters[3]"
+	// True if it is required to delete floating IPs assigned to the instance. Can't be
+	// used with `floatings`.
 	DeleteFloatings param.Opt[bool] `query:"delete_floatings,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D/delete/parameters/4'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}']['delete'].parameters[4]"
+	// Comma separated list of floating ids that should be deleted. Can't be used with
+	// `delete_floatings`.
 	Floatings param.Opt[string] `query:"floatings,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D/delete/parameters/5'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}']['delete'].parameters[5]"
+	// Comma separated list of port IDs to be deleted with the instance
 	ReservedFixedIPs param.Opt[string] `query:"reserved_fixed_ips,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D/delete/parameters/6'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}']['delete'].parameters[6]"
+	// Comma separated list of volume IDs to be deleted with the instance
 	Volumes param.Opt[string] `query:"volumes,omitzero" json:"-"`
 	paramObj
 }
@@ -1707,24 +1618,16 @@ func (r InstanceDeleteParams) URLQuery() (v url.Values, err error) {
 }
 
 type InstanceActionParams struct {
-	// '#/paths/%2Fcloud%2Fv2%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Faction/post/parameters/0/schema'
-	// "$.paths['/cloud/v2/instances/{project_id}/{region_id}/{instance_id}/action'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Faction/post/parameters/1/schema'
-	// "$.paths['/cloud/v2/instances/{project_id}/{region_id}/{instance_id}/action'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 
 	//
 	// Request body variants
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	// '#/components/schemas/InstanceActionSerializerPydantic/anyOf/0'
-	// "$.components.schemas.InstanceActionSerializerPydantic.anyOf[0]"
 	OfStartActionInstanceSerializer *InstanceActionParamsBodyStartActionInstanceSerializer `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// '#/components/schemas/InstanceActionSerializerPydantic/anyOf/1'
-	// "$.components.schemas.InstanceActionSerializerPydantic.anyOf[1]"
 	OfBasicActionInstanceSerializer *InstanceActionParamsBodyBasicActionInstanceSerializer `json:",inline"`
 
 	paramObj
@@ -1738,16 +1641,11 @@ func (u InstanceActionParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceActionParams](u.OfStartActionInstanceSerializer, u.OfBasicActionInstanceSerializer)
 }
 
-// '#/components/schemas/InstanceActionSerializerPydantic/anyOf/0'
-// "$.components.schemas.InstanceActionSerializerPydantic.anyOf[0]"
-//
 // The property Action is required.
 type InstanceActionParamsBodyStartActionInstanceSerializer struct {
-	// '#/components/schemas/StartActionInstanceSerializer/properties/activate_profile/anyOf/0'
-	// "$.components.schemas.StartActionInstanceSerializer.properties.activate_profile.anyOf[0]"
+	// Used on start instance to activate Advanced DDoS profile
 	ActivateProfile param.Opt[bool] `json:"activate_profile,omitzero"`
-	// '#/components/schemas/StartActionInstanceSerializer/properties/action'
-	// "$.components.schemas.StartActionInstanceSerializer.properties.action"
+	// Instance action name
 	//
 	// This field can be elided, and will marshal its zero value as "start".
 	Action constant.Start `json:"action,required"`
@@ -1764,13 +1662,9 @@ func (r InstanceActionParamsBodyStartActionInstanceSerializer) MarshalJSON() (da
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/InstanceActionSerializerPydantic/anyOf/1'
-// "$.components.schemas.InstanceActionSerializerPydantic.anyOf[1]"
-//
 // The property Action is required.
 type InstanceActionParamsBodyBasicActionInstanceSerializer struct {
-	// '#/components/schemas/BasicActionInstanceSerializer/properties/action'
-	// "$.components.schemas.BasicActionInstanceSerializer.properties.action"
+	// Instance action name
 	//
 	// Any of "reboot", "reboot_hard", "resume", "stop", "suspend".
 	Action string `json:"action,omitzero,required"`
@@ -1794,14 +1688,9 @@ func init() {
 }
 
 type InstanceAddToPlacementGroupParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fput_into_servergroup/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/put_into_servergroup'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fput_into_servergroup/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/put_into_servergroup'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/InstancePutServerGroupSchema/properties/servergroup_id'
-	// "$.components.schemas.InstancePutServerGroupSchema.properties.servergroup_id"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Anti-affinity or affinity or soft-anti-affinity server group ID.
 	ServergroupID string `json:"servergroup_id,required"`
 	paramObj
 }
@@ -1818,17 +1707,11 @@ func (r InstanceAddToPlacementGroupParams) MarshalJSON() (data []byte, err error
 }
 
 type InstanceAssignSecurityGroupParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Faddsecuritygroup/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/addsecuritygroup'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Faddsecuritygroup/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/addsecuritygroup'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/InstancePortsSecurityGroupsSchema/properties/name'
-	// "$.components.schemas.InstancePortsSecurityGroupsSchema.properties.name"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Security group name, applies to all ports
 	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/InstancePortsSecurityGroupsSchema/properties/ports_security_group_names'
-	// "$.components.schemas.InstancePortsSecurityGroupsSchema.properties.ports_security_group_names"
+	// Port security groups mapping
 	PortsSecurityGroupNames []InstanceAssignSecurityGroupParamsPortsSecurityGroupName `json:"ports_security_group_names,omitzero"`
 	paramObj
 }
@@ -1844,16 +1727,13 @@ func (r InstanceAssignSecurityGroupParams) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/InstancePortsSecurityGroupsSchema/properties/ports_security_group_names/items'
-// "$.components.schemas.InstancePortsSecurityGroupsSchema.properties.ports_security_group_names.items"
+// Port security group names
 //
 // The properties PortID, SecurityGroupNames are required.
 type InstanceAssignSecurityGroupParamsPortsSecurityGroupName struct {
-	// '#/components/schemas/PortSecurityGroupNamesSchema/properties/port_id'
-	// "$.components.schemas.PortSecurityGroupNamesSchema.properties.port_id"
+	// Port ID. If None, security groups will be applied to all ports
 	PortID param.Opt[string] `json:"port_id,omitzero,required"`
-	// '#/components/schemas/PortSecurityGroupNamesSchema/properties/security_group_names'
-	// "$.components.schemas.PortSecurityGroupNamesSchema.properties.security_group_names"
+	// List of security group names
 	SecurityGroupNames []string `json:"security_group_names,omitzero,required"`
 	paramObj
 }
@@ -1869,12 +1749,8 @@ func (r InstanceAssignSecurityGroupParamsPortsSecurityGroupName) MarshalJSON() (
 }
 
 type InstanceDisablePortSecurityParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fports%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fdisable_port_security/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/ports/{project_id}/{region_id}/{port_id}/disable_port_security'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fports%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fdisable_port_security/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/ports/{project_id}/{region_id}/{port_id}/disable_port_security'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -1885,12 +1761,8 @@ func (f InstanceDisablePortSecurityParams) IsPresent() bool {
 }
 
 type InstanceEnablePortSecurityParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fports%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fenable_port_security/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/ports/{project_id}/{region_id}/{port_id}/enable_port_security'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fports%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fenable_port_security/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/ports/{project_id}/{region_id}/{port_id}/enable_port_security'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -1899,11 +1771,9 @@ type InstanceEnablePortSecurityParams struct {
 func (f InstanceEnablePortSecurityParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type InstanceGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -1913,14 +1783,9 @@ type InstanceGetParams struct {
 func (f InstanceGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type InstanceGetConsoleParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fget_console/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/get_console'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fget_console/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/get_console'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fget_console/get/parameters/3'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/get_console'].get.parameters[3]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Console type
 	ConsoleType param.Opt[string] `query:"console_type,omitzero" json:"-"`
 	paramObj
 }
@@ -1939,12 +1804,8 @@ func (r InstanceGetConsoleParams) URLQuery() (v url.Values, err error) {
 }
 
 type InstanceRemoveFromPlacementGroupParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fremove_from_servergroup/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/remove_from_servergroup'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fremove_from_servergroup/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/remove_from_servergroup'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -1955,14 +1816,9 @@ func (f InstanceRemoveFromPlacementGroupParams) IsPresent() bool {
 }
 
 type InstanceResizeParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fchangeflavor/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/changeflavor'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fchangeflavor/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/changeflavor'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/FlavorIdSchema/properties/flavor_id'
-	// "$.components.schemas.FlavorIdSchema.properties.flavor_id"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Flavor ID
 	FlavorID string `json:"flavor_id,required"`
 	paramObj
 }
@@ -1977,17 +1833,11 @@ func (r InstanceResizeParams) MarshalJSON() (data []byte, err error) {
 }
 
 type InstanceUnassignSecurityGroupParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fdelsecuritygroup/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/delsecuritygroup'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fdelsecuritygroup/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/delsecuritygroup'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/InstancePortsSecurityGroupsSchema/properties/name'
-	// "$.components.schemas.InstancePortsSecurityGroupsSchema.properties.name"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Security group name, applies to all ports
 	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/InstancePortsSecurityGroupsSchema/properties/ports_security_group_names'
-	// "$.components.schemas.InstancePortsSecurityGroupsSchema.properties.ports_security_group_names"
+	// Port security groups mapping
 	PortsSecurityGroupNames []InstanceUnassignSecurityGroupParamsPortsSecurityGroupName `json:"ports_security_group_names,omitzero"`
 	paramObj
 }
@@ -2003,16 +1853,13 @@ func (r InstanceUnassignSecurityGroupParams) MarshalJSON() (data []byte, err err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/InstancePortsSecurityGroupsSchema/properties/ports_security_group_names/items'
-// "$.components.schemas.InstancePortsSecurityGroupsSchema.properties.ports_security_group_names.items"
+// Port security group names
 //
 // The properties PortID, SecurityGroupNames are required.
 type InstanceUnassignSecurityGroupParamsPortsSecurityGroupName struct {
-	// '#/components/schemas/PortSecurityGroupNamesSchema/properties/port_id'
-	// "$.components.schemas.PortSecurityGroupNamesSchema.properties.port_id"
+	// Port ID. If None, security groups will be applied to all ports
 	PortID param.Opt[string] `json:"port_id,omitzero,required"`
-	// '#/components/schemas/PortSecurityGroupNamesSchema/properties/security_group_names'
-	// "$.components.schemas.PortSecurityGroupNamesSchema.properties.security_group_names"
+	// List of security group names
 	SecurityGroupNames []string `json:"security_group_names,omitzero,required"`
 	paramObj
 }

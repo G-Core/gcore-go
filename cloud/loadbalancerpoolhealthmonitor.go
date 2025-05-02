@@ -86,37 +86,27 @@ func (r *LoadBalancerPoolHealthMonitorService) Delete(ctx context.Context, poolI
 }
 
 type LoadBalancerPoolHealthMonitorNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D%2Fhealthmonitor/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}/healthmonitor'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D%2Fhealthmonitor/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}/healthmonitor'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/delay'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.delay"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// The time, in seconds, between sending probes to members
 	Delay int64 `json:"delay,required"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/max_retries'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.max_retries"
+	// Number of successes before the member is switched to ONLINE state
 	MaxRetries int64 `json:"max_retries,required"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/timeout'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.timeout"
+	// The maximum time to connect. Must be less than the delay value
 	Timeout int64 `json:"timeout,required"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/type'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.type"
+	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type HealthMonitorType `json:"type,omitzero,required"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/expected_codes/anyOf/0'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.expected_codes.anyOf[0]"
+	// Can only be used together with `HTTP` or `HTTPS` health monitor type.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/max_retries_down/anyOf/0'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.max_retries_down.anyOf[0]"
+	// Number of failures before the member is switched to ERROR state.
 	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/url_path/anyOf/0'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.url_path.anyOf[0]"
+	// URL Path. Defaults to '/'. Can only be used together with `HTTP` or `HTTPS`
+	// health monitor type.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/http_method/anyOf/0'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.http_method.anyOf[0]"
+	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
+	// type.
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".
@@ -136,12 +126,8 @@ func (r LoadBalancerPoolHealthMonitorNewParams) MarshalJSON() (data []byte, err 
 }
 
 type LoadBalancerPoolHealthMonitorDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D%2Fhealthmonitor/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}/healthmonitor']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D%2Fhealthmonitor/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}/healthmonitor']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 

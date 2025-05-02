@@ -228,49 +228,36 @@ func (r *NetworkRouterService) Get(ctx context.Context, routerID string, query N
 	return
 }
 
-// '#/components/schemas/RouterSerializer' "$.components.schemas.RouterSerializer"
 type Router struct {
-	// '#/components/schemas/RouterSerializer/properties/id'
-	// "$.components.schemas.RouterSerializer.properties.id"
+	// Router ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/RouterSerializer/properties/created_at'
-	// "$.components.schemas.RouterSerializer.properties.created_at"
+	// Datetime when the router was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/RouterSerializer/properties/distributed'
-	// "$.components.schemas.RouterSerializer.properties.distributed"
+	// Whether the router is distributed or centralized.
 	Distributed bool `json:"distributed,required"`
-	// '#/components/schemas/RouterSerializer/properties/interfaces'
-	// "$.components.schemas.RouterSerializer.properties.interfaces"
+	// List of router interfaces.
 	Interfaces []RouterInterface `json:"interfaces,required"`
-	// '#/components/schemas/RouterSerializer/properties/name'
-	// "$.components.schemas.RouterSerializer.properties.name"
+	// Router name
 	Name string `json:"name,required"`
-	// '#/components/schemas/RouterSerializer/properties/project_id'
-	// "$.components.schemas.RouterSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/RouterSerializer/properties/region'
-	// "$.components.schemas.RouterSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/RouterSerializer/properties/region_id'
-	// "$.components.schemas.RouterSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/RouterSerializer/properties/routes'
-	// "$.components.schemas.RouterSerializer.properties.routes"
+	// List of custom routes.
 	Routes []Route `json:"routes,required"`
-	// '#/components/schemas/RouterSerializer/properties/status'
-	// "$.components.schemas.RouterSerializer.properties.status"
+	// Status of the router.
 	Status string `json:"status,required"`
-	// '#/components/schemas/RouterSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.RouterSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,required" format:"uuid4"`
-	// '#/components/schemas/RouterSerializer/properties/updated_at'
-	// "$.components.schemas.RouterSerializer.properties.updated_at"
+	// Datetime when the router was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// '#/components/schemas/RouterSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.RouterSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// '#/components/schemas/RouterSerializer/properties/external_gateway_info/anyOf/0'
-	// "$.components.schemas.RouterSerializer.properties.external_gateway_info.anyOf[0]"
+	// State of this router's external gateway.
 	ExternalGatewayInfo RouterExternalGatewayInfo `json:"external_gateway_info,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -300,20 +287,14 @@ func (r *Router) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/RouterSerializer/properties/interfaces/items'
-// "$.components.schemas.RouterSerializer.properties.interfaces.items"
 type RouterInterface struct {
-	// '#/components/schemas/PortSerializer/properties/ip_assignments'
-	// "$.components.schemas.PortSerializer.properties.ip_assignments"
+	// IP addresses assigned to this port
 	IPAssignments []IPAssignment `json:"ip_assignments,required"`
-	// '#/components/schemas/PortSerializer/properties/network_id'
-	// "$.components.schemas.PortSerializer.properties.network_id"
+	// ID of the network the port is attached to
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/PortSerializer/properties/port_id'
-	// "$.components.schemas.PortSerializer.properties.port_id"
+	// ID of virtual ethernet port object
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// '#/components/schemas/PortSerializer/properties/mac_address/anyOf/0'
-	// "$.components.schemas.PortSerializer.properties.mac_address.anyOf[0]"
+	// MAC address of the virtual port
 	MacAddress string `json:"mac_address,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -333,17 +314,13 @@ func (r *RouterInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/RouterSerializer/properties/external_gateway_info/anyOf/0'
-// "$.components.schemas.RouterSerializer.properties.external_gateway_info.anyOf[0]"
+// State of this router's external gateway.
 type RouterExternalGatewayInfo struct {
-	// '#/components/schemas/ExternalGatewaySerializer/properties/enable_snat'
-	// "$.components.schemas.ExternalGatewaySerializer.properties.enable_snat"
+	// Is SNAT enabled.
 	EnableSnat bool `json:"enable_snat,required"`
-	// '#/components/schemas/ExternalGatewaySerializer/properties/external_fixed_ips'
-	// "$.components.schemas.ExternalGatewaySerializer.properties.external_fixed_ips"
+	// List of external IPs that emit SNAT-ed traffic.
 	ExternalFixedIPs []IPAssignment `json:"external_fixed_ips,required"`
-	// '#/components/schemas/ExternalGatewaySerializer/properties/network_id'
-	// "$.components.schemas.ExternalGatewaySerializer.properties.network_id"
+	// Id of the external network.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -362,14 +339,10 @@ func (r *RouterExternalGatewayInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/RouterSerializerList'
-// "$.components.schemas.RouterSerializerList"
 type RouterList struct {
-	// '#/components/schemas/RouterSerializerList/properties/count'
-	// "$.components.schemas.RouterSerializerList.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/RouterSerializerList/properties/results'
-	// "$.components.schemas.RouterSerializerList.properties.results"
+	// Objects
 	Results []Router `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -387,13 +360,9 @@ func (r *RouterList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/SubnetIdSerializer'
-// "$.components.schemas.SubnetIdSerializer"
-//
 // The property SubnetID is required.
 type SubnetIDParam struct {
-	// '#/components/schemas/SubnetIdSerializer/properties/subnet_id'
-	// "$.components.schemas.SubnetIdSerializer.properties.subnet_id"
+	// Target IP is identified by it's subnet
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
 	paramObj
 }
@@ -407,23 +376,14 @@ func (r SubnetIDParam) MarshalJSON() (data []byte, err error) {
 }
 
 type NetworkRouterNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateRouterSerializer/properties/name'
-	// "$.components.schemas.CreateRouterSerializer.properties.name"
-	Name string `json:"name,required"`
-	// '#/components/schemas/CreateRouterSerializer/properties/external_gateway_info'
-	// "$.components.schemas.CreateRouterSerializer.properties.external_gateway_info"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// name of router
+	Name                string                                         `json:"name,required"`
 	ExternalGatewayInfo NetworkRouterNewParamsExternalGatewayInfoUnion `json:"external_gateway_info,omitzero"`
-	// '#/components/schemas/CreateRouterSerializer/properties/interfaces/anyOf/0'
-	// "$.components.schemas.CreateRouterSerializer.properties.interfaces.anyOf[0]"
+	// List of interfaces to attach to router immediately after creation.
 	Interfaces []NetworkRouterNewParamsInterface `json:"interfaces,omitzero"`
-	// '#/components/schemas/CreateRouterSerializer/properties/routes/anyOf/0'
-	// "$.components.schemas.CreateRouterSerializer.properties.routes.anyOf[0]"
+	// List of custom routes.
 	Routes []NetworkRouterNewParamsRoute `json:"routes,omitzero"`
 	paramObj
 }
@@ -441,11 +401,7 @@ func (r NetworkRouterNewParams) MarshalJSON() (data []byte, err error) {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type NetworkRouterNewParamsExternalGatewayInfoUnion struct {
-	// '#/components/schemas/CreateRouterSerializer/properties/external_gateway_info/anyOf/0'
-	// "$.components.schemas.CreateRouterSerializer.properties.external_gateway_info.anyOf[0]"
-	OfRouterExternalManualGwSerializer *NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer `json:",omitzero,inline"`
-	// '#/components/schemas/CreateRouterSerializer/properties/external_gateway_info/anyOf/1'
-	// "$.components.schemas.CreateRouterSerializer.properties.external_gateway_info.anyOf[1]"
+	OfRouterExternalManualGwSerializer  *NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer  `json:",omitzero,inline"`
 	OfRouterExternalDefaultGwSerializer *NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer `json:",omitzero,inline"`
 	paramUnion
 }
@@ -496,19 +452,13 @@ func (u NetworkRouterNewParamsExternalGatewayInfoUnion) GetType() *string {
 	return nil
 }
 
-// '#/components/schemas/CreateRouterSerializer/properties/external_gateway_info/anyOf/0'
-// "$.components.schemas.CreateRouterSerializer.properties.external_gateway_info.anyOf[0]"
-//
 // The property NetworkID is required.
 type NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer struct {
-	// '#/components/schemas/RouterExternalManualGwSerializer/properties/network_id'
-	// "$.components.schemas.RouterExternalManualGwSerializer.properties.network_id"
+	// id of the external network.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/RouterExternalManualGwSerializer/properties/enable_snat'
-	// "$.components.schemas.RouterExternalManualGwSerializer.properties.enable_snat"
+	// Is SNAT enabled. Defaults to true.
 	EnableSnat param.Opt[bool] `json:"enable_snat,omitzero"`
-	// '#/components/schemas/RouterExternalManualGwSerializer/properties/type'
-	// "$.components.schemas.RouterExternalManualGwSerializer.properties.type"
+	// must be 'manual'.
 	//
 	// Any of "manual".
 	Type string `json:"type,omitzero"`
@@ -531,14 +481,10 @@ func init() {
 	)
 }
 
-// '#/components/schemas/CreateRouterSerializer/properties/external_gateway_info/anyOf/1'
-// "$.components.schemas.CreateRouterSerializer.properties.external_gateway_info.anyOf[1]"
 type NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer struct {
-	// '#/components/schemas/RouterExternalDefaultGwSerializer/properties/enable_snat'
-	// "$.components.schemas.RouterExternalDefaultGwSerializer.properties.enable_snat"
+	// Is SNAT enabled. Defaults to true.
 	EnableSnat param.Opt[bool] `json:"enable_snat,omitzero"`
-	// '#/components/schemas/RouterExternalDefaultGwSerializer/properties/type'
-	// "$.components.schemas.RouterExternalDefaultGwSerializer.properties.type"
+	// must be 'default'.
 	//
 	// Any of "default".
 	Type string `json:"type,omitzero"`
@@ -561,16 +507,11 @@ func init() {
 	)
 }
 
-// '#/components/schemas/CreateRouterSerializer/properties/interfaces/anyOf/0/items'
-// "$.components.schemas.CreateRouterSerializer.properties.interfaces.anyOf[0].items"
-//
 // The property SubnetID is required.
 type NetworkRouterNewParamsInterface struct {
-	// '#/components/schemas/CreateRouterInterfaceSubnetSerializer/properties/subnet_id'
-	// "$.components.schemas.CreateRouterInterfaceSubnetSerializer.properties.subnet_id"
+	// id of the subnet to attach to.
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// '#/components/schemas/CreateRouterInterfaceSubnetSerializer/properties/type'
-	// "$.components.schemas.CreateRouterInterfaceSubnetSerializer.properties.type"
+	// must be 'subnet'.
 	//
 	// Any of "subnet".
 	Type string `json:"type,omitzero"`
@@ -591,16 +532,12 @@ func init() {
 	)
 }
 
-// '#/components/schemas/CreateRouterSerializer/properties/routes/anyOf/0/items'
-// "$.components.schemas.CreateRouterSerializer.properties.routes.anyOf[0].items"
-//
 // The properties Destination, Nexthop are required.
 type NetworkRouterNewParamsRoute struct {
-	// '#/components/schemas/RouteInSerializer/properties/destination'
-	// "$.components.schemas.RouteInSerializer.properties.destination"
+	// CIDR of destination IPv4 subnet.
 	Destination string `json:"destination,required" format:"ipvanynetwork"`
-	// '#/components/schemas/RouteInSerializer/properties/nexthop'
-	// "$.components.schemas.RouteInSerializer.properties.nexthop"
+	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
+	// CIDR.
 	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
 	paramObj
 }
@@ -614,20 +551,13 @@ func (r NetworkRouterNewParamsRoute) MarshalJSON() (data []byte, err error) {
 }
 
 type NetworkRouterUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}'].patch.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}'].patch.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/PatchRouterSerializer/properties/name/anyOf/0'
-	// "$.components.schemas.PatchRouterSerializer.properties.name.anyOf[0]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// New name of router
 	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/PatchRouterSerializer/properties/external_gateway_info/anyOf/0'
-	// "$.components.schemas.PatchRouterSerializer.properties.external_gateway_info.anyOf[0]"
+	// New external gateway.
 	ExternalGatewayInfo NetworkRouterUpdateParamsExternalGatewayInfo `json:"external_gateway_info,omitzero"`
-	// '#/components/schemas/PatchRouterSerializer/properties/routes/anyOf/0'
-	// "$.components.schemas.PatchRouterSerializer.properties.routes.anyOf[0]"
+	// List of custom routes.
 	Routes []NetworkRouterUpdateParamsRoute `json:"routes,omitzero"`
 	paramObj
 }
@@ -641,19 +571,15 @@ func (r NetworkRouterUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/PatchRouterSerializer/properties/external_gateway_info/anyOf/0'
-// "$.components.schemas.PatchRouterSerializer.properties.external_gateway_info.anyOf[0]"
+// New external gateway.
 //
 // The property NetworkID is required.
 type NetworkRouterUpdateParamsExternalGatewayInfo struct {
-	// '#/components/schemas/RouterExternalManualGwSerializer/properties/network_id'
-	// "$.components.schemas.RouterExternalManualGwSerializer.properties.network_id"
+	// id of the external network.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/RouterExternalManualGwSerializer/properties/enable_snat'
-	// "$.components.schemas.RouterExternalManualGwSerializer.properties.enable_snat"
+	// Is SNAT enabled. Defaults to true.
 	EnableSnat param.Opt[bool] `json:"enable_snat,omitzero"`
-	// '#/components/schemas/RouterExternalManualGwSerializer/properties/type'
-	// "$.components.schemas.RouterExternalManualGwSerializer.properties.type"
+	// must be 'manual'.
 	//
 	// Any of "manual".
 	Type string `json:"type,omitzero"`
@@ -676,16 +602,12 @@ func init() {
 	)
 }
 
-// '#/components/schemas/PatchRouterSerializer/properties/routes/anyOf/0/items'
-// "$.components.schemas.PatchRouterSerializer.properties.routes.anyOf[0].items"
-//
 // The properties Destination, Nexthop are required.
 type NetworkRouterUpdateParamsRoute struct {
-	// '#/components/schemas/RouteInSerializer/properties/destination'
-	// "$.components.schemas.RouteInSerializer.properties.destination"
+	// CIDR of destination IPv4 subnet.
 	Destination string `json:"destination,required" format:"ipvanynetwork"`
-	// '#/components/schemas/RouteInSerializer/properties/nexthop'
-	// "$.components.schemas.RouteInSerializer.properties.nexthop"
+	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
+	// CIDR.
 	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
 	paramObj
 }
@@ -699,17 +621,11 @@ func (r NetworkRouterUpdateParamsRoute) MarshalJSON() (data []byte, err error) {
 }
 
 type NetworkRouterListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}'].get.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Limit the number of returned limit request entities.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}'].get.parameters[3]"
+	// Offset value is used to exclude the first set of records from the result.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
@@ -728,12 +644,8 @@ func (r NetworkRouterListParams) URLQuery() (v url.Values, err error) {
 }
 
 type NetworkRouterDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -742,17 +654,14 @@ type NetworkRouterDeleteParams struct {
 func (f NetworkRouterDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type NetworkRouterAttachSubnetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D%2Fattach/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}/attach'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D%2Fattach/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}/attach'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/AddRouterInterfaceSerializer/properties/subnet_id'
-	// "$.components.schemas.AddRouterInterfaceSerializer.properties.subnet_id"
+	// Subnet ID on which router interface will be created
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// '#/components/schemas/AddRouterInterfaceSerializer/properties/ip_address'
-	// "$.components.schemas.AddRouterInterfaceSerializer.properties.ip_address"
+	// IP address to assign for router's interface, if not specified, address will be
+	// selected automatically
 	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipvanyaddress"`
 	paramObj
 }
@@ -767,15 +676,9 @@ func (r NetworkRouterAttachSubnetParams) MarshalJSON() (data []byte, err error) 
 }
 
 type NetworkRouterDetachSubnetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D%2Fdetach/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}/detach'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D%2Fdetach/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}/detach'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D%2Fdetach/post/requestBody/content/application%2Fjson/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}/detach'].post.requestBody.content['application/json'].schema"
-	SubnetID SubnetIDParam
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	SubnetID  SubnetIDParam
 	paramObj
 }
 
@@ -788,12 +691,8 @@ func (r NetworkRouterDetachSubnetParams) MarshalJSON() (data []byte, err error) 
 }
 
 type NetworkRouterGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Frouters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brouter_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/routers/{project_id}/{region_id}/{router_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 

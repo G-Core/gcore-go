@@ -69,14 +69,10 @@ func (r *QuotaService) GetGlobal(ctx context.Context, clientID int64, opts ...op
 	return
 }
 
-// '#/paths/%2Fcloud%2Fv2%2Fclient_quotas/get/responses/200/content/application%2Fjson/schema'
-// "$.paths['/cloud/v2/client_quotas'].get.responses[200].content['application/json'].schema"
 type QuotaGetAllResponse struct {
-	// '#/components/schemas/AllClientQuotasSerializer/properties/global_quotas'
-	// "$.components.schemas.AllClientQuotasSerializer.properties.global_quotas"
+	// Global entity quotas
 	GlobalQuotas QuotaGetAllResponseGlobalQuotas `json:"global_quotas"`
-	// '#/components/schemas/AllClientQuotasSerializer/properties/regional_quotas'
-	// "$.components.schemas.AllClientQuotasSerializer.properties.regional_quotas"
+	// Regional entity quotas. Only contains initialized quotas.
 	RegionalQuotas []QuotaGetAllResponseRegionalQuota `json:"regional_quotas"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -94,50 +90,35 @@ func (r *QuotaGetAllResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/AllClientQuotasSerializer/properties/global_quotas'
-// "$.components.schemas.AllClientQuotasSerializer.properties.global_quotas"
+// Global entity quotas
 type QuotaGetAllResponseGlobalQuotas struct {
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_cpu_millicore_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_cpu_millicore_count_limit"
+	// Inference CPU millicore count limit
 	InferenceCPUMillicoreCountLimit int64 `json:"inference_cpu_millicore_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_cpu_millicore_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_cpu_millicore_count_usage"
+	// Inference CPU millicore count usage
 	InferenceCPUMillicoreCountUsage int64 `json:"inference_cpu_millicore_count_usage"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_gpu_a100_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_gpu_a100_count_limit"
+	// Inference GPU A100 Count limit
 	InferenceGPUA100CountLimit int64 `json:"inference_gpu_a100_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_gpu_a100_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_gpu_a100_count_usage"
+	// Inference GPU A100 Count usage
 	InferenceGPUA100CountUsage int64 `json:"inference_gpu_a100_count_usage"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_gpu_h100_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_gpu_h100_count_limit"
+	// Inference GPU H100 Count limit
 	InferenceGPUH100CountLimit int64 `json:"inference_gpu_h100_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_gpu_h100_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_gpu_h100_count_usage"
+	// Inference GPU H100 Count usage
 	InferenceGPUH100CountUsage int64 `json:"inference_gpu_h100_count_usage"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_gpu_l40s_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_gpu_l40s_count_limit"
+	// Inference GPU L40s Count limit
 	InferenceGPUL40sCountLimit int64 `json:"inference_gpu_l40s_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_gpu_l40s_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_gpu_l40s_count_usage"
+	// Inference GPU L40s Count usage
 	InferenceGPUL40sCountUsage int64 `json:"inference_gpu_l40s_count_usage"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_instance_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_instance_count_limit"
+	// Inference instance count limit
 	InferenceInstanceCountLimit int64 `json:"inference_instance_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_instance_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_instance_count_usage"
+	// Inference instance count usage
 	InferenceInstanceCountUsage int64 `json:"inference_instance_count_usage"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/keypair_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.keypair_count_limit"
+	// SSH Keys Count limit
 	KeypairCountLimit int64 `json:"keypair_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/keypair_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.keypair_count_usage"
+	// SSH Keys Count usage
 	KeypairCountUsage int64 `json:"keypair_count_usage"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/project_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.project_count_limit"
+	// Projects Count limit
 	ProjectCountLimit int64 `json:"project_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/project_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.project_count_usage"
+	// Projects Count usage
 	ProjectCountUsage int64 `json:"project_count_usage"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -167,287 +148,192 @@ func (r *QuotaGetAllResponseGlobalQuotas) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/AllClientQuotasSerializer/properties/regional_quotas/items'
-// "$.components.schemas.AllClientQuotasSerializer.properties.regional_quotas.items"
 type QuotaGetAllResponseRegionalQuota struct {
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_basic_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_basic_count_limit"
+	// Basic bare metal servers count limit
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_basic_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_basic_count_usage"
+	// Basic bare metal servers count usage
 	BaremetalBasicCountUsage int64 `json:"baremetal_basic_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_gpu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_gpu_count_limit"
+	// AI GPU bare metal servers count limit
 	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_gpu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_gpu_count_usage"
+	// AI GPU bare metal servers count usage
 	BaremetalGPUCountUsage int64 `json:"baremetal_gpu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_hf_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_hf_count_limit"
+	// High-frequency bare metal servers count limit
 	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_hf_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_hf_count_usage"
+	// High-frequency bare metal servers count usage
 	BaremetalHfCountUsage int64 `json:"baremetal_hf_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_infrastructure_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_infrastructure_count_limit"
+	// Infrastructure bare metal servers count limit
 	BaremetalInfrastructureCountLimit int64 `json:"baremetal_infrastructure_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_infrastructure_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_infrastructure_count_usage"
+	// Infrastructure bare metal servers count usage
 	BaremetalInfrastructureCountUsage int64 `json:"baremetal_infrastructure_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_network_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_network_count_limit"
+	// Bare metal Network Count limit
 	BaremetalNetworkCountLimit int64 `json:"baremetal_network_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_network_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_network_count_usage"
+	// Bare metal Network Count usage
 	BaremetalNetworkCountUsage int64 `json:"baremetal_network_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_storage_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_storage_count_limit"
+	// Storage bare metal servers count limit
 	BaremetalStorageCountLimit int64 `json:"baremetal_storage_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_storage_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_storage_count_usage"
+	// Storage bare metal servers count usage
 	BaremetalStorageCountUsage int64 `json:"baremetal_storage_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_container_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_container_count_limit"
+	// Containers count limit
 	CaasContainerCountLimit int64 `json:"caas_container_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_container_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_container_count_usage"
+	// Containers count usage
 	CaasContainerCountUsage int64 `json:"caas_container_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_cpu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_cpu_count_limit"
+	// mCPU count for containers limit
 	CaasCPUCountLimit int64 `json:"caas_cpu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_cpu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_cpu_count_usage"
+	// mCPU count for containers usage
 	CaasCPUCountUsage int64 `json:"caas_cpu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_gpu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_gpu_count_limit"
+	// Containers gpu count limit
 	CaasGPUCountLimit int64 `json:"caas_gpu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_gpu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_gpu_count_usage"
+	// Containers gpu count usage
 	CaasGPUCountUsage int64 `json:"caas_gpu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_ram_size_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_ram_size_limit"
+	// MB memory count for containers limit
 	CaasRamSizeLimit int64 `json:"caas_ram_size_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_ram_size_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_ram_size_usage"
+	// MB memory count for containers usage
 	CaasRamSizeUsage int64 `json:"caas_ram_size_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/cluster_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.cluster_count_limit"
+	// K8s clusters count limit
 	ClusterCountLimit int64 `json:"cluster_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/cluster_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.cluster_count_usage"
+	// K8s clusters count usage
 	ClusterCountUsage int64 `json:"cluster_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/cpu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.cpu_count_limit"
+	// vCPU Count limit
 	CPUCountLimit int64 `json:"cpu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/cpu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.cpu_count_usage"
+	// vCPU Count usage
 	CPUCountUsage int64 `json:"cpu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/dbaas_postgres_cluster_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.dbaas_postgres_cluster_count_limit"
+	// DBaaS cluster count limit
 	DbaasPostgresClusterCountLimit int64 `json:"dbaas_postgres_cluster_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/dbaas_postgres_cluster_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.dbaas_postgres_cluster_count_usage"
+	// DBaaS cluster count usage
 	DbaasPostgresClusterCountUsage int64 `json:"dbaas_postgres_cluster_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/external_ip_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.external_ip_count_limit"
+	// External IP Count limit
 	ExternalIPCountLimit int64 `json:"external_ip_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/external_ip_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.external_ip_count_usage"
+	// External IP Count usage
 	ExternalIPCountUsage int64 `json:"external_ip_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_cpu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_cpu_count_limit"
+	// mCPU count for functions limit
 	FaasCPUCountLimit int64 `json:"faas_cpu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_cpu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_cpu_count_usage"
+	// mCPU count for functions usage
 	FaasCPUCountUsage int64 `json:"faas_cpu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_function_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_function_count_limit"
+	// Functions count limit
 	FaasFunctionCountLimit int64 `json:"faas_function_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_function_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_function_count_usage"
+	// Functions count usage
 	FaasFunctionCountUsage int64 `json:"faas_function_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_namespace_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_namespace_count_limit"
+	// Functions namespace count limit
 	FaasNamespaceCountLimit int64 `json:"faas_namespace_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_namespace_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_namespace_count_usage"
+	// Functions namespace count usage
 	FaasNamespaceCountUsage int64 `json:"faas_namespace_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_ram_size_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_ram_size_limit"
+	// MB memory count for functions limit
 	FaasRamSizeLimit int64 `json:"faas_ram_size_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_ram_size_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_ram_size_usage"
+	// MB memory count for functions usage
 	FaasRamSizeUsage int64 `json:"faas_ram_size_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/firewall_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.firewall_count_limit"
+	// Firewalls Count limit
 	FirewallCountLimit int64 `json:"firewall_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/firewall_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.firewall_count_usage"
+	// Firewalls Count usage
 	FirewallCountUsage int64 `json:"firewall_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/floating_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.floating_count_limit"
+	// Floating IP Count limit
 	FloatingCountLimit int64 `json:"floating_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/floating_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.floating_count_usage"
+	// Floating IP Count usage
 	FloatingCountUsage int64 `json:"floating_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_count_limit"
+	// GPU Count limit
 	GPUCountLimit int64 `json:"gpu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_count_usage"
+	// GPU Count usage
 	GPUCountUsage int64 `json:"gpu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_virtual_a100_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_virtual_a100_count_limit"
+	// Virtual A100 GPU card count limit
 	GPUVirtualA100CountLimit int64 `json:"gpu_virtual_a100_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_virtual_a100_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_virtual_a100_count_usage"
+	// Virtual A100 GPU card count usage
 	GPUVirtualA100CountUsage int64 `json:"gpu_virtual_a100_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_virtual_h100_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_virtual_h100_count_limit"
+	// Virtual H100 GPU card count limit
 	GPUVirtualH100CountLimit int64 `json:"gpu_virtual_h100_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_virtual_h100_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_virtual_h100_count_usage"
+	// Virtual H100 GPU card count usage
 	GPUVirtualH100CountUsage int64 `json:"gpu_virtual_h100_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_virtual_l40s_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_virtual_l40s_count_limit"
+	// Virtual L40S GPU card count limit
 	GPUVirtualL40sCountLimit int64 `json:"gpu_virtual_l40s_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_virtual_l40s_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_virtual_l40s_count_usage"
+	// Virtual L40S GPU card count usage
 	GPUVirtualL40sCountUsage int64 `json:"gpu_virtual_l40s_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/image_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.image_count_limit"
+	// Images Count limit
 	ImageCountLimit int64 `json:"image_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/image_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.image_count_usage"
+	// Images Count usage
 	ImageCountUsage int64 `json:"image_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/image_size_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.image_size_limit"
+	// Images Size, GiB limit
 	ImageSizeLimit int64 `json:"image_size_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/image_size_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.image_size_usage"
+	// Images Size, GiB usage
 	ImageSizeUsage int64 `json:"image_size_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/ipu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.ipu_count_limit"
+	// IPU Count limit
 	IpuCountLimit int64 `json:"ipu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/ipu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.ipu_count_usage"
+	// IPU Count usage
 	IpuCountUsage int64 `json:"ipu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/laas_topic_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.laas_topic_count_limit"
+	// LaaS Topics Count limit
 	LaasTopicCountLimit int64 `json:"laas_topic_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/laas_topic_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.laas_topic_count_usage"
+	// LaaS Topics Count usage
 	LaasTopicCountUsage int64 `json:"laas_topic_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/loadbalancer_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.loadbalancer_count_limit"
+	// Load Balancers Count limit
 	LoadbalancerCountLimit int64 `json:"loadbalancer_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/loadbalancer_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.loadbalancer_count_usage"
+	// Load Balancers Count usage
 	LoadbalancerCountUsage int64 `json:"loadbalancer_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/network_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.network_count_limit"
+	// Networks Count limit
 	NetworkCountLimit int64 `json:"network_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/network_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.network_count_usage"
+	// Networks Count usage
 	NetworkCountUsage int64 `json:"network_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/ram_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.ram_limit"
+	// RAM Size, GiB limit
 	RamLimit int64 `json:"ram_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/ram_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.ram_usage"
+	// RAM Size, GiB usage
 	RamUsage int64 `json:"ram_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/region_id'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/registry_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.registry_count_limit"
+	// Registries count limit
 	RegistryCountLimit int64 `json:"registry_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/registry_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.registry_count_usage"
+	// Registries count usage
 	RegistryCountUsage int64 `json:"registry_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/registry_storage_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.registry_storage_limit"
+	// Registries volume usage, GiB limit
 	RegistryStorageLimit int64 `json:"registry_storage_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/registry_storage_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.registry_storage_usage"
+	// Registries volume usage, GiB usage
 	RegistryStorageUsage int64 `json:"registry_storage_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/router_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.router_count_limit"
+	// Routers Count limit
 	RouterCountLimit int64 `json:"router_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/router_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.router_count_usage"
+	// Routers Count usage
 	RouterCountUsage int64 `json:"router_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/secret_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.secret_count_limit"
+	// Secret Count limit
 	SecretCountLimit int64 `json:"secret_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/secret_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.secret_count_usage"
+	// Secret Count usage
 	SecretCountUsage int64 `json:"secret_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/servergroup_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.servergroup_count_limit"
+	// Placement Group Count limit
 	ServergroupCountLimit int64 `json:"servergroup_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/servergroup_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.servergroup_count_usage"
+	// Placement Group Count usage
 	ServergroupCountUsage int64 `json:"servergroup_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/sfs_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.sfs_count_limit"
+	// Shared file system Count limit
 	SfsCountLimit int64 `json:"sfs_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/sfs_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.sfs_count_usage"
+	// Shared file system Count usage
 	SfsCountUsage int64 `json:"sfs_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/sfs_size_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.sfs_size_limit"
+	// Shared file system Size, GiB limit
 	SfsSizeLimit int64 `json:"sfs_size_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/sfs_size_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.sfs_size_usage"
+	// Shared file system Size, GiB usage
 	SfsSizeUsage int64 `json:"sfs_size_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/shared_vm_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.shared_vm_count_limit"
+	// Basic VMs Count limit
 	SharedVmCountLimit int64 `json:"shared_vm_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/shared_vm_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.shared_vm_count_usage"
+	// Basic VMs Count usage
 	SharedVmCountUsage int64 `json:"shared_vm_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/snapshot_schedule_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.snapshot_schedule_count_limit"
+	// Snapshot Schedules Count limit
 	SnapshotScheduleCountLimit int64 `json:"snapshot_schedule_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/snapshot_schedule_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.snapshot_schedule_count_usage"
+	// Snapshot Schedules Count usage
 	SnapshotScheduleCountUsage int64 `json:"snapshot_schedule_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/subnet_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.subnet_count_limit"
+	// Subnets Count limit
 	SubnetCountLimit int64 `json:"subnet_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/subnet_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.subnet_count_usage"
+	// Subnets Count usage
 	SubnetCountUsage int64 `json:"subnet_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/vm_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.vm_count_limit"
+	// Instances Dedicated Count limit
 	VmCountLimit int64 `json:"vm_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/vm_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.vm_count_usage"
+	// Instances Dedicated Count usage
 	VmCountUsage int64 `json:"vm_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_count_limit"
+	// Volumes Count limit
 	VolumeCountLimit int64 `json:"volume_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_count_usage"
+	// Volumes Count usage
 	VolumeCountUsage int64 `json:"volume_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_size_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_size_limit"
+	// Volumes Size, GiB limit
 	VolumeSizeLimit int64 `json:"volume_size_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_size_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_size_usage"
+	// Volumes Size, GiB usage
 	VolumeSizeUsage int64 `json:"volume_size_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_snapshots_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_snapshots_count_limit"
+	// Snapshots Count limit
 	VolumeSnapshotsCountLimit int64 `json:"volume_snapshots_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_snapshots_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_snapshots_count_usage"
+	// Snapshots Count usage
 	VolumeSnapshotsCountUsage int64 `json:"volume_snapshots_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_snapshots_size_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_snapshots_size_limit"
+	// Snapshots Size, GiB limit
 	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_snapshots_size_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_snapshots_size_usage"
+	// Snapshots Size, GiB usage
 	VolumeSnapshotsSizeUsage int64 `json:"volume_snapshots_size_usage"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -556,287 +442,192 @@ func (r *QuotaGetAllResponseRegionalQuota) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/paths/%2Fcloud%2Fv2%2Fregional_quotas%2F%7Bclient_id%7D%2F%7Bregion_id%7D/get/responses/200/content/application%2Fjson/schema'
-// "$.paths['/cloud/v2/regional_quotas/{client_id}/{region_id}'].get.responses[200].content['application/json'].schema"
 type QuotaGetByRegionResponse struct {
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_basic_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_basic_count_limit"
+	// Basic bare metal servers count limit
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_basic_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_basic_count_usage"
+	// Basic bare metal servers count usage
 	BaremetalBasicCountUsage int64 `json:"baremetal_basic_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_gpu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_gpu_count_limit"
+	// AI GPU bare metal servers count limit
 	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_gpu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_gpu_count_usage"
+	// AI GPU bare metal servers count usage
 	BaremetalGPUCountUsage int64 `json:"baremetal_gpu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_hf_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_hf_count_limit"
+	// High-frequency bare metal servers count limit
 	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_hf_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_hf_count_usage"
+	// High-frequency bare metal servers count usage
 	BaremetalHfCountUsage int64 `json:"baremetal_hf_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_infrastructure_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_infrastructure_count_limit"
+	// Infrastructure bare metal servers count limit
 	BaremetalInfrastructureCountLimit int64 `json:"baremetal_infrastructure_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_infrastructure_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_infrastructure_count_usage"
+	// Infrastructure bare metal servers count usage
 	BaremetalInfrastructureCountUsage int64 `json:"baremetal_infrastructure_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_network_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_network_count_limit"
+	// Bare metal Network Count limit
 	BaremetalNetworkCountLimit int64 `json:"baremetal_network_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_network_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_network_count_usage"
+	// Bare metal Network Count usage
 	BaremetalNetworkCountUsage int64 `json:"baremetal_network_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_storage_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_storage_count_limit"
+	// Storage bare metal servers count limit
 	BaremetalStorageCountLimit int64 `json:"baremetal_storage_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/baremetal_storage_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.baremetal_storage_count_usage"
+	// Storage bare metal servers count usage
 	BaremetalStorageCountUsage int64 `json:"baremetal_storage_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_container_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_container_count_limit"
+	// Containers count limit
 	CaasContainerCountLimit int64 `json:"caas_container_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_container_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_container_count_usage"
+	// Containers count usage
 	CaasContainerCountUsage int64 `json:"caas_container_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_cpu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_cpu_count_limit"
+	// mCPU count for containers limit
 	CaasCPUCountLimit int64 `json:"caas_cpu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_cpu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_cpu_count_usage"
+	// mCPU count for containers usage
 	CaasCPUCountUsage int64 `json:"caas_cpu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_gpu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_gpu_count_limit"
+	// Containers gpu count limit
 	CaasGPUCountLimit int64 `json:"caas_gpu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_gpu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_gpu_count_usage"
+	// Containers gpu count usage
 	CaasGPUCountUsage int64 `json:"caas_gpu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_ram_size_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_ram_size_limit"
+	// MB memory count for containers limit
 	CaasRamSizeLimit int64 `json:"caas_ram_size_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/caas_ram_size_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.caas_ram_size_usage"
+	// MB memory count for containers usage
 	CaasRamSizeUsage int64 `json:"caas_ram_size_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/cluster_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.cluster_count_limit"
+	// K8s clusters count limit
 	ClusterCountLimit int64 `json:"cluster_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/cluster_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.cluster_count_usage"
+	// K8s clusters count usage
 	ClusterCountUsage int64 `json:"cluster_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/cpu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.cpu_count_limit"
+	// vCPU Count limit
 	CPUCountLimit int64 `json:"cpu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/cpu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.cpu_count_usage"
+	// vCPU Count usage
 	CPUCountUsage int64 `json:"cpu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/dbaas_postgres_cluster_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.dbaas_postgres_cluster_count_limit"
+	// DBaaS cluster count limit
 	DbaasPostgresClusterCountLimit int64 `json:"dbaas_postgres_cluster_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/dbaas_postgres_cluster_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.dbaas_postgres_cluster_count_usage"
+	// DBaaS cluster count usage
 	DbaasPostgresClusterCountUsage int64 `json:"dbaas_postgres_cluster_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/external_ip_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.external_ip_count_limit"
+	// External IP Count limit
 	ExternalIPCountLimit int64 `json:"external_ip_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/external_ip_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.external_ip_count_usage"
+	// External IP Count usage
 	ExternalIPCountUsage int64 `json:"external_ip_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_cpu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_cpu_count_limit"
+	// mCPU count for functions limit
 	FaasCPUCountLimit int64 `json:"faas_cpu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_cpu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_cpu_count_usage"
+	// mCPU count for functions usage
 	FaasCPUCountUsage int64 `json:"faas_cpu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_function_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_function_count_limit"
+	// Functions count limit
 	FaasFunctionCountLimit int64 `json:"faas_function_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_function_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_function_count_usage"
+	// Functions count usage
 	FaasFunctionCountUsage int64 `json:"faas_function_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_namespace_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_namespace_count_limit"
+	// Functions namespace count limit
 	FaasNamespaceCountLimit int64 `json:"faas_namespace_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_namespace_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_namespace_count_usage"
+	// Functions namespace count usage
 	FaasNamespaceCountUsage int64 `json:"faas_namespace_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_ram_size_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_ram_size_limit"
+	// MB memory count for functions limit
 	FaasRamSizeLimit int64 `json:"faas_ram_size_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/faas_ram_size_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.faas_ram_size_usage"
+	// MB memory count for functions usage
 	FaasRamSizeUsage int64 `json:"faas_ram_size_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/firewall_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.firewall_count_limit"
+	// Firewalls Count limit
 	FirewallCountLimit int64 `json:"firewall_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/firewall_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.firewall_count_usage"
+	// Firewalls Count usage
 	FirewallCountUsage int64 `json:"firewall_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/floating_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.floating_count_limit"
+	// Floating IP Count limit
 	FloatingCountLimit int64 `json:"floating_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/floating_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.floating_count_usage"
+	// Floating IP Count usage
 	FloatingCountUsage int64 `json:"floating_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_count_limit"
+	// GPU Count limit
 	GPUCountLimit int64 `json:"gpu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_count_usage"
+	// GPU Count usage
 	GPUCountUsage int64 `json:"gpu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_virtual_a100_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_virtual_a100_count_limit"
+	// Virtual A100 GPU card count limit
 	GPUVirtualA100CountLimit int64 `json:"gpu_virtual_a100_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_virtual_a100_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_virtual_a100_count_usage"
+	// Virtual A100 GPU card count usage
 	GPUVirtualA100CountUsage int64 `json:"gpu_virtual_a100_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_virtual_h100_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_virtual_h100_count_limit"
+	// Virtual H100 GPU card count limit
 	GPUVirtualH100CountLimit int64 `json:"gpu_virtual_h100_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_virtual_h100_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_virtual_h100_count_usage"
+	// Virtual H100 GPU card count usage
 	GPUVirtualH100CountUsage int64 `json:"gpu_virtual_h100_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_virtual_l40s_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_virtual_l40s_count_limit"
+	// Virtual L40S GPU card count limit
 	GPUVirtualL40sCountLimit int64 `json:"gpu_virtual_l40s_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/gpu_virtual_l40s_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.gpu_virtual_l40s_count_usage"
+	// Virtual L40S GPU card count usage
 	GPUVirtualL40sCountUsage int64 `json:"gpu_virtual_l40s_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/image_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.image_count_limit"
+	// Images Count limit
 	ImageCountLimit int64 `json:"image_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/image_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.image_count_usage"
+	// Images Count usage
 	ImageCountUsage int64 `json:"image_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/image_size_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.image_size_limit"
+	// Images Size, GiB limit
 	ImageSizeLimit int64 `json:"image_size_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/image_size_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.image_size_usage"
+	// Images Size, GiB usage
 	ImageSizeUsage int64 `json:"image_size_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/ipu_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.ipu_count_limit"
+	// IPU Count limit
 	IpuCountLimit int64 `json:"ipu_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/ipu_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.ipu_count_usage"
+	// IPU Count usage
 	IpuCountUsage int64 `json:"ipu_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/laas_topic_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.laas_topic_count_limit"
+	// LaaS Topics Count limit
 	LaasTopicCountLimit int64 `json:"laas_topic_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/laas_topic_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.laas_topic_count_usage"
+	// LaaS Topics Count usage
 	LaasTopicCountUsage int64 `json:"laas_topic_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/loadbalancer_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.loadbalancer_count_limit"
+	// Load Balancers Count limit
 	LoadbalancerCountLimit int64 `json:"loadbalancer_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/loadbalancer_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.loadbalancer_count_usage"
+	// Load Balancers Count usage
 	LoadbalancerCountUsage int64 `json:"loadbalancer_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/network_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.network_count_limit"
+	// Networks Count limit
 	NetworkCountLimit int64 `json:"network_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/network_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.network_count_usage"
+	// Networks Count usage
 	NetworkCountUsage int64 `json:"network_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/ram_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.ram_limit"
+	// RAM Size, GiB limit
 	RamLimit int64 `json:"ram_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/ram_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.ram_usage"
+	// RAM Size, GiB usage
 	RamUsage int64 `json:"ram_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/region_id'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/registry_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.registry_count_limit"
+	// Registries count limit
 	RegistryCountLimit int64 `json:"registry_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/registry_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.registry_count_usage"
+	// Registries count usage
 	RegistryCountUsage int64 `json:"registry_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/registry_storage_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.registry_storage_limit"
+	// Registries volume usage, GiB limit
 	RegistryStorageLimit int64 `json:"registry_storage_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/registry_storage_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.registry_storage_usage"
+	// Registries volume usage, GiB usage
 	RegistryStorageUsage int64 `json:"registry_storage_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/router_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.router_count_limit"
+	// Routers Count limit
 	RouterCountLimit int64 `json:"router_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/router_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.router_count_usage"
+	// Routers Count usage
 	RouterCountUsage int64 `json:"router_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/secret_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.secret_count_limit"
+	// Secret Count limit
 	SecretCountLimit int64 `json:"secret_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/secret_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.secret_count_usage"
+	// Secret Count usage
 	SecretCountUsage int64 `json:"secret_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/servergroup_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.servergroup_count_limit"
+	// Placement Group Count limit
 	ServergroupCountLimit int64 `json:"servergroup_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/servergroup_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.servergroup_count_usage"
+	// Placement Group Count usage
 	ServergroupCountUsage int64 `json:"servergroup_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/sfs_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.sfs_count_limit"
+	// Shared file system Count limit
 	SfsCountLimit int64 `json:"sfs_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/sfs_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.sfs_count_usage"
+	// Shared file system Count usage
 	SfsCountUsage int64 `json:"sfs_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/sfs_size_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.sfs_size_limit"
+	// Shared file system Size, GiB limit
 	SfsSizeLimit int64 `json:"sfs_size_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/sfs_size_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.sfs_size_usage"
+	// Shared file system Size, GiB usage
 	SfsSizeUsage int64 `json:"sfs_size_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/shared_vm_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.shared_vm_count_limit"
+	// Basic VMs Count limit
 	SharedVmCountLimit int64 `json:"shared_vm_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/shared_vm_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.shared_vm_count_usage"
+	// Basic VMs Count usage
 	SharedVmCountUsage int64 `json:"shared_vm_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/snapshot_schedule_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.snapshot_schedule_count_limit"
+	// Snapshot Schedules Count limit
 	SnapshotScheduleCountLimit int64 `json:"snapshot_schedule_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/snapshot_schedule_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.snapshot_schedule_count_usage"
+	// Snapshot Schedules Count usage
 	SnapshotScheduleCountUsage int64 `json:"snapshot_schedule_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/subnet_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.subnet_count_limit"
+	// Subnets Count limit
 	SubnetCountLimit int64 `json:"subnet_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/subnet_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.subnet_count_usage"
+	// Subnets Count usage
 	SubnetCountUsage int64 `json:"subnet_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/vm_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.vm_count_limit"
+	// Instances Dedicated Count limit
 	VmCountLimit int64 `json:"vm_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/vm_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.vm_count_usage"
+	// Instances Dedicated Count usage
 	VmCountUsage int64 `json:"vm_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_count_limit"
+	// Volumes Count limit
 	VolumeCountLimit int64 `json:"volume_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_count_usage"
+	// Volumes Count usage
 	VolumeCountUsage int64 `json:"volume_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_size_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_size_limit"
+	// Volumes Size, GiB limit
 	VolumeSizeLimit int64 `json:"volume_size_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_size_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_size_usage"
+	// Volumes Size, GiB usage
 	VolumeSizeUsage int64 `json:"volume_size_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_snapshots_count_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_snapshots_count_limit"
+	// Snapshots Count limit
 	VolumeSnapshotsCountLimit int64 `json:"volume_snapshots_count_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_snapshots_count_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_snapshots_count_usage"
+	// Snapshots Count usage
 	VolumeSnapshotsCountUsage int64 `json:"volume_snapshots_count_usage"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_snapshots_size_limit'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_snapshots_size_limit"
+	// Snapshots Size, GiB limit
 	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit"`
-	// '#/components/schemas/RegionalQuotasSerializer/properties/volume_snapshots_size_usage'
-	// "$.components.schemas.RegionalQuotasSerializer.properties.volume_snapshots_size_usage"
+	// Snapshots Size, GiB usage
 	VolumeSnapshotsSizeUsage int64 `json:"volume_snapshots_size_usage"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -945,50 +736,34 @@ func (r *QuotaGetByRegionResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/paths/%2Fcloud%2Fv2%2Fglobal_quotas%2F%7Bclient_id%7D/get/responses/200/content/application%2Fjson/schema'
-// "$.paths['/cloud/v2/global_quotas/{client_id}'].get.responses[200].content['application/json'].schema"
 type QuotaGetGlobalResponse struct {
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_cpu_millicore_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_cpu_millicore_count_limit"
+	// Inference CPU millicore count limit
 	InferenceCPUMillicoreCountLimit int64 `json:"inference_cpu_millicore_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_cpu_millicore_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_cpu_millicore_count_usage"
+	// Inference CPU millicore count usage
 	InferenceCPUMillicoreCountUsage int64 `json:"inference_cpu_millicore_count_usage"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_gpu_a100_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_gpu_a100_count_limit"
+	// Inference GPU A100 Count limit
 	InferenceGPUA100CountLimit int64 `json:"inference_gpu_a100_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_gpu_a100_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_gpu_a100_count_usage"
+	// Inference GPU A100 Count usage
 	InferenceGPUA100CountUsage int64 `json:"inference_gpu_a100_count_usage"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_gpu_h100_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_gpu_h100_count_limit"
+	// Inference GPU H100 Count limit
 	InferenceGPUH100CountLimit int64 `json:"inference_gpu_h100_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_gpu_h100_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_gpu_h100_count_usage"
+	// Inference GPU H100 Count usage
 	InferenceGPUH100CountUsage int64 `json:"inference_gpu_h100_count_usage"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_gpu_l40s_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_gpu_l40s_count_limit"
+	// Inference GPU L40s Count limit
 	InferenceGPUL40sCountLimit int64 `json:"inference_gpu_l40s_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_gpu_l40s_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_gpu_l40s_count_usage"
+	// Inference GPU L40s Count usage
 	InferenceGPUL40sCountUsage int64 `json:"inference_gpu_l40s_count_usage"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_instance_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_instance_count_limit"
+	// Inference instance count limit
 	InferenceInstanceCountLimit int64 `json:"inference_instance_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/inference_instance_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.inference_instance_count_usage"
+	// Inference instance count usage
 	InferenceInstanceCountUsage int64 `json:"inference_instance_count_usage"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/keypair_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.keypair_count_limit"
+	// SSH Keys Count limit
 	KeypairCountLimit int64 `json:"keypair_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/keypair_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.keypair_count_usage"
+	// SSH Keys Count usage
 	KeypairCountUsage int64 `json:"keypair_count_usage"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/project_count_limit'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.project_count_limit"
+	// Projects Count limit
 	ProjectCountLimit int64 `json:"project_count_limit"`
-	// '#/components/schemas/GlobalQuotasSerializer/properties/project_count_usage'
-	// "$.components.schemas.GlobalQuotasSerializer.properties.project_count_usage"
+	// Projects Count usage
 	ProjectCountUsage int64 `json:"project_count_usage"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1019,11 +794,9 @@ func (r *QuotaGetGlobalResponse) UnmarshalJSON(data []byte) error {
 }
 
 type QuotaGetByRegionParams struct {
-	// '#/paths/%2Fcloud%2Fv2%2Fregional_quotas%2F%7Bclient_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v2/regional_quotas/{client_id}/{region_id}'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fregional_quotas%2F%7Bclient_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v2/regional_quotas/{client_id}/{region_id}'].get.parameters[0].schema"
+	// Client ID
 	ClientID int64 `path:"client_id,required" json:"-"`
 	paramObj
 }

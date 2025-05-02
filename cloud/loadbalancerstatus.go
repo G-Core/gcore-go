@@ -81,12 +81,8 @@ func (r *LoadBalancerStatusService) Get(ctx context.Context, loadbalancerID stri
 }
 
 type LoadBalancerStatusListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Fstatus/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/status'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Fstatus/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/status'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -95,12 +91,8 @@ type LoadBalancerStatusListParams struct {
 func (f LoadBalancerStatusListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type LoadBalancerStatusGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D%2Fstatus/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}/status'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D%2Fstatus/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}/status'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 

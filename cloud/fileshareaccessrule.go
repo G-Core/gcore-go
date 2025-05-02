@@ -117,22 +117,16 @@ func (r *FileShareAccessRuleService) Delete(ctx context.Context, accessRuleID st
 	return
 }
 
-// '#/components/schemas/AccessRuleSerializer'
-// "$.components.schemas.AccessRuleSerializer"
 type AccessRule struct {
-	// '#/components/schemas/AccessRuleSerializer/properties/id'
-	// "$.components.schemas.AccessRuleSerializer.properties.id"
+	// Access Rule ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/AccessRuleSerializer/properties/access_level'
-	// "$.components.schemas.AccessRuleSerializer.properties.access_level"
+	// Access mode
 	//
 	// Any of "ro", "rw".
 	AccessLevel AccessRuleAccessLevel `json:"access_level,required"`
-	// '#/components/schemas/AccessRuleSerializer/properties/access_to/anyOf/0'
-	// "$.components.schemas.AccessRuleSerializer.properties.access_to.anyOf[0]"
+	// Source IP or network
 	AccessTo string `json:"access_to,required" format:"ipvanyaddress"`
-	// '#/components/schemas/AccessRuleSerializer/properties/state'
-	// "$.components.schemas.AccessRuleSerializer.properties.state"
+	// Access Rule state
 	//
 	// Any of "active", "applying", "denying", "error", "new", "queued_to_apply",
 	// "queued_to_deny".
@@ -155,8 +149,7 @@ func (r *AccessRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/AccessRuleSerializer/properties/access_level'
-// "$.components.schemas.AccessRuleSerializer.properties.access_level"
+// Access mode
 type AccessRuleAccessLevel string
 
 const (
@@ -164,8 +157,7 @@ const (
 	AccessRuleAccessLevelRw AccessRuleAccessLevel = "rw"
 )
 
-// '#/components/schemas/AccessRuleSerializer/properties/state'
-// "$.components.schemas.AccessRuleSerializer.properties.state"
+// Access Rule state
 type AccessRuleState string
 
 const (
@@ -178,14 +170,10 @@ const (
 	AccessRuleStateQueuedToDeny  AccessRuleState = "queued_to_deny"
 )
 
-// '#/components/schemas/AccessRuleCollectionSerializer'
-// "$.components.schemas.AccessRuleCollectionSerializer"
 type AccessRuleList struct {
-	// '#/components/schemas/AccessRuleCollectionSerializer/properties/count'
-	// "$.components.schemas.AccessRuleCollectionSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/AccessRuleCollectionSerializer/properties/results'
-	// "$.components.schemas.AccessRuleCollectionSerializer.properties.results"
+	// Objects
 	Results []AccessRule `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -204,19 +192,15 @@ func (r *AccessRuleList) UnmarshalJSON(data []byte) error {
 }
 
 type FileShareAccessRuleNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateAccessRuleSerializer/properties/access_mode'
-	// "$.components.schemas.CreateAccessRuleSerializer.properties.access_mode"
+	// Access mode
 	//
 	// Any of "ro", "rw".
 	AccessMode FileShareAccessRuleNewParamsAccessMode `json:"access_mode,omitzero,required"`
-	// '#/components/schemas/CreateAccessRuleSerializer/properties/ip_address/anyOf/0'
-	// "$.components.schemas.CreateAccessRuleSerializer.properties.ip_address.anyOf[0]"
+	// Source IP or network
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	paramObj
 }
@@ -230,8 +214,7 @@ func (r FileShareAccessRuleNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateAccessRuleSerializer/properties/access_mode'
-// "$.components.schemas.CreateAccessRuleSerializer.properties.access_mode"
+// Access mode
 type FileShareAccessRuleNewParamsAccessMode string
 
 const (
@@ -240,11 +223,9 @@ const (
 )
 
 type FileShareAccessRuleListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -254,14 +235,11 @@ type FileShareAccessRuleListParams struct {
 func (f FileShareAccessRuleListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type FileShareAccessRuleDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule%2F%7Baccess_rule_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule/{access_rule_id}']['delete'].parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule%2F%7Baccess_rule_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule/{access_rule_id}']['delete'].parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Faccess_rule%2F%7Baccess_rule_id%7D/delete/parameters/2/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/access_rule/{access_rule_id}']['delete'].parameters[2].schema"
+	// File Share ID
 	FileShareID string `path:"file_share_id,required" format:"uuid4" json:"-"`
 	paramObj
 }

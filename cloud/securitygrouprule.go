@@ -112,39 +112,27 @@ func (r *SecurityGroupRuleService) Replace(ctx context.Context, ruleID string, p
 }
 
 type SecurityGroupRuleNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bgroup_id%7D%2Frules/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/securitygroups/{project_id}/{region_id}/{group_id}/rules'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bgroup_id%7D%2Frules/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/securitygroups/{project_id}/{region_id}/{group_id}/rules'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateSecurityGroupRuleSerializer/properties/port_range_max/anyOf/0'
-	// "$.components.schemas.CreateSecurityGroupRuleSerializer.properties.port_range_max.anyOf[0]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// The maximum port number in the range that is matched by the security group rule
 	PortRangeMax param.Opt[int64] `json:"port_range_max,omitzero"`
-	// '#/components/schemas/CreateSecurityGroupRuleSerializer/properties/port_range_min/anyOf/0'
-	// "$.components.schemas.CreateSecurityGroupRuleSerializer.properties.port_range_min.anyOf[0]"
+	// The minimum port number in the range that is matched by the security group rule
 	PortRangeMin param.Opt[int64] `json:"port_range_min,omitzero"`
-	// '#/components/schemas/CreateSecurityGroupRuleSerializer/properties/remote_ip_prefix/anyOf/0'
-	// "$.components.schemas.CreateSecurityGroupRuleSerializer.properties.remote_ip_prefix.anyOf[0]"
+	// The remote IP prefix that is matched by this security group rule
 	RemoteIPPrefix param.Opt[string] `json:"remote_ip_prefix,omitzero" format:"ipvanynetwork"`
-	// '#/components/schemas/CreateSecurityGroupRuleSerializer/properties/description'
-	// "$.components.schemas.CreateSecurityGroupRuleSerializer.properties.description"
+	// Rule description
 	Description param.Opt[string] `json:"description,omitzero"`
-	// '#/components/schemas/CreateSecurityGroupRuleSerializer/properties/remote_group_id'
-	// "$.components.schemas.CreateSecurityGroupRuleSerializer.properties.remote_group_id"
+	// The remote group UUID to associate with this security group
 	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateSecurityGroupRuleSerializer/properties/direction'
-	// "$.components.schemas.CreateSecurityGroupRuleSerializer.properties.direction"
+	// Ingress or egress, which is the direction in which the security group is applied
 	//
 	// Any of "egress", "ingress".
 	Direction SecurityGroupRuleNewParamsDirection `json:"direction,omitzero"`
-	// '#/components/schemas/CreateSecurityGroupRuleSerializer/properties/ethertype'
-	// "$.components.schemas.CreateSecurityGroupRuleSerializer.properties.ethertype"
+	// Ether type
 	//
 	// Any of "IPv4", "IPv6".
 	Ethertype SecurityGroupRuleNewParamsEthertype `json:"ethertype,omitzero"`
-	// '#/components/schemas/CreateSecurityGroupRuleSerializer/properties/protocol'
-	// "$.components.schemas.CreateSecurityGroupRuleSerializer.properties.protocol"
+	// Protocol
 	//
 	// Any of "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap",
 	// "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts",
@@ -162,8 +150,7 @@ func (r SecurityGroupRuleNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateSecurityGroupRuleSerializer/properties/direction'
-// "$.components.schemas.CreateSecurityGroupRuleSerializer.properties.direction"
+// Ingress or egress, which is the direction in which the security group is applied
 type SecurityGroupRuleNewParamsDirection string
 
 const (
@@ -171,8 +158,7 @@ const (
 	SecurityGroupRuleNewParamsDirectionIngress SecurityGroupRuleNewParamsDirection = "ingress"
 )
 
-// '#/components/schemas/CreateSecurityGroupRuleSerializer/properties/ethertype'
-// "$.components.schemas.CreateSecurityGroupRuleSerializer.properties.ethertype"
+// Ether type
 type SecurityGroupRuleNewParamsEthertype string
 
 const (
@@ -180,8 +166,7 @@ const (
 	SecurityGroupRuleNewParamsEthertypeIPv6 SecurityGroupRuleNewParamsEthertype = "IPv6"
 )
 
-// '#/components/schemas/CreateSecurityGroupRuleSerializer/properties/protocol'
-// "$.components.schemas.CreateSecurityGroupRuleSerializer.properties.protocol"
+// Protocol
 type SecurityGroupRuleNewParamsProtocol string
 
 const (
@@ -212,12 +197,8 @@ const (
 )
 
 type SecurityGroupRuleDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygrouprules%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brule_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/securitygrouprules/{project_id}/{region_id}/{rule_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygrouprules%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brule_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/securitygrouprules/{project_id}/{region_id}/{rule_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -226,42 +207,31 @@ type SecurityGroupRuleDeleteParams struct {
 func (f SecurityGroupRuleDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type SecurityGroupRuleReplaceParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygrouprules%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brule_id%7D/put/parameters/0/schema'
-	// "$.paths['/cloud/v1/securitygrouprules/{project_id}/{region_id}/{rule_id}'].put.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsecuritygrouprules%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Brule_id%7D/put/parameters/1/schema'
-	// "$.paths['/cloud/v1/securitygrouprules/{project_id}/{region_id}/{rule_id}'].put.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/direction'
-	// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.direction"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Ingress or egress, which is the direction in which the security group rule is
+	// applied
 	//
 	// Any of "egress", "ingress".
 	Direction SecurityGroupRuleReplaceParamsDirection `json:"direction,omitzero,required"`
-	// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/security_group_id'
-	// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.security_group_id"
+	// Parent security group of this rule
 	SecurityGroupID string `json:"security_group_id,required" format:"uuid4"`
-	// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/port_range_max/anyOf/0'
-	// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.port_range_max.anyOf[0]"
+	// The maximum port number in the range that is matched by the security group rule
 	PortRangeMax param.Opt[int64] `json:"port_range_max,omitzero"`
-	// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/port_range_min/anyOf/0'
-	// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.port_range_min.anyOf[0]"
+	// The minimum port number in the range that is matched by the security group rule
 	PortRangeMin param.Opt[int64] `json:"port_range_min,omitzero"`
-	// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/remote_group_id/anyOf/0'
-	// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.remote_group_id.anyOf[0]"
+	// The remote group UUID to associate with this security group rule
 	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/remote_ip_prefix/anyOf/0'
-	// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.remote_ip_prefix.anyOf[0]"
+	// The remote IP prefix that is matched by this security group rule
 	RemoteIPPrefix param.Opt[string] `json:"remote_ip_prefix,omitzero" format:"ipvanynetwork"`
-	// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/description'
-	// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.description"
+	// Rule description
 	Description param.Opt[string] `json:"description,omitzero"`
-	// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/ethertype/anyOf/0'
-	// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.ethertype.anyOf[0]"
+	// Must be IPv4 or IPv6, and addresses represented in CIDR must match the ingress
+	// or egress rules.
 	//
 	// Any of "IPv4", "IPv6".
 	Ethertype SecurityGroupRuleReplaceParamsEthertype `json:"ethertype,omitzero"`
-	// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/protocol'
-	// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.protocol"
+	// Protocol
 	//
 	// Any of "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap",
 	// "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts",
@@ -279,8 +249,8 @@ func (r SecurityGroupRuleReplaceParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/direction'
-// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.direction"
+// Ingress or egress, which is the direction in which the security group rule is
+// applied
 type SecurityGroupRuleReplaceParamsDirection string
 
 const (
@@ -288,8 +258,8 @@ const (
 	SecurityGroupRuleReplaceParamsDirectionIngress SecurityGroupRuleReplaceParamsDirection = "ingress"
 )
 
-// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/ethertype/anyOf/0'
-// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.ethertype.anyOf[0]"
+// Must be IPv4 or IPv6, and addresses represented in CIDR must match the ingress
+// or egress rules.
 type SecurityGroupRuleReplaceParamsEthertype string
 
 const (
@@ -297,8 +267,7 @@ const (
 	SecurityGroupRuleReplaceParamsEthertypeIPv6 SecurityGroupRuleReplaceParamsEthertype = "IPv6"
 )
 
-// '#/components/schemas/ChangeSecurityGroupRuleSerializer/properties/protocol'
-// "$.components.schemas.ChangeSecurityGroupRuleSerializer.properties.protocol"
+// Protocol
 type SecurityGroupRuleReplaceParamsProtocol string
 
 const (

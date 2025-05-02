@@ -154,32 +154,22 @@ func (r *RegistryService) Resize(ctx context.Context, registryID int64, params R
 	return
 }
 
-// '#/components/schemas/RegistrySerializer'
-// "$.components.schemas.RegistrySerializer"
 type Registry struct {
-	// '#/components/schemas/RegistrySerializer/properties/id'
-	// "$.components.schemas.RegistrySerializer.properties.id"
+	// Registry ID
 	ID int64 `json:"id,required"`
-	// '#/components/schemas/RegistrySerializer/properties/created_at'
-	// "$.components.schemas.RegistrySerializer.properties.created_at"
+	// Registry creation date-time
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/RegistrySerializer/properties/name'
-	// "$.components.schemas.RegistrySerializer.properties.name"
+	// Registry name
 	Name string `json:"name,required"`
-	// '#/components/schemas/RegistrySerializer/properties/repo_count'
-	// "$.components.schemas.RegistrySerializer.properties.repo_count"
+	// Number of repositories in the registry
 	RepoCount int64 `json:"repo_count,required"`
-	// '#/components/schemas/RegistrySerializer/properties/storage_limit'
-	// "$.components.schemas.RegistrySerializer.properties.storage_limit"
+	// Registry storage limit, GiB
 	StorageLimit int64 `json:"storage_limit,required"`
-	// '#/components/schemas/RegistrySerializer/properties/storage_used'
-	// "$.components.schemas.RegistrySerializer.properties.storage_used"
+	// Registry storage used, bytes
 	StorageUsed int64 `json:"storage_used,required"`
-	// '#/components/schemas/RegistrySerializer/properties/updated_at'
-	// "$.components.schemas.RegistrySerializer.properties.updated_at"
+	// Registry modification date-time
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// '#/components/schemas/RegistrySerializer/properties/url'
-	// "$.components.schemas.RegistrySerializer.properties.url"
+	// Registry url
 	URL string `json:"url,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -203,14 +193,10 @@ func (r *Registry) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/RegistryCollectionSerializer'
-// "$.components.schemas.RegistryCollectionSerializer"
 type RegistryList struct {
-	// '#/components/schemas/RegistryCollectionSerializer/properties/count'
-	// "$.components.schemas.RegistryCollectionSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/RegistryCollectionSerializer/properties/results'
-	// "$.components.schemas.RegistryCollectionSerializer.properties.results"
+	// Objects
 	Results []Registry `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -228,26 +214,18 @@ func (r *RegistryList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/RegistryTagSerializer'
-// "$.components.schemas.RegistryTagSerializer"
 type RegistryTag struct {
-	// '#/components/schemas/RegistryTagSerializer/properties/id'
-	// "$.components.schemas.RegistryTagSerializer.properties.id"
+	// Tag ID
 	ID int64 `json:"id,required"`
-	// '#/components/schemas/RegistryTagSerializer/properties/artifact_id'
-	// "$.components.schemas.RegistryTagSerializer.properties.artifact_id"
+	// Artifact ID
 	ArtifactID int64 `json:"artifact_id,required"`
-	// '#/components/schemas/RegistryTagSerializer/properties/name'
-	// "$.components.schemas.RegistryTagSerializer.properties.name"
+	// Tag name
 	Name string `json:"name,required"`
-	// '#/components/schemas/RegistryTagSerializer/properties/pulled_at'
-	// "$.components.schemas.RegistryTagSerializer.properties.pulled_at"
+	// Tag last pull date-time
 	PulledAt time.Time `json:"pulled_at,required" format:"date-time"`
-	// '#/components/schemas/RegistryTagSerializer/properties/pushed_at'
-	// "$.components.schemas.RegistryTagSerializer.properties.pushed_at"
+	// Tag push date-time
 	PushedAt time.Time `json:"pushed_at,required" format:"date-time"`
-	// '#/components/schemas/RegistryTagSerializer/properties/repository_id'
-	// "$.components.schemas.RegistryTagSerializer.properties.repository_id"
+	// Repository ID
 	RepositoryID int64 `json:"repository_id,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -270,17 +248,15 @@ func (r *RegistryTag) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/RegistryCreateSerializer/properties/name'
-	// "$.components.schemas.RegistryCreateSerializer.properties.name"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// A name for the container registry.
+	//
+	// Should be in lowercase, consisting only of numbers, letters and -,
+	//
+	// with maximum length of 24 characters
 	Name string `json:"name,required"`
-	// '#/components/schemas/RegistryCreateSerializer/properties/storage_limit'
-	// "$.components.schemas.RegistryCreateSerializer.properties.storage_limit"
+	// Registry storage limit, GiB
 	StorageLimit param.Opt[int64] `json:"storage_limit,omitzero"`
 	paramObj
 }
@@ -295,12 +271,8 @@ func (r RegistryNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type RegistryListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -309,12 +281,8 @@ type RegistryListParams struct {
 func (f RegistryListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type RegistryDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -323,12 +291,8 @@ type RegistryDeleteParams struct {
 func (f RegistryDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type RegistryGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -337,14 +301,9 @@ type RegistryGetParams struct {
 func (f RegistryGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type RegistryResizeParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fresize/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/resize'].patch.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fresize/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/resize'].patch.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/RegistryResizeSerializer/properties/storage_limit'
-	// "$.components.schemas.RegistryResizeSerializer.properties.storage_limit"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Registry storage limit, GiB
 	StorageLimit param.Opt[int64] `json:"storage_limit,omitzero"`
 	paramObj
 }

@@ -174,46 +174,43 @@ func (r *NetworkSubnetService) Get(ctx context.Context, subnetID string, query N
 }
 
 type NetworkSubnetNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateSubnetSerializer/properties/cidr'
-	// "$.components.schemas.CreateSubnetSerializer.properties.cidr"
+	// CIDR
 	Cidr string `json:"cidr,required" format:"ipvanynetwork"`
-	// '#/components/schemas/CreateSubnetSerializer/properties/name'
-	// "$.components.schemas.CreateSubnetSerializer.properties.name"
+	// Subnet name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateSubnetSerializer/properties/network_id'
-	// "$.components.schemas.CreateSubnetSerializer.properties.network_id"
+	// Network ID
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/CreateSubnetSerializer/properties/gateway_ip/anyOf/0'
-	// "$.components.schemas.CreateSubnetSerializer.properties.gateway_ip.anyOf[0]"
+	// Default GW IPv4 address to advertise in DHCP routes in this subnet. Omit this
+	// field to let the cloud backend allocate it automatically. Set to null if no
+	// gateway must be advertised by this subnet's DHCP (useful when attaching
+	// instances to multiple subnets in order to prevent default route conflicts).
 	GatewayIP param.Opt[string] `json:"gateway_ip,omitzero" format:"ipvanyaddress"`
-	// '#/components/schemas/CreateSubnetSerializer/properties/router_id_to_connect/anyOf/0'
-	// "$.components.schemas.CreateSubnetSerializer.properties.router_id_to_connect.anyOf[0]"
+	// ID of the router to connect to. Requires `connect_to_network_router` set to
+	// true. If not specified, attempts to find a router created during network
+	// creation.
 	RouterIDToConnect param.Opt[string] `json:"router_id_to_connect,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateSubnetSerializer/properties/connect_to_network_router'
-	// "$.components.schemas.CreateSubnetSerializer.properties.connect_to_network_router"
+	// True if the network's router should get a gateway in this subnet. Must be
+	// explicitly 'false' when gateway_ip is null.
 	ConnectToNetworkRouter param.Opt[bool] `json:"connect_to_network_router,omitzero"`
-	// '#/components/schemas/CreateSubnetSerializer/properties/enable_dhcp'
-	// "$.components.schemas.CreateSubnetSerializer.properties.enable_dhcp"
+	// True if DHCP should be enabled
 	EnableDhcp param.Opt[bool] `json:"enable_dhcp,omitzero"`
-	// '#/components/schemas/CreateSubnetSerializer/properties/dns_nameservers/anyOf/0'
-	// "$.components.schemas.CreateSubnetSerializer.properties.dns_nameservers.anyOf[0]"
+	// List IP addresses of DNS servers to advertise via DHCP.
 	DNSNameservers []string `json:"dns_nameservers,omitzero" format:"ipvanyaddress"`
-	// '#/components/schemas/CreateSubnetSerializer/properties/host_routes/anyOf/0'
-	// "$.components.schemas.CreateSubnetSerializer.properties.host_routes.anyOf[0]"
+	// List of custom static routes to advertise via DHCP.
 	HostRoutes []NetworkSubnetNewParamsHostRoute `json:"host_routes,omitzero"`
-	// '#/components/schemas/CreateSubnetSerializer/properties/ip_version'
-	// "$.components.schemas.CreateSubnetSerializer.properties.ip_version"
+	// IP version
 	//
 	// Any of 4, 6.
 	IPVersion int64 `json:"ip_version,omitzero"`
-	// '#/components/schemas/CreateSubnetSerializer/properties/tags'
-	// "$.components.schemas.CreateSubnetSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
@@ -227,16 +224,12 @@ func (r NetworkSubnetNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateSubnetSerializer/properties/host_routes/anyOf/0/items'
-// "$.components.schemas.CreateSubnetSerializer.properties.host_routes.anyOf[0].items"
-//
 // The properties Destination, Nexthop are required.
 type NetworkSubnetNewParamsHostRoute struct {
-	// '#/components/schemas/RouteInSerializer/properties/destination'
-	// "$.components.schemas.RouteInSerializer.properties.destination"
+	// CIDR of destination IPv4 subnet.
 	Destination string `json:"destination,required" format:"ipvanynetwork"`
-	// '#/components/schemas/RouteInSerializer/properties/nexthop'
-	// "$.components.schemas.RouteInSerializer.properties.nexthop"
+	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
+	// CIDR.
 	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
 	paramObj
 }
@@ -250,26 +243,22 @@ func (r NetworkSubnetNewParamsHostRoute) MarshalJSON() (data []byte, err error) 
 }
 
 type NetworkSubnetUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsubnet_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}/{subnet_id}'].patch.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsubnet_id%7D/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}/{subnet_id}'].patch.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/PatchSubnetSerializer/properties/enable_dhcp/anyOf/0'
-	// "$.components.schemas.PatchSubnetSerializer.properties.enable_dhcp.anyOf[0]"
+	// True if DHCP should be enabled
 	EnableDhcp param.Opt[bool] `json:"enable_dhcp,omitzero"`
-	// '#/components/schemas/PatchSubnetSerializer/properties/gateway_ip/anyOf/0'
-	// "$.components.schemas.PatchSubnetSerializer.properties.gateway_ip.anyOf[0]"
+	// Default GW IPv4 address to advertise in DHCP routes in this subnet. Omit this
+	// field to let the cloud backend allocate it automatically. Set to null if no
+	// gateway must be advertised by this subnet's DHCP (useful when attaching
+	// instances to multiple subnets in order to prevent default route conflicts).
 	GatewayIP param.Opt[string] `json:"gateway_ip,omitzero" format:"ipvanyaddress"`
-	// '#/components/schemas/PatchSubnetSerializer/properties/name/anyOf/0'
-	// "$.components.schemas.PatchSubnetSerializer.properties.name.anyOf[0]"
+	// Name
 	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/PatchSubnetSerializer/properties/dns_nameservers/anyOf/0'
-	// "$.components.schemas.PatchSubnetSerializer.properties.dns_nameservers.anyOf[0]"
+	// List IP addresses of DNS servers to advertise via DHCP.
 	DNSNameservers []string `json:"dns_nameservers,omitzero" format:"ipvanyaddress"`
-	// '#/components/schemas/PatchSubnetSerializer/properties/host_routes/anyOf/0'
-	// "$.components.schemas.PatchSubnetSerializer.properties.host_routes.anyOf[0]"
+	// List of custom static routes to advertise via DHCP.
 	HostRoutes []NetworkSubnetUpdateParamsHostRoute `json:"host_routes,omitzero"`
 	paramObj
 }
@@ -283,16 +272,12 @@ func (r NetworkSubnetUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/PatchSubnetSerializer/properties/host_routes/anyOf/0/items'
-// "$.components.schemas.PatchSubnetSerializer.properties.host_routes.anyOf[0].items"
-//
 // The properties Destination, Nexthop are required.
 type NetworkSubnetUpdateParamsHostRoute struct {
-	// '#/components/schemas/RouteInSerializer/properties/destination'
-	// "$.components.schemas.RouteInSerializer.properties.destination"
+	// CIDR of destination IPv4 subnet.
 	Destination string `json:"destination,required" format:"ipvanynetwork"`
-	// '#/components/schemas/RouteInSerializer/properties/nexthop'
-	// "$.components.schemas.RouteInSerializer.properties.nexthop"
+	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
+	// CIDR.
 	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
 	paramObj
 }
@@ -308,33 +293,30 @@ func (r NetworkSubnetUpdateParamsHostRoute) MarshalJSON() (data []byte, err erro
 }
 
 type NetworkSubnetListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[2]"
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[3]"
+	// Only list subnets of this network
 	NetworkID param.Opt[string] `query:"network_id,omitzero" format:"uuid4" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[4]"
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/7'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[7]"
+	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
+	// "tag_key_value={"key": "value"}" --url
+	// "https://example.com/cloud/v1/resource/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[5]"
+	// Ordering subnets list result by `name`, `created_at`, `updated_at`,
+	// `available_ips`, `total_ips`, and `cidr` (default) fields of the subnet and
+	// directions (`name.asc`).
 	//
 	// Any of "available_ips.asc", "available_ips.desc", "cidr.asc", "cidr.desc",
 	// "created_at.asc", "created_at.desc", "name.asc", "name.desc", "total_ips.asc",
 	// "total_ips.desc", "updated_at.asc", "updated_at.desc".
 	OrderBy NetworkSubnetListParamsOrderBy `query:"order_by,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[6]"
+	// Optional. Filter by tag keys. ?tag_key=key1&tag_key=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
@@ -352,8 +334,9 @@ func (r NetworkSubnetListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}'].get.parameters[5]"
+// Ordering subnets list result by `name`, `created_at`, `updated_at`,
+// `available_ips`, `total_ips`, and `cidr` (default) fields of the subnet and
+// directions (`name.asc`).
 type NetworkSubnetListParamsOrderBy string
 
 const (
@@ -372,11 +355,9 @@ const (
 )
 
 type NetworkSubnetDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsubnet_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}/{subnet_id}']['delete'].parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsubnet_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}/{subnet_id}']['delete'].parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -386,11 +367,9 @@ type NetworkSubnetDeleteParams struct {
 func (f NetworkSubnetDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type NetworkSubnetGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsubnet_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}/{subnet_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsubnets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsubnet_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/subnets/{project_id}/{region_id}/{subnet_id}'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }

@@ -175,34 +175,26 @@ func (r *LoadBalancerL7PolicyRuleService) Replace(ctx context.Context, l7ruleID 
 }
 
 type LoadBalancerL7PolicyRuleNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateL7RuleSchema/properties/compare_type'
-	// "$.components.schemas.CreateL7RuleSchema.properties.compare_type"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// The comparison type for the L7 rule
 	//
 	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
 	CompareType LoadBalancerL7PolicyRuleNewParamsCompareType `json:"compare_type,omitzero,required"`
-	// '#/components/schemas/CreateL7RuleSchema/properties/type'
-	// "$.components.schemas.CreateL7RuleSchema.properties.type"
+	// The L7 rule type
 	//
 	// Any of "COOKIE", "FILE_TYPE", "HEADER", "HOST_NAME", "PATH",
 	// "SSL_CONN_HAS_CERT", "SSL_DN_FIELD", "SSL_VERIFY_RESULT".
 	Type LoadBalancerL7PolicyRuleNewParamsType `json:"type,omitzero,required"`
-	// '#/components/schemas/CreateL7RuleSchema/properties/value'
-	// "$.components.schemas.CreateL7RuleSchema.properties.value"
+	// The value to use for the comparison. For example, the file type to compare
 	Value string `json:"value,required"`
-	// '#/components/schemas/CreateL7RuleSchema/properties/invert'
-	// "$.components.schemas.CreateL7RuleSchema.properties.invert"
+	// When true the logic of the rule is inverted. For example, with invert true,
+	// 'equal to' would become 'not equal to'. Default is false.
 	Invert param.Opt[bool] `json:"invert,omitzero"`
-	// '#/components/schemas/CreateL7RuleSchema/properties/key'
-	// "$.components.schemas.CreateL7RuleSchema.properties.key"
+	// The key to use for the comparison. For example, the name of the cookie to
+	// evaluate.
 	Key param.Opt[string] `json:"key,omitzero"`
-	// '#/components/schemas/CreateL7RuleSchema/properties/tags'
-	// "$.components.schemas.CreateL7RuleSchema.properties.tags"
+	// A list of simple strings assigned to the l7 rule
 	Tags []string `json:"tags,omitzero"`
 	paramObj
 }
@@ -218,8 +210,7 @@ func (r LoadBalancerL7PolicyRuleNewParams) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateL7RuleSchema/properties/compare_type'
-// "$.components.schemas.CreateL7RuleSchema.properties.compare_type"
+// The comparison type for the L7 rule
 type LoadBalancerL7PolicyRuleNewParamsCompareType string
 
 const (
@@ -230,8 +221,7 @@ const (
 	LoadBalancerL7PolicyRuleNewParamsCompareTypeStartsWith LoadBalancerL7PolicyRuleNewParamsCompareType = "STARTS_WITH"
 )
 
-// '#/components/schemas/CreateL7RuleSchema/properties/type'
-// "$.components.schemas.CreateL7RuleSchema.properties.type"
+// The L7 rule type
 type LoadBalancerL7PolicyRuleNewParamsType string
 
 const (
@@ -246,12 +236,8 @@ const (
 )
 
 type LoadBalancerL7PolicyRuleListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -262,15 +248,9 @@ func (f LoadBalancerL7PolicyRuleListParams) IsPresent() bool {
 }
 
 type LoadBalancerL7PolicyRuleDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}']['delete'].parameters[0].schema"
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/delete/parameters/2/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}']['delete'].parameters[2].schema"
-	L7policyID string `path:"l7policy_id,required" json:"-"`
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	L7policyID string           `path:"l7policy_id,required" json:"-"`
 	paramObj
 }
 
@@ -281,15 +261,9 @@ func (f LoadBalancerL7PolicyRuleDeleteParams) IsPresent() bool {
 }
 
 type LoadBalancerL7PolicyRuleGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}'].get.parameters[0].schema"
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/get/parameters/2/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}'].get.parameters[2].schema"
-	L7policyID string `path:"l7policy_id,required" json:"-"`
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	L7policyID string           `path:"l7policy_id,required" json:"-"`
 	paramObj
 }
 
@@ -300,34 +274,24 @@ func (f LoadBalancerL7PolicyRuleGetParams) IsPresent() bool {
 }
 
 type LoadBalancerL7PolicyRuleReplaceParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/put/parameters/0/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}'].put.parameters[0].schema"
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/put/parameters/1/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}'].put.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D%2Frules%2F%7Bl7rule_id%7D/put/parameters/2/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}/rules/{l7rule_id}'].put.parameters[2].schema"
-	L7policyID string `path:"l7policy_id,required" json:"-"`
-	// '#/components/schemas/UpdateL7RuleSchema/properties/invert'
-	// "$.components.schemas.UpdateL7RuleSchema.properties.invert"
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	L7policyID string           `path:"l7policy_id,required" json:"-"`
+	// When true the logic of the rule is inverted. For example, with invert true,
+	// 'equal to' would become 'not equal to'. Default is false.
 	Invert param.Opt[bool] `json:"invert,omitzero"`
-	// '#/components/schemas/UpdateL7RuleSchema/properties/key'
-	// "$.components.schemas.UpdateL7RuleSchema.properties.key"
+	// The key to use for the comparison. For example, the name of the cookie to
+	// evaluate.
 	Key param.Opt[string] `json:"key,omitzero"`
-	// '#/components/schemas/UpdateL7RuleSchema/properties/value'
-	// "$.components.schemas.UpdateL7RuleSchema.properties.value"
+	// The value to use for the comparison. For example, the file type to compare
 	Value param.Opt[string] `json:"value,omitzero"`
-	// '#/components/schemas/UpdateL7RuleSchema/properties/compare_type'
-	// "$.components.schemas.UpdateL7RuleSchema.properties.compare_type"
+	// The comparison type for the L7 rule
 	//
 	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
 	CompareType LoadBalancerL7PolicyRuleReplaceParamsCompareType `json:"compare_type,omitzero"`
-	// '#/components/schemas/UpdateL7RuleSchema/properties/tags'
-	// "$.components.schemas.UpdateL7RuleSchema.properties.tags"
+	// A list of simple strings assigned to the l7 rule
 	Tags []string `json:"tags,omitzero"`
-	// '#/components/schemas/UpdateL7RuleSchema/properties/type'
-	// "$.components.schemas.UpdateL7RuleSchema.properties.type"
+	// The L7 rule type
 	//
 	// Any of "COOKIE", "FILE_TYPE", "HEADER", "HOST_NAME", "PATH",
 	// "SSL_CONN_HAS_CERT", "SSL_DN_FIELD", "SSL_VERIFY_RESULT".
@@ -346,8 +310,7 @@ func (r LoadBalancerL7PolicyRuleReplaceParams) MarshalJSON() (data []byte, err e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/UpdateL7RuleSchema/properties/compare_type'
-// "$.components.schemas.UpdateL7RuleSchema.properties.compare_type"
+// The comparison type for the L7 rule
 type LoadBalancerL7PolicyRuleReplaceParamsCompareType string
 
 const (
@@ -358,8 +321,7 @@ const (
 	LoadBalancerL7PolicyRuleReplaceParamsCompareTypeStartsWith LoadBalancerL7PolicyRuleReplaceParamsCompareType = "STARTS_WITH"
 )
 
-// '#/components/schemas/UpdateL7RuleSchema/properties/type'
-// "$.components.schemas.UpdateL7RuleSchema.properties.type"
+// The L7 rule type
 type LoadBalancerL7PolicyRuleReplaceParamsType string
 
 const (

@@ -308,37 +308,26 @@ func (r *VolumeService) RevertToLastSnapshot(ctx context.Context, volumeID strin
 	return
 }
 
-// '#/components/schemas/VolumeSerializer' "$.components.schemas.VolumeSerializer"
 type Volume struct {
-	// '#/components/schemas/VolumeSerializer/properties/id'
-	// "$.components.schemas.VolumeSerializer.properties.id"
+	// The unique identifier of the volume.
 	ID string `json:"id,required"`
-	// '#/components/schemas/VolumeSerializer/properties/bootable'
-	// "$.components.schemas.VolumeSerializer.properties.bootable"
+	// Indicates whether the volume is bootable.
 	Bootable bool `json:"bootable,required"`
-	// '#/components/schemas/VolumeSerializer/properties/created_at'
-	// "$.components.schemas.VolumeSerializer.properties.created_at"
+	// The date and time when the volume was created.
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/VolumeSerializer/properties/is_root_volume'
-	// "$.components.schemas.VolumeSerializer.properties.is_root_volume"
+	// Indicates whether this is a root volume.
 	IsRootVolume bool `json:"is_root_volume,required"`
-	// '#/components/schemas/VolumeSerializer/properties/name'
-	// "$.components.schemas.VolumeSerializer.properties.name"
+	// The name of the volume.
 	Name string `json:"name,required"`
-	// '#/components/schemas/VolumeSerializer/properties/project_id'
-	// "$.components.schemas.VolumeSerializer.properties.project_id"
+	// Project ID.
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/VolumeSerializer/properties/region'
-	// "$.components.schemas.VolumeSerializer.properties.region"
+	// The region where the volume is located.
 	Region string `json:"region,required"`
-	// '#/components/schemas/VolumeSerializer/properties/region_id'
-	// "$.components.schemas.VolumeSerializer.properties.region_id"
+	// The identifier of the region.
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/VolumeSerializer/properties/size'
-	// "$.components.schemas.VolumeSerializer.properties.size"
+	// The size of the volume in gibibytes (GiB).
 	Size int64 `json:"size,required"`
-	// '#/components/schemas/VolumeSerializer/properties/status'
-	// "$.components.schemas.VolumeSerializer.properties.status"
+	// The current status of the volume.
 	//
 	// Any of "attaching", "available", "awaiting-transfer", "backing-up", "creating",
 	// "deleting", "detaching", "downloading", "error", "error_backing-up",
@@ -346,32 +335,29 @@ type Volume struct {
 	// "maintenance", "reserved", "restoring-backup", "retyping", "reverting",
 	// "uploading".
 	Status VolumeStatus `json:"status,required"`
-	// '#/components/schemas/VolumeSerializer/properties/tags'
-	// "$.components.schemas.VolumeSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/VolumeSerializer/properties/volume_type'
-	// "$.components.schemas.VolumeSerializer.properties.volume_type"
+	// The type of volume storage.
 	VolumeType string `json:"volume_type,required"`
-	// '#/components/schemas/VolumeSerializer/properties/attachments/anyOf/0'
-	// "$.components.schemas.VolumeSerializer.properties.attachments.anyOf[0]"
+	// List of attachments associated with the volume.
 	Attachments []VolumeAttachment `json:"attachments,nullable"`
-	// '#/components/schemas/VolumeSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.VolumeSerializer.properties.creator_task_id.anyOf[0]"
+	// The ID of the task that created this volume.
 	CreatorTaskID string `json:"creator_task_id,nullable"`
-	// '#/components/schemas/VolumeSerializer/properties/limiter_stats/anyOf/0'
-	// "$.components.schemas.VolumeSerializer.properties.limiter_stats.anyOf[0]"
+	// Schema representing the Quality of Service (QoS) parameters for a volume.
 	LimiterStats VolumeLimiterStats `json:"limiter_stats,nullable"`
-	// '#/components/schemas/VolumeSerializer/properties/snapshot_ids/anyOf/0'
-	// "$.components.schemas.VolumeSerializer.properties.snapshot_ids.anyOf[0]"
+	// List of snapshot IDs associated with this volume.
 	SnapshotIDs []string `json:"snapshot_ids,nullable"`
-	// '#/components/schemas/VolumeSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.VolumeSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,nullable"`
-	// '#/components/schemas/VolumeSerializer/properties/updated_at/anyOf/0'
-	// "$.components.schemas.VolumeSerializer.properties.updated_at.anyOf[0]"
+	// The date and time when the volume was last updated.
 	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
-	// '#/components/schemas/VolumeSerializer/properties/volume_image_metadata/anyOf/0'
-	// "$.components.schemas.VolumeSerializer.properties.volume_image_metadata.anyOf[0]"
+	// Image metadata for volumes created from an image.
 	VolumeImageMetadata map[string]string `json:"volume_image_metadata,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -406,8 +392,7 @@ func (r *Volume) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/VolumeSerializer/properties/status'
-// "$.components.schemas.VolumeSerializer.properties.status"
+// The current status of the volume.
 type VolumeStatus string
 
 const (
@@ -434,29 +419,20 @@ const (
 	VolumeStatusUploading        VolumeStatus = "uploading"
 )
 
-// '#/components/schemas/VolumeSerializer/properties/attachments/anyOf/0/items'
-// "$.components.schemas.VolumeSerializer.properties.attachments.anyOf[0].items"
 type VolumeAttachment struct {
-	// '#/components/schemas/VolumeAttachmentSerializer/properties/attachment_id'
-	// "$.components.schemas.VolumeAttachmentSerializer.properties.attachment_id"
+	// The unique identifier of the attachment object.
 	AttachmentID string `json:"attachment_id,required"`
-	// '#/components/schemas/VolumeAttachmentSerializer/properties/volume_id'
-	// "$.components.schemas.VolumeAttachmentSerializer.properties.volume_id"
+	// The unique identifier of the attached volume.
 	VolumeID string `json:"volume_id,required"`
-	// '#/components/schemas/VolumeAttachmentSerializer/properties/attached_at/anyOf/0'
-	// "$.components.schemas.VolumeAttachmentSerializer.properties.attached_at.anyOf[0]"
+	// The date and time when the attachment was created.
 	AttachedAt time.Time `json:"attached_at,nullable" format:"date-time"`
-	// '#/components/schemas/VolumeAttachmentSerializer/properties/device/anyOf/0'
-	// "$.components.schemas.VolumeAttachmentSerializer.properties.device.anyOf[0]"
+	// The block device name inside the guest instance.
 	Device string `json:"device,nullable"`
-	// '#/components/schemas/VolumeAttachmentSerializer/properties/flavor_id/anyOf/0'
-	// "$.components.schemas.VolumeAttachmentSerializer.properties.flavor_id.anyOf[0]"
+	// The flavor ID of the instance.
 	FlavorID string `json:"flavor_id,nullable"`
-	// '#/components/schemas/VolumeAttachmentSerializer/properties/instance_name/anyOf/0'
-	// "$.components.schemas.VolumeAttachmentSerializer.properties.instance_name.anyOf[0]"
+	// The name of the instance if attached and the server name is known.
 	InstanceName string `json:"instance_name,nullable"`
-	// '#/components/schemas/VolumeAttachmentSerializer/properties/server_id/anyOf/0'
-	// "$.components.schemas.VolumeAttachmentSerializer.properties.server_id.anyOf[0]"
+	// The unique identifier of the instance.
 	ServerID string `json:"server_id,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -479,20 +455,15 @@ func (r *VolumeAttachment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/VolumeSerializer/properties/limiter_stats/anyOf/0'
-// "$.components.schemas.VolumeSerializer.properties.limiter_stats.anyOf[0]"
+// Schema representing the Quality of Service (QoS) parameters for a volume.
 type VolumeLimiterStats struct {
-	// '#/components/schemas/VolumeLimiterStatsSerializer/properties/iops_base_limit'
-	// "$.components.schemas.VolumeLimiterStatsSerializer.properties.iops_base_limit"
+	// The sustained IOPS (Input/Output Operations Per Second) limit.
 	IopsBaseLimit int64 `json:"iops_base_limit,required"`
-	// '#/components/schemas/VolumeLimiterStatsSerializer/properties/iops_burst_limit'
-	// "$.components.schemas.VolumeLimiterStatsSerializer.properties.iops_burst_limit"
+	// The burst IOPS limit.
 	IopsBurstLimit int64 `json:"iops_burst_limit,required"`
-	// '#/components/schemas/VolumeLimiterStatsSerializer/properties/MBps_base_limit'
-	// "$.components.schemas.VolumeLimiterStatsSerializer.properties.MBps_base_limit"
+	// The sustained bandwidth limit in megabytes per second (MBps).
 	MBpsBaseLimit int64 `json:"MBps_base_limit,required"`
-	// '#/components/schemas/VolumeLimiterStatsSerializer/properties/MBps_burst_limit'
-	// "$.components.schemas.VolumeLimiterStatsSerializer.properties.MBps_burst_limit"
+	// The burst bandwidth limit in megabytes per second (MBps).
 	MBpsBurstLimit int64 `json:"MBps_burst_limit,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -513,11 +484,9 @@ func (r *VolumeLimiterStats) UnmarshalJSON(data []byte) error {
 }
 
 type VolumeNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 
 	//
@@ -525,16 +494,10 @@ type VolumeNewParams struct {
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	// '#/components/schemas/CreateVolumeSerializer/anyOf/0'
-	// "$.components.schemas.CreateVolumeSerializer.anyOf[0]"
 	OfImage *VolumeNewParamsBodyImage `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// '#/components/schemas/CreateVolumeSerializer/anyOf/1'
-	// "$.components.schemas.CreateVolumeSerializer.anyOf[1]"
 	OfSnapshot *VolumeNewParamsBodySnapshot `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// '#/components/schemas/CreateVolumeSerializer/anyOf/2'
-	// "$.components.schemas.CreateVolumeSerializer.anyOf[2]"
 	OfNewVolume *VolumeNewParamsBodyNewVolume `json:",inline"`
 
 	paramObj
@@ -548,39 +511,34 @@ func (u VolumeNewParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[VolumeNewParams](u.OfImage, u.OfSnapshot, u.OfNewVolume)
 }
 
-// '#/components/schemas/CreateVolumeSerializer/anyOf/0'
-// "$.components.schemas.CreateVolumeSerializer.anyOf[0]"
-//
 // The properties ImageID, Name, Size, Source are required.
 type VolumeNewParamsBodyImage struct {
-	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/image_id'
-	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.image_id"
+	// Image ID
 	ImageID string `json:"image_id,required" format:"uuid4"`
-	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/name'
-	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.name"
+	// Volume name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/size'
-	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.size"
+	// Volume size in GiB
 	Size int64 `json:"size,required"`
-	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/attachment_tag'
-	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.attachment_tag"
+	// Block device attachment tag (not exposed in the user tags). Only used in
+	// conjunction with instance_id_to_attach_to
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/instance_id_to_attach_to'
-	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.instance_id_to_attach_to"
+	// instance_id to attach newly-created volume to
 	InstanceIDToAttachTo param.Opt[string] `json:"instance_id_to_attach_to,omitzero"`
-	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/lifecycle_policy_ids'
-	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.lifecycle_policy_ids"
+	// List of lifecycle policy IDs (snapshot creation schedules) to associate with the
+	// volume
 	LifecyclePolicyIDs []int64 `json:"lifecycle_policy_ids,omitzero"`
-	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/tags'
-	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
-	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/type_name'
-	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.type_name"
+	// Volume type. Defaults to `standard`. If not specified for source `snapshot`,
+	// volume type will be derived from the snapshot volume.
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`
-	// '#/components/schemas/CreateVolumeFromImageSerializer/properties/source'
-	// "$.components.schemas.CreateVolumeFromImageSerializer.properties.source"
+	// Volume source type
 	//
 	// This field can be elided, and will marshal its zero value as "image".
 	Source constant.Image `json:"source,required"`
@@ -601,39 +559,35 @@ func init() {
 	)
 }
 
-// '#/components/schemas/CreateVolumeSerializer/anyOf/1'
-// "$.components.schemas.CreateVolumeSerializer.anyOf[1]"
-//
 // The properties Name, SnapshotID, Source are required.
 type VolumeNewParamsBodySnapshot struct {
-	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/name'
-	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.name"
+	// Volume name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/snapshot_id'
-	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.snapshot_id"
+	// Snapshot ID
 	SnapshotID string `json:"snapshot_id,required" format:"uuid4"`
-	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/attachment_tag'
-	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.attachment_tag"
+	// Block device attachment tag (not exposed in the user tags). Only used in
+	// conjunction with instance_id_to_attach_to
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/instance_id_to_attach_to'
-	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.instance_id_to_attach_to"
+	// instance_id to attach newly-created volume to
 	InstanceIDToAttachTo param.Opt[string] `json:"instance_id_to_attach_to,omitzero"`
-	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/size'
-	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.size"
+	// Volume size in GiB. If specified, value must be equal to respective snapshot
+	// size
 	Size param.Opt[int64] `json:"size,omitzero"`
-	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/lifecycle_policy_ids'
-	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.lifecycle_policy_ids"
+	// List of lifecycle policy IDs (snapshot creation schedules) to associate with the
+	// volume
 	LifecyclePolicyIDs []int64 `json:"lifecycle_policy_ids,omitzero"`
-	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/tags'
-	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
-	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/type_name'
-	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.type_name"
+	// Volume type. Defaults to `standard`. If not specified for source `snapshot`,
+	// volume type will be derived from the snapshot volume.
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`
-	// '#/components/schemas/CreateVolumeFromSnapshotSerializer/properties/source'
-	// "$.components.schemas.CreateVolumeFromSnapshotSerializer.properties.source"
+	// Volume source type
 	//
 	// This field can be elided, and will marshal its zero value as "snapshot".
 	Source constant.Snapshot `json:"source,required"`
@@ -654,36 +608,32 @@ func init() {
 	)
 }
 
-// '#/components/schemas/CreateVolumeSerializer/anyOf/2'
-// "$.components.schemas.CreateVolumeSerializer.anyOf[2]"
-//
 // The properties Name, Size, Source are required.
 type VolumeNewParamsBodyNewVolume struct {
-	// '#/components/schemas/CreateNewVolumeSerializer/properties/name'
-	// "$.components.schemas.CreateNewVolumeSerializer.properties.name"
+	// Volume name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateNewVolumeSerializer/properties/size'
-	// "$.components.schemas.CreateNewVolumeSerializer.properties.size"
+	// Volume size in GiB
 	Size int64 `json:"size,required"`
-	// '#/components/schemas/CreateNewVolumeSerializer/properties/attachment_tag'
-	// "$.components.schemas.CreateNewVolumeSerializer.properties.attachment_tag"
+	// Block device attachment tag (not exposed in the user tags). Only used in
+	// conjunction with instance_id_to_attach_to
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// '#/components/schemas/CreateNewVolumeSerializer/properties/instance_id_to_attach_to'
-	// "$.components.schemas.CreateNewVolumeSerializer.properties.instance_id_to_attach_to"
+	// instance_id to attach newly-created volume to
 	InstanceIDToAttachTo param.Opt[string] `json:"instance_id_to_attach_to,omitzero"`
-	// '#/components/schemas/CreateNewVolumeSerializer/properties/lifecycle_policy_ids'
-	// "$.components.schemas.CreateNewVolumeSerializer.properties.lifecycle_policy_ids"
+	// List of lifecycle policy IDs (snapshot creation schedules) to associate with the
+	// volume
 	LifecyclePolicyIDs []int64 `json:"lifecycle_policy_ids,omitzero"`
-	// '#/components/schemas/CreateNewVolumeSerializer/properties/tags'
-	// "$.components.schemas.CreateNewVolumeSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
-	// '#/components/schemas/CreateNewVolumeSerializer/properties/type_name'
-	// "$.components.schemas.CreateNewVolumeSerializer.properties.type_name"
+	// Volume type. Defaults to `standard`. If not specified for source `snapshot`,
+	// volume type will be derived from the snapshot volume.
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`
-	// '#/components/schemas/CreateNewVolumeSerializer/properties/source'
-	// "$.components.schemas.CreateNewVolumeSerializer.properties.source"
+	// Volume source type
 	//
 	// This field can be elided, and will marshal its zero value as "new-volume".
 	Source constant.NewVolume `json:"source,required"`
@@ -705,14 +655,11 @@ func init() {
 }
 
 type VolumeUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}'].patch.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}'].patch.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/NameSerializer/properties/name'
-	// "$.components.schemas.NameSerializer.properties.name"
+	// Name.
 	Name string `json:"name,required"`
 	paramObj
 }
@@ -727,41 +674,33 @@ func (r VolumeUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type VolumeListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[2]"
+	// Filter by bootable field
 	Bootable param.Opt[bool] `query:"bootable,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[3]"
+	// Filter volumes by k8s cluster ID
 	ClusterID param.Opt[string] `query:"cluster_id,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[4]"
+	// Filter by the presence of attachments
 	HasAttachments param.Opt[bool] `query:"has_attachments,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[5]"
+	// Filter the volume list result by the ID part of the volume
 	IDPart param.Opt[string] `query:"id_part,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[6]"
+	// Filter volumes by instance ID
 	InstanceID param.Opt[string] `query:"instance_id,omitzero" format:"uuid4" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/7'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[7]"
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/8'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[8]"
+	// Filter volumes by name_part inclusion in volume name.Any substring can be used
+	// and volumes will be returned with names containing the substring.
 	NamePart param.Opt[string] `query:"name_part,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/9'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[9]"
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/11'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[11]"
+	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
+	// "tag_key_value={"key": "value"}" --url
+	// "https://example.com/cloud/v1/resource/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/10'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}'].get.parameters[10]"
+	// Optional. Filter by tag keys. ?tag_key=key1&tag_key=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
@@ -779,14 +718,11 @@ func (r VolumeListParams) URLQuery() (v url.Values, err error) {
 }
 
 type VolumeDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}']['delete'].parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}']['delete'].parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D/delete/parameters/3'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}']['delete'].parameters[3]"
+	// Comma separated list of snapshot IDs to be deleted with the volume.
 	Snapshots param.Opt[string] `query:"snapshots,omitzero" json:"-"`
 	paramObj
 }
@@ -804,17 +740,13 @@ func (r VolumeDeleteParams) URLQuery() (v url.Values, err error) {
 }
 
 type VolumeAttachToInstanceParams struct {
-	// '#/paths/%2Fcloud%2Fv2%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D%2Fattach/post/parameters/0/schema'
-	// "$.paths['/cloud/v2/volumes/{project_id}/{region_id}/{volume_id}/attach'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D%2Fattach/post/parameters/1/schema'
-	// "$.paths['/cloud/v2/volumes/{project_id}/{region_id}/{volume_id}/attach'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/AttachVolumeToInstanceSerializer/properties/instance_id'
-	// "$.components.schemas.AttachVolumeToInstanceSerializer.properties.instance_id"
+	// Instance ID.
 	InstanceID string `json:"instance_id,required" format:"uuid4"`
-	// '#/components/schemas/AttachVolumeToInstanceSerializer/properties/attachment_tag'
-	// "$.components.schemas.AttachVolumeToInstanceSerializer.properties.attachment_tag"
+	// Block device attachment tag (not exposed in the normal tags).
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
 	paramObj
 }
@@ -829,14 +761,11 @@ func (r VolumeAttachToInstanceParams) MarshalJSON() (data []byte, err error) {
 }
 
 type VolumeChangeTypeParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D%2Fretype/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}/retype'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D%2Fretype/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}/retype'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/VolumeRetypeSerializer/properties/volume_type'
-	// "$.components.schemas.VolumeRetypeSerializer.properties.volume_type"
+	// New volume type name
 	//
 	// Any of "ssd_hiiops", "standard".
 	VolumeType VolumeChangeTypeParamsVolumeType `json:"volume_type,omitzero,required"`
@@ -852,8 +781,7 @@ func (r VolumeChangeTypeParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/VolumeRetypeSerializer/properties/volume_type'
-// "$.components.schemas.VolumeRetypeSerializer.properties.volume_type"
+// New volume type name
 type VolumeChangeTypeParamsVolumeType string
 
 const (
@@ -862,14 +790,11 @@ const (
 )
 
 type VolumeDetachFromInstanceParams struct {
-	// '#/paths/%2Fcloud%2Fv2%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D%2Fdetach/post/parameters/0/schema'
-	// "$.paths['/cloud/v2/volumes/{project_id}/{region_id}/{volume_id}/detach'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D%2Fdetach/post/parameters/1/schema'
-	// "$.paths['/cloud/v2/volumes/{project_id}/{region_id}/{volume_id}/detach'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/InstanceIdSerializer/properties/instance_id'
-	// "$.components.schemas.InstanceIdSerializer.properties.instance_id"
+	// Instance ID
 	InstanceID string `json:"instance_id,required" format:"uuid4"`
 	paramObj
 }
@@ -884,11 +809,9 @@ func (r VolumeDetachFromInstanceParams) MarshalJSON() (data []byte, err error) {
 }
 
 type VolumeGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -898,14 +821,11 @@ type VolumeGetParams struct {
 func (f VolumeGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type VolumeResizeParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D%2Fextend/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}/extend'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D%2Fextend/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}/extend'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/SizeSerializer/properties/size'
-	// "$.components.schemas.SizeSerializer.properties.size"
+	// New volume size in GiB
 	Size int64 `json:"size,required"`
 	paramObj
 }
@@ -920,11 +840,9 @@ func (r VolumeResizeParams) MarshalJSON() (data []byte, err error) {
 }
 
 type VolumeRevertToLastSnapshotParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D%2Frevert/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}/revert'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fvolumes%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bvolume_id%7D%2Frevert/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/volumes/{project_id}/{region_id}/{volume_id}/revert'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }

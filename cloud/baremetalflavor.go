@@ -81,29 +81,20 @@ func (r *BaremetalFlavorService) ListSuitable(ctx context.Context, params Bareme
 }
 
 type BaremetalFlavorListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fbmflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/bmflavors/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/bmflavors/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/bmflavors/{project_id}/{region_id}'].get.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Flag for filtering disabled flavors in the region. Defaults to true
 	Disabled param.Opt[bool] `query:"disabled,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/bmflavors/{project_id}/{region_id}'].get.parameters[3]"
+	// Set to true to exclude flavors dedicated to linux images. Default False
 	ExcludeLinux param.Opt[bool] `query:"exclude_linux,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/bmflavors/{project_id}/{region_id}'].get.parameters[4]"
+	// Set to true to exclude flavors dedicated to windows images. Default False
 	ExcludeWindows param.Opt[bool] `query:"exclude_windows,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/bmflavors/{project_id}/{region_id}'].get.parameters[5]"
+	// Set to true if the response should include flavor capacity
 	IncludeCapacity param.Opt[bool] `query:"include_capacity,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-	// "$.paths['/cloud/v1/bmflavors/{project_id}/{region_id}'].get.parameters[6]"
+	// Set to true if the response should include flavor prices
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/7'
-	// "$.paths['/cloud/v1/bmflavors/{project_id}/{region_id}'].get.parameters[7]"
+	// Optional. Set to true if flavor listing should include count of reserved
+	// resources in stock.
 	IncludeReservationStock param.Opt[bool] `query:"include_reservation_stock,omitzero" json:"-"`
 	paramObj
 }
@@ -122,20 +113,13 @@ func (r BaremetalFlavorListParams) URLQuery() (v url.Values, err error) {
 }
 
 type BaremetalFlavorListSuitableParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Favailable_flavors/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}/available_flavors'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Favailable_flavors/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}/available_flavors'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Favailable_flavors/post/parameters/2'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}/available_flavors'].post.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Set to true if flavor listing should include flavor prices
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
-	// '#/components/schemas/AvailableBaremetalFlavorsRequestSchema/properties/apptemplate_id'
-	// "$.components.schemas.AvailableBaremetalFlavorsRequestSchema.properties.apptemplate_id"
+	// Apptemplate ID
 	ApptemplateID param.Opt[string] `json:"apptemplate_id,omitzero"`
-	// '#/components/schemas/AvailableBaremetalFlavorsRequestSchema/properties/image_id'
-	// "$.components.schemas.AvailableBaremetalFlavorsRequestSchema.properties.image_id"
+	// Image ID
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
 	paramObj
 }

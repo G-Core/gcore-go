@@ -127,23 +127,20 @@ func (r *BaremetalServerService) Rebuild(ctx context.Context, serverID string, p
 	return
 }
 
-// '#/components/schemas/BareMetalFixedAddressSerializer'
-// "$.components.schemas.BareMetalFixedAddressSerializer"
+// IP addresses of the trunk port and its subports.
 type BaremetalFixedAddress struct {
-	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/addr'
-	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.addr"
+	// Address
 	Addr string `json:"addr,required"`
-	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.interface_name.anyOf[0]"
+	// Interface name. This field will be `null` if `with_interfaces_name=true` is not
+	// set in the request when listing servers. It will also be `null` if the
+	// `interface_name` was not specified during server creation or when attaching the
+	// interface.
 	InterfaceName string `json:"interface_name,required"`
-	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/subnet_id'
-	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.subnet_id"
+	// The unique identifier of the subnet associated with this address.
 	SubnetID string `json:"subnet_id,required"`
-	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/subnet_name'
-	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.subnet_name"
+	// The name of the subnet associated with this address.
 	SubnetName string `json:"subnet_name,required"`
-	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/type'
-	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.type"
+	// Type of the address
 	Type constant.Fixed `json:"type,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -164,14 +161,10 @@ func (r *BaremetalFixedAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BareMetalFloatingAddressSerializer'
-// "$.components.schemas.BareMetalFloatingAddressSerializer"
 type BaremetalFloatingAddress struct {
-	// '#/components/schemas/BareMetalFloatingAddressSerializer/properties/addr'
-	// "$.components.schemas.BareMetalFloatingAddressSerializer.properties.addr"
+	// Address
 	Addr string `json:"addr,required"`
-	// '#/components/schemas/BareMetalFloatingAddressSerializer/properties/type'
-	// "$.components.schemas.BareMetalFloatingAddressSerializer.properties.type"
+	// Type of the address
 	Type constant.Floating `json:"type,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -189,73 +182,58 @@ func (r *BaremetalFloatingAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BareMetalServerSerializer'
-// "$.components.schemas.BareMetalServerSerializer"
 type BaremetalServer struct {
-	// '#/components/schemas/BareMetalServerSerializer/properties/addresses'
-	// "$.components.schemas.BareMetalServerSerializer.properties.addresses"
+	// Map of network_name to list of addresses in that network
 	Addresses map[string][]BaremetalServerAddressUnion `json:"addresses,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/blackhole_ports'
-	// "$.components.schemas.BareMetalServerSerializer.properties.blackhole_ports"
+	// IP addresses of the instances that are blackholed by DDoS mitigation system
 	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.BareMetalServerSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/ddos_profile/anyOf/0'
-	// "$.components.schemas.BareMetalServerSerializer.properties.ddos_profile.anyOf[0]"
+	// Bare metal advanced DDoS protection profile. It is always `null` if query
+	// parameter `with_ddos=true` is not set.
 	DDOSProfile DDOSProfile `json:"ddos_profile,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/fixed_ip_assignments'
-	// "$.components.schemas.BareMetalServerSerializer.properties.fixed_ip_assignments"
+	// Fixed IP assigned to instance
 	FixedIPAssignments []BaremetalServerFixedIPAssignment `json:"fixed_ip_assignments,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/flavor'
-	// "$.components.schemas.BareMetalServerSerializer.properties.flavor"
+	// Flavor
 	Flavor BaremetalServerFlavor `json:"flavor,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/instance_created'
-	// "$.components.schemas.BareMetalServerSerializer.properties.instance_created"
+	// Datetime when bare metal server was created
 	InstanceCreated time.Time `json:"instance_created,required" format:"date-time"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/instance_description/anyOf/0'
-	// "$.components.schemas.BareMetalServerSerializer.properties.instance_description.anyOf[0]"
+	// Bare metal server description
 	InstanceDescription string `json:"instance_description,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/instance_id'
-	// "$.components.schemas.BareMetalServerSerializer.properties.instance_id"
+	// Bare metal server ID
 	InstanceID string `json:"instance_id,required" format:"uuid4"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/instance_isolation/anyOf/0'
-	// "$.components.schemas.BareMetalServerSerializer.properties.instance_isolation.anyOf[0]"
+	// Instance isolation information
 	InstanceIsolation InstanceIsolation `json:"instance_isolation,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/instance_name'
-	// "$.components.schemas.BareMetalServerSerializer.properties.instance_name"
+	// Bare metal server name
 	InstanceName string `json:"instance_name,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/project_id'
-	// "$.components.schemas.BareMetalServerSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/region'
-	// "$.components.schemas.BareMetalServerSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/region_id'
-	// "$.components.schemas.BareMetalServerSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/ssh_key_name/anyOf/0'
-	// "$.components.schemas.BareMetalServerSerializer.properties.ssh_key_name.anyOf[0]"
+	// SSH key assigned to bare metal server
 	SSHKeyName string `json:"ssh_key_name,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/status'
-	// "$.components.schemas.BareMetalServerSerializer.properties.status"
+	// Bare metal server status
 	//
 	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
 	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
 	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
 	// "UNKNOWN", "VERIFY_RESIZE".
 	Status BaremetalServerStatus `json:"status,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/tags'
-	// "$.components.schemas.BareMetalServerSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.BareMetalServerSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/task_state/anyOf/0'
-	// "$.components.schemas.BareMetalServerSerializer.properties.task_state.anyOf[0]"
+	// Task state
 	TaskState string `json:"task_state,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/vm_state'
-	// "$.components.schemas.BareMetalServerSerializer.properties.vm_state"
+	// Bare metal server state
 	//
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
@@ -334,17 +312,12 @@ func (r *BaremetalServerAddressUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BareMetalServerSerializer/properties/fixed_ip_assignments/items'
-// "$.components.schemas.BareMetalServerSerializer.properties.fixed_ip_assignments.items"
 type BaremetalServerFixedIPAssignment struct {
-	// '#/components/schemas/IpAssignmentsSerializer/properties/external'
-	// "$.components.schemas.IpAssignmentsSerializer.properties.external"
+	// Is network external
 	External bool `json:"external,required"`
-	// '#/components/schemas/IpAssignmentsSerializer/properties/ip_address'
-	// "$.components.schemas.IpAssignmentsSerializer.properties.ip_address"
+	// Ip address
 	IPAddress string `json:"ip_address,required"`
-	// '#/components/schemas/IpAssignmentsSerializer/properties/subnet_id'
-	// "$.components.schemas.IpAssignmentsSerializer.properties.subnet_id"
+	// Interface subnet id
 	SubnetID string `json:"subnet_id,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -363,32 +336,23 @@ func (r *BaremetalServerFixedIPAssignment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BareMetalServerSerializer/properties/flavor'
-// "$.components.schemas.BareMetalServerSerializer.properties.flavor"
+// Flavor
 type BaremetalServerFlavor struct {
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/architecture'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.architecture"
+	// CPU architecture
 	Architecture string `json:"architecture,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/flavor_id'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.flavor_id"
+	// Flavor ID is the same as name
 	FlavorID string `json:"flavor_id,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/flavor_name'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.flavor_name"
+	// Flavor name
 	FlavorName string `json:"flavor_name,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/hardware_description'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.hardware_description"
+	// Additional hardware description
 	HardwareDescription BaremetalServerFlavorHardwareDescription `json:"hardware_description,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/os_type'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.os_type"
+	// Operating system
 	OsType string `json:"os_type,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/ram'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.ram"
+	// RAM size in MiB
 	Ram int64 `json:"ram,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/resource_class'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.resource_class"
+	// Flavor resource class for mapping to hardware capacity
 	ResourceClass string `json:"resource_class,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/vcpus'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.vcpus"
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -412,23 +376,17 @@ func (r *BaremetalServerFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BareMetalFlavorSerializer/properties/hardware_description'
-// "$.components.schemas.BareMetalFlavorSerializer.properties.hardware_description"
+// Additional hardware description
 type BaremetalServerFlavorHardwareDescription struct {
-	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/cpu'
-	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.cpu"
+	// Human-readable CPU description
 	CPU string `json:"cpu,required"`
-	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/disk'
-	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.disk"
+	// Human-readable disk description
 	Disk string `json:"disk,required"`
-	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/license'
-	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.license"
+	// If the flavor is licensed, this field contains the license type
 	License string `json:"license,required"`
-	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/network'
-	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.network"
+	// Human-readable NIC description
 	Network string `json:"network,required"`
-	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/ram'
-	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.ram"
+	// Human-readable RAM description
 	Ram string `json:"ram,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -449,8 +407,7 @@ func (r *BaremetalServerFlavorHardwareDescription) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BareMetalServerSerializer/properties/status'
-// "$.components.schemas.BareMetalServerSerializer.properties.status"
+// Bare metal server status
 type BaremetalServerStatus string
 
 const (
@@ -476,8 +433,7 @@ const (
 	BaremetalServerStatusVerifyResize     BaremetalServerStatus = "VERIFY_RESIZE"
 )
 
-// '#/components/schemas/BareMetalServerSerializer/properties/vm_state'
-// "$.components.schemas.BareMetalServerSerializer.properties.vm_state"
+// Bare metal server state
 type BaremetalServerVmState string
 
 const (
@@ -496,50 +452,55 @@ const (
 )
 
 type BaremetalServerNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/flavor'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.flavor"
+	// The flavor of the instance.
 	Flavor string `json:"flavor,required"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/interfaces'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.interfaces"
+	// A list of network interfaces for the server. You can create one or more
+	// interfaces—private, public, or both.
 	Interfaces []BaremetalServerNewParamsInterfaceUnion `json:"interfaces,omitzero,required"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/ssh_key_name/anyOf/0'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.ssh_key_name.anyOf[0]"
+	// Specifies the name of the SSH keypair, created via the `/v1/ssh_keys` endpoint.
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/apptemplate_id'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.apptemplate_id"
+	// Apptemplate ID. Either `image_id` or `apptemplate_id` is required.
 	ApptemplateID param.Opt[string] `json:"apptemplate_id,omitzero"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/image_id'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.image_id"
+	// Image ID. Either `image_id` or `apptemplate_id` is required.
 	ImageID param.Opt[string] `json:"image_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/password'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.password"
+	// For Linux instances, 'username' and 'password' are used to create a new user.
+	// When only 'password' is provided, it is set as the password for the default user
+	// of the image. For Windows instances, 'username' cannot be specified. Use the
+	// 'password' field to set the password for the 'Admin' user on Windows. Use the
+	// 'user_data' field to provide a script to create new users on Windows. The
+	// password of the Admin user cannot be updated via 'user_data'.
 	Password param.Opt[string] `json:"password,omitzero"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/user_data'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.user_data"
+	// String in base64 format. For Linux instances, 'user_data' is ignored when
+	// 'password' field is provided. For Windows instances, Admin user password is set
+	// by 'password' field and cannot be updated via 'user_data'. Examples of the
+	// user_data: https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData param.Opt[string] `json:"user_data,omitzero"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/username'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.username"
+	// For Linux instances, 'username' and 'password' are used to create a new user.
+	// For Windows instances, 'username' cannot be specified. Use 'password' field to
+	// set the password for the 'Admin' user on Windows.
 	Username param.Opt[string] `json:"username,omitzero"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/app_config/anyOf/0'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.app_config.anyOf[0]"
+	// Parameters for the application template if creating the instance from an
+	// `apptemplate`.
 	AppConfig any `json:"app_config,omitzero"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/ddos_profile'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.ddos_profile"
+	// Enable advanced DDoS protection for the server
 	DDOSProfile BaremetalServerNewParamsDDOSProfile `json:"ddos_profile,omitzero"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/name_templates'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.name_templates"
+	// If you want server names to be automatically generated using IP octets, you can
+	// specify name templates instead of setting names manually.Provide a list of
+	// templated names that should be replaced using the selected template. The
+	// following template formats are supported: `{ip_octets}`, `{two_ip_octets}`, and
+	// `{one_ip_octet}`.
 	NameTemplates []string `json:"name_templates,omitzero"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/names'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.names"
+	// List of server names. Specify one name to create a single server.
 	Names []string `json:"names,omitzero"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/tags'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
@@ -557,17 +518,9 @@ func (r BaremetalServerNewParams) MarshalJSON() (data []byte, err error) {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type BaremetalServerNewParamsInterfaceUnion struct {
-	// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/0'
-	// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[0]"
-	OfExternal *BaremetalServerNewParamsInterfaceExternal `json:",omitzero,inline"`
-	// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/1'
-	// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[1]"
-	OfSubnet *BaremetalServerNewParamsInterfaceSubnet `json:",omitzero,inline"`
-	// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/2'
-	// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[2]"
-	OfAnySubnet *BaremetalServerNewParamsInterfaceAnySubnet `json:",omitzero,inline"`
-	// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/3'
-	// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[3]"
+	OfExternal        *BaremetalServerNewParamsInterfaceExternal        `json:",omitzero,inline"`
+	OfSubnet          *BaremetalServerNewParamsInterfaceSubnet          `json:",omitzero,inline"`
+	OfAnySubnet       *BaremetalServerNewParamsInterfaceAnySubnet       `json:",omitzero,inline"`
 	OfReservedFixedIP *BaremetalServerNewParamsInterfaceReservedFixedIP `json:",omitzero,inline"`
 	paramUnion
 }
@@ -769,24 +722,20 @@ func init() {
 	)
 }
 
-// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/0'
-// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[0]"
+// Instance will be attached to default external network
 //
 // The property Type is required.
 type BaremetalServerNewParamsInterfaceExternal struct {
-	// '#/components/schemas/CreateBareMetalExternalInterfaceSerializer/properties/interface_name'
-	// "$.components.schemas.CreateBareMetalExternalInterfaceSerializer.properties.interface_name"
+	// Interface name. Defaults to `null` and is returned as `null` in the API response
+	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/CreateBareMetalExternalInterfaceSerializer/properties/port_group'
-	// "$.components.schemas.CreateBareMetalExternalInterfaceSerializer.properties.port_group"
+	// Applicable only to bare metal. Each group is added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/CreateBareMetalExternalInterfaceSerializer/properties/ip_family/anyOf/0'
-	// "$.components.schemas.CreateBareMetalExternalInterfaceSerializer.properties.ip_family.anyOf[0]"
+	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// '#/components/schemas/CreateBareMetalExternalInterfaceSerializer/properties/type'
-	// "$.components.schemas.CreateBareMetalExternalInterfaceSerializer.properties.type"
+	// A public IP address will be assigned to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "external".
 	Type constant.External `json:"type,required"`
@@ -803,28 +752,26 @@ func (r BaremetalServerNewParamsInterfaceExternal) MarshalJSON() (data []byte, e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/1'
-// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[1]"
+// The instance will get an IP address from the selected network. If you choose to
+// add a floating IP, the instance will be reachable from the internet. Otherwise,
+// it will only have a private IP within the network.
 //
 // The properties NetworkID, SubnetID, Type are required.
 type BaremetalServerNewParamsInterfaceSubnet struct {
-	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/network_id'
-	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.network_id"
+	// The network where the instance will be connected.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/subnet_id'
-	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.subnet_id"
+	// The instance will get an IP address from this subnet.
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/interface_name'
-	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.interface_name"
+	// Interface name. Defaults to `null` and is returned as `null` in the API response
+	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/port_group'
-	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.port_group"
+	// Applicable only to bare metal. Each group is added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/floating_ip'
-	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip"
+	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/type'
-	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.type"
+	// The instance will get an IP address from the selected network. If you choose to
+	// add a floating IP, the instance will be reachable from the internet. Otherwise,
+	// it will only have a private IP within the network.
 	//
 	// This field can be elided, and will marshal its zero value as "subnet".
 	Type constant.Subnet `json:"type,required"`
@@ -845,11 +792,7 @@ func (r BaremetalServerNewParamsInterfaceSubnet) MarshalJSON() (data []byte, err
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion struct {
-	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/floating_ip/anyOf/0'
-	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip.anyOf[0]"
-	OfNew *BaremetalServerNewParamsInterfaceSubnetFloatingIPNew `json:",omitzero,inline"`
-	// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/floating_ip/anyOf/1'
-	// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip.anyOf[1]"
+	OfNew      *BaremetalServerNewParamsInterfaceSubnetFloatingIPNew      `json:",omitzero,inline"`
 	OfExisting *BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
@@ -912,14 +855,13 @@ func NewBaremetalServerNewParamsInterfaceSubnetFloatingIPNew() BaremetalServerNe
 	}
 }
 
-// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/floating_ip/anyOf/0'
-// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip.anyOf[0]"
-//
 // This struct has a constant value, construct it with
 // [NewBaremetalServerNewParamsInterfaceSubnetFloatingIPNew].
 type BaremetalServerNewParamsInterfaceSubnetFloatingIPNew struct {
-	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
+	// A new floating IP will be created and attached to the instance. A floating IP is
+	// a public IP that makes the instance accessible from the internet, even if it
+	// only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -934,16 +876,15 @@ func (r BaremetalServerNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() (dat
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateBareMetalSubnetInterfaceSerializer/properties/floating_ip/anyOf/1'
-// "$.components.schemas.CreateBareMetalSubnetInterfaceSerializer.properties.floating_ip.anyOf[1]"
-//
 // The properties ExistingFloatingID, Source are required.
 type BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting struct {
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
+	// An existing available floating IP id must be specified if the source is set to
+	// `existing`
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.source"
+	// An existing available floating IP will be attached to the instance. A floating
+	// IP is a public IP that makes the instance accessible from the internet, even if
+	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
 	Source constant.Existing `json:"source,required"`
@@ -960,33 +901,24 @@ func (r BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting) MarshalJSON()
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/2'
-// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[2]"
-//
 // The properties NetworkID, Type are required.
 type BaremetalServerNewParamsInterfaceAnySubnet struct {
-	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/network_id'
-	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.network_id"
+	// The network where the instance will be connected.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/interface_name'
-	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.interface_name"
+	// Interface name. Defaults to `null` and is returned as `null` in the API response
+	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/ip_address'
-	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.ip_address"
+	// You can specify a specific IP address from your subnet.
 	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipvanyaddress"`
-	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/port_group'
-	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.port_group"
+	// Applicable only to bare metal. Each group is added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/floating_ip'
-	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip"
+	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/ip_family/anyOf/0'
-	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.ip_family.anyOf[0]"
+	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/type'
-	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.type"
+	// Instance will be attached to a subnet with the largest count of free IPs.
 	//
 	// This field can be elided, and will marshal its zero value as "any_subnet".
 	Type constant.AnySubnet `json:"type,required"`
@@ -1007,11 +939,7 @@ func (r BaremetalServerNewParamsInterfaceAnySubnet) MarshalJSON() (data []byte, 
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion struct {
-	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/floating_ip/anyOf/0'
-	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip.anyOf[0]"
-	OfNew *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew `json:",omitzero,inline"`
-	// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/floating_ip/anyOf/1'
-	// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip.anyOf[1]"
+	OfNew      *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew      `json:",omitzero,inline"`
 	OfExisting *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1074,14 +1002,13 @@ func NewBaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew() BaremetalServe
 	}
 }
 
-// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/floating_ip/anyOf/0'
-// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip.anyOf[0]"
-//
 // This struct has a constant value, construct it with
 // [NewBaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew].
 type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew struct {
-	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
+	// A new floating IP will be created and attached to the instance. A floating IP is
+	// a public IP that makes the instance accessible from the internet, even if it
+	// only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1096,16 +1023,15 @@ func (r BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON() (
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateBareMetalAnySubnetInterfaceSerializer/properties/floating_ip/anyOf/1'
-// "$.components.schemas.CreateBareMetalAnySubnetInterfaceSerializer.properties.floating_ip.anyOf[1]"
-//
 // The properties ExistingFloatingID, Source are required.
 type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting struct {
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
+	// An existing available floating IP id must be specified if the source is set to
+	// `existing`
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.source"
+	// An existing available floating IP will be attached to the instance. A floating
+	// IP is a public IP that makes the instance accessible from the internet, even if
+	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
 	Source constant.Existing `json:"source,required"`
@@ -1122,25 +1048,20 @@ func (r BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting) MarshalJSO
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateBareMetalInterfaceSerializers/anyOf/3'
-// "$.components.schemas.CreateBareMetalInterfaceSerializers.anyOf[3]"
-//
 // The properties PortID, Type are required.
 type BaremetalServerNewParamsInterfaceReservedFixedIP struct {
-	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/port_id'
-	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.port_id"
+	// Network ID the subnet belongs to. Port will be plugged in this network.
 	PortID string `json:"port_id,required"`
-	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/interface_name'
-	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.interface_name"
+	// Interface name. Defaults to `null` and is returned as `null` in the API response
+	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/port_group'
-	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.port_group"
+	// Applicable only to bare metal. Each group is added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/floating_ip'
-	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip"
+	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion `json:"floating_ip,omitzero"`
-	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/type'
-	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.type"
+	// An existing available reserved fixed IP will be attached to the instance. If the
+	// reserved IP is not public and you choose to add a floating IP, the instance will
+	// be accessible from the internet.
 	//
 	// This field can be elided, and will marshal its zero value as
 	// "reserved_fixed_ip".
@@ -1162,11 +1083,7 @@ func (r BaremetalServerNewParamsInterfaceReservedFixedIP) MarshalJSON() (data []
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
-	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/floating_ip/anyOf/0'
-	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip.anyOf[0]"
-	OfNew *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew `json:",omitzero,inline"`
-	// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/floating_ip/anyOf/1'
-	// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip.anyOf[1]"
+	OfNew      *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew      `json:",omitzero,inline"`
 	OfExisting *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1229,14 +1146,13 @@ func NewBaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew() Baremeta
 	}
 }
 
-// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/floating_ip/anyOf/0'
-// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip.anyOf[0]"
-//
 // This struct has a constant value, construct it with
 // [NewBaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew].
 type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
-	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
+	// A new floating IP will be created and attached to the instance. A floating IP is
+	// a public IP that makes the instance accessible from the internet, even if it
+	// only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1251,16 +1167,15 @@ func (r BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew) MarshalJS
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateBareMetalReservedFixedIpInterfaceSerializer/properties/floating_ip/anyOf/1'
-// "$.components.schemas.CreateBareMetalReservedFixedIpInterfaceSerializer.properties.floating_ip.anyOf[1]"
-//
 // The properties ExistingFloatingID, Source are required.
 type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
+	// An existing available floating IP id must be specified if the source is set to
+	// `existing`
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.source"
+	// An existing available floating IP will be attached to the instance. A floating
+	// IP is a public IP that makes the instance accessible from the internet, even if
+	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
 	Source constant.Existing `json:"source,required"`
@@ -1277,19 +1192,15 @@ func (r BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting) Mars
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateBareMetalServerSerializer/properties/ddos_profile'
-// "$.components.schemas.CreateBareMetalServerSerializer.properties.ddos_profile"
+// Enable advanced DDoS protection for the server
 //
 // The property ProfileTemplate is required.
 type BaremetalServerNewParamsDDOSProfile struct {
-	// '#/components/schemas/CreateDDoSProfileSerializer/properties/profile_template'
-	// "$.components.schemas.CreateDDoSProfileSerializer.properties.profile_template"
+	// DDoS profile template ID
 	ProfileTemplate int64 `json:"profile_template,required"`
-	// '#/components/schemas/CreateDDoSProfileSerializer/properties/profile_template_name/anyOf/0'
-	// "$.components.schemas.CreateDDoSProfileSerializer.properties.profile_template_name.anyOf[0]"
+	// DDoS profile template name
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
-	// '#/components/schemas/CreateDDoSProfileSerializer/properties/fields/anyOf/0'
-	// "$.components.schemas.CreateDDoSProfileSerializer.properties.fields.anyOf[0]"
+	// DDoS profile parameters
 	Fields []BaremetalServerNewParamsDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
@@ -1304,20 +1215,14 @@ func (r BaremetalServerNewParamsDDOSProfile) MarshalJSON() (data []byte, err err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateDDoSProfileSerializer/properties/fields/anyOf/0/items'
-// "$.components.schemas.CreateDDoSProfileSerializer.properties.fields.anyOf[0].items"
 type BaremetalServerNewParamsDDOSProfileField struct {
-	// '#/components/schemas/CreateBareMetalDDoSProfileFieldSerializer/properties/base_field/anyOf/0'
-	// "$.components.schemas.CreateBareMetalDDoSProfileFieldSerializer.properties.base_field.anyOf[0]"
+	// ID of DDoS profile field
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// '#/components/schemas/CreateBareMetalDDoSProfileFieldSerializer/properties/field_name/anyOf/0'
-	// "$.components.schemas.CreateBareMetalDDoSProfileFieldSerializer.properties.field_name.anyOf[0]"
+	// Name of DDoS profile field
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
-	// '#/components/schemas/CreateBareMetalDDoSProfileFieldSerializer/properties/value/anyOf/0'
-	// "$.components.schemas.CreateBareMetalDDoSProfileFieldSerializer.properties.value.anyOf[0]"
+	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// '#/components/schemas/CreateBareMetalDDoSProfileFieldSerializer/properties/field_value'
-	// "$.components.schemas.CreateBareMetalDDoSProfileFieldSerializer.properties.field_value"
+	// Complex value. Only one of 'value' or 'field_value' must be specified.
 	FieldValue BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion `json:"field_value,omitzero"`
 	paramObj
 }
@@ -1336,15 +1241,9 @@ func (r BaremetalServerNewParamsDDOSProfileField) MarshalJSON() (data []byte, er
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion struct {
-	// '#/components/schemas/CreateBareMetalDDoSProfileFieldSerializer/properties/field_value/anyOf/0'
-	// "$.components.schemas.CreateBareMetalDDoSProfileFieldSerializer.properties.field_value.anyOf[0]"
-	OfAnyArray []any `json:",omitzero,inline"`
-	// '#/components/schemas/CreateBareMetalDDoSProfileFieldSerializer/properties/field_value/anyOf/1'
-	// "$.components.schemas.CreateBareMetalDDoSProfileFieldSerializer.properties.field_value.anyOf[1]"
-	OfInt param.Opt[int64] `json:",omitzero,inline"`
-	// '#/components/schemas/CreateBareMetalDDoSProfileFieldSerializer/properties/field_value/anyOf/2'
-	// "$.components.schemas.CreateBareMetalDDoSProfileFieldSerializer.properties.field_value.anyOf[2]"
-	OfString param.Opt[string] `json:",omitzero,inline"`
+	OfAnyArray []any             `json:",omitzero,inline"`
+	OfInt      param.Opt[int64]  `json:",omitzero,inline"`
+	OfString   param.Opt[string] `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1369,82 +1268,72 @@ func (u *BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) asAny() any {
 }
 
 type BaremetalServerListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[2]"
+	// Filters the instances by a date and time stamp when the instances last changed.
 	ChangesBefore param.Opt[time.Time] `query:"changes-before,omitzero" format:"date-time" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[3]"
+	// Filters the instances by a date and time stamp when the instances last changed
+	// status.
 	ChangesSince param.Opt[time.Time] `query:"changes-since,omitzero" format:"date-time" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[4]"
+	// Filter out instances by flavor_id. Flavor id must match exactly.
 	FlavorID param.Opt[string] `query:"flavor_id,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[5]"
+	// Filter out instances by flavor_prefix.
 	FlavorPrefix param.Opt[string] `query:"flavor_prefix,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[6]"
+	// Include managed k8s worker nodes
 	IncludeK8s param.Opt[bool] `query:"include_k8s,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/7'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[7]"
+	// An IPv4 address to filter results by. Note: partial matches are allowed. For
+	// example, searching for 192.168.0.1 will return 192.168.0.1, 192.168.0.10,
+	// 192.168.0.110, and so on.
 	IP param.Opt[string] `query:"ip,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/8'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[8]"
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/9'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[9]"
+	// Filter instances by name. You can provide a full or partial name, instances with
+	// matching names will be returned. For example, entering 'test' will return all
+	// instances that contain 'test' in their name.
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/10'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[10]"
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/11'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[11]"
+	// Include only isolated instances
 	OnlyIsolated param.Opt[bool] `query:"only_isolated,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/12'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[12]"
+	// Return bare metals only with external fixed IP addresses.
 	OnlyWithFixedExternalIP param.Opt[bool] `query:"only_with_fixed_external_ip,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/14'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[14]"
+	// Filter result by ddos protection profile name. Effective only with with_ddos set
+	// to true.
 	ProfileName param.Opt[string] `query:"profile_name,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/17'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[17]"
+	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
+	// "tag_key_value={"key": "value"}" --url
+	// "https://example.com/cloud/v1/resource/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/20'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[20]"
+	// Filter the server list result by the UUID of the server. Allowed UUID part
 	Uuid param.Opt[string] `query:"uuid,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/21'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[21]"
+	// Include DDoS profile information for bare-metal servers in the response when set
+	// to `true`. Otherwise, the `ddos_profile` field in the response is `null` by
+	// default.
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/22'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[22]"
+	// Include `interface_name` in the addresses
 	WithInterfacesName param.Opt[bool] `query:"with_interfaces_name,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/13'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[13]"
+	// Order by field and direction.
 	//
 	// Any of "created.asc", "created.desc", "name.asc", "name.desc", "status.asc",
 	// "status.desc".
 	OrderBy BaremetalServerListParamsOrderBy `query:"order_by,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/15'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[15]"
+	// Filter result by DDoS protection_status. Effective only with with_ddos set to
+	// true. (Active, Queued or Error)
 	//
 	// Any of "Active", "Queued", "Error".
 	ProtectionStatus BaremetalServerListParamsProtectionStatus `query:"protection_status,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/16'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[16]"
+	// Filters instances by a server status, as a string.
 	//
 	// Any of "ACTIVE", "BUILD", "ERROR", "HARD_REBOOT", "REBOOT", "REBUILD", "RESCUE",
 	// "SHUTOFF", "SUSPENDED".
 	Status BaremetalServerListParamsStatus `query:"status,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/18'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[18]"
+	// Optional. Filter by tag values. ?tag_value=value1&tag_value=value2
 	TagValue []string `query:"tag_value,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/19'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[19]"
+	// Return bare metals either only with advanced or only basic DDoS protection.
+	// Effective only with with_ddos set to true. (advanced or basic)
 	//
 	// Any of "basic", "advanced".
 	TypeDDOSProfile BaremetalServerListParamsTypeDDOSProfile `query:"type_ddos_profile,omitzero" json:"-"`
@@ -1464,8 +1353,7 @@ func (r BaremetalServerListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/13'
-// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[13]"
+// Order by field and direction.
 type BaremetalServerListParamsOrderBy string
 
 const (
@@ -1477,8 +1365,8 @@ const (
 	BaremetalServerListParamsOrderByStatusDesc  BaremetalServerListParamsOrderBy = "status.desc"
 )
 
-// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/15'
-// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[15]"
+// Filter result by DDoS protection_status. Effective only with with_ddos set to
+// true. (Active, Queued or Error)
 type BaremetalServerListParamsProtectionStatus string
 
 const (
@@ -1487,8 +1375,7 @@ const (
 	BaremetalServerListParamsProtectionStatusError  BaremetalServerListParamsProtectionStatus = "Error"
 )
 
-// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/16'
-// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[16]"
+// Filters instances by a server status, as a string.
 type BaremetalServerListParamsStatus string
 
 const (
@@ -1503,8 +1390,8 @@ const (
 	BaremetalServerListParamsStatusSuspended  BaremetalServerListParamsStatus = "SUSPENDED"
 )
 
-// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/19'
-// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}'].get.parameters[19]"
+// Return bare metals either only with advanced or only basic DDoS protection.
+// Effective only with with_ddos set to true. (advanced or basic)
 type BaremetalServerListParamsTypeDDOSProfile string
 
 const (
@@ -1513,17 +1400,13 @@ const (
 )
 
 type BaremetalServerRebuildParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bserver_id%7D%2Frebuild/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}/{server_id}/rebuild'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbminstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bserver_id%7D%2Frebuild/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/bminstances/{project_id}/{region_id}/{server_id}/rebuild'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/RebuildBaremetalSchema/properties/image_id'
-	// "$.components.schemas.RebuildBaremetalSchema.properties.image_id"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Image ID
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
-	// '#/components/schemas/RebuildBaremetalSchema/properties/user_data'
-	// "$.components.schemas.RebuildBaremetalSchema.properties.user_data"
+	// String in base64 format. Must not be passed together with 'username' or
+	// 'password'. Examples of the user_data:
+	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	paramObj
 }

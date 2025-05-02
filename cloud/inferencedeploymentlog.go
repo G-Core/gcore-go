@@ -72,20 +72,16 @@ func (r *InferenceDeploymentLogService) ListAutoPaging(ctx context.Context, depl
 }
 
 type InferenceDeploymentLogListParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments%2F%7Bdeployment_name%7D%2Flogs/get/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments/{deployment_name}/logs'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments%2F%7Bdeployment_name%7D%2Flogs/get/parameters/5/schema/anyOf/0'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments/{deployment_name}/logs'].get.parameters[5].schema.anyOf[0]"
+	// Region ID
 	RegionID param.Opt[int64] `query:"region_id,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments%2F%7Bdeployment_name%7D%2Flogs/get/parameters/2'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments/{deployment_name}/logs'].get.parameters[2]"
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments%2F%7Bdeployment_name%7D%2Flogs/get/parameters/3'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments/{deployment_name}/logs'].get.parameters[3]"
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments%2F%7Bdeployment_name%7D%2Flogs/get/parameters/4'
-	// "$.paths['/cloud/v3/inference/{project_id}/deployments/{deployment_name}/logs'].get.parameters[4]"
+	// Order by field
 	//
 	// Any of "time.asc", "time.desc".
 	OrderBy InferenceDeploymentLogListParamsOrderBy `query:"order_by,omitzero" json:"-"`
@@ -105,8 +101,7 @@ func (r InferenceDeploymentLogListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fdeployments%2F%7Bdeployment_name%7D%2Flogs/get/parameters/4'
-// "$.paths['/cloud/v3/inference/{project_id}/deployments/{deployment_name}/logs'].get.parameters[4]"
+// Order by field
 type InferenceDeploymentLogListParamsOrderBy string
 
 const (

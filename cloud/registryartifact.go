@@ -92,32 +92,22 @@ func (r *RegistryArtifactService) Delete(ctx context.Context, digest string, bod
 	return
 }
 
-// '#/components/schemas/RegistryArtifactSerializer'
-// "$.components.schemas.RegistryArtifactSerializer"
 type RegistryArtifact struct {
-	// '#/components/schemas/RegistryArtifactSerializer/properties/id'
-	// "$.components.schemas.RegistryArtifactSerializer.properties.id"
+	// Repository ID
 	ID int64 `json:"id,required"`
-	// '#/components/schemas/RegistryArtifactSerializer/properties/digest'
-	// "$.components.schemas.RegistryArtifactSerializer.properties.digest"
+	// Artifact digest
 	Digest string `json:"digest,required"`
-	// '#/components/schemas/RegistryArtifactSerializer/properties/pulled_at'
-	// "$.components.schemas.RegistryArtifactSerializer.properties.pulled_at"
+	// Artifact last pull date-time
 	PulledAt time.Time `json:"pulled_at,required" format:"date-time"`
-	// '#/components/schemas/RegistryArtifactSerializer/properties/pushed_at'
-	// "$.components.schemas.RegistryArtifactSerializer.properties.pushed_at"
+	// Artifact push date-time
 	PushedAt time.Time `json:"pushed_at,required" format:"date-time"`
-	// '#/components/schemas/RegistryArtifactSerializer/properties/registry_id'
-	// "$.components.schemas.RegistryArtifactSerializer.properties.registry_id"
+	// Artifact registry ID
 	RegistryID int64 `json:"registry_id,required"`
-	// '#/components/schemas/RegistryArtifactSerializer/properties/repository_id'
-	// "$.components.schemas.RegistryArtifactSerializer.properties.repository_id"
+	// Artifact repository ID
 	RepositoryID int64 `json:"repository_id,required"`
-	// '#/components/schemas/RegistryArtifactSerializer/properties/size'
-	// "$.components.schemas.RegistryArtifactSerializer.properties.size"
+	// Artifact size, bytes
 	Size int64 `json:"size,required"`
-	// '#/components/schemas/RegistryArtifactSerializer/properties/tags'
-	// "$.components.schemas.RegistryArtifactSerializer.properties.tags"
+	// Artifact tags
 	Tags []RegistryTag `json:"tags,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -141,14 +131,10 @@ func (r *RegistryArtifact) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/RegistryArtifactCollectionSerializer'
-// "$.components.schemas.RegistryArtifactCollectionSerializer"
 type RegistryArtifactList struct {
-	// '#/components/schemas/RegistryArtifactCollectionSerializer/properties/count'
-	// "$.components.schemas.RegistryArtifactCollectionSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/RegistryArtifactCollectionSerializer/properties/results'
-	// "$.components.schemas.RegistryArtifactCollectionSerializer.properties.results"
+	// Objects
 	Results []RegistryArtifact `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -167,15 +153,9 @@ func (r *RegistryArtifactList) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryArtifactListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts'].get.parameters[0].schema"
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts/get/parameters/2/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts'].get.parameters[2].schema"
-	RegistryID int64 `path:"registry_id,required" json:"-"`
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegistryID int64            `path:"registry_id,required" json:"-"`
 	paramObj
 }
 
@@ -184,18 +164,10 @@ type RegistryArtifactListParams struct {
 func (f RegistryArtifactListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type RegistryArtifactDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts%2F%7Bdigest%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts/{digest}']['delete'].parameters[0].schema"
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts%2F%7Bdigest%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts/{digest}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts%2F%7Bdigest%7D/delete/parameters/2/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts/{digest}']['delete'].parameters[2].schema"
-	RegistryID int64 `path:"registry_id,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts%2F%7Bdigest%7D/delete/parameters/3/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts/{digest}']['delete'].parameters[3].schema"
-	RepositoryName string `path:"repository_name,required" json:"-"`
+	ProjectID      param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID       param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegistryID     int64            `path:"registry_id,required" json:"-"`
+	RepositoryName string           `path:"repository_name,required" json:"-"`
 	paramObj
 }
 

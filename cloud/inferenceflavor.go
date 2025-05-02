@@ -72,35 +72,24 @@ func (r *InferenceFlavorService) Get(ctx context.Context, flavorName string, opt
 	return
 }
 
-// '#/components/schemas/InferenceFlavorOutSerializerV3'
-// "$.components.schemas.InferenceFlavorOutSerializerV3"
 type InferenceFlavor struct {
-	// '#/components/schemas/InferenceFlavorOutSerializerV3/properties/cpu'
-	// "$.components.schemas.InferenceFlavorOutSerializerV3.properties.cpu"
+	// Inference flavor cpu count.
 	CPU float64 `json:"cpu,required"`
-	// '#/components/schemas/InferenceFlavorOutSerializerV3/properties/description'
-	// "$.components.schemas.InferenceFlavorOutSerializerV3.properties.description"
+	// Inference flavor description.
 	Description string `json:"description,required"`
-	// '#/components/schemas/InferenceFlavorOutSerializerV3/properties/gpu'
-	// "$.components.schemas.InferenceFlavorOutSerializerV3.properties.gpu"
+	// Inference flavor gpu count.
 	GPU int64 `json:"gpu,required"`
-	// '#/components/schemas/InferenceFlavorOutSerializerV3/properties/gpu_compute_capability'
-	// "$.components.schemas.InferenceFlavorOutSerializerV3.properties.gpu_compute_capability"
+	// Inference flavor gpu compute capability.
 	GPUComputeCapability string `json:"gpu_compute_capability,required"`
-	// '#/components/schemas/InferenceFlavorOutSerializerV3/properties/gpu_memory'
-	// "$.components.schemas.InferenceFlavorOutSerializerV3.properties.gpu_memory"
+	// Inference flavor gpu memory in Gi.
 	GPUMemory float64 `json:"gpu_memory,required"`
-	// '#/components/schemas/InferenceFlavorOutSerializerV3/properties/gpu_model'
-	// "$.components.schemas.InferenceFlavorOutSerializerV3.properties.gpu_model"
+	// Inference flavor gpu model.
 	GPUModel string `json:"gpu_model,required"`
-	// '#/components/schemas/InferenceFlavorOutSerializerV3/properties/is_gpu_shared'
-	// "$.components.schemas.InferenceFlavorOutSerializerV3.properties.is_gpu_shared"
+	// Inference flavor is gpu shared.
 	IsGPUShared bool `json:"is_gpu_shared,required"`
-	// '#/components/schemas/InferenceFlavorOutSerializerV3/properties/memory'
-	// "$.components.schemas.InferenceFlavorOutSerializerV3.properties.memory"
+	// Inference flavor memory in Gi.
 	Memory float64 `json:"memory,required"`
-	// '#/components/schemas/InferenceFlavorOutSerializerV3/properties/name'
-	// "$.components.schemas.InferenceFlavorOutSerializerV3.properties.name"
+	// Inference flavor name.
 	Name string `json:"name,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -126,11 +115,10 @@ func (r *InferenceFlavor) UnmarshalJSON(data []byte) error {
 }
 
 type InferenceFlavorListParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2Fflavors/get/parameters/0'
-	// "$.paths['/cloud/v3/inference/flavors'].get.parameters[0]"
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2Fflavors/get/parameters/1'
-	// "$.paths['/cloud/v3/inference/flavors'].get.parameters[1]"
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }

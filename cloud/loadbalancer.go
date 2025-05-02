@@ -242,74 +242,55 @@ func (r *LoadBalancerService) Resize(ctx context.Context, loadbalancerID string,
 	return
 }
 
-// '#/components/schemas/DetailedLbPoolSerializer'
-// "$.components.schemas.DetailedLbPoolSerializer"
 type DetailedLbPool struct {
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/id'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.id"
+	// Pool ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/ca_secret_id/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.ca_secret_id.anyOf[0]"
+	// Secret ID of CA certificate bundle
 	CaSecretID string `json:"ca_secret_id,required" format:"uuid4"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/crl_secret_id/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.crl_secret_id.anyOf[0]"
+	// Secret ID of CA revocation list file
 	CrlSecretID string `json:"crl_secret_id,required" format:"uuid4"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/lb_algorithm'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.lb_algorithm"
+	// Load balancer algorithm
 	//
 	// Any of "LEAST_CONNECTIONS", "ROUND_ROBIN", "SOURCE_IP".
 	LbAlgorithm LbAlgorithm `json:"lb_algorithm,required"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/listeners'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.listeners"
+	// Listeners IDs
 	Listeners []DetailedLbPoolListener `json:"listeners,required"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/loadbalancers'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.loadbalancers"
+	// Load balancers IDs
 	Loadbalancers []DetailedLbPoolLoadbalancer `json:"loadbalancers,required"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/members'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.members"
+	// Pool members
 	Members []DetailedLbPoolMember `json:"members,required"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/name'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.name"
+	// Pool name
 	Name string `json:"name,required"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/operating_status'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.operating_status"
+	// Pool operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/protocol'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.protocol"
+	// Protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROXY", "PROXYV2", "TCP", "UDP".
 	Protocol LbPoolProtocol `json:"protocol,required"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/provisioning_status'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.provisioning_status"
+	// Pool lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/secret_id/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.secret_id.anyOf[0]"
+	// Secret ID for TLS client authentication to the member servers
 	SecretID string `json:"secret_id,required" format:"uuid4"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/session_persistence/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.session_persistence.anyOf[0]"
+	// Session persistence parameters
 	SessionPersistence LbSessionPersistence `json:"session_persistence,required"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/timeout_client_data/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.timeout_client_data.anyOf[0]"
+	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData int64 `json:"timeout_client_data,required"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/timeout_member_connect/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.timeout_member_connect.anyOf[0]"
+	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect int64 `json:"timeout_member_connect,required"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/timeout_member_data/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.timeout_member_data.anyOf[0]"
+	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData int64 `json:"timeout_member_data,required"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/healthmonitor/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.healthmonitor.anyOf[0]"
+	// Health monitor parameters
 	Healthmonitor LbHealthMonitor `json:"healthmonitor,nullable"`
-	// '#/components/schemas/DetailedLbPoolSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -344,11 +325,8 @@ func (r *DetailedLbPool) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/DetailedLbPoolSerializer/properties/listeners/items'
-// "$.components.schemas.DetailedLbPoolSerializer.properties.listeners.items"
 type DetailedLbPoolListener struct {
-	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
-	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
+	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -365,11 +343,8 @@ func (r *DetailedLbPoolListener) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/DetailedLbPoolSerializer/properties/loadbalancers/items'
-// "$.components.schemas.DetailedLbPoolSerializer.properties.loadbalancers.items"
 type DetailedLbPoolLoadbalancer struct {
-	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
-	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
+	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -386,14 +361,10 @@ func (r *DetailedLbPoolLoadbalancer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/DetailedLbPoolSerializerList'
-// "$.components.schemas.DetailedLbPoolSerializerList"
 type DetailedLbPoolList struct {
-	// '#/components/schemas/DetailedLbPoolSerializerList/properties/count'
-	// "$.components.schemas.DetailedLbPoolSerializerList.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/DetailedLbPoolSerializerList/properties/results'
-	// "$.components.schemas.DetailedLbPoolSerializerList.properties.results"
+	// Objects
 	Results []DetailedLbPool `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -411,43 +382,33 @@ func (r *DetailedLbPoolList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/DetailedLbPoolMemberSerializer'
-// "$.components.schemas.DetailedLbPoolMemberSerializer"
 type DetailedLbPoolMember struct {
-	// '#/components/schemas/DetailedLbPoolMemberSerializer/properties/id'
-	// "$.components.schemas.DetailedLbPoolMemberSerializer.properties.id"
+	// Member ID must be provided if an existing member is being updated
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/DetailedLbPoolMemberSerializer/properties/address'
-	// "$.components.schemas.DetailedLbPoolMemberSerializer.properties.address"
+	// Member IP address
 	Address string `json:"address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/DetailedLbPoolMemberSerializer/properties/admin_state_up'
-	// "$.components.schemas.DetailedLbPoolMemberSerializer.properties.admin_state_up"
+	// true if enabled. Defaults to true
 	AdminStateUp bool `json:"admin_state_up,required"`
-	// '#/components/schemas/DetailedLbPoolMemberSerializer/properties/operating_status'
-	// "$.components.schemas.DetailedLbPoolMemberSerializer.properties.operating_status"
+	// Member operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// '#/components/schemas/DetailedLbPoolMemberSerializer/properties/protocol_port'
-	// "$.components.schemas.DetailedLbPoolMemberSerializer.properties.protocol_port"
+	// Member IP port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// '#/components/schemas/DetailedLbPoolMemberSerializer/properties/provisioning_status'
-	// "$.components.schemas.DetailedLbPoolMemberSerializer.properties.provisioning_status"
+	// Pool member lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// '#/components/schemas/DetailedLbPoolMemberSerializer/properties/weight'
-	// "$.components.schemas.DetailedLbPoolMemberSerializer.properties.weight"
+	// Member weight. Valid values: 0 to 256, defaults to 1
 	Weight int64 `json:"weight,required"`
-	// '#/components/schemas/DetailedLbPoolMemberSerializer/properties/monitor_address/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolMemberSerializer.properties.monitor_address.anyOf[0]"
+	// An alternate IP address used for health monitoring of a backend member. Default
+	// is null which monitors the member address.
 	MonitorAddress string `json:"monitor_address,nullable" format:"ipvanyaddress"`
-	// '#/components/schemas/DetailedLbPoolMemberSerializer/properties/monitor_port/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolMemberSerializer.properties.monitor_port.anyOf[0]"
+	// An alternate protocol port used for health monitoring of a backend member.
+	// Default is null which monitors the member protocol_port.
 	MonitorPort int64 `json:"monitor_port,nullable"`
-	// '#/components/schemas/DetailedLbPoolMemberSerializer/properties/subnet_id/anyOf/0'
-	// "$.components.schemas.DetailedLbPoolMemberSerializer.properties.subnet_id.anyOf[0]"
+	// Either subnet_id or instance_id should be provided
 	SubnetID string `json:"subnet_id,nullable" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -473,25 +434,19 @@ func (r *DetailedLbPoolMember) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/HealthMonitorStatusSerializer'
-// "$.components.schemas.HealthMonitorStatusSerializer"
 type HealthMonitorStatus struct {
-	// '#/components/schemas/HealthMonitorStatusSerializer/properties/id'
-	// "$.components.schemas.HealthMonitorStatusSerializer.properties.id"
+	// UUID of the entity
 	ID string `json:"id,required" format:"uuid"`
-	// '#/components/schemas/HealthMonitorStatusSerializer/properties/operating_status'
-	// "$.components.schemas.HealthMonitorStatusSerializer.properties.operating_status"
+	// Operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// '#/components/schemas/HealthMonitorStatusSerializer/properties/provisioning_status'
-	// "$.components.schemas.HealthMonitorStatusSerializer.properties.provisioning_status"
+	// Provisioning status of the entity
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// '#/components/schemas/HealthMonitorStatusSerializer/properties/type'
-	// "$.components.schemas.HealthMonitorStatusSerializer.properties.type"
+	// Type of the Health Monitor
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type HealthMonitorType `json:"type,required"`
@@ -513,8 +468,6 @@ func (r *HealthMonitorStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/HealthMonitorTypeEnum'
-// "$.components.schemas.HealthMonitorTypeEnum"
 type HealthMonitorType string
 
 const (
@@ -527,7 +480,6 @@ const (
 	HealthMonitorTypeUdpConnect HealthMonitorType = "UDP-CONNECT"
 )
 
-// '#/components/schemas/HttpMethodEnum' "$.components.schemas.HttpMethodEnum"
 type HTTPMethod string
 
 const (
@@ -542,65 +494,56 @@ const (
 	HTTPMethodTrace   HTTPMethod = "TRACE"
 )
 
-// '#/components/schemas/L7PolicySchema' "$.components.schemas.L7PolicySchema"
+// L7Policy schema
 type L7Policy struct {
-	// '#/components/schemas/L7PolicySchema/properties/id'
-	// "$.components.schemas.L7PolicySchema.properties.id"
+	// ID
 	ID string `json:"id"`
-	// '#/components/schemas/L7PolicySchema/properties/action'
-	// "$.components.schemas.L7PolicySchema.properties.action"
+	// Action
 	//
 	// Any of "REDIRECT_PREFIX", "REDIRECT_TO_POOL", "REDIRECT_TO_URL", "REJECT".
 	Action L7PolicyAction `json:"action"`
-	// '#/components/schemas/L7PolicySchema/properties/listener_id'
-	// "$.components.schemas.L7PolicySchema.properties.listener_id"
+	// Listener ID
 	ListenerID string `json:"listener_id"`
-	// '#/components/schemas/L7PolicySchema/properties/name'
-	// "$.components.schemas.L7PolicySchema.properties.name"
+	// Human-readable name of the policy
 	Name string `json:"name"`
-	// '#/components/schemas/L7PolicySchema/properties/operating_status'
-	// "$.components.schemas.L7PolicySchema.properties.operating_status"
+	// L7 policy operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus L7PolicyOperatingStatus `json:"operating_status"`
-	// '#/components/schemas/L7PolicySchema/properties/position'
-	// "$.components.schemas.L7PolicySchema.properties.position"
+	// The position of this policy on the listener. Positions start at 1.
 	Position int64 `json:"position"`
-	// '#/components/schemas/L7PolicySchema/properties/project_id'
-	// "$.components.schemas.L7PolicySchema.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id"`
-	// '#/components/schemas/L7PolicySchema/properties/provisioning_status'
-	// "$.components.schemas.L7PolicySchema.properties.provisioning_status"
-	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus L7PolicyProvisioningStatus `json:"provisioning_status"`
-	// '#/components/schemas/L7PolicySchema/properties/redirect_http_code'
-	// "$.components.schemas.L7PolicySchema.properties.redirect_http_code"
+	// Requests matching this policy will be redirected to the specified URL or Prefix
+	// URL with the HTTP response code. Valid if action is REDIRECT_TO_URL or
+	// REDIRECT_PREFIX. Valid options are 301, 302, 303, 307, or 308. Default is 302.
 	RedirectHTTPCode int64 `json:"redirect_http_code"`
-	// '#/components/schemas/L7PolicySchema/properties/redirect_pool_id'
-	// "$.components.schemas.L7PolicySchema.properties.redirect_pool_id"
+	// Requests matching this policy will be redirected to the pool with this ID. Only
+	// valid if action is REDIRECT_TO_POOL.
 	RedirectPoolID string `json:"redirect_pool_id"`
-	// '#/components/schemas/L7PolicySchema/properties/redirect_prefix'
-	// "$.components.schemas.L7PolicySchema.properties.redirect_prefix"
+	// Requests matching this policy will be redirected to this Prefix URL. Only valid
+	// if action is REDIRECT_PREFIX.
 	RedirectPrefix string `json:"redirect_prefix"`
-	// '#/components/schemas/L7PolicySchema/properties/redirect_url'
-	// "$.components.schemas.L7PolicySchema.properties.redirect_url"
+	// Requests matching this policy will be redirected to this URL. Only valid if
+	// action is REDIRECT_TO_URL.
 	RedirectURL string `json:"redirect_url"`
-	// '#/components/schemas/L7PolicySchema/properties/region'
-	// "$.components.schemas.L7PolicySchema.properties.region"
+	// Region name
 	Region string `json:"region"`
-	// '#/components/schemas/L7PolicySchema/properties/region_id'
-	// "$.components.schemas.L7PolicySchema.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id"`
-	// '#/components/schemas/L7PolicySchema/properties/rules'
-	// "$.components.schemas.L7PolicySchema.properties.rules"
+	// Rules. All the rules associated with a given policy are logically ANDed
+	// together. A request must match all the policy’s rules to match the policy.If you
+	// need to express a logical OR operation between rules, then do this by creating
+	// multiple policies with the same action.
 	Rules []L7Rule `json:"rules"`
-	// '#/components/schemas/L7PolicySchema/properties/tags'
-	// "$.components.schemas.L7PolicySchema.properties.tags"
+	// A list of simple strings assigned to the resource.
 	Tags []string `json:"tags"`
-	// '#/components/schemas/L7PolicySchema/properties/task_id'
-	// "$.components.schemas.L7PolicySchema.properties.task_id"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -633,8 +576,7 @@ func (r *L7Policy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/L7PolicySchema/properties/action'
-// "$.components.schemas.L7PolicySchema.properties.action"
+// Action
 type L7PolicyAction string
 
 const (
@@ -644,8 +586,7 @@ const (
 	L7PolicyActionReject         L7PolicyAction = "REJECT"
 )
 
-// '#/components/schemas/L7PolicySchema/properties/operating_status'
-// "$.components.schemas.L7PolicySchema.properties.operating_status"
+// L7 policy operating status
 type L7PolicyOperatingStatus string
 
 const (
@@ -657,8 +598,6 @@ const (
 	L7PolicyOperatingStatusOnline    L7PolicyOperatingStatus = "ONLINE"
 )
 
-// '#/components/schemas/L7PolicySchema/properties/provisioning_status'
-// "$.components.schemas.L7PolicySchema.properties.provisioning_status"
 type L7PolicyProvisioningStatus string
 
 const (
@@ -670,14 +609,10 @@ const (
 	L7PolicyProvisioningStatusPendingUpdate L7PolicyProvisioningStatus = "PENDING_UPDATE"
 )
 
-// '#/components/schemas/L7PolicyListSchema'
-// "$.components.schemas.L7PolicyListSchema"
 type L7PolicyList struct {
-	// '#/components/schemas/L7PolicyListSchema/properties/count'
-	// "$.components.schemas.L7PolicyListSchema.properties.count"
+	// Number of objects
 	Count int64 `json:"count"`
-	// '#/components/schemas/L7PolicyListSchema/properties/results'
-	// "$.components.schemas.L7PolicyListSchema.properties.results"
+	// Objects
 	Results []L7Policy `json:"results"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -695,56 +630,48 @@ func (r *L7PolicyList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/L7RuleSchema' "$.components.schemas.L7RuleSchema"
+// L7Rule schema All the rules associated with a given policy are logically ANDed
+// together. A request must match all the policy’s rules to match the policy. If
+// you need to express a logical OR operation between rules, then do this by
+// creating multiple policies with the same action.
 type L7Rule struct {
-	// '#/components/schemas/L7RuleSchema/properties/id'
-	// "$.components.schemas.L7RuleSchema.properties.id"
+	// L7Rule ID
 	ID string `json:"id"`
-	// '#/components/schemas/L7RuleSchema/properties/compare_type'
-	// "$.components.schemas.L7RuleSchema.properties.compare_type"
+	// The comparison type for the L7 rule
 	//
 	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
 	CompareType L7RuleCompareType `json:"compare_type"`
-	// '#/components/schemas/L7RuleSchema/properties/invert'
-	// "$.components.schemas.L7RuleSchema.properties.invert"
+	// When true the logic of the rule is inverted. For example, with invert true,
+	// 'equal to' would become 'not equal to'. Default is false.
 	Invert bool `json:"invert"`
-	// '#/components/schemas/L7RuleSchema/properties/key'
-	// "$.components.schemas.L7RuleSchema.properties.key"
+	// The key to use for the comparison. For example, the name of the cookie to
+	// evaluate.
 	Key string `json:"key"`
-	// '#/components/schemas/L7RuleSchema/properties/operating_status'
-	// "$.components.schemas.L7RuleSchema.properties.operating_status"
+	// L7 policy operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus L7RuleOperatingStatus `json:"operating_status"`
-	// '#/components/schemas/L7RuleSchema/properties/project_id'
-	// "$.components.schemas.L7RuleSchema.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id"`
-	// '#/components/schemas/L7RuleSchema/properties/provisioning_status'
-	// "$.components.schemas.L7RuleSchema.properties.provisioning_status"
-	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus L7RuleProvisioningStatus `json:"provisioning_status"`
-	// '#/components/schemas/L7RuleSchema/properties/region'
-	// "$.components.schemas.L7RuleSchema.properties.region"
+	// Region name
 	Region string `json:"region"`
-	// '#/components/schemas/L7RuleSchema/properties/region_id'
-	// "$.components.schemas.L7RuleSchema.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id"`
-	// '#/components/schemas/L7RuleSchema/properties/tags'
-	// "$.components.schemas.L7RuleSchema.properties.tags"
+	// A list of simple strings assigned to the l7 rule
 	Tags []string `json:"tags"`
-	// '#/components/schemas/L7RuleSchema/properties/task_id'
-	// "$.components.schemas.L7RuleSchema.properties.task_id"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id"`
-	// '#/components/schemas/L7RuleSchema/properties/type'
-	// "$.components.schemas.L7RuleSchema.properties.type"
+	// The L7 rule type
 	//
 	// Any of "COOKIE", "FILE_TYPE", "HEADER", "HOST_NAME", "PATH",
 	// "SSL_CONN_HAS_CERT", "SSL_DN_FIELD", "SSL_VERIFY_RESULT".
 	Type L7RuleType `json:"type"`
-	// '#/components/schemas/L7RuleSchema/properties/value'
-	// "$.components.schemas.L7RuleSchema.properties.value"
+	// The value to use for the comparison. For example, the file type to compare.
 	Value string `json:"value"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -773,8 +700,7 @@ func (r *L7Rule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/L7RuleSchema/properties/compare_type'
-// "$.components.schemas.L7RuleSchema.properties.compare_type"
+// The comparison type for the L7 rule
 type L7RuleCompareType string
 
 const (
@@ -785,8 +711,7 @@ const (
 	L7RuleCompareTypeStartsWith L7RuleCompareType = "STARTS_WITH"
 )
 
-// '#/components/schemas/L7RuleSchema/properties/operating_status'
-// "$.components.schemas.L7RuleSchema.properties.operating_status"
+// L7 policy operating status
 type L7RuleOperatingStatus string
 
 const (
@@ -798,8 +723,6 @@ const (
 	L7RuleOperatingStatusOnline    L7RuleOperatingStatus = "ONLINE"
 )
 
-// '#/components/schemas/L7RuleSchema/properties/provisioning_status'
-// "$.components.schemas.L7RuleSchema.properties.provisioning_status"
 type L7RuleProvisioningStatus string
 
 const (
@@ -811,8 +734,7 @@ const (
 	L7RuleProvisioningStatusPendingUpdate L7RuleProvisioningStatus = "PENDING_UPDATE"
 )
 
-// '#/components/schemas/L7RuleSchema/properties/type'
-// "$.components.schemas.L7RuleSchema.properties.type"
+// The L7 rule type
 type L7RuleType string
 
 const (
@@ -826,13 +748,10 @@ const (
 	L7RuleTypeSslVerifyResult L7RuleType = "SSL_VERIFY_RESULT"
 )
 
-// '#/components/schemas/L7RuleListSchema' "$.components.schemas.L7RuleListSchema"
 type L7RuleList struct {
-	// '#/components/schemas/L7RuleListSchema/properties/count'
-	// "$.components.schemas.L7RuleListSchema.properties.count"
+	// Number of objects
 	Count int64 `json:"count"`
-	// '#/components/schemas/L7RuleListSchema/properties/results'
-	// "$.components.schemas.L7RuleListSchema.properties.results"
+	// Objects
 	Results []L7Rule `json:"results"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -850,7 +769,6 @@ func (r *L7RuleList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LbAlgorithmEnum' "$.components.schemas.LbAlgorithmEnum"
 type LbAlgorithm string
 
 const (
@@ -859,14 +777,10 @@ const (
 	LbAlgorithmSourceIP         LbAlgorithm = "SOURCE_IP"
 )
 
-// '#/components/schemas/LbFlavorPricingCollectionSerializer'
-// "$.components.schemas.LbFlavorPricingCollectionSerializer"
 type LbFlavorList struct {
-	// '#/components/schemas/LbFlavorPricingCollectionSerializer/properties/count'
-	// "$.components.schemas.LbFlavorPricingCollectionSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/LbFlavorPricingCollectionSerializer/properties/results'
-	// "$.components.schemas.LbFlavorPricingCollectionSerializer.properties.results"
+	// Objects
 	Results []LbFlavorListResult `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -884,35 +798,24 @@ func (r *LbFlavorList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LbFlavorPricingCollectionSerializer/properties/results/items'
-// "$.components.schemas.LbFlavorPricingCollectionSerializer.properties.results.items"
 type LbFlavorListResult struct {
-	// '#/components/schemas/LbFlavorPricingSerializer/properties/flavor_id'
-	// "$.components.schemas.LbFlavorPricingSerializer.properties.flavor_id"
+	// Flavor ID is the same as name
 	FlavorID string `json:"flavor_id,required"`
-	// '#/components/schemas/LbFlavorPricingSerializer/properties/flavor_name'
-	// "$.components.schemas.LbFlavorPricingSerializer.properties.flavor_name"
+	// Flavor name
 	FlavorName string `json:"flavor_name,required"`
-	// '#/components/schemas/LbFlavorPricingSerializer/properties/hardware_description'
-	// "$.components.schemas.LbFlavorPricingSerializer.properties.hardware_description"
+	// Additional hardware description.
 	HardwareDescription FlavorHardwareDescription `json:"hardware_description,required"`
-	// '#/components/schemas/LbFlavorPricingSerializer/properties/ram'
-	// "$.components.schemas.LbFlavorPricingSerializer.properties.ram"
+	// RAM size in MiB
 	Ram int64 `json:"ram,required"`
-	// '#/components/schemas/LbFlavorPricingSerializer/properties/vcpus'
-	// "$.components.schemas.LbFlavorPricingSerializer.properties.vcpus"
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// '#/components/schemas/LbFlavorPricingSerializer/properties/currency_code/anyOf/0'
-	// "$.components.schemas.LbFlavorPricingSerializer.properties.currency_code.anyOf[0]"
+	// Currency code. Shown if the include_prices query parameter if set to true
 	CurrencyCode string `json:"currency_code,nullable"`
-	// '#/components/schemas/LbFlavorPricingSerializer/properties/price_per_hour/anyOf/0'
-	// "$.components.schemas.LbFlavorPricingSerializer.properties.price_per_hour.anyOf[0]"
+	// Price per hour. Shown if the include_prices query parameter if set to true
 	PricePerHour float64 `json:"price_per_hour,nullable"`
-	// '#/components/schemas/LbFlavorPricingSerializer/properties/price_per_month/anyOf/0'
-	// "$.components.schemas.LbFlavorPricingSerializer.properties.price_per_month.anyOf[0]"
+	// Price per month. Shown if the include_prices query parameter if set to true
 	PricePerMonth float64 `json:"price_per_month,nullable"`
-	// '#/components/schemas/LbFlavorPricingSerializer/properties/price_status/anyOf/0'
-	// "$.components.schemas.LbFlavorPricingSerializer.properties.price_status.anyOf[0]"
+	// Price status for the UI
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus string `json:"price_status,nullable"`
@@ -939,54 +842,39 @@ func (r *LbFlavorListResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LbHealthMonitorSerializer'
-// "$.components.schemas.LbHealthMonitorSerializer"
 type LbHealthMonitor struct {
-	// '#/components/schemas/LbHealthMonitorSerializer/properties/id'
-	// "$.components.schemas.LbHealthMonitorSerializer.properties.id"
+	// Health monitor ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/LbHealthMonitorSerializer/properties/admin_state_up'
-	// "$.components.schemas.LbHealthMonitorSerializer.properties.admin_state_up"
+	// true if enabled. Defaults to true
 	AdminStateUp bool `json:"admin_state_up,required"`
-	// '#/components/schemas/LbHealthMonitorSerializer/properties/delay'
-	// "$.components.schemas.LbHealthMonitorSerializer.properties.delay"
+	// The time, in seconds, between sending probes to members
 	Delay int64 `json:"delay,required"`
-	// '#/components/schemas/LbHealthMonitorSerializer/properties/max_retries'
-	// "$.components.schemas.LbHealthMonitorSerializer.properties.max_retries"
+	// Number of successes before the member is switched to ONLINE state
 	MaxRetries int64 `json:"max_retries,required"`
-	// '#/components/schemas/LbHealthMonitorSerializer/properties/max_retries_down'
-	// "$.components.schemas.LbHealthMonitorSerializer.properties.max_retries_down"
+	// Number of failures before the member is switched to ERROR state
 	MaxRetriesDown int64 `json:"max_retries_down,required"`
-	// '#/components/schemas/LbHealthMonitorSerializer/properties/operating_status'
-	// "$.components.schemas.LbHealthMonitorSerializer.properties.operating_status"
+	// Health Monitor operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// '#/components/schemas/LbHealthMonitorSerializer/properties/provisioning_status'
-	// "$.components.schemas.LbHealthMonitorSerializer.properties.provisioning_status"
+	// Health monitor lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// '#/components/schemas/LbHealthMonitorSerializer/properties/timeout'
-	// "$.components.schemas.LbHealthMonitorSerializer.properties.timeout"
+	// The maximum time to connect. Must be less than the delay value
 	Timeout int64 `json:"timeout,required"`
-	// '#/components/schemas/LbHealthMonitorSerializer/properties/type'
-	// "$.components.schemas.LbHealthMonitorSerializer.properties.type"
+	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
-	Type HealthMonitorType `json:"type,required"`
-	// '#/components/schemas/LbHealthMonitorSerializer/properties/expected_codes/anyOf/0'
-	// "$.components.schemas.LbHealthMonitorSerializer.properties.expected_codes.anyOf[0]"
-	ExpectedCodes string `json:"expected_codes,nullable"`
-	// '#/components/schemas/LbHealthMonitorSerializer/properties/http_method/anyOf/0'
-	// "$.components.schemas.LbHealthMonitorSerializer.properties.http_method.anyOf[0]"
+	Type          HealthMonitorType `json:"type,required"`
+	ExpectedCodes string            `json:"expected_codes,nullable"`
+	// HTTP method
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".
 	HTTPMethod HTTPMethod `json:"http_method,nullable"`
-	// '#/components/schemas/LbHealthMonitorSerializer/properties/url_path/anyOf/0'
-	// "$.components.schemas.LbHealthMonitorSerializer.properties.url_path.anyOf[0]"
+	// URL Path. Defaults to '/'
 	URLPath string `json:"url_path,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1014,75 +902,59 @@ func (r *LbHealthMonitor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LbListenerSerializer'
-// "$.components.schemas.LbListenerSerializer"
 type LbListener struct {
-	// '#/components/schemas/LbListenerSerializer/properties/id'
-	// "$.components.schemas.LbListenerSerializer.properties.id"
+	// Load balancer listener ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/LbListenerSerializer/properties/connection_limit'
-	// "$.components.schemas.LbListenerSerializer.properties.connection_limit"
+	// Limit of simultaneous connections
 	ConnectionLimit int64 `json:"connection_limit,required"`
-	// '#/components/schemas/LbListenerSerializer/properties/insert_headers'
-	// "$.components.schemas.LbListenerSerializer.properties.insert_headers"
+	// Dictionary of additional header insertion into HTTP headers. Only used with HTTP
+	// and TERMINATED_HTTPS protocols.
 	InsertHeaders any `json:"insert_headers,required"`
-	// '#/components/schemas/LbListenerSerializer/properties/name'
-	// "$.components.schemas.LbListenerSerializer.properties.name"
+	// Load balancer listener name
 	Name string `json:"name,required"`
-	// '#/components/schemas/LbListenerSerializer/properties/operating_status'
-	// "$.components.schemas.LbListenerSerializer.properties.operating_status"
+	// Listener operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// '#/components/schemas/LbListenerSerializer/properties/protocol'
-	// "$.components.schemas.LbListenerSerializer.properties.protocol"
+	// Load balancer protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROMETHEUS", "TCP", "TERMINATED_HTTPS", "UDP".
 	Protocol LbListenerProtocol `json:"protocol,required"`
-	// '#/components/schemas/LbListenerSerializer/properties/protocol_port'
-	// "$.components.schemas.LbListenerSerializer.properties.protocol_port"
+	// Protocol port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// '#/components/schemas/LbListenerSerializer/properties/provisioning_status'
-	// "$.components.schemas.LbListenerSerializer.properties.provisioning_status"
+	// Listener lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// '#/components/schemas/LbListenerSerializer/properties/allowed_cidrs/anyOf/0'
-	// "$.components.schemas.LbListenerSerializer.properties.allowed_cidrs.anyOf[0]"
+	// Network CIDRs from which service will be accessible
 	AllowedCidrs []string `json:"allowed_cidrs,nullable" format:"ipvanynetwork"`
-	// '#/components/schemas/LbListenerSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.LbListenerSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// '#/components/schemas/LbListenerSerializer/properties/loadbalancer_id/anyOf/0'
-	// "$.components.schemas.LbListenerSerializer.properties.loadbalancer_id.anyOf[0]"
+	// Load balancer ID
 	LoadbalancerID string `json:"loadbalancer_id,nullable" format:"uuid4"`
-	// '#/components/schemas/LbListenerSerializer/properties/pool_count/anyOf/0'
-	// "$.components.schemas.LbListenerSerializer.properties.pool_count.anyOf[0]"
+	// Number of pools (for UI)
 	PoolCount int64 `json:"pool_count,nullable"`
-	// '#/components/schemas/LbListenerSerializer/properties/secret_id/anyOf/0'
-	// "$.components.schemas.LbListenerSerializer.properties.secret_id.anyOf[0]"
+	// ID of the secret where PKCS12 file is stored for TERMINATED_HTTPS or PROMETHEUS
+	// load balancer
 	SecretID string `json:"secret_id,nullable"`
-	// '#/components/schemas/LbListenerSerializer/properties/sni_secret_id/anyOf/0'
-	// "$.components.schemas.LbListenerSerializer.properties.sni_secret_id.anyOf[0]"
+	// List of secret's ID containing PKCS12 format certificate/key bundles for
+	// TERMINATED_HTTPS or PROMETHEUS listeners
 	SniSecretID []string `json:"sni_secret_id,nullable"`
-	// '#/components/schemas/LbListenerSerializer/properties/stats/anyOf/0'
-	// "$.components.schemas.LbListenerSerializer.properties.stats.anyOf[0]"
+	// Statistics of the load balancer. It is available only in get functions by a
+	// flag.
 	Stats LoadBalancerStatistics `json:"stats,nullable"`
-	// '#/components/schemas/LbListenerSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.LbListenerSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// '#/components/schemas/LbListenerSerializer/properties/timeout_client_data/anyOf/0'
-	// "$.components.schemas.LbListenerSerializer.properties.timeout_client_data.anyOf[0]"
+	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData int64 `json:"timeout_client_data,nullable"`
-	// '#/components/schemas/LbListenerSerializer/properties/timeout_member_connect/anyOf/0'
-	// "$.components.schemas.LbListenerSerializer.properties.timeout_member_connect.anyOf[0]"
+	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect int64 `json:"timeout_member_connect,nullable"`
-	// '#/components/schemas/LbListenerSerializer/properties/timeout_member_data/anyOf/0'
-	// "$.components.schemas.LbListenerSerializer.properties.timeout_member_data.anyOf[0]"
+	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData int64 `json:"timeout_member_data,nullable"`
-	// '#/components/schemas/LbListenerSerializer/properties/user_list'
-	// "$.components.schemas.LbListenerSerializer.properties.user_list"
+	// Load balancer listener users list
 	UserList []LbListenerUserList `json:"user_list"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1118,14 +990,10 @@ func (r *LbListener) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LbListenerSerializer/properties/user_list/items'
-// "$.components.schemas.LbListenerSerializer.properties.user_list.items"
 type LbListenerUserList struct {
-	// '#/components/schemas/UserListItem/properties/encrypted_password'
-	// "$.components.schemas.UserListItem.properties.encrypted_password"
+	// Encrypted password to auth via Basic Authentication
 	EncryptedPassword string `json:"encrypted_password,required"`
-	// '#/components/schemas/UserListItem/properties/username'
-	// "$.components.schemas.UserListItem.properties.username"
+	// Username to auth via Basic Authentication
 	Username string `json:"username,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1143,14 +1011,10 @@ func (r *LbListenerUserList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LbListenerSerializerList'
-// "$.components.schemas.LbListenerSerializerList"
 type LbListenerList struct {
-	// '#/components/schemas/LbListenerSerializerList/properties/count'
-	// "$.components.schemas.LbListenerSerializerList.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/LbListenerSerializerList/properties/results'
-	// "$.components.schemas.LbListenerSerializerList.properties.results"
+	// Objects
 	Results []LbListener `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1168,8 +1032,6 @@ func (r *LbListenerList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LbListenerProtocolEnum'
-// "$.components.schemas.LbListenerProtocolEnum"
 type LbListenerProtocol string
 
 const (
@@ -1181,8 +1043,6 @@ const (
 	LbListenerProtocolUdp             LbListenerProtocol = "UDP"
 )
 
-// '#/components/schemas/LbPoolProtocolEnum'
-// "$.components.schemas.LbPoolProtocolEnum"
 type LbPoolProtocol string
 
 const (
@@ -1194,22 +1054,16 @@ const (
 	LbPoolProtocolUdp     LbPoolProtocol = "UDP"
 )
 
-// '#/components/schemas/LbSessionPersistence'
-// "$.components.schemas.LbSessionPersistence"
 type LbSessionPersistence struct {
-	// '#/components/schemas/LbSessionPersistence/properties/type'
-	// "$.components.schemas.LbSessionPersistence.properties.type"
+	// Session persistence type
 	//
 	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
 	Type SessionPersistenceType `json:"type,required"`
-	// '#/components/schemas/LbSessionPersistence/properties/cookie_name/anyOf/0'
-	// "$.components.schemas.LbSessionPersistence.properties.cookie_name.anyOf[0]"
+	// Should be set if app cookie or http cookie is used
 	CookieName string `json:"cookie_name,nullable"`
-	// '#/components/schemas/LbSessionPersistence/properties/persistence_granularity/anyOf/0'
-	// "$.components.schemas.LbSessionPersistence.properties.persistence_granularity.anyOf[0]"
+	// Subnet mask if source_ip is used. For UDP ports only
 	PersistenceGranularity string `json:"persistence_granularity,nullable"`
-	// '#/components/schemas/LbSessionPersistence/properties/persistence_timeout/anyOf/0'
-	// "$.components.schemas.LbSessionPersistence.properties.persistence_timeout.anyOf[0]"
+	// Session persistence timeout. For UDP ports only
 	PersistenceTimeout int64 `json:"persistence_timeout,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1229,25 +1083,18 @@ func (r *LbSessionPersistence) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ListenerStatusSerializer'
-// "$.components.schemas.ListenerStatusSerializer"
 type ListenerStatus struct {
-	// '#/components/schemas/ListenerStatusSerializer/properties/id'
-	// "$.components.schemas.ListenerStatusSerializer.properties.id"
+	// UUID of the entity
 	ID string `json:"id,required" format:"uuid"`
-	// '#/components/schemas/ListenerStatusSerializer/properties/name'
-	// "$.components.schemas.ListenerStatusSerializer.properties.name"
+	// Name of the load balancer listener
 	Name string `json:"name,required"`
-	// '#/components/schemas/ListenerStatusSerializer/properties/operating_status'
-	// "$.components.schemas.ListenerStatusSerializer.properties.operating_status"
+	// Operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// '#/components/schemas/ListenerStatusSerializer/properties/pools'
-	// "$.components.schemas.ListenerStatusSerializer.properties.pools"
+	// Pools of the Listeners
 	Pools []PoolStatus `json:"pools,required"`
-	// '#/components/schemas/ListenerStatusSerializer/properties/provisioning_status'
-	// "$.components.schemas.ListenerStatusSerializer.properties.provisioning_status"
+	// Provisioning status of the entity
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
@@ -1271,31 +1118,27 @@ func (r *ListenerStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LoadBalancerStatusSerializer'
-// "$.components.schemas.LoadBalancerStatusSerializer"
 type LoadBalancerStatus struct {
-	// '#/components/schemas/LoadBalancerStatusSerializer/properties/id'
-	// "$.components.schemas.LoadBalancerStatusSerializer.properties.id"
+	// UUID of the entity
 	ID string `json:"id,required" format:"uuid"`
-	// '#/components/schemas/LoadBalancerStatusSerializer/properties/listeners'
-	// "$.components.schemas.LoadBalancerStatusSerializer.properties.listeners"
+	// Listeners of the Load Balancer
 	Listeners []ListenerStatus `json:"listeners,required"`
-	// '#/components/schemas/LoadBalancerStatusSerializer/properties/name'
-	// "$.components.schemas.LoadBalancerStatusSerializer.properties.name"
+	// Name of the load balancer
 	Name string `json:"name,required"`
-	// '#/components/schemas/LoadBalancerStatusSerializer/properties/operating_status'
-	// "$.components.schemas.LoadBalancerStatusSerializer.properties.operating_status"
+	// Operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// '#/components/schemas/LoadBalancerStatusSerializer/properties/provisioning_status'
-	// "$.components.schemas.LoadBalancerStatusSerializer.properties.provisioning_status"
+	// Provisioning status of the entity
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// '#/components/schemas/LoadBalancerStatusSerializer/properties/tags'
-	// "$.components.schemas.LoadBalancerStatusSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1317,14 +1160,10 @@ func (r *LoadBalancerStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LoadBalancerStatusSerializerList'
-// "$.components.schemas.LoadBalancerStatusSerializerList"
 type LoadBalancerStatusList struct {
-	// '#/components/schemas/LoadBalancerStatusSerializerList/properties/count'
-	// "$.components.schemas.LoadBalancerStatusSerializerList.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/LoadBalancerStatusSerializerList/properties/results'
-	// "$.components.schemas.LoadBalancerStatusSerializerList.properties.results"
+	// Objects
 	Results []LoadBalancerStatus `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1342,29 +1181,20 @@ func (r *LoadBalancerStatusList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LoadbalancerMetricsSerializer'
-// "$.components.schemas.LoadbalancerMetricsSerializer"
 type LoadbalancerMetrics struct {
-	// '#/components/schemas/LoadbalancerMetricsSerializer/properties/cpu_util/anyOf/0'
-	// "$.components.schemas.LoadbalancerMetricsSerializer.properties.cpu_util.anyOf[0]"
+	// CPU utilization, % (max 100% for multi-core)
 	CPUUtil float64 `json:"cpu_util,nullable"`
-	// '#/components/schemas/LoadbalancerMetricsSerializer/properties/memory_util/anyOf/0'
-	// "$.components.schemas.LoadbalancerMetricsSerializer.properties.memory_util.anyOf[0]"
+	// RAM utilization, %
 	MemoryUtil float64 `json:"memory_util,nullable"`
-	// '#/components/schemas/LoadbalancerMetricsSerializer/properties/network_Bps_egress/anyOf/0'
-	// "$.components.schemas.LoadbalancerMetricsSerializer.properties.network_Bps_egress.anyOf[0]"
+	// Network out, bytes per second
 	NetworkBpsEgress float64 `json:"network_Bps_egress,nullable"`
-	// '#/components/schemas/LoadbalancerMetricsSerializer/properties/network_Bps_ingress/anyOf/0'
-	// "$.components.schemas.LoadbalancerMetricsSerializer.properties.network_Bps_ingress.anyOf[0]"
+	// Network in, bytes per second
 	NetworkBpsIngress float64 `json:"network_Bps_ingress,nullable"`
-	// '#/components/schemas/LoadbalancerMetricsSerializer/properties/network_pps_egress/anyOf/0'
-	// "$.components.schemas.LoadbalancerMetricsSerializer.properties.network_pps_egress.anyOf[0]"
+	// Network out, packets per second
 	NetworkPpsEgress float64 `json:"network_pps_egress,nullable"`
-	// '#/components/schemas/LoadbalancerMetricsSerializer/properties/network_pps_ingress/anyOf/0'
-	// "$.components.schemas.LoadbalancerMetricsSerializer.properties.network_pps_ingress.anyOf[0]"
+	// Network in, packets per second
 	NetworkPpsIngress float64 `json:"network_pps_ingress,nullable"`
-	// '#/components/schemas/LoadbalancerMetricsSerializer/properties/time/anyOf/0'
-	// "$.components.schemas.LoadbalancerMetricsSerializer.properties.time.anyOf[0]"
+	// Timestamp
 	Time string `json:"time,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1387,14 +1217,10 @@ func (r *LoadbalancerMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LoadbalancerMetricsSerializerList'
-// "$.components.schemas.LoadbalancerMetricsSerializerList"
 type LoadbalancerMetricsList struct {
-	// '#/components/schemas/LoadbalancerMetricsSerializerList/properties/count'
-	// "$.components.schemas.LoadbalancerMetricsSerializerList.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/LoadbalancerMetricsSerializerList/properties/results'
-	// "$.components.schemas.LoadbalancerMetricsSerializerList.properties.results"
+	// Objects
 	Results []LoadbalancerMetrics `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1412,25 +1238,18 @@ func (r *LoadbalancerMetricsList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/MemberStatusSerializer'
-// "$.components.schemas.MemberStatusSerializer"
 type MemberStatus struct {
-	// '#/components/schemas/MemberStatusSerializer/properties/id'
-	// "$.components.schemas.MemberStatusSerializer.properties.id"
+	// UUID of the entity
 	ID string `json:"id,required" format:"uuid"`
-	// '#/components/schemas/MemberStatusSerializer/properties/address'
-	// "$.components.schemas.MemberStatusSerializer.properties.address"
+	// Address of the member (server)
 	Address string `json:"address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/MemberStatusSerializer/properties/operating_status'
-	// "$.components.schemas.MemberStatusSerializer.properties.operating_status"
+	// Operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// '#/components/schemas/MemberStatusSerializer/properties/protocol_port'
-	// "$.components.schemas.MemberStatusSerializer.properties.protocol_port"
+	// Port of the member (server)
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// '#/components/schemas/MemberStatusSerializer/properties/provisioning_status'
-	// "$.components.schemas.MemberStatusSerializer.properties.provisioning_status"
+	// Provisioning status of the entity
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
@@ -1454,31 +1273,23 @@ func (r *MemberStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/PoolStatusSerializer'
-// "$.components.schemas.PoolStatusSerializer"
 type PoolStatus struct {
-	// '#/components/schemas/PoolStatusSerializer/properties/id'
-	// "$.components.schemas.PoolStatusSerializer.properties.id"
+	// UUID of the entity
 	ID string `json:"id,required" format:"uuid"`
-	// '#/components/schemas/PoolStatusSerializer/properties/members'
-	// "$.components.schemas.PoolStatusSerializer.properties.members"
+	// Members (servers) of the pool
 	Members []MemberStatus `json:"members,required"`
-	// '#/components/schemas/PoolStatusSerializer/properties/name'
-	// "$.components.schemas.PoolStatusSerializer.properties.name"
+	// Name of the load balancer pool
 	Name string `json:"name,required"`
-	// '#/components/schemas/PoolStatusSerializer/properties/operating_status'
-	// "$.components.schemas.PoolStatusSerializer.properties.operating_status"
+	// Operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// '#/components/schemas/PoolStatusSerializer/properties/provisioning_status'
-	// "$.components.schemas.PoolStatusSerializer.properties.provisioning_status"
+	// Provisioning status of the entity
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// '#/components/schemas/PoolStatusSerializer/properties/health_monitor'
-	// "$.components.schemas.PoolStatusSerializer.properties.health_monitor"
+	// Health Monitor of the Pool
 	HealthMonitor HealthMonitorStatus `json:"health_monitor"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1500,8 +1311,6 @@ func (r *PoolStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/SessionPersistenceTypeEnum'
-// "$.components.schemas.SessionPersistenceTypeEnum"
 type SessionPersistenceType string
 
 const (
@@ -1511,49 +1320,44 @@ const (
 )
 
 type LoadBalancerNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/flavor'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.flavor"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Load balancer flavor name
 	Flavor param.Opt[string] `json:"flavor,omitzero"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/name'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.name"
+	// Load balancer name
 	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/name_template'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.name_template"
+	// Load balancer name which will be changed by template.
 	NameTemplate param.Opt[string] `json:"name_template,omitzero"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/vip_network_id'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.vip_network_id"
+	// Network ID for load balancer. If not specified, default external network will be
+	// used. Mutually exclusive with vip_port_id
 	VipNetworkID param.Opt[string] `json:"vip_network_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/vip_port_id'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.vip_port_id"
+	// Existing Reserved Fixed IP port ID for load balancer. Mutually exclusive with
+	// vip_network_id
 	VipPortID param.Opt[string] `json:"vip_port_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/vip_subnet_id'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.vip_subnet_id"
+	// Subnet ID for load balancer. If not specified, any subnet from vip_network_id
+	// will be selected. Ignored when vip_network_id is not specified.
 	VipSubnetID param.Opt[string] `json:"vip_subnet_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/floating_ip'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.floating_ip"
+	// Floating IP configuration for assignment
 	FloatingIP LoadBalancerNewParamsFloatingIPUnion `json:"floating_ip,omitzero"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/listeners'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.listeners"
+	// Load balancer listeners. Maximum 50 per LB (excluding Prometheus endpoint
+	// listener).
 	Listeners []LoadBalancerNewParamsListener `json:"listeners,omitzero"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/logging'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.logging"
+	// Logging configuration
 	Logging LoadBalancerNewParamsLogging `json:"logging,omitzero"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/preferred_connectivity'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.preferred_connectivity"
+	// Preferred option to establish connectivity between load balancer and its pools
+	// members. L2 provides best performance, L3 provides less IPs usage. It is taking
+	// effect only if instance_id + ip_address is provided, not subnet_id + ip_address,
+	// because we're considering this as intentional subnet_id specification.
 	//
 	// Any of "L2", "L3".
 	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity,omitzero"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/tags'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/vip_ip_family'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.vip_ip_family"
+	// IP family for load balancer subnet auto-selection if vip_network_id is specified
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	VipIPFamily InterfaceIPFamily `json:"vip_ip_family,omitzero"`
@@ -1573,11 +1377,7 @@ func (r LoadBalancerNewParams) MarshalJSON() (data []byte, err error) {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type LoadBalancerNewParamsFloatingIPUnion struct {
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/floating_ip/anyOf/0'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.floating_ip.anyOf[0]"
-	OfNew *LoadBalancerNewParamsFloatingIPNew `json:",omitzero,inline"`
-	// '#/components/schemas/CreateLoadbalancerSerializer/properties/floating_ip/anyOf/1'
-	// "$.components.schemas.CreateLoadbalancerSerializer.properties.floating_ip.anyOf[1]"
+	OfNew      *LoadBalancerNewParamsFloatingIPNew      `json:",omitzero,inline"`
 	OfExisting *LoadBalancerNewParamsFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1640,14 +1440,13 @@ func NewLoadBalancerNewParamsFloatingIPNew() LoadBalancerNewParamsFloatingIPNew 
 	}
 }
 
-// '#/components/schemas/CreateLoadbalancerSerializer/properties/floating_ip/anyOf/0'
-// "$.components.schemas.CreateLoadbalancerSerializer.properties.floating_ip.anyOf[0]"
-//
 // This struct has a constant value, construct it with
 // [NewLoadBalancerNewParamsFloatingIPNew].
 type LoadBalancerNewParamsFloatingIPNew struct {
-	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
+	// A new floating IP will be created and attached to the instance. A floating IP is
+	// a public IP that makes the instance accessible from the internet, even if it
+	// only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1662,16 +1461,15 @@ func (r LoadBalancerNewParamsFloatingIPNew) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateLoadbalancerSerializer/properties/floating_ip/anyOf/1'
-// "$.components.schemas.CreateLoadbalancerSerializer.properties.floating_ip.anyOf[1]"
-//
 // The properties ExistingFloatingID, Source are required.
 type LoadBalancerNewParamsFloatingIPExisting struct {
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
+	// An existing available floating IP id must be specified if the source is set to
+	// `existing`
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.source"
+	// An existing available floating IP will be attached to the instance. A floating
+	// IP is a public IP that makes the instance accessible from the internet, even if
+	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
 	Source constant.Existing `json:"source,required"`
@@ -1688,51 +1486,38 @@ func (r LoadBalancerNewParamsFloatingIPExisting) MarshalJSON() (data []byte, err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateLoadbalancerSerializer/properties/listeners/items'
-// "$.components.schemas.CreateLoadbalancerSerializer.properties.listeners.items"
-//
 // The properties Name, Protocol, ProtocolPort are required.
 type LoadBalancerNewParamsListener struct {
-	// '#/components/schemas/CreateListenerSerializer/properties/name'
-	// "$.components.schemas.CreateListenerSerializer.properties.name"
+	// Load balancer listener name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateListenerSerializer/properties/protocol'
-	// "$.components.schemas.CreateListenerSerializer.properties.protocol"
+	// Load balancer listener protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROMETHEUS", "TCP", "TERMINATED_HTTPS", "UDP".
 	Protocol LbListenerProtocol `json:"protocol,omitzero,required"`
-	// '#/components/schemas/CreateListenerSerializer/properties/protocol_port'
-	// "$.components.schemas.CreateListenerSerializer.properties.protocol_port"
+	// Protocol port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// '#/components/schemas/CreateListenerSerializer/properties/timeout_client_data/anyOf/0'
-	// "$.components.schemas.CreateListenerSerializer.properties.timeout_client_data.anyOf[0]"
+	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
-	// '#/components/schemas/CreateListenerSerializer/properties/timeout_member_connect/anyOf/0'
-	// "$.components.schemas.CreateListenerSerializer.properties.timeout_member_connect.anyOf[0]"
+	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
-	// '#/components/schemas/CreateListenerSerializer/properties/timeout_member_data/anyOf/0'
-	// "$.components.schemas.CreateListenerSerializer.properties.timeout_member_data.anyOf[0]"
+	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
-	// '#/components/schemas/CreateListenerSerializer/properties/connection_limit'
-	// "$.components.schemas.CreateListenerSerializer.properties.connection_limit"
+	// Limit of the simultaneous connections
 	ConnectionLimit param.Opt[int64] `json:"connection_limit,omitzero"`
-	// '#/components/schemas/CreateListenerSerializer/properties/insert_x_forwarded'
-	// "$.components.schemas.CreateListenerSerializer.properties.insert_x_forwarded"
+	// Add headers X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto to requests.
+	// Only used with HTTP or TERMINATED_HTTPS protocols.
 	InsertXForwarded param.Opt[bool] `json:"insert_x_forwarded,omitzero"`
-	// '#/components/schemas/CreateListenerSerializer/properties/secret_id/anyOf/0'
-	// "$.components.schemas.CreateListenerSerializer.properties.secret_id.anyOf[0]"
+	// ID of the secret where PKCS12 file is stored for TERMINATED_HTTPS or PROMETHEUS
+	// listener
 	SecretID param.Opt[string] `json:"secret_id,omitzero"`
-	// '#/components/schemas/CreateListenerSerializer/properties/allowed_cidrs/anyOf/0'
-	// "$.components.schemas.CreateListenerSerializer.properties.allowed_cidrs.anyOf[0]"
+	// Network CIDRs from which service will be accessible
 	AllowedCidrs []string `json:"allowed_cidrs,omitzero" format:"ipvanynetwork"`
-	// '#/components/schemas/CreateListenerSerializer/properties/pools'
-	// "$.components.schemas.CreateListenerSerializer.properties.pools"
+	// Member pools
 	Pools []LoadBalancerNewParamsListenerPool `json:"pools,omitzero"`
-	// '#/components/schemas/CreateListenerSerializer/properties/sni_secret_id'
-	// "$.components.schemas.CreateListenerSerializer.properties.sni_secret_id"
+	// List of secrets IDs containing PKCS12 format certificate/key bundles for
+	// TERMINATED_HTTPS or PROMETHEUS listeners
 	SniSecretID []string `json:"sni_secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateListenerSerializer/properties/user_list'
-	// "$.components.schemas.CreateListenerSerializer.properties.user_list"
+	// Load balancer listener list of username and encrypted password items
 	UserList []LoadBalancerNewParamsListenerUserList `json:"user_list,omitzero"`
 	paramObj
 }
@@ -1745,56 +1530,39 @@ func (r LoadBalancerNewParamsListener) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateListenerSerializer/properties/pools/items'
-// "$.components.schemas.CreateListenerSerializer.properties.pools.items"
-//
 // The properties LbAlgorithm, Name, Protocol are required.
 type LoadBalancerNewParamsListenerPool struct {
-	// '#/components/schemas/CreateLbPoolSerializer/properties/lb_algorithm'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.lb_algorithm"
+	// Load balancer algorithm
 	//
 	// Any of "LEAST_CONNECTIONS", "ROUND_ROBIN", "SOURCE_IP".
 	LbAlgorithm LbAlgorithm `json:"lb_algorithm,omitzero,required"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/name'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.name"
+	// Pool name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/protocol'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.protocol"
+	// Protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROXY", "PROXYV2", "TCP", "UDP".
 	Protocol LbPoolProtocol `json:"protocol,omitzero,required"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/ca_secret_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.ca_secret_id.anyOf[0]"
+	// Secret ID of CA certificate bundle
 	CaSecretID param.Opt[string] `json:"ca_secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/crl_secret_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.crl_secret_id.anyOf[0]"
+	// Secret ID of CA revocation list file
 	CrlSecretID param.Opt[string] `json:"crl_secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/listener_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.listener_id.anyOf[0]"
+	// Listener ID
 	ListenerID param.Opt[string] `json:"listener_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/loadbalancer_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.loadbalancer_id.anyOf[0]"
+	// Loadbalancer ID
 	LoadbalancerID param.Opt[string] `json:"loadbalancer_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/secret_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.secret_id.anyOf[0]"
+	// Secret ID for TLS client authentication to the member servers
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/timeout_client_data/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.timeout_client_data.anyOf[0]"
+	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/timeout_member_connect/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.timeout_member_connect.anyOf[0]"
+	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/timeout_member_data/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.timeout_member_data.anyOf[0]"
+	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/healthmonitor/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.healthmonitor.anyOf[0]"
+	// Health monitor details
 	Healthmonitor LoadBalancerNewParamsListenerPoolHealthmonitor `json:"healthmonitor,omitzero"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/members/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.members.anyOf[0]"
+	// Pool members
 	Members []LoadBalancerNewParamsListenerPoolMember `json:"members,omitzero"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/session_persistence/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.session_persistence.anyOf[0]"
+	// Session persistence details
 	SessionPersistence LoadBalancerNewParamsListenerPoolSessionPersistence `json:"session_persistence,omitzero"`
 	paramObj
 }
@@ -1809,36 +1577,29 @@ func (r LoadBalancerNewParamsListenerPool) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateLbPoolSerializer/properties/healthmonitor/anyOf/0'
-// "$.components.schemas.CreateLbPoolSerializer.properties.healthmonitor.anyOf[0]"
+// Health monitor details
 //
 // The properties Delay, MaxRetries, Timeout, Type are required.
 type LoadBalancerNewParamsListenerPoolHealthmonitor struct {
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/delay'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.delay"
+	// The time, in seconds, between sending probes to members
 	Delay int64 `json:"delay,required"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/max_retries'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.max_retries"
+	// Number of successes before the member is switched to ONLINE state
 	MaxRetries int64 `json:"max_retries,required"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/timeout'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.timeout"
+	// The maximum time to connect. Must be less than the delay value
 	Timeout int64 `json:"timeout,required"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/type'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.type"
+	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type HealthMonitorType `json:"type,omitzero,required"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/expected_codes/anyOf/0'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.expected_codes.anyOf[0]"
+	// Can only be used together with `HTTP` or `HTTPS` health monitor type.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/max_retries_down/anyOf/0'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.max_retries_down.anyOf[0]"
+	// Number of failures before the member is switched to ERROR state.
 	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/url_path/anyOf/0'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.url_path.anyOf[0]"
+	// URL Path. Defaults to '/'. Can only be used together with `HTTP` or `HTTPS`
+	// health monitor type.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/http_method/anyOf/0'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.http_method.anyOf[0]"
+	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
+	// type.
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".
@@ -1856,34 +1617,25 @@ func (r LoadBalancerNewParamsListenerPoolHealthmonitor) MarshalJSON() (data []by
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateLbPoolSerializer/properties/members/anyOf/0/items'
-// "$.components.schemas.CreateLbPoolSerializer.properties.members.anyOf[0].items"
-//
 // The properties Address, ProtocolPort are required.
 type LoadBalancerNewParamsListenerPoolMember struct {
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/address'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.address"
+	// Member IP address
 	Address string `json:"address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/protocol_port'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.protocol_port"
+	// Member IP port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/admin_state_up/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.admin_state_up.anyOf[0]"
+	// true if enabled. Defaults to true
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/instance_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.instance_id.anyOf[0]"
+	// Either subnet_id or instance_id should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/monitor_address/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.monitor_address.anyOf[0]"
+	// An alternate IP address used for health monitoring of a backend member. Default
+	// is null which monitors the member address.
 	MonitorAddress param.Opt[string] `json:"monitor_address,omitzero" format:"ipvanyaddress"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/monitor_port/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.monitor_port.anyOf[0]"
+	// An alternate protocol port used for health monitoring of a backend member.
+	// Default is null which monitors the member protocol_port.
 	MonitorPort param.Opt[int64] `json:"monitor_port,omitzero"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/subnet_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.subnet_id.anyOf[0]"
+	// Either subnet_id or instance_id should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/weight/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.weight.anyOf[0]"
+	// Member weight. Valid values: 0 to 256, defaults to 1
 	Weight param.Opt[int64] `json:"weight,omitzero"`
 	paramObj
 }
@@ -1898,24 +1650,19 @@ func (r LoadBalancerNewParamsListenerPoolMember) MarshalJSON() (data []byte, err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateLbPoolSerializer/properties/session_persistence/anyOf/0'
-// "$.components.schemas.CreateLbPoolSerializer.properties.session_persistence.anyOf[0]"
+// Session persistence details
 //
 // The property Type is required.
 type LoadBalancerNewParamsListenerPoolSessionPersistence struct {
-	// '#/components/schemas/MutateLbSessionPersistence/properties/type'
-	// "$.components.schemas.MutateLbSessionPersistence.properties.type"
+	// Session persistence type
 	//
 	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
 	Type SessionPersistenceType `json:"type,omitzero,required"`
-	// '#/components/schemas/MutateLbSessionPersistence/properties/cookie_name/anyOf/0'
-	// "$.components.schemas.MutateLbSessionPersistence.properties.cookie_name.anyOf[0]"
+	// Should be set if app cookie or http cookie is used
 	CookieName param.Opt[string] `json:"cookie_name,omitzero"`
-	// '#/components/schemas/MutateLbSessionPersistence/properties/persistence_granularity/anyOf/0'
-	// "$.components.schemas.MutateLbSessionPersistence.properties.persistence_granularity.anyOf[0]"
+	// Subnet mask if source_ip is used. For UDP ports only
 	PersistenceGranularity param.Opt[string] `json:"persistence_granularity,omitzero"`
-	// '#/components/schemas/MutateLbSessionPersistence/properties/persistence_timeout/anyOf/0'
-	// "$.components.schemas.MutateLbSessionPersistence.properties.persistence_timeout.anyOf[0]"
+	// Session persistence timeout. For UDP ports only
 	PersistenceTimeout param.Opt[int64] `json:"persistence_timeout,omitzero"`
 	paramObj
 }
@@ -1930,16 +1677,11 @@ func (r LoadBalancerNewParamsListenerPoolSessionPersistence) MarshalJSON() (data
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateListenerSerializer/properties/user_list/items'
-// "$.components.schemas.CreateListenerSerializer.properties.user_list.items"
-//
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerNewParamsListenerUserList struct {
-	// '#/components/schemas/UserListItem/properties/encrypted_password'
-	// "$.components.schemas.UserListItem.properties.encrypted_password"
+	// Encrypted password to auth via Basic Authentication
 	EncryptedPassword string `json:"encrypted_password,required"`
-	// '#/components/schemas/UserListItem/properties/username'
-	// "$.components.schemas.UserListItem.properties.username"
+	// Username to auth via Basic Authentication
 	Username string `json:"username,required"`
 	paramObj
 }
@@ -1954,20 +1696,15 @@ func (r LoadBalancerNewParamsListenerUserList) MarshalJSON() (data []byte, err e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateLoadbalancerSerializer/properties/logging'
-// "$.components.schemas.CreateLoadbalancerSerializer.properties.logging"
+// Logging configuration
 type LoadBalancerNewParamsLogging struct {
-	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/destination_region_id/anyOf/0'
-	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.destination_region_id.anyOf[0]"
+	// Destination region id to which the logs will be written
 	DestinationRegionID param.Opt[int64] `json:"destination_region_id,omitzero"`
-	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/topic_name/anyOf/0'
-	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.topic_name.anyOf[0]"
+	// The topic name to which the logs will be written
 	TopicName param.Opt[string] `json:"topic_name,omitzero"`
-	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/enabled'
-	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.enabled"
+	// Enable/disable forwarding logs to LaaS
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/retention_policy/anyOf/0'
-	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.retention_policy.anyOf[0]"
+	// The logs retention policy
 	RetentionPolicy LaasIndexRetentionPolicyParam `json:"retention_policy,omitzero"`
 	paramObj
 }
@@ -1981,20 +1718,14 @@ func (r LoadBalancerNewParamsLogging) MarshalJSON() (data []byte, err error) {
 }
 
 type LoadBalancerUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}'].patch.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}'].patch.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/LoadBalancerPatchSerializer/properties/name'
-	// "$.components.schemas.LoadBalancerPatchSerializer.properties.name"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Name.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/LoadBalancerPatchSerializer/properties/logging'
-	// "$.components.schemas.LoadBalancerPatchSerializer.properties.logging"
+	// Logging configuration
 	Logging LoadBalancerUpdateParamsLogging `json:"logging,omitzero"`
-	// '#/components/schemas/LoadBalancerPatchSerializer/properties/preferred_connectivity'
-	// "$.components.schemas.LoadBalancerPatchSerializer.properties.preferred_connectivity"
+	// Preferred option to establish connectivity between load balancer and its pools
+	// members
 	//
 	// Any of "L2", "L3".
 	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity,omitzero"`
@@ -2010,20 +1741,15 @@ func (r LoadBalancerUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/LoadBalancerPatchSerializer/properties/logging'
-// "$.components.schemas.LoadBalancerPatchSerializer.properties.logging"
+// Logging configuration
 type LoadBalancerUpdateParamsLogging struct {
-	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/destination_region_id/anyOf/0'
-	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.destination_region_id.anyOf[0]"
+	// Destination region id to which the logs will be written
 	DestinationRegionID param.Opt[int64] `json:"destination_region_id,omitzero"`
-	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/topic_name/anyOf/0'
-	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.topic_name.anyOf[0]"
+	// The topic name to which the logs will be written
 	TopicName param.Opt[string] `json:"topic_name,omitzero"`
-	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/enabled'
-	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.enabled"
+	// Enable/disable forwarding logs to LaaS
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// '#/components/schemas/LoadbalancerLoggingSerializer/properties/retention_policy/anyOf/0'
-	// "$.components.schemas.LoadbalancerLoggingSerializer.properties.retention_policy.anyOf[0]"
+	// The logs retention policy
 	RetentionPolicy LaasIndexRetentionPolicyParam `json:"retention_policy,omitzero"`
 	paramObj
 }
@@ -2037,41 +1763,32 @@ func (r LoadBalancerUpdateParamsLogging) MarshalJSON() (data []byte, err error) 
 }
 
 type LoadBalancerListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// With or without assigned floating IP
 	AssignedFloating param.Opt[bool] `query:"assigned_floating,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[3]"
+	// Limit the number of returned limit request entities.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[4]"
+	// With or without logging
 	LoggingEnabled param.Opt[bool] `query:"logging_enabled,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[5]"
+	// Filter by name
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[6]"
+	// Offset value is used to exclude the first set of records from the result.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/7'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[7]"
+	// Ordering Load Balancer list result by name, created_at, updated_at,
+	// operating_status, provisioning_status, vip_address, vip_ip_family and flavor
+	// fields of the load balancer and directions (name.asc), default is
+	// "created_at.asc"
 	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/8'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[8]"
+	// Show statistics
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/10'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[10]"
+	// Filter by tag key-value pairs. Must be a valid JSON string. curl -G
+	// --data-urlencode "tag_key_value={"key": "value"}" --url
+	// "http://localhost:1111/v1/loadbalancers/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/11'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[11]"
+	// Show Advanced DDoS protection profile, if exists
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/9'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}'].get.parameters[9]"
+	// Filter by tag keys.
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
@@ -2089,12 +1806,8 @@ func (r LoadBalancerListParams) URLQuery() (v url.Values, err error) {
 }
 
 type LoadBalancerDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -2103,14 +1816,9 @@ type LoadBalancerDeleteParams struct {
 func (f LoadBalancerDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type LoadBalancerFailoverParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D%2Ffailover/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}/failover'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D%2Ffailover/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}/failover'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/FailoverLoadBalancer/properties/force'
-	// "$.components.schemas.FailoverLoadBalancer.properties.force"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Validate current load balancer status before failover or not.
 	Force param.Opt[bool] `json:"force,omitzero"`
 	paramObj
 }
@@ -2125,17 +1833,11 @@ func (r LoadBalancerFailoverParams) MarshalJSON() (data []byte, err error) {
 }
 
 type LoadBalancerGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}'].get.parameters[3]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Show statistics
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}'].get.parameters[4]"
+	// Show DDoS profile
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
 	paramObj
 }
@@ -2153,14 +1855,9 @@ func (r LoadBalancerGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type LoadBalancerResizeParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D%2Fresize/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}/resize'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D%2Fresize/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}/resize'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/ResizeLoadBalancer/properties/flavor'
-	// "$.components.schemas.ResizeLoadBalancer.properties.flavor"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Name of the desired flavor to resize to.
 	Flavor string `json:"flavor,required"`
 	paramObj
 }

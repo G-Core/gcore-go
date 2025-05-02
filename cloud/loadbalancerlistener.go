@@ -157,52 +157,38 @@ func (r *LoadBalancerListenerService) Get(ctx context.Context, listenerID string
 }
 
 type LoadBalancerListenerNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/lblisteners/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/lblisteners/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/loadbalancer_id'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.loadbalancer_id"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Load balancer ID
 	LoadbalancerID string `json:"loadbalancer_id,required" format:"uuid4"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/name'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.name"
+	// Load balancer listener name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/protocol'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.protocol"
+	// Load balancer listener protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROMETHEUS", "TCP", "TERMINATED_HTTPS", "UDP".
 	Protocol LbListenerProtocol `json:"protocol,omitzero,required"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/protocol_port'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.protocol_port"
+	// Protocol port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/timeout_client_data/anyOf/0'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.timeout_client_data.anyOf[0]"
+	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/timeout_member_connect/anyOf/0'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.timeout_member_connect.anyOf[0]"
+	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/timeout_member_data/anyOf/0'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.timeout_member_data.anyOf[0]"
+	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/connection_limit'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.connection_limit"
+	// Limit of the simultaneous connections
 	ConnectionLimit param.Opt[int64] `json:"connection_limit,omitzero"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/insert_x_forwarded'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.insert_x_forwarded"
+	// Add headers X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto to requests.
+	// Only used with HTTP or TERMINATED_HTTPS protocols.
 	InsertXForwarded param.Opt[bool] `json:"insert_x_forwarded,omitzero"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/secret_id/anyOf/0'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.secret_id.anyOf[0]"
+	// ID of the secret where PKCS12 file is stored for TERMINATED_HTTPS or PROMETHEUS
+	// listener
 	SecretID param.Opt[string] `json:"secret_id,omitzero"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/allowed_cidrs/anyOf/0'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.allowed_cidrs.anyOf[0]"
+	// Network CIDRs from which service will be accessible
 	AllowedCidrs []string `json:"allowed_cidrs,omitzero" format:"ipvanynetwork"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/sni_secret_id'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.sni_secret_id"
+	// List of secrets IDs containing PKCS12 format certificate/key bundles for
+	// TERMINATED_HTTPS or PROMETHEUS listeners
 	SniSecretID []string `json:"sni_secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbListenerSerializer/properties/user_list'
-	// "$.components.schemas.CreateLbListenerSerializer.properties.user_list"
+	// Load balancer listener list of username and encrypted password items
 	UserList []LoadBalancerListenerNewParamsUserList `json:"user_list,omitzero"`
 	paramObj
 }
@@ -216,16 +202,11 @@ func (r LoadBalancerListenerNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateLbListenerSerializer/properties/user_list/items'
-// "$.components.schemas.CreateLbListenerSerializer.properties.user_list.items"
-//
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerListenerNewParamsUserList struct {
-	// '#/components/schemas/UserListItem/properties/encrypted_password'
-	// "$.components.schemas.UserListItem.properties.encrypted_password"
+	// Encrypted password to auth via Basic Authentication
 	EncryptedPassword string `json:"encrypted_password,required"`
-	// '#/components/schemas/UserListItem/properties/username'
-	// "$.components.schemas.UserListItem.properties.username"
+	// Username to auth via Basic Authentication
 	Username string `json:"username,required"`
 	paramObj
 }
@@ -241,38 +222,27 @@ func (r LoadBalancerListenerNewParamsUserList) MarshalJSON() (data []byte, err e
 }
 
 type LoadBalancerListenerUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv2%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Blistener_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v2/lblisteners/{project_id}/{region_id}/{listener_id}'].patch.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Blistener_id%7D/patch/parameters/1/schema'
-	// "$.paths['/cloud/v2/lblisteners/{project_id}/{region_id}/{listener_id}'].patch.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/PatchLbListenerSerializer/properties/secret_id/anyOf/0'
-	// "$.components.schemas.PatchLbListenerSerializer.properties.secret_id.anyOf[0]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// ID of the secret where PKCS12 file is stored for TERMINATED_HTTPS or PROMETHEUS
+	// load balancer
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/PatchLbListenerSerializer/properties/timeout_client_data/anyOf/0'
-	// "$.components.schemas.PatchLbListenerSerializer.properties.timeout_client_data.anyOf[0]"
+	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
-	// '#/components/schemas/PatchLbListenerSerializer/properties/timeout_member_connect/anyOf/0'
-	// "$.components.schemas.PatchLbListenerSerializer.properties.timeout_member_connect.anyOf[0]"
+	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
-	// '#/components/schemas/PatchLbListenerSerializer/properties/timeout_member_data/anyOf/0'
-	// "$.components.schemas.PatchLbListenerSerializer.properties.timeout_member_data.anyOf[0]"
+	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
-	// '#/components/schemas/PatchLbListenerSerializer/properties/connection_limit'
-	// "$.components.schemas.PatchLbListenerSerializer.properties.connection_limit"
+	// Limit of simultaneous connections
 	ConnectionLimit param.Opt[int64] `json:"connection_limit,omitzero"`
-	// '#/components/schemas/PatchLbListenerSerializer/properties/name'
-	// "$.components.schemas.PatchLbListenerSerializer.properties.name"
+	// Load balancer listener name
 	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/PatchLbListenerSerializer/properties/allowed_cidrs/anyOf/0'
-	// "$.components.schemas.PatchLbListenerSerializer.properties.allowed_cidrs.anyOf[0]"
+	// Network CIDRs from which service will be accessible
 	AllowedCidrs []string `json:"allowed_cidrs,omitzero" format:"ipvanynetwork"`
-	// '#/components/schemas/PatchLbListenerSerializer/properties/sni_secret_id/anyOf/0'
-	// "$.components.schemas.PatchLbListenerSerializer.properties.sni_secret_id.anyOf[0]"
+	// List of secret's ID containing PKCS12 format certificate/key bundfles for
+	// TERMINATED_HTTPS or PROMETHEUS listeners
 	SniSecretID []string `json:"sni_secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/PatchLbListenerSerializer/properties/user_list/anyOf/0'
-	// "$.components.schemas.PatchLbListenerSerializer.properties.user_list.anyOf[0]"
+	// Load balancer listener users list
 	UserList []LoadBalancerListenerUpdateParamsUserList `json:"user_list,omitzero"`
 	paramObj
 }
@@ -286,16 +256,11 @@ func (r LoadBalancerListenerUpdateParams) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/PatchLbListenerSerializer/properties/user_list/anyOf/0/items'
-// "$.components.schemas.PatchLbListenerSerializer.properties.user_list.anyOf[0].items"
-//
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerListenerUpdateParamsUserList struct {
-	// '#/components/schemas/UserListItem/properties/encrypted_password'
-	// "$.components.schemas.UserListItem.properties.encrypted_password"
+	// Encrypted password to auth via Basic Authentication
 	EncryptedPassword string `json:"encrypted_password,required"`
-	// '#/components/schemas/UserListItem/properties/username'
-	// "$.components.schemas.UserListItem.properties.username"
+	// Username to auth via Basic Authentication
 	Username string `json:"username,required"`
 	paramObj
 }
@@ -311,17 +276,11 @@ func (r LoadBalancerListenerUpdateParamsUserList) MarshalJSON() (data []byte, er
 }
 
 type LoadBalancerListenerListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/lblisteners/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/lblisteners/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/lblisteners/{project_id}/{region_id}'].get.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Load balancer ID
 	LoadbalancerID param.Opt[string] `query:"loadbalancer_id,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/lblisteners/{project_id}/{region_id}'].get.parameters[3]"
+	// Show statistics
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
 	paramObj
 }
@@ -340,12 +299,8 @@ func (r LoadBalancerListenerListParams) URLQuery() (v url.Values, err error) {
 }
 
 type LoadBalancerListenerDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Blistener_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/lblisteners/{project_id}/{region_id}/{listener_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Blistener_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/lblisteners/{project_id}/{region_id}/{listener_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -354,14 +309,9 @@ type LoadBalancerListenerDeleteParams struct {
 func (f LoadBalancerListenerDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type LoadBalancerListenerGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Blistener_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/lblisteners/{project_id}/{region_id}/{listener_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Blistener_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/lblisteners/{project_id}/{region_id}/{listener_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flblisteners%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Blistener_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/lblisteners/{project_id}/{region_id}/{listener_id}'].get.parameters[3]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Show statistics
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
 	paramObj
 }

@@ -84,32 +84,21 @@ func (r *UserRoleAssignmentService) Delete(ctx context.Context, assignmentID int
 	return
 }
 
-// '#/components/schemas/RoleAssignmentSerializer'
-// "$.components.schemas.RoleAssignmentSerializer"
 type RoleAssignment struct {
-	// '#/components/schemas/RoleAssignmentSerializer/properties/id'
-	// "$.components.schemas.RoleAssignmentSerializer.properties.id"
-	ID int64 `json:"id,required"`
-	// '#/components/schemas/RoleAssignmentSerializer/properties/assigned_by/anyOf/0'
-	// "$.components.schemas.RoleAssignmentSerializer.properties.assigned_by.anyOf[0]"
+	// Assignment ID
+	ID         int64 `json:"id,required"`
 	AssignedBy int64 `json:"assigned_by,required"`
-	// '#/components/schemas/RoleAssignmentSerializer/properties/client_id'
-	// "$.components.schemas.RoleAssignmentSerializer.properties.client_id"
+	// Client ID
 	ClientID int64 `json:"client_id,required"`
-	// '#/components/schemas/RoleAssignmentSerializer/properties/created_at'
-	// "$.components.schemas.RoleAssignmentSerializer.properties.created_at"
+	// Created timestamp
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/RoleAssignmentSerializer/properties/project_id/anyOf/0'
-	// "$.components.schemas.RoleAssignmentSerializer.properties.project_id.anyOf[0]"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/RoleAssignmentSerializer/properties/role'
-	// "$.components.schemas.RoleAssignmentSerializer.properties.role"
+	// User role
 	Role string `json:"role,required"`
-	// '#/components/schemas/RoleAssignmentSerializer/properties/updated_at/anyOf/0'
-	// "$.components.schemas.RoleAssignmentSerializer.properties.updated_at.anyOf[0]"
+	// Updated timestamp
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// '#/components/schemas/RoleAssignmentSerializer/properties/user_id'
-	// "$.components.schemas.RoleAssignmentSerializer.properties.user_id"
+	// User ID
 	UserID int64 `json:"user_id,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -133,11 +122,8 @@ func (r *RoleAssignment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/AssignmentSerializer'
-// "$.components.schemas.AssignmentSerializer"
 type RoleAssignmentUpdateDelete struct {
-	// '#/components/schemas/AssignmentSerializer/properties/assignment_id'
-	// "$.components.schemas.AssignmentSerializer.properties.assignment_id"
+	// Assignment ID
 	AssignmentID int64 `json:"assignment_id,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -155,17 +141,13 @@ func (r *RoleAssignmentUpdateDelete) UnmarshalJSON(data []byte) error {
 }
 
 type UserRoleAssignmentNewParams struct {
-	// '#/components/schemas/RequestAssignmentSerializer/properties/role'
-	// "$.components.schemas.RequestAssignmentSerializer.properties.role"
+	// User role
 	Role string `json:"role,required"`
-	// '#/components/schemas/RequestAssignmentSerializer/properties/user_id'
-	// "$.components.schemas.RequestAssignmentSerializer.properties.user_id"
+	// User ID
 	UserID int64 `json:"user_id,required"`
-	// '#/components/schemas/RequestAssignmentSerializer/properties/client_id/anyOf/0'
-	// "$.components.schemas.RequestAssignmentSerializer.properties.client_id.anyOf[0]"
+	// Client ID. Required if project_id is specified
 	ClientID param.Opt[int64] `json:"client_id,omitzero"`
-	// '#/components/schemas/RequestAssignmentSerializer/properties/project_id/anyOf/0'
-	// "$.components.schemas.RequestAssignmentSerializer.properties.project_id.anyOf[0]"
+	// Project ID
 	ProjectID param.Opt[int64] `json:"project_id,omitzero"`
 	paramObj
 }
@@ -180,17 +162,13 @@ func (r UserRoleAssignmentNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type UserRoleAssignmentUpdateParams struct {
-	// '#/components/schemas/RequestAssignmentSerializer/properties/role'
-	// "$.components.schemas.RequestAssignmentSerializer.properties.role"
+	// User role
 	Role string `json:"role,required"`
-	// '#/components/schemas/RequestAssignmentSerializer/properties/user_id'
-	// "$.components.schemas.RequestAssignmentSerializer.properties.user_id"
+	// User ID
 	UserID int64 `json:"user_id,required"`
-	// '#/components/schemas/RequestAssignmentSerializer/properties/client_id/anyOf/0'
-	// "$.components.schemas.RequestAssignmentSerializer.properties.client_id.anyOf[0]"
+	// Client ID. Required if project_id is specified
 	ClientID param.Opt[int64] `json:"client_id,omitzero"`
-	// '#/components/schemas/RequestAssignmentSerializer/properties/project_id/anyOf/0'
-	// "$.components.schemas.RequestAssignmentSerializer.properties.project_id.anyOf[0]"
+	// Project ID
 	ProjectID param.Opt[int64] `json:"project_id,omitzero"`
 	paramObj
 }
@@ -205,17 +183,14 @@ func (r UserRoleAssignmentUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type UserRoleAssignmentListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fusers%2Fassignments/get/parameters/0'
-	// "$.paths['/cloud/v1/users/assignments'].get.parameters[0]"
+	// Limit the number of returned items. Falls back to default of 1000 if not
+	// specified. Limited by max limit value of 1000
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fusers%2Fassignments/get/parameters/1'
-	// "$.paths['/cloud/v1/users/assignments'].get.parameters[1]"
+	// Offset value is used to exclude the first set of records from the result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fusers%2Fassignments/get/parameters/2'
-	// "$.paths['/cloud/v1/users/assignments'].get.parameters[2]"
+	// Project ID
 	ProjectID param.Opt[int64] `query:"project_id,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fusers%2Fassignments/get/parameters/3'
-	// "$.paths['/cloud/v1/users/assignments'].get.parameters[3]"
+	// User ID for filtering
 	UserID param.Opt[int64] `query:"user_id,omitzero" json:"-"`
 	paramObj
 }

@@ -84,29 +84,20 @@ func (r *RegistryRepositoryService) Delete(ctx context.Context, repositoryName s
 	return
 }
 
-// '#/components/schemas/RegistryRepositorySerializer'
-// "$.components.schemas.RegistryRepositorySerializer"
 type RegistryRepository struct {
-	// '#/components/schemas/RegistryRepositorySerializer/properties/id'
-	// "$.components.schemas.RegistryRepositorySerializer.properties.id"
+	// Repository ID
 	ID int64 `json:"id,required"`
-	// '#/components/schemas/RegistryRepositorySerializer/properties/artifact_count'
-	// "$.components.schemas.RegistryRepositorySerializer.properties.artifact_count"
+	// Number of artifacts in the repository
 	ArtifactCount int64 `json:"artifact_count,required"`
-	// '#/components/schemas/RegistryRepositorySerializer/properties/created_at'
-	// "$.components.schemas.RegistryRepositorySerializer.properties.created_at"
+	// Repository creation date-time
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/RegistryRepositorySerializer/properties/name'
-	// "$.components.schemas.RegistryRepositorySerializer.properties.name"
+	// Repository name
 	Name string `json:"name,required"`
-	// '#/components/schemas/RegistryRepositorySerializer/properties/pull_count'
-	// "$.components.schemas.RegistryRepositorySerializer.properties.pull_count"
+	// Number of pools from the repository
 	PullCount int64 `json:"pull_count,required"`
-	// '#/components/schemas/RegistryRepositorySerializer/properties/registry_id'
-	// "$.components.schemas.RegistryRepositorySerializer.properties.registry_id"
+	// Repository registry ID
 	RegistryID int64 `json:"registry_id,required"`
-	// '#/components/schemas/RegistryRepositorySerializer/properties/updated_at'
-	// "$.components.schemas.RegistryRepositorySerializer.properties.updated_at"
+	// Repository modification date-time
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -129,14 +120,10 @@ func (r *RegistryRepository) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/RegistryRepositoryCollectionSerializer'
-// "$.components.schemas.RegistryRepositoryCollectionSerializer"
 type RegistryRepositoryList struct {
-	// '#/components/schemas/RegistryRepositoryCollectionSerializer/properties/count'
-	// "$.components.schemas.RegistryRepositoryCollectionSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/RegistryRepositoryCollectionSerializer/properties/results'
-	// "$.components.schemas.RegistryRepositoryCollectionSerializer.properties.results"
+	// Objects
 	Results []RegistryRepository `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -155,12 +142,8 @@ func (r *RegistryRepositoryList) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryRepositoryListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -169,15 +152,9 @@ type RegistryRepositoryListParams struct {
 func (f RegistryRepositoryListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type RegistryRepositoryDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}']['delete'].parameters[0].schema"
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D/delete/parameters/2/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}']['delete'].parameters[2].schema"
-	RegistryID int64 `path:"registry_id,required" json:"-"`
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegistryID int64            `path:"registry_id,required" json:"-"`
 	paramObj
 }
 

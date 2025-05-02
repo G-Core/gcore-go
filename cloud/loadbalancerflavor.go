@@ -59,14 +59,9 @@ func (r *LoadBalancerFlavorService) List(ctx context.Context, params LoadBalance
 }
 
 type LoadBalancerFlavorListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flbflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/lbflavors/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/lbflavors/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/lbflavors/{project_id}/{region_id}'].get.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Set to true if the response should include flavor prices
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	paramObj
 }

@@ -203,50 +203,35 @@ func (r *FileShareService) Resize(ctx context.Context, fileShareID string, param
 	return
 }
 
-// '#/components/schemas/FileShareSerializer'
-// "$.components.schemas.FileShareSerializer"
 type FileShare struct {
-	// '#/components/schemas/FileShareSerializer/properties/id'
-	// "$.components.schemas.FileShareSerializer.properties.id"
+	// File share ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/FileShareSerializer/properties/connection_point/anyOf/0'
-	// "$.components.schemas.FileShareSerializer.properties.connection_point.anyOf[0]"
+	// Connection point. Can be null during File share creation
 	ConnectionPoint string `json:"connection_point,required"`
-	// '#/components/schemas/FileShareSerializer/properties/created_at'
-	// "$.components.schemas.FileShareSerializer.properties.created_at"
+	// Datetime when the file share was created
 	CreatedAt string `json:"created_at,required"`
-	// '#/components/schemas/FileShareSerializer/properties/creator_task_id'
-	// "$.components.schemas.FileShareSerializer.properties.creator_task_id"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
-	// '#/components/schemas/FileShareSerializer/properties/name'
-	// "$.components.schemas.FileShareSerializer.properties.name"
+	// File share name
 	Name string `json:"name,required"`
-	// '#/components/schemas/FileShareSerializer/properties/network_id'
-	// "$.components.schemas.FileShareSerializer.properties.network_id"
+	// Network ID.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/FileShareSerializer/properties/network_name'
-	// "$.components.schemas.FileShareSerializer.properties.network_name"
+	// Network name.
 	NetworkName string `json:"network_name,required"`
-	// '#/components/schemas/FileShareSerializer/properties/project_id'
-	// "$.components.schemas.FileShareSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/FileShareSerializer/properties/protocol'
-	// "$.components.schemas.FileShareSerializer.properties.protocol"
+	// File share protocol
 	Protocol string `json:"protocol,required"`
-	// '#/components/schemas/FileShareSerializer/properties/region'
-	// "$.components.schemas.FileShareSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/FileShareSerializer/properties/region_id'
-	// "$.components.schemas.FileShareSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/FileShareSerializer/properties/share_network_name/anyOf/0'
-	// "$.components.schemas.FileShareSerializer.properties.share_network_name.anyOf[0]"
+	// Share network name. May be null if the file share was created with volume type
+	// VAST
 	ShareNetworkName string `json:"share_network_name,required"`
-	// '#/components/schemas/FileShareSerializer/properties/size'
-	// "$.components.schemas.FileShareSerializer.properties.size"
+	// File share size, GiB
 	Size int64 `json:"size,required"`
-	// '#/components/schemas/FileShareSerializer/properties/status'
-	// "$.components.schemas.FileShareSerializer.properties.status"
+	// File share status
 	//
 	// Any of "available", "awaiting_transfer", "backup_creating", "backup_restoring",
 	// "backup_restoring_error", "creating", "creating_from_snapshot", "deleted",
@@ -256,20 +241,21 @@ type FileShare struct {
 	// "shrinking", "shrinking_error", "shrinking_possible_data_loss_error",
 	// "unmanage_error", "unmanage_starting", "unmanaged".
 	Status FileShareStatus `json:"status,required"`
-	// '#/components/schemas/FileShareSerializer/properties/subnet_id'
-	// "$.components.schemas.FileShareSerializer.properties.subnet_id"
+	// Subnet ID.
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// '#/components/schemas/FileShareSerializer/properties/subnet_name'
-	// "$.components.schemas.FileShareSerializer.properties.subnet_name"
+	// Subnet name.
 	SubnetName string `json:"subnet_name,required"`
-	// '#/components/schemas/FileShareSerializer/properties/tags'
-	// "$.components.schemas.FileShareSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/FileShareSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.FileShareSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,required" format:"uuid4"`
-	// '#/components/schemas/FileShareSerializer/properties/volume_type'
-	// "$.components.schemas.FileShareSerializer.properties.volume_type"
+	// File share disk type
 	//
 	// Any of "default_share_type", "vast_share_type".
 	VolumeType FileShareVolumeType `json:"volume_type,required"`
@@ -306,8 +292,7 @@ func (r *FileShare) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/FileShareSerializer/properties/status'
-// "$.components.schemas.FileShareSerializer.properties.status"
+// File share status
 type FileShareStatus string
 
 const (
@@ -341,8 +326,7 @@ const (
 	FileShareStatusUnmanaged                      FileShareStatus = "unmanaged"
 )
 
-// '#/components/schemas/FileShareSerializer/properties/volume_type'
-// "$.components.schemas.FileShareSerializer.properties.volume_type"
+// File share disk type
 type FileShareVolumeType string
 
 const (
@@ -351,11 +335,9 @@ const (
 )
 
 type FileShareNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 
 	//
@@ -363,12 +345,8 @@ type FileShareNewParams struct {
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	// '#/components/schemas/CreateFileShareSerializer/anyOf/0'
-	// "$.components.schemas.CreateFileShareSerializer.anyOf[0]"
 	OfCreateStandardFileShareSerializer *FileShareNewParamsBodyCreateStandardFileShareSerializer `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// '#/components/schemas/CreateFileShareSerializer/anyOf/1'
-	// "$.components.schemas.CreateFileShareSerializer.anyOf[1]"
 	OfCreateVastFileShareSerializer *FileShareNewParamsBodyCreateVastFileShareSerializer `json:",inline"`
 
 	paramObj
@@ -382,33 +360,27 @@ func (u FileShareNewParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[FileShareNewParams](u.OfCreateStandardFileShareSerializer, u.OfCreateVastFileShareSerializer)
 }
 
-// '#/components/schemas/CreateFileShareSerializer/anyOf/0'
-// "$.components.schemas.CreateFileShareSerializer.anyOf[0]"
-//
 // The properties Name, Network, Protocol, Size are required.
 type FileShareNewParamsBodyCreateStandardFileShareSerializer struct {
-	// '#/components/schemas/CreateStandardFileShareSerializer/properties/name'
-	// "$.components.schemas.CreateStandardFileShareSerializer.properties.name"
+	// File share name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateStandardFileShareSerializer/properties/network'
-	// "$.components.schemas.CreateStandardFileShareSerializer.properties.network"
+	// File share network configuration
 	Network FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork `json:"network,omitzero,required"`
-	// '#/components/schemas/CreateStandardFileShareSerializer/properties/size'
-	// "$.components.schemas.CreateStandardFileShareSerializer.properties.size"
+	// File share size
 	Size int64 `json:"size,required"`
-	// '#/components/schemas/CreateStandardFileShareSerializer/properties/access'
-	// "$.components.schemas.CreateStandardFileShareSerializer.properties.access"
+	// Access Rules
 	Access []FileShareNewParamsBodyCreateStandardFileShareSerializerAccess `json:"access,omitzero"`
-	// '#/components/schemas/CreateStandardFileShareSerializer/properties/tags'
-	// "$.components.schemas.CreateStandardFileShareSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
-	// '#/components/schemas/CreateStandardFileShareSerializer/properties/volume_type'
-	// "$.components.schemas.CreateStandardFileShareSerializer.properties.volume_type"
+	// File share volume type
 	//
 	// Any of "default_share_type".
 	VolumeType string `json:"volume_type,omitzero"`
-	// '#/components/schemas/CreateStandardFileShareSerializer/properties/protocol'
-	// "$.components.schemas.CreateStandardFileShareSerializer.properties.protocol"
+	// File share protocol
 	//
 	// This field can be elided, and will marshal its zero value as "NFS".
 	Protocol constant.Nfs `json:"protocol,required"`
@@ -431,16 +403,13 @@ func init() {
 	)
 }
 
-// '#/components/schemas/CreateStandardFileShareSerializer/properties/network'
-// "$.components.schemas.CreateStandardFileShareSerializer.properties.network"
+// File share network configuration
 //
 // The property NetworkID is required.
 type FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork struct {
-	// '#/components/schemas/FileShareNetworkSerializer/properties/network_id'
-	// "$.components.schemas.FileShareNetworkSerializer.properties.network_id"
+	// Network ID.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/FileShareNetworkSerializer/properties/subnet_id'
-	// "$.components.schemas.FileShareNetworkSerializer.properties.subnet_id"
+	// Subnetwork ID. If the subnet is not selected, it will be selected automatically.
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
 	paramObj
 }
@@ -455,18 +424,13 @@ func (r FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork) MarshalJ
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateStandardFileShareSerializer/properties/access/items'
-// "$.components.schemas.CreateStandardFileShareSerializer.properties.access.items"
-//
 // The properties AccessMode, IPAddress are required.
 type FileShareNewParamsBodyCreateStandardFileShareSerializerAccess struct {
-	// '#/components/schemas/CreateAccessRuleSerializer/properties/access_mode'
-	// "$.components.schemas.CreateAccessRuleSerializer.properties.access_mode"
+	// Access mode
 	//
 	// Any of "ro", "rw".
 	AccessMode string `json:"access_mode,omitzero,required"`
-	// '#/components/schemas/CreateAccessRuleSerializer/properties/ip_address/anyOf/0'
-	// "$.components.schemas.CreateAccessRuleSerializer.properties.ip_address.anyOf[0]"
+	// Source IP or network
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	paramObj
 }
@@ -487,27 +451,23 @@ func init() {
 	)
 }
 
-// '#/components/schemas/CreateFileShareSerializer/anyOf/1'
-// "$.components.schemas.CreateFileShareSerializer.anyOf[1]"
-//
 // The properties Name, Protocol, Size, VolumeType are required.
 type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
-	// '#/components/schemas/CreateVastFileShareSerializer/properties/name'
-	// "$.components.schemas.CreateVastFileShareSerializer.properties.name"
+	// File share name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateVastFileShareSerializer/properties/size'
-	// "$.components.schemas.CreateVastFileShareSerializer.properties.size"
+	// File share size
 	Size int64 `json:"size,required"`
-	// '#/components/schemas/CreateVastFileShareSerializer/properties/tags'
-	// "$.components.schemas.CreateVastFileShareSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
-	// '#/components/schemas/CreateVastFileShareSerializer/properties/protocol'
-	// "$.components.schemas.CreateVastFileShareSerializer.properties.protocol"
+	// File share protocol
 	//
 	// This field can be elided, and will marshal its zero value as "NFS".
 	Protocol constant.Nfs `json:"protocol,required"`
-	// '#/components/schemas/CreateVastFileShareSerializer/properties/volume_type'
-	// "$.components.schemas.CreateVastFileShareSerializer.properties.volume_type"
+	// File share volume type
 	//
 	// This field can be elided, and will marshal its zero value as "vast_share_type".
 	VolumeType constant.VastShareType `json:"volume_type,required"`
@@ -525,14 +485,11 @@ func (r FileShareNewParamsBodyCreateVastFileShareSerializer) MarshalJSON() (data
 }
 
 type FileShareUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}'].patch.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}'].patch.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/NameSerializer/properties/name'
-	// "$.components.schemas.NameSerializer.properties.name"
+	// Name.
 	Name string `json:"name,required"`
 	paramObj
 }
@@ -547,17 +504,14 @@ func (r FileShareUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type FileShareListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].get.parameters[2]"
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}'].get.parameters[3]"
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
@@ -575,11 +529,9 @@ func (r FileShareListParams) URLQuery() (v url.Values, err error) {
 }
 
 type FileShareDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}']['delete'].parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}']['delete'].parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -589,11 +541,9 @@ type FileShareDeleteParams struct {
 func (f FileShareDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type FileShareGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -603,14 +553,11 @@ type FileShareGetParams struct {
 func (f FileShareGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type FileShareResizeParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Fextend/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/extend'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffile_shares%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfile_share_id%7D%2Fextend/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/file_shares/{project_id}/{region_id}/{file_share_id}/extend'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/ResizeSfsSerializer/properties/size'
-	// "$.components.schemas.ResizeSfsSerializer.properties.size"
+	// File Share new size in GiB.
 	Size int64 `json:"size,required"`
 	paramObj
 }
