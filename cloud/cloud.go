@@ -690,6 +690,50 @@ func (r *FloatingIP) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// FloatingIPDetailedAddressUnion contains all possible properties and values from
+// [FloatingAddress], [FixedAddressShort], [FixedAddress].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type FloatingIPDetailedAddressUnion struct {
+	Addr          string `json:"addr"`
+	Type          string `json:"type"`
+	InterfaceName string `json:"interface_name"`
+	// This field is from variant [FixedAddress].
+	SubnetID string `json:"subnet_id"`
+	// This field is from variant [FixedAddress].
+	SubnetName string `json:"subnet_name"`
+	JSON       struct {
+		Addr          resp.Field
+		Type          resp.Field
+		InterfaceName resp.Field
+		SubnetID      resp.Field
+		SubnetName    resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+func (u FloatingIPDetailedAddressUnion) AsFloatingIPAddress() (v FloatingAddress) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FloatingIPDetailedAddressUnion) AsFixedIPAddressShort() (v FixedAddressShort) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FloatingIPDetailedAddressUnion) AsFixedIPAddress() (v FixedAddress) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u FloatingIPDetailedAddressUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *FloatingIPDetailedAddressUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type FloatingIPStatus string
 
 const (
