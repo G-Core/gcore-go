@@ -297,9 +297,6 @@ type GPUBaremetalCluster struct {
 	// '#/components/schemas/AIClusterSerializer/properties/interfaces/anyOf/0'
 	// "$.components.schemas.AIClusterSerializer.properties.interfaces.anyOf[0]"
 	Interfaces []GPUBaremetalClusterInterface `json:"interfaces,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/keypair_name/anyOf/0'
-	// "$.components.schemas.AIClusterSerializer.properties.keypair_name.anyOf[0]"
-	KeypairName string `json:"keypair_name,required"`
 	// '#/components/schemas/AIClusterSerializer/properties/password/anyOf/0'
 	// "$.components.schemas.AIClusterSerializer.properties.password.anyOf[0]"
 	Password string `json:"password,required"`
@@ -315,6 +312,9 @@ type GPUBaremetalCluster struct {
 	// '#/components/schemas/AIClusterSerializer/properties/servers'
 	// "$.components.schemas.AIClusterSerializer.properties.servers"
 	Servers []GPUClusterServer `json:"servers,required"`
+	// '#/components/schemas/AIClusterSerializer/properties/ssh_key_name/anyOf/0'
+	// "$.components.schemas.AIClusterSerializer.properties.ssh_key_name.anyOf[0]"
+	SSHKeyName string `json:"ssh_key_name,required"`
 	// '#/components/schemas/AIClusterSerializer/properties/tags'
 	// "$.components.schemas.AIClusterSerializer.properties.tags"
 	Tags []Tag `json:"tags,required"`
@@ -346,12 +346,12 @@ type GPUBaremetalCluster struct {
 		ImageID       resp.Field
 		ImageName     resp.Field
 		Interfaces    resp.Field
-		KeypairName   resp.Field
 		Password      resp.Field
 		ProjectID     resp.Field
 		Region        resp.Field
 		RegionID      resp.Field
 		Servers       resp.Field
+		SSHKeyName    resp.Field
 		Tags          resp.Field
 		TaskID        resp.Field
 		TaskStatus    resp.Field
@@ -836,12 +836,12 @@ type GPUBaremetalClusterNewParams struct {
 	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/instances_count'
 	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.instances_count"
 	InstancesCount param.Opt[int64] `json:"instances_count,omitzero"`
-	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/keypair_name'
-	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.keypair_name"
-	KeypairName param.Opt[string] `json:"keypair_name,omitzero"`
 	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/password'
 	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.password"
 	Password param.Opt[string] `json:"password,omitzero"`
+	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/ssh_key_name'
+	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.ssh_key_name"
+	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
 	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/user_data'
 	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.user_data"
 	UserData param.Opt[string] `json:"user_data,omitzero"`

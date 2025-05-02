@@ -163,9 +163,6 @@ type BaremetalServer struct {
 	// '#/components/schemas/BareMetalServerSerializer/properties/instance_name'
 	// "$.components.schemas.BareMetalServerSerializer.properties.instance_name"
 	InstanceName string `json:"instance_name,required"`
-	// '#/components/schemas/BareMetalServerSerializer/properties/keypair_name/anyOf/0'
-	// "$.components.schemas.BareMetalServerSerializer.properties.keypair_name.anyOf[0]"
-	KeypairName string `json:"keypair_name,required"`
 	// '#/components/schemas/BareMetalServerSerializer/properties/project_id'
 	// "$.components.schemas.BareMetalServerSerializer.properties.project_id"
 	ProjectID int64 `json:"project_id,required"`
@@ -175,6 +172,9 @@ type BaremetalServer struct {
 	// '#/components/schemas/BareMetalServerSerializer/properties/region_id'
 	// "$.components.schemas.BareMetalServerSerializer.properties.region_id"
 	RegionID int64 `json:"region_id,required"`
+	// '#/components/schemas/BareMetalServerSerializer/properties/ssh_key_name/anyOf/0'
+	// "$.components.schemas.BareMetalServerSerializer.properties.ssh_key_name.anyOf[0]"
+	SSHKeyName string `json:"ssh_key_name,required"`
 	// '#/components/schemas/BareMetalServerSerializer/properties/status'
 	// "$.components.schemas.BareMetalServerSerializer.properties.status"
 	//
@@ -212,10 +212,10 @@ type BaremetalServer struct {
 		InstanceID          resp.Field
 		InstanceIsolation   resp.Field
 		InstanceName        resp.Field
-		KeypairName         resp.Field
 		ProjectID           resp.Field
 		Region              resp.Field
 		RegionID            resp.Field
+		SSHKeyName          resp.Field
 		Status              resp.Field
 		Tags                resp.Field
 		TaskID              resp.Field
@@ -580,9 +580,9 @@ type BaremetalServerNewParams struct {
 	// '#/components/schemas/CreateBareMetalServerSerializer/properties/interfaces'
 	// "$.components.schemas.CreateBareMetalServerSerializer.properties.interfaces"
 	Interfaces []BaremetalServerNewParamsInterfaceUnion `json:"interfaces,omitzero,required"`
-	// '#/components/schemas/CreateBareMetalServerSerializer/properties/keypair_name/anyOf/0'
-	// "$.components.schemas.CreateBareMetalServerSerializer.properties.keypair_name.anyOf[0]"
-	KeypairName param.Opt[string] `json:"keypair_name,omitzero"`
+	// '#/components/schemas/CreateBareMetalServerSerializer/properties/ssh_key_name/anyOf/0'
+	// "$.components.schemas.CreateBareMetalServerSerializer.properties.ssh_key_name.anyOf[0]"
+	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
 	// '#/components/schemas/CreateBareMetalServerSerializer/properties/apptemplate_id'
 	// "$.components.schemas.CreateBareMetalServerSerializer.properties.apptemplate_id"
 	ApptemplateID param.Opt[string] `json:"apptemplate_id,omitzero"`

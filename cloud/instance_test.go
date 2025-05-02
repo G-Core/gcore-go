@@ -60,7 +60,6 @@ func TestInstanceNewWithOptionalParams(t *testing.T) {
 		}},
 		AllowAppPorts: gcore.Bool(true),
 		Configuration: map[string]interface{}{},
-		KeypairName:   gcore.String("my-keypair"),
 		NameTemplates: []string{"my-instance-{ip_octets}"},
 		Names:         []string{"my-instance"},
 		Password:      gcore.String("password"),
@@ -68,6 +67,7 @@ func TestInstanceNewWithOptionalParams(t *testing.T) {
 			ID: "ae74714c-c380-48b4-87f8-758d656cdad6",
 		}},
 		ServergroupID: gcore.String("servergroup_id"),
+		SSHKeyName:    gcore.String("my-ssh-key"),
 		Tags: cloud.TagUpdateList{
 			"foo": "my-tag-value",
 		},
