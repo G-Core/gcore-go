@@ -445,16 +445,16 @@ func (r *InstanceService) UnassignSecurityGroup(ctx context.Context, instanceID 
 type InstanceInterface struct {
 	// '#/components/schemas/InstanceInterfaceSerializer/properties/allowed_address_pairs'
 	// "$.components.schemas.InstanceInterfaceSerializer.properties.allowed_address_pairs"
-	AllowedAddressPairs []InstanceInterfaceAllowedAddressPair `json:"allowed_address_pairs,required"`
+	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs,required"`
 	// '#/components/schemas/InstanceInterfaceSerializer/properties/floatingip_details'
 	// "$.components.schemas.InstanceInterfaceSerializer.properties.floatingip_details"
 	FloatingipDetails []FloatingIP `json:"floatingip_details,required"`
 	// '#/components/schemas/InstanceInterfaceSerializer/properties/ip_assignments'
 	// "$.components.schemas.InstanceInterfaceSerializer.properties.ip_assignments"
-	IPAssignments []InstanceInterfaceIPAssignment `json:"ip_assignments,required"`
+	IPAssignments []IPAssignment `json:"ip_assignments,required"`
 	// '#/components/schemas/InstanceInterfaceSerializer/properties/network_details'
 	// "$.components.schemas.InstanceInterfaceSerializer.properties.network_details"
-	NetworkDetails InstanceInterfaceNetworkDetails `json:"network_details,required"`
+	NetworkDetails NetworkDetails `json:"network_details,required"`
 	// '#/components/schemas/InstanceInterfaceSerializer/properties/network_id'
 	// "$.components.schemas.InstanceInterfaceSerializer.properties.network_id"
 	NetworkID string `json:"network_id,required" format:"uuid4"`
@@ -490,145 +490,6 @@ type InstanceInterface struct {
 // Returns the unmodified JSON received from the API
 func (r InstanceInterface) RawJSON() string { return r.JSON.raw }
 func (r *InstanceInterface) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/InstanceInterfaceSerializer/properties/allowed_address_pairs/items'
-// "$.components.schemas.InstanceInterfaceSerializer.properties.allowed_address_pairs.items"
-type InstanceInterfaceAllowedAddressPair struct {
-	// '#/components/schemas/AllowedAddressPairsSerializer/properties/ip_address/anyOf/0'
-	// "$.components.schemas.AllowedAddressPairsSerializer.properties.ip_address.anyOf[0]"
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/AllowedAddressPairsSerializer/properties/mac_address/anyOf/0'
-	// "$.components.schemas.AllowedAddressPairsSerializer.properties.mac_address.anyOf[0]"
-	MacAddress string `json:"mac_address,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		IPAddress   resp.Field
-		MacAddress  resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InstanceInterfaceAllowedAddressPair) RawJSON() string { return r.JSON.raw }
-func (r *InstanceInterfaceAllowedAddressPair) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/InstanceInterfaceSerializer/properties/ip_assignments/items'
-// "$.components.schemas.InstanceInterfaceSerializer.properties.ip_assignments.items"
-type InstanceInterfaceIPAssignment struct {
-	// '#/components/schemas/PortIpSubnetIdSerializer/properties/ip_address'
-	// "$.components.schemas.PortIpSubnetIdSerializer.properties.ip_address"
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/PortIpSubnetIdSerializer/properties/subnet_id'
-	// "$.components.schemas.PortIpSubnetIdSerializer.properties.subnet_id"
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		IPAddress   resp.Field
-		SubnetID    resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InstanceInterfaceIPAssignment) RawJSON() string { return r.JSON.raw }
-func (r *InstanceInterfaceIPAssignment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/InstanceInterfaceSerializer/properties/network_details'
-// "$.components.schemas.InstanceInterfaceSerializer.properties.network_details"
-type InstanceInterfaceNetworkDetails struct {
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/id'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.id"
-	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/created_at'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.created_at"
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/external'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.external"
-	External bool `json:"external,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/name'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.name"
-	Name string `json:"name,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/port_security_enabled'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.port_security_enabled"
-	PortSecurityEnabled bool `json:"port_security_enabled,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/region'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.region"
-	Region string `json:"region,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/region_id'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.region_id"
-	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/shared'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.shared"
-	Shared bool `json:"shared,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/tags'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.tags"
-	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/type'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.type"
-	Type string `json:"type,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/updated_at'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.updated_at"
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.creator_task_id.anyOf[0]"
-	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/default/anyOf/0'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties['default'].anyOf[0]"
-	Default bool `json:"default,nullable"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/mtu'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.mtu"
-	Mtu int64 `json:"mtu"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/project_id/anyOf/0'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.project_id.anyOf[0]"
-	ProjectID int64 `json:"project_id,nullable"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/segmentation_id/anyOf/0'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.segmentation_id.anyOf[0]"
-	SegmentationID int64 `json:"segmentation_id,nullable"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/subnets/anyOf/0'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.subnets.anyOf[0]"
-	Subnets []Subnet `json:"subnets,nullable"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.task_id.anyOf[0]"
-	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		ID                  resp.Field
-		CreatedAt           resp.Field
-		External            resp.Field
-		Name                resp.Field
-		PortSecurityEnabled resp.Field
-		Region              resp.Field
-		RegionID            resp.Field
-		Shared              resp.Field
-		Tags                resp.Field
-		Type                resp.Field
-		UpdatedAt           resp.Field
-		CreatorTaskID       resp.Field
-		Default             resp.Field
-		Mtu                 resp.Field
-		ProjectID           resp.Field
-		SegmentationID      resp.Field
-		Subnets             resp.Field
-		TaskID              resp.Field
-		ExtraFields         map[string]resp.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InstanceInterfaceNetworkDetails) RawJSON() string { return r.JSON.raw }
-func (r *InstanceInterfaceNetworkDetails) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

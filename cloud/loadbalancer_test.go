@@ -103,7 +103,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 		Logging: cloud.LoadBalancerNewParamsLogging{
 			DestinationRegionID: gcore.Int(1),
 			Enabled:             gcore.Bool(true),
-			RetentionPolicy: cloud.LoadBalancerNewParamsLoggingRetentionPolicy{
+			RetentionPolicy: cloud.LaasIndexRetentionPolicyParam{
 				Period: gcore.Int(45),
 			},
 			TopicName: gcore.String("my-log-name"),
@@ -149,7 +149,7 @@ func TestLoadBalancerUpdateWithOptionalParams(t *testing.T) {
 			Logging: cloud.LoadBalancerUpdateParamsLogging{
 				DestinationRegionID: gcore.Int(1),
 				Enabled:             gcore.Bool(true),
-				RetentionPolicy: cloud.LoadBalancerUpdateParamsLoggingRetentionPolicy{
+				RetentionPolicy: cloud.LaasIndexRetentionPolicyParam{
 					Period: gcore.Int(45),
 				},
 				TopicName: gcore.String("my-log-name"),

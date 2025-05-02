@@ -197,7 +197,7 @@ type BaremetalServer struct {
 	Addresses map[string][]BaremetalServerAddressUnion `json:"addresses,required"`
 	// '#/components/schemas/BareMetalServerSerializer/properties/blackhole_ports'
 	// "$.components.schemas.BareMetalServerSerializer.properties.blackhole_ports"
-	BlackholePorts []BaremetalServerBlackholePort `json:"blackhole_ports,required"`
+	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
 	// '#/components/schemas/BareMetalServerSerializer/properties/creator_task_id/anyOf/0'
 	// "$.components.schemas.BareMetalServerSerializer.properties.creator_task_id.anyOf[0]"
 	CreatorTaskID string `json:"creator_task_id,required"`
@@ -221,7 +221,7 @@ type BaremetalServer struct {
 	InstanceID string `json:"instance_id,required" format:"uuid4"`
 	// '#/components/schemas/BareMetalServerSerializer/properties/instance_isolation/anyOf/0'
 	// "$.components.schemas.BareMetalServerSerializer.properties.instance_isolation.anyOf[0]"
-	InstanceIsolation BaremetalServerInstanceIsolation `json:"instance_isolation,required"`
+	InstanceIsolation InstanceIsolation `json:"instance_isolation,required"`
 	// '#/components/schemas/BareMetalServerSerializer/properties/instance_name'
 	// "$.components.schemas.BareMetalServerSerializer.properties.instance_name"
 	InstanceName string `json:"instance_name,required"`
@@ -331,56 +331,6 @@ func (u BaremetalServerAddressUnion) AsFixedIPAddress() (v BaremetalFixedAddress
 func (u BaremetalServerAddressUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *BaremetalServerAddressUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/BareMetalServerSerializer/properties/blackhole_ports/items'
-// "$.components.schemas.BareMetalServerSerializer.properties.blackhole_ports.items"
-type BaremetalServerBlackholePort struct {
-	// '#/components/schemas/BlackholePortSerializer/properties/AlarmEnd'
-	// "$.components.schemas.BlackholePortSerializer.properties.AlarmEnd"
-	AlarmEnd time.Time `json:"AlarmEnd,required" format:"date-time"`
-	// '#/components/schemas/BlackholePortSerializer/properties/AlarmStart'
-	// "$.components.schemas.BlackholePortSerializer.properties.AlarmStart"
-	AlarmStart time.Time `json:"AlarmStart,required" format:"date-time"`
-	// '#/components/schemas/BlackholePortSerializer/properties/AlarmState'
-	// "$.components.schemas.BlackholePortSerializer.properties.AlarmState"
-	//
-	// Any of "ACK_REQ", "ALARM", "ARCHIVED", "CLEAR", "CLEARING", "CLEARING_FAIL",
-	// "END_GRACE", "END_WAIT", "MANUAL_CLEAR", "MANUAL_CLEARING",
-	// "MANUAL_CLEARING_FAIL", "MANUAL_MITIGATING", "MANUAL_STARTING",
-	// "MANUAL_STARTING_FAIL", "MITIGATING", "STARTING", "STARTING_FAIL", "START_WAIT",
-	// "ack_req", "alarm", "archived", "clear", "clearing", "clearing_fail",
-	// "end_grace", "end_wait", "manual_clear", "manual_clearing",
-	// "manual_clearing_fail", "manual_mitigating", "manual_starting",
-	// "manual_starting_fail", "mitigating", "start_wait", "starting", "starting_fail".
-	AlarmState string `json:"AlarmState,required"`
-	// '#/components/schemas/BlackholePortSerializer/properties/AlertDuration'
-	// "$.components.schemas.BlackholePortSerializer.properties.AlertDuration"
-	AlertDuration string `json:"AlertDuration,required"`
-	// '#/components/schemas/BlackholePortSerializer/properties/DestinationIP'
-	// "$.components.schemas.BlackholePortSerializer.properties.DestinationIP"
-	DestinationIP string `json:"DestinationIP,required"`
-	// '#/components/schemas/BlackholePortSerializer/properties/ID'
-	// "$.components.schemas.BlackholePortSerializer.properties.ID"
-	ID int64 `json:"ID,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		AlarmEnd      resp.Field
-		AlarmStart    resp.Field
-		AlarmState    resp.Field
-		AlertDuration resp.Field
-		DestinationIP resp.Field
-		ID            resp.Field
-		ExtraFields   map[string]resp.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BaremetalServerBlackholePort) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalServerBlackholePort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -496,27 +446,6 @@ type BaremetalServerFlavorHardwareDescription struct {
 // Returns the unmodified JSON received from the API
 func (r BaremetalServerFlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
 func (r *BaremetalServerFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/BareMetalServerSerializer/properties/instance_isolation/anyOf/0'
-// "$.components.schemas.BareMetalServerSerializer.properties.instance_isolation.anyOf[0]"
-type BaremetalServerInstanceIsolation struct {
-	// '#/components/schemas/IsolationSerializer/properties/reason/anyOf/0'
-	// "$.components.schemas.IsolationSerializer.properties.reason.anyOf[0]"
-	Reason string `json:"reason,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Reason      resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BaremetalServerInstanceIsolation) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalServerInstanceIsolation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

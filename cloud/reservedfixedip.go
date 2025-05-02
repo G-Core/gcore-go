@@ -157,7 +157,7 @@ func (r *ReservedFixedIPService) Get(ctx context.Context, portID string, query R
 type ReservedFixedIP struct {
 	// '#/components/schemas/ReservedFixedIPSerializer/properties/allowed_address_pairs'
 	// "$.components.schemas.ReservedFixedIPSerializer.properties.allowed_address_pairs"
-	AllowedAddressPairs []ReservedFixedIPAllowedAddressPair `json:"allowed_address_pairs,required"`
+	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs,required"`
 	// '#/components/schemas/ReservedFixedIPSerializer/properties/attachments'
 	// "$.components.schemas.ReservedFixedIPSerializer.properties.attachments"
 	Attachments []ReservedFixedIPAttachment `json:"attachments,required"`
@@ -250,31 +250,6 @@ type ReservedFixedIP struct {
 // Returns the unmodified JSON received from the API
 func (r ReservedFixedIP) RawJSON() string { return r.JSON.raw }
 func (r *ReservedFixedIP) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/ReservedFixedIPSerializer/properties/allowed_address_pairs/items'
-// "$.components.schemas.ReservedFixedIPSerializer.properties.allowed_address_pairs.items"
-type ReservedFixedIPAllowedAddressPair struct {
-	// '#/components/schemas/AllowedAddressPairsSerializer/properties/ip_address/anyOf/0'
-	// "$.components.schemas.AllowedAddressPairsSerializer.properties.ip_address.anyOf[0]"
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/AllowedAddressPairsSerializer/properties/mac_address/anyOf/0'
-	// "$.components.schemas.AllowedAddressPairsSerializer.properties.mac_address.anyOf[0]"
-	MacAddress string `json:"mac_address,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		IPAddress   resp.Field
-		MacAddress  resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReservedFixedIPAllowedAddressPair) RawJSON() string { return r.JSON.raw }
-func (r *ReservedFixedIPAllowedAddressPair) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

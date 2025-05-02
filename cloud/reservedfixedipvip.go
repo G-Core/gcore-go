@@ -175,7 +175,7 @@ type CandidatePort struct {
 	InstanceName string `json:"instance_name,required"`
 	// '#/components/schemas/VIPAttachCandidateSerializer/properties/ip_assignments'
 	// "$.components.schemas.VIPAttachCandidateSerializer.properties.ip_assignments"
-	IPAssignments []IPAssignment `json:"ip_assignments,required"`
+	IPAssignments []IPWithSubnet `json:"ip_assignments,required"`
 	// '#/components/schemas/VIPAttachCandidateSerializer/properties/network'
 	// "$.components.schemas.VIPAttachCandidateSerializer.properties.network"
 	Network Network `json:"network,required"`
@@ -237,7 +237,7 @@ type ConnectedPort struct {
 	InstanceName string `json:"instance_name,required"`
 	// '#/components/schemas/ConnectedDevicesVIPSerializer/properties/ip_assignments'
 	// "$.components.schemas.ConnectedDevicesVIPSerializer.properties.ip_assignments"
-	IPAssignments []IPAssignment `json:"ip_assignments,required"`
+	IPAssignments []IPWithSubnet `json:"ip_assignments,required"`
 	// '#/components/schemas/ConnectedDevicesVIPSerializer/properties/network'
 	// "$.components.schemas.ConnectedDevicesVIPSerializer.properties.network"
 	Network Network `json:"network,required"`
@@ -290,7 +290,7 @@ func (r *ConnectedPortList) UnmarshalJSON(data []byte) error {
 
 // '#/components/schemas/PortIpWithSubnetSerializer'
 // "$.components.schemas.PortIpWithSubnetSerializer"
-type IPAssignment struct {
+type IPWithSubnet struct {
 	// '#/components/schemas/PortIpWithSubnetSerializer/properties/ip_address'
 	// "$.components.schemas.PortIpWithSubnetSerializer.properties.ip_address"
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
@@ -312,8 +312,8 @@ type IPAssignment struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r IPAssignment) RawJSON() string { return r.JSON.raw }
-func (r *IPAssignment) UnmarshalJSON(data []byte) error {
+func (r IPWithSubnet) RawJSON() string { return r.JSON.raw }
+func (r *IPWithSubnet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -305,7 +305,7 @@ func (r *Router) UnmarshalJSON(data []byte) error {
 type RouterInterface struct {
 	// '#/components/schemas/PortSerializer/properties/ip_assignments'
 	// "$.components.schemas.PortSerializer.properties.ip_assignments"
-	IPAssignments []RouterInterfaceIPAssignment `json:"ip_assignments,required"`
+	IPAssignments []IPAssignment `json:"ip_assignments,required"`
 	// '#/components/schemas/PortSerializer/properties/network_id'
 	// "$.components.schemas.PortSerializer.properties.network_id"
 	NetworkID string `json:"network_id,required" format:"uuid4"`
@@ -333,31 +333,6 @@ func (r *RouterInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/PortSerializer/properties/ip_assignments/items'
-// "$.components.schemas.PortSerializer.properties.ip_assignments.items"
-type RouterInterfaceIPAssignment struct {
-	// '#/components/schemas/PortIpSubnetIdSerializer/properties/ip_address'
-	// "$.components.schemas.PortIpSubnetIdSerializer.properties.ip_address"
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/PortIpSubnetIdSerializer/properties/subnet_id'
-	// "$.components.schemas.PortIpSubnetIdSerializer.properties.subnet_id"
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		IPAddress   resp.Field
-		SubnetID    resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RouterInterfaceIPAssignment) RawJSON() string { return r.JSON.raw }
-func (r *RouterInterfaceIPAssignment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // '#/components/schemas/RouterSerializer/properties/external_gateway_info/anyOf/0'
 // "$.components.schemas.RouterSerializer.properties.external_gateway_info.anyOf[0]"
 type RouterExternalGatewayInfo struct {
@@ -366,7 +341,7 @@ type RouterExternalGatewayInfo struct {
 	EnableSnat bool `json:"enable_snat,required"`
 	// '#/components/schemas/ExternalGatewaySerializer/properties/external_fixed_ips'
 	// "$.components.schemas.ExternalGatewaySerializer.properties.external_fixed_ips"
-	ExternalFixedIPs []RouterExternalGatewayInfoExternalFixedIP `json:"external_fixed_ips,required"`
+	ExternalFixedIPs []IPAssignment `json:"external_fixed_ips,required"`
 	// '#/components/schemas/ExternalGatewaySerializer/properties/network_id'
 	// "$.components.schemas.ExternalGatewaySerializer.properties.network_id"
 	NetworkID string `json:"network_id,required" format:"uuid4"`
@@ -384,31 +359,6 @@ type RouterExternalGatewayInfo struct {
 // Returns the unmodified JSON received from the API
 func (r RouterExternalGatewayInfo) RawJSON() string { return r.JSON.raw }
 func (r *RouterExternalGatewayInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/ExternalGatewaySerializer/properties/external_fixed_ips/items'
-// "$.components.schemas.ExternalGatewaySerializer.properties.external_fixed_ips.items"
-type RouterExternalGatewayInfoExternalFixedIP struct {
-	// '#/components/schemas/PortIpSubnetIdSerializer/properties/ip_address'
-	// "$.components.schemas.PortIpSubnetIdSerializer.properties.ip_address"
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/PortIpSubnetIdSerializer/properties/subnet_id'
-	// "$.components.schemas.PortIpSubnetIdSerializer.properties.subnet_id"
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		IPAddress   resp.Field
-		SubnetID    resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RouterExternalGatewayInfoExternalFixedIP) RawJSON() string { return r.JSON.raw }
-func (r *RouterExternalGatewayInfoExternalFixedIP) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
