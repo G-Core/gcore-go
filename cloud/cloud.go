@@ -75,6 +75,120 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	return
 }
 
+// '#/components/schemas/BareMetalFlavorExtendedSerializer'
+// "$.components.schemas.BareMetalFlavorExtendedSerializer"
+type BaremetalFlavor struct {
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/architecture'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.architecture"
+	Architecture string `json:"architecture,required"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/disabled'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.disabled"
+	Disabled bool `json:"disabled,required"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/flavor_id'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.flavor_id"
+	FlavorID string `json:"flavor_id,required"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/flavor_name'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.flavor_name"
+	FlavorName string `json:"flavor_name,required"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/os_type'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.os_type"
+	OsType string `json:"os_type,required"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/ram'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.ram"
+	Ram int64 `json:"ram,required"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/resource_class/anyOf/0'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.resource_class.anyOf[0]"
+	ResourceClass string `json:"resource_class,required"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/vcpus'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.vcpus"
+	Vcpus int64 `json:"vcpus,required"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/capacity/anyOf/0'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.capacity.anyOf[0]"
+	Capacity int64 `json:"capacity,nullable"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/currency_code/anyOf/0'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.currency_code.anyOf[0]"
+	CurrencyCode string `json:"currency_code,nullable"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/hardware_description'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.hardware_description"
+	HardwareDescription map[string]string `json:"hardware_description"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/price_per_hour/anyOf/0'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.price_per_hour.anyOf[0]"
+	PricePerHour float64 `json:"price_per_hour,nullable"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/price_per_month/anyOf/0'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.price_per_month.anyOf[0]"
+	PricePerMonth float64 `json:"price_per_month,nullable"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/price_status/anyOf/0'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.price_status.anyOf[0]"
+	//
+	// Any of "error", "hide", "show".
+	PriceStatus BaremetalFlavorPriceStatus `json:"price_status,nullable"`
+	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/reserved_in_stock/anyOf/0'
+	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.reserved_in_stock.anyOf[0]"
+	ReservedInStock int64 `json:"reserved_in_stock,nullable"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Architecture        resp.Field
+		Disabled            resp.Field
+		FlavorID            resp.Field
+		FlavorName          resp.Field
+		OsType              resp.Field
+		Ram                 resp.Field
+		ResourceClass       resp.Field
+		Vcpus               resp.Field
+		Capacity            resp.Field
+		CurrencyCode        resp.Field
+		HardwareDescription resp.Field
+		PricePerHour        resp.Field
+		PricePerMonth       resp.Field
+		PriceStatus         resp.Field
+		ReservedInStock     resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BaremetalFlavor) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalFlavor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/price_status/anyOf/0'
+// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.price_status.anyOf[0]"
+type BaremetalFlavorPriceStatus string
+
+const (
+	BaremetalFlavorPriceStatusError BaremetalFlavorPriceStatus = "error"
+	BaremetalFlavorPriceStatusHide  BaremetalFlavorPriceStatus = "hide"
+	BaremetalFlavorPriceStatusShow  BaremetalFlavorPriceStatus = "show"
+)
+
+// '#/components/schemas/BareMetalFlavorExtendedCollectionSerializer'
+// "$.components.schemas.BareMetalFlavorExtendedCollectionSerializer"
+type BaremetalFlavorList struct {
+	// '#/components/schemas/BareMetalFlavorExtendedCollectionSerializer/properties/count'
+	// "$.components.schemas.BareMetalFlavorExtendedCollectionSerializer.properties.count"
+	Count int64 `json:"count,required"`
+	// '#/components/schemas/BareMetalFlavorExtendedCollectionSerializer/properties/results'
+	// "$.components.schemas.BareMetalFlavorExtendedCollectionSerializer.properties.results"
+	Results []BaremetalFlavor `json:"results,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Count       resp.Field
+		Results     resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BaremetalFlavorList) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalFlavorList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // '#/components/schemas/RemoteConsoleSerializer'
 // "$.components.schemas.RemoteConsoleSerializer"
 type Console struct {
@@ -363,6 +477,72 @@ func (r *DDOSProfileTemplateField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// '#/components/schemas/InstanceFixedAddressSerializer'
+// "$.components.schemas.InstanceFixedAddressSerializer"
+type FixedAddress struct {
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/addr'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.addr"
+	Addr string `json:"addr,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/interface_name/anyOf/0'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.interface_name.anyOf[0]"
+	InterfaceName string `json:"interface_name,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_id'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_id"
+	SubnetID string `json:"subnet_id,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_name'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_name"
+	SubnetName string `json:"subnet_name,required"`
+	// '#/components/schemas/InstanceFixedAddressSerializer/properties/type'
+	// "$.components.schemas.InstanceFixedAddressSerializer.properties.type"
+	Type constant.Fixed `json:"type,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addr          resp.Field
+		InterfaceName resp.Field
+		SubnetID      resp.Field
+		SubnetName    resp.Field
+		Type          resp.Field
+		ExtraFields   map[string]resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FixedAddress) RawJSON() string { return r.JSON.raw }
+func (r *FixedAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceFixedAddressShortSerializer'
+// "$.components.schemas.InstanceFixedAddressShortSerializer"
+type FixedAddressShort struct {
+	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/addr'
+	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.addr"
+	Addr string `json:"addr,required"`
+	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/interface_name/anyOf/0'
+	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.interface_name.anyOf[0]"
+	InterfaceName string `json:"interface_name,required"`
+	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/type'
+	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.type"
+	Type constant.Fixed `json:"type,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addr          resp.Field
+		InterfaceName resp.Field
+		Type          resp.Field
+		ExtraFields   map[string]resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FixedAddressShort) RawJSON() string { return r.JSON.raw }
+func (r *FixedAddressShort) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // '#/components/schemas/FlavorHardwareDescriptionSerializer'
 // "$.components.schemas.FlavorHardwareDescriptionSerializer"
 type FlavorHardwareDescription struct {
@@ -409,6 +589,31 @@ type FlavorHardwareDescription struct {
 // Returns the unmodified JSON received from the API
 func (r FlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
 func (r *FlavorHardwareDescription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/InstanceFloatingAddressSerializer'
+// "$.components.schemas.InstanceFloatingAddressSerializer"
+type FloatingAddress struct {
+	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/addr'
+	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.addr"
+	Addr string `json:"addr,required"`
+	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/type'
+	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.type"
+	Type constant.Floating `json:"type,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addr        resp.Field
+		Type        resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FloatingAddress) RawJSON() string { return r.JSON.raw }
+func (r *FloatingAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -624,18 +829,16 @@ func (r *GPUClusterServer) UnmarshalJSON(data []byte) error {
 }
 
 // GPUClusterServerAddressUnion contains all possible properties and values from
-// [GPUClusterServerAddressFloatingIPAddress],
-// [GPUClusterServerAddressFixedIPAddressShort],
-// [GPUClusterServerAddressFixedIPAddress].
+// [FloatingAddress], [FixedAddressShort], [FixedAddress].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type GPUClusterServerAddressUnion struct {
 	Addr          string `json:"addr"`
 	Type          string `json:"type"`
 	InterfaceName string `json:"interface_name"`
-	// This field is from variant [GPUClusterServerAddressFixedIPAddress].
+	// This field is from variant [FixedAddress].
 	SubnetID string `json:"subnet_id"`
-	// This field is from variant [GPUClusterServerAddressFixedIPAddress].
+	// This field is from variant [FixedAddress].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
 		Addr          resp.Field
@@ -647,17 +850,17 @@ type GPUClusterServerAddressUnion struct {
 	} `json:"-"`
 }
 
-func (u GPUClusterServerAddressUnion) AsFloatingIPAddress() (v GPUClusterServerAddressFloatingIPAddress) {
+func (u GPUClusterServerAddressUnion) AsFloatingIPAddress() (v FloatingAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u GPUClusterServerAddressUnion) AsFixedIPAddressShort() (v GPUClusterServerAddressFixedIPAddressShort) {
+func (u GPUClusterServerAddressUnion) AsFixedIPAddressShort() (v FixedAddressShort) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u GPUClusterServerAddressUnion) AsFixedIPAddress() (v GPUClusterServerAddressFixedIPAddress) {
+func (u GPUClusterServerAddressUnion) AsFixedIPAddress() (v FixedAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -666,97 +869,6 @@ func (u GPUClusterServerAddressUnion) AsFixedIPAddress() (v GPUClusterServerAddr
 func (u GPUClusterServerAddressUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *GPUClusterServerAddressUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/GPUClusterServerSerializer/properties/addresses/additionalProperties/items/anyOf/0'
-// "$.components.schemas.GPUClusterServerSerializer.properties.addresses.additionalProperties.items.anyOf[0]"
-type GPUClusterServerAddressFloatingIPAddress struct {
-	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/addr'
-	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.addr"
-	Addr string `json:"addr,required"`
-	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/type'
-	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.type"
-	Type constant.Floating `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Addr        resp.Field
-		Type        resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r GPUClusterServerAddressFloatingIPAddress) RawJSON() string { return r.JSON.raw }
-func (r *GPUClusterServerAddressFloatingIPAddress) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/GPUClusterServerSerializer/properties/addresses/additionalProperties/items/anyOf/1'
-// "$.components.schemas.GPUClusterServerSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
-type GPUClusterServerAddressFixedIPAddressShort struct {
-	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/addr'
-	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.addr"
-	Addr string `json:"addr,required"`
-	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.interface_name.anyOf[0]"
-	InterfaceName string `json:"interface_name,required"`
-	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/type'
-	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.type"
-	Type constant.Fixed `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Addr          resp.Field
-		InterfaceName resp.Field
-		Type          resp.Field
-		ExtraFields   map[string]resp.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r GPUClusterServerAddressFixedIPAddressShort) RawJSON() string { return r.JSON.raw }
-func (r *GPUClusterServerAddressFixedIPAddressShort) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/GPUClusterServerSerializer/properties/addresses/additionalProperties/items/anyOf/2'
-// "$.components.schemas.GPUClusterServerSerializer.properties.addresses.additionalProperties.items.anyOf[2]"
-type GPUClusterServerAddressFixedIPAddress struct {
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/addr'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.addr"
-	Addr string `json:"addr,required"`
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.interface_name.anyOf[0]"
-	InterfaceName string `json:"interface_name,required"`
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_id'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_id"
-	SubnetID string `json:"subnet_id,required"`
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_name'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_name"
-	SubnetName string `json:"subnet_name,required"`
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/type'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.type"
-	Type constant.Fixed `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Addr          resp.Field
-		InterfaceName resp.Field
-		SubnetID      resp.Field
-		SubnetName    resp.Field
-		Type          resp.Field
-		ExtraFields   map[string]resp.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r GPUClusterServerAddressFixedIPAddress) RawJSON() string { return r.JSON.raw }
-func (r *GPUClusterServerAddressFixedIPAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1463,17 +1575,16 @@ func (r *Instance) UnmarshalJSON(data []byte) error {
 }
 
 // InstanceAddressUnion contains all possible properties and values from
-// [InstanceAddressFloatingIPAddress], [InstanceAddressFixedIPAddressShort],
-// [InstanceAddressFixedIPAddress].
+// [FloatingAddress], [FixedAddressShort], [FixedAddress].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type InstanceAddressUnion struct {
 	Addr          string `json:"addr"`
 	Type          string `json:"type"`
 	InterfaceName string `json:"interface_name"`
-	// This field is from variant [InstanceAddressFixedIPAddress].
+	// This field is from variant [FixedAddress].
 	SubnetID string `json:"subnet_id"`
-	// This field is from variant [InstanceAddressFixedIPAddress].
+	// This field is from variant [FixedAddress].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
 		Addr          resp.Field
@@ -1485,17 +1596,17 @@ type InstanceAddressUnion struct {
 	} `json:"-"`
 }
 
-func (u InstanceAddressUnion) AsFloatingIPAddress() (v InstanceAddressFloatingIPAddress) {
+func (u InstanceAddressUnion) AsFloatingIPAddress() (v FloatingAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InstanceAddressUnion) AsFixedIPAddressShort() (v InstanceAddressFixedIPAddressShort) {
+func (u InstanceAddressUnion) AsFixedIPAddressShort() (v FixedAddressShort) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InstanceAddressUnion) AsFixedIPAddress() (v InstanceAddressFixedIPAddress) {
+func (u InstanceAddressUnion) AsFixedIPAddress() (v FixedAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1504,97 +1615,6 @@ func (u InstanceAddressUnion) AsFixedIPAddress() (v InstanceAddressFixedIPAddres
 func (u InstanceAddressUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *InstanceAddressUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/InstanceSerializer/properties/addresses/additionalProperties/items/anyOf/0'
-// "$.components.schemas.InstanceSerializer.properties.addresses.additionalProperties.items.anyOf[0]"
-type InstanceAddressFloatingIPAddress struct {
-	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/addr'
-	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.addr"
-	Addr string `json:"addr,required"`
-	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/type'
-	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.type"
-	Type constant.Floating `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Addr        resp.Field
-		Type        resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InstanceAddressFloatingIPAddress) RawJSON() string { return r.JSON.raw }
-func (r *InstanceAddressFloatingIPAddress) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/InstanceSerializer/properties/addresses/additionalProperties/items/anyOf/1'
-// "$.components.schemas.InstanceSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
-type InstanceAddressFixedIPAddressShort struct {
-	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/addr'
-	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.addr"
-	Addr string `json:"addr,required"`
-	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.interface_name.anyOf[0]"
-	InterfaceName string `json:"interface_name,required"`
-	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/type'
-	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.type"
-	Type constant.Fixed `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Addr          resp.Field
-		InterfaceName resp.Field
-		Type          resp.Field
-		ExtraFields   map[string]resp.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InstanceAddressFixedIPAddressShort) RawJSON() string { return r.JSON.raw }
-func (r *InstanceAddressFixedIPAddressShort) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/InstanceSerializer/properties/addresses/additionalProperties/items/anyOf/2'
-// "$.components.schemas.InstanceSerializer.properties.addresses.additionalProperties.items.anyOf[2]"
-type InstanceAddressFixedIPAddress struct {
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/addr'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.addr"
-	Addr string `json:"addr,required"`
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.interface_name.anyOf[0]"
-	InterfaceName string `json:"interface_name,required"`
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_id'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_id"
-	SubnetID string `json:"subnet_id,required"`
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_name'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_name"
-	SubnetName string `json:"subnet_name,required"`
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/type'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.type"
-	Type constant.Fixed `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Addr          resp.Field
-		InterfaceName resp.Field
-		SubnetID      resp.Field
-		SubnetName    resp.Field
-		Type          resp.Field
-		ExtraFields   map[string]resp.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InstanceAddressFixedIPAddress) RawJSON() string { return r.JSON.raw }
-func (r *InstanceAddressFixedIPAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2996,6 +3016,31 @@ const (
 	ProvisioningStatusPendingUpdate ProvisioningStatus = "PENDING_UPDATE"
 )
 
+// '#/components/schemas/RouteOutSerializer'
+// "$.components.schemas.RouteOutSerializer"
+type Route struct {
+	// '#/components/schemas/RouteOutSerializer/properties/destination'
+	// "$.components.schemas.RouteOutSerializer.properties.destination"
+	Destination string `json:"destination,required" format:"ipvanynetwork"`
+	// '#/components/schemas/RouteOutSerializer/properties/nexthop'
+	// "$.components.schemas.RouteOutSerializer.properties.nexthop"
+	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Destination resp.Field
+		Nexthop     resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Route) RawJSON() string { return r.JSON.raw }
+func (r *Route) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // '#/components/schemas/SubnetSerializer' "$.components.schemas.SubnetSerializer"
 type Subnet struct {
 	// '#/components/schemas/SubnetSerializer/properties/cidr'
@@ -3053,7 +3098,7 @@ type Subnet struct {
 	HasRouter bool `json:"has_router"`
 	// '#/components/schemas/SubnetSerializer/properties/host_routes/anyOf/0'
 	// "$.components.schemas.SubnetSerializer.properties.host_routes.anyOf[0]"
-	HostRoutes []SubnetHostRoute `json:"host_routes,nullable"`
+	HostRoutes []Route `json:"host_routes,nullable"`
 	// '#/components/schemas/SubnetSerializer/properties/task_id/anyOf/0'
 	// "$.components.schemas.SubnetSerializer.properties.task_id.anyOf[0]"
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
@@ -3091,31 +3136,6 @@ type Subnet struct {
 // Returns the unmodified JSON received from the API
 func (r Subnet) RawJSON() string { return r.JSON.raw }
 func (r *Subnet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/SubnetSerializer/properties/host_routes/anyOf/0/items'
-// "$.components.schemas.SubnetSerializer.properties.host_routes.anyOf[0].items"
-type SubnetHostRoute struct {
-	// '#/components/schemas/RouteOutSerializer/properties/destination'
-	// "$.components.schemas.RouteOutSerializer.properties.destination"
-	Destination string `json:"destination,required" format:"ipvanynetwork"`
-	// '#/components/schemas/RouteOutSerializer/properties/nexthop'
-	// "$.components.schemas.RouteOutSerializer.properties.nexthop"
-	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Destination resp.Field
-		Nexthop     resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SubnetHostRoute) RawJSON() string { return r.JSON.raw }
-func (r *SubnetHostRoute) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

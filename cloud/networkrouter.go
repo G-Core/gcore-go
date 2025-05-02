@@ -256,7 +256,7 @@ type Router struct {
 	RegionID int64 `json:"region_id,required"`
 	// '#/components/schemas/RouterSerializer/properties/routes'
 	// "$.components.schemas.RouterSerializer.properties.routes"
-	Routes []RouterRoute `json:"routes,required"`
+	Routes []Route `json:"routes,required"`
 	// '#/components/schemas/RouterSerializer/properties/status'
 	// "$.components.schemas.RouterSerializer.properties.status"
 	Status string `json:"status,required"`
@@ -355,31 +355,6 @@ type RouterInterfaceIPAssignment struct {
 // Returns the unmodified JSON received from the API
 func (r RouterInterfaceIPAssignment) RawJSON() string { return r.JSON.raw }
 func (r *RouterInterfaceIPAssignment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/RouterSerializer/properties/routes/items'
-// "$.components.schemas.RouterSerializer.properties.routes.items"
-type RouterRoute struct {
-	// '#/components/schemas/RouteOutSerializer/properties/destination'
-	// "$.components.schemas.RouteOutSerializer.properties.destination"
-	Destination string `json:"destination,required" format:"ipvanynetwork"`
-	// '#/components/schemas/RouteOutSerializer/properties/nexthop'
-	// "$.components.schemas.RouteOutSerializer.properties.nexthop"
-	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Destination resp.Field
-		Nexthop     resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RouterRoute) RawJSON() string { return r.JSON.raw }
-func (r *RouterRoute) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
