@@ -10,6 +10,8 @@ Params Types:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavor">BaremetalFlavor</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorList">BaremetalFlavorList</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Console">Console</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#DDOSProfile">DDOSProfile</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#DDOSProfileField">DDOSProfileField</a>
@@ -17,7 +19,10 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#DDOSProfileStatus">DDOSProfileStatus</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#DDOSProfileTemplate">DDOSProfileTemplate</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#DDOSProfileTemplateField">DDOSProfileTemplateField</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#FixedAddress">FixedAddress</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#FixedAddressShort">FixedAddressShort</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#FlavorHardwareDescription">FlavorHardwareDescription</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#FloatingAddress">FloatingAddress</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#FloatingIP">FloatingIP</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#FloatingIPStatus">FloatingIPStatus</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#GPUClusterServer">GPUClusterServer</a>
@@ -39,6 +44,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#NetworkInterface">NetworkInterface</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#NetworkInterfaceList">NetworkInterfaceList</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#ProvisioningStatus">ProvisioningStatus</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Route">Route</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Subnet">Subnet</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#Tag">Tag</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#TaskIDList">TaskIDList</a>
@@ -556,20 +562,17 @@ Methods:
 
 ### Flavors
 
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListResponse">BaremetalFlavorListResponse</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListSuitableResponse">BaremetalFlavorListSuitableResponse</a>
-
 Methods:
 
-- <code title="get /cloud/v1/bmflavors/{project_id}/{region_id}">client.Cloud.Baremetal.Flavors.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListParams">BaremetalFlavorListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListResponse">BaremetalFlavorListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="post /cloud/v1/bminstances/{project_id}/{region_id}/available_flavors">client.Cloud.Baremetal.Flavors.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorService.ListSuitable">ListSuitable</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListSuitableParams">BaremetalFlavorListSuitableParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListSuitableResponse">BaremetalFlavorListSuitableResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /cloud/v1/bmflavors/{project_id}/{region_id}">client.Cloud.Baremetal.Flavors.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListParams">BaremetalFlavorListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorList">BaremetalFlavorList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /cloud/v1/bminstances/{project_id}/{region_id}/available_flavors">client.Cloud.Baremetal.Flavors.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorService.ListSuitable">ListSuitable</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorListSuitableParams">BaremetalFlavorListSuitableParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFlavorList">BaremetalFlavorList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ### Servers
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFixedAddress">BaremetalFixedAddress</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalFloatingAddress">BaremetalFloatingAddress</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/gcore-go/cloud#BaremetalServer">BaremetalServer</a>
 
 Methods:

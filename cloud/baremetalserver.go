@@ -127,6 +127,68 @@ func (r *BaremetalServerService) Rebuild(ctx context.Context, serverID string, p
 	return
 }
 
+// '#/components/schemas/BareMetalFixedAddressSerializer'
+// "$.components.schemas.BareMetalFixedAddressSerializer"
+type BaremetalFixedAddress struct {
+	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/addr'
+	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.addr"
+	Addr string `json:"addr,required"`
+	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/interface_name/anyOf/0'
+	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.interface_name.anyOf[0]"
+	InterfaceName string `json:"interface_name,required"`
+	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/subnet_id'
+	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.subnet_id"
+	SubnetID string `json:"subnet_id,required"`
+	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/subnet_name'
+	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.subnet_name"
+	SubnetName string `json:"subnet_name,required"`
+	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/type'
+	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.type"
+	Type constant.Fixed `json:"type,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addr          resp.Field
+		InterfaceName resp.Field
+		SubnetID      resp.Field
+		SubnetName    resp.Field
+		Type          resp.Field
+		ExtraFields   map[string]resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BaremetalFixedAddress) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalFixedAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// '#/components/schemas/BareMetalFloatingAddressSerializer'
+// "$.components.schemas.BareMetalFloatingAddressSerializer"
+type BaremetalFloatingAddress struct {
+	// '#/components/schemas/BareMetalFloatingAddressSerializer/properties/addr'
+	// "$.components.schemas.BareMetalFloatingAddressSerializer.properties.addr"
+	Addr string `json:"addr,required"`
+	// '#/components/schemas/BareMetalFloatingAddressSerializer/properties/type'
+	// "$.components.schemas.BareMetalFloatingAddressSerializer.properties.type"
+	Type constant.Floating `json:"type,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Addr        resp.Field
+		Type        resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BaremetalFloatingAddress) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalFloatingAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // '#/components/schemas/BareMetalServerSerializer'
 // "$.components.schemas.BareMetalServerSerializer"
 type BaremetalServer struct {
@@ -233,18 +295,17 @@ func (r *BaremetalServer) UnmarshalJSON(data []byte) error {
 }
 
 // BaremetalServerAddressUnion contains all possible properties and values from
-// [BaremetalServerAddressFloatingIPAddress],
-// [BaremetalServerAddressFixedIPAddress].
+// [BaremetalFloatingAddress], [BaremetalFixedAddress].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type BaremetalServerAddressUnion struct {
 	Addr string `json:"addr"`
 	Type string `json:"type"`
-	// This field is from variant [BaremetalServerAddressFixedIPAddress].
+	// This field is from variant [BaremetalFixedAddress].
 	InterfaceName string `json:"interface_name"`
-	// This field is from variant [BaremetalServerAddressFixedIPAddress].
+	// This field is from variant [BaremetalFixedAddress].
 	SubnetID string `json:"subnet_id"`
-	// This field is from variant [BaremetalServerAddressFixedIPAddress].
+	// This field is from variant [BaremetalFixedAddress].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
 		Addr          resp.Field
@@ -256,12 +317,12 @@ type BaremetalServerAddressUnion struct {
 	} `json:"-"`
 }
 
-func (u BaremetalServerAddressUnion) AsFloatingIPAddress() (v BaremetalServerAddressFloatingIPAddress) {
+func (u BaremetalServerAddressUnion) AsFloatingIPAddress() (v BaremetalFloatingAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u BaremetalServerAddressUnion) AsFixedIPAddress() (v BaremetalServerAddressFixedIPAddress) {
+func (u BaremetalServerAddressUnion) AsFixedIPAddress() (v BaremetalFixedAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -270,68 +331,6 @@ func (u BaremetalServerAddressUnion) AsFixedIPAddress() (v BaremetalServerAddres
 func (u BaremetalServerAddressUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *BaremetalServerAddressUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/BareMetalServerSerializer/properties/addresses/additionalProperties/items/anyOf/0'
-// "$.components.schemas.BareMetalServerSerializer.properties.addresses.additionalProperties.items.anyOf[0]"
-type BaremetalServerAddressFloatingIPAddress struct {
-	// '#/components/schemas/BareMetalFloatingAddressSerializer/properties/addr'
-	// "$.components.schemas.BareMetalFloatingAddressSerializer.properties.addr"
-	Addr string `json:"addr,required"`
-	// '#/components/schemas/BareMetalFloatingAddressSerializer/properties/type'
-	// "$.components.schemas.BareMetalFloatingAddressSerializer.properties.type"
-	Type constant.Floating `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Addr        resp.Field
-		Type        resp.Field
-		ExtraFields map[string]resp.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BaremetalServerAddressFloatingIPAddress) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalServerAddressFloatingIPAddress) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// '#/components/schemas/BareMetalServerSerializer/properties/addresses/additionalProperties/items/anyOf/1'
-// "$.components.schemas.BareMetalServerSerializer.properties.addresses.additionalProperties.items.anyOf[1]"
-type BaremetalServerAddressFixedIPAddress struct {
-	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/addr'
-	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.addr"
-	Addr string `json:"addr,required"`
-	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.interface_name.anyOf[0]"
-	InterfaceName string `json:"interface_name,required"`
-	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/subnet_id'
-	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.subnet_id"
-	SubnetID string `json:"subnet_id,required"`
-	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/subnet_name'
-	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.subnet_name"
-	SubnetName string `json:"subnet_name,required"`
-	// '#/components/schemas/BareMetalFixedAddressSerializer/properties/type'
-	// "$.components.schemas.BareMetalFixedAddressSerializer.properties.type"
-	Type constant.Fixed `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
-	JSON struct {
-		Addr          resp.Field
-		InterfaceName resp.Field
-		SubnetID      resp.Field
-		SubnetName    resp.Field
-		Type          resp.Field
-		ExtraFields   map[string]resp.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BaremetalServerAddressFixedIPAddress) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalServerAddressFixedIPAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
