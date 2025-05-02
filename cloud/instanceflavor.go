@@ -108,47 +108,33 @@ func (r *InstanceFlavorService) ListSuitable(ctx context.Context, params Instanc
 	return
 }
 
-// '#/components/schemas/InstanceFlavorExtendedSerializer'
-// "$.components.schemas.InstanceFlavorExtendedSerializer"
+// Instances flavor schema
 type InstanceFlavor struct {
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/architecture'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.architecture"
+	// Flavor architecture type
 	Architecture string `json:"architecture,required"`
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/disabled'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.disabled"
+	// Disabled flavor flag
 	Disabled bool `json:"disabled,required"`
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/flavor_id'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.flavor_id"
+	// Flavor ID is the same as name
 	FlavorID string `json:"flavor_id,required"`
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/flavor_name'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.flavor_name"
+	// Flavor name
 	FlavorName string `json:"flavor_name,required"`
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/os_type'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.os_type"
+	// Flavor operating system
 	OsType string `json:"os_type,required"`
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/ram'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.ram"
+	// RAM size in MiB
 	Ram int64 `json:"ram,required"`
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/vcpus'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.vcpus"
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/capacity/anyOf/0'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.capacity.anyOf[0]"
+	// Number of available instances of given configuration
 	Capacity int64 `json:"capacity,nullable"`
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/currency_code/anyOf/0'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.currency_code.anyOf[0]"
+	// Currency code. Shown if the include_prices query parameter if set to true
 	CurrencyCode string `json:"currency_code,nullable"`
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/hardware_description'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.hardware_description"
+	// Additional hardware description
 	HardwareDescription map[string]string `json:"hardware_description"`
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/price_per_hour/anyOf/0'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.price_per_hour.anyOf[0]"
+	// Price per hour. Shown if the include_prices query parameter if set to true
 	PricePerHour float64 `json:"price_per_hour,nullable"`
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/price_per_month/anyOf/0'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.price_per_month.anyOf[0]"
+	// Price per month. Shown if the include_prices query parameter if set to true
 	PricePerMonth float64 `json:"price_per_month,nullable"`
-	// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/price_status/anyOf/0'
-	// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.price_status.anyOf[0]"
+	// Price status for the UI
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus InstanceFlavorPriceStatus `json:"price_status,nullable"`
@@ -179,8 +165,7 @@ func (r *InstanceFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceFlavorExtendedSerializer/properties/price_status/anyOf/0'
-// "$.components.schemas.InstanceFlavorExtendedSerializer.properties.price_status.anyOf[0]"
+// Price status for the UI
 type InstanceFlavorPriceStatus string
 
 const (
@@ -189,14 +174,10 @@ const (
 	InstanceFlavorPriceStatusShow  InstanceFlavorPriceStatus = "show"
 )
 
-// '#/components/schemas/InstanceFlavorExtendedCollectionSerializer'
-// "$.components.schemas.InstanceFlavorExtendedCollectionSerializer"
 type InstanceFlavorList struct {
-	// '#/components/schemas/InstanceFlavorExtendedCollectionSerializer/properties/count'
-	// "$.components.schemas.InstanceFlavorExtendedCollectionSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/InstanceFlavorExtendedCollectionSerializer/properties/results'
-	// "$.components.schemas.InstanceFlavorExtendedCollectionSerializer.properties.results"
+	// Objects
 	Results []InstanceFlavor `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -215,23 +196,15 @@ func (r *InstanceFlavorList) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceFlavorListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/flavors/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/flavors/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/flavors/{project_id}/{region_id}'].get.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Flag for filtering disabled flavors in the region. Defaults to true
 	Disabled param.Opt[bool] `query:"disabled,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/flavors/{project_id}/{region_id}'].get.parameters[3]"
+	// Set to true to exclude flavors dedicated to linux images. Default False
 	ExcludeLinux param.Opt[bool] `query:"exclude_linux,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/flavors/{project_id}/{region_id}'].get.parameters[4]"
+	// Set to true to exclude flavors dedicated to windows images. Default False
 	ExcludeWindows param.Opt[bool] `query:"exclude_windows,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fflavors%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/flavors/{project_id}/{region_id}'].get.parameters[5]"
+	// Set to true if the response should include flavor prices
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	paramObj
 }
@@ -250,14 +223,9 @@ func (r InstanceFlavorListParams) URLQuery() (v url.Values, err error) {
 }
 
 type InstanceFlavorListForResizeParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Favailable_flavors/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/available_flavors'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Favailable_flavors/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/available_flavors'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Favailable_flavors/get/parameters/3'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/available_flavors'].get.parameters[3]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Set to true if flavor listing should include flavor prices
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	paramObj
 }
@@ -278,17 +246,11 @@ func (r InstanceFlavorListForResizeParams) URLQuery() (v url.Values, err error) 
 }
 
 type InstanceFlavorListSuitableParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Favailable_flavors/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/available_flavors'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Favailable_flavors/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/available_flavors'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateInstanceVolumeListSchema/properties/volumes'
-	// "$.components.schemas.CreateInstanceVolumeListSchema.properties.volumes"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Volumes details. Non-important info such as names may be omitted.
 	Volumes []InstanceFlavorListSuitableParamsVolume `json:"volumes,omitzero,required"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Favailable_flavors/post/parameters/2'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/available_flavors'].post.parameters[2]"
+	// Set to true if flavor listing should include flavor prices
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	paramObj
 }
@@ -311,39 +273,29 @@ func (r InstanceFlavorListSuitableParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// '#/components/schemas/CreateInstanceVolumeListSchema/properties/volumes/items'
-// "$.components.schemas.CreateInstanceVolumeListSchema.properties.volumes.items"
-//
 // The property Source is required.
 type InstanceFlavorListSuitableParamsVolume struct {
-	// '#/components/schemas/CheckFlavorVolumeSchema/properties/source'
-	// "$.components.schemas.CheckFlavorVolumeSchema.properties.source"
+	// Volume source
 	//
 	// Any of "apptemplate", "existing-volume", "image", "new-volume", "snapshot".
-	Source string `json:"source,omitzero,required"`
-	// '#/components/schemas/CheckFlavorVolumeSchema/properties/name'
-	// "$.components.schemas.CheckFlavorVolumeSchema.properties.name"
-	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/CheckFlavorVolumeSchema/properties/apptemplate_id'
-	// "$.components.schemas.CheckFlavorVolumeSchema.properties.apptemplate_id"
+	Source string            `json:"source,omitzero,required"`
+	Name   param.Opt[string] `json:"name,omitzero"`
+	// App template ID. Mandatory if volume is created from marketplace template
 	ApptemplateID param.Opt[string] `json:"apptemplate_id,omitzero"`
-	// '#/components/schemas/CheckFlavorVolumeSchema/properties/boot_index'
-	// "$.components.schemas.CheckFlavorVolumeSchema.properties.boot_index"
+	// 0 should be set for primary boot device Unique positive values for other
+	// bootable devices.Negative - boot prohibited
 	BootIndex param.Opt[int64] `json:"boot_index,omitzero"`
-	// '#/components/schemas/CheckFlavorVolumeSchema/properties/image_id'
-	// "$.components.schemas.CheckFlavorVolumeSchema.properties.image_id"
+	// Image ID. Mandatory if volume is created from image
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
-	// '#/components/schemas/CheckFlavorVolumeSchema/properties/size'
-	// "$.components.schemas.CheckFlavorVolumeSchema.properties.size"
+	// Volume size. Must be specified when source is 'new-volume' or 'image'. If
+	// specified for source 'snapshot' or 'existing-volume', value must be equal to
+	// respective snapshot or volume size
 	Size param.Opt[int64] `json:"size,omitzero"`
-	// '#/components/schemas/CheckFlavorVolumeSchema/properties/snapshot_id'
-	// "$.components.schemas.CheckFlavorVolumeSchema.properties.snapshot_id"
+	// Volume snapshot ID. Mandatory if volume is created from a snapshot
 	SnapshotID param.Opt[string] `json:"snapshot_id,omitzero"`
-	// '#/components/schemas/CheckFlavorVolumeSchema/properties/volume_id'
-	// "$.components.schemas.CheckFlavorVolumeSchema.properties.volume_id"
+	// Volume ID. Mandatory if volume is pre-existing volume
 	VolumeID param.Opt[string] `json:"volume_id,omitzero"`
-	// '#/components/schemas/CheckFlavorVolumeSchema/properties/type_name'
-	// "$.components.schemas.CheckFlavorVolumeSchema.properties.type_name"
+	// One of 'standard', 'ssd_hiiops', 'ssd_local', 'ssd_lowlatency', 'cold', 'ultra'
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`

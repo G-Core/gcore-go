@@ -130,29 +130,21 @@ func (r *PlacementGroupService) Get(ctx context.Context, groupID string, query P
 	return
 }
 
-// '#/components/schemas/ServerGroupSerializer'
-// "$.components.schemas.ServerGroupSerializer"
 type PlacementGroup struct {
-	// '#/components/schemas/ServerGroupSerializer/properties/instances'
-	// "$.components.schemas.ServerGroupSerializer.properties.instances"
+	// The list of instances in this server group.
 	Instances []PlacementGroupInstance `json:"instances,required"`
-	// '#/components/schemas/ServerGroupSerializer/properties/name'
-	// "$.components.schemas.ServerGroupSerializer.properties.name"
+	// The name of the server group.
 	Name string `json:"name,required"`
-	// '#/components/schemas/ServerGroupSerializer/properties/policy'
-	// "$.components.schemas.ServerGroupSerializer.properties.policy"
+	// The server group policy. Options are: anti-affinity, affinity, or
+	// soft-anti-affinity.
 	Policy string `json:"policy,required"`
-	// '#/components/schemas/ServerGroupSerializer/properties/project_id'
-	// "$.components.schemas.ServerGroupSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/ServerGroupSerializer/properties/region'
-	// "$.components.schemas.ServerGroupSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/ServerGroupSerializer/properties/region_id'
-	// "$.components.schemas.ServerGroupSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/ServerGroupSerializer/properties/servergroup_id'
-	// "$.components.schemas.ServerGroupSerializer.properties.servergroup_id"
+	// The ID of the server group.
 	ServergroupID string `json:"servergroup_id,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -175,14 +167,10 @@ func (r *PlacementGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ServerGroupSerializer/properties/instances/items'
-// "$.components.schemas.ServerGroupSerializer.properties.instances.items"
 type PlacementGroupInstance struct {
-	// '#/components/schemas/InstanceBriefSerializer/properties/instance_id'
-	// "$.components.schemas.InstanceBriefSerializer.properties.instance_id"
+	// The ID of the instance, corresponding to the attribute 'id'.
 	InstanceID string `json:"instance_id,required"`
-	// '#/components/schemas/InstanceBriefSerializer/properties/instance_name'
-	// "$.components.schemas.InstanceBriefSerializer.properties.instance_name"
+	// The name of the instance, corresponding to the attribute 'name'.
 	InstanceName string `json:"instance_name,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -200,14 +188,10 @@ func (r *PlacementGroupInstance) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ServerGroupSerializerList'
-// "$.components.schemas.ServerGroupSerializerList"
 type PlacementGroupList struct {
-	// '#/components/schemas/ServerGroupSerializerList/properties/count'
-	// "$.components.schemas.ServerGroupSerializerList.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/ServerGroupSerializerList/properties/results'
-	// "$.components.schemas.ServerGroupSerializerList.properties.results"
+	// Objects
 	Results []PlacementGroup `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -226,17 +210,11 @@ func (r *PlacementGroupList) UnmarshalJSON(data []byte) error {
 }
 
 type PlacementGroupNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fservergroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/servergroups/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fservergroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/servergroups/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateServerGroupSerializer/properties/name'
-	// "$.components.schemas.CreateServerGroupSerializer.properties.name"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// The name of the server group.
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateServerGroupSerializer/properties/policy'
-	// "$.components.schemas.CreateServerGroupSerializer.properties.policy"
+	// The server group policy.
 	//
 	// Any of "affinity", "anti-affinity", "soft-anti-affinity".
 	Policy PlacementGroupNewParamsPolicy `json:"policy,omitzero,required"`
@@ -252,8 +230,7 @@ func (r PlacementGroupNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateServerGroupSerializer/properties/policy'
-// "$.components.schemas.CreateServerGroupSerializer.properties.policy"
+// The server group policy.
 type PlacementGroupNewParamsPolicy string
 
 const (
@@ -263,12 +240,8 @@ const (
 )
 
 type PlacementGroupListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fservergroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/servergroups/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fservergroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/servergroups/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -277,12 +250,8 @@ type PlacementGroupListParams struct {
 func (f PlacementGroupListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type PlacementGroupDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fservergroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bgroup_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/servergroups/{project_id}/{region_id}/{group_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fservergroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bgroup_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/servergroups/{project_id}/{region_id}/{group_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -291,12 +260,8 @@ type PlacementGroupDeleteParams struct {
 func (f PlacementGroupDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type PlacementGroupGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fservergroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bgroup_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/servergroups/{project_id}/{region_id}/{group_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fservergroups%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bgroup_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/servergroups/{project_id}/{region_id}/{group_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 

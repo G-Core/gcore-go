@@ -39,11 +39,8 @@ func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption)
 	return
 }
 
-// '#/components/schemas/IPRangesSerializer'
-// "$.components.schemas.IPRangesSerializer"
 type IPRanges struct {
-	// '#/components/schemas/IPRangesSerializer/properties/ranges'
-	// "$.components.schemas.IPRangesSerializer.properties.ranges"
+	// IP ranges list
 	Ranges []string `json:"ranges,required" format:"ipv4interface"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.

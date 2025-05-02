@@ -153,39 +153,39 @@ func (r *SecretService) UploadTlsCertificate(ctx context.Context, params SecretU
 	return
 }
 
-// '#/components/schemas/SecretSerializer' "$.components.schemas.SecretSerializer"
 type Secret struct {
-	// '#/components/schemas/SecretSerializer/properties/id'
-	// "$.components.schemas.SecretSerializer.properties.id"
+	// Secret uuid
 	ID string `json:"id,required"`
-	// '#/components/schemas/SecretSerializer/properties/name'
-	// "$.components.schemas.SecretSerializer.properties.name"
+	// Secret name
 	Name string `json:"name,required"`
-	// '#/components/schemas/SecretSerializer/properties/secret_type'
-	// "$.components.schemas.SecretSerializer.properties.secret_type"
+	// Secret type, base64 encoded. symmetric - Used for storing byte arrays such as
+	// keys suitable for symmetric encryption; public - Used for storing the public key
+	// of an asymmetric keypair; private - Used for storing the private key of an
+	// asymmetric keypair; passphrase - Used for storing plain text passphrases;
+	// certificate - Used for storing cryptographic certificates such as X.509
+	// certificates; opaque - Used for backwards compatibility with previous versions
+	// of the API
 	//
 	// Any of "certificate", "opaque", "passphrase", "private", "public", "symmetric".
 	SecretType SecretSecretType `json:"secret_type,required"`
-	// '#/components/schemas/SecretSerializer/properties/status'
-	// "$.components.schemas.SecretSerializer.properties.status"
+	// Status
 	Status string `json:"status,required"`
-	// '#/components/schemas/SecretSerializer/properties/algorithm/anyOf/0'
-	// "$.components.schemas.SecretSerializer.properties.algorithm.anyOf[0]"
+	// Metadata provided by a user or system for informational purposes. Defaults to
+	// None
 	Algorithm string `json:"algorithm,nullable"`
-	// '#/components/schemas/SecretSerializer/properties/bit_length/anyOf/0'
-	// "$.components.schemas.SecretSerializer.properties.bit_length.anyOf[0]"
+	// Metadata provided by a user or system for informational purposes. Value must be
+	// greater than zero. Defaults to None
 	BitLength int64 `json:"bit_length,nullable"`
-	// '#/components/schemas/SecretSerializer/properties/content_types/anyOf/0'
-	// "$.components.schemas.SecretSerializer.properties.content_types.anyOf[0]"
+	// Describes the content-types that can be used to retrieve the payload. The
+	// content-type used with symmetric secrets is application/octet-stream
 	ContentTypes map[string]string `json:"content_types,nullable"`
-	// '#/components/schemas/SecretSerializer/properties/created/anyOf/0'
-	// "$.components.schemas.SecretSerializer.properties.created.anyOf[0]"
+	// Datetime when the secret was created. The format is 2020-01-01T12:00:00+00:00
 	Created time.Time `json:"created,nullable" format:"date-time"`
-	// '#/components/schemas/SecretSerializer/properties/expiration/anyOf/0'
-	// "$.components.schemas.SecretSerializer.properties.expiration.anyOf[0]"
+	// Datetime when the secret will expire. The format is 2020-01-01T12:00:00+00:00.
+	// Defaults to None
 	Expiration time.Time `json:"expiration,nullable" format:"date-time"`
-	// '#/components/schemas/SecretSerializer/properties/mode/anyOf/0'
-	// "$.components.schemas.SecretSerializer.properties.mode.anyOf[0]"
+	// Metadata provided by a user or system for informational purposes. Defaults to
+	// None
 	Mode string `json:"mode,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -211,8 +211,13 @@ func (r *Secret) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/SecretSerializer/properties/secret_type'
-// "$.components.schemas.SecretSerializer.properties.secret_type"
+// Secret type, base64 encoded. symmetric - Used for storing byte arrays such as
+// keys suitable for symmetric encryption; public - Used for storing the public key
+// of an asymmetric keypair; private - Used for storing the private key of an
+// asymmetric keypair; passphrase - Used for storing plain text passphrases;
+// certificate - Used for storing cryptographic certificates such as X.509
+// certificates; opaque - Used for backwards compatibility with previous versions
+// of the API
 type SecretSecretType string
 
 const (
@@ -224,14 +229,10 @@ const (
 	SecretSecretTypeSymmetric   SecretSecretType = "symmetric"
 )
 
-// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/responses/200/content/application%2Fjson/schema'
-// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}'].get.responses[200].content['application/json'].schema"
 type SecretListResponse struct {
-	// '#/components/schemas/SecretSerializerList/properties/count'
-	// "$.components.schemas.SecretSerializerList.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/SecretSerializerList/properties/results'
-	// "$.components.schemas.SecretSerializerList.properties.results"
+	// Objects
 	Results []Secret `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -250,42 +251,42 @@ func (r *SecretListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type SecretNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateSecretSerializer/properties/name'
-	// "$.components.schemas.CreateSecretSerializer.properties.name"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Secret name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateSecretSerializer/properties/payload'
-	// "$.components.schemas.CreateSecretSerializer.properties.payload"
+	// Secret payload. For HTTPS-terminated load balancing, provide base64 encoded
+	// conents of a PKCS12 file. The PKCS12 file is the combined TLS certificate, key,
+	// and intermediate certificate chain obtained from an external certificate
+	// authority. The file can be created via openssl, e.g.'openssl pkcs12 -export
+	// -inkey server.key -in server.crt -certfile ca-chain.crt -passout pass: -out
+	// server.p12'The key and certificate should be PEM-encoded, and the intermediate
+	// certificate chain should be multiple PEM-encoded certs concatenated together
 	Payload string `json:"payload,required" format:"password"`
-	// '#/components/schemas/CreateSecretSerializer/properties/payload_content_encoding'
-	// "$.components.schemas.CreateSecretSerializer.properties.payload_content_encoding"
+	// The encoding used for the payload to be able to include it in the JSON request.
+	// Currently only base64 is supported
 	//
 	// Any of "base64".
 	PayloadContentEncoding SecretNewParamsPayloadContentEncoding `json:"payload_content_encoding,omitzero,required"`
-	// '#/components/schemas/CreateSecretSerializer/properties/payload_content_type'
-	// "$.components.schemas.CreateSecretSerializer.properties.payload_content_type"
+	// The media type for the content of the payload
 	PayloadContentType string `json:"payload_content_type,required"`
-	// '#/components/schemas/CreateSecretSerializer/properties/secret_type'
-	// "$.components.schemas.CreateSecretSerializer.properties.secret_type"
+	// Secret type. symmetric - Used for storing byte arrays such as keys suitable for
+	// symmetric encryption; public - Used for storing the public key of an asymmetric
+	// keypair; private - Used for storing the private key of an asymmetric keypair;
+	// passphrase - Used for storing plain text passphrases; certificate - Used for
+	// storing cryptographic certificates such as X.509 certificates; opaque - Used for
+	// backwards compatibility with previous versions of the API
 	//
 	// Any of "certificate", "opaque", "passphrase", "private", "public", "symmetric".
 	SecretType SecretNewParamsSecretType `json:"secret_type,omitzero,required"`
-	// '#/components/schemas/CreateSecretSerializer/properties/algorithm/anyOf/0'
-	// "$.components.schemas.CreateSecretSerializer.properties.algorithm.anyOf[0]"
+	// Metadata provided by a user or system for informational purposes.
 	Algorithm param.Opt[string] `json:"algorithm,omitzero"`
-	// '#/components/schemas/CreateSecretSerializer/properties/bit_length/anyOf/0'
-	// "$.components.schemas.CreateSecretSerializer.properties.bit_length.anyOf[0]"
+	// Metadata provided by a user or system for informational purposes. Value must be
+	// greater than zero.
 	BitLength param.Opt[int64] `json:"bit_length,omitzero"`
-	// '#/components/schemas/CreateSecretSerializer/properties/expiration/anyOf/0'
-	// "$.components.schemas.CreateSecretSerializer.properties.expiration.anyOf[0]"
+	// Datetime when the secret will expire.
 	Expiration param.Opt[string] `json:"expiration,omitzero"`
-	// '#/components/schemas/CreateSecretSerializer/properties/mode/anyOf/0'
-	// "$.components.schemas.CreateSecretSerializer.properties.mode.anyOf[0]"
+	// Metadata provided by a user or system for informational purposes.
 	Mode param.Opt[string] `json:"mode,omitzero"`
 	paramObj
 }
@@ -299,16 +300,20 @@ func (r SecretNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateSecretSerializer/properties/payload_content_encoding'
-// "$.components.schemas.CreateSecretSerializer.properties.payload_content_encoding"
+// The encoding used for the payload to be able to include it in the JSON request.
+// Currently only base64 is supported
 type SecretNewParamsPayloadContentEncoding string
 
 const (
 	SecretNewParamsPayloadContentEncodingBase64 SecretNewParamsPayloadContentEncoding = "base64"
 )
 
-// '#/components/schemas/CreateSecretSerializer/properties/secret_type'
-// "$.components.schemas.CreateSecretSerializer.properties.secret_type"
+// Secret type. symmetric - Used for storing byte arrays such as keys suitable for
+// symmetric encryption; public - Used for storing the public key of an asymmetric
+// keypair; private - Used for storing the private key of an asymmetric keypair;
+// passphrase - Used for storing plain text passphrases; certificate - Used for
+// storing cryptographic certificates such as X.509 certificates; opaque - Used for
+// backwards compatibility with previous versions of the API
 type SecretNewParamsSecretType string
 
 const (
@@ -321,12 +326,8 @@ const (
 )
 
 type SecretListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -335,12 +336,8 @@ type SecretListParams struct {
 func (f SecretListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type SecretDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsecret_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}/{secret_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsecret_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}/{secret_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -349,12 +346,8 @@ type SecretDeleteParams struct {
 func (f SecretDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type SecretGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsecret_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}/{secret_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bsecret_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/secrets/{project_id}/{region_id}/{secret_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -363,20 +356,13 @@ type SecretGetParams struct {
 func (f SecretGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type SecretUploadTlsCertificateParams struct {
-	// '#/paths/%2Fcloud%2Fv2%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v2/secrets/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fsecrets%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v2/secrets/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateSecretSerializerV2/properties/name'
-	// "$.components.schemas.CreateSecretSerializerV2.properties.name"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Secret name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateSecretSerializerV2/properties/payload'
-	// "$.components.schemas.CreateSecretSerializerV2.properties.payload"
+	// Secret payload.
 	Payload SecretUploadTlsCertificateParamsPayload `json:"payload,omitzero,required"`
-	// '#/components/schemas/CreateSecretSerializerV2/properties/expiration/anyOf/0'
-	// "$.components.schemas.CreateSecretSerializerV2.properties.expiration.anyOf[0]"
+	// Datetime when the secret will expire. Defaults to None
 	Expiration param.Opt[time.Time] `json:"expiration,omitzero" format:"date-time"`
 	paramObj
 }
@@ -390,19 +376,15 @@ func (r SecretUploadTlsCertificateParams) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateSecretSerializerV2/properties/payload'
-// "$.components.schemas.CreateSecretSerializerV2.properties.payload"
+// Secret payload.
 //
 // The properties Certificate, CertificateChain, PrivateKey are required.
 type SecretUploadTlsCertificateParamsPayload struct {
-	// '#/components/schemas/CreateSecretPayloadSerializer/properties/certificate'
-	// "$.components.schemas.CreateSecretPayloadSerializer.properties.certificate"
+	// SSL certificate in PEM format.
 	Certificate string `json:"certificate,required" format:"password"`
-	// '#/components/schemas/CreateSecretPayloadSerializer/properties/certificate_chain'
-	// "$.components.schemas.CreateSecretPayloadSerializer.properties.certificate_chain"
+	// SSL certificate chain of intermediates and root certificates in PEM format.
 	CertificateChain string `json:"certificate_chain,required" format:"password"`
-	// '#/components/schemas/CreateSecretPayloadSerializer/properties/private_key'
-	// "$.components.schemas.CreateSecretPayloadSerializer.properties.private_key"
+	// SSL private key in PEM format.
 	PrivateKey string `json:"private_key,required" format:"password"`
 	paramObj
 }

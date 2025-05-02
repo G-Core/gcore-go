@@ -59,17 +59,11 @@ func (r *LoadBalancerMetricService) List(ctx context.Context, loadbalancerID str
 }
 
 type LoadBalancerMetricListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D%2Fmetrics/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}/metrics'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Floadbalancers%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bloadbalancer_id%7D%2Fmetrics/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/loadbalancers/{project_id}/{region_id}/{loadbalancer_id}/metrics'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/LoadbalancerMetricsRequestSerializer/properties/time_interval'
-	// "$.components.schemas.LoadbalancerMetricsRequestSerializer.properties.time_interval"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Time interval
 	TimeInterval int64 `json:"time_interval,required"`
-	// '#/components/schemas/LoadbalancerMetricsRequestSerializer/properties/time_unit'
-	// "$.components.schemas.LoadbalancerMetricsRequestSerializer.properties.time_unit"
+	// Time interval unit
 	//
 	// Any of "day", "hour".
 	TimeUnit InstanceMetricsTimeUnit `json:"time_unit,omitzero,required"`

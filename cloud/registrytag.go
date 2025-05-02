@@ -68,21 +68,11 @@ func (r *RegistryTagService) Delete(ctx context.Context, tagName string, body Re
 }
 
 type RegistryTagDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts%2F%7Bdigest%7D%2Ftags%2F%7Btag_name%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts/{digest}/tags/{tag_name}']['delete'].parameters[0].schema"
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts%2F%7Bdigest%7D%2Ftags%2F%7Btag_name%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts/{digest}/tags/{tag_name}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts%2F%7Bdigest%7D%2Ftags%2F%7Btag_name%7D/delete/parameters/2/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts/{digest}/tags/{tag_name}']['delete'].parameters[2].schema"
-	RegistryID int64 `path:"registry_id,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts%2F%7Bdigest%7D%2Ftags%2F%7Btag_name%7D/delete/parameters/3/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts/{digest}/tags/{tag_name}']['delete'].parameters[3].schema"
-	RepositoryName string `path:"repository_name,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Frepositories%2F%7Brepository_name%7D%2Fartifacts%2F%7Bdigest%7D%2Ftags%2F%7Btag_name%7D/delete/parameters/4/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/repositories/{repository_name}/artifacts/{digest}/tags/{tag_name}']['delete'].parameters[4].schema"
-	Digest string `path:"digest,required" json:"-"`
+	ProjectID      param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID       param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegistryID     int64            `path:"registry_id,required" json:"-"`
+	RepositoryName string           `path:"repository_name,required" json:"-"`
+	Digest         string           `path:"digest,required" json:"-"`
 	paramObj
 }
 

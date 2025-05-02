@@ -177,23 +177,19 @@ func (r *NetworkService) Get(ctx context.Context, networkID string, query Networ
 }
 
 type NetworkNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateNetworkSerializer/properties/name'
-	// "$.components.schemas.CreateNetworkSerializer.properties.name"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Network name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateNetworkSerializer/properties/create_router'
-	// "$.components.schemas.CreateNetworkSerializer.properties.create_router"
+	// Defaults to True
 	CreateRouter param.Opt[bool] `json:"create_router,omitzero"`
-	// '#/components/schemas/CreateNetworkSerializer/properties/tags'
-	// "$.components.schemas.CreateNetworkSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
-	// '#/components/schemas/CreateNetworkSerializer/properties/type'
-	// "$.components.schemas.CreateNetworkSerializer.properties.type"
+	// vlan or vxlan network type is allowed. Default value is vxlan
 	//
 	// Any of "vlan", "vxlan".
 	Type NetworkNewParamsType `json:"type,omitzero"`
@@ -209,8 +205,7 @@ func (r NetworkNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateNetworkSerializer/properties/type'
-// "$.components.schemas.CreateNetworkSerializer.properties.type"
+// vlan or vxlan network type is allowed. Default value is vxlan
 type NetworkNewParamsType string
 
 const (
@@ -219,14 +214,9 @@ const (
 )
 
 type NetworkUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bnetwork_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}/{network_id}'].patch.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bnetwork_id%7D/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}/{network_id}'].patch.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/NameSerializerPydantic/properties/name'
-	// "$.components.schemas.NameSerializerPydantic.properties.name"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Name.
 	Name string `json:"name,required"`
 	paramObj
 }
@@ -241,26 +231,19 @@ func (r NetworkUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type NetworkListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Limit the number of returned limit request entities.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[3]"
+	// Offset value is used to exclude the first set of records from the result.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[4]"
+	// Order networks by fields and directions (name.asc). Default is `created_at.asc`.
 	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[6]"
+	// Filter by tag key-value pairs. Must be a valid JSON string. curl -G
+	// --data-urlencode "tag_key_value={"key": "value"}" --url
+	// "http://localhost:1111/v1/networks/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}'].get.parameters[5]"
+	// Filter by tag keys.
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
@@ -278,12 +261,8 @@ func (r NetworkListParams) URLQuery() (v url.Values, err error) {
 }
 
 type NetworkDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bnetwork_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}/{network_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bnetwork_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}/{network_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -292,12 +271,8 @@ type NetworkDeleteParams struct {
 func (f NetworkDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type NetworkGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bnetwork_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}/{network_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fnetworks%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bnetwork_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/networks/{project_id}/{region_id}/{network_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 

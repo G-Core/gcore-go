@@ -152,71 +152,50 @@ func (r *ReservedFixedIPService) Get(ctx context.Context, portID string, query R
 	return
 }
 
-// '#/components/schemas/ReservedFixedIPSerializer'
-// "$.components.schemas.ReservedFixedIPSerializer"
 type ReservedFixedIP struct {
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/allowed_address_pairs'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.allowed_address_pairs"
+	// Group of subnet masks and/or IP addresses that share the current IP as VIP
 	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs,required"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/attachments'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.attachments"
+	// Reserved fixed IP attachment entities
 	Attachments []ReservedFixedIPAttachment `json:"attachments,required"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/created_at'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.created_at"
+	// Datetime when the reserved fixed IP was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/is_external'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.is_external"
+	// If reserved fixed IP belongs to a public network
 	IsExternal bool `json:"is_external,required"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/is_vip'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.is_vip"
+	// If reserved fixed IP is a VIP
 	IsVip bool `json:"is_vip,required"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/name'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.name"
+	// Reserved fixed IP name
 	Name string `json:"name,required"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/network'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.network"
+	// Network details
 	Network Network `json:"network,required"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/network_id'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.network_id"
+	// ID of the network the port is attached to
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/port_id'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.port_id"
+	// ID of the port underlying the reserved fixed IP
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/region'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/region_id'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/reservation'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.reservation"
+	// Reserved fixed IP status with resource type and ID it is attached to
 	Reservation ReservedFixedIPReservation `json:"reservation,required"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/status'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.status"
+	// Underlying port status
 	Status string `json:"status,required"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/updated_at'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.updated_at"
+	// Datetime when the reserved fixed IP was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/fixed_ip_address/anyOf/0'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.fixed_ip_address.anyOf[0]"
+	// IPv4 address of the reserved fixed IP
 	FixedIPAddress string `json:"fixed_ip_address,nullable" format:"ipv4"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/fixed_ipv6_address/anyOf/0'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.fixed_ipv6_address.anyOf[0]"
+	// IPv6 address of the reserved fixed IP
 	FixedIpv6Address string `json:"fixed_ipv6_address,nullable" format:"ipv6"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/project_id/anyOf/0'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.project_id.anyOf[0]"
+	// Project ID
 	ProjectID int64 `json:"project_id,nullable"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/subnet_id/anyOf/0'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.subnet_id.anyOf[0]"
+	// ID of the subnet that owns the IP address
 	SubnetID string `json:"subnet_id,nullable" format:"uuid4"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/subnet_v6_id/anyOf/0'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.subnet_v6_id.anyOf[0]"
+	// ID of the subnet that owns the IPv6 address
 	SubnetV6ID string `json:"subnet_v6_id,nullable" format:"uuid4"`
-	// '#/components/schemas/ReservedFixedIPSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.ReservedFixedIPSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -253,14 +232,10 @@ func (r *ReservedFixedIP) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ReservedFixedIPSerializer/properties/attachments/items'
-// "$.components.schemas.ReservedFixedIPSerializer.properties.attachments.items"
 type ReservedFixedIPAttachment struct {
-	// '#/components/schemas/AttachmentSerializer/properties/resource_id/anyOf/0'
-	// "$.components.schemas.AttachmentSerializer.properties.resource_id.anyOf[0]"
+	// Resource ID
 	ResourceID string `json:"resource_id,nullable"`
-	// '#/components/schemas/AttachmentSerializer/properties/resource_type/anyOf/0'
-	// "$.components.schemas.AttachmentSerializer.properties.resource_type.anyOf[0]"
+	// Resource type
 	ResourceType string `json:"resource_type,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -278,17 +253,13 @@ func (r *ReservedFixedIPAttachment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ReservedFixedIPSerializer/properties/reservation'
-// "$.components.schemas.ReservedFixedIPSerializer.properties.reservation"
+// Reserved fixed IP status with resource type and ID it is attached to
 type ReservedFixedIPReservation struct {
-	// '#/components/schemas/ReservationSerializer/properties/resource_id/anyOf/0'
-	// "$.components.schemas.ReservationSerializer.properties.resource_id.anyOf[0]"
+	// ID of the instance or load balancer the IP is attached to
 	ResourceID string `json:"resource_id,nullable" format:"uuid4"`
-	// '#/components/schemas/ReservationSerializer/properties/resource_type/anyOf/0'
-	// "$.components.schemas.ReservationSerializer.properties.resource_type.anyOf[0]"
+	// Resource type of the resource the IP is attached to
 	ResourceType string `json:"resource_type,nullable"`
-	// '#/components/schemas/ReservationSerializer/properties/status/anyOf/0'
-	// "$.components.schemas.ReservationSerializer.properties.status.anyOf[0]"
+	// IP reservation status
 	Status string `json:"status,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -308,36 +279,22 @@ func (r *ReservedFixedIPReservation) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 
 	//
 	// Request body variants
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/0'
-	// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[0]"
 	OfExternal *ReservedFixedIPNewParamsBodyExternal `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/1'
-	// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[1]"
 	OfSubnet *ReservedFixedIPNewParamsBodySubnet `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/2'
-	// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[2]"
 	OfAnySubnet *ReservedFixedIPNewParamsBodyAnySubnet `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/3'
-	// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[3]"
 	OfIPAddress *ReservedFixedIPNewParamsBodyIPAddress `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/4'
-	// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[4]"
 	OfPort *ReservedFixedIPNewParamsBodyPort `json:",inline"`
 
 	paramObj
@@ -355,21 +312,15 @@ func (u ReservedFixedIPNewParams) MarshalJSON() ([]byte, error) {
 		u.OfPort)
 }
 
-// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/0'
-// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[0]"
-//
 // The property Type is required.
 type ReservedFixedIPNewParamsBodyExternal struct {
-	// '#/components/schemas/NewReservedFixedIpExternalSerializer/properties/is_vip'
-	// "$.components.schemas.NewReservedFixedIpExternalSerializer.properties.is_vip"
+	// If reserved fixed IP is a VIP
 	IsVip param.Opt[bool] `json:"is_vip,omitzero"`
-	// '#/components/schemas/NewReservedFixedIpExternalSerializer/properties/ip_family/anyOf/0'
-	// "$.components.schemas.NewReservedFixedIpExternalSerializer.properties.ip_family.anyOf[0]"
+	// Which subnets should be selected: IPv4, IPv6 or use dual stack.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// '#/components/schemas/NewReservedFixedIpExternalSerializer/properties/type'
-	// "$.components.schemas.NewReservedFixedIpExternalSerializer.properties.type"
+	// Must be 'external'
 	//
 	// This field can be elided, and will marshal its zero value as "external".
 	Type constant.External `json:"type,required"`
@@ -386,19 +337,13 @@ func (r ReservedFixedIPNewParamsBodyExternal) MarshalJSON() (data []byte, err er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/1'
-// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[1]"
-//
 // The properties SubnetID, Type are required.
 type ReservedFixedIPNewParamsBodySubnet struct {
-	// '#/components/schemas/NewReservedFixedIpSpecificSubnetSerializer/properties/subnet_id'
-	// "$.components.schemas.NewReservedFixedIpSpecificSubnetSerializer.properties.subnet_id"
+	// Reserved fixed IP will be allocated in this subnet
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// '#/components/schemas/NewReservedFixedIpSpecificSubnetSerializer/properties/is_vip'
-	// "$.components.schemas.NewReservedFixedIpSpecificSubnetSerializer.properties.is_vip"
+	// If reserved fixed IP is a VIP
 	IsVip param.Opt[bool] `json:"is_vip,omitzero"`
-	// '#/components/schemas/NewReservedFixedIpSpecificSubnetSerializer/properties/type'
-	// "$.components.schemas.NewReservedFixedIpSpecificSubnetSerializer.properties.type"
+	// Must be 'subnet'.
 	//
 	// This field can be elided, and will marshal its zero value as "subnet".
 	Type constant.Subnet `json:"type,required"`
@@ -415,24 +360,17 @@ func (r ReservedFixedIPNewParamsBodySubnet) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/2'
-// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[2]"
-//
 // The properties NetworkID, Type are required.
 type ReservedFixedIPNewParamsBodyAnySubnet struct {
-	// '#/components/schemas/NewReservedFixedIpAnySubnetSerializer/properties/network_id'
-	// "$.components.schemas.NewReservedFixedIpAnySubnetSerializer.properties.network_id"
+	// Reserved fixed IP will be allocated in a subnet of this network
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/NewReservedFixedIpAnySubnetSerializer/properties/is_vip'
-	// "$.components.schemas.NewReservedFixedIpAnySubnetSerializer.properties.is_vip"
+	// If reserved fixed IP is a VIP
 	IsVip param.Opt[bool] `json:"is_vip,omitzero"`
-	// '#/components/schemas/NewReservedFixedIpAnySubnetSerializer/properties/ip_family/anyOf/0'
-	// "$.components.schemas.NewReservedFixedIpAnySubnetSerializer.properties.ip_family.anyOf[0]"
+	// Which subnets should be selected: IPv4, IPv6 or use dual stack.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// '#/components/schemas/NewReservedFixedIpAnySubnetSerializer/properties/type'
-	// "$.components.schemas.NewReservedFixedIpAnySubnetSerializer.properties.type"
+	// Must be 'any_subnet'.
 	//
 	// This field can be elided, and will marshal its zero value as "any_subnet".
 	Type constant.AnySubnet `json:"type,required"`
@@ -449,22 +387,15 @@ func (r ReservedFixedIPNewParamsBodyAnySubnet) MarshalJSON() (data []byte, err e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/3'
-// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[3]"
-//
 // The properties IPAddress, NetworkID, Type are required.
 type ReservedFixedIPNewParamsBodyIPAddress struct {
-	// '#/components/schemas/NewReservedFixedIpSpecificIpAddressSerializer/properties/ip_address'
-	// "$.components.schemas.NewReservedFixedIpSpecificIpAddressSerializer.properties.ip_address"
+	// Reserved fixed IP will be allocated the given IP address
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/NewReservedFixedIpSpecificIpAddressSerializer/properties/network_id'
-	// "$.components.schemas.NewReservedFixedIpSpecificIpAddressSerializer.properties.network_id"
+	// Reserved fixed IP will be allocated in a subnet of this network
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/NewReservedFixedIpSpecificIpAddressSerializer/properties/is_vip'
-	// "$.components.schemas.NewReservedFixedIpSpecificIpAddressSerializer.properties.is_vip"
+	// If reserved fixed IP is a VIP
 	IsVip param.Opt[bool] `json:"is_vip,omitzero"`
-	// '#/components/schemas/NewReservedFixedIpSpecificIpAddressSerializer/properties/type'
-	// "$.components.schemas.NewReservedFixedIpSpecificIpAddressSerializer.properties.type"
+	// Must be 'ip_address'.
 	//
 	// This field can be elided, and will marshal its zero value as "ip_address".
 	Type constant.IPAddress `json:"type,required"`
@@ -481,16 +412,12 @@ func (r ReservedFixedIPNewParamsBodyIPAddress) MarshalJSON() (data []byte, err e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateReservedFixedIpSerializer/anyOf/4'
-// "$.components.schemas.CreateReservedFixedIpSerializer.anyOf[4]"
-//
 // The properties PortID, Type are required.
 type ReservedFixedIPNewParamsBodyPort struct {
-	// '#/components/schemas/NewReservedFixedIpSpecificPortSerializer/properties/port_id'
-	// "$.components.schemas.NewReservedFixedIpSpecificPortSerializer.properties.port_id"
+	// Port ID to make a reserved fixed IP (for example, `vip_port_id` of the Load
+	// Balancer entity).
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// '#/components/schemas/NewReservedFixedIpSpecificPortSerializer/properties/type'
-	// "$.components.schemas.NewReservedFixedIpSpecificPortSerializer.properties.type"
+	// Must be 'port'.
 	//
 	// This field can be elided, and will marshal its zero value as "port".
 	Type constant.Port `json:"type,required"`
@@ -506,38 +433,28 @@ func (r ReservedFixedIPNewParamsBodyPort) MarshalJSON() (data []byte, err error)
 }
 
 type ReservedFixedIPListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].get.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Set to true if the response should only list IP addresses that are not attached
+	// to any instance
 	AvailableOnly param.Opt[bool] `query:"available_only,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].get.parameters[3]"
+	// Filter IPs by device ID it is attached to
 	DeviceID param.Opt[string] `query:"device_id,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].get.parameters[4]"
+	// Set to true if the response should only list public IP addresses
 	ExternalOnly param.Opt[bool] `query:"external_only,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].get.parameters[5]"
+	// Set to true if the response should only list private IP addresses
 	InternalOnly param.Opt[bool] `query:"internal_only,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].get.parameters[6]"
+	// An IPv4 address to filter results by. Regular expression allowed
 	IPAddress param.Opt[string] `query:"ip_address,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/7'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].get.parameters[7]"
+	// Limit the number of returned IPs
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/8'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].get.parameters[8]"
+	// Offset value is used to exclude the first set of records from the result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/9'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].get.parameters[9]"
+	// Ordering reserved fixed IP list result by name, status, updated_at, created_at
+	// or fixed_ip_address fields of the reserved fixed IP and directions (status.asc),
+	// default is "fixed_ip_address.asc"
 	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/10'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}'].get.parameters[10]"
+	// Set to true if the response should only list VIPs
 	VipOnly param.Opt[bool] `query:"vip_only,omitzero" json:"-"`
 	paramObj
 }
@@ -556,12 +473,8 @@ func (r ReservedFixedIPListParams) URLQuery() (v url.Values, err error) {
 }
 
 type ReservedFixedIPDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -570,12 +483,8 @@ type ReservedFixedIPDeleteParams struct {
 func (f ReservedFixedIPDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type ReservedFixedIPGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 

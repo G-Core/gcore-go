@@ -164,23 +164,16 @@ func (r *ReservedFixedIPVipService) UpdateConnectedPorts(ctx context.Context, po
 	return
 }
 
-// '#/components/schemas/VIPAttachCandidateSerializer'
-// "$.components.schemas.VIPAttachCandidateSerializer"
 type CandidatePort struct {
-	// '#/components/schemas/VIPAttachCandidateSerializer/properties/instance_id'
-	// "$.components.schemas.VIPAttachCandidateSerializer.properties.instance_id"
+	// ID of the instance that owns the port
 	InstanceID string `json:"instance_id,required" format:"uuid4"`
-	// '#/components/schemas/VIPAttachCandidateSerializer/properties/instance_name'
-	// "$.components.schemas.VIPAttachCandidateSerializer.properties.instance_name"
+	// Name of the instance that owns the port
 	InstanceName string `json:"instance_name,required"`
-	// '#/components/schemas/VIPAttachCandidateSerializer/properties/ip_assignments'
-	// "$.components.schemas.VIPAttachCandidateSerializer.properties.ip_assignments"
+	// IP addresses assigned to this port
 	IPAssignments []IPWithSubnet `json:"ip_assignments,required"`
-	// '#/components/schemas/VIPAttachCandidateSerializer/properties/network'
-	// "$.components.schemas.VIPAttachCandidateSerializer.properties.network"
+	// Network details
 	Network Network `json:"network,required"`
-	// '#/components/schemas/VIPAttachCandidateSerializer/properties/port_id'
-	// "$.components.schemas.VIPAttachCandidateSerializer.properties.port_id"
+	// Port ID that shares VIP
 	PortID string `json:"port_id,required" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -201,14 +194,10 @@ func (r *CandidatePort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/VIPAttachCandidateSerializerList'
-// "$.components.schemas.VIPAttachCandidateSerializerList"
 type CandidatePortList struct {
-	// '#/components/schemas/VIPAttachCandidateSerializerList/properties/count'
-	// "$.components.schemas.VIPAttachCandidateSerializerList.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/VIPAttachCandidateSerializerList/properties/results'
-	// "$.components.schemas.VIPAttachCandidateSerializerList.properties.results"
+	// Objects
 	Results []CandidatePort `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -226,23 +215,16 @@ func (r *CandidatePortList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ConnectedDevicesVIPSerializer'
-// "$.components.schemas.ConnectedDevicesVIPSerializer"
 type ConnectedPort struct {
-	// '#/components/schemas/ConnectedDevicesVIPSerializer/properties/instance_id'
-	// "$.components.schemas.ConnectedDevicesVIPSerializer.properties.instance_id"
+	// ID of the instance that owns the port
 	InstanceID string `json:"instance_id,required" format:"uuid4"`
-	// '#/components/schemas/ConnectedDevicesVIPSerializer/properties/instance_name'
-	// "$.components.schemas.ConnectedDevicesVIPSerializer.properties.instance_name"
+	// Name of the instance that owns the port
 	InstanceName string `json:"instance_name,required"`
-	// '#/components/schemas/ConnectedDevicesVIPSerializer/properties/ip_assignments'
-	// "$.components.schemas.ConnectedDevicesVIPSerializer.properties.ip_assignments"
+	// IP addresses assigned to this port
 	IPAssignments []IPWithSubnet `json:"ip_assignments,required"`
-	// '#/components/schemas/ConnectedDevicesVIPSerializer/properties/network'
-	// "$.components.schemas.ConnectedDevicesVIPSerializer.properties.network"
+	// Network details
 	Network Network `json:"network,required"`
-	// '#/components/schemas/ConnectedDevicesVIPSerializer/properties/port_id'
-	// "$.components.schemas.ConnectedDevicesVIPSerializer.properties.port_id"
+	// Port ID that shares VIP
 	PortID string `json:"port_id,required" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -263,14 +245,10 @@ func (r *ConnectedPort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ConnectedDevicesVIPSerializerList'
-// "$.components.schemas.ConnectedDevicesVIPSerializerList"
 type ConnectedPortList struct {
-	// '#/components/schemas/ConnectedDevicesVIPSerializerList/properties/count'
-	// "$.components.schemas.ConnectedDevicesVIPSerializerList.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/ConnectedDevicesVIPSerializerList/properties/results'
-	// "$.components.schemas.ConnectedDevicesVIPSerializerList.properties.results"
+	// Objects
 	Results []ConnectedPort `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -288,17 +266,12 @@ func (r *ConnectedPortList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/PortIpWithSubnetSerializer'
-// "$.components.schemas.PortIpWithSubnetSerializer"
 type IPWithSubnet struct {
-	// '#/components/schemas/PortIpWithSubnetSerializer/properties/ip_address'
-	// "$.components.schemas.PortIpWithSubnetSerializer.properties.ip_address"
+	// IP address
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/PortIpWithSubnetSerializer/properties/subnet'
-	// "$.components.schemas.PortIpWithSubnetSerializer.properties.subnet"
+	// Subnet details
 	Subnet Subnet `json:"subnet,required"`
-	// '#/components/schemas/PortIpWithSubnetSerializer/properties/subnet_id'
-	// "$.components.schemas.PortIpWithSubnetSerializer.properties.subnet_id"
+	// ID of the subnet that allocated the IP
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -318,12 +291,8 @@ func (r *IPWithSubnet) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPVipListCandidatePortsParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Favailable_devices/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/available_devices'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Favailable_devices/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/available_devices'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -334,12 +303,8 @@ func (f ReservedFixedIPVipListCandidatePortsParams) IsPresent() bool {
 }
 
 type ReservedFixedIPVipListConnectedPortsParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fconnected_devices/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/connected_devices'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fconnected_devices/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/connected_devices'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -350,14 +315,9 @@ func (f ReservedFixedIPVipListConnectedPortsParams) IsPresent() bool {
 }
 
 type ReservedFixedIPVipReplaceConnectedPortsParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fconnected_devices/put/parameters/0/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/connected_devices'].put.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fconnected_devices/put/parameters/1/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/connected_devices'].put.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/PortIDsForVIPSerializer/properties/port_ids'
-	// "$.components.schemas.PortIDsForVIPSerializer.properties.port_ids"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// List of port IDs that will share one VIP
 	PortIDs []string `json:"port_ids,omitzero" format:"uuid4"`
 	paramObj
 }
@@ -374,14 +334,9 @@ func (r ReservedFixedIPVipReplaceConnectedPortsParams) MarshalJSON() (data []byt
 }
 
 type ReservedFixedIPVipToggleParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}'].patch.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}'].patch.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/PatchReservedFixedIPSerializer/properties/is_vip'
-	// "$.components.schemas.PatchReservedFixedIPSerializer.properties.is_vip"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// If reserved fixed IP should be a VIP
 	IsVip bool `json:"is_vip,required"`
 	paramObj
 }
@@ -396,14 +351,9 @@ func (r ReservedFixedIPVipToggleParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ReservedFixedIPVipUpdateConnectedPortsParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fconnected_devices/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/connected_devices'].patch.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freserved_fixed_ips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bport_id%7D%2Fconnected_devices/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/reserved_fixed_ips/{project_id}/{region_id}/{port_id}/connected_devices'].patch.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/PortIDsForVIPSerializer/properties/port_ids'
-	// "$.components.schemas.PortIDsForVIPSerializer.properties.port_ids"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// List of port IDs that will share one VIP
 	PortIDs []string `json:"port_ids,omitzero" format:"uuid4"`
 	paramObj
 }

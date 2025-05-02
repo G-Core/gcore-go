@@ -265,74 +265,61 @@ func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID strin
 	return
 }
 
-// '#/components/schemas/AIClusterSerializer'
-// "$.components.schemas.AIClusterSerializer"
 type GPUBaremetalCluster struct {
-	// '#/components/schemas/AIClusterSerializer/properties/cluster_id'
-	// "$.components.schemas.AIClusterSerializer.properties.cluster_id"
+	// GPU Cluster ID
 	ClusterID string `json:"cluster_id,required" format:"uuid4"`
-	// '#/components/schemas/AIClusterSerializer/properties/cluster_name'
-	// "$.components.schemas.AIClusterSerializer.properties.cluster_name"
+	// GPU Cluster Name
 	ClusterName string `json:"cluster_name,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/cluster_status'
-	// "$.components.schemas.AIClusterSerializer.properties.cluster_status"
+	// GPU Cluster status
 	//
 	// Any of "ACTIVE", "ERROR", "PENDING", "SUSPENDED".
 	ClusterStatus GPUBaremetalClusterClusterStatus `json:"cluster_status,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/created_at/anyOf/0'
-	// "$.components.schemas.AIClusterSerializer.properties.created_at.anyOf[0]"
+	// Datetime when the cluster was created
 	CreatedAt string `json:"created_at,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/creator_task_id'
-	// "$.components.schemas.AIClusterSerializer.properties.creator_task_id"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
-	// '#/components/schemas/AIClusterSerializer/properties/flavor'
-	// "$.components.schemas.AIClusterSerializer.properties.flavor"
+	// Flavor ID is the same as the name
 	Flavor string `json:"flavor,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/image_id'
-	// "$.components.schemas.AIClusterSerializer.properties.image_id"
+	// Image ID
 	ImageID string `json:"image_id,required" format:"uuid4"`
-	// '#/components/schemas/AIClusterSerializer/properties/image_name'
-	// "$.components.schemas.AIClusterSerializer.properties.image_name"
+	// Image name
 	ImageName string `json:"image_name,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/interfaces/anyOf/0'
-	// "$.components.schemas.AIClusterSerializer.properties.interfaces.anyOf[0]"
+	// Networks managed by user and associated with the cluster
 	Interfaces []GPUBaremetalClusterInterface `json:"interfaces,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/password/anyOf/0'
-	// "$.components.schemas.AIClusterSerializer.properties.password.anyOf[0]"
+	// A password for a bare metal server. This parameter is used to set a password for
+	// the "Admin" user on a Windows instance, a default user or a new user on a Linux
+	// instance
 	Password string `json:"password,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/project_id'
-	// "$.components.schemas.AIClusterSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/region'
-	// "$.components.schemas.AIClusterSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/region_id'
-	// "$.components.schemas.AIClusterSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/servers'
-	// "$.components.schemas.AIClusterSerializer.properties.servers"
+	// GPU cluster servers
 	Servers []GPUClusterServer `json:"servers,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/ssh_key_name/anyOf/0'
-	// "$.components.schemas.AIClusterSerializer.properties.ssh_key_name.anyOf[0]"
+	// Keypair name to inject into new cluster(s)
 	SSHKeyName string `json:"ssh_key_name,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/tags'
-	// "$.components.schemas.AIClusterSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.AIClusterSerializer.properties.task_id.anyOf[0]"
+	// Task ID associated with the cluster
 	TaskID string `json:"task_id,required" format:"uuid4"`
-	// '#/components/schemas/AIClusterSerializer/properties/task_status'
-	// "$.components.schemas.AIClusterSerializer.properties.task_status"
+	// Task status
 	//
 	// Any of "CLUSTER_CLEAN_UP", "CLUSTER_RESIZE", "CLUSTER_RESUME",
 	// "CLUSTER_SUSPEND", "ERROR", "FINISHED", "IPU_SERVERS", "NETWORK",
 	// "POPLAR_SERVERS", "POST_DEPLOY_SETUP", "VIPU_CONTROLLER".
 	TaskStatus GPUBaremetalClusterTaskStatus `json:"task_status,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/user_data/anyOf/0'
-	// "$.components.schemas.AIClusterSerializer.properties.user_data.anyOf[0]"
+	// String in base64 format. Must not be passed together with 'username' or
+	// 'password'. Examples of the user_data:
+	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData string `json:"user_data,required"`
-	// '#/components/schemas/AIClusterSerializer/properties/username/anyOf/0'
-	// "$.components.schemas.AIClusterSerializer.properties.username.anyOf[0]"
+	// A name of a new user in the Linux instance. It may be passed with a 'password'
+	// parameter
 	Username string `json:"username,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -368,8 +355,7 @@ func (r *GPUBaremetalCluster) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/AIClusterSerializer/properties/cluster_status'
-// "$.components.schemas.AIClusterSerializer.properties.cluster_status"
+// GPU Cluster status
 type GPUBaremetalClusterClusterStatus string
 
 const (
@@ -379,20 +365,14 @@ const (
 	GPUBaremetalClusterClusterStatusSuspended GPUBaremetalClusterClusterStatus = "SUSPENDED"
 )
 
-// '#/components/schemas/AIClusterSerializer/properties/interfaces/anyOf/0/items'
-// "$.components.schemas.AIClusterSerializer.properties.interfaces.anyOf[0].items"
 type GPUBaremetalClusterInterface struct {
-	// '#/components/schemas/AIClusterNetworkSerializer/properties/network_id'
-	// "$.components.schemas.AIClusterNetworkSerializer.properties.network_id"
+	// Network ID
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/AIClusterNetworkSerializer/properties/port_id'
-	// "$.components.schemas.AIClusterNetworkSerializer.properties.port_id"
+	// Network ID the subnet belongs to. Port will be plugged in this network
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// '#/components/schemas/AIClusterNetworkSerializer/properties/subnet_id'
-	// "$.components.schemas.AIClusterNetworkSerializer.properties.subnet_id"
+	// Port is assigned to IP address from the subnet
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// '#/components/schemas/AIClusterNetworkSerializer/properties/type'
-	// "$.components.schemas.AIClusterNetworkSerializer.properties.type"
+	// Network type
 	Type string `json:"type,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -412,8 +392,7 @@ func (r *GPUBaremetalClusterInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/AIClusterSerializer/properties/task_status'
-// "$.components.schemas.AIClusterSerializer.properties.task_status"
+// Task status
 type GPUBaremetalClusterTaskStatus string
 
 const (
@@ -528,26 +507,18 @@ func (r *GPUBaremetalFlavorUnionHardwareProperties) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GpuBaremetalFlavorSerializer/anyOf/0'
-// "$.components.schemas.GpuBaremetalFlavorSerializer.anyOf[0]"
 type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice struct {
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/architecture/anyOf/0'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.architecture.anyOf[0]"
+	// Flavor architecture type
 	Architecture string `json:"architecture,required"`
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/capacity'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.capacity"
+	// Number of available instances of given flavor
 	Capacity int64 `json:"capacity,required"`
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/disabled'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.disabled"
+	// If the flavor is disabled, new resources cannot be created using this flavor.
 	Disabled bool `json:"disabled,required"`
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/hardware_description'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.hardware_description"
+	// Additional bare metal hardware description
 	HardwareDescription GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareDescription `json:"hardware_description,required"`
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/hardware_properties'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.hardware_properties"
+	// Additional bare metal hardware properties
 	HardwareProperties GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties `json:"hardware_properties,required"`
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/name'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.name"
+	// Flavor name
 	Name string `json:"name,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -569,23 +540,17 @@ func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice) UnmarshalJSON(d
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/hardware_description'
-// "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.hardware_description"
+// Additional bare metal hardware description
 type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareDescription struct {
-	// '#/components/schemas/GpuBaremetalFlavorHardwareDescriptionSerializer/properties/cpu'
-	// "$.components.schemas.GpuBaremetalFlavorHardwareDescriptionSerializer.properties.cpu"
+	// Human-readable CPU description
 	CPU string `json:"cpu,required"`
-	// '#/components/schemas/GpuBaremetalFlavorHardwareDescriptionSerializer/properties/disk'
-	// "$.components.schemas.GpuBaremetalFlavorHardwareDescriptionSerializer.properties.disk"
+	// Human-readable disk description
 	Disk string `json:"disk,required"`
-	// '#/components/schemas/GpuBaremetalFlavorHardwareDescriptionSerializer/properties/gpu'
-	// "$.components.schemas.GpuBaremetalFlavorHardwareDescriptionSerializer.properties.gpu"
+	// Human-readable GPU description
 	GPU string `json:"gpu,required"`
-	// '#/components/schemas/GpuBaremetalFlavorHardwareDescriptionSerializer/properties/network'
-	// "$.components.schemas.GpuBaremetalFlavorHardwareDescriptionSerializer.properties.network"
+	// Human-readable NIC description
 	Network string `json:"network,required"`
-	// '#/components/schemas/GpuBaremetalFlavorHardwareDescriptionSerializer/properties/ram'
-	// "$.components.schemas.GpuBaremetalFlavorHardwareDescriptionSerializer.properties.ram"
+	// Human-readable RAM description
 	Ram string `json:"ram,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -608,17 +573,13 @@ func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareDescripti
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GpuBaremetalFlavorSerializerWithoutPrice/properties/hardware_properties'
-// "$.components.schemas.GpuBaremetalFlavorSerializerWithoutPrice.properties.hardware_properties"
+// Additional bare metal hardware properties
 type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties struct {
-	// '#/components/schemas/GpuFlavorHardwareProperties/properties/gpu_count/anyOf/0'
-	// "$.components.schemas.GpuFlavorHardwareProperties.properties.gpu_count.anyOf[0]"
+	// The total count of available GPUs.
 	GPUCount int64 `json:"gpu_count,required"`
-	// '#/components/schemas/GpuFlavorHardwareProperties/properties/gpu_manufacturer/anyOf/0'
-	// "$.components.schemas.GpuFlavorHardwareProperties.properties.gpu_manufacturer.anyOf[0]"
+	// The manufacturer of the graphics processing GPU
 	GPUManufacturer string `json:"gpu_manufacturer,required"`
-	// '#/components/schemas/GpuFlavorHardwareProperties/properties/gpu_model/anyOf/0'
-	// "$.components.schemas.GpuFlavorHardwareProperties.properties.gpu_model.anyOf[0]"
+	// GPU model
 	GPUModel string `json:"gpu_model,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -639,29 +600,20 @@ func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwarePropertie
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GpuBaremetalFlavorSerializer/anyOf/1'
-// "$.components.schemas.GpuBaremetalFlavorSerializer.anyOf[1]"
 type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice struct {
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/architecture/anyOf/0'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.architecture.anyOf[0]"
+	// Flavor architecture type
 	Architecture string `json:"architecture,required"`
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/capacity'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.capacity"
+	// Number of available instances of given flavor
 	Capacity int64 `json:"capacity,required"`
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/disabled'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.disabled"
+	// If the flavor is disabled, new resources cannot be created using this flavor.
 	Disabled bool `json:"disabled,required"`
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/hardware_description'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.hardware_description"
+	// Additional virtual hardware description
 	HardwareDescription GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareDescription `json:"hardware_description,required"`
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/hardware_properties'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.hardware_properties"
+	// Additional bare metal hardware properties
 	HardwareProperties GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties `json:"hardware_properties,required"`
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/name'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.name"
+	// Flavor name
 	Name string `json:"name,required"`
-	// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/price'
-	// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.price"
+	// Flavor price
 	Price GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice `json:"price,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -684,23 +636,17 @@ func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice) UnmarshalJSON(data
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/hardware_description'
-// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.hardware_description"
+// Additional virtual hardware description
 type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareDescription struct {
-	// '#/components/schemas/GpuBaremetalFlavorHardwareDescriptionSerializer/properties/cpu'
-	// "$.components.schemas.GpuBaremetalFlavorHardwareDescriptionSerializer.properties.cpu"
+	// Human-readable CPU description
 	CPU string `json:"cpu,required"`
-	// '#/components/schemas/GpuBaremetalFlavorHardwareDescriptionSerializer/properties/disk'
-	// "$.components.schemas.GpuBaremetalFlavorHardwareDescriptionSerializer.properties.disk"
+	// Human-readable disk description
 	Disk string `json:"disk,required"`
-	// '#/components/schemas/GpuBaremetalFlavorHardwareDescriptionSerializer/properties/gpu'
-	// "$.components.schemas.GpuBaremetalFlavorHardwareDescriptionSerializer.properties.gpu"
+	// Human-readable GPU description
 	GPU string `json:"gpu,required"`
-	// '#/components/schemas/GpuBaremetalFlavorHardwareDescriptionSerializer/properties/network'
-	// "$.components.schemas.GpuBaremetalFlavorHardwareDescriptionSerializer.properties.network"
+	// Human-readable NIC description
 	Network string `json:"network,required"`
-	// '#/components/schemas/GpuBaremetalFlavorHardwareDescriptionSerializer/properties/ram'
-	// "$.components.schemas.GpuBaremetalFlavorHardwareDescriptionSerializer.properties.ram"
+	// Human-readable RAM description
 	Ram string `json:"ram,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -723,17 +669,13 @@ func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareDescription)
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/hardware_properties'
-// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.hardware_properties"
+// Additional bare metal hardware properties
 type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties struct {
-	// '#/components/schemas/GpuFlavorHardwareProperties/properties/gpu_count/anyOf/0'
-	// "$.components.schemas.GpuFlavorHardwareProperties.properties.gpu_count.anyOf[0]"
+	// The total count of available GPUs.
 	GPUCount int64 `json:"gpu_count,required"`
-	// '#/components/schemas/GpuFlavorHardwareProperties/properties/gpu_manufacturer/anyOf/0'
-	// "$.components.schemas.GpuFlavorHardwareProperties.properties.gpu_manufacturer.anyOf[0]"
+	// The manufacturer of the graphics processing GPU
 	GPUManufacturer string `json:"gpu_manufacturer,required"`
-	// '#/components/schemas/GpuFlavorHardwareProperties/properties/gpu_model/anyOf/0'
-	// "$.components.schemas.GpuFlavorHardwareProperties.properties.gpu_model.anyOf[0]"
+	// GPU model
 	GPUModel string `json:"gpu_model,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -754,20 +696,15 @@ func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GpuBaremetalFlavorSerializerWithPrices/properties/price'
-// "$.components.schemas.GpuBaremetalFlavorSerializerWithPrices.properties.price"
+// Flavor price
 type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice struct {
-	// '#/components/schemas/FlavorPrice/properties/currency_code/anyOf/0'
-	// "$.components.schemas.FlavorPrice.properties.currency_code.anyOf[0]"
+	// Currency code. Shown if the include_prices query parameter if set to true
 	CurrencyCode string `json:"currency_code,required"`
-	// '#/components/schemas/FlavorPrice/properties/price_per_hour/anyOf/0'
-	// "$.components.schemas.FlavorPrice.properties.price_per_hour.anyOf[0]"
+	// Price per hour. Shown if the include_prices query parameter if set to true
 	PricePerHour float64 `json:"price_per_hour,required"`
-	// '#/components/schemas/FlavorPrice/properties/price_per_month/anyOf/0'
-	// "$.components.schemas.FlavorPrice.properties.price_per_month.anyOf[0]"
+	// Price per month. Shown if the include_prices query parameter if set to true
 	PricePerMonth float64 `json:"price_per_month,required"`
-	// '#/components/schemas/FlavorPrice/properties/price_status/anyOf/0'
-	// "$.components.schemas.FlavorPrice.properties.price_status.anyOf[0]"
+	// Price status for the UI
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus string `json:"price_status,required"`
@@ -789,14 +726,10 @@ func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice) UnmarshalJSON
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ListGpuBaremetalFlavorSerializer'
-// "$.components.schemas.ListGpuBaremetalFlavorSerializer"
 type GPUBaremetalFlavorList struct {
-	// '#/components/schemas/ListGpuBaremetalFlavorSerializer/properties/count'
-	// "$.components.schemas.ListGpuBaremetalFlavorSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/ListGpuBaremetalFlavorSerializer/properties/results'
-	// "$.components.schemas.ListGpuBaremetalFlavorSerializer.properties.results"
+	// Objects
 	Results []GPUBaremetalFlavorUnion `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -815,41 +748,36 @@ func (r *GPUBaremetalFlavorList) UnmarshalJSON(data []byte) error {
 }
 
 type GPUBaremetalClusterNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/flavor'
-	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.flavor"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Flavor name
 	Flavor string `json:"flavor,required"`
-	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/image_id'
-	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.image_id"
+	// Image ID
 	ImageID string `json:"image_id,required" format:"uuid4"`
-	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/interfaces'
-	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.interfaces"
+	// Subnet IPs and floating IPs
 	Interfaces []GPUBaremetalClusterNewParamsInterfaceUnion `json:"interfaces,omitzero,required"`
-	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/name'
-	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.name"
+	// GPU Cluster name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/instances_count'
-	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.instances_count"
+	// Number of servers to create
 	InstancesCount param.Opt[int64] `json:"instances_count,omitzero"`
-	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/password'
-	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.password"
+	// A password for a bare metal server. This parameter is used to set a password for
+	// the "Admin" user on a Windows instance, a default user or a new user on a Linux
+	// instance
 	Password param.Opt[string] `json:"password,omitzero"`
-	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/ssh_key_name'
-	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.ssh_key_name"
+	// Specifies the name of the SSH keypair, created via the `/v1/ssh_keys` endpoint.
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
-	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/user_data'
-	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.user_data"
+	// String in base64 format. Must not be passed together with 'username' or
+	// 'password'. Examples of the user_data:
+	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData param.Opt[string] `json:"user_data,omitzero"`
-	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/username'
-	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.username"
+	// A name of a new user in the Linux instance. It may be passed with a 'password'
+	// parameter
 	Username param.Opt[string] `json:"username,omitzero"`
-	// '#/components/schemas/CreateAIClusterGPUSerializer/properties/tags'
-	// "$.components.schemas.CreateAIClusterGPUSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
@@ -867,17 +795,9 @@ func (r GPUBaremetalClusterNewParams) MarshalJSON() (data []byte, err error) {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type GPUBaremetalClusterNewParamsInterfaceUnion struct {
-	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/0'
-	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[0]"
-	OfExternal *GPUBaremetalClusterNewParamsInterfaceExternal `json:",omitzero,inline"`
-	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/1'
-	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[1]"
-	OfSubnet *GPUBaremetalClusterNewParamsInterfaceSubnet `json:",omitzero,inline"`
-	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/2'
-	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[2]"
-	OfAnySubnet *GPUBaremetalClusterNewParamsInterfaceAnySubnet `json:",omitzero,inline"`
-	// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/3'
-	// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[3]"
+	OfExternal        *GPUBaremetalClusterNewParamsInterfaceExternal        `json:",omitzero,inline"`
+	OfSubnet          *GPUBaremetalClusterNewParamsInterfaceSubnet          `json:",omitzero,inline"`
+	OfAnySubnet       *GPUBaremetalClusterNewParamsInterfaceAnySubnet       `json:",omitzero,inline"`
 	OfReservedFixedIP *GPUBaremetalClusterNewParamsInterfaceReservedFixedIP `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1114,27 +1034,23 @@ func init() {
 	)
 }
 
-// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/0'
-// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[0]"
+// Instance will be attached to default external network
 //
 // The property Type is required.
 type GPUBaremetalClusterNewParamsInterfaceExternal struct {
-	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/interface_name'
-	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.interface_name"
+	// Interface name. Defaults to `null` and is returned as `null` in the API response
+	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/port_group'
-	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.port_group"
+	// Applicable only to bare metal. Each group is added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/ip_family/anyOf/0'
-	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.ip_family.anyOf[0]"
+	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/security_groups'
-	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.security_groups"
+	// Applies only to instances and is ignored for bare metal. Specifies security
+	// group UUIDs to be applied to the instance network interface.
 	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup `json:"security_groups,omitzero"`
-	// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/type'
-	// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.type"
+	// A public IP address will be assigned to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "external".
 	Type constant.External `json:"type,required"`
@@ -1151,13 +1067,9 @@ func (r GPUBaremetalClusterNewParamsInterfaceExternal) MarshalJSON() (data []byt
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceExternalSerializerPydantic/properties/security_groups/items'
-// "$.components.schemas.NewInterfaceExternalSerializerPydantic.properties.security_groups.items"
-//
 // The property ID is required.
 type GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
-	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
+	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
 	paramObj
 }
@@ -1172,31 +1084,29 @@ func (r GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup) MarshalJSON(
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/1'
-// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[1]"
+// The instance will get an IP address from the selected network. If you choose to
+// add a floating IP, the instance will be reachable from the internet. Otherwise,
+// it will only have a private IP within the network.
 //
 // The properties NetworkID, SubnetID, Type are required.
 type GPUBaremetalClusterNewParamsInterfaceSubnet struct {
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/network_id'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.network_id"
+	// The network where the instance will be connected.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/subnet_id'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.subnet_id"
+	// The instance will get an IP address from this subnet.
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/interface_name'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.interface_name"
+	// Interface name. Defaults to `null` and is returned as `null` in the API response
+	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/port_group'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.port_group"
+	// Applicable only to bare metal. Each group is added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip"
+	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/security_groups'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.security_groups"
+	// Applies only to instances and is ignored for bare metal. Specifies security
+	// group UUIDs to be applied to the instance network interface.
 	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup `json:"security_groups,omitzero"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/type'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.type"
+	// The instance will get an IP address from the selected network. If you choose to
+	// add a floating IP, the instance will be reachable from the internet. Otherwise,
+	// it will only have a private IP within the network.
 	//
 	// This field can be elided, and will marshal its zero value as "subnet".
 	Type constant.Subnet `json:"type,required"`
@@ -1217,11 +1127,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceSubnet) MarshalJSON() (data []byte,
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion struct {
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-	OfNew *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew `json:",omitzero,inline"`
-	// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
-	// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
+	OfNew      *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew      `json:",omitzero,inline"`
 	OfExisting *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1284,14 +1190,13 @@ func NewGPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew() GPUBaremetalC
 	}
 }
 
-// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
-// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-//
 // This struct has a constant value, construct it with
 // [NewGPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew].
 type GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew struct {
-	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
+	// A new floating IP will be created and attached to the instance. A floating IP is
+	// a public IP that makes the instance accessible from the internet, even if it
+	// only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1306,16 +1211,15 @@ func (r GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
-// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
-//
 // The properties ExistingFloatingID, Source are required.
 type GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting struct {
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
+	// An existing available floating IP id must be specified if the source is set to
+	// `existing`
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.source"
+	// An existing available floating IP will be attached to the instance. A floating
+	// IP is a public IP that makes the instance accessible from the internet, even if
+	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
 	Source constant.Existing `json:"source,required"`
@@ -1332,13 +1236,9 @@ func (r GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting) MarshalJS
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceSpecificSubnetFipSerializerPydantic/properties/security_groups/items'
-// "$.components.schemas.NewInterfaceSpecificSubnetFipSerializerPydantic.properties.security_groups.items"
-//
 // The property ID is required.
 type GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
-	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
+	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
 	paramObj
 }
@@ -1353,36 +1253,27 @@ func (r GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup) MarshalJSON() 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/2'
-// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[2]"
-//
 // The properties NetworkID, Type are required.
 type GPUBaremetalClusterNewParamsInterfaceAnySubnet struct {
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/network_id'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.network_id"
+	// The network where the instance will be connected.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/interface_name'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.interface_name"
+	// Interface name. Defaults to `null` and is returned as `null` in the API response
+	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/ip_address'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.ip_address"
+	// You can specify a specific IP address from your subnet.
 	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipvanyaddress"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/port_group'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.port_group"
+	// Applicable only to bare metal. Each group is added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip"
+	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/ip_family/anyOf/0'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.ip_family.anyOf[0]"
+	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/security_groups'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.security_groups"
+	// Applies only to instances and is ignored for bare metal. Specifies security
+	// group UUIDs to be applied to the instance network interface.
 	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup `json:"security_groups,omitzero"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/type'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.type"
+	// Instance will be attached to a subnet with the largest count of free IPs.
 	//
 	// This field can be elided, and will marshal its zero value as "any_subnet".
 	Type constant.AnySubnet `json:"type,required"`
@@ -1403,11 +1294,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceAnySubnet) MarshalJSON() (data []by
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion struct {
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-	OfNew *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew `json:",omitzero,inline"`
-	// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
-	// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
+	OfNew      *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew      `json:",omitzero,inline"`
 	OfExisting *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1470,14 +1357,13 @@ func NewGPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew() GPUBaremet
 	}
 }
 
-// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/0'
-// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-//
 // This struct has a constant value, construct it with
 // [NewGPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew].
 type GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew struct {
-	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
+	// A new floating IP will be created and attached to the instance. A floating IP is
+	// a public IP that makes the instance accessible from the internet, even if it
+	// only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1492,16 +1378,15 @@ func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/floating_ip/anyOf/1'
-// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.floating_ip.anyOf[1]"
-//
 // The properties ExistingFloatingID, Source are required.
 type GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting struct {
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
+	// An existing available floating IP id must be specified if the source is set to
+	// `existing`
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.source"
+	// An existing available floating IP will be attached to the instance. A floating
+	// IP is a public IP that makes the instance accessible from the internet, even if
+	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
 	Source constant.Existing `json:"source,required"`
@@ -1518,13 +1403,9 @@ func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting) Marsha
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceAnySubnetFipSerializerPydantic/properties/security_groups/items'
-// "$.components.schemas.NewInterfaceAnySubnetFipSerializerPydantic.properties.security_groups.items"
-//
 // The property ID is required.
 type GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
-	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
+	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
 	paramObj
 }
@@ -1539,28 +1420,23 @@ func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup) MarshalJSON
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewVmInterfaceSerializersPydantic/anyOf/3'
-// "$.components.schemas.NewVmInterfaceSerializersPydantic.anyOf[3]"
-//
 // The properties PortID, Type are required.
 type GPUBaremetalClusterNewParamsInterfaceReservedFixedIP struct {
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/port_id'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.port_id"
+	// Network ID the subnet belongs to. Port will be plugged in this network.
 	PortID string `json:"port_id,required"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/interface_name'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.interface_name"
+	// Interface name. Defaults to `null` and is returned as `null` in the API response
+	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/port_group'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.port_group"
+	// Applicable only to bare metal. Each group is added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip"
+	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion `json:"floating_ip,omitzero"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/security_groups'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.security_groups"
+	// Applies only to instances and is ignored for bare metal. Specifies security
+	// group UUIDs to be applied to the instance network interface.
 	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup `json:"security_groups,omitzero"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/type'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.type"
+	// An existing available reserved fixed IP will be attached to the instance. If the
+	// reserved IP is not public and you choose to add a floating IP, the instance will
+	// be accessible from the internet.
 	//
 	// This field can be elided, and will marshal its zero value as
 	// "reserved_fixed_ip".
@@ -1582,11 +1458,7 @@ func (r GPUBaremetalClusterNewParamsInterfaceReservedFixedIP) MarshalJSON() (dat
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/0'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-	OfNew *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew `json:",omitzero,inline"`
-	// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/1'
-	// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[1]"
+	OfNew      *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew      `json:",omitzero,inline"`
 	OfExisting *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting `json:",omitzero,inline"`
 	paramUnion
 }
@@ -1649,14 +1521,13 @@ func NewGPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew() GPUB
 	}
 }
 
-// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/0'
-// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[0]"
-//
 // This struct has a constant value, construct it with
 // [NewGPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew].
 type GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
-	// '#/components/schemas/NewInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.NewInstanceFloatingIpInterfaceSerializer.properties.source"
+	// A new floating IP will be created and attached to the instance. A floating IP is
+	// a public IP that makes the instance accessible from the internet, even if it
+	// only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	Source constant.New `json:"source,required"`
 	paramObj
 }
@@ -1671,16 +1542,15 @@ func (r GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew) Marsh
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/floating_ip/anyOf/1'
-// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.floating_ip.anyOf[1]"
-//
 // The properties ExistingFloatingID, Source are required.
 type GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/existing_floating_id'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.existing_floating_id"
+	// An existing available floating IP id must be specified if the source is set to
+	// `existing`
 	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// '#/components/schemas/ExistingInstanceFloatingIpInterfaceSerializer/properties/source'
-	// "$.components.schemas.ExistingInstanceFloatingIpInterfaceSerializer.properties.source"
+	// An existing available floating IP will be attached to the instance. A floating
+	// IP is a public IP that makes the instance accessible from the internet, even if
+	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
+	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
 	Source constant.Existing `json:"source,required"`
@@ -1697,13 +1567,9 @@ func (r GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting) 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/NewInterfaceReservedFixedIpFipSerializerPydantic/properties/security_groups/items'
-// "$.components.schemas.NewInterfaceReservedFixedIpFipSerializerPydantic.properties.security_groups.items"
-//
 // The property ID is required.
 type GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup struct {
-	// '#/components/schemas/MandatoryIdSerializerPydantic/properties/id'
-	// "$.components.schemas.MandatoryIdSerializerPydantic.properties.id"
+	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
 	paramObj
 }
@@ -1719,17 +1585,11 @@ func (r GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup) Marsh
 }
 
 type GPUBaremetalClusterListParams struct {
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}'].get.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Limit the number of returned clusters
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}'].get.parameters[3]"
+	// Offset value is used to exclude the first set of records from the result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
@@ -1748,20 +1608,15 @@ func (r GPUBaremetalClusterListParams) URLQuery() (v url.Values, err error) {
 }
 
 type GPUBaremetalClusterDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}/{cluster_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}/{cluster_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D/delete/parameters/3'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}/{cluster_id}']['delete'].parameters[3]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// True if it is required to delete floating IPs assigned to the servers. Can't be
+	// used with floatings.
 	DeleteFloatings param.Opt[bool] `query:"delete_floatings,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D/delete/parameters/4'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}/{cluster_id}']['delete'].parameters[4]"
+	// Comma separated list of floating ids that should be deleted. Can't be used with
+	// delete_floatings.
 	Floatings param.Opt[string] `query:"floatings,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D/delete/parameters/5'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}/{cluster_id}']['delete'].parameters[5]"
+	// Comma separated list of port IDs to be deleted with the servers
 	ReservedFixedIPs param.Opt[string] `query:"reserved_fixed_ips,omitzero" json:"-"`
 	paramObj
 }
@@ -1780,12 +1635,8 @@ func (r GPUBaremetalClusterDeleteParams) URLQuery() (v url.Values, err error) {
 }
 
 type GPUBaremetalClusterGetParams struct {
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}/{cluster_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}/{cluster_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -1794,12 +1645,8 @@ type GPUBaremetalClusterGetParams struct {
 func (f GPUBaremetalClusterGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type GPUBaremetalClusterPowercycleAllServersParams struct {
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fpowercycle/post/parameters/0/schema'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}/{cluster_id}/powercycle'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fpowercycle/post/parameters/1/schema'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}/{cluster_id}/powercycle'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -1810,12 +1657,8 @@ func (f GPUBaremetalClusterPowercycleAllServersParams) IsPresent() bool {
 }
 
 type GPUBaremetalClusterRebootAllServersParams struct {
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Freboot/post/parameters/0/schema'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}/{cluster_id}/reboot'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv2%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Freboot/post/parameters/1/schema'
-	// "$.paths['/cloud/v2/ai/clusters/{project_id}/{region_id}/{cluster_id}/reboot'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -1826,20 +1669,14 @@ func (f GPUBaremetalClusterRebootAllServersParams) IsPresent() bool {
 }
 
 type GPUBaremetalClusterRebuildParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Frebuild/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/rebuild'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Frebuild/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/rebuild'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/RebuildClusterSerializer/properties/nodes'
-	// "$.components.schemas.RebuildClusterSerializer.properties.nodes"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// List of nodes uuids to be rebuild
 	Nodes []string `json:"nodes,omitzero,required"`
-	// '#/components/schemas/RebuildClusterSerializer/properties/image_id/anyOf/0'
-	// "$.components.schemas.RebuildClusterSerializer.properties.image_id.anyOf[0]"
+	// AI GPU image ID
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
-	// '#/components/schemas/RebuildClusterSerializer/properties/user_data/anyOf/0'
-	// "$.components.schemas.RebuildClusterSerializer.properties.user_data.anyOf[0]"
+	// String in base64 format.Examples of the user_data:
+	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	paramObj
 }
@@ -1854,14 +1691,9 @@ func (r GPUBaremetalClusterRebuildParams) MarshalJSON() (data []byte, err error)
 }
 
 type GPUBaremetalClusterResizeParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fresize/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/resize'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2Fgpu%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Fresize/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/ai/clusters/gpu/{project_id}/{region_id}/{cluster_id}/resize'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/ResizeAIClusterGPUSerializerV1/properties/instances_count'
-	// "$.components.schemas.ResizeAIClusterGPUSerializerV1.properties.instances_count"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Resized (total) number of instances
 	InstancesCount int64 `json:"instances_count,required"`
 	paramObj
 }

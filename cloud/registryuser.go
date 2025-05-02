@@ -169,26 +169,18 @@ func (r *RegistryUserService) RefreshSecret(ctx context.Context, userID int64, b
 	return
 }
 
-// '#/components/schemas/RegistryUserSerializer'
-// "$.components.schemas.RegistryUserSerializer"
 type RegistryUser struct {
-	// '#/components/schemas/RegistryUserSerializer/properties/id'
-	// "$.components.schemas.RegistryUserSerializer.properties.id"
+	// User ID
 	ID int64 `json:"id,required"`
-	// '#/components/schemas/RegistryUserSerializer/properties/created_at'
-	// "$.components.schemas.RegistryUserSerializer.properties.created_at"
+	// User creation date-time
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/RegistryUserSerializer/properties/duration'
-	// "$.components.schemas.RegistryUserSerializer.properties.duration"
+	// User account operating time, days
 	Duration int64 `json:"duration,required"`
-	// '#/components/schemas/RegistryUserSerializer/properties/expires_at'
-	// "$.components.schemas.RegistryUserSerializer.properties.expires_at"
+	// User operation end date-time
 	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
-	// '#/components/schemas/RegistryUserSerializer/properties/name'
-	// "$.components.schemas.RegistryUserSerializer.properties.name"
+	// User name
 	Name string `json:"name,required"`
-	// '#/components/schemas/RegistryUserSerializer/properties/read_only'
-	// "$.components.schemas.RegistryUserSerializer.properties.read_only"
+	// Read-only user
 	ReadOnly bool `json:"read_only"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -210,29 +202,20 @@ func (r *RegistryUser) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/RegistryUserCreateResponseSerializer'
-// "$.components.schemas.RegistryUserCreateResponseSerializer"
 type RegistryUserCreated struct {
-	// '#/components/schemas/RegistryUserCreateResponseSerializer/properties/id'
-	// "$.components.schemas.RegistryUserCreateResponseSerializer.properties.id"
+	// User ID
 	ID int64 `json:"id,required"`
-	// '#/components/schemas/RegistryUserCreateResponseSerializer/properties/created_at'
-	// "$.components.schemas.RegistryUserCreateResponseSerializer.properties.created_at"
+	// User creation date-time
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/RegistryUserCreateResponseSerializer/properties/duration'
-	// "$.components.schemas.RegistryUserCreateResponseSerializer.properties.duration"
+	// User account operating time, days
 	Duration int64 `json:"duration,required"`
-	// '#/components/schemas/RegistryUserCreateResponseSerializer/properties/expires_at'
-	// "$.components.schemas.RegistryUserCreateResponseSerializer.properties.expires_at"
+	// User operation end date-time
 	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
-	// '#/components/schemas/RegistryUserCreateResponseSerializer/properties/name'
-	// "$.components.schemas.RegistryUserCreateResponseSerializer.properties.name"
+	// User name
 	Name string `json:"name,required"`
-	// '#/components/schemas/RegistryUserCreateResponseSerializer/properties/read_only'
-	// "$.components.schemas.RegistryUserCreateResponseSerializer.properties.read_only"
+	// Read-only user
 	ReadOnly bool `json:"read_only"`
-	// '#/components/schemas/RegistryUserCreateResponseSerializer/properties/secret'
-	// "$.components.schemas.RegistryUserCreateResponseSerializer.properties.secret"
+	// User secret
 	Secret string `json:"secret"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -255,14 +238,10 @@ func (r *RegistryUserCreated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/RegistryUserCollectionSerializer'
-// "$.components.schemas.RegistryUserCollectionSerializer"
 type RegistryUserList struct {
-	// '#/components/schemas/RegistryUserCollectionSerializer/properties/count'
-	// "$.components.schemas.RegistryUserCollectionSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/RegistryUserCollectionSerializer/properties/results'
-	// "$.components.schemas.RegistryUserCollectionSerializer.properties.results"
+	// Objects
 	Results []RegistryUser `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -281,23 +260,19 @@ func (r *RegistryUserList) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryUserNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/RegistryUserCreateSerializer/properties/duration'
-	// "$.components.schemas.RegistryUserCreateSerializer.properties.duration"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// User account operating time, days
 	Duration int64 `json:"duration,required"`
-	// '#/components/schemas/RegistryUserCreateSerializer/properties/name'
-	// "$.components.schemas.RegistryUserCreateSerializer.properties.name"
+	// A name for the registry user.
+	//
+	// Should be in lowercase, consisting only of numbers and letters,
+	//
+	// with maximum length of 16 characters
 	Name string `json:"name,required"`
-	// '#/components/schemas/RegistryUserCreateSerializer/properties/read_only'
-	// "$.components.schemas.RegistryUserCreateSerializer.properties.read_only"
+	// Read-only user
 	ReadOnly param.Opt[bool] `json:"read_only,omitzero"`
-	// '#/components/schemas/RegistryUserCreateSerializer/properties/secret'
-	// "$.components.schemas.RegistryUserCreateSerializer.properties.secret"
+	// User secret
 	Secret param.Opt[string] `json:"secret,omitzero"`
 	paramObj
 }
@@ -312,20 +287,12 @@ func (r RegistryUserNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type RegistryUserUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}'].patch.parameters[0].schema"
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}'].patch.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D/patch/parameters/2/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}'].patch.parameters[2].schema"
-	RegistryID int64 `path:"registry_id,required" json:"-"`
-	// '#/components/schemas/RegistryUserUpdateSerializer/properties/duration'
-	// "$.components.schemas.RegistryUserUpdateSerializer.properties.duration"
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegistryID int64            `path:"registry_id,required" json:"-"`
+	// User account operating time, days
 	Duration int64 `json:"duration,required"`
-	// '#/components/schemas/RegistryUserUpdateSerializer/properties/read_only'
-	// "$.components.schemas.RegistryUserUpdateSerializer.properties.read_only"
+	// Read-only user
 	ReadOnly param.Opt[bool] `json:"read_only,omitzero"`
 	paramObj
 }
@@ -340,12 +307,8 @@ func (r RegistryUserUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type RegistryUserListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -354,15 +317,9 @@ type RegistryUserListParams struct {
 func (f RegistryUserListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type RegistryUserDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}']['delete'].parameters[0].schema"
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D/delete/parameters/2/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}']['delete'].parameters[2].schema"
-	RegistryID int64 `path:"registry_id,required" json:"-"`
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegistryID int64            `path:"registry_id,required" json:"-"`
 	paramObj
 }
 
@@ -371,14 +328,9 @@ type RegistryUserDeleteParams struct {
 func (f RegistryUserDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type RegistryUserNewMultipleParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2Fbatch/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/batch'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2Fbatch/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/batch'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/RegistryBatchUsersCreateSerializer/properties/users'
-	// "$.components.schemas.RegistryBatchUsersCreateSerializer.properties.users"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Set of users
 	Users []RegistryUserNewMultipleParamsUser `json:"users,omitzero,required"`
 	paramObj
 }
@@ -392,22 +344,19 @@ func (r RegistryUserNewMultipleParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/RegistryBatchUsersCreateSerializer/properties/users/items'
-// "$.components.schemas.RegistryBatchUsersCreateSerializer.properties.users.items"
-//
 // The properties Duration, Name are required.
 type RegistryUserNewMultipleParamsUser struct {
-	// '#/components/schemas/RegistryUserCreateSerializer/properties/duration'
-	// "$.components.schemas.RegistryUserCreateSerializer.properties.duration"
+	// User account operating time, days
 	Duration int64 `json:"duration,required"`
-	// '#/components/schemas/RegistryUserCreateSerializer/properties/name'
-	// "$.components.schemas.RegistryUserCreateSerializer.properties.name"
+	// A name for the registry user.
+	//
+	// Should be in lowercase, consisting only of numbers and letters,
+	//
+	// with maximum length of 16 characters
 	Name string `json:"name,required"`
-	// '#/components/schemas/RegistryUserCreateSerializer/properties/read_only'
-	// "$.components.schemas.RegistryUserCreateSerializer.properties.read_only"
+	// Read-only user
 	ReadOnly param.Opt[bool] `json:"read_only,omitzero"`
-	// '#/components/schemas/RegistryUserCreateSerializer/properties/secret'
-	// "$.components.schemas.RegistryUserCreateSerializer.properties.secret"
+	// User secret
 	Secret param.Opt[string] `json:"secret,omitzero"`
 	paramObj
 }
@@ -423,15 +372,9 @@ func (r RegistryUserNewMultipleParamsUser) MarshalJSON() (data []byte, err error
 }
 
 type RegistryUserRefreshSecretParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D%2Frefresh_secret/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}/refresh_secret'].post.parameters[0].schema"
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D%2Frefresh_secret/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}/refresh_secret'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fregistries%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bregistry_id%7D%2Fusers%2F%7Buser_id%7D%2Frefresh_secret/post/parameters/2/schema'
-	// "$.paths['/cloud/v1/registries/{project_id}/{region_id}/{registry_id}/users/{user_id}/refresh_secret'].post.parameters[2].schema"
-	RegistryID int64 `path:"registry_id,required" json:"-"`
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegistryID int64            `path:"registry_id,required" json:"-"`
 	paramObj
 }
 

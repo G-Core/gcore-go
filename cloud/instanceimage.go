@@ -180,40 +180,33 @@ func (r *InstanceImageService) Upload(ctx context.Context, params InstanceImageU
 }
 
 type InstanceImageUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bimage_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}/{image_id}'].patch.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bimage_id%7D/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}/{image_id}'].patch.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/UpdateImageSerializer/properties/is_baremetal'
-	// "$.components.schemas.UpdateImageSerializer.properties.is_baremetal"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Set to true if the image will be used by bare metal servers.
 	IsBaremetal param.Opt[bool] `json:"is_baremetal,omitzero"`
-	// '#/components/schemas/UpdateImageSerializer/properties/name'
-	// "$.components.schemas.UpdateImageSerializer.properties.name"
+	// Image display name
 	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/UpdateImageSerializer/properties/hw_firmware_type'
-	// "$.components.schemas.UpdateImageSerializer.properties.hw_firmware_type"
+	// Specifies the type of firmware with which to boot the guest.
 	//
 	// Any of "bios", "uefi".
 	HwFirmwareType InstanceImageUpdateParamsHwFirmwareType `json:"hw_firmware_type,omitzero"`
-	// '#/components/schemas/UpdateImageSerializer/properties/hw_machine_type'
-	// "$.components.schemas.UpdateImageSerializer.properties.hw_machine_type"
+	// A virtual chipset type.
 	//
 	// Any of "pc", "q35".
 	HwMachineType InstanceImageUpdateParamsHwMachineType `json:"hw_machine_type,omitzero"`
-	// '#/components/schemas/UpdateImageSerializer/properties/os_type'
-	// "$.components.schemas.UpdateImageSerializer.properties.os_type"
+	// The operating system installed on the image.
 	//
 	// Any of "linux", "windows".
 	OsType InstanceImageUpdateParamsOsType `json:"os_type,omitzero"`
-	// '#/components/schemas/UpdateImageSerializer/properties/ssh_key'
-	// "$.components.schemas.UpdateImageSerializer.properties.ssh_key"
+	// Whether the image supports SSH key or not
 	//
 	// Any of "allow", "deny", "required".
 	SSHKey InstanceImageUpdateParamsSSHKey `json:"ssh_key,omitzero"`
-	// '#/components/schemas/UpdateImageSerializer/properties/tags'
-	// "$.components.schemas.UpdateImageSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
@@ -227,8 +220,7 @@ func (r InstanceImageUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/UpdateImageSerializer/properties/hw_firmware_type'
-// "$.components.schemas.UpdateImageSerializer.properties.hw_firmware_type"
+// Specifies the type of firmware with which to boot the guest.
 type InstanceImageUpdateParamsHwFirmwareType string
 
 const (
@@ -236,8 +228,7 @@ const (
 	InstanceImageUpdateParamsHwFirmwareTypeUefi InstanceImageUpdateParamsHwFirmwareType = "uefi"
 )
 
-// '#/components/schemas/UpdateImageSerializer/properties/hw_machine_type'
-// "$.components.schemas.UpdateImageSerializer.properties.hw_machine_type"
+// A virtual chipset type.
 type InstanceImageUpdateParamsHwMachineType string
 
 const (
@@ -245,8 +236,7 @@ const (
 	InstanceImageUpdateParamsHwMachineTypeQ35 InstanceImageUpdateParamsHwMachineType = "q35"
 )
 
-// '#/components/schemas/UpdateImageSerializer/properties/os_type'
-// "$.components.schemas.UpdateImageSerializer.properties.os_type"
+// The operating system installed on the image.
 type InstanceImageUpdateParamsOsType string
 
 const (
@@ -254,8 +244,7 @@ const (
 	InstanceImageUpdateParamsOsTypeWindows InstanceImageUpdateParamsOsType = "windows"
 )
 
-// '#/components/schemas/UpdateImageSerializer/properties/ssh_key'
-// "$.components.schemas.UpdateImageSerializer.properties.ssh_key"
+// Whether the image supports SSH key or not
 type InstanceImageUpdateParamsSSHKey string
 
 const (
@@ -265,26 +254,19 @@ const (
 )
 
 type InstanceImageListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}'].get.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Show price
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}'].get.parameters[3]"
+	// Any value to show private images
 	Private param.Opt[string] `query:"private,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}'].get.parameters[5]"
+	// Filter by tag key-value pairs. Must be a valid JSON string. 'curl -G
+	// --data-urlencode 'tag_key_value={"key": "value"}' --url
+	// 'http://localhost:1111/v1/images/1/1'"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}'].get.parameters[4]"
+	// Filter by tag keys.
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}'].get.parameters[6]"
+	// Image visibility. Globally visible images are public
 	//
 	// Any of "private", "public", "shared".
 	Visibility InstanceImageListParamsVisibility `query:"visibility,omitzero" json:"-"`
@@ -304,8 +286,7 @@ func (r InstanceImageListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-// "$.paths['/cloud/v1/images/{project_id}/{region_id}'].get.parameters[6]"
+// Image visibility. Globally visible images are public
 type InstanceImageListParamsVisibility string
 
 const (
@@ -315,12 +296,8 @@ const (
 )
 
 type InstanceImageDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bimage_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}/{image_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bimage_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}/{image_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -329,53 +306,43 @@ type InstanceImageDeleteParams struct {
 func (f InstanceImageDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type InstanceImageNewFromVolumeParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/name'
-	// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.name"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Image name
 	Name string `json:"name,required"`
-	// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/volume_id'
-	// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.volume_id"
+	// Required if source is volume. Volume id
 	VolumeID string `json:"volume_id,required" format:"uuid4"`
-	// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/is_baremetal'
-	// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.is_baremetal"
+	// Set to true if the image will be used by bare metal servers. Defaults to false.
 	IsBaremetal param.Opt[bool] `json:"is_baremetal,omitzero"`
-	// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/hw_firmware_type/anyOf/0'
-	// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.hw_firmware_type.anyOf[0]"
+	// Specifies the type of firmware with which to boot the guest.
 	//
 	// Any of "bios", "uefi".
 	HwFirmwareType InstanceImageNewFromVolumeParamsHwFirmwareType `json:"hw_firmware_type,omitzero"`
-	// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/hw_machine_type/anyOf/0'
-	// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.hw_machine_type.anyOf[0]"
+	// A virtual chipset type.
 	//
 	// Any of "pc", "q35".
 	HwMachineType InstanceImageNewFromVolumeParamsHwMachineType `json:"hw_machine_type,omitzero"`
-	// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/architecture'
-	// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.architecture"
+	// Image CPU architecture type: `aarch64`, `x86_64`
 	//
 	// Any of "aarch64", "x86_64".
 	Architecture InstanceImageNewFromVolumeParamsArchitecture `json:"architecture,omitzero"`
-	// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/os_type'
-	// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.os_type"
+	// The operating system installed on the image.
 	//
 	// Any of "linux", "windows".
 	OsType InstanceImageNewFromVolumeParamsOsType `json:"os_type,omitzero"`
-	// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/source'
-	// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.source"
+	// Image source
 	//
 	// Any of "volume".
 	Source InstanceImageNewFromVolumeParamsSource `json:"source,omitzero"`
-	// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/ssh_key'
-	// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.ssh_key"
+	// Whether the image supports SSH key or not
 	//
 	// Any of "allow", "deny", "required".
 	SSHKey InstanceImageNewFromVolumeParamsSSHKey `json:"ssh_key,omitzero"`
-	// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/tags'
-	// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
@@ -389,8 +356,7 @@ func (r InstanceImageNewFromVolumeParams) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/architecture'
-// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.architecture"
+// Image CPU architecture type: `aarch64`, `x86_64`
 type InstanceImageNewFromVolumeParamsArchitecture string
 
 const (
@@ -398,8 +364,7 @@ const (
 	InstanceImageNewFromVolumeParamsArchitectureX86_64  InstanceImageNewFromVolumeParamsArchitecture = "x86_64"
 )
 
-// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/hw_firmware_type/anyOf/0'
-// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.hw_firmware_type.anyOf[0]"
+// Specifies the type of firmware with which to boot the guest.
 type InstanceImageNewFromVolumeParamsHwFirmwareType string
 
 const (
@@ -407,8 +372,7 @@ const (
 	InstanceImageNewFromVolumeParamsHwFirmwareTypeUefi InstanceImageNewFromVolumeParamsHwFirmwareType = "uefi"
 )
 
-// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/hw_machine_type/anyOf/0'
-// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.hw_machine_type.anyOf[0]"
+// A virtual chipset type.
 type InstanceImageNewFromVolumeParamsHwMachineType string
 
 const (
@@ -416,8 +380,7 @@ const (
 	InstanceImageNewFromVolumeParamsHwMachineTypeQ35 InstanceImageNewFromVolumeParamsHwMachineType = "q35"
 )
 
-// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/os_type'
-// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.os_type"
+// The operating system installed on the image.
 type InstanceImageNewFromVolumeParamsOsType string
 
 const (
@@ -425,16 +388,14 @@ const (
 	InstanceImageNewFromVolumeParamsOsTypeWindows InstanceImageNewFromVolumeParamsOsType = "windows"
 )
 
-// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/source'
-// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.source"
+// Image source
 type InstanceImageNewFromVolumeParamsSource string
 
 const (
 	InstanceImageNewFromVolumeParamsSourceVolume InstanceImageNewFromVolumeParamsSource = "volume"
 )
 
-// '#/components/schemas/ImageCreateFromVolumeSerializer/properties/ssh_key'
-// "$.components.schemas.ImageCreateFromVolumeSerializer.properties.ssh_key"
+// Whether the image supports SSH key or not
 type InstanceImageNewFromVolumeParamsSSHKey string
 
 const (
@@ -444,14 +405,9 @@ const (
 )
 
 type InstanceImageGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bimage_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}/{image_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bimage_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}/{image_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bimage_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/images/{project_id}/{region_id}/{image_id}'].get.parameters[3]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Show price
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	paramObj
 }
@@ -469,57 +425,46 @@ func (r InstanceImageGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type InstanceImageUploadParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fdownloadimage%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/downloadimage/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fdownloadimage%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/downloadimage/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/ImageDownloadSerializer/properties/name'
-	// "$.components.schemas.ImageDownloadSerializer.properties.name"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Image name
 	Name string `json:"name,required"`
-	// '#/components/schemas/ImageDownloadSerializer/properties/url'
-	// "$.components.schemas.ImageDownloadSerializer.properties.url"
+	// URL
 	URL string `json:"url,required" format:"uri"`
-	// '#/components/schemas/ImageDownloadSerializer/properties/os_distro/anyOf/0'
-	// "$.components.schemas.ImageDownloadSerializer.properties.os_distro.anyOf[0]"
+	// OS Distribution, i.e. Debian, CentOS, Ubuntu, CoreOS etc.
 	OsDistro param.Opt[string] `json:"os_distro,omitzero"`
-	// '#/components/schemas/ImageDownloadSerializer/properties/os_version/anyOf/0'
-	// "$.components.schemas.ImageDownloadSerializer.properties.os_version.anyOf[0]"
+	// OS version, i.e. 22.04 (for Ubuntu) or 9.4 for Debian
 	OsVersion param.Opt[string] `json:"os_version,omitzero"`
-	// '#/components/schemas/ImageDownloadSerializer/properties/cow_format'
-	// "$.components.schemas.ImageDownloadSerializer.properties.cow_format"
+	// When True, image cannot be deleted unless all volumes, created from it, are
+	// deleted.
 	CowFormat param.Opt[bool] `json:"cow_format,omitzero"`
-	// '#/components/schemas/ImageDownloadSerializer/properties/is_baremetal'
-	// "$.components.schemas.ImageDownloadSerializer.properties.is_baremetal"
+	// Set to true if the image will be used by bare metal servers. Defaults to false.
 	IsBaremetal param.Opt[bool] `json:"is_baremetal,omitzero"`
-	// '#/components/schemas/ImageDownloadSerializer/properties/hw_firmware_type/anyOf/0'
-	// "$.components.schemas.ImageDownloadSerializer.properties.hw_firmware_type.anyOf[0]"
+	// Specifies the type of firmware with which to boot the guest.
 	//
 	// Any of "bios", "uefi".
 	HwFirmwareType InstanceImageUploadParamsHwFirmwareType `json:"hw_firmware_type,omitzero"`
-	// '#/components/schemas/ImageDownloadSerializer/properties/hw_machine_type/anyOf/0'
-	// "$.components.schemas.ImageDownloadSerializer.properties.hw_machine_type.anyOf[0]"
+	// A virtual chipset type.
 	//
 	// Any of "pc", "q35".
 	HwMachineType InstanceImageUploadParamsHwMachineType `json:"hw_machine_type,omitzero"`
-	// '#/components/schemas/ImageDownloadSerializer/properties/architecture'
-	// "$.components.schemas.ImageDownloadSerializer.properties.architecture"
+	// Image CPU architecture type: `aarch64`, `x86_64`
 	//
 	// Any of "aarch64", "x86_64".
 	Architecture InstanceImageUploadParamsArchitecture `json:"architecture,omitzero"`
-	// '#/components/schemas/ImageDownloadSerializer/properties/os_type'
-	// "$.components.schemas.ImageDownloadSerializer.properties.os_type"
+	// The operating system installed on the image.
 	//
 	// Any of "linux", "windows".
 	OsType InstanceImageUploadParamsOsType `json:"os_type,omitzero"`
-	// '#/components/schemas/ImageDownloadSerializer/properties/ssh_key'
-	// "$.components.schemas.ImageDownloadSerializer.properties.ssh_key"
+	// Whether the image supports SSH key or not
 	//
 	// Any of "allow", "deny", "required".
 	SSHKey InstanceImageUploadParamsSSHKey `json:"ssh_key,omitzero"`
-	// '#/components/schemas/ImageDownloadSerializer/properties/tags'
-	// "$.components.schemas.ImageDownloadSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
@@ -533,8 +478,7 @@ func (r InstanceImageUploadParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/ImageDownloadSerializer/properties/architecture'
-// "$.components.schemas.ImageDownloadSerializer.properties.architecture"
+// Image CPU architecture type: `aarch64`, `x86_64`
 type InstanceImageUploadParamsArchitecture string
 
 const (
@@ -542,8 +486,7 @@ const (
 	InstanceImageUploadParamsArchitectureX86_64  InstanceImageUploadParamsArchitecture = "x86_64"
 )
 
-// '#/components/schemas/ImageDownloadSerializer/properties/hw_firmware_type/anyOf/0'
-// "$.components.schemas.ImageDownloadSerializer.properties.hw_firmware_type.anyOf[0]"
+// Specifies the type of firmware with which to boot the guest.
 type InstanceImageUploadParamsHwFirmwareType string
 
 const (
@@ -551,8 +494,7 @@ const (
 	InstanceImageUploadParamsHwFirmwareTypeUefi InstanceImageUploadParamsHwFirmwareType = "uefi"
 )
 
-// '#/components/schemas/ImageDownloadSerializer/properties/hw_machine_type/anyOf/0'
-// "$.components.schemas.ImageDownloadSerializer.properties.hw_machine_type.anyOf[0]"
+// A virtual chipset type.
 type InstanceImageUploadParamsHwMachineType string
 
 const (
@@ -560,8 +502,7 @@ const (
 	InstanceImageUploadParamsHwMachineTypeQ35 InstanceImageUploadParamsHwMachineType = "q35"
 )
 
-// '#/components/schemas/ImageDownloadSerializer/properties/os_type'
-// "$.components.schemas.ImageDownloadSerializer.properties.os_type"
+// The operating system installed on the image.
 type InstanceImageUploadParamsOsType string
 
 const (
@@ -569,8 +510,7 @@ const (
 	InstanceImageUploadParamsOsTypeWindows InstanceImageUploadParamsOsType = "windows"
 )
 
-// '#/components/schemas/ImageDownloadSerializer/properties/ssh_key'
-// "$.components.schemas.ImageDownloadSerializer.properties.ssh_key"
+// Whether the image supports SSH key or not
 type InstanceImageUploadParamsSSHKey string
 
 const (

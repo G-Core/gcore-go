@@ -129,11 +129,9 @@ func (r *GPUBaremetalClusterImageService) Upload(ctx context.Context, params GPU
 }
 
 type GPUBaremetalClusterImageListParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Fgpu%2Fbaremetal%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Fimages/get/parameters/0/schema'
-	// "$.paths['/cloud/v3/gpu/baremetal/{project_id}/{region_id}/images'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Fgpu%2Fbaremetal%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Fimages/get/parameters/1/schema'
-	// "$.paths['/cloud/v3/gpu/baremetal/{project_id}/{region_id}/images'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -145,11 +143,9 @@ func (f GPUBaremetalClusterImageListParams) IsPresent() bool {
 }
 
 type GPUBaremetalClusterImageDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Fgpu%2Fbaremetal%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Fimages%2F%7Bimage_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v3/gpu/baremetal/{project_id}/{region_id}/images/{image_id}']['delete'].parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Fgpu%2Fbaremetal%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Fimages%2F%7Bimage_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v3/gpu/baremetal/{project_id}/{region_id}/images/{image_id}']['delete'].parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -161,11 +157,9 @@ func (f GPUBaremetalClusterImageDeleteParams) IsPresent() bool {
 }
 
 type GPUBaremetalClusterImageGetParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Fgpu%2Fbaremetal%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Fimages%2F%7Bimage_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v3/gpu/baremetal/{project_id}/{region_id}/images/{image_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Fgpu%2Fbaremetal%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Fimages%2F%7Bimage_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v3/gpu/baremetal/{project_id}/{region_id}/images/{image_id}'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -177,49 +171,42 @@ func (f GPUBaremetalClusterImageGetParams) IsPresent() bool {
 }
 
 type GPUBaremetalClusterImageUploadParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Fgpu%2Fbaremetal%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Fimages/post/parameters/0/schema'
-	// "$.paths['/cloud/v3/gpu/baremetal/{project_id}/{region_id}/images'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Fgpu%2Fbaremetal%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2Fimages/post/parameters/1/schema'
-	// "$.paths['/cloud/v3/gpu/baremetal/{project_id}/{region_id}/images'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/name'
-	// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.name"
+	// Image name
 	Name string `json:"name,required"`
-	// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/url/anyOf/0'
-	// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.url.anyOf[0]"
+	// Image URL
 	URL string `json:"url,required" format:"uri"`
-	// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/os_distro/anyOf/0'
-	// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.os_distro.anyOf[0]"
+	// OS Distribution, i.e. Debian, CentOS, Ubuntu, CoreOS etc.
 	OsDistro param.Opt[string] `json:"os_distro,omitzero"`
-	// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/os_version/anyOf/0'
-	// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.os_version.anyOf[0]"
+	// OS version, i.e. 19.04 (for Ubuntu) or 9.4 for Debian
 	OsVersion param.Opt[string] `json:"os_version,omitzero"`
-	// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/cow_format'
-	// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.cow_format"
+	// When True, image cannot be deleted unless all volumes, created from it, are
+	// deleted.
 	CowFormat param.Opt[bool] `json:"cow_format,omitzero"`
-	// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/architecture/anyOf/0'
-	// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.architecture.anyOf[0]"
+	// Image architecture type: aarch64, x86_64
 	//
 	// Any of "aarch64", "x86_64".
 	Architecture GPUBaremetalClusterImageUploadParamsArchitecture `json:"architecture,omitzero"`
-	// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/hw_firmware_type/anyOf/0'
-	// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.hw_firmware_type.anyOf[0]"
+	// Specifies the type of firmware with which to boot the guest.
 	//
 	// Any of "bios", "uefi".
 	HwFirmwareType GPUBaremetalClusterImageUploadParamsHwFirmwareType `json:"hw_firmware_type,omitzero"`
-	// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/os_type/anyOf/0'
-	// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.os_type.anyOf[0]"
+	// The operating system installed on the image. Linux by default
 	//
 	// Any of "linux", "windows".
 	OsType GPUBaremetalClusterImageUploadParamsOsType `json:"os_type,omitzero"`
-	// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/ssh_key'
-	// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.ssh_key"
+	// Permission to use a ssh key in instances
 	//
 	// Any of "allow", "deny", "required".
 	SSHKey GPUBaremetalClusterImageUploadParamsSSHKey `json:"ssh_key,omitzero"`
-	// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/tags'
-	// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
@@ -235,8 +222,7 @@ func (r GPUBaremetalClusterImageUploadParams) MarshalJSON() (data []byte, err er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/architecture/anyOf/0'
-// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.architecture.anyOf[0]"
+// Image architecture type: aarch64, x86_64
 type GPUBaremetalClusterImageUploadParamsArchitecture string
 
 const (
@@ -244,8 +230,7 @@ const (
 	GPUBaremetalClusterImageUploadParamsArchitectureX86_64  GPUBaremetalClusterImageUploadParamsArchitecture = "x86_64"
 )
 
-// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/hw_firmware_type/anyOf/0'
-// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.hw_firmware_type.anyOf[0]"
+// Specifies the type of firmware with which to boot the guest.
 type GPUBaremetalClusterImageUploadParamsHwFirmwareType string
 
 const (
@@ -253,8 +238,7 @@ const (
 	GPUBaremetalClusterImageUploadParamsHwFirmwareTypeUefi GPUBaremetalClusterImageUploadParamsHwFirmwareType = "uefi"
 )
 
-// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/os_type/anyOf/0'
-// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.os_type.anyOf[0]"
+// The operating system installed on the image. Linux by default
 type GPUBaremetalClusterImageUploadParamsOsType string
 
 const (
@@ -262,8 +246,7 @@ const (
 	GPUBaremetalClusterImageUploadParamsOsTypeWindows GPUBaremetalClusterImageUploadParamsOsType = "windows"
 )
 
-// '#/components/schemas/UploadBaremetalGpuImageSerializer/properties/ssh_key'
-// "$.components.schemas.UploadBaremetalGpuImageSerializer.properties.ssh_key"
+// Permission to use a ssh key in instances
 type GPUBaremetalClusterImageUploadParamsSSHKey string
 
 const (

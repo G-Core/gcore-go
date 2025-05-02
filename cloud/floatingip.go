@@ -203,73 +203,58 @@ func (r *FloatingIPService) Unassign(ctx context.Context, floatingIPID string, b
 	return
 }
 
-// '#/components/schemas/FloatingIPDetailedSerializer'
-// "$.components.schemas.FloatingIPDetailedSerializer"
 type FloatingIPDetailed struct {
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/id/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.id.anyOf[0]"
+	// Floating IP ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/created_at'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.created_at"
+	// Datetime when the floating IP was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/dns_domain/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.dns_domain.anyOf[0]"
+	// This field is deprecated and can be ignored
 	//
 	// Deprecated: deprecated
 	DNSDomain string `json:"dns_domain,required"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/dns_name/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.dns_name.anyOf[0]"
+	// This field is deprecated and can be ignored
 	//
 	// Deprecated: deprecated
 	DNSName string `json:"dns_name,required"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/fixed_ip_address/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.fixed_ip_address.anyOf[0]"
+	// IP address of the port the floating IP is attached to
 	FixedIPAddress string `json:"fixed_ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/floating_ip_address/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.floating_ip_address.anyOf[0]"
+	// IP Address of the floating IP
 	FloatingIPAddress string `json:"floating_ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/instance/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.instance.anyOf[0]"
+	// Instance the floating IP is attached to
 	Instance FloatingIPDetailedInstance `json:"instance,required"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/loadbalancer/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.loadbalancer.anyOf[0]"
+	// Load balancer the floating IP is attached to
 	Loadbalancer LoadBalancer `json:"loadbalancer,required"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/port_id/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.port_id.anyOf[0]"
+	// Port ID
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/project_id'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/region'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/region_id'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/router_id/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.router_id.anyOf[0]"
+	// Router ID
 	RouterID string `json:"router_id,required" format:"uuid4"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/status/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.status.anyOf[0]"
+	// Floating IP status
 	//
 	// Any of "ACTIVE", "DOWN", "ERROR".
 	Status FloatingIPStatus `json:"status,required"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/subnet_id/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.subnet_id.anyOf[0]"
+	// This field is deprecated and can be ignored
 	//
 	// Deprecated: deprecated
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/tags'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,required" format:"uuid4"`
-	// '#/components/schemas/FloatingIPDetailedSerializer/properties/updated_at'
-	// "$.components.schemas.FloatingIPDetailedSerializer.properties.updated_at"
+	// Datetime when the floating IP was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -304,70 +289,57 @@ func (r *FloatingIPDetailed) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/FloatingIPDetailedSerializer/properties/instance/anyOf/0'
-// "$.components.schemas.FloatingIPDetailedSerializer.properties.instance.anyOf[0]"
+// Instance the floating IP is attached to
 type FloatingIPDetailedInstance struct {
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/addresses'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.addresses"
+	// Map of network_name to list of addresses in that network
 	Addresses map[string][]FloatingIPDetailedInstanceAddressUnion `json:"addresses,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/creator_task_id'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.creator_task_id"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/flavor'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.flavor"
+	// Flavor
 	Flavor FloatingIPDetailedInstanceFlavor `json:"flavor,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/instance_created'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.instance_created"
+	// Datetime when instance was created
 	InstanceCreated time.Time `json:"instance_created,required" format:"date-time"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/instance_description/anyOf/0'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.instance_description.anyOf[0]"
+	// Instance description
 	InstanceDescription string `json:"instance_description,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/instance_id'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.instance_id"
+	// Instance ID
 	InstanceID string `json:"instance_id,required" format:"uuid4"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/instance_name'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.instance_name"
+	// Instance name
 	InstanceName string `json:"instance_name,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/project_id'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/region'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/region_id'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/security_groups'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.security_groups"
+	// Security groups
 	SecurityGroups []FloatingIPDetailedInstanceSecurityGroup `json:"security_groups,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/ssh_key_name/anyOf/0'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.ssh_key_name.anyOf[0]"
+	// SSH key name assigned to instance
 	SSHKeyName string `json:"ssh_key_name,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/status'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.status"
+	// Instance status
 	//
 	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
 	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
 	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
 	// "UNKNOWN", "VERIFY_RESIZE".
 	Status string `json:"status,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/tags'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/task_state/anyOf/0'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.task_state.anyOf[0]"
+	// Task state
 	TaskState string `json:"task_state,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/vm_state'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.vm_state"
+	// Virtual machine state (active)
 	//
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
 	VmState string `json:"vm_state,required"`
-	// '#/components/schemas/InstanceInFloatingSerializer/properties/volumes'
-	// "$.components.schemas.InstanceInFloatingSerializer.properties.volumes"
+	// List of volumes
 	Volumes []FloatingIPDetailedInstanceVolume `json:"volumes,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -445,20 +417,15 @@ func (r *FloatingIPDetailedInstanceAddressUnion) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceInFloatingSerializer/properties/flavor'
-// "$.components.schemas.InstanceInFloatingSerializer.properties.flavor"
+// Flavor
 type FloatingIPDetailedInstanceFlavor struct {
-	// '#/components/schemas/BaseFlavorSerializer/properties/flavor_id'
-	// "$.components.schemas.BaseFlavorSerializer.properties.flavor_id"
+	// Flavor ID is the same as name
 	FlavorID string `json:"flavor_id,required"`
-	// '#/components/schemas/BaseFlavorSerializer/properties/flavor_name'
-	// "$.components.schemas.BaseFlavorSerializer.properties.flavor_name"
+	// Flavor name
 	FlavorName string `json:"flavor_name,required"`
-	// '#/components/schemas/BaseFlavorSerializer/properties/ram'
-	// "$.components.schemas.BaseFlavorSerializer.properties.ram"
+	// RAM size in MiB
 	Ram int64 `json:"ram,required"`
-	// '#/components/schemas/BaseFlavorSerializer/properties/vcpus'
-	// "$.components.schemas.BaseFlavorSerializer.properties.vcpus"
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -478,11 +445,8 @@ func (r *FloatingIPDetailedInstanceFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceInFloatingSerializer/properties/security_groups/items'
-// "$.components.schemas.InstanceInFloatingSerializer.properties.security_groups.items"
 type FloatingIPDetailedInstanceSecurityGroup struct {
-	// '#/components/schemas/NameSerializerPydantic/properties/name'
-	// "$.components.schemas.NameSerializerPydantic.properties.name"
+	// Name.
 	Name string `json:"name,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -499,14 +463,10 @@ func (r *FloatingIPDetailedInstanceSecurityGroup) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceInFloatingSerializer/properties/volumes/items'
-// "$.components.schemas.InstanceInFloatingSerializer.properties.volumes.items"
 type FloatingIPDetailedInstanceVolume struct {
-	// '#/components/schemas/InstanceVolumeSerializer/properties/id'
-	// "$.components.schemas.InstanceVolumeSerializer.properties.id"
+	// Volume ID
 	ID string `json:"id,required"`
-	// '#/components/schemas/InstanceVolumeSerializer/properties/delete_on_termination'
-	// "$.components.schemas.InstanceVolumeSerializer.properties.delete_on_termination"
+	// Whether the volume is deleted together with the VM
 	DeleteOnTermination bool `json:"delete_on_termination,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -525,20 +485,21 @@ func (r *FloatingIPDetailedInstanceVolume) UnmarshalJSON(data []byte) error {
 }
 
 type FloatingIPNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateFloatingIPSerializer/properties/fixed_ip_address/anyOf/0'
-	// "$.components.schemas.CreateFloatingIPSerializer.properties.fixed_ip_address.anyOf[0]"
+	// If the port has multiple IP addresses, a specific one can be selected using this
+	// field. If not specified, the first IP in the port's list will be used by
+	// default.
 	FixedIPAddress param.Opt[string] `json:"fixed_ip_address,omitzero" format:"ipv4"`
-	// '#/components/schemas/CreateFloatingIPSerializer/properties/port_id/anyOf/0'
-	// "$.components.schemas.CreateFloatingIPSerializer.properties.port_id.anyOf[0]"
+	// If provided, the floating IP will be immediately attached to the specified port.
 	PortID param.Opt[string] `json:"port_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateFloatingIPSerializer/properties/tags'
-	// "$.components.schemas.CreateFloatingIPSerializer.properties.tags"
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
 	paramObj
 }
@@ -553,23 +514,20 @@ func (r FloatingIPNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type FloatingIPListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[2]"
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[3]"
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[5]"
+	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
+	// "tag_key_value={"key": "value"}" --url
+	// "https://example.com/cloud/v1/resource/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}'].get.parameters[4]"
+	// Optional. Filter by tag keys. ?tag_key=key1&tag_key=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
@@ -587,12 +545,8 @@ func (r FloatingIPListParams) URLQuery() (v url.Values, err error) {
 }
 
 type FloatingIPDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -601,17 +555,11 @@ type FloatingIPDeleteParams struct {
 func (f FloatingIPDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type FloatingIPAssignParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D%2Fassign/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}/assign'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D%2Fassign/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}/assign'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/AssignFloatingIPSerializer/properties/port_id'
-	// "$.components.schemas.AssignFloatingIPSerializer.properties.port_id"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Port ID
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// '#/components/schemas/AssignFloatingIPSerializer/properties/fixed_ip_address/anyOf/0'
-	// "$.components.schemas.AssignFloatingIPSerializer.properties.fixed_ip_address.anyOf[0]"
+	// Fixed IP address
 	FixedIPAddress param.Opt[string] `json:"fixed_ip_address,omitzero" format:"ipvanyaddress"`
 	paramObj
 }
@@ -626,12 +574,8 @@ func (r FloatingIPAssignParams) MarshalJSON() (data []byte, err error) {
 }
 
 type FloatingIPGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -640,12 +584,8 @@ type FloatingIPGetParams struct {
 func (f FloatingIPGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type FloatingIPUnassignParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D%2Funassign/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}/unassign'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Ffloatingips%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bfloating_ip_id%7D%2Funassign/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/floatingips/{project_id}/{region_id}/{floating_ip_id}/unassign'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 

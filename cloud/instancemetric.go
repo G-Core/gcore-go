@@ -60,32 +60,23 @@ func (r *InstanceMetricService) List(ctx context.Context, instanceID string, par
 	return
 }
 
-// '#/components/schemas/InstanceMetricsSerializer'
-// "$.components.schemas.InstanceMetricsSerializer"
+// Instance metrics item
 type Metrics struct {
-	// '#/components/schemas/InstanceMetricsSerializer/properties/time'
-	// "$.components.schemas.InstanceMetricsSerializer.properties.time"
+	// Timestamp
 	Time string `json:"time,required"`
-	// '#/components/schemas/InstanceMetricsSerializer/properties/cpu_util/anyOf/0'
-	// "$.components.schemas.InstanceMetricsSerializer.properties.cpu_util.anyOf[0]"
+	// CPU utilization, % (max 100% for multi-core)
 	CPUUtil float64 `json:"cpu_util,nullable"`
-	// '#/components/schemas/InstanceMetricsSerializer/properties/disks/anyOf/0'
-	// "$.components.schemas.InstanceMetricsSerializer.properties.disks.anyOf[0]"
+	// Disks metrics for each of the disks attached
 	Disks []MetricsDisk `json:"disks,nullable"`
-	// '#/components/schemas/InstanceMetricsSerializer/properties/memory_util/anyOf/0'
-	// "$.components.schemas.InstanceMetricsSerializer.properties.memory_util.anyOf[0]"
+	// RAM utilization, %
 	MemoryUtil float64 `json:"memory_util,nullable"`
-	// '#/components/schemas/InstanceMetricsSerializer/properties/network_Bps_egress/anyOf/0'
-	// "$.components.schemas.InstanceMetricsSerializer.properties.network_Bps_egress.anyOf[0]"
+	// Network out, bytes per second
 	NetworkBpsEgress float64 `json:"network_Bps_egress,nullable"`
-	// '#/components/schemas/InstanceMetricsSerializer/properties/network_Bps_ingress/anyOf/0'
-	// "$.components.schemas.InstanceMetricsSerializer.properties.network_Bps_ingress.anyOf[0]"
+	// Network in, bytes per second
 	NetworkBpsIngress float64 `json:"network_Bps_ingress,nullable"`
-	// '#/components/schemas/InstanceMetricsSerializer/properties/network_pps_egress/anyOf/0'
-	// "$.components.schemas.InstanceMetricsSerializer.properties.network_pps_egress.anyOf[0]"
+	// Network out, packets per second
 	NetworkPpsEgress float64 `json:"network_pps_egress,nullable"`
-	// '#/components/schemas/InstanceMetricsSerializer/properties/network_pps_ingress/anyOf/0'
-	// "$.components.schemas.InstanceMetricsSerializer.properties.network_pps_ingress.anyOf[0]"
+	// Network in, packets per second
 	NetworkPpsIngress float64 `json:"network_pps_ingress,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -109,23 +100,17 @@ func (r *Metrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceMetricsSerializer/properties/disks/anyOf/0/items'
-// "$.components.schemas.InstanceMetricsSerializer.properties.disks.anyOf[0].items"
+// Disk metrics item
 type MetricsDisk struct {
-	// '#/components/schemas/DisksMetrics/properties/disk_Bps_read/anyOf/0'
-	// "$.components.schemas.DisksMetrics.properties.disk_Bps_read.anyOf[0]"
+	// Disk read, Bytes per second
 	DiskBpsRead float64 `json:"disk_Bps_read,nullable"`
-	// '#/components/schemas/DisksMetrics/properties/disk_Bps_write/anyOf/0'
-	// "$.components.schemas.DisksMetrics.properties.disk_Bps_write.anyOf[0]"
+	// Disk write, Bytes per second
 	DiskBpsWrite float64 `json:"disk_Bps_write,nullable"`
-	// '#/components/schemas/DisksMetrics/properties/disk_iops_read/anyOf/0'
-	// "$.components.schemas.DisksMetrics.properties.disk_iops_read.anyOf[0]"
+	// Disk read, iops
 	DiskIopsRead float64 `json:"disk_iops_read,nullable"`
-	// '#/components/schemas/DisksMetrics/properties/disk_iops_write/anyOf/0'
-	// "$.components.schemas.DisksMetrics.properties.disk_iops_write.anyOf[0]"
+	// Disk write, iops
 	DiskIopsWrite float64 `json:"disk_iops_write,nullable"`
-	// '#/components/schemas/DisksMetrics/properties/disk_name/anyOf/0'
-	// "$.components.schemas.DisksMetrics.properties.disk_name.anyOf[0]"
+	// Disk attached slot name
 	DiskName string `json:"disk_name,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -146,14 +131,10 @@ func (r *MetricsDisk) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceMetricsListSerializer'
-// "$.components.schemas.InstanceMetricsListSerializer"
 type MetricsList struct {
-	// '#/components/schemas/InstanceMetricsListSerializer/properties/count'
-	// "$.components.schemas.InstanceMetricsListSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/InstanceMetricsListSerializer/properties/results'
-	// "$.components.schemas.InstanceMetricsListSerializer.properties.results"
+	// Objects
 	Results []Metrics `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -172,17 +153,13 @@ func (r *MetricsList) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceMetricListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fmetrics/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/metrics'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Finstances%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Binstance_id%7D%2Fmetrics/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/instances/{project_id}/{region_id}/{instance_id}/metrics'].post.parameters[1].schema"
+	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/InstanceMetricsRequestSerializer/properties/time_interval'
-	// "$.components.schemas.InstanceMetricsRequestSerializer.properties.time_interval"
+	// Time interval.
 	TimeInterval int64 `json:"time_interval,required"`
-	// '#/components/schemas/InstanceMetricsRequestSerializer/properties/time_unit'
-	// "$.components.schemas.InstanceMetricsRequestSerializer.properties.time_unit"
+	// Time interval unit.
 	//
 	// Any of "day", "hour".
 	TimeUnit InstanceMetricsTimeUnit `json:"time_unit,omitzero,required"`

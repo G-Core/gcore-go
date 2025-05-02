@@ -163,57 +163,39 @@ func (r *LoadBalancerPoolService) Get(ctx context.Context, poolID string, query 
 }
 
 type LoadBalancerPoolNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/lb_algorithm'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.lb_algorithm"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Load balancer algorithm
 	//
 	// Any of "LEAST_CONNECTIONS", "ROUND_ROBIN", "SOURCE_IP".
 	LbAlgorithm LbAlgorithm `json:"lb_algorithm,omitzero,required"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/name'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.name"
+	// Pool name
 	Name string `json:"name,required"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/protocol'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.protocol"
+	// Protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROXY", "PROXYV2", "TCP", "UDP".
 	Protocol LbPoolProtocol `json:"protocol,omitzero,required"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/ca_secret_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.ca_secret_id.anyOf[0]"
+	// Secret ID of CA certificate bundle
 	CaSecretID param.Opt[string] `json:"ca_secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/crl_secret_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.crl_secret_id.anyOf[0]"
+	// Secret ID of CA revocation list file
 	CrlSecretID param.Opt[string] `json:"crl_secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/listener_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.listener_id.anyOf[0]"
+	// Listener ID
 	ListenerID param.Opt[string] `json:"listener_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/loadbalancer_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.loadbalancer_id.anyOf[0]"
+	// Loadbalancer ID
 	LoadbalancerID param.Opt[string] `json:"loadbalancer_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/secret_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.secret_id.anyOf[0]"
+	// Secret ID for TLS client authentication to the member servers
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/timeout_client_data/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.timeout_client_data.anyOf[0]"
+	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/timeout_member_connect/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.timeout_member_connect.anyOf[0]"
+	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/timeout_member_data/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.timeout_member_data.anyOf[0]"
+	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/healthmonitor/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.healthmonitor.anyOf[0]"
+	// Health monitor details
 	Healthmonitor LoadBalancerPoolNewParamsHealthmonitor `json:"healthmonitor,omitzero"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/members/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.members.anyOf[0]"
+	// Pool members
 	Members []LoadBalancerPoolNewParamsMember `json:"members,omitzero"`
-	// '#/components/schemas/CreateLbPoolSerializer/properties/session_persistence/anyOf/0'
-	// "$.components.schemas.CreateLbPoolSerializer.properties.session_persistence.anyOf[0]"
+	// Session persistence details
 	SessionPersistence LoadBalancerPoolNewParamsSessionPersistence `json:"session_persistence,omitzero"`
 	paramObj
 }
@@ -227,36 +209,29 @@ func (r LoadBalancerPoolNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateLbPoolSerializer/properties/healthmonitor/anyOf/0'
-// "$.components.schemas.CreateLbPoolSerializer.properties.healthmonitor.anyOf[0]"
+// Health monitor details
 //
 // The properties Delay, MaxRetries, Timeout, Type are required.
 type LoadBalancerPoolNewParamsHealthmonitor struct {
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/delay'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.delay"
+	// The time, in seconds, between sending probes to members
 	Delay int64 `json:"delay,required"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/max_retries'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.max_retries"
+	// Number of successes before the member is switched to ONLINE state
 	MaxRetries int64 `json:"max_retries,required"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/timeout'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.timeout"
+	// The maximum time to connect. Must be less than the delay value
 	Timeout int64 `json:"timeout,required"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/type'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.type"
+	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type HealthMonitorType `json:"type,omitzero,required"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/expected_codes/anyOf/0'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.expected_codes.anyOf[0]"
+	// Can only be used together with `HTTP` or `HTTPS` health monitor type.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/max_retries_down/anyOf/0'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.max_retries_down.anyOf[0]"
+	// Number of failures before the member is switched to ERROR state.
 	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/url_path/anyOf/0'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.url_path.anyOf[0]"
+	// URL Path. Defaults to '/'. Can only be used together with `HTTP` or `HTTPS`
+	// health monitor type.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
-	// '#/components/schemas/CreateLbHealthMonitorSerializer/properties/http_method/anyOf/0'
-	// "$.components.schemas.CreateLbHealthMonitorSerializer.properties.http_method.anyOf[0]"
+	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
+	// type.
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".
@@ -274,34 +249,25 @@ func (r LoadBalancerPoolNewParamsHealthmonitor) MarshalJSON() (data []byte, err 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateLbPoolSerializer/properties/members/anyOf/0/items'
-// "$.components.schemas.CreateLbPoolSerializer.properties.members.anyOf[0].items"
-//
 // The properties Address, ProtocolPort are required.
 type LoadBalancerPoolNewParamsMember struct {
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/address'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.address"
+	// Member IP address
 	Address string `json:"address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/protocol_port'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.protocol_port"
+	// Member IP port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/admin_state_up/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.admin_state_up.anyOf[0]"
+	// true if enabled. Defaults to true
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/instance_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.instance_id.anyOf[0]"
+	// Either subnet_id or instance_id should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/monitor_address/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.monitor_address.anyOf[0]"
+	// An alternate IP address used for health monitoring of a backend member. Default
+	// is null which monitors the member address.
 	MonitorAddress param.Opt[string] `json:"monitor_address,omitzero" format:"ipvanyaddress"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/monitor_port/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.monitor_port.anyOf[0]"
+	// An alternate protocol port used for health monitoring of a backend member.
+	// Default is null which monitors the member protocol_port.
 	MonitorPort param.Opt[int64] `json:"monitor_port,omitzero"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/subnet_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.subnet_id.anyOf[0]"
+	// Either subnet_id or instance_id should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/weight/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.weight.anyOf[0]"
+	// Member weight. Valid values: 0 to 256, defaults to 1
 	Weight param.Opt[int64] `json:"weight,omitzero"`
 	paramObj
 }
@@ -314,24 +280,19 @@ func (r LoadBalancerPoolNewParamsMember) MarshalJSON() (data []byte, err error) 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateLbPoolSerializer/properties/session_persistence/anyOf/0'
-// "$.components.schemas.CreateLbPoolSerializer.properties.session_persistence.anyOf[0]"
+// Session persistence details
 //
 // The property Type is required.
 type LoadBalancerPoolNewParamsSessionPersistence struct {
-	// '#/components/schemas/MutateLbSessionPersistence/properties/type'
-	// "$.components.schemas.MutateLbSessionPersistence.properties.type"
+	// Session persistence type
 	//
 	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
 	Type SessionPersistenceType `json:"type,omitzero,required"`
-	// '#/components/schemas/MutateLbSessionPersistence/properties/cookie_name/anyOf/0'
-	// "$.components.schemas.MutateLbSessionPersistence.properties.cookie_name.anyOf[0]"
+	// Should be set if app cookie or http cookie is used
 	CookieName param.Opt[string] `json:"cookie_name,omitzero"`
-	// '#/components/schemas/MutateLbSessionPersistence/properties/persistence_granularity/anyOf/0'
-	// "$.components.schemas.MutateLbSessionPersistence.properties.persistence_granularity.anyOf[0]"
+	// Subnet mask if source_ip is used. For UDP ports only
 	PersistenceGranularity param.Opt[string] `json:"persistence_granularity,omitzero"`
-	// '#/components/schemas/MutateLbSessionPersistence/properties/persistence_timeout/anyOf/0'
-	// "$.components.schemas.MutateLbSessionPersistence.properties.persistence_timeout.anyOf[0]"
+	// Session persistence timeout. For UDP ports only
 	PersistenceTimeout param.Opt[int64] `json:"persistence_timeout,omitzero"`
 	paramObj
 }
@@ -347,49 +308,34 @@ func (r LoadBalancerPoolNewParamsSessionPersistence) MarshalJSON() (data []byte,
 }
 
 type LoadBalancerPoolUpdateParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D/patch/parameters/0/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}'].patch.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D/patch/parameters/1/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}'].patch.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/PatchLbPoolSerializer/properties/ca_secret_id/anyOf/0'
-	// "$.components.schemas.PatchLbPoolSerializer.properties.ca_secret_id.anyOf[0]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Secret ID of CA certificate bundle
 	CaSecretID param.Opt[string] `json:"ca_secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/PatchLbPoolSerializer/properties/crl_secret_id/anyOf/0'
-	// "$.components.schemas.PatchLbPoolSerializer.properties.crl_secret_id.anyOf[0]"
+	// Secret ID of CA revocation list file
 	CrlSecretID param.Opt[string] `json:"crl_secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/PatchLbPoolSerializer/properties/secret_id/anyOf/0'
-	// "$.components.schemas.PatchLbPoolSerializer.properties.secret_id.anyOf[0]"
+	// Secret ID for TLS client authentication to the member servers
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/PatchLbPoolSerializer/properties/timeout_client_data/anyOf/0'
-	// "$.components.schemas.PatchLbPoolSerializer.properties.timeout_client_data.anyOf[0]"
+	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
-	// '#/components/schemas/PatchLbPoolSerializer/properties/timeout_member_connect/anyOf/0'
-	// "$.components.schemas.PatchLbPoolSerializer.properties.timeout_member_connect.anyOf[0]"
+	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
-	// '#/components/schemas/PatchLbPoolSerializer/properties/timeout_member_data/anyOf/0'
-	// "$.components.schemas.PatchLbPoolSerializer.properties.timeout_member_data.anyOf[0]"
+	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
-	// '#/components/schemas/PatchLbPoolSerializer/properties/name'
-	// "$.components.schemas.PatchLbPoolSerializer.properties.name"
+	// New pool name
 	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/PatchLbPoolSerializer/properties/healthmonitor/anyOf/0'
-	// "$.components.schemas.PatchLbPoolSerializer.properties.healthmonitor.anyOf[0]"
+	// New pool health monitor settings
 	Healthmonitor LoadBalancerPoolUpdateParamsHealthmonitor `json:"healthmonitor,omitzero"`
-	// '#/components/schemas/PatchLbPoolSerializer/properties/members/anyOf/0'
-	// "$.components.schemas.PatchLbPoolSerializer.properties.members.anyOf[0]"
+	// New sequence of load balancer pool members. If members are the same (by
+	// address + port), they will be kept as is without recreation and downtime.
 	Members []LoadBalancerPoolUpdateParamsMember `json:"members,omitzero"`
-	// '#/components/schemas/PatchLbPoolSerializer/properties/session_persistence/anyOf/0'
-	// "$.components.schemas.PatchLbPoolSerializer.properties.session_persistence.anyOf[0]"
+	// New session persistence settings
 	SessionPersistence LoadBalancerPoolUpdateParamsSessionPersistence `json:"session_persistence,omitzero"`
-	// '#/components/schemas/PatchLbPoolSerializer/properties/lb_algorithm'
-	// "$.components.schemas.PatchLbPoolSerializer.properties.lb_algorithm"
+	// New load balancer pool algorithm of how to distribute requests
 	//
 	// Any of "LEAST_CONNECTIONS", "ROUND_ROBIN", "SOURCE_IP".
 	LbAlgorithm LbAlgorithm `json:"lb_algorithm,omitzero"`
-	// '#/components/schemas/PatchLbPoolSerializer/properties/protocol'
-	// "$.components.schemas.PatchLbPoolSerializer.properties.protocol"
+	// New communication protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROXY", "PROXYV2", "TCP", "UDP".
 	Protocol LbPoolProtocol `json:"protocol,omitzero"`
@@ -405,37 +351,30 @@ func (r LoadBalancerPoolUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/PatchLbPoolSerializer/properties/healthmonitor/anyOf/0'
-// "$.components.schemas.PatchLbPoolSerializer.properties.healthmonitor.anyOf[0]"
+// New pool health monitor settings
 //
 // The properties Delay, MaxRetries, Timeout are required.
 type LoadBalancerPoolUpdateParamsHealthmonitor struct {
-	// '#/components/schemas/PatchLbHealthMonitorSerializer/properties/delay'
-	// "$.components.schemas.PatchLbHealthMonitorSerializer.properties.delay"
+	// The time, in seconds, between sending probes to members
 	Delay int64 `json:"delay,required"`
-	// '#/components/schemas/PatchLbHealthMonitorSerializer/properties/max_retries'
-	// "$.components.schemas.PatchLbHealthMonitorSerializer.properties.max_retries"
+	// Number of successes before the member is switched to ONLINE state
 	MaxRetries int64 `json:"max_retries,required"`
-	// '#/components/schemas/PatchLbHealthMonitorSerializer/properties/timeout'
-	// "$.components.schemas.PatchLbHealthMonitorSerializer.properties.timeout"
+	// The maximum time to connect. Must be less than the delay value
 	Timeout int64 `json:"timeout,required"`
-	// '#/components/schemas/PatchLbHealthMonitorSerializer/properties/expected_codes/anyOf/0'
-	// "$.components.schemas.PatchLbHealthMonitorSerializer.properties.expected_codes.anyOf[0]"
+	// Can only be used together with `HTTP` or `HTTPS` health monitor type.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
-	// '#/components/schemas/PatchLbHealthMonitorSerializer/properties/max_retries_down/anyOf/0'
-	// "$.components.schemas.PatchLbHealthMonitorSerializer.properties.max_retries_down.anyOf[0]"
+	// Number of failures before the member is switched to ERROR state.
 	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
-	// '#/components/schemas/PatchLbHealthMonitorSerializer/properties/url_path/anyOf/0'
-	// "$.components.schemas.PatchLbHealthMonitorSerializer.properties.url_path.anyOf[0]"
+	// URL Path. Defaults to '/'. Can only be used together with `HTTP` or `HTTPS`
+	// health monitor type.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
-	// '#/components/schemas/PatchLbHealthMonitorSerializer/properties/http_method/anyOf/0'
-	// "$.components.schemas.PatchLbHealthMonitorSerializer.properties.http_method.anyOf[0]"
+	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
+	// type.
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".
 	HTTPMethod HTTPMethod `json:"http_method,omitzero"`
-	// '#/components/schemas/PatchLbHealthMonitorSerializer/properties/type/anyOf/0'
-	// "$.components.schemas.PatchLbHealthMonitorSerializer.properties.type.anyOf[0]"
+	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type HealthMonitorType `json:"type,omitzero"`
@@ -452,34 +391,25 @@ func (r LoadBalancerPoolUpdateParamsHealthmonitor) MarshalJSON() (data []byte, e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/PatchLbPoolSerializer/properties/members/anyOf/0/items'
-// "$.components.schemas.PatchLbPoolSerializer.properties.members.anyOf[0].items"
-//
 // The properties Address, ProtocolPort are required.
 type LoadBalancerPoolUpdateParamsMember struct {
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/address'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.address"
+	// Member IP address
 	Address string `json:"address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/protocol_port'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.protocol_port"
+	// Member IP port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/admin_state_up/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.admin_state_up.anyOf[0]"
+	// true if enabled. Defaults to true
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/instance_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.instance_id.anyOf[0]"
+	// Either subnet_id or instance_id should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/monitor_address/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.monitor_address.anyOf[0]"
+	// An alternate IP address used for health monitoring of a backend member. Default
+	// is null which monitors the member address.
 	MonitorAddress param.Opt[string] `json:"monitor_address,omitzero" format:"ipvanyaddress"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/monitor_port/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.monitor_port.anyOf[0]"
+	// An alternate protocol port used for health monitoring of a backend member.
+	// Default is null which monitors the member protocol_port.
 	MonitorPort param.Opt[int64] `json:"monitor_port,omitzero"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/subnet_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.subnet_id.anyOf[0]"
+	// Either subnet_id or instance_id should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/weight/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.weight.anyOf[0]"
+	// Member weight. Valid values: 0 to 256, defaults to 1
 	Weight param.Opt[int64] `json:"weight,omitzero"`
 	paramObj
 }
@@ -494,24 +424,19 @@ func (r LoadBalancerPoolUpdateParamsMember) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/PatchLbPoolSerializer/properties/session_persistence/anyOf/0'
-// "$.components.schemas.PatchLbPoolSerializer.properties.session_persistence.anyOf[0]"
+// New session persistence settings
 //
 // The property Type is required.
 type LoadBalancerPoolUpdateParamsSessionPersistence struct {
-	// '#/components/schemas/MutateLbSessionPersistence/properties/type'
-	// "$.components.schemas.MutateLbSessionPersistence.properties.type"
+	// Session persistence type
 	//
 	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
 	Type SessionPersistenceType `json:"type,omitzero,required"`
-	// '#/components/schemas/MutateLbSessionPersistence/properties/cookie_name/anyOf/0'
-	// "$.components.schemas.MutateLbSessionPersistence.properties.cookie_name.anyOf[0]"
+	// Should be set if app cookie or http cookie is used
 	CookieName param.Opt[string] `json:"cookie_name,omitzero"`
-	// '#/components/schemas/MutateLbSessionPersistence/properties/persistence_granularity/anyOf/0'
-	// "$.components.schemas.MutateLbSessionPersistence.properties.persistence_granularity.anyOf[0]"
+	// Subnet mask if source_ip is used. For UDP ports only
 	PersistenceGranularity param.Opt[string] `json:"persistence_granularity,omitzero"`
-	// '#/components/schemas/MutateLbSessionPersistence/properties/persistence_timeout/anyOf/0'
-	// "$.components.schemas.MutateLbSessionPersistence.properties.persistence_timeout.anyOf[0]"
+	// Session persistence timeout. For UDP ports only
 	PersistenceTimeout param.Opt[int64] `json:"persistence_timeout,omitzero"`
 	paramObj
 }
@@ -527,20 +452,14 @@ func (r LoadBalancerPoolUpdateParamsSessionPersistence) MarshalJSON() (data []by
 }
 
 type LoadBalancerPoolListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}'].get.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// If true, show member and healthmonitor details of each pool (increases request
+	// time)
 	Details param.Opt[bool] `query:"details,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}'].get.parameters[3]"
+	// Load balancer listener ID
 	ListenerID param.Opt[string] `query:"listener_id,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}'].get.parameters[4]"
+	// Load balancer ID
 	LoadbalancerID param.Opt[string] `query:"loadbalancer_id,omitzero" json:"-"`
 	paramObj
 }
@@ -559,12 +478,8 @@ func (r LoadBalancerPoolListParams) URLQuery() (v url.Values, err error) {
 }
 
 type LoadBalancerPoolDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -573,12 +488,8 @@ type LoadBalancerPoolDeleteParams struct {
 func (f LoadBalancerPoolDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type LoadBalancerPoolGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 

@@ -76,14 +76,10 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	return
 }
 
-// '#/components/schemas/AllowedAddressPairsSerializer'
-// "$.components.schemas.AllowedAddressPairsSerializer"
 type AllowedAddressPairs struct {
-	// '#/components/schemas/AllowedAddressPairsSerializer/properties/ip_address/anyOf/0'
-	// "$.components.schemas.AllowedAddressPairsSerializer.properties.ip_address.anyOf[0]"
+	// Subnet mask or IP address of the port specified in allowed_address_pairs
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/AllowedAddressPairsSerializer/properties/mac_address/anyOf/0'
-	// "$.components.schemas.AllowedAddressPairsSerializer.properties.mac_address.anyOf[0]"
+	// MAC address of the port specified in allowed_address_pairs
 	MacAddress string `json:"mac_address,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -101,55 +97,40 @@ func (r *AllowedAddressPairs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BareMetalFlavorExtendedSerializer'
-// "$.components.schemas.BareMetalFlavorExtendedSerializer"
+// Bare metal flavor schema
 type BaremetalFlavor struct {
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/architecture'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.architecture"
+	// Flavor architecture type
 	Architecture string `json:"architecture,required"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/disabled'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.disabled"
+	// Disabled flavor flag
 	Disabled bool `json:"disabled,required"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/flavor_id'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.flavor_id"
+	// Flavor ID is the same as name
 	FlavorID string `json:"flavor_id,required"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/flavor_name'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.flavor_name"
+	// Flavor name
 	FlavorName string `json:"flavor_name,required"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/os_type'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.os_type"
+	// Flavor operating system
 	OsType string `json:"os_type,required"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/ram'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.ram"
+	// RAM size in MiB
 	Ram int64 `json:"ram,required"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/resource_class/anyOf/0'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.resource_class.anyOf[0]"
+	// Flavor resource class for mapping to hardware capacity
 	ResourceClass string `json:"resource_class,required"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/vcpus'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.vcpus"
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/capacity/anyOf/0'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.capacity.anyOf[0]"
+	// Number of available instances of given configuration
 	Capacity int64 `json:"capacity,nullable"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/currency_code/anyOf/0'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.currency_code.anyOf[0]"
+	// Currency code. Shown if the include_prices query parameter if set to true
 	CurrencyCode string `json:"currency_code,nullable"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/hardware_description'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.hardware_description"
+	// Additional hardware description
 	HardwareDescription map[string]string `json:"hardware_description"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/price_per_hour/anyOf/0'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.price_per_hour.anyOf[0]"
+	// Price per hour. Shown if the include_prices query parameter if set to true
 	PricePerHour float64 `json:"price_per_hour,nullable"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/price_per_month/anyOf/0'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.price_per_month.anyOf[0]"
+	// Price per month. Shown if the include_prices query parameter if set to true
 	PricePerMonth float64 `json:"price_per_month,nullable"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/price_status/anyOf/0'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.price_status.anyOf[0]"
+	// Price status for the UI
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus BaremetalFlavorPriceStatus `json:"price_status,nullable"`
-	// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/reserved_in_stock/anyOf/0'
-	// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.reserved_in_stock.anyOf[0]"
+	// Count of reserved but not used nodes. If a client don't have reservations for
+	// the flavor, it's None.
 	ReservedInStock int64 `json:"reserved_in_stock,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -180,8 +161,7 @@ func (r *BaremetalFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BareMetalFlavorExtendedSerializer/properties/price_status/anyOf/0'
-// "$.components.schemas.BareMetalFlavorExtendedSerializer.properties.price_status.anyOf[0]"
+// Price status for the UI
 type BaremetalFlavorPriceStatus string
 
 const (
@@ -190,14 +170,10 @@ const (
 	BaremetalFlavorPriceStatusShow  BaremetalFlavorPriceStatus = "show"
 )
 
-// '#/components/schemas/BareMetalFlavorExtendedCollectionSerializer'
-// "$.components.schemas.BareMetalFlavorExtendedCollectionSerializer"
 type BaremetalFlavorList struct {
-	// '#/components/schemas/BareMetalFlavorExtendedCollectionSerializer/properties/count'
-	// "$.components.schemas.BareMetalFlavorExtendedCollectionSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/BareMetalFlavorExtendedCollectionSerializer/properties/results'
-	// "$.components.schemas.BareMetalFlavorExtendedCollectionSerializer.properties.results"
+	// Objects
 	Results []BaremetalFlavor `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -215,17 +191,12 @@ func (r *BaremetalFlavorList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BlackholePortSerializer'
-// "$.components.schemas.BlackholePortSerializer"
 type BlackholePort struct {
-	// '#/components/schemas/BlackholePortSerializer/properties/AlarmEnd'
-	// "$.components.schemas.BlackholePortSerializer.properties.AlarmEnd"
+	// A date-time string giving the time that the alarm ended
 	AlarmEnd time.Time `json:"AlarmEnd,required" format:"date-time"`
-	// '#/components/schemas/BlackholePortSerializer/properties/AlarmStart'
-	// "$.components.schemas.BlackholePortSerializer.properties.AlarmStart"
+	// A date-time string giving the time that the alarm started
 	AlarmStart time.Time `json:"AlarmStart,required" format:"date-time"`
-	// '#/components/schemas/BlackholePortSerializer/properties/AlarmState'
-	// "$.components.schemas.BlackholePortSerializer.properties.AlarmState"
+	// Current state of alarm
 	//
 	// Any of "ACK_REQ", "ALARM", "ARCHIVED", "CLEAR", "CLEARING", "CLEARING_FAIL",
 	// "END_GRACE", "END_WAIT", "MANUAL_CLEAR", "MANUAL_CLEARING",
@@ -236,15 +207,11 @@ type BlackholePort struct {
 	// "manual_clearing_fail", "manual_mitigating", "manual_starting",
 	// "manual_starting_fail", "mitigating", "start_wait", "starting", "starting_fail".
 	AlarmState BlackholePortAlarmState `json:"AlarmState,required"`
-	// '#/components/schemas/BlackholePortSerializer/properties/AlertDuration'
-	// "$.components.schemas.BlackholePortSerializer.properties.AlertDuration"
+	// Total alert duration
 	AlertDuration string `json:"AlertDuration,required"`
-	// '#/components/schemas/BlackholePortSerializer/properties/DestinationIP'
-	// "$.components.schemas.BlackholePortSerializer.properties.DestinationIP"
+	// Notification destination IP address
 	DestinationIP string `json:"DestinationIP,required"`
-	// '#/components/schemas/BlackholePortSerializer/properties/ID'
-	// "$.components.schemas.BlackholePortSerializer.properties.ID"
-	ID int64 `json:"ID,required"`
+	ID            int64  `json:"ID,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -265,8 +232,7 @@ func (r *BlackholePort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BlackholePortSerializer/properties/AlarmState'
-// "$.components.schemas.BlackholePortSerializer.properties.AlarmState"
+// Current state of alarm
 type BlackholePortAlarmState string
 
 const (
@@ -308,11 +274,8 @@ const (
 	BlackholePortAlarmStateStartingFail                BlackholePortAlarmState = "starting_fail"
 )
 
-// '#/components/schemas/RemoteConsoleSerializer'
-// "$.components.schemas.RemoteConsoleSerializer"
 type Console struct {
-	// '#/components/schemas/RemoteConsoleSerializer/properties/remote_console'
-	// "$.components.schemas.RemoteConsoleSerializer.properties.remote_console"
+	// Remote console information
 	RemoteConsole ConsoleRemoteConsole `json:"remote_console,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -329,18 +292,11 @@ func (r *Console) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/RemoteConsoleSerializer/properties/remote_console'
-// "$.components.schemas.RemoteConsoleSerializer.properties.remote_console"
+// Remote console information
 type ConsoleRemoteConsole struct {
-	// '#/components/schemas/RemoteConsoleData/properties/protocol'
-	// "$.components.schemas.RemoteConsoleData.properties.protocol"
 	Protocol string `json:"protocol,required"`
-	// '#/components/schemas/RemoteConsoleData/properties/type'
-	// "$.components.schemas.RemoteConsoleData.properties.type"
-	Type string `json:"type,required"`
-	// '#/components/schemas/RemoteConsoleData/properties/url'
-	// "$.components.schemas.RemoteConsoleData.properties.url"
-	URL string `json:"url,required" format:"uri"`
+	Type     string `json:"type,required"`
+	URL      string `json:"url,required" format:"uri"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -358,33 +314,19 @@ func (r *ConsoleRemoteConsole) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GetClientProfileSerializer'
-// "$.components.schemas.GetClientProfileSerializer"
 type DDOSProfile struct {
-	// '#/components/schemas/GetClientProfileSerializer/properties/id'
-	// "$.components.schemas.GetClientProfileSerializer.properties.id"
+	// DDoS protection profile ID
 	ID int64 `json:"id,required"`
-	// '#/components/schemas/GetClientProfileSerializer/properties/profile_template'
-	// "$.components.schemas.GetClientProfileSerializer.properties.profile_template"
-	ProfileTemplate DDOSProfileTemplate `json:"profile_template,required"`
-	// '#/components/schemas/GetClientProfileSerializer/properties/fields'
-	// "$.components.schemas.GetClientProfileSerializer.properties.fields"
-	Fields []DDOSProfileField `json:"fields"`
-	// '#/components/schemas/GetClientProfileSerializer/properties/options/anyOf/0'
-	// "$.components.schemas.GetClientProfileSerializer.properties.options.anyOf[0]"
-	Options DDOSProfileOptionList `json:"options,nullable"`
-	// '#/components/schemas/GetClientProfileSerializer/properties/profile_template_description/anyOf/0'
-	// "$.components.schemas.GetClientProfileSerializer.properties.profile_template_description.anyOf[0]"
+	// Template data
+	ProfileTemplate DDOSProfileTemplate   `json:"profile_template,required"`
+	Fields          []DDOSProfileField    `json:"fields"`
+	Options         DDOSProfileOptionList `json:"options,nullable"`
+	// DDoS profile template description
 	ProfileTemplateDescription string `json:"profile_template_description,nullable"`
-	// '#/components/schemas/GetClientProfileSerializer/properties/protocols/anyOf/0'
-	// "$.components.schemas.GetClientProfileSerializer.properties.protocols.anyOf[0]"
-	Protocols []any `json:"protocols,nullable"`
-	// '#/components/schemas/GetClientProfileSerializer/properties/site/anyOf/0'
-	// "$.components.schemas.GetClientProfileSerializer.properties.site.anyOf[0]"
-	Site string `json:"site,nullable"`
-	// '#/components/schemas/GetClientProfileSerializer/properties/status/anyOf/0'
-	// "$.components.schemas.GetClientProfileSerializer.properties.status.anyOf[0]"
-	Status DDOSProfileStatus `json:"status,nullable"`
+	// List of protocols
+	Protocols []any             `json:"protocols,nullable"`
+	Site      string            `json:"site,nullable"`
+	Status    DDOSProfileStatus `json:"status,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -407,42 +349,18 @@ func (r *DDOSProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ClientProfileFieldSerializer'
-// "$.components.schemas.ClientProfileFieldSerializer"
 type DDOSProfileField struct {
-	// '#/components/schemas/ClientProfileFieldSerializer/properties/id'
-	// "$.components.schemas.ClientProfileFieldSerializer.properties.id"
-	ID int64 `json:"id,required"`
-	// '#/components/schemas/ClientProfileFieldSerializer/properties/default'
-	// "$.components.schemas.ClientProfileFieldSerializer.properties['default']"
-	Default any `json:"default,required"`
-	// '#/components/schemas/ClientProfileFieldSerializer/properties/description'
-	// "$.components.schemas.ClientProfileFieldSerializer.properties.description"
-	Description string `json:"description,required"`
-	// '#/components/schemas/ClientProfileFieldSerializer/properties/field_value'
-	// "$.components.schemas.ClientProfileFieldSerializer.properties.field_value"
-	FieldValue any `json:"field_value,required"`
-	// '#/components/schemas/ClientProfileFieldSerializer/properties/name'
-	// "$.components.schemas.ClientProfileFieldSerializer.properties.name"
-	Name string `json:"name,required"`
-	// '#/components/schemas/ClientProfileFieldSerializer/properties/base_field/anyOf/0'
-	// "$.components.schemas.ClientProfileFieldSerializer.properties.base_field.anyOf[0]"
-	BaseField int64 `json:"base_field,nullable"`
-	// '#/components/schemas/ClientProfileFieldSerializer/properties/field_name/anyOf/0'
-	// "$.components.schemas.ClientProfileFieldSerializer.properties.field_name.anyOf[0]"
-	FieldName string `json:"field_name,nullable"`
-	// '#/components/schemas/ClientProfileFieldSerializer/properties/field_type/anyOf/0'
-	// "$.components.schemas.ClientProfileFieldSerializer.properties.field_type.anyOf[0]"
-	FieldType string `json:"field_type,nullable"`
-	// '#/components/schemas/ClientProfileFieldSerializer/properties/required/anyOf/0'
-	// "$.components.schemas.ClientProfileFieldSerializer.properties.required.anyOf[0]"
-	Required bool `json:"required,nullable"`
-	// '#/components/schemas/ClientProfileFieldSerializer/properties/validation_schema'
-	// "$.components.schemas.ClientProfileFieldSerializer.properties.validation_schema"
-	ValidationSchema any `json:"validation_schema"`
-	// '#/components/schemas/ClientProfileFieldSerializer/properties/value/anyOf/0'
-	// "$.components.schemas.ClientProfileFieldSerializer.properties.value.anyOf[0]"
-	Value string `json:"value,nullable"`
+	ID               int64  `json:"id,required"`
+	Default          any    `json:"default,required"`
+	Description      string `json:"description,required"`
+	FieldValue       any    `json:"field_value,required"`
+	Name             string `json:"name,required"`
+	BaseField        int64  `json:"base_field,nullable"`
+	FieldName        string `json:"field_name,nullable"`
+	FieldType        string `json:"field_type,nullable"`
+	Required         bool   `json:"required,nullable"`
+	ValidationSchema any    `json:"validation_schema"`
+	Value            string `json:"value,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -468,14 +386,10 @@ func (r *DDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ProfileOptionsSerializer'
-// "$.components.schemas.ProfileOptionsSerializer"
 type DDOSProfileOptionList struct {
-	// '#/components/schemas/ProfileOptionsSerializer/properties/active/anyOf/0'
-	// "$.components.schemas.ProfileOptionsSerializer.properties.active.anyOf[0]"
+	// Activate profile.
 	Active bool `json:"active,nullable"`
-	// '#/components/schemas/ProfileOptionsSerializer/properties/bgp/anyOf/0'
-	// "$.components.schemas.ProfileOptionsSerializer.properties.bgp.anyOf[0]"
+	// Activate BGP protocol.
 	Bgp bool `json:"bgp,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -493,14 +407,10 @@ func (r *DDOSProfileOptionList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/DdosProfileStatusSerializer'
-// "$.components.schemas.DdosProfileStatusSerializer"
 type DDOSProfileStatus struct {
-	// '#/components/schemas/DdosProfileStatusSerializer/properties/error_description'
-	// "$.components.schemas.DdosProfileStatusSerializer.properties.error_description"
+	// Description of the error, if it exists
 	ErrorDescription string `json:"error_description,required"`
-	// '#/components/schemas/DdosProfileStatusSerializer/properties/status'
-	// "$.components.schemas.DdosProfileStatusSerializer.properties.status"
+	// Profile status
 	Status string `json:"status,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -518,21 +428,11 @@ func (r *DDOSProfileStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ClientProfileTemplateSerializer'
-// "$.components.schemas.ClientProfileTemplateSerializer"
 type DDOSProfileTemplate struct {
-	// '#/components/schemas/ClientProfileTemplateSerializer/properties/id'
-	// "$.components.schemas.ClientProfileTemplateSerializer.properties.id"
-	ID int64 `json:"id,required"`
-	// '#/components/schemas/ClientProfileTemplateSerializer/properties/name'
-	// "$.components.schemas.ClientProfileTemplateSerializer.properties.name"
-	Name string `json:"name,required"`
-	// '#/components/schemas/ClientProfileTemplateSerializer/properties/description/anyOf/0'
-	// "$.components.schemas.ClientProfileTemplateSerializer.properties.description.anyOf[0]"
-	Description string `json:"description,nullable"`
-	// '#/components/schemas/ClientProfileTemplateSerializer/properties/fields'
-	// "$.components.schemas.ClientProfileTemplateSerializer.properties.fields"
-	Fields []DDOSProfileTemplateField `json:"fields"`
+	ID          int64                      `json:"id,required"`
+	Name        string                     `json:"name,required"`
+	Description string                     `json:"description,nullable"`
+	Fields      []DDOSProfileTemplateField `json:"fields"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -551,30 +451,14 @@ func (r *DDOSProfileTemplate) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ClientProfileTemplateFieldSerializer'
-// "$.components.schemas.ClientProfileTemplateFieldSerializer"
 type DDOSProfileTemplateField struct {
-	// '#/components/schemas/ClientProfileTemplateFieldSerializer/properties/id'
-	// "$.components.schemas.ClientProfileTemplateFieldSerializer.properties.id"
-	ID int64 `json:"id,required"`
-	// '#/components/schemas/ClientProfileTemplateFieldSerializer/properties/name'
-	// "$.components.schemas.ClientProfileTemplateFieldSerializer.properties.name"
-	Name string `json:"name,required"`
-	// '#/components/schemas/ClientProfileTemplateFieldSerializer/properties/default/anyOf/0'
-	// "$.components.schemas.ClientProfileTemplateFieldSerializer.properties['default'].anyOf[0]"
-	Default string `json:"default,nullable"`
-	// '#/components/schemas/ClientProfileTemplateFieldSerializer/properties/description/anyOf/0'
-	// "$.components.schemas.ClientProfileTemplateFieldSerializer.properties.description.anyOf[0]"
-	Description string `json:"description,nullable"`
-	// '#/components/schemas/ClientProfileTemplateFieldSerializer/properties/field_type/anyOf/0'
-	// "$.components.schemas.ClientProfileTemplateFieldSerializer.properties.field_type.anyOf[0]"
-	FieldType string `json:"field_type,nullable"`
-	// '#/components/schemas/ClientProfileTemplateFieldSerializer/properties/required/anyOf/0'
-	// "$.components.schemas.ClientProfileTemplateFieldSerializer.properties.required.anyOf[0]"
-	Required bool `json:"required,nullable"`
-	// '#/components/schemas/ClientProfileTemplateFieldSerializer/properties/validation_schema'
-	// "$.components.schemas.ClientProfileTemplateFieldSerializer.properties.validation_schema"
-	ValidationSchema any `json:"validation_schema"`
+	ID               int64  `json:"id,required"`
+	Name             string `json:"name,required"`
+	Default          string `json:"default,nullable"`
+	Description      string `json:"description,nullable"`
+	FieldType        string `json:"field_type,nullable"`
+	Required         bool   `json:"required,nullable"`
+	ValidationSchema any    `json:"validation_schema"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
@@ -596,23 +480,25 @@ func (r *DDOSProfileTemplateField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceFixedAddressSerializer'
-// "$.components.schemas.InstanceFixedAddressSerializer"
+// Schema for `fixed` addresses. This schema is used when fetching a single
+// instance.
 type FixedAddress struct {
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/addr'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.addr"
+	// IP address
 	Addr string `json:"addr,required"`
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.interface_name.anyOf[0]"
+	// Interface name. This field will be `null` if `with_interfaces_name=true` is not
+	// set in the request when listing instances. It will also be `null` if the
+	// `interface_name` was not specified during instance creation or when attaching
+	// the interface.
 	InterfaceName string `json:"interface_name,required"`
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_id'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_id"
+	// The unique identifier of the subnet associated with this address. Included only
+	// in the response for a single-resource lookup (GET by ID). For the trunk
+	// subports, this field is always set.
 	SubnetID string `json:"subnet_id,required"`
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/subnet_name'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.subnet_name"
+	// The name of the subnet associated with this address. Included only in the
+	// response for a single-resource lookup (GET by ID). For the trunk subports, this
+	// field is always set.
 	SubnetName string `json:"subnet_name,required"`
-	// '#/components/schemas/InstanceFixedAddressSerializer/properties/type'
-	// "$.components.schemas.InstanceFixedAddressSerializer.properties.type"
+	// Type of the address
 	Type constant.Fixed `json:"type,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -633,17 +519,17 @@ func (r *FixedAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceFixedAddressShortSerializer'
-// "$.components.schemas.InstanceFixedAddressShortSerializer"
+// Schema for `fixed` addresses. This schema is used when listing instances. It
+// omits the `subnet_name` and `subnet_id` fields.
 type FixedAddressShort struct {
-	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/addr'
-	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.addr"
+	// IP address
 	Addr string `json:"addr,required"`
-	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.interface_name.anyOf[0]"
+	// Interface name. This field will be `null` if `with_interfaces_name=true` is not
+	// set in the request when listing instances. It will also be `null` if the
+	// `interface_name` was not specified during instance creation or when attaching
+	// the interface.
 	InterfaceName string `json:"interface_name,required"`
-	// '#/components/schemas/InstanceFixedAddressShortSerializer/properties/type'
-	// "$.components.schemas.InstanceFixedAddressShortSerializer.properties.type"
+	// Type of the address
 	Type constant.Fixed `json:"type,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -662,32 +548,22 @@ func (r *FixedAddressShort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/FlavorHardwareDescriptionSerializer'
-// "$.components.schemas.FlavorHardwareDescriptionSerializer"
 type FlavorHardwareDescription struct {
-	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/cpu/anyOf/0'
-	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.cpu.anyOf[0]"
+	// Human-readable CPU description
 	CPU string `json:"cpu,nullable"`
-	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/disk/anyOf/0'
-	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.disk.anyOf[0]"
+	// Human-readable disk description
 	Disk string `json:"disk,nullable"`
-	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/ephemeral/anyOf/0'
-	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.ephemeral.anyOf[0]"
+	// Human-readable ephemeral disk description
 	Ephemeral string `json:"ephemeral,nullable"`
-	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/gpu/anyOf/0'
-	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.gpu.anyOf[0]"
+	// Human-readable GPU description
 	GPU string `json:"gpu,nullable"`
-	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/ipu/anyOf/0'
-	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.ipu.anyOf[0]"
+	// Human-readable IPU description of AI cluster
 	Ipu string `json:"ipu,nullable"`
-	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/network/anyOf/0'
-	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.network.anyOf[0]"
+	// Human-readable NIC description
 	Network string `json:"network,nullable"`
-	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/poplar_count/anyOf/0'
-	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.poplar_count.anyOf[0]"
+	// Human-readable count of poplar servers of AI cluster
 	PoplarCount int64 `json:"poplar_count,nullable"`
-	// '#/components/schemas/FlavorHardwareDescriptionSerializer/properties/ram/anyOf/0'
-	// "$.components.schemas.FlavorHardwareDescriptionSerializer.properties.ram.anyOf[0]"
+	// Human-readable RAM description
 	Ram string `json:"ram,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -711,14 +587,11 @@ func (r *FlavorHardwareDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceFloatingAddressSerializer'
-// "$.components.schemas.InstanceFloatingAddressSerializer"
+// Schema for `floating` addresses.
 type FloatingAddress struct {
-	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/addr'
-	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.addr"
+	// Address
 	Addr string `json:"addr,required"`
-	// '#/components/schemas/InstanceFloatingAddressSerializer/properties/type'
-	// "$.components.schemas.InstanceFloatingAddressSerializer.properties.type"
+	// Type of the address
 	Type constant.Floating `json:"type,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -736,67 +609,55 @@ func (r *FloatingAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/FloatingIPSerializer'
-// "$.components.schemas.FloatingIPSerializer"
 type FloatingIP struct {
-	// '#/components/schemas/FloatingIPSerializer/properties/id/anyOf/0'
-	// "$.components.schemas.FloatingIPSerializer.properties.id.anyOf[0]"
+	// Floating IP ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/FloatingIPSerializer/properties/created_at'
-	// "$.components.schemas.FloatingIPSerializer.properties.created_at"
+	// Datetime when the floating IP was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/FloatingIPSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.FloatingIPSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
-	// '#/components/schemas/FloatingIPSerializer/properties/dns_domain/anyOf/0'
-	// "$.components.schemas.FloatingIPSerializer.properties.dns_domain.anyOf[0]"
+	// This field is deprecated and can be ignored
 	//
 	// Deprecated: deprecated
 	DNSDomain string `json:"dns_domain,required"`
-	// '#/components/schemas/FloatingIPSerializer/properties/dns_name/anyOf/0'
-	// "$.components.schemas.FloatingIPSerializer.properties.dns_name.anyOf[0]"
+	// This field is deprecated and can be ignored
 	//
 	// Deprecated: deprecated
 	DNSName string `json:"dns_name,required"`
-	// '#/components/schemas/FloatingIPSerializer/properties/fixed_ip_address/anyOf/0'
-	// "$.components.schemas.FloatingIPSerializer.properties.fixed_ip_address.anyOf[0]"
+	// IP address of the port the floating IP is attached to
 	FixedIPAddress string `json:"fixed_ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/FloatingIPSerializer/properties/floating_ip_address/anyOf/0'
-	// "$.components.schemas.FloatingIPSerializer.properties.floating_ip_address.anyOf[0]"
+	// IP Address of the floating IP
 	FloatingIPAddress string `json:"floating_ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/FloatingIPSerializer/properties/port_id/anyOf/0'
-	// "$.components.schemas.FloatingIPSerializer.properties.port_id.anyOf[0]"
+	// Port ID the floating IP is attached to. The `fixed_ip_address` is the IP address
+	// of the port.
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// '#/components/schemas/FloatingIPSerializer/properties/project_id'
-	// "$.components.schemas.FloatingIPSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/FloatingIPSerializer/properties/region'
-	// "$.components.schemas.FloatingIPSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/FloatingIPSerializer/properties/region_id'
-	// "$.components.schemas.FloatingIPSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/FloatingIPSerializer/properties/router_id/anyOf/0'
-	// "$.components.schemas.FloatingIPSerializer.properties.router_id.anyOf[0]"
+	// Router ID
 	RouterID string `json:"router_id,required" format:"uuid4"`
-	// '#/components/schemas/FloatingIPSerializer/properties/status/anyOf/0'
-	// "$.components.schemas.FloatingIPSerializer.properties.status.anyOf[0]"
+	// Floating IP status
 	//
 	// Any of "ACTIVE", "DOWN", "ERROR".
 	Status FloatingIPStatus `json:"status,required"`
-	// '#/components/schemas/FloatingIPSerializer/properties/subnet_id/anyOf/0'
-	// "$.components.schemas.FloatingIPSerializer.properties.subnet_id.anyOf[0]"
+	// This field is deprecated and can be ignored
 	//
 	// Deprecated: deprecated
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// '#/components/schemas/FloatingIPSerializer/properties/tags'
-	// "$.components.schemas.FloatingIPSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/FloatingIPSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.FloatingIPSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,required" format:"uuid4"`
-	// '#/components/schemas/FloatingIPSerializer/properties/updated_at'
-	// "$.components.schemas.FloatingIPSerializer.properties.updated_at"
+	// Datetime when the floating IP was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -829,7 +690,6 @@ func (r *FloatingIP) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/FloatingIPStatus' "$.components.schemas.FloatingIPStatus"
 type FloatingIPStatus string
 
 const (
@@ -838,76 +698,60 @@ const (
 	FloatingIPStatusError  FloatingIPStatus = "ERROR"
 )
 
-// '#/components/schemas/GPUClusterServerSerializer'
-// "$.components.schemas.GPUClusterServerSerializer"
 type GPUClusterServer struct {
-	// '#/components/schemas/GPUClusterServerSerializer/properties/addresses'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.addresses"
+	// Map of network_name to list of addresses in that network
 	Addresses map[string][]GPUClusterServerAddressUnion `json:"addresses,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/blackhole_ports'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.blackhole_ports"
+	// IP addresses of the instances that are blackholed by DDoS mitigation system
 	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/ddos_profile/anyOf/0'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.ddos_profile.anyOf[0]"
+	// Advanced DDoS protection profile. It is always `null` if query parameter
+	// `with_ddos=true` is not set.
 	DDOSProfile DDOSProfile `json:"ddos_profile,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/fixed_ip_assignments/anyOf/0'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.fixed_ip_assignments.anyOf[0]"
+	// Fixed IP assigned to instance
 	FixedIPAssignments []GPUClusterServerFixedIPAssignment `json:"fixed_ip_assignments,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/flavor'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.flavor"
+	// Flavor
 	Flavor GPUClusterServerFlavor `json:"flavor,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/instance_created'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.instance_created"
+	// Datetime when instance was created
 	InstanceCreated time.Time `json:"instance_created,required" format:"date-time"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/instance_description/anyOf/0'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.instance_description.anyOf[0]"
+	// Instance description
 	InstanceDescription string `json:"instance_description,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/instance_id'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.instance_id"
+	// Instance ID
 	InstanceID string `json:"instance_id,required" format:"uuid4"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/instance_isolation/anyOf/0'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.instance_isolation.anyOf[0]"
+	// Instance isolation information
 	InstanceIsolation InstanceIsolation `json:"instance_isolation,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/instance_name'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.instance_name"
+	// Instance name
 	InstanceName string `json:"instance_name,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/project_id'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/region'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/region_id'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/security_groups'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.security_groups"
+	// Security groups
 	SecurityGroups []GPUClusterServerSecurityGroup `json:"security_groups,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/ssh_key_name/anyOf/0'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.ssh_key_name.anyOf[0]"
+	// SSH key name assigned to instance
 	SSHKeyName string `json:"ssh_key_name,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/status'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.status"
+	// Instance status
 	//
 	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
 	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
 	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
 	// "UNKNOWN", "VERIFY_RESIZE".
 	Status GPUClusterServerStatus `json:"status,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/tags'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/task_state/anyOf/0'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.task_state.anyOf[0]"
+	// Task state
 	TaskState string `json:"task_state,required"`
-	// '#/components/schemas/GPUClusterServerSerializer/properties/vm_state'
-	// "$.components.schemas.GPUClusterServerSerializer.properties.vm_state"
+	// Virtual machine state (active)
 	//
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
@@ -991,17 +835,12 @@ func (r *GPUClusterServerAddressUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GPUClusterServerSerializer/properties/fixed_ip_assignments/anyOf/0/items'
-// "$.components.schemas.GPUClusterServerSerializer.properties.fixed_ip_assignments.anyOf[0].items"
 type GPUClusterServerFixedIPAssignment struct {
-	// '#/components/schemas/IpAssignmentsSerializer/properties/external'
-	// "$.components.schemas.IpAssignmentsSerializer.properties.external"
+	// Is network external
 	External bool `json:"external,required"`
-	// '#/components/schemas/IpAssignmentsSerializer/properties/ip_address'
-	// "$.components.schemas.IpAssignmentsSerializer.properties.ip_address"
+	// Ip address
 	IPAddress string `json:"ip_address,required"`
-	// '#/components/schemas/IpAssignmentsSerializer/properties/subnet_id'
-	// "$.components.schemas.IpAssignmentsSerializer.properties.subnet_id"
+	// Interface subnet id
 	SubnetID string `json:"subnet_id,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1020,32 +859,23 @@ func (r *GPUClusterServerFixedIPAssignment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GPUClusterServerSerializer/properties/flavor'
-// "$.components.schemas.GPUClusterServerSerializer.properties.flavor"
+// Flavor
 type GPUClusterServerFlavor struct {
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/architecture'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.architecture"
+	// CPU architecture
 	Architecture string `json:"architecture,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/flavor_id'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.flavor_id"
+	// Flavor ID is the same as name
 	FlavorID string `json:"flavor_id,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/flavor_name'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.flavor_name"
+	// Flavor name
 	FlavorName string `json:"flavor_name,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/hardware_description'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.hardware_description"
+	// Additional hardware description
 	HardwareDescription GPUClusterServerFlavorHardwareDescription `json:"hardware_description,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/os_type'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.os_type"
+	// Operating system
 	OsType string `json:"os_type,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/ram'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.ram"
+	// RAM size in MiB
 	Ram int64 `json:"ram,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/resource_class'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.resource_class"
+	// Flavor resource class for mapping to hardware capacity
 	ResourceClass string `json:"resource_class,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/vcpus'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.vcpus"
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1069,26 +899,19 @@ func (r *GPUClusterServerFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/hardware_description'
-// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.hardware_description"
+// Additional hardware description
 type GPUClusterServerFlavorHardwareDescription struct {
-	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/cpu'
-	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.cpu"
+	// Human-readable CPU description
 	CPU string `json:"cpu,required"`
-	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/disk'
-	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.disk"
+	// Human-readable disk description
 	Disk string `json:"disk,required"`
-	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/gpu'
-	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.gpu"
+	// Human-readable GPU description
 	GPU string `json:"gpu,required"`
-	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/license'
-	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.license"
+	// If the flavor is licensed, this field contains the license type
 	License string `json:"license,required"`
-	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/network'
-	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.network"
+	// Human-readable NIC description
 	Network string `json:"network,required"`
-	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/ram'
-	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.ram"
+	// Human-readable RAM description
 	Ram string `json:"ram,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1110,11 +933,8 @@ func (r *GPUClusterServerFlavorHardwareDescription) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GPUClusterServerSerializer/properties/security_groups/items'
-// "$.components.schemas.GPUClusterServerSerializer.properties.security_groups.items"
 type GPUClusterServerSecurityGroup struct {
-	// '#/components/schemas/NameSerializerPydantic/properties/name'
-	// "$.components.schemas.NameSerializerPydantic.properties.name"
+	// Name.
 	Name string `json:"name,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1131,8 +951,7 @@ func (r *GPUClusterServerSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GPUClusterServerSerializer/properties/status'
-// "$.components.schemas.GPUClusterServerSerializer.properties.status"
+// Instance status
 type GPUClusterServerStatus string
 
 const (
@@ -1158,8 +977,7 @@ const (
 	GPUClusterServerStatusVerifyResize     GPUClusterServerStatus = "VERIFY_RESIZE"
 )
 
-// '#/components/schemas/GPUClusterServerSerializer/properties/vm_state'
-// "$.components.schemas.GPUClusterServerSerializer.properties.vm_state"
+// Virtual machine state (active)
 type GPUClusterServerVmState string
 
 const (
@@ -1177,14 +995,10 @@ const (
 	GPUClusterServerVmStateSuspended        GPUClusterServerVmState = "suspended"
 )
 
-// '#/components/schemas/GPUClusterServerCollectionSerializer'
-// "$.components.schemas.GPUClusterServerCollectionSerializer"
 type GPUClusterServerList struct {
-	// '#/components/schemas/GPUClusterServerCollectionSerializer/properties/count'
-	// "$.components.schemas.GPUClusterServerCollectionSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/GPUClusterServerCollectionSerializer/properties/results'
-	// "$.components.schemas.GPUClusterServerCollectionSerializer.properties.results"
+	// Objects
 	Results []GPUClusterServer `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1202,56 +1016,44 @@ func (r *GPUClusterServerList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/GpuImageSerializer'
-// "$.components.schemas.GpuImageSerializer"
 type GPUImage struct {
-	// '#/components/schemas/GpuImageSerializer/properties/id'
-	// "$.components.schemas.GpuImageSerializer.properties.id"
+	// Image ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/GpuImageSerializer/properties/created_at'
-	// "$.components.schemas.GpuImageSerializer.properties.created_at"
+	// Datetime when the image was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/GpuImageSerializer/properties/min_disk'
-	// "$.components.schemas.GpuImageSerializer.properties.min_disk"
+	// Minimal boot volume required
 	MinDisk int64 `json:"min_disk,required"`
-	// '#/components/schemas/GpuImageSerializer/properties/min_ram'
-	// "$.components.schemas.GpuImageSerializer.properties.min_ram"
+	// Minimal VM RAM required
 	MinRam int64 `json:"min_ram,required"`
-	// '#/components/schemas/GpuImageSerializer/properties/name'
-	// "$.components.schemas.GpuImageSerializer.properties.name"
+	// Image name
 	Name string `json:"name,required"`
-	// '#/components/schemas/GpuImageSerializer/properties/status'
-	// "$.components.schemas.GpuImageSerializer.properties.status"
+	// Image status
 	Status string `json:"status,required"`
-	// '#/components/schemas/GpuImageSerializer/properties/tags'
-	// "$.components.schemas.GpuImageSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/GpuImageSerializer/properties/updated_at'
-	// "$.components.schemas.GpuImageSerializer.properties.updated_at"
+	// Datetime when the image was updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// '#/components/schemas/GpuImageSerializer/properties/visibility'
-	// "$.components.schemas.GpuImageSerializer.properties.visibility"
+	// Image visibility. Globally visible images are public
 	Visibility string `json:"visibility,required"`
-	// '#/components/schemas/GpuImageSerializer/properties/architecture/anyOf/0'
-	// "$.components.schemas.GpuImageSerializer.properties.architecture.anyOf[0]"
+	// Image architecture type
 	Architecture string `json:"architecture,nullable"`
-	// '#/components/schemas/GpuImageSerializer/properties/os_distro/anyOf/0'
-	// "$.components.schemas.GpuImageSerializer.properties.os_distro.anyOf[0]"
+	// OS Distribution
 	OsDistro string `json:"os_distro,nullable"`
-	// '#/components/schemas/GpuImageSerializer/properties/os_type/anyOf/0'
-	// "$.components.schemas.GpuImageSerializer.properties.os_type.anyOf[0]"
+	// The operating system installed on the image
 	OsType string `json:"os_type,nullable"`
-	// '#/components/schemas/GpuImageSerializer/properties/os_version/anyOf/0'
-	// "$.components.schemas.GpuImageSerializer.properties.os_version.anyOf[0]"
+	// OS version, i.e. 19.04 (for Ubuntu) or 9.4 for Debian
 	OsVersion string `json:"os_version,nullable"`
-	// '#/components/schemas/GpuImageSerializer/properties/size'
-	// "$.components.schemas.GpuImageSerializer.properties.size"
+	// Image size in bytes.
 	Size int64 `json:"size"`
-	// '#/components/schemas/GpuImageSerializer/properties/ssh_key/anyOf/0'
-	// "$.components.schemas.GpuImageSerializer.properties.ssh_key.anyOf[0]"
+	// Whether the image supports SSH key or not
 	SSHKey string `json:"ssh_key,nullable"`
-	// '#/components/schemas/GpuImageSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.GpuImageSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1283,14 +1085,10 @@ func (r *GPUImage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ListGpuImageSerializer'
-// "$.components.schemas.ListGpuImageSerializer"
 type GPUImageList struct {
-	// '#/components/schemas/ListGpuImageSerializer/properties/count'
-	// "$.components.schemas.ListGpuImageSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/ListGpuImageSerializer/properties/results'
-	// "$.components.schemas.ListGpuImageSerializer.properties.results"
+	// Objects
 	Results []GPUImage `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1308,95 +1106,73 @@ func (r *GPUImageList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ImageSerializer' "$.components.schemas.ImageSerializer"
 type Image struct {
-	// '#/components/schemas/ImageSerializer/properties/id'
-	// "$.components.schemas.ImageSerializer.properties.id"
+	// Image ID
 	ID string `json:"id,required"`
-	// '#/components/schemas/ImageSerializer/properties/created_at'
-	// "$.components.schemas.ImageSerializer.properties.created_at"
+	// Datetime when the image was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/ImageSerializer/properties/disk_format'
-	// "$.components.schemas.ImageSerializer.properties.disk_format"
+	// Disk format
 	DiskFormat string `json:"disk_format,required"`
-	// '#/components/schemas/ImageSerializer/properties/min_disk'
-	// "$.components.schemas.ImageSerializer.properties.min_disk"
+	// Minimal boot volume required
 	MinDisk int64 `json:"min_disk,required"`
-	// '#/components/schemas/ImageSerializer/properties/min_ram'
-	// "$.components.schemas.ImageSerializer.properties.min_ram"
+	// Minimal VM RAM required
 	MinRam int64 `json:"min_ram,required"`
-	// '#/components/schemas/ImageSerializer/properties/name'
-	// "$.components.schemas.ImageSerializer.properties.name"
+	// Image display name
 	Name string `json:"name,required"`
-	// '#/components/schemas/ImageSerializer/properties/os_distro'
-	// "$.components.schemas.ImageSerializer.properties.os_distro"
+	// OS Distribution, i.e. Debian, CentOS, Ubuntu, CoreOS etc.
 	OsDistro string `json:"os_distro,required"`
-	// '#/components/schemas/ImageSerializer/properties/os_type'
-	// "$.components.schemas.ImageSerializer.properties.os_type"
+	// The operating system installed on the image.
 	//
 	// Any of "linux", "windows".
 	OsType ImageOsType `json:"os_type,required"`
-	// '#/components/schemas/ImageSerializer/properties/os_version'
-	// "$.components.schemas.ImageSerializer.properties.os_version"
+	// OS version, i.e. 19.04 (for Ubuntu) or 9.4 for Debian
 	OsVersion string `json:"os_version,required"`
-	// '#/components/schemas/ImageSerializer/properties/project_id'
-	// "$.components.schemas.ImageSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/ImageSerializer/properties/region'
-	// "$.components.schemas.ImageSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/ImageSerializer/properties/region_id'
-	// "$.components.schemas.ImageSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/ImageSerializer/properties/size'
-	// "$.components.schemas.ImageSerializer.properties.size"
+	// Image size in bytes
 	Size int64 `json:"size,required"`
-	// '#/components/schemas/ImageSerializer/properties/status'
-	// "$.components.schemas.ImageSerializer.properties.status"
+	// Image status, i.e. active
 	Status string `json:"status,required"`
-	// '#/components/schemas/ImageSerializer/properties/tags'
-	// "$.components.schemas.ImageSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/ImageSerializer/properties/updated_at'
-	// "$.components.schemas.ImageSerializer.properties.updated_at"
+	// Datetime when the image was updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// '#/components/schemas/ImageSerializer/properties/visibility'
-	// "$.components.schemas.ImageSerializer.properties.visibility"
+	// Image visibility. Globally visible images are public
 	Visibility string `json:"visibility,required"`
-	// '#/components/schemas/ImageSerializer/properties/architecture'
-	// "$.components.schemas.ImageSerializer.properties.architecture"
+	// An image architecture type: aarch64, x86_64
 	//
 	// Any of "aarch64", "x86_64".
 	Architecture ImageArchitecture `json:"architecture"`
-	// '#/components/schemas/ImageSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.ImageSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,nullable"`
-	// '#/components/schemas/ImageSerializer/properties/description/anyOf/0'
-	// "$.components.schemas.ImageSerializer.properties.description.anyOf[0]"
-	Description string `json:"description,nullable"`
-	// '#/components/schemas/ImageSerializer/properties/display_order/anyOf/0'
-	// "$.components.schemas.ImageSerializer.properties.display_order.anyOf[0]"
-	DisplayOrder int64 `json:"display_order,nullable"`
-	// '#/components/schemas/ImageSerializer/properties/hw_firmware_type/anyOf/0'
-	// "$.components.schemas.ImageSerializer.properties.hw_firmware_type.anyOf[0]"
+	// Image description
+	Description  string `json:"description,nullable"`
+	DisplayOrder int64  `json:"display_order,nullable"`
+	// Specifies the type of firmware with which to boot the guest.
 	//
 	// Any of "bios", "uefi".
 	HwFirmwareType ImageHwFirmwareType `json:"hw_firmware_type,nullable"`
-	// '#/components/schemas/ImageSerializer/properties/hw_machine_type/anyOf/0'
-	// "$.components.schemas.ImageSerializer.properties.hw_machine_type.anyOf[0]"
+	// A virtual chipset type.
 	//
 	// Any of "pc", "q35".
 	HwMachineType ImageHwMachineType `json:"hw_machine_type,nullable"`
-	// '#/components/schemas/ImageSerializer/properties/is_baremetal/anyOf/0'
-	// "$.components.schemas.ImageSerializer.properties.is_baremetal.anyOf[0]"
+	// Set to true if the image will be used by bare metal servers. Defaults to false.
 	IsBaremetal bool `json:"is_baremetal,nullable"`
-	// '#/components/schemas/ImageSerializer/properties/ssh_key/anyOf/0'
-	// "$.components.schemas.ImageSerializer.properties.ssh_key.anyOf[0]"
+	// Whether the image supports SSH key or not
 	//
 	// Any of "allow", "deny", "required".
 	SSHKey ImageSSHKey `json:"ssh_key,nullable"`
-	// '#/components/schemas/ImageSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.ImageSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1438,8 +1214,7 @@ func (r *Image) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ImageSerializer/properties/os_type'
-// "$.components.schemas.ImageSerializer.properties.os_type"
+// The operating system installed on the image.
 type ImageOsType string
 
 const (
@@ -1447,8 +1222,7 @@ const (
 	ImageOsTypeWindows ImageOsType = "windows"
 )
 
-// '#/components/schemas/ImageSerializer/properties/architecture'
-// "$.components.schemas.ImageSerializer.properties.architecture"
+// An image architecture type: aarch64, x86_64
 type ImageArchitecture string
 
 const (
@@ -1456,8 +1230,7 @@ const (
 	ImageArchitectureX86_64  ImageArchitecture = "x86_64"
 )
 
-// '#/components/schemas/ImageSerializer/properties/hw_firmware_type/anyOf/0'
-// "$.components.schemas.ImageSerializer.properties.hw_firmware_type.anyOf[0]"
+// Specifies the type of firmware with which to boot the guest.
 type ImageHwFirmwareType string
 
 const (
@@ -1465,8 +1238,7 @@ const (
 	ImageHwFirmwareTypeUefi ImageHwFirmwareType = "uefi"
 )
 
-// '#/components/schemas/ImageSerializer/properties/hw_machine_type/anyOf/0'
-// "$.components.schemas.ImageSerializer.properties.hw_machine_type.anyOf[0]"
+// A virtual chipset type.
 type ImageHwMachineType string
 
 const (
@@ -1474,8 +1246,7 @@ const (
 	ImageHwMachineTypeQ35 ImageHwMachineType = "q35"
 )
 
-// '#/components/schemas/ImageSerializer/properties/ssh_key/anyOf/0'
-// "$.components.schemas.ImageSerializer.properties.ssh_key.anyOf[0]"
+// Whether the image supports SSH key or not
 type ImageSSHKey string
 
 const (
@@ -1484,14 +1255,10 @@ const (
 	ImageSSHKeyRequired ImageSSHKey = "required"
 )
 
-// '#/components/schemas/ImageCollectionSerializer'
-// "$.components.schemas.ImageCollectionSerializer"
 type ImageList struct {
-	// '#/components/schemas/ImageCollectionSerializer/properties/count'
-	// "$.components.schemas.ImageCollectionSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/ImageCollectionSerializer/properties/results'
-	// "$.components.schemas.ImageCollectionSerializer.properties.results"
+	// Objects
 	Results []Image `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1509,82 +1276,65 @@ func (r *ImageList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceSerializer'
-// "$.components.schemas.InstanceSerializer"
 type Instance struct {
-	// '#/components/schemas/InstanceSerializer/properties/addresses'
-	// "$.components.schemas.InstanceSerializer.properties.addresses"
+	// Map of network_name to list of addresses in that network
 	Addresses map[string][]InstanceAddressUnion `json:"addresses,required"`
-	// '#/components/schemas/InstanceSerializer/properties/blackhole_ports'
-	// "$.components.schemas.InstanceSerializer.properties.blackhole_ports"
+	// IP addresses of the instances that are blackholed by DDoS mitigation system
 	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
-	// '#/components/schemas/InstanceSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.InstanceSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required"`
-	// '#/components/schemas/InstanceSerializer/properties/ddos_profile/anyOf/0'
-	// "$.components.schemas.InstanceSerializer.properties.ddos_profile.anyOf[0]"
+	// Advanced DDoS protection profile. It is always `null` if query parameter
+	// `with_ddos=true` is not set.
 	DDOSProfile DDOSProfile `json:"ddos_profile,required"`
-	// '#/components/schemas/InstanceSerializer/properties/fixed_ip_assignments/anyOf/0'
-	// "$.components.schemas.InstanceSerializer.properties.fixed_ip_assignments.anyOf[0]"
+	// Fixed IP assigned to instance
 	FixedIPAssignments []InstanceFixedIPAssignment `json:"fixed_ip_assignments,required"`
-	// '#/components/schemas/InstanceSerializer/properties/flavor'
-	// "$.components.schemas.InstanceSerializer.properties.flavor"
+	// Flavor
 	Flavor InstanceFlavorUnion `json:"flavor,required"`
-	// '#/components/schemas/InstanceSerializer/properties/instance_created'
-	// "$.components.schemas.InstanceSerializer.properties.instance_created"
+	// Datetime when instance was created
 	InstanceCreated time.Time `json:"instance_created,required" format:"date-time"`
-	// '#/components/schemas/InstanceSerializer/properties/instance_description/anyOf/0'
-	// "$.components.schemas.InstanceSerializer.properties.instance_description.anyOf[0]"
+	// Instance description
 	InstanceDescription string `json:"instance_description,required"`
-	// '#/components/schemas/InstanceSerializer/properties/instance_id'
-	// "$.components.schemas.InstanceSerializer.properties.instance_id"
+	// Instance ID
 	InstanceID string `json:"instance_id,required" format:"uuid4"`
-	// '#/components/schemas/InstanceSerializer/properties/instance_isolation/anyOf/0'
-	// "$.components.schemas.InstanceSerializer.properties.instance_isolation.anyOf[0]"
+	// Instance isolation information
 	InstanceIsolation InstanceIsolation `json:"instance_isolation,required"`
-	// '#/components/schemas/InstanceSerializer/properties/instance_name'
-	// "$.components.schemas.InstanceSerializer.properties.instance_name"
+	// Instance name
 	InstanceName string `json:"instance_name,required"`
-	// '#/components/schemas/InstanceSerializer/properties/project_id'
-	// "$.components.schemas.InstanceSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/InstanceSerializer/properties/region'
-	// "$.components.schemas.InstanceSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/InstanceSerializer/properties/region_id'
-	// "$.components.schemas.InstanceSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/InstanceSerializer/properties/security_groups'
-	// "$.components.schemas.InstanceSerializer.properties.security_groups"
+	// Security groups
 	SecurityGroups []InstanceSecurityGroup `json:"security_groups,required"`
-	// '#/components/schemas/InstanceSerializer/properties/ssh_key_name/anyOf/0'
-	// "$.components.schemas.InstanceSerializer.properties.ssh_key_name.anyOf[0]"
+	// SSH key assigned to instance
 	SSHKeyName string `json:"ssh_key_name,required"`
-	// '#/components/schemas/InstanceSerializer/properties/status'
-	// "$.components.schemas.InstanceSerializer.properties.status"
+	// Instance status
 	//
 	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
 	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
 	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
 	// "UNKNOWN", "VERIFY_RESIZE".
 	Status InstanceStatus `json:"status,required"`
-	// '#/components/schemas/InstanceSerializer/properties/tags'
-	// "$.components.schemas.InstanceSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/InstanceSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.InstanceSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,required"`
-	// '#/components/schemas/InstanceSerializer/properties/task_state/anyOf/0'
-	// "$.components.schemas.InstanceSerializer.properties.task_state.anyOf[0]"
+	// Task state
 	TaskState string `json:"task_state,required"`
-	// '#/components/schemas/InstanceSerializer/properties/vm_state'
-	// "$.components.schemas.InstanceSerializer.properties.vm_state"
+	// Virtual machine state (active)
 	//
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
 	VmState InstanceVmState `json:"vm_state,required"`
-	// '#/components/schemas/InstanceSerializer/properties/volumes'
-	// "$.components.schemas.InstanceSerializer.properties.volumes"
+	// List of volumes
 	Volumes []InstanceVolume `json:"volumes,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1666,17 +1416,12 @@ func (r *InstanceAddressUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceSerializer/properties/fixed_ip_assignments/anyOf/0/items'
-// "$.components.schemas.InstanceSerializer.properties.fixed_ip_assignments.anyOf[0].items"
 type InstanceFixedIPAssignment struct {
-	// '#/components/schemas/IpAssignmentsSerializer/properties/external'
-	// "$.components.schemas.IpAssignmentsSerializer.properties.external"
+	// Is network external
 	External bool `json:"external,required"`
-	// '#/components/schemas/IpAssignmentsSerializer/properties/ip_address'
-	// "$.components.schemas.IpAssignmentsSerializer.properties.ip_address"
+	// Ip address
 	IPAddress string `json:"ip_address,required"`
-	// '#/components/schemas/IpAssignmentsSerializer/properties/subnet_id'
-	// "$.components.schemas.IpAssignmentsSerializer.properties.subnet_id"
+	// Interface subnet id
 	SubnetID string `json:"subnet_id,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1779,29 +1524,21 @@ func (r *InstanceFlavorUnionHardwareDescription) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceSerializer/properties/flavor/anyOf/0'
-// "$.components.schemas.InstanceSerializer.properties.flavor.anyOf[0]"
+// Instances flavor schema embedded into instance schema
 type InstanceFlavorInstanceFlavor struct {
-	// '#/components/schemas/InstanceFlavorSerializer/properties/architecture'
-	// "$.components.schemas.InstanceFlavorSerializer.properties.architecture"
+	// CPU architecture
 	Architecture string `json:"architecture,required"`
-	// '#/components/schemas/InstanceFlavorSerializer/properties/flavor_id'
-	// "$.components.schemas.InstanceFlavorSerializer.properties.flavor_id"
+	// Flavor ID is the same as name
 	FlavorID string `json:"flavor_id,required"`
-	// '#/components/schemas/InstanceFlavorSerializer/properties/flavor_name'
-	// "$.components.schemas.InstanceFlavorSerializer.properties.flavor_name"
+	// Flavor name
 	FlavorName string `json:"flavor_name,required"`
-	// '#/components/schemas/InstanceFlavorSerializer/properties/hardware_description'
-	// "$.components.schemas.InstanceFlavorSerializer.properties.hardware_description"
+	// Additional hardware description
 	HardwareDescription InstanceFlavorInstanceFlavorHardwareDescription `json:"hardware_description,required"`
-	// '#/components/schemas/InstanceFlavorSerializer/properties/os_type'
-	// "$.components.schemas.InstanceFlavorSerializer.properties.os_type"
+	// Flavor operating system
 	OsType string `json:"os_type,required"`
-	// '#/components/schemas/InstanceFlavorSerializer/properties/ram'
-	// "$.components.schemas.InstanceFlavorSerializer.properties.ram"
+	// RAM size in MiB
 	Ram int64 `json:"ram,required"`
-	// '#/components/schemas/InstanceFlavorSerializer/properties/vcpus'
-	// "$.components.schemas.InstanceFlavorSerializer.properties.vcpus"
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1824,14 +1561,11 @@ func (r *InstanceFlavorInstanceFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceFlavorSerializer/properties/hardware_description'
-// "$.components.schemas.InstanceFlavorSerializer.properties.hardware_description"
+// Additional hardware description
 type InstanceFlavorInstanceFlavorHardwareDescription struct {
-	// '#/components/schemas/InstanceFlavorHardwareDescriptionSerializer/properties/ram'
-	// "$.components.schemas.InstanceFlavorHardwareDescriptionSerializer.properties.ram"
+	// RAM description
 	Ram string `json:"ram,required"`
-	// '#/components/schemas/InstanceFlavorHardwareDescriptionSerializer/properties/vcpus'
-	// "$.components.schemas.InstanceFlavorHardwareDescriptionSerializer.properties.vcpus"
+	// CPU description
 	Vcpus string `json:"vcpus,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1849,32 +1583,23 @@ func (r *InstanceFlavorInstanceFlavorHardwareDescription) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceSerializer/properties/flavor/anyOf/1'
-// "$.components.schemas.InstanceSerializer.properties.flavor.anyOf[1]"
+// Bare metal flavor schema embedded into instance schema
 type InstanceFlavorBareMetalFlavor struct {
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/architecture'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.architecture"
+	// CPU architecture
 	Architecture string `json:"architecture,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/flavor_id'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.flavor_id"
+	// Flavor ID is the same as name
 	FlavorID string `json:"flavor_id,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/flavor_name'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.flavor_name"
+	// Flavor name
 	FlavorName string `json:"flavor_name,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/hardware_description'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.hardware_description"
+	// Additional hardware description
 	HardwareDescription InstanceFlavorBareMetalFlavorHardwareDescription `json:"hardware_description,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/os_type'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.os_type"
+	// Operating system
 	OsType string `json:"os_type,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/ram'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.ram"
+	// RAM size in MiB
 	Ram int64 `json:"ram,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/resource_class'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.resource_class"
+	// Flavor resource class for mapping to hardware capacity
 	ResourceClass string `json:"resource_class,required"`
-	// '#/components/schemas/BareMetalFlavorSerializer/properties/vcpus'
-	// "$.components.schemas.BareMetalFlavorSerializer.properties.vcpus"
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1898,23 +1623,17 @@ func (r *InstanceFlavorBareMetalFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BareMetalFlavorSerializer/properties/hardware_description'
-// "$.components.schemas.BareMetalFlavorSerializer.properties.hardware_description"
+// Additional hardware description
 type InstanceFlavorBareMetalFlavorHardwareDescription struct {
-	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/cpu'
-	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.cpu"
+	// Human-readable CPU description
 	CPU string `json:"cpu,required"`
-	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/disk'
-	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.disk"
+	// Human-readable disk description
 	Disk string `json:"disk,required"`
-	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/license'
-	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.license"
+	// If the flavor is licensed, this field contains the license type
 	License string `json:"license,required"`
-	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/network'
-	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.network"
+	// Human-readable NIC description
 	Network string `json:"network,required"`
-	// '#/components/schemas/BareMetalFlavorHardwareDescriptionSerializer/properties/ram'
-	// "$.components.schemas.BareMetalFlavorHardwareDescriptionSerializer.properties.ram"
+	// Human-readable RAM description
 	Ram string `json:"ram,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1935,32 +1654,23 @@ func (r *InstanceFlavorBareMetalFlavorHardwareDescription) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceSerializer/properties/flavor/anyOf/2'
-// "$.components.schemas.InstanceSerializer.properties.flavor.anyOf[2]"
+// GPU cluster flavor schema embedded into instance schema
 type InstanceFlavorGPUClusterFlavor struct {
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/architecture'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.architecture"
+	// CPU architecture
 	Architecture string `json:"architecture,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/flavor_id'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.flavor_id"
+	// Flavor ID is the same as name
 	FlavorID string `json:"flavor_id,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/flavor_name'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.flavor_name"
+	// Flavor name
 	FlavorName string `json:"flavor_name,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/hardware_description'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.hardware_description"
+	// Additional hardware description
 	HardwareDescription InstanceFlavorGPUClusterFlavorHardwareDescription `json:"hardware_description,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/os_type'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.os_type"
+	// Operating system
 	OsType string `json:"os_type,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/ram'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.ram"
+	// RAM size in MiB
 	Ram int64 `json:"ram,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/resource_class'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.resource_class"
+	// Flavor resource class for mapping to hardware capacity
 	ResourceClass string `json:"resource_class,required"`
-	// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/vcpus'
-	// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.vcpus"
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -1984,26 +1694,19 @@ func (r *InstanceFlavorGPUClusterFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/DeprecatedGpuClusterFlavorSerializer/properties/hardware_description'
-// "$.components.schemas.DeprecatedGpuClusterFlavorSerializer.properties.hardware_description"
+// Additional hardware description
 type InstanceFlavorGPUClusterFlavorHardwareDescription struct {
-	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/cpu'
-	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.cpu"
+	// Human-readable CPU description
 	CPU string `json:"cpu,required"`
-	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/disk'
-	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.disk"
+	// Human-readable disk description
 	Disk string `json:"disk,required"`
-	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/gpu'
-	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.gpu"
+	// Human-readable GPU description
 	GPU string `json:"gpu,required"`
-	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/license'
-	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.license"
+	// If the flavor is licensed, this field contains the license type
 	License string `json:"license,required"`
-	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/network'
-	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.network"
+	// Human-readable NIC description
 	Network string `json:"network,required"`
-	// '#/components/schemas/DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer/properties/ram'
-	// "$.components.schemas.DeprecatedAIClusterServerFlavorHardwareDescriptionSerializer.properties.ram"
+	// Human-readable RAM description
 	Ram string `json:"ram,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2025,11 +1728,8 @@ func (r *InstanceFlavorGPUClusterFlavorHardwareDescription) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceSerializer/properties/security_groups/items'
-// "$.components.schemas.InstanceSerializer.properties.security_groups.items"
 type InstanceSecurityGroup struct {
-	// '#/components/schemas/NameSerializerPydantic/properties/name'
-	// "$.components.schemas.NameSerializerPydantic.properties.name"
+	// Name.
 	Name string `json:"name,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2046,8 +1746,7 @@ func (r *InstanceSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceSerializer/properties/status'
-// "$.components.schemas.InstanceSerializer.properties.status"
+// Instance status
 type InstanceStatus string
 
 const (
@@ -2073,8 +1772,7 @@ const (
 	InstanceStatusVerifyResize     InstanceStatus = "VERIFY_RESIZE"
 )
 
-// '#/components/schemas/InstanceSerializer/properties/vm_state'
-// "$.components.schemas.InstanceSerializer.properties.vm_state"
+// Virtual machine state (active)
 type InstanceVmState string
 
 const (
@@ -2092,14 +1790,10 @@ const (
 	InstanceVmStateSuspended        InstanceVmState = "suspended"
 )
 
-// '#/components/schemas/InstanceSerializer/properties/volumes/items'
-// "$.components.schemas.InstanceSerializer.properties.volumes.items"
 type InstanceVolume struct {
-	// '#/components/schemas/InstanceVolumeSerializer/properties/id'
-	// "$.components.schemas.InstanceVolumeSerializer.properties.id"
+	// Volume ID
 	ID string `json:"id,required"`
-	// '#/components/schemas/InstanceVolumeSerializer/properties/delete_on_termination'
-	// "$.components.schemas.InstanceVolumeSerializer.properties.delete_on_termination"
+	// Whether the volume is deleted together with the VM
 	DeleteOnTermination bool `json:"delete_on_termination,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2117,11 +1811,8 @@ func (r *InstanceVolume) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/IsolationSerializer'
-// "$.components.schemas.IsolationSerializer"
 type InstanceIsolation struct {
-	// '#/components/schemas/IsolationSerializer/properties/reason/anyOf/0'
-	// "$.components.schemas.IsolationSerializer.properties.reason.anyOf[0]"
+	// The reason of instance isolation if it is isolated from external internet.
 	Reason string `json:"reason,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2138,14 +1829,10 @@ func (r *InstanceIsolation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceCollectionSerializer'
-// "$.components.schemas.InstanceCollectionSerializer"
 type InstanceList struct {
-	// '#/components/schemas/InstanceCollectionSerializer/properties/count'
-	// "$.components.schemas.InstanceCollectionSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/InstanceCollectionSerializer/properties/results'
-	// "$.components.schemas.InstanceCollectionSerializer.properties.results"
+	// Objects
 	Results []Instance `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2163,8 +1850,6 @@ func (r *InstanceList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceMetricsTimeUnitEnum'
-// "$.components.schemas.InstanceMetricsTimeUnitEnum"
 type InstanceMetricsTimeUnit string
 
 const (
@@ -2172,8 +1857,6 @@ const (
 	InstanceMetricsTimeUnitHour InstanceMetricsTimeUnit = "hour"
 )
 
-// '#/components/schemas/InterfaceIPFamily'
-// "$.components.schemas.InterfaceIPFamily"
 type InterfaceIPFamily string
 
 const (
@@ -2182,14 +1865,10 @@ const (
 	InterfaceIPFamilyIpv6 InterfaceIPFamily = "ipv6"
 )
 
-// '#/components/schemas/PortIpSubnetIdSerializer'
-// "$.components.schemas.PortIpSubnetIdSerializer"
 type IPAssignment struct {
-	// '#/components/schemas/PortIpSubnetIdSerializer/properties/ip_address'
-	// "$.components.schemas.PortIpSubnetIdSerializer.properties.ip_address"
+	// IP address
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/PortIpSubnetIdSerializer/properties/subnet_id'
-	// "$.components.schemas.PortIpSubnetIdSerializer.properties.subnet_id"
+	// ID of the subnet that allocated the IP
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2207,7 +1886,6 @@ func (r *IPAssignment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/IPVersion' "$.components.schemas.IPVersion"
 type IPVersion int64
 
 const (
@@ -2215,11 +1893,8 @@ const (
 	IPVersion6 IPVersion = 6
 )
 
-// '#/components/schemas/LaasIndexRetentionPolicyPydanticSerializer'
-// "$.components.schemas.LaasIndexRetentionPolicyPydanticSerializer"
 type LaasIndexRetentionPolicy struct {
-	// '#/components/schemas/LaasIndexRetentionPolicyPydanticSerializer/properties/period/anyOf/0'
-	// "$.components.schemas.LaasIndexRetentionPolicyPydanticSerializer.properties.period.anyOf[0]"
+	// Duration of days for which logs must be kept.
 	Period int64 `json:"period,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2246,13 +1921,9 @@ func (r LaasIndexRetentionPolicy) ToParam() LaasIndexRetentionPolicyParam {
 	return param.OverrideObj[LaasIndexRetentionPolicyParam](r.RawJSON())
 }
 
-// '#/components/schemas/LaasIndexRetentionPolicyPydanticSerializer'
-// "$.components.schemas.LaasIndexRetentionPolicyPydanticSerializer"
-//
 // The property Period is required.
 type LaasIndexRetentionPolicyParam struct {
-	// '#/components/schemas/LaasIndexRetentionPolicyPydanticSerializer/properties/period/anyOf/0'
-	// "$.components.schemas.LaasIndexRetentionPolicyPydanticSerializer.properties.period.anyOf[0]"
+	// Duration of days for which logs must be kept.
 	Period param.Opt[int64] `json:"period,omitzero,required"`
 	paramObj
 }
@@ -2265,89 +1936,70 @@ func (r LaasIndexRetentionPolicyParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/LoadbalancerSerializer'
-// "$.components.schemas.LoadbalancerSerializer"
 type LoadBalancer struct {
-	// '#/components/schemas/LoadbalancerSerializer/properties/id'
-	// "$.components.schemas.LoadbalancerSerializer.properties.id"
+	// Load balancer ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/created_at'
-	// "$.components.schemas.LoadbalancerSerializer.properties.created_at"
+	// Datetime when the load balancer was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/name'
-	// "$.components.schemas.LoadbalancerSerializer.properties.name"
+	// Load balancer name
 	Name string `json:"name,required"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/operating_status'
-	// "$.components.schemas.LoadbalancerSerializer.properties.operating_status"
+	// Load balancer operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/project_id'
-	// "$.components.schemas.LoadbalancerSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/provisioning_status'
-	// "$.components.schemas.LoadbalancerSerializer.properties.provisioning_status"
+	// Load balancer lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/region'
-	// "$.components.schemas.LoadbalancerSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/region_id'
-	// "$.components.schemas.LoadbalancerSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/tags_v2'
-	// "$.components.schemas.LoadbalancerSerializer.properties.tags_v2"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	TagsV2 []Tag `json:"tags_v2,required"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/additional_vips'
-	// "$.components.schemas.LoadbalancerSerializer.properties.additional_vips"
+	// List of additional IP addresses
 	AdditionalVips []LoadBalancerAdditionalVip `json:"additional_vips"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.LoadbalancerSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/ddos_profile/anyOf/0'
-	// "$.components.schemas.LoadbalancerSerializer.properties.ddos_profile.anyOf[0]"
+	// Loadbalancer advanced DDoS protection profile.
 	DDOSProfile DDOSProfile `json:"ddos_profile,nullable"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/flavor/anyOf/0'
-	// "$.components.schemas.LoadbalancerSerializer.properties.flavor.anyOf[0]"
+	// Load balancer flavor (if not default)
 	Flavor LoadBalancerFlavor `json:"flavor,nullable"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/floating_ips'
-	// "$.components.schemas.LoadbalancerSerializer.properties.floating_ips"
+	// List of assigned floating IPs
 	FloatingIPs []FloatingIP `json:"floating_ips"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/listeners'
-	// "$.components.schemas.LoadbalancerSerializer.properties.listeners"
+	// Load balancer listeners
 	Listeners []LoadBalancerListener `json:"listeners"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/logging/anyOf/0'
-	// "$.components.schemas.LoadbalancerSerializer.properties.logging.anyOf[0]"
+	// Logging configuration
 	Logging Logging `json:"logging,nullable"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/preferred_connectivity'
-	// "$.components.schemas.LoadbalancerSerializer.properties.preferred_connectivity"
+	// Preferred option to establish connectivity between load balancer and its pools
+	// members
 	//
 	// Any of "L2", "L3".
 	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/stats/anyOf/0'
-	// "$.components.schemas.LoadbalancerSerializer.properties.stats.anyOf[0]"
+	// Statistics of load balancer.
 	Stats LoadBalancerStatistics `json:"stats,nullable"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.LoadbalancerSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/updated_at/anyOf/0'
-	// "$.components.schemas.LoadbalancerSerializer.properties.updated_at.anyOf[0]"
+	// Datetime when the load balancer was last updated
 	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/vip_address/anyOf/0'
-	// "$.components.schemas.LoadbalancerSerializer.properties.vip_address.anyOf[0]"
+	// Load balancer IP address
 	VipAddress string `json:"vip_address,nullable" format:"ipvanyaddress"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/vip_ip_family/anyOf/0'
-	// "$.components.schemas.LoadbalancerSerializer.properties.vip_ip_family.anyOf[0]"
+	// Load balancer IP family
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	VipIPFamily InterfaceIPFamily `json:"vip_ip_family,nullable"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/vip_port_id/anyOf/0'
-	// "$.components.schemas.LoadbalancerSerializer.properties.vip_port_id.anyOf[0]"
+	// The ID of the Virtual IP (VIP) port.
 	VipPortID string `json:"vip_port_id,nullable" format:"uuid4"`
-	// '#/components/schemas/LoadbalancerSerializer/properties/vrrp_ips'
-	// "$.components.schemas.LoadbalancerSerializer.properties.vrrp_ips"
+	// List of VRRP IP addresses
 	VrrpIPs []LoadBalancerVrrpIP `json:"vrrp_ips"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2387,14 +2039,10 @@ func (r *LoadBalancer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LoadbalancerSerializer/properties/additional_vips/items'
-// "$.components.schemas.LoadbalancerSerializer.properties.additional_vips.items"
 type LoadBalancerAdditionalVip struct {
-	// '#/components/schemas/NetworkPortFixedIp/properties/ip_address'
-	// "$.components.schemas.NetworkPortFixedIp.properties.ip_address"
+	// IP address
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/NetworkPortFixedIp/properties/subnet_id'
-	// "$.components.schemas.NetworkPortFixedIp.properties.subnet_id"
+	// Subnet UUID
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2412,20 +2060,15 @@ func (r *LoadBalancerAdditionalVip) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LoadbalancerSerializer/properties/flavor/anyOf/0'
-// "$.components.schemas.LoadbalancerSerializer.properties.flavor.anyOf[0]"
+// Load balancer flavor (if not default)
 type LoadBalancerFlavor struct {
-	// '#/components/schemas/LbFlavorSerializer/properties/flavor_id'
-	// "$.components.schemas.LbFlavorSerializer.properties.flavor_id"
+	// Flavor ID is the same as name
 	FlavorID string `json:"flavor_id,required"`
-	// '#/components/schemas/LbFlavorSerializer/properties/flavor_name'
-	// "$.components.schemas.LbFlavorSerializer.properties.flavor_name"
+	// Flavor name
 	FlavorName string `json:"flavor_name,required"`
-	// '#/components/schemas/LbFlavorSerializer/properties/ram'
-	// "$.components.schemas.LbFlavorSerializer.properties.ram"
+	// RAM size in MiB
 	Ram int64 `json:"ram,required"`
-	// '#/components/schemas/LbFlavorSerializer/properties/vcpus'
-	// "$.components.schemas.LbFlavorSerializer.properties.vcpus"
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2445,11 +2088,8 @@ func (r *LoadBalancerFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LoadbalancerSerializer/properties/listeners/items'
-// "$.components.schemas.LoadbalancerSerializer.properties.listeners.items"
 type LoadBalancerListener struct {
-	// '#/components/schemas/ListenerSerializer/properties/id'
-	// "$.components.schemas.ListenerSerializer.properties.id"
+	// Listener ID
 	ID string `json:"id,required" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2466,19 +2106,14 @@ func (r *LoadBalancerListener) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LoadbalancerSerializer/properties/vrrp_ips/items'
-// "$.components.schemas.LoadbalancerSerializer.properties.vrrp_ips.items"
 type LoadBalancerVrrpIP struct {
-	// '#/components/schemas/VRRPIP/properties/ip_address'
-	// "$.components.schemas.VRRPIP.properties.ip_address"
+	// IP address
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/VRRPIP/properties/role'
-	// "$.components.schemas.VRRPIP.properties.role"
+	// LoadBalancer instance role to which VRRP IP belong
 	//
 	// Any of "BACKUP", "MASTER", "STANDALONE".
 	Role LoadBalancerInstanceRole `json:"role,required"`
-	// '#/components/schemas/VRRPIP/properties/subnet_id'
-	// "$.components.schemas.VRRPIP.properties.subnet_id"
+	// Subnet UUID
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2497,8 +2132,6 @@ func (r *LoadBalancerVrrpIP) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LoadBalancerInstanceRoleEnum'
-// "$.components.schemas.LoadBalancerInstanceRoleEnum"
 type LoadBalancerInstanceRole string
 
 const (
@@ -2507,8 +2140,6 @@ const (
 	LoadBalancerInstanceRoleStandalone LoadBalancerInstanceRole = "STANDALONE"
 )
 
-// '#/components/schemas/MemberConnectivity'
-// "$.components.schemas.MemberConnectivity"
 type LoadBalancerMemberConnectivity string
 
 const (
@@ -2516,8 +2147,6 @@ const (
 	LoadBalancerMemberConnectivityL3 LoadBalancerMemberConnectivity = "L3"
 )
 
-// '#/components/schemas/OperatingStatusEnum'
-// "$.components.schemas.OperatingStatusEnum"
 type LoadBalancerOperatingStatus string
 
 const (
@@ -2529,23 +2158,16 @@ const (
 	LoadBalancerOperatingStatusOnline    LoadBalancerOperatingStatus = "ONLINE"
 )
 
-// '#/components/schemas/LoadbalancerStatsSerializer'
-// "$.components.schemas.LoadbalancerStatsSerializer"
 type LoadBalancerStatistics struct {
-	// '#/components/schemas/LoadbalancerStatsSerializer/properties/active_connections'
-	// "$.components.schemas.LoadbalancerStatsSerializer.properties.active_connections"
+	// Currently active connections
 	ActiveConnections int64 `json:"active_connections,required"`
-	// '#/components/schemas/LoadbalancerStatsSerializer/properties/bytes_in'
-	// "$.components.schemas.LoadbalancerStatsSerializer.properties.bytes_in"
+	// Total bytes received
 	BytesIn int64 `json:"bytes_in,required"`
-	// '#/components/schemas/LoadbalancerStatsSerializer/properties/bytes_out'
-	// "$.components.schemas.LoadbalancerStatsSerializer.properties.bytes_out"
+	// Total bytes sent
 	BytesOut int64 `json:"bytes_out,required"`
-	// '#/components/schemas/LoadbalancerStatsSerializer/properties/request_errors'
-	// "$.components.schemas.LoadbalancerStatsSerializer.properties.request_errors"
+	// Total requests that were unable to be fulfilled
 	RequestErrors int64 `json:"request_errors,required"`
-	// '#/components/schemas/LoadbalancerStatsSerializer/properties/total_connections'
-	// "$.components.schemas.LoadbalancerStatsSerializer.properties.total_connections"
+	// Total connections handled
 	TotalConnections int64 `json:"total_connections,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2566,20 +2188,14 @@ func (r *LoadBalancerStatistics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/LoggingOutSerializer'
-// "$.components.schemas.LoggingOutSerializer"
 type Logging struct {
-	// '#/components/schemas/LoggingOutSerializer/properties/destination_region_id/anyOf/0'
-	// "$.components.schemas.LoggingOutSerializer.properties.destination_region_id.anyOf[0]"
+	// ID of the region in which the logs will be stored
 	DestinationRegionID int64 `json:"destination_region_id,required"`
-	// '#/components/schemas/LoggingOutSerializer/properties/enabled'
-	// "$.components.schemas.LoggingOutSerializer.properties.enabled"
+	// Indicates if log streaming is enabled or disabled
 	Enabled bool `json:"enabled,required"`
-	// '#/components/schemas/LoggingOutSerializer/properties/topic_name/anyOf/0'
-	// "$.components.schemas.LoggingOutSerializer.properties.topic_name.anyOf[0]"
+	// The topic name to stream logs to
 	TopicName string `json:"topic_name,required"`
-	// '#/components/schemas/LoggingOutSerializer/properties/retention_policy/anyOf/0'
-	// "$.components.schemas.LoggingOutSerializer.properties.retention_policy.anyOf[0]"
+	// Logs retention policy
 	RetentionPolicy LaasIndexRetentionPolicy `json:"retention_policy,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2599,62 +2215,49 @@ func (r *Logging) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/NetworkSerializer'
-// "$.components.schemas.NetworkSerializer"
 type Network struct {
-	// '#/components/schemas/NetworkSerializer/properties/id'
-	// "$.components.schemas.NetworkSerializer.properties.id"
+	// Network ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/NetworkSerializer/properties/created_at'
-	// "$.components.schemas.NetworkSerializer.properties.created_at"
+	// Datetime when the network was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/NetworkSerializer/properties/external'
-	// "$.components.schemas.NetworkSerializer.properties.external"
+	// True if the network `router:external` attribute
 	External bool `json:"external,required"`
-	// '#/components/schemas/NetworkSerializer/properties/name'
-	// "$.components.schemas.NetworkSerializer.properties.name"
+	// Network name
 	Name string `json:"name,required"`
-	// '#/components/schemas/NetworkSerializer/properties/port_security_enabled'
-	// "$.components.schemas.NetworkSerializer.properties.port_security_enabled"
+	// Indicates port_security_enabled status of all newly created in the network
+	// ports.
 	PortSecurityEnabled bool `json:"port_security_enabled,required"`
-	// '#/components/schemas/NetworkSerializer/properties/region'
-	// "$.components.schemas.NetworkSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/NetworkSerializer/properties/region_id'
-	// "$.components.schemas.NetworkSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/NetworkSerializer/properties/shared'
-	// "$.components.schemas.NetworkSerializer.properties.shared"
+	// True when the network is shared with your project by external owner
 	Shared bool `json:"shared,required"`
-	// '#/components/schemas/NetworkSerializer/properties/subnets'
-	// "$.components.schemas.NetworkSerializer.properties.subnets"
+	// List of subnetworks
 	Subnets []string `json:"subnets,required" format:"uuid4"`
-	// '#/components/schemas/NetworkSerializer/properties/tags'
-	// "$.components.schemas.NetworkSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/NetworkSerializer/properties/type'
-	// "$.components.schemas.NetworkSerializer.properties.type"
+	// Network type (vlan, vxlan)
 	Type string `json:"type,required"`
-	// '#/components/schemas/NetworkSerializer/properties/updated_at'
-	// "$.components.schemas.NetworkSerializer.properties.updated_at"
+	// Datetime when the network was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// '#/components/schemas/NetworkSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.NetworkSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// '#/components/schemas/NetworkSerializer/properties/default/anyOf/0'
-	// "$.components.schemas.NetworkSerializer.properties['default'].anyOf[0]"
+	// True if network has is_default attribute
 	Default bool `json:"default,nullable"`
-	// '#/components/schemas/NetworkSerializer/properties/mtu'
-	// "$.components.schemas.NetworkSerializer.properties.mtu"
+	// MTU (maximum transmission unit). Default value is 1450
 	Mtu int64 `json:"mtu"`
-	// '#/components/schemas/NetworkSerializer/properties/project_id/anyOf/0'
-	// "$.components.schemas.NetworkSerializer.properties.project_id.anyOf[0]"
+	// Project ID
 	ProjectID int64 `json:"project_id,nullable"`
-	// '#/components/schemas/NetworkSerializer/properties/segmentation_id/anyOf/0'
-	// "$.components.schemas.NetworkSerializer.properties.segmentation_id.anyOf[0]"
+	// Id of network segment
 	SegmentationID int64 `json:"segmentation_id,nullable"`
-	// '#/components/schemas/NetworkSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.NetworkSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2688,62 +2291,48 @@ func (r *Network) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/NetworkSubnetworkSerializer'
-// "$.components.schemas.NetworkSubnetworkSerializer"
 type NetworkDetails struct {
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/id'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.id"
+	// Network ID
 	ID string `json:"id,required" format:"uuid4"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/created_at'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.created_at"
+	// Datetime when the network was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/external'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.external"
+	// True if the network `router:external` attribute
 	External bool `json:"external,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/name'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.name"
+	// Network name
 	Name string `json:"name,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/port_security_enabled'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.port_security_enabled"
+	// Indicates port_security_enabled status of all newly created in the network
+	// ports.
 	PortSecurityEnabled bool `json:"port_security_enabled,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/region'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/region_id'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/shared'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.shared"
+	// True when the network is shared with your project by external owner
 	Shared bool `json:"shared,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/tags'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/type'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.type"
+	// Network type (vlan, vxlan)
 	Type string `json:"type,required"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/updated_at'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.updated_at"
+	// Datetime when the network was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/default/anyOf/0'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties['default'].anyOf[0]"
+	// True if network has is_default attribute
 	Default bool `json:"default,nullable"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/mtu'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.mtu"
+	// MTU (maximum transmission unit). Default value is 1450
 	Mtu int64 `json:"mtu"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/project_id/anyOf/0'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.project_id.anyOf[0]"
+	// Project ID
 	ProjectID int64 `json:"project_id,nullable"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/segmentation_id/anyOf/0'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.segmentation_id.anyOf[0]"
-	SegmentationID int64 `json:"segmentation_id,nullable"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/subnets/anyOf/0'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.subnets.anyOf[0]"
-	Subnets []Subnet `json:"subnets,nullable"`
-	// '#/components/schemas/NetworkSubnetworkSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.NetworkSubnetworkSerializer.properties.task_id.anyOf[0]"
+	// Id of network segment
+	SegmentationID int64    `json:"segmentation_id,nullable"`
+	Subnets        []Subnet `json:"subnets,nullable"`
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2777,38 +2366,26 @@ func (r *NetworkDetails) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceInterfaceTrunkSerializer'
-// "$.components.schemas.InstanceInterfaceTrunkSerializer"
 type NetworkInterface struct {
-	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/allowed_address_pairs'
-	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.allowed_address_pairs"
+	// Group of subnet masks and/or IP addresses that share the current IP as VIP
 	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs,required"`
-	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/floatingip_details'
-	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.floatingip_details"
+	// Bodies of floating IPs that are NAT-ing IPs of this port
 	FloatingipDetails []FloatingIP `json:"floatingip_details,required"`
-	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/ip_assignments'
-	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.ip_assignments"
+	// IP addresses assigned to this port
 	IPAssignments []IPAssignment `json:"ip_assignments,required"`
-	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/network_details'
-	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.network_details"
+	// Body of the network this port is attached to
 	NetworkDetails NetworkDetails `json:"network_details,required"`
-	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/network_id'
-	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.network_id"
+	// ID of the network the port is attached to
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/port_id'
-	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.port_id"
+	// ID of virtual ethernet port object
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/port_security_enabled'
-	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.port_security_enabled"
+	// Port security status
 	PortSecurityEnabled bool `json:"port_security_enabled,required"`
-	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/sub_ports'
-	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.sub_ports"
+	// body of ports that are included into trunk port
 	SubPorts []NetworkInterfaceSubPort `json:"sub_ports,required"`
-	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.interface_name.anyOf[0]"
+	// Interface name
 	InterfaceName string `json:"interface_name,nullable"`
-	// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/mac_address/anyOf/0'
-	// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.mac_address.anyOf[0]"
+	// MAC address of the virtual port
 	MacAddress string `json:"mac_address,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2834,41 +2411,28 @@ func (r *NetworkInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceInterfaceTrunkSerializer/properties/sub_ports/items'
-// "$.components.schemas.InstanceInterfaceTrunkSerializer.properties.sub_ports.items"
 type NetworkInterfaceSubPort struct {
-	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/allowed_address_pairs'
-	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.allowed_address_pairs"
+	// Group of subnet masks and/or IP addresses that share the current IP as VIP
 	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs,required"`
-	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/floatingip_details'
-	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.floatingip_details"
+	// Bodies of floating IPs that are NAT-ing IPs of this port
 	FloatingipDetails []FloatingIP `json:"floatingip_details,required"`
-	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/ip_assignments'
-	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.ip_assignments"
+	// IP addresses assigned to this port
 	IPAssignments []IPAssignment `json:"ip_assignments,required"`
-	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/network_details'
-	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.network_details"
+	// Body of the network this port is attached to
 	NetworkDetails NetworkDetails `json:"network_details,required"`
-	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/network_id'
-	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.network_id"
+	// ID of the network the port is attached to
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/port_id'
-	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.port_id"
+	// ID of virtual ethernet port object
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/port_security_enabled'
-	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.port_security_enabled"
+	// Port security status
 	PortSecurityEnabled bool `json:"port_security_enabled,required"`
-	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/segmentation_id'
-	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.segmentation_id"
+	// id of network segment
 	SegmentationID int64 `json:"segmentation_id,required"`
-	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/segmentation_type'
-	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.segmentation_type"
+	// type of network segment
 	SegmentationType string `json:"segmentation_type,required"`
-	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/interface_name/anyOf/0'
-	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.interface_name.anyOf[0]"
+	// Interface name
 	InterfaceName string `json:"interface_name,nullable"`
-	// '#/components/schemas/InstanceInterfaceSubportSerializer/properties/mac_address/anyOf/0'
-	// "$.components.schemas.InstanceInterfaceSubportSerializer.properties.mac_address.anyOf[0]"
+	// MAC address of the virtual port
 	MacAddress string `json:"mac_address,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2895,14 +2459,10 @@ func (r *NetworkInterfaceSubPort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InstanceInterfaceTrunkCollectionSerializer'
-// "$.components.schemas.InstanceInterfaceTrunkCollectionSerializer"
 type NetworkInterfaceList struct {
-	// '#/components/schemas/InstanceInterfaceTrunkCollectionSerializer/properties/count'
-	// "$.components.schemas.InstanceInterfaceTrunkCollectionSerializer.properties.count"
+	// Number of objects
 	Count int64 `json:"count,required"`
-	// '#/components/schemas/InstanceInterfaceTrunkCollectionSerializer/properties/results'
-	// "$.components.schemas.InstanceInterfaceTrunkCollectionSerializer.properties.results"
+	// Objects
 	Results []NetworkInterface `json:"results,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2920,8 +2480,6 @@ func (r *NetworkInterfaceList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/ProvisioningStatusEnum'
-// "$.components.schemas.ProvisioningStatusEnum"
 type ProvisioningStatus string
 
 const (
@@ -2933,14 +2491,11 @@ const (
 	ProvisioningStatusPendingUpdate ProvisioningStatus = "PENDING_UPDATE"
 )
 
-// '#/components/schemas/RouteOutSerializer'
-// "$.components.schemas.RouteOutSerializer"
 type Route struct {
-	// '#/components/schemas/RouteOutSerializer/properties/destination'
-	// "$.components.schemas.RouteOutSerializer.properties.destination"
+	// CIDR of destination IPv4 subnet.
 	Destination string `json:"destination,required" format:"ipvanynetwork"`
-	// '#/components/schemas/RouteOutSerializer/properties/nexthop'
-	// "$.components.schemas.RouteOutSerializer.properties.nexthop"
+	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
+	// CIDR.
 	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -2958,69 +2513,55 @@ func (r *Route) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/SubnetSerializer' "$.components.schemas.SubnetSerializer"
 type Subnet struct {
-	// '#/components/schemas/SubnetSerializer/properties/cidr'
-	// "$.components.schemas.SubnetSerializer.properties.cidr"
+	// CIDR
 	Cidr string `json:"cidr,required" format:"ipvanynetwork"`
-	// '#/components/schemas/SubnetSerializer/properties/created_at'
-	// "$.components.schemas.SubnetSerializer.properties.created_at"
+	// Datetime when the subnet was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/SubnetSerializer/properties/enable_dhcp'
-	// "$.components.schemas.SubnetSerializer.properties.enable_dhcp"
+	// True if DHCP should be enabled
 	EnableDhcp bool `json:"enable_dhcp,required"`
-	// '#/components/schemas/SubnetSerializer/properties/ip_version'
-	// "$.components.schemas.SubnetSerializer.properties.ip_version"
+	// IP version
 	//
 	// Any of 4, 6.
 	IPVersion int64 `json:"ip_version,required"`
-	// '#/components/schemas/SubnetSerializer/properties/name'
-	// "$.components.schemas.SubnetSerializer.properties.name"
+	// Subnet name
 	Name string `json:"name,required"`
-	// '#/components/schemas/SubnetSerializer/properties/network_id'
-	// "$.components.schemas.SubnetSerializer.properties.network_id"
+	// Network ID
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// '#/components/schemas/SubnetSerializer/properties/project_id'
-	// "$.components.schemas.SubnetSerializer.properties.project_id"
+	// Project ID
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/SubnetSerializer/properties/region'
-	// "$.components.schemas.SubnetSerializer.properties.region"
+	// Region name
 	Region string `json:"region,required"`
-	// '#/components/schemas/SubnetSerializer/properties/region_id'
-	// "$.components.schemas.SubnetSerializer.properties.region_id"
+	// Region ID
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/SubnetSerializer/properties/tags'
-	// "$.components.schemas.SubnetSerializer.properties.tags"
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
-	// '#/components/schemas/SubnetSerializer/properties/updated_at'
-	// "$.components.schemas.SubnetSerializer.properties.updated_at"
+	// Datetime when the subnet was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// '#/components/schemas/SubnetSerializer/properties/id/anyOf/0'
-	// "$.components.schemas.SubnetSerializer.properties.id.anyOf[0]"
+	// Subnet id.
 	ID string `json:"id,nullable" format:"uuid4"`
-	// '#/components/schemas/SubnetSerializer/properties/available_ips/anyOf/0'
-	// "$.components.schemas.SubnetSerializer.properties.available_ips.anyOf[0]"
+	// Number of available ips in subnet
 	AvailableIPs int64 `json:"available_ips,nullable"`
-	// '#/components/schemas/SubnetSerializer/properties/creator_task_id/anyOf/0'
-	// "$.components.schemas.SubnetSerializer.properties.creator_task_id.anyOf[0]"
+	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// '#/components/schemas/SubnetSerializer/properties/dns_nameservers/anyOf/0'
-	// "$.components.schemas.SubnetSerializer.properties.dns_nameservers.anyOf[0]"
+	// List IP addresses of a DNS resolver reachable from the network
 	DNSNameservers []string `json:"dns_nameservers,nullable" format:"ipvanyaddress"`
-	// '#/components/schemas/SubnetSerializer/properties/gateway_ip/anyOf/0'
-	// "$.components.schemas.SubnetSerializer.properties.gateway_ip.anyOf[0]"
+	// Default GW IPv4 address, advertised in DHCP routes of this subnet. If null, no
+	// gateway is advertised by this subnet.
 	GatewayIP string `json:"gateway_ip,nullable" format:"ipvanyaddress"`
-	// '#/components/schemas/SubnetSerializer/properties/has_router'
-	// "$.components.schemas.SubnetSerializer.properties.has_router"
+	// Subnet has router attached to it
 	HasRouter bool `json:"has_router"`
-	// '#/components/schemas/SubnetSerializer/properties/host_routes/anyOf/0'
-	// "$.components.schemas.SubnetSerializer.properties.host_routes.anyOf[0]"
+	// List of custom static routes to advertise via DHCP.
 	HostRoutes []Route `json:"host_routes,nullable"`
-	// '#/components/schemas/SubnetSerializer/properties/task_id/anyOf/0'
-	// "$.components.schemas.SubnetSerializer.properties.task_id.anyOf[0]"
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// '#/components/schemas/SubnetSerializer/properties/total_ips/anyOf/0'
-	// "$.components.schemas.SubnetSerializer.properties.total_ips.anyOf[0]"
+	// Total number of ips in subnet
 	TotalIPs int64 `json:"total_ips,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -3056,16 +2597,17 @@ func (r *Subnet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/TagSerializer' "$.components.schemas.TagSerializer"
+// A tag is a key-value pair that can be associated with a resource, enabling
+// efficient filtering and grouping for better organization and management. Some
+// tags are read-only and cannot be modified by the user. Tags are also integrated
+// with cost reports, allowing cost data to be filtered based on tag keys or
+// values.
 type Tag struct {
-	// '#/components/schemas/TagSerializer/properties/key'
-	// "$.components.schemas.TagSerializer.properties.key"
+	// Tag key. The maximum size for a key is 255 bytes.
 	Key string `json:"key,required"`
-	// '#/components/schemas/TagSerializer/properties/read_only'
-	// "$.components.schemas.TagSerializer.properties.read_only"
+	// If true, the tag is read-only and cannot be modified by the user
 	ReadOnly bool `json:"read_only,required"`
-	// '#/components/schemas/TagSerializer/properties/value'
-	// "$.components.schemas.TagSerializer.properties.value"
+	// Tag value. The maximum size for a value is 1024 bytes.
 	Value string `json:"value,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -3086,11 +2628,8 @@ func (r *Tag) UnmarshalJSON(data []byte) error {
 
 type TagUpdateList map[string]string
 
-// '#/components/schemas/TaskIDsSerializer'
-// "$.components.schemas.TaskIDsSerializer"
 type TaskIDList struct {
-	// '#/components/schemas/TaskIDsSerializer/properties/tasks'
-	// "$.components.schemas.TaskIDsSerializer.properties.tasks"
+	// List of task IDs
 	Tasks []string `json:"tasks,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.

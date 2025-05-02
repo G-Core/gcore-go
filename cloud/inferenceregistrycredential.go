@@ -151,20 +151,14 @@ func (r *InferenceRegistryCredentialService) Replace(ctx context.Context, creden
 	return
 }
 
-// '#/components/schemas/InferenceRegistryCredentialOutSerializer'
-// "$.components.schemas.InferenceRegistryCredentialOutSerializer"
 type InferenceRegistryCredential struct {
-	// '#/components/schemas/InferenceRegistryCredentialOutSerializer/properties/name'
-	// "$.components.schemas.InferenceRegistryCredentialOutSerializer.properties.name"
+	// Registry credential name.
 	Name string `json:"name,required"`
-	// '#/components/schemas/InferenceRegistryCredentialOutSerializer/properties/project_id'
-	// "$.components.schemas.InferenceRegistryCredentialOutSerializer.properties.project_id"
+	// Project ID to which the inference registry credentials belongs.
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/InferenceRegistryCredentialOutSerializer/properties/registry_url'
-	// "$.components.schemas.InferenceRegistryCredentialOutSerializer.properties.registry_url"
+	// Registry URL.
 	RegistryURL string `json:"registry_url,required"`
-	// '#/components/schemas/InferenceRegistryCredentialOutSerializer/properties/username'
-	// "$.components.schemas.InferenceRegistryCredentialOutSerializer.properties.username"
+	// Registry username.
 	Username string `json:"username,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -184,23 +178,16 @@ func (r *InferenceRegistryCredential) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/InferenceRegistryCredentialOutFullSerializer'
-// "$.components.schemas.InferenceRegistryCredentialOutFullSerializer"
 type InferenceRegistryCredentialFull struct {
-	// '#/components/schemas/InferenceRegistryCredentialOutFullSerializer/properties/name'
-	// "$.components.schemas.InferenceRegistryCredentialOutFullSerializer.properties.name"
+	// Registry credential name.
 	Name string `json:"name,required"`
-	// '#/components/schemas/InferenceRegistryCredentialOutFullSerializer/properties/password'
-	// "$.components.schemas.InferenceRegistryCredentialOutFullSerializer.properties.password"
+	// Registry password.
 	Password string `json:"password,required"`
-	// '#/components/schemas/InferenceRegistryCredentialOutFullSerializer/properties/project_id'
-	// "$.components.schemas.InferenceRegistryCredentialOutFullSerializer.properties.project_id"
+	// Project ID to which the inference registry credentials belongs.
 	ProjectID int64 `json:"project_id,required"`
-	// '#/components/schemas/InferenceRegistryCredentialOutFullSerializer/properties/registry_url'
-	// "$.components.schemas.InferenceRegistryCredentialOutFullSerializer.properties.registry_url"
+	// Registry URL.
 	RegistryURL string `json:"registry_url,required"`
-	// '#/components/schemas/InferenceRegistryCredentialOutFullSerializer/properties/username'
-	// "$.components.schemas.InferenceRegistryCredentialOutFullSerializer.properties.username"
+	// Registry username.
 	Username string `json:"username,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -222,20 +209,15 @@ func (r *InferenceRegistryCredentialFull) UnmarshalJSON(data []byte) error {
 }
 
 type InferenceRegistryCredentialNewParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fregistry_credentials/post/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/registry_credentials'].post.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/components/schemas/InferenceRegistryCredentialInSerializer/properties/name'
-	// "$.components.schemas.InferenceRegistryCredentialInSerializer.properties.name"
+	// Registry credential name.
 	Name string `json:"name,required"`
-	// '#/components/schemas/InferenceRegistryCredentialInSerializer/properties/password'
-	// "$.components.schemas.InferenceRegistryCredentialInSerializer.properties.password"
+	// Registry password.
 	Password string `json:"password,required"`
-	// '#/components/schemas/InferenceRegistryCredentialInSerializer/properties/registry_url'
-	// "$.components.schemas.InferenceRegistryCredentialInSerializer.properties.registry_url"
+	// Registry URL.
 	RegistryURL string `json:"registry_url,required"`
-	// '#/components/schemas/InferenceRegistryCredentialInSerializer/properties/username'
-	// "$.components.schemas.InferenceRegistryCredentialInSerializer.properties.username"
+	// Registry username.
 	Username string `json:"username,required"`
 	paramObj
 }
@@ -252,14 +234,12 @@ func (r InferenceRegistryCredentialNewParams) MarshalJSON() (data []byte, err er
 }
 
 type InferenceRegistryCredentialListParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fregistry_credentials/get/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/registry_credentials'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fregistry_credentials/get/parameters/1'
-	// "$.paths['/cloud/v3/inference/{project_id}/registry_credentials'].get.parameters[1]"
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fregistry_credentials/get/parameters/2'
-	// "$.paths['/cloud/v3/inference/{project_id}/registry_credentials'].get.parameters[2]"
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
@@ -280,8 +260,7 @@ func (r InferenceRegistryCredentialListParams) URLQuery() (v url.Values, err err
 }
 
 type InferenceRegistryCredentialDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fregistry_credentials%2F%7Bcredential_name%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/registry_credentials/{credential_name}']['delete'].parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -293,8 +272,7 @@ func (f InferenceRegistryCredentialDeleteParams) IsPresent() bool {
 }
 
 type InferenceRegistryCredentialGetParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fregistry_credentials%2F%7Bcredential_name%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/registry_credentials/{credential_name}'].get.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
@@ -306,17 +284,13 @@ func (f InferenceRegistryCredentialGetParams) IsPresent() bool {
 }
 
 type InferenceRegistryCredentialReplaceParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2F%7Bproject_id%7D%2Fregistry_credentials%2F%7Bcredential_name%7D/put/parameters/0/schema'
-	// "$.paths['/cloud/v3/inference/{project_id}/registry_credentials/{credential_name}'].put.parameters[0].schema"
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/components/schemas/InferenceRegistryCredentialInUpdateSerializer/properties/password'
-	// "$.components.schemas.InferenceRegistryCredentialInUpdateSerializer.properties.password"
+	// Registry password.
 	Password string `json:"password,required"`
-	// '#/components/schemas/InferenceRegistryCredentialInUpdateSerializer/properties/registry_url'
-	// "$.components.schemas.InferenceRegistryCredentialInUpdateSerializer.properties.registry_url"
+	// Registry URL.
 	RegistryURL string `json:"registry_url,required"`
-	// '#/components/schemas/InferenceRegistryCredentialInUpdateSerializer/properties/username'
-	// "$.components.schemas.InferenceRegistryCredentialInUpdateSerializer.properties.username"
+	// Registry username.
 	Username string `json:"username,required"`
 	paramObj
 }

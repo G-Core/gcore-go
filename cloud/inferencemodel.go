@@ -72,62 +72,42 @@ func (r *InferenceModelService) Get(ctx context.Context, modelID string, opts ..
 	return
 }
 
-// '#/components/schemas/MLCatalogModelCardSerializerV3'
-// "$.components.schemas.MLCatalogModelCardSerializerV3"
 type MlcatalogModelCard struct {
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/id'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.id"
+	// Model ID.
 	ID string `json:"id,required" format:"uuid"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/category/anyOf/0'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.category.anyOf[0]"
+	// Category of the model.
 	Category string `json:"category,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/default_flavor_name/anyOf/0'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.default_flavor_name.anyOf[0]"
+	// Default flavor for the model.
 	DefaultFlavorName string `json:"default_flavor_name,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/description'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.description"
+	// Description of the model.
 	Description string `json:"description,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/developer/anyOf/0'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.developer.anyOf[0]"
+	// Developer of the model.
 	Developer string `json:"developer,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/documentation_page/anyOf/0'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.documentation_page.anyOf[0]"
+	// Path to the documentation page.
 	DocumentationPage string `json:"documentation_page,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/eula_url/anyOf/0'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.eula_url.anyOf[0]"
+	// URL to the EULA text.
 	EulaURL string `json:"eula_url,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/example_curl_request/anyOf/0'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.example_curl_request.anyOf[0]"
+	// Example curl request to the model.
 	ExampleCurlRequest string `json:"example_curl_request,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/has_eula'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.has_eula"
+	// Whether the model has an EULA.
 	HasEula bool `json:"has_eula,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/image_registry_id/anyOf/0'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.image_registry_id.anyOf[0]"
+	// Image registry of the model.
 	ImageRegistryID string `json:"image_registry_id,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/image_url'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.image_url"
+	// Image URL of the model.
 	ImageURL string `json:"image_url,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/inference_backend/anyOf/0'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.inference_backend.anyOf[0]"
+	// Describing underlying inference engine.
 	InferenceBackend string `json:"inference_backend,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/inference_frontend/anyOf/0'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.inference_frontend.anyOf[0]"
+	// Describing model frontend type.
 	InferenceFrontend string `json:"inference_frontend,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/model_id/anyOf/0'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.model_id.anyOf[0]"
+	// Model name to perform inference call.
 	ModelID string `json:"model_id,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/name'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.name"
+	// Name of the model.
 	Name string `json:"name,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/openai_compatibility/anyOf/0'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.openai_compatibility.anyOf[0]"
+	// OpenAI compatibility level.
 	OpenAICompatibility string `json:"openai_compatibility,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/port'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.port"
+	// Port on which the model runs.
 	Port int64 `json:"port,required"`
-	// '#/components/schemas/MLCatalogModelCardSerializerV3/properties/version/anyOf/0'
-	// "$.components.schemas.MLCatalogModelCardSerializerV3.properties.version.anyOf[0]"
+	// Version of the model.
 	Version string `json:"version,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -161,8 +141,6 @@ func (r *MlcatalogModelCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/MLCatalogOrderByChoices'
-// "$.components.schemas.MLCatalogOrderByChoices"
 type MlcatalogOrderByChoices string
 
 const (
@@ -171,14 +149,12 @@ const (
 )
 
 type InferenceModelListParams struct {
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2Fmodels/get/parameters/0'
-	// "$.paths['/cloud/v3/inference/models'].get.parameters[0]"
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2Fmodels/get/parameters/1'
-	// "$.paths['/cloud/v3/inference/models'].get.parameters[1]"
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv3%2Finference%2Fmodels/get/parameters/2'
-	// "$.paths['/cloud/v3/inference/models'].get.parameters[2]"
+	// Order instances by transmitted fields and directions
 	//
 	// Any of "name.asc", "name.desc".
 	OrderBy MlcatalogOrderByChoices `query:"order_by,omitzero" json:"-"`

@@ -68,65 +68,45 @@ func (r *BillingReservationService) Get(ctx context.Context, reservationID int64
 	return
 }
 
-// '#/components/schemas/BillingReservationItemResponseSerializer'
-// "$.components.schemas.BillingReservationItemResponseSerializer"
 type BillingReservation struct {
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/id'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.id"
+	// Reservation id
 	ID int64 `json:"id,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/active_from'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.active_from"
+	// Reservation active from date
 	ActiveFrom time.Time `json:"active_from,required" format:"date"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/active_to'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.active_to"
+	// Reservation active to date
 	ActiveTo time.Time `json:"active_to,required" format:"date"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/activity_period'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.activity_period"
+	// Name of the billing period, e.g month
 	ActivityPeriod string `json:"activity_period,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/activity_period_length'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.activity_period_length"
+	// Length of the full reservation period by `activity_period`
 	ActivityPeriodLength int64 `json:"activity_period_length,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/amount_prices'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.amount_prices"
+	// Reservation amount prices
 	AmountPrices BillingReservationAmountPrices `json:"amount_prices,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/billing_plan_id'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.billing_plan_id"
+	// Billing plan id
 	BillingPlanID int64 `json:"billing_plan_id,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/created_at'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.created_at"
+	// Reservation creation date
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/error/anyOf/0'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.error.anyOf[0]"
+	// Error message if any occured during reservation
 	Error string `json:"error,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/eta/anyOf/0'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.eta.anyOf[0]"
+	// ETA delivery if bare metal out of stock. Value None means that bare metal in
+	// stock.
 	Eta time.Time `json:"eta,required" format:"date"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/is_expiration_message_visible'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.is_expiration_message_visible"
+	// Hide or show expiration message to customer.
 	IsExpirationMessageVisible bool `json:"is_expiration_message_visible,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/name'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.name"
+	// Reservation name
 	Name string `json:"name,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/next_statuses'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.next_statuses"
+	// List of possible next reservation statuses
 	NextStatuses []string `json:"next_statuses,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/region_id'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.region_id"
+	// Region id
 	RegionID int64 `json:"region_id,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/region_name'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.region_name"
+	// Region name
 	RegionName string `json:"region_name,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/remind_expiration_message/anyOf/0'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.remind_expiration_message.anyOf[0]"
+	// The date when show expiration date to customer
 	RemindExpirationMessage time.Time `json:"remind_expiration_message,required" format:"date"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/resources'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.resources"
+	// List of reservation resources
 	Resources []BillingReservationResource `json:"resources,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/status'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.status"
+	// Reservation status
 	Status string `json:"status,required"`
-	// '#/components/schemas/BillingReservationItemResponseSerializer/properties/user_status'
-	// "$.components.schemas.BillingReservationItemResponseSerializer.properties.user_status"
+	// User status
 	UserStatus string `json:"user_status,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -161,29 +141,21 @@ func (r *BillingReservation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BillingReservationItemResponseSerializer/properties/amount_prices'
-// "$.components.schemas.BillingReservationItemResponseSerializer.properties.amount_prices"
+// Reservation amount prices
 type BillingReservationAmountPrices struct {
-	// '#/components/schemas/BillingReservationAmountPricesResponseSerializer/properties/commit_price_per_month'
-	// "$.components.schemas.BillingReservationAmountPricesResponseSerializer.properties.commit_price_per_month"
+	// Commit price of the item charged per month
 	CommitPricePerMonth string `json:"commit_price_per_month,required"`
-	// '#/components/schemas/BillingReservationAmountPricesResponseSerializer/properties/commit_price_per_unit'
-	// "$.components.schemas.BillingReservationAmountPricesResponseSerializer.properties.commit_price_per_unit"
+	// Commit price of the item charged per hour
 	CommitPricePerUnit string `json:"commit_price_per_unit,required"`
-	// '#/components/schemas/BillingReservationAmountPricesResponseSerializer/properties/commit_price_total'
-	// "$.components.schemas.BillingReservationAmountPricesResponseSerializer.properties.commit_price_total"
+	// Commit price of the item charged for all period reservation
 	CommitPriceTotal string `json:"commit_price_total,required"`
-	// '#/components/schemas/BillingReservationAmountPricesResponseSerializer/properties/currency_code'
-	// "$.components.schemas.BillingReservationAmountPricesResponseSerializer.properties.currency_code"
+	// Currency code (3 letter code per ISO 4217)
 	CurrencyCode string `json:"currency_code,required"`
-	// '#/components/schemas/BillingReservationAmountPricesResponseSerializer/properties/overcommit_price_per_month'
-	// "$.components.schemas.BillingReservationAmountPricesResponseSerializer.properties.overcommit_price_per_month"
+	// Overcommit price of the item charged per month
 	OvercommitPricePerMonth string `json:"overcommit_price_per_month,required"`
-	// '#/components/schemas/BillingReservationAmountPricesResponseSerializer/properties/overcommit_price_per_unit'
-	// "$.components.schemas.BillingReservationAmountPricesResponseSerializer.properties.overcommit_price_per_unit"
+	// Overcommit price of the item charged per hour
 	OvercommitPricePerUnit string `json:"overcommit_price_per_unit,required"`
-	// '#/components/schemas/BillingReservationAmountPricesResponseSerializer/properties/overcommit_price_total'
-	// "$.components.schemas.BillingReservationAmountPricesResponseSerializer.properties.overcommit_price_total"
+	// Overcommit price of the item charged for all period reservation
 	OvercommitPriceTotal string `json:"overcommit_price_total,required"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -206,67 +178,46 @@ func (r *BillingReservationAmountPrices) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// '#/components/schemas/BillingReservationItemResponseSerializer/properties/resources/items'
-// "$.components.schemas.BillingReservationItemResponseSerializer.properties.resources.items"
 type BillingReservationResource struct {
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/activity_period'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.activity_period"
+	// Name of the billing period, e.g month
 	ActivityPeriod string `json:"activity_period,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/activity_period_length'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.activity_period_length"
+	// Length of the full reservation period by `activity_period`
 	ActivityPeriodLength int64 `json:"activity_period_length,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/billing_plan_item_id'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.billing_plan_item_id"
+	// Billing plan item id
 	BillingPlanItemID int64 `json:"billing_plan_item_id,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/commit_price_per_month'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.commit_price_per_month"
+	// Commit price of the item charged per month
 	CommitPricePerMonth string `json:"commit_price_per_month,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/commit_price_per_unit'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.commit_price_per_unit"
+	// Commit price of the item charged per hour
 	CommitPricePerUnit string `json:"commit_price_per_unit,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/commit_price_total'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.commit_price_total"
+	// Commit price of the item charged for all period reservation
 	CommitPriceTotal string `json:"commit_price_total,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/overcommit_billing_plan_item_id'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.overcommit_billing_plan_item_id"
+	// Overcommit billing plan item id
 	OvercommitBillingPlanItemID int64 `json:"overcommit_billing_plan_item_id,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/overcommit_price_per_month'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.overcommit_price_per_month"
+	// Overcommit price of the item charged per month
 	OvercommitPricePerMonth string `json:"overcommit_price_per_month,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/overcommit_price_per_unit'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.overcommit_price_per_unit"
+	// Overcommit price of the item charged per hour
 	OvercommitPricePerUnit string `json:"overcommit_price_per_unit,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/overcommit_price_total'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.overcommit_price_total"
+	// Overcommit price of the item charged for all period reservation
 	OvercommitPriceTotal string `json:"overcommit_price_total,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/resource_count'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.resource_count"
+	// Number of reserved resource items
 	ResourceCount int64 `json:"resource_count,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/resource_name'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.resource_name"
+	// Resource name
 	ResourceName string `json:"resource_name,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/resource_type'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.resource_type"
+	// Resource type
 	//
 	// Any of "flavor".
 	ResourceType string `json:"resource_type,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/unit_name'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.unit_name"
+	// Billing unit name
 	UnitName string `json:"unit_name,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/unit_size_month'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.unit_size_month"
+	// Minimal billing size, for example it is 744 hours per 1 month.
 	UnitSizeMonth string `json:"unit_size_month,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/unit_size_total'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.unit_size_total"
+	// Unit size month multiplied by count of resources in the reservation
 	UnitSizeTotal string `json:"unit_size_total,required"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/cpu/anyOf/0'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.cpu.anyOf[0]"
+	// Baremetal CPU description
 	CPU string `json:"cpu,nullable"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/disk/anyOf/0'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.disk.anyOf[0]"
+	// Baremetal disk description
 	Disk string `json:"disk,nullable"`
-	// '#/components/schemas/BillingReservationResourceSerializer/properties/ram/anyOf/0'
-	// "$.components.schemas.BillingReservationResourceSerializer.properties.ram.anyOf[0]"
+	// Baremetal RAM description
 	Ram string `json:"ram,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
@@ -302,38 +253,29 @@ func (r *BillingReservationResource) UnmarshalJSON(data []byte) error {
 }
 
 type BillingReservationListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Freservations/get/parameters/0'
-	// "$.paths['/cloud/v1/reservations'].get.parameters[0]"
+	// Lower bound, starting from what date the reservation was/will be activated
 	ActivatedFrom param.Opt[time.Time] `query:"activated_from,omitzero" format:"date" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freservations/get/parameters/1'
-	// "$.paths['/cloud/v1/reservations'].get.parameters[1]"
+	// High bound, before what date the reservation was/will be activated
 	ActivatedTo param.Opt[time.Time] `query:"activated_to,omitzero" format:"date" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freservations/get/parameters/2'
-	// "$.paths['/cloud/v1/reservations'].get.parameters[2]"
+	// Lower bound the filter, showing result(s) equal to or greater than date the
+	// reservation was created
 	CreatedFrom param.Opt[time.Time] `query:"created_from,omitzero" format:"date-time" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freservations/get/parameters/3'
-	// "$.paths['/cloud/v1/reservations'].get.parameters[3]"
+	// High bound the filter, showing result(s) equal to or less date the reservation
+	// was created
 	CreatedTo param.Opt[time.Time] `query:"created_to,omitzero" format:"date-time" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freservations/get/parameters/4'
-	// "$.paths['/cloud/v1/reservations'].get.parameters[4]"
+	// Lower bound, starting from what date the reservation was/will be deactivated
 	DeactivatedFrom param.Opt[time.Time] `query:"deactivated_from,omitzero" format:"date" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freservations/get/parameters/5'
-	// "$.paths['/cloud/v1/reservations'].get.parameters[5]"
+	// High bound, before what date the reservation was/will be deactivated
 	DeactivatedTo param.Opt[time.Time] `query:"deactivated_to,omitzero" format:"date" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freservations/get/parameters/6'
-	// "$.paths['/cloud/v1/reservations'].get.parameters[6]"
+	// Limit of reservation list page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freservations/get/parameters/7'
-	// "$.paths['/cloud/v1/reservations'].get.parameters[7]"
+	// Name from billing features for specific resource
 	MetricName param.Opt[string] `query:"metric_name,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freservations/get/parameters/8'
-	// "$.paths['/cloud/v1/reservations'].get.parameters[8]"
+	// Offset in reservation list
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freservations/get/parameters/9'
-	// "$.paths['/cloud/v1/reservations'].get.parameters[9]"
+	// Region for reservation
 	RegionID param.Opt[int64] `query:"region_id,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Freservations/get/parameters/10'
-	// "$.paths['/cloud/v1/reservations'].get.parameters[10]"
+	// Field for fixed a status by reservation workflow
 	//
 	// Any of "ACTIVATED", "APPROVED", "COPIED", "CREATED", "EXPIRED", "REJECTED",
 	// "RESERVED", "WAITING_FOR_PAYMENT".

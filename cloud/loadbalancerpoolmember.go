@@ -89,35 +89,25 @@ func (r *LoadBalancerPoolMemberService) Remove(ctx context.Context, memberID str
 }
 
 type LoadBalancerPoolMemberAddParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D%2Fmember/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}/member'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D%2Fmember/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}/member'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/address'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.address"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Member IP address
 	Address string `json:"address,required" format:"ipvanyaddress"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/protocol_port'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.protocol_port"
+	// Member IP port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/admin_state_up/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.admin_state_up.anyOf[0]"
+	// true if enabled. Defaults to true
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/instance_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.instance_id.anyOf[0]"
+	// Either subnet_id or instance_id should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/monitor_address/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.monitor_address.anyOf[0]"
+	// An alternate IP address used for health monitoring of a backend member. Default
+	// is null which monitors the member address.
 	MonitorAddress param.Opt[string] `json:"monitor_address,omitzero" format:"ipvanyaddress"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/monitor_port/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.monitor_port.anyOf[0]"
+	// An alternate protocol port used for health monitoring of a backend member.
+	// Default is null which monitors the member protocol_port.
 	MonitorPort param.Opt[int64] `json:"monitor_port,omitzero"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/subnet_id/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.subnet_id.anyOf[0]"
+	// Either subnet_id or instance_id should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
-	// '#/components/schemas/CreateLbPoolMemberSerializer/properties/weight/anyOf/0'
-	// "$.components.schemas.CreateLbPoolMemberSerializer.properties.weight.anyOf[0]"
+	// Member weight. Valid values: 0 to 256, defaults to 1
 	Weight param.Opt[int64] `json:"weight,omitzero"`
 	paramObj
 }
@@ -132,15 +122,9 @@ func (r LoadBalancerPoolMemberAddParams) MarshalJSON() (data []byte, err error) 
 }
 
 type LoadBalancerPoolMemberRemoveParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D%2Fmember%2F%7Bmember_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}/member/{member_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D%2Fmember%2F%7Bmember_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}/member/{member_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Flbpools%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bpool_id%7D%2Fmember%2F%7Bmember_id%7D/delete/parameters/2/schema'
-	// "$.paths['/cloud/v1/lbpools/{project_id}/{region_id}/{pool_id}/member/{member_id}']['delete'].parameters[2].schema"
-	PoolID string `path:"pool_id,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	PoolID    string           `path:"pool_id,required" json:"-"`
 	paramObj
 }
 

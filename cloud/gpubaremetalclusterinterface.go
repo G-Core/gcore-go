@@ -59,12 +59,8 @@ func (r *GPUBaremetalClusterInterfaceService) List(ctx context.Context, clusterI
 }
 
 type GPUBaremetalClusterInterfaceListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Finterfaces/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{cluster_id}/interfaces'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fai%2Fclusters%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bcluster_id%7D%2Finterfaces/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/ai/clusters/{project_id}/{region_id}/{cluster_id}/interfaces'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 

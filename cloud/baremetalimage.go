@@ -58,26 +58,19 @@ func (r *BaremetalImageService) List(ctx context.Context, params BaremetalImageL
 }
 
 type BaremetalImageListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fbmimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/bmimages/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/bmimages/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/2'
-	// "$.paths['/cloud/v1/bmimages/{project_id}/{region_id}'].get.parameters[2]"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Show price
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/3'
-	// "$.paths['/cloud/v1/bmimages/{project_id}/{region_id}'].get.parameters[3]"
+	// Any value to show private images
 	Private param.Opt[string] `query:"private,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/5'
-	// "$.paths['/cloud/v1/bmimages/{project_id}/{region_id}'].get.parameters[5]"
+	// Filter by tag key-value pairs. Must be a valid JSON string. 'curl -G
+	// --data-urlencode 'tag_key_value={"key": "value"}' --url
+	// 'http://localhost:1111/v1/images/1/1'"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/4'
-	// "$.paths['/cloud/v1/bmimages/{project_id}/{region_id}'].get.parameters[4]"
+	// Filter by tag keys.
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fbmimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-	// "$.paths['/cloud/v1/bmimages/{project_id}/{region_id}'].get.parameters[6]"
+	// Image visibility. Globally visible images are public
 	//
 	// Any of "private", "public", "shared".
 	Visibility BaremetalImageListParamsVisibility `query:"visibility,omitzero" json:"-"`
@@ -97,8 +90,7 @@ func (r BaremetalImageListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// '#/paths/%2Fcloud%2Fv1%2Fbmimages%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/6'
-// "$.paths['/cloud/v1/bmimages/{project_id}/{region_id}'].get.parameters[6]"
+// Image visibility. Globally visible images are public
 type BaremetalImageListParamsVisibility string
 
 const (

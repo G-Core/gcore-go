@@ -157,40 +157,32 @@ func (r *LoadBalancerL7PolicyService) Replace(ctx context.Context, l7policyID st
 }
 
 type LoadBalancerL7PolicyNewParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/0/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}'].post.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D/post/parameters/1/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}'].post.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/CreateL7PolicySchema/properties/action'
-	// "$.components.schemas.CreateL7PolicySchema.properties.action"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Action
 	//
 	// Any of "REDIRECT_PREFIX", "REDIRECT_TO_POOL", "REDIRECT_TO_URL", "REJECT".
 	Action LoadBalancerL7PolicyNewParamsAction `json:"action,omitzero,required"`
-	// '#/components/schemas/CreateL7PolicySchema/properties/listener_id'
-	// "$.components.schemas.CreateL7PolicySchema.properties.listener_id"
+	// Listener ID
 	ListenerID string `json:"listener_id,required"`
-	// '#/components/schemas/CreateL7PolicySchema/properties/name'
-	// "$.components.schemas.CreateL7PolicySchema.properties.name"
+	// Human-readable name of the policy
 	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/CreateL7PolicySchema/properties/position'
-	// "$.components.schemas.CreateL7PolicySchema.properties.position"
+	// The position of this policy on the listener. Positions start at 1.
 	Position param.Opt[int64] `json:"position,omitzero"`
-	// '#/components/schemas/CreateL7PolicySchema/properties/redirect_http_code'
-	// "$.components.schemas.CreateL7PolicySchema.properties.redirect_http_code"
+	// Requests matching this policy will be redirected to the specified URL or Prefix
+	// URL with the HTTP response code. Valid if action is REDIRECT_TO_URL or
+	// REDIRECT_PREFIX. Valid options are 301, 302, 303, 307, or 308. Default is 302.
 	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
-	// '#/components/schemas/CreateL7PolicySchema/properties/redirect_pool_id'
-	// "$.components.schemas.CreateL7PolicySchema.properties.redirect_pool_id"
+	// Requests matching this policy will be redirected to the pool withthis ID. Only
+	// valid if action is REDIRECT_TO_POOL.
 	RedirectPoolID param.Opt[string] `json:"redirect_pool_id,omitzero"`
-	// '#/components/schemas/CreateL7PolicySchema/properties/redirect_prefix'
-	// "$.components.schemas.CreateL7PolicySchema.properties.redirect_prefix"
+	// Requests matching this policy will be redirected to this Prefix URL. Only valid
+	// if action is REDIRECT_PREFIX.
 	RedirectPrefix param.Opt[string] `json:"redirect_prefix,omitzero"`
-	// '#/components/schemas/CreateL7PolicySchema/properties/redirect_url'
-	// "$.components.schemas.CreateL7PolicySchema.properties.redirect_url"
+	// Requests matching this policy will be redirected to this URL. Only valid if
+	// action is REDIRECT_TO_URL.
 	RedirectURL param.Opt[string] `json:"redirect_url,omitzero"`
-	// '#/components/schemas/CreateL7PolicySchema/properties/tags'
-	// "$.components.schemas.CreateL7PolicySchema.properties.tags"
+	// A list of simple strings assigned to the resource.
 	Tags []string `json:"tags,omitzero"`
 	paramObj
 }
@@ -204,8 +196,7 @@ func (r LoadBalancerL7PolicyNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/CreateL7PolicySchema/properties/action'
-// "$.components.schemas.CreateL7PolicySchema.properties.action"
+// Action
 type LoadBalancerL7PolicyNewParamsAction string
 
 const (
@@ -216,12 +207,8 @@ const (
 )
 
 type LoadBalancerL7PolicyListParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -230,12 +217,8 @@ type LoadBalancerL7PolicyListParams struct {
 func (f LoadBalancerL7PolicyListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type LoadBalancerL7PolicyDeleteParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D/delete/parameters/0/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}']['delete'].parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D/delete/parameters/1/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}']['delete'].parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -244,12 +227,8 @@ type LoadBalancerL7PolicyDeleteParams struct {
 func (f LoadBalancerL7PolicyDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type LoadBalancerL7PolicyGetParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D/get/parameters/0/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}'].get.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D/get/parameters/1/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}'].get.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
@@ -258,37 +237,30 @@ type LoadBalancerL7PolicyGetParams struct {
 func (f LoadBalancerL7PolicyGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type LoadBalancerL7PolicyReplaceParams struct {
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D/put/parameters/0/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}'].put.parameters[0].schema"
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// '#/paths/%2Fcloud%2Fv1%2Fl7policies%2F%7Bproject_id%7D%2F%7Bregion_id%7D%2F%7Bl7policy_id%7D/put/parameters/1/schema'
-	// "$.paths['/cloud/v1/l7policies/{project_id}/{region_id}/{l7policy_id}'].put.parameters[1].schema"
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// '#/components/schemas/UpdateL7PolicySchema/properties/action'
-	// "$.components.schemas.UpdateL7PolicySchema.properties.action"
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Action
 	//
 	// Any of "REDIRECT_PREFIX", "REDIRECT_TO_POOL", "REDIRECT_TO_URL", "REJECT".
 	Action LoadBalancerL7PolicyReplaceParamsAction `json:"action,omitzero,required"`
-	// '#/components/schemas/UpdateL7PolicySchema/properties/name'
-	// "$.components.schemas.UpdateL7PolicySchema.properties.name"
+	// Human-readable name of the policy
 	Name param.Opt[string] `json:"name,omitzero"`
-	// '#/components/schemas/UpdateL7PolicySchema/properties/position'
-	// "$.components.schemas.UpdateL7PolicySchema.properties.position"
+	// The position of this policy on the listener. Positions start at 1.
 	Position param.Opt[int64] `json:"position,omitzero"`
-	// '#/components/schemas/UpdateL7PolicySchema/properties/redirect_http_code'
-	// "$.components.schemas.UpdateL7PolicySchema.properties.redirect_http_code"
+	// Requests matching this policy will be redirected to the specified URL or Prefix
+	// URL with the HTTP response code. Valid if action is REDIRECT_TO_URL or
+	// REDIRECT_PREFIX. Valid options are 301, 302, 303, 307, or 308. Default is 302.
 	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
-	// '#/components/schemas/UpdateL7PolicySchema/properties/redirect_pool_id'
-	// "$.components.schemas.UpdateL7PolicySchema.properties.redirect_pool_id"
+	// Requests matching this policy will be redirected to the pool with this ID. Only
+	// valid if action is REDIRECT_TO_POOL.
 	RedirectPoolID param.Opt[string] `json:"redirect_pool_id,omitzero"`
-	// '#/components/schemas/UpdateL7PolicySchema/properties/redirect_prefix'
-	// "$.components.schemas.UpdateL7PolicySchema.properties.redirect_prefix"
+	// Requests matching this policy will be redirected to this Prefix URL. Only valid
+	// if action is REDIRECT_PREFIX.
 	RedirectPrefix param.Opt[string] `json:"redirect_prefix,omitzero"`
-	// '#/components/schemas/UpdateL7PolicySchema/properties/redirect_url'
-	// "$.components.schemas.UpdateL7PolicySchema.properties.redirect_url"
+	// Requests matching this policy will be redirected to this URL. Only valid if
+	// action is REDIRECT_TO_URL.
 	RedirectURL param.Opt[string] `json:"redirect_url,omitzero"`
-	// '#/components/schemas/UpdateL7PolicySchema/properties/tags'
-	// "$.components.schemas.UpdateL7PolicySchema.properties.tags"
+	// A list of simple strings assigned to the resource.
 	Tags []string `json:"tags,omitzero"`
 	paramObj
 }
@@ -304,8 +276,7 @@ func (r LoadBalancerL7PolicyReplaceParams) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// '#/components/schemas/UpdateL7PolicySchema/properties/action'
-// "$.components.schemas.UpdateL7PolicySchema.properties.action"
+// Action
 type LoadBalancerL7PolicyReplaceParamsAction string
 
 const (
