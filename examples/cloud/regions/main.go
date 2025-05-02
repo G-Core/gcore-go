@@ -26,9 +26,9 @@ func main() {
 }
 
 func getRegionByID(client *gcore.Client) {
-	// Region ID can also be omitted — it defaults to the GCORE_REGION environment variable
+	// Region ID can also be omitted — it defaults to the GCORE_CLOUD_REGION_ID environment variable
 	regionID := int64(76)
-	if id, err := strconv.ParseInt(os.Getenv("GCORE_REGION"), 10, 64); err == nil {
+	if id, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_REGION_ID"), 10, 64); err == nil {
 		regionID = id
 	}
 

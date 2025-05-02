@@ -52,22 +52,22 @@ func getTaskByID(client *gcore.Client) {
 }
 
 func listTasks(client *gcore.Client) {
-	// Get project ID from environment variable GCORE_PROJECT, defaulting to 1 if not set or invalid
+	// Get project ID from environment variable GCORE_CLOUD_PROJECT_ID, defaulting to 1 if not set or invalid
 	projectID := int64(1)
-	if idStr := os.Getenv("GCORE_PROJECT"); idStr != "" {
+	if idStr := os.Getenv("GCORE_CLOUD_PROJECT_ID"); idStr != "" {
 		if id, err := strconv.ParseInt(idStr, 10, 64); err == nil {
 			projectID = id
 		} else {
-			log.Printf("Warning: Invalid GCORE_PROJECT value '%s', using default 1. Error: %v", idStr, err)
+			log.Printf("Warning: Invalid GCORE_CLOUD_PROJECT_ID value '%s', using default 1. Error: %v", idStr, err)
 		}
 	}
-	// Get region ID from environment variable GCORE_REGION, defaulting to 1 if not set or invalid
+	// Get region ID from environment variable GCORE_CLOUD_REGION_ID, defaulting to 1 if not set or invalid
 	regionID := int64(1)
-	if idStr := os.Getenv("GCORE_REGION"); idStr != "" {
+	if idStr := os.Getenv("GCORE_CLOUD_REGION_ID"); idStr != "" {
 		if id, err := strconv.ParseInt(idStr, 10, 64); err == nil {
 			regionID = id
 		} else {
-			log.Printf("Warning: Invalid GCORE_REGION value '%s', using default 1. Error: %v", idStr, err)
+			log.Printf("Warning: Invalid GCORE_CLOUD_REGION_ID value '%s', using default 1. Error: %v", idStr, err)
 		}
 	}
 
@@ -105,22 +105,22 @@ func listTasks(client *gcore.Client) {
 }
 
 func listTasksWithAutopager(client *gcore.Client) {
-	// Get project ID from environment variable GCORE_PROJECT, defaulting to 1 if not set or invalid
+	// Get project ID from environment variable GCORE_CLOUD_PROJECT_ID, defaulting to 1 if not set or invalid
 	projectID := int64(1)
-	if idStr := os.Getenv("GCORE_PROJECT"); idStr != "" {
+	if idStr := os.Getenv("GCORE_CLOUD_PROJECT_ID"); idStr != "" {
 		if id, err := strconv.ParseInt(idStr, 10, 64); err == nil {
 			projectID = id
 		} else {
-			log.Printf("Warning: Invalid GCORE_PROJECT value '%s', using default 1. Error: %v", idStr, err)
+			log.Printf("Warning: Invalid GCORE_CLOUD_PROJECT_ID value '%s', using default 1. Error: %v", idStr, err)
 		}
 	}
-	// Get region ID from environment variable GCORE_REGION, defaulting to 1 if not set or invalid
+	// Get region ID from environment variable GCORE_CLOUD_REGION_ID, defaulting to 1 if not set or invalid
 	regionID := int64(1)
-	if idStr := os.Getenv("GCORE_REGION"); idStr != "" {
+	if idStr := os.Getenv("GCORE_CLOUD_REGION_ID"); idStr != "" {
 		if id, err := strconv.ParseInt(idStr, 10, 64); err == nil {
 			regionID = id
 		} else {
-			log.Printf("Warning: Invalid GCORE_REGION value '%s', using default 1. Error: %v", idStr, err)
+			log.Printf("Warning: Invalid GCORE_CLOUD_REGION_ID value '%s', using default 1. Error: %v", idStr, err)
 		}
 	}
 
