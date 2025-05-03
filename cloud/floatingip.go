@@ -4,6 +4,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -290,7 +291,7 @@ func (r *FloatingIPDetailed) UnmarshalJSON(data []byte) error {
 // Instance the floating IP is attached to
 type FloatingIPDetailedInstance struct {
 	// Map of network_name to list of addresses in that network
-	Addresses map[string][]FloatingIPDetailedAddressUnion `json:"addresses,required"`
+	Addresses map[string][]FloatingIPDetailedInstanceAddressUnion `json:"addresses,required"`
 	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required"`
 	// Flavor
@@ -368,6 +369,50 @@ type FloatingIPDetailedInstance struct {
 // Returns the unmodified JSON received from the API
 func (r FloatingIPDetailedInstance) RawJSON() string { return r.JSON.raw }
 func (r *FloatingIPDetailedInstance) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// FloatingIPDetailedInstanceAddressUnion contains all possible properties and
+// values from [FloatingAddress], [FixedAddressShort], [FixedAddress].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type FloatingIPDetailedInstanceAddressUnion struct {
+	Addr          string `json:"addr"`
+	Type          string `json:"type"`
+	InterfaceName string `json:"interface_name"`
+	// This field is from variant [FixedAddress].
+	SubnetID string `json:"subnet_id"`
+	// This field is from variant [FixedAddress].
+	SubnetName string `json:"subnet_name"`
+	JSON       struct {
+		Addr          resp.Field
+		Type          resp.Field
+		InterfaceName resp.Field
+		SubnetID      resp.Field
+		SubnetName    resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+func (u FloatingIPDetailedInstanceAddressUnion) AsFloatingIPAddress() (v FloatingAddress) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FloatingIPDetailedInstanceAddressUnion) AsFixedIPAddressShort() (v FixedAddressShort) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FloatingIPDetailedInstanceAddressUnion) AsFixedIPAddress() (v FixedAddress) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u FloatingIPDetailedInstanceAddressUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *FloatingIPDetailedInstanceAddressUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
