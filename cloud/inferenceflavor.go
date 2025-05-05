@@ -15,7 +15,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // InferenceFlavorService contains methods and other services that help with
@@ -91,18 +91,18 @@ type InferenceFlavor struct {
 	Memory float64 `json:"memory,required"`
 	// Inference flavor name.
 	Name string `json:"name,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CPU                  resp.Field
-		Description          resp.Field
-		GPU                  resp.Field
-		GPUComputeCapability resp.Field
-		GPUMemory            resp.Field
-		GPUModel             resp.Field
-		IsGPUShared          resp.Field
-		Memory               resp.Field
-		Name                 resp.Field
-		ExtraFields          map[string]resp.Field
+		CPU                  respjson.Field
+		Description          respjson.Field
+		GPU                  respjson.Field
+		GPUComputeCapability respjson.Field
+		GPUMemory            respjson.Field
+		GPUModel             respjson.Field
+		IsGPUShared          respjson.Field
+		Memory               respjson.Field
+		Name                 respjson.Field
+		ExtraFields          map[string]respjson.Field
 		raw                  string
 	} `json:"-"`
 }

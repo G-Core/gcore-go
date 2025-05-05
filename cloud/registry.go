@@ -13,7 +13,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // RegistryService contains methods and other services that help with interacting
@@ -171,17 +171,17 @@ type Registry struct {
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// Registry url
 	URL string `json:"url,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           resp.Field
-		CreatedAt    resp.Field
-		Name         resp.Field
-		RepoCount    resp.Field
-		StorageLimit resp.Field
-		StorageUsed  resp.Field
-		UpdatedAt    resp.Field
-		URL          resp.Field
-		ExtraFields  map[string]resp.Field
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		Name         respjson.Field
+		RepoCount    respjson.Field
+		StorageLimit respjson.Field
+		StorageUsed  respjson.Field
+		UpdatedAt    respjson.Field
+		URL          respjson.Field
+		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
 }
@@ -197,11 +197,11 @@ type RegistryList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []Registry `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -225,15 +225,15 @@ type RegistryTag struct {
 	PushedAt time.Time `json:"pushed_at,required" format:"date-time"`
 	// Repository ID
 	RepositoryID int64 `json:"repository_id,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           resp.Field
-		ArtifactID   resp.Field
-		Name         resp.Field
-		PulledAt     resp.Field
-		PushedAt     resp.Field
-		RepositoryID resp.Field
-		ExtraFields  map[string]resp.Field
+		ID           respjson.Field
+		ArtifactID   respjson.Field
+		Name         respjson.Field
+		PulledAt     respjson.Field
+		PushedAt     respjson.Field
+		RepositoryID respjson.Field
+		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
 }

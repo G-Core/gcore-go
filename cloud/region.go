@@ -16,7 +16,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // RegionService contains methods and other services that help with interacting
@@ -150,37 +150,37 @@ type Region struct {
 	Zone RegionZone `json:"zone,required"`
 	// Region has DBAAS service
 	HasDbaas bool `json:"has_dbaas"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                   resp.Field
-		AccessLevel          resp.Field
-		AIServiceEndpointID  resp.Field
-		AvailableVolumeTypes resp.Field
-		Coordinates          resp.Field
-		Country              resp.Field
-		CreatedAt            resp.Field
-		CreatedOn            resp.Field
-		DDOSEndpointID       resp.Field
-		DisplayName          resp.Field
-		EndpointType         resp.Field
-		ExternalNetworkID    resp.Field
-		FileShareTypes       resp.Field
-		HasAI                resp.Field
-		HasAIGPU             resp.Field
-		HasBaremetal         resp.Field
-		HasBasicVm           resp.Field
-		HasK8s               resp.Field
-		HasKvm               resp.Field
-		HasSfs               resp.Field
-		KeystoneID           resp.Field
-		KeystoneName         resp.Field
-		MetricsDatabaseID    resp.Field
-		State                resp.Field
-		TaskID               resp.Field
-		VlanPhysicalNetwork  resp.Field
-		Zone                 resp.Field
-		HasDbaas             resp.Field
-		ExtraFields          map[string]resp.Field
+		ID                   respjson.Field
+		AccessLevel          respjson.Field
+		AIServiceEndpointID  respjson.Field
+		AvailableVolumeTypes respjson.Field
+		Coordinates          respjson.Field
+		Country              respjson.Field
+		CreatedAt            respjson.Field
+		CreatedOn            respjson.Field
+		DDOSEndpointID       respjson.Field
+		DisplayName          respjson.Field
+		EndpointType         respjson.Field
+		ExternalNetworkID    respjson.Field
+		FileShareTypes       respjson.Field
+		HasAI                respjson.Field
+		HasAIGPU             respjson.Field
+		HasBaremetal         respjson.Field
+		HasBasicVm           respjson.Field
+		HasK8s               respjson.Field
+		HasKvm               respjson.Field
+		HasSfs               respjson.Field
+		KeystoneID           respjson.Field
+		KeystoneName         respjson.Field
+		MetricsDatabaseID    respjson.Field
+		State                respjson.Field
+		TaskID               respjson.Field
+		VlanPhysicalNetwork  respjson.Field
+		Zone                 respjson.Field
+		HasDbaas             respjson.Field
+		ExtraFields          map[string]respjson.Field
 		raw                  string
 	} `json:"-"`
 }
@@ -203,11 +203,11 @@ const (
 type RegionCoordinates struct {
 	Latitude  float64 `json:"latitude,required"`
 	Longitude float64 `json:"longitude,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Latitude    resp.Field
-		Longitude   resp.Field
-		ExtraFields map[string]resp.Field
+		Latitude    respjson.Field
+		Longitude   respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

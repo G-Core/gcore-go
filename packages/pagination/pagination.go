@@ -10,7 +10,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // aliased to make [param.APIUnion] private when embedding
@@ -22,11 +22,11 @@ type paramObj = param.APIObject
 type OffsetPage[T any] struct {
 	Results []T   `json:"results"`
 	Count   int64 `json:"count"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Results     resp.Field
-		Count       resp.Field
-		ExtraFields map[string]resp.Field
+		Results     respjson.Field
+		Count       respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 	cfg *requestconfig.RequestConfig

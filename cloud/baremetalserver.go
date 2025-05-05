@@ -18,7 +18,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 	"github.com/stainless-sdks/gcore-go/shared/constant"
 	"github.com/tidwall/gjson"
 )
@@ -159,14 +159,14 @@ type BaremetalFixedAddress struct {
 	SubnetName string `json:"subnet_name,required"`
 	// Type of the address
 	Type constant.Fixed `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Addr          resp.Field
-		InterfaceName resp.Field
-		SubnetID      resp.Field
-		SubnetName    resp.Field
-		Type          resp.Field
-		ExtraFields   map[string]resp.Field
+		Addr          respjson.Field
+		InterfaceName respjson.Field
+		SubnetID      respjson.Field
+		SubnetName    respjson.Field
+		Type          respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -182,11 +182,11 @@ type BaremetalFloatingAddress struct {
 	Addr string `json:"addr,required"`
 	// Type of the address
 	Type constant.Floating `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Addr        resp.Field
-		Type        resp.Field
-		ExtraFields map[string]resp.Field
+		Addr        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -251,28 +251,28 @@ type BaremetalServer struct {
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
 	VmState BaremetalServerVmState `json:"vm_state,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 resp.Field
-		Addresses          resp.Field
-		BlackholePorts     resp.Field
-		CreatedAt          resp.Field
-		CreatorTaskID      resp.Field
-		DDOSProfile        resp.Field
-		FixedIPAssignments resp.Field
-		Flavor             resp.Field
-		InstanceIsolation  resp.Field
-		Name               resp.Field
-		ProjectID          resp.Field
-		Region             resp.Field
-		RegionID           resp.Field
-		SSHKeyName         resp.Field
-		Status             resp.Field
-		Tags               resp.Field
-		TaskID             resp.Field
-		TaskState          resp.Field
-		VmState            resp.Field
-		ExtraFields        map[string]resp.Field
+		ID                 respjson.Field
+		Addresses          respjson.Field
+		BlackholePorts     respjson.Field
+		CreatedAt          respjson.Field
+		CreatorTaskID      respjson.Field
+		DDOSProfile        respjson.Field
+		FixedIPAssignments respjson.Field
+		Flavor             respjson.Field
+		InstanceIsolation  respjson.Field
+		Name               respjson.Field
+		ProjectID          respjson.Field
+		Region             respjson.Field
+		RegionID           respjson.Field
+		SSHKeyName         respjson.Field
+		Status             respjson.Field
+		Tags               respjson.Field
+		TaskID             respjson.Field
+		TaskState          respjson.Field
+		VmState            respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -297,11 +297,11 @@ type BaremetalServerAddressUnion struct {
 	// This field is from variant [BaremetalFixedAddress].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
-		Addr          resp.Field
-		Type          resp.Field
-		InterfaceName resp.Field
-		SubnetID      resp.Field
-		SubnetName    resp.Field
+		Addr          respjson.Field
+		Type          respjson.Field
+		InterfaceName respjson.Field
+		SubnetID      respjson.Field
+		SubnetName    respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -330,12 +330,12 @@ type BaremetalServerFixedIPAssignment struct {
 	IPAddress string `json:"ip_address,required"`
 	// Interface subnet id
 	SubnetID string `json:"subnet_id,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		External    resp.Field
-		IPAddress   resp.Field
-		SubnetID    resp.Field
-		ExtraFields map[string]resp.Field
+		External    respjson.Field
+		IPAddress   respjson.Field
+		SubnetID    respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -364,17 +364,17 @@ type BaremetalServerFlavor struct {
 	ResourceClass string `json:"resource_class,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Architecture        resp.Field
-		FlavorID            resp.Field
-		FlavorName          resp.Field
-		HardwareDescription resp.Field
-		OsType              resp.Field
-		Ram                 resp.Field
-		ResourceClass       resp.Field
-		Vcpus               resp.Field
-		ExtraFields         map[string]resp.Field
+		Architecture        respjson.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		HardwareDescription respjson.Field
+		OsType              respjson.Field
+		Ram                 respjson.Field
+		ResourceClass       respjson.Field
+		Vcpus               respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -397,14 +397,14 @@ type BaremetalServerFlavorHardwareDescription struct {
 	Network string `json:"network,required"`
 	// Human-readable RAM description
 	Ram string `json:"ram,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CPU         resp.Field
-		Disk        resp.Field
-		License     resp.Field
-		Network     resp.Field
-		Ram         resp.Field
-		ExtraFields map[string]resp.Field
+		CPU         respjson.Field
+		Disk        respjson.Field
+		License     respjson.Field
+		Network     respjson.Field
+		Ram         respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

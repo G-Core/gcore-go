@@ -16,7 +16,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // SSHKeyService contains methods and other services that help with interacting
@@ -172,17 +172,17 @@ type SSHKey struct {
 	//
 	// Any of "ACTIVE", "DELETING".
 	State SSHKeyState `json:"state,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID              resp.Field
-		CreatedAt       resp.Field
-		Fingerprint     resp.Field
-		Name            resp.Field
-		ProjectID       resp.Field
-		PublicKey       resp.Field
-		SharedInProject resp.Field
-		State           resp.Field
-		ExtraFields     map[string]resp.Field
+		ID              respjson.Field
+		CreatedAt       respjson.Field
+		Fingerprint     respjson.Field
+		Name            respjson.Field
+		ProjectID       respjson.Field
+		PublicKey       respjson.Field
+		SharedInProject respjson.Field
+		State           respjson.Field
+		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -233,18 +233,18 @@ type SSHKeyCreated struct {
 	//
 	// Any of "ACTIVE", "DELETING".
 	State SSHKeyCreatedState `json:"state,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID              resp.Field
-		CreatedAt       resp.Field
-		Fingerprint     resp.Field
-		Name            resp.Field
-		PrivateKey      resp.Field
-		ProjectID       resp.Field
-		PublicKey       resp.Field
-		SharedInProject resp.Field
-		State           resp.Field
-		ExtraFields     map[string]resp.Field
+		ID              respjson.Field
+		CreatedAt       respjson.Field
+		Fingerprint     respjson.Field
+		Name            respjson.Field
+		PrivateKey      respjson.Field
+		ProjectID       respjson.Field
+		PublicKey       respjson.Field
+		SharedInProject respjson.Field
+		State           respjson.Field
+		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
 }

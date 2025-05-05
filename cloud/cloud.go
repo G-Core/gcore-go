@@ -9,7 +9,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/apijson"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 	"github.com/stainless-sdks/gcore-go/shared/constant"
 )
 
@@ -81,11 +81,11 @@ type AllowedAddressPairs struct {
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	// MAC address of the port specified in allowed_address_pairs
 	MacAddress string `json:"mac_address,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		IPAddress   resp.Field
-		MacAddress  resp.Field
-		ExtraFields map[string]resp.Field
+		IPAddress   respjson.Field
+		MacAddress  respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -131,24 +131,24 @@ type BaremetalFlavor struct {
 	// Count of reserved but not used nodes. If a client don't have reservations for
 	// the flavor, it's None.
 	ReservedInStock int64 `json:"reserved_in_stock,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Architecture        resp.Field
-		Disabled            resp.Field
-		FlavorID            resp.Field
-		FlavorName          resp.Field
-		OsType              resp.Field
-		Ram                 resp.Field
-		ResourceClass       resp.Field
-		Vcpus               resp.Field
-		Capacity            resp.Field
-		CurrencyCode        resp.Field
-		HardwareDescription resp.Field
-		PricePerHour        resp.Field
-		PricePerMonth       resp.Field
-		PriceStatus         resp.Field
-		ReservedInStock     resp.Field
-		ExtraFields         map[string]resp.Field
+		Architecture        respjson.Field
+		Disabled            respjson.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		OsType              respjson.Field
+		Ram                 respjson.Field
+		ResourceClass       respjson.Field
+		Vcpus               respjson.Field
+		Capacity            respjson.Field
+		CurrencyCode        respjson.Field
+		HardwareDescription respjson.Field
+		PricePerHour        respjson.Field
+		PricePerMonth       respjson.Field
+		PriceStatus         respjson.Field
+		ReservedInStock     respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -173,11 +173,11 @@ type BaremetalFlavorList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []BaremetalFlavor `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -209,15 +209,15 @@ type BlackholePort struct {
 	// Notification destination IP address
 	DestinationIP string `json:"DestinationIP,required"`
 	ID            int64  `json:"ID,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AlarmEnd      resp.Field
-		AlarmStart    resp.Field
-		AlarmState    resp.Field
-		AlertDuration resp.Field
-		DestinationIP resp.Field
-		ID            resp.Field
-		ExtraFields   map[string]resp.Field
+		AlarmEnd      respjson.Field
+		AlarmStart    respjson.Field
+		AlarmState    respjson.Field
+		AlertDuration respjson.Field
+		DestinationIP respjson.Field
+		ID            respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -273,10 +273,10 @@ const (
 type Console struct {
 	// Remote console information
 	RemoteConsole ConsoleRemoteConsole `json:"remote_console,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		RemoteConsole resp.Field
-		ExtraFields   map[string]resp.Field
+		RemoteConsole respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -292,12 +292,12 @@ type ConsoleRemoteConsole struct {
 	Protocol string `json:"protocol,required"`
 	Type     string `json:"type,required"`
 	URL      string `json:"url,required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Protocol    resp.Field
-		Type        resp.Field
-		URL         resp.Field
-		ExtraFields map[string]resp.Field
+		Protocol    respjson.Field
+		Type        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -321,17 +321,17 @@ type DDOSProfile struct {
 	Protocols []any             `json:"protocols,nullable"`
 	Site      string            `json:"site,nullable"`
 	Status    DDOSProfileStatus `json:"status,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                         resp.Field
-		ProfileTemplate            resp.Field
-		Fields                     resp.Field
-		Options                    resp.Field
-		ProfileTemplateDescription resp.Field
-		Protocols                  resp.Field
-		Site                       resp.Field
-		Status                     resp.Field
-		ExtraFields                map[string]resp.Field
+		ID                         respjson.Field
+		ProfileTemplate            respjson.Field
+		Fields                     respjson.Field
+		Options                    respjson.Field
+		ProfileTemplateDescription respjson.Field
+		Protocols                  respjson.Field
+		Site                       respjson.Field
+		Status                     respjson.Field
+		ExtraFields                map[string]respjson.Field
 		raw                        string
 	} `json:"-"`
 }
@@ -354,20 +354,20 @@ type DDOSProfileField struct {
 	Required         bool   `json:"required,nullable"`
 	ValidationSchema any    `json:"validation_schema"`
 	Value            string `json:"value,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID               resp.Field
-		Default          resp.Field
-		Description      resp.Field
-		FieldValue       resp.Field
-		Name             resp.Field
-		BaseField        resp.Field
-		FieldName        resp.Field
-		FieldType        resp.Field
-		Required         resp.Field
-		ValidationSchema resp.Field
-		Value            resp.Field
-		ExtraFields      map[string]resp.Field
+		ID               respjson.Field
+		Default          respjson.Field
+		Description      respjson.Field
+		FieldValue       respjson.Field
+		Name             respjson.Field
+		BaseField        respjson.Field
+		FieldName        respjson.Field
+		FieldType        respjson.Field
+		Required         respjson.Field
+		ValidationSchema respjson.Field
+		Value            respjson.Field
+		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
 }
@@ -383,11 +383,11 @@ type DDOSProfileOptionList struct {
 	Active bool `json:"active,nullable"`
 	// Activate BGP protocol.
 	Bgp bool `json:"bgp,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Active      resp.Field
-		Bgp         resp.Field
-		ExtraFields map[string]resp.Field
+		Active      respjson.Field
+		Bgp         respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -403,11 +403,11 @@ type DDOSProfileStatus struct {
 	ErrorDescription string `json:"error_description,required"`
 	// Profile status
 	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ErrorDescription resp.Field
-		Status           resp.Field
-		ExtraFields      map[string]resp.Field
+		ErrorDescription respjson.Field
+		Status           respjson.Field
+		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
 }
@@ -423,13 +423,13 @@ type DDOSProfileTemplate struct {
 	Name        string                     `json:"name,required"`
 	Description string                     `json:"description,nullable"`
 	Fields      []DDOSProfileTemplateField `json:"fields"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          resp.Field
-		Name        resp.Field
-		Description resp.Field
-		Fields      resp.Field
-		ExtraFields map[string]resp.Field
+		ID          respjson.Field
+		Name        respjson.Field
+		Description respjson.Field
+		Fields      respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -448,16 +448,16 @@ type DDOSProfileTemplateField struct {
 	FieldType        string `json:"field_type,nullable"`
 	Required         bool   `json:"required,nullable"`
 	ValidationSchema any    `json:"validation_schema"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID               resp.Field
-		Name             resp.Field
-		Default          resp.Field
-		Description      resp.Field
-		FieldType        resp.Field
-		Required         resp.Field
-		ValidationSchema resp.Field
-		ExtraFields      map[string]resp.Field
+		ID               respjson.Field
+		Name             respjson.Field
+		Default          respjson.Field
+		Description      respjson.Field
+		FieldType        respjson.Field
+		Required         respjson.Field
+		ValidationSchema respjson.Field
+		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
 }
@@ -488,14 +488,14 @@ type FixedAddress struct {
 	SubnetName string `json:"subnet_name,required"`
 	// Type of the address
 	Type constant.Fixed `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Addr          resp.Field
-		InterfaceName resp.Field
-		SubnetID      resp.Field
-		SubnetName    resp.Field
-		Type          resp.Field
-		ExtraFields   map[string]resp.Field
+		Addr          respjson.Field
+		InterfaceName respjson.Field
+		SubnetID      respjson.Field
+		SubnetName    respjson.Field
+		Type          respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -518,12 +518,12 @@ type FixedAddressShort struct {
 	InterfaceName string `json:"interface_name,required"`
 	// Type of the address
 	Type constant.Fixed `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Addr          resp.Field
-		InterfaceName resp.Field
-		Type          resp.Field
-		ExtraFields   map[string]resp.Field
+		Addr          respjson.Field
+		InterfaceName respjson.Field
+		Type          respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -547,15 +547,15 @@ type FlavorHardwareDescription struct {
 	Network string `json:"network,nullable"`
 	// Human-readable RAM description
 	Ram string `json:"ram,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CPU         resp.Field
-		Disk        resp.Field
-		Ephemeral   resp.Field
-		GPU         resp.Field
-		Network     resp.Field
-		Ram         resp.Field
-		ExtraFields map[string]resp.Field
+		CPU         respjson.Field
+		Disk        respjson.Field
+		Ephemeral   respjson.Field
+		GPU         respjson.Field
+		Network     respjson.Field
+		Ram         respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -572,11 +572,11 @@ type FloatingAddress struct {
 	Addr string `json:"addr,required"`
 	// Type of the address
 	Type constant.Floating `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Addr        resp.Field
-		Type        resp.Field
-		ExtraFields map[string]resp.Field
+		Addr        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -637,26 +637,26 @@ type FloatingIP struct {
 	TaskID string `json:"task_id,required" format:"uuid4"`
 	// Datetime when the floating IP was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                resp.Field
-		CreatedAt         resp.Field
-		CreatorTaskID     resp.Field
-		DNSDomain         resp.Field
-		DNSName           resp.Field
-		FixedIPAddress    resp.Field
-		FloatingIPAddress resp.Field
-		PortID            resp.Field
-		ProjectID         resp.Field
-		Region            resp.Field
-		RegionID          resp.Field
-		RouterID          resp.Field
-		Status            resp.Field
-		SubnetID          resp.Field
-		Tags              resp.Field
-		TaskID            resp.Field
-		UpdatedAt         resp.Field
-		ExtraFields       map[string]resp.Field
+		ID                respjson.Field
+		CreatedAt         respjson.Field
+		CreatorTaskID     respjson.Field
+		DNSDomain         respjson.Field
+		DNSName           respjson.Field
+		FixedIPAddress    respjson.Field
+		FloatingIPAddress respjson.Field
+		PortID            respjson.Field
+		ProjectID         respjson.Field
+		Region            respjson.Field
+		RegionID          respjson.Field
+		RouterID          respjson.Field
+		Status            respjson.Field
+		SubnetID          respjson.Field
+		Tags              respjson.Field
+		TaskID            respjson.Field
+		UpdatedAt         respjson.Field
+		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
 }
@@ -714,25 +714,25 @@ type GPUImage struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           resp.Field
-		CreatedAt    resp.Field
-		MinDisk      resp.Field
-		MinRam       resp.Field
-		Name         resp.Field
-		Status       resp.Field
-		Tags         resp.Field
-		UpdatedAt    resp.Field
-		Visibility   resp.Field
-		Architecture resp.Field
-		OsDistro     resp.Field
-		OsType       resp.Field
-		OsVersion    resp.Field
-		Size         resp.Field
-		SSHKey       resp.Field
-		TaskID       resp.Field
-		ExtraFields  map[string]resp.Field
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		MinDisk      respjson.Field
+		MinRam       respjson.Field
+		Name         respjson.Field
+		Status       respjson.Field
+		Tags         respjson.Field
+		UpdatedAt    respjson.Field
+		Visibility   respjson.Field
+		Architecture respjson.Field
+		OsDistro     respjson.Field
+		OsType       respjson.Field
+		OsVersion    respjson.Field
+		Size         respjson.Field
+		SSHKey       respjson.Field
+		TaskID       respjson.Field
+		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
 }
@@ -748,11 +748,11 @@ type GPUImageList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []GPUImage `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -831,35 +831,35 @@ type Image struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID             resp.Field
-		CreatedAt      resp.Field
-		DiskFormat     resp.Field
-		MinDisk        resp.Field
-		MinRam         resp.Field
-		Name           resp.Field
-		OsDistro       resp.Field
-		OsType         resp.Field
-		OsVersion      resp.Field
-		ProjectID      resp.Field
-		Region         resp.Field
-		RegionID       resp.Field
-		Size           resp.Field
-		Status         resp.Field
-		Tags           resp.Field
-		UpdatedAt      resp.Field
-		Visibility     resp.Field
-		Architecture   resp.Field
-		CreatorTaskID  resp.Field
-		Description    resp.Field
-		DisplayOrder   resp.Field
-		HwFirmwareType resp.Field
-		HwMachineType  resp.Field
-		IsBaremetal    resp.Field
-		SSHKey         resp.Field
-		TaskID         resp.Field
-		ExtraFields    map[string]resp.Field
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		DiskFormat     respjson.Field
+		MinDisk        respjson.Field
+		MinRam         respjson.Field
+		Name           respjson.Field
+		OsDistro       respjson.Field
+		OsType         respjson.Field
+		OsVersion      respjson.Field
+		ProjectID      respjson.Field
+		Region         respjson.Field
+		RegionID       respjson.Field
+		Size           respjson.Field
+		Status         respjson.Field
+		Tags           respjson.Field
+		UpdatedAt      respjson.Field
+		Visibility     respjson.Field
+		Architecture   respjson.Field
+		CreatorTaskID  respjson.Field
+		Description    respjson.Field
+		DisplayOrder   respjson.Field
+		HwFirmwareType respjson.Field
+		HwMachineType  respjson.Field
+		IsBaremetal    respjson.Field
+		SSHKey         respjson.Field
+		TaskID         respjson.Field
+		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
 }
@@ -916,11 +916,11 @@ type ImageList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []Image `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -991,31 +991,31 @@ type Instance struct {
 	VmState InstanceVmState `json:"vm_state,required"`
 	// List of volumes
 	Volumes []InstanceVolume `json:"volumes,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  resp.Field
-		Addresses           resp.Field
-		BlackholePorts      resp.Field
-		CreatedAt           resp.Field
-		CreatorTaskID       resp.Field
-		DDOSProfile         resp.Field
-		FixedIPAssignments  resp.Field
-		Flavor              resp.Field
-		InstanceDescription resp.Field
-		InstanceIsolation   resp.Field
-		Name                resp.Field
-		ProjectID           resp.Field
-		Region              resp.Field
-		RegionID            resp.Field
-		SecurityGroups      resp.Field
-		SSHKeyName          resp.Field
-		Status              resp.Field
-		Tags                resp.Field
-		TaskID              resp.Field
-		TaskState           resp.Field
-		VmState             resp.Field
-		Volumes             resp.Field
-		ExtraFields         map[string]resp.Field
+		ID                  respjson.Field
+		Addresses           respjson.Field
+		BlackholePorts      respjson.Field
+		CreatedAt           respjson.Field
+		CreatorTaskID       respjson.Field
+		DDOSProfile         respjson.Field
+		FixedIPAssignments  respjson.Field
+		Flavor              respjson.Field
+		InstanceDescription respjson.Field
+		InstanceIsolation   respjson.Field
+		Name                respjson.Field
+		ProjectID           respjson.Field
+		Region              respjson.Field
+		RegionID            respjson.Field
+		SecurityGroups      respjson.Field
+		SSHKeyName          respjson.Field
+		Status              respjson.Field
+		Tags                respjson.Field
+		TaskID              respjson.Field
+		TaskState           respjson.Field
+		VmState             respjson.Field
+		Volumes             respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -1039,11 +1039,11 @@ type InstanceAddressUnion struct {
 	// This field is from variant [FixedAddress].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
-		Addr          resp.Field
-		Type          resp.Field
-		InterfaceName resp.Field
-		SubnetID      resp.Field
-		SubnetName    resp.Field
+		Addr          respjson.Field
+		Type          respjson.Field
+		InterfaceName respjson.Field
+		SubnetID      respjson.Field
+		SubnetName    respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -1077,12 +1077,12 @@ type InstanceFixedIPAssignment struct {
 	IPAddress string `json:"ip_address,required"`
 	// Interface subnet id
 	SubnetID string `json:"subnet_id,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		External    resp.Field
-		IPAddress   resp.Field
-		SubnetID    resp.Field
-		ExtraFields map[string]resp.Field
+		External    respjson.Field
+		IPAddress   respjson.Field
+		SubnetID    respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1111,14 +1111,14 @@ type InstanceFlavorUnion struct {
 	Vcpus               int64                                  `json:"vcpus"`
 	ResourceClass       string                                 `json:"resource_class"`
 	JSON                struct {
-		Architecture        resp.Field
-		FlavorID            resp.Field
-		FlavorName          resp.Field
-		HardwareDescription resp.Field
-		OsType              resp.Field
-		Ram                 resp.Field
-		Vcpus               resp.Field
-		ResourceClass       resp.Field
+		Architecture        respjson.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		HardwareDescription respjson.Field
+		OsType              respjson.Field
+		Ram                 respjson.Field
+		Vcpus               respjson.Field
+		ResourceClass       respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -1162,13 +1162,13 @@ type InstanceFlavorUnionHardwareDescription struct {
 	// This field is from variant [InstanceFlavorGPUClusterFlavorHardwareDescription].
 	GPU  string `json:"gpu"`
 	JSON struct {
-		Ram     resp.Field
-		Vcpus   resp.Field
-		CPU     resp.Field
-		Disk    resp.Field
-		License resp.Field
-		Network resp.Field
-		GPU     resp.Field
+		Ram     respjson.Field
+		Vcpus   respjson.Field
+		CPU     respjson.Field
+		Disk    respjson.Field
+		License respjson.Field
+		Network respjson.Field
+		GPU     respjson.Field
 		raw     string
 	} `json:"-"`
 }
@@ -1193,16 +1193,16 @@ type InstanceFlavorInstanceFlavor struct {
 	Ram int64 `json:"ram,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Architecture        resp.Field
-		FlavorID            resp.Field
-		FlavorName          resp.Field
-		HardwareDescription resp.Field
-		OsType              resp.Field
-		Ram                 resp.Field
-		Vcpus               resp.Field
-		ExtraFields         map[string]resp.Field
+		Architecture        respjson.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		HardwareDescription respjson.Field
+		OsType              respjson.Field
+		Ram                 respjson.Field
+		Vcpus               respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -1219,11 +1219,11 @@ type InstanceFlavorInstanceFlavorHardwareDescription struct {
 	Ram string `json:"ram,required"`
 	// CPU description
 	Vcpus string `json:"vcpus,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Ram         resp.Field
-		Vcpus       resp.Field
-		ExtraFields map[string]resp.Field
+		Ram         respjson.Field
+		Vcpus       respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1252,17 +1252,17 @@ type InstanceFlavorBareMetalFlavor struct {
 	ResourceClass string `json:"resource_class,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Architecture        resp.Field
-		FlavorID            resp.Field
-		FlavorName          resp.Field
-		HardwareDescription resp.Field
-		OsType              resp.Field
-		Ram                 resp.Field
-		ResourceClass       resp.Field
-		Vcpus               resp.Field
-		ExtraFields         map[string]resp.Field
+		Architecture        respjson.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		HardwareDescription respjson.Field
+		OsType              respjson.Field
+		Ram                 respjson.Field
+		ResourceClass       respjson.Field
+		Vcpus               respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -1285,14 +1285,14 @@ type InstanceFlavorBareMetalFlavorHardwareDescription struct {
 	Network string `json:"network,required"`
 	// Human-readable RAM description
 	Ram string `json:"ram,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CPU         resp.Field
-		Disk        resp.Field
-		License     resp.Field
-		Network     resp.Field
-		Ram         resp.Field
-		ExtraFields map[string]resp.Field
+		CPU         respjson.Field
+		Disk        respjson.Field
+		License     respjson.Field
+		Network     respjson.Field
+		Ram         respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1321,17 +1321,17 @@ type InstanceFlavorGPUClusterFlavor struct {
 	ResourceClass string `json:"resource_class,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Architecture        resp.Field
-		FlavorID            resp.Field
-		FlavorName          resp.Field
-		HardwareDescription resp.Field
-		OsType              resp.Field
-		Ram                 resp.Field
-		ResourceClass       resp.Field
-		Vcpus               resp.Field
-		ExtraFields         map[string]resp.Field
+		Architecture        respjson.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		HardwareDescription respjson.Field
+		OsType              respjson.Field
+		Ram                 respjson.Field
+		ResourceClass       respjson.Field
+		Vcpus               respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -1356,15 +1356,15 @@ type InstanceFlavorGPUClusterFlavorHardwareDescription struct {
 	Network string `json:"network,required"`
 	// Human-readable RAM description
 	Ram string `json:"ram,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CPU         resp.Field
-		Disk        resp.Field
-		GPU         resp.Field
-		License     resp.Field
-		Network     resp.Field
-		Ram         resp.Field
-		ExtraFields map[string]resp.Field
+		CPU         respjson.Field
+		Disk        respjson.Field
+		GPU         respjson.Field
+		License     respjson.Field
+		Network     respjson.Field
+		Ram         respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1378,10 +1378,10 @@ func (r *InstanceFlavorGPUClusterFlavorHardwareDescription) UnmarshalJSON(data [
 type InstanceSecurityGroup struct {
 	// Name.
 	Name string `json:"name,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Name        resp.Field
-		ExtraFields map[string]resp.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1441,11 +1441,11 @@ type InstanceVolume struct {
 	ID string `json:"id,required"`
 	// Whether the volume is deleted together with the VM
 	DeleteOnTermination bool `json:"delete_on_termination,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  resp.Field
-		DeleteOnTermination resp.Field
-		ExtraFields         map[string]resp.Field
+		ID                  respjson.Field
+		DeleteOnTermination respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -1459,10 +1459,10 @@ func (r *InstanceVolume) UnmarshalJSON(data []byte) error {
 type InstanceIsolation struct {
 	// The reason of instance isolation if it is isolated from external internet.
 	Reason string `json:"reason,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Reason      resp.Field
-		ExtraFields map[string]resp.Field
+		Reason      respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1478,11 +1478,11 @@ type InstanceList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []Instance `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1513,11 +1513,11 @@ type IPAssignment struct {
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	// ID of the subnet that allocated the IP
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		IPAddress   resp.Field
-		SubnetID    resp.Field
-		ExtraFields map[string]resp.Field
+		IPAddress   respjson.Field
+		SubnetID    respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1538,10 +1538,10 @@ const (
 type LaasIndexRetentionPolicy struct {
 	// Duration of days for which logs must be kept.
 	Period int64 `json:"period,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Period      resp.Field
-		ExtraFields map[string]resp.Field
+		Period      respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1639,33 +1639,33 @@ type LoadBalancer struct {
 	VipPortID string `json:"vip_port_id,nullable" format:"uuid4"`
 	// List of VRRP IP addresses
 	VrrpIPs []LoadBalancerVrrpIP `json:"vrrp_ips"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                    resp.Field
-		CreatedAt             resp.Field
-		Name                  resp.Field
-		OperatingStatus       resp.Field
-		ProjectID             resp.Field
-		ProvisioningStatus    resp.Field
-		Region                resp.Field
-		RegionID              resp.Field
-		TagsV2                resp.Field
-		AdditionalVips        resp.Field
-		CreatorTaskID         resp.Field
-		DDOSProfile           resp.Field
-		Flavor                resp.Field
-		FloatingIPs           resp.Field
-		Listeners             resp.Field
-		Logging               resp.Field
-		PreferredConnectivity resp.Field
-		Stats                 resp.Field
-		TaskID                resp.Field
-		UpdatedAt             resp.Field
-		VipAddress            resp.Field
-		VipIPFamily           resp.Field
-		VipPortID             resp.Field
-		VrrpIPs               resp.Field
-		ExtraFields           map[string]resp.Field
+		ID                    respjson.Field
+		CreatedAt             respjson.Field
+		Name                  respjson.Field
+		OperatingStatus       respjson.Field
+		ProjectID             respjson.Field
+		ProvisioningStatus    respjson.Field
+		Region                respjson.Field
+		RegionID              respjson.Field
+		TagsV2                respjson.Field
+		AdditionalVips        respjson.Field
+		CreatorTaskID         respjson.Field
+		DDOSProfile           respjson.Field
+		Flavor                respjson.Field
+		FloatingIPs           respjson.Field
+		Listeners             respjson.Field
+		Logging               respjson.Field
+		PreferredConnectivity respjson.Field
+		Stats                 respjson.Field
+		TaskID                respjson.Field
+		UpdatedAt             respjson.Field
+		VipAddress            respjson.Field
+		VipIPFamily           respjson.Field
+		VipPortID             respjson.Field
+		VrrpIPs               respjson.Field
+		ExtraFields           map[string]respjson.Field
 		raw                   string
 	} `json:"-"`
 }
@@ -1681,11 +1681,11 @@ type LoadBalancerAdditionalVip struct {
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	// Subnet UUID
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		IPAddress   resp.Field
-		SubnetID    resp.Field
-		ExtraFields map[string]resp.Field
+		IPAddress   respjson.Field
+		SubnetID    respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1706,13 +1706,13 @@ type LoadBalancerFlavor struct {
 	Ram int64 `json:"ram,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FlavorID    resp.Field
-		FlavorName  resp.Field
-		Ram         resp.Field
-		Vcpus       resp.Field
-		ExtraFields map[string]resp.Field
+		FlavorID    respjson.Field
+		FlavorName  respjson.Field
+		Ram         respjson.Field
+		Vcpus       respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1726,10 +1726,10 @@ func (r *LoadBalancerFlavor) UnmarshalJSON(data []byte) error {
 type LoadBalancerListener struct {
 	// Listener ID
 	ID string `json:"id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          resp.Field
-		ExtraFields map[string]resp.Field
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1749,12 +1749,12 @@ type LoadBalancerVrrpIP struct {
 	Role LoadBalancerInstanceRole `json:"role,required"`
 	// Subnet UUID
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		IPAddress   resp.Field
-		Role        resp.Field
-		SubnetID    resp.Field
-		ExtraFields map[string]resp.Field
+		IPAddress   respjson.Field
+		Role        respjson.Field
+		SubnetID    respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1802,14 +1802,14 @@ type LoadBalancerStatistics struct {
 	RequestErrors int64 `json:"request_errors,required"`
 	// Total connections handled
 	TotalConnections int64 `json:"total_connections,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ActiveConnections resp.Field
-		BytesIn           resp.Field
-		BytesOut          resp.Field
-		RequestErrors     resp.Field
-		TotalConnections  resp.Field
-		ExtraFields       map[string]resp.Field
+		ActiveConnections respjson.Field
+		BytesIn           respjson.Field
+		BytesOut          respjson.Field
+		RequestErrors     respjson.Field
+		TotalConnections  respjson.Field
+		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
 }
@@ -1829,13 +1829,13 @@ type Logging struct {
 	TopicName string `json:"topic_name,required"`
 	// Logs retention policy
 	RetentionPolicy LaasIndexRetentionPolicy `json:"retention_policy,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		DestinationRegionID resp.Field
-		Enabled             resp.Field
-		TopicName           resp.Field
-		RetentionPolicy     resp.Field
-		ExtraFields         map[string]resp.Field
+		DestinationRegionID respjson.Field
+		Enabled             respjson.Field
+		TopicName           respjson.Field
+		RetentionPolicy     respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -1890,27 +1890,27 @@ type Network struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  resp.Field
-		CreatedAt           resp.Field
-		External            resp.Field
-		Name                resp.Field
-		PortSecurityEnabled resp.Field
-		Region              resp.Field
-		RegionID            resp.Field
-		Shared              resp.Field
-		Subnets             resp.Field
-		Tags                resp.Field
-		Type                resp.Field
-		UpdatedAt           resp.Field
-		CreatorTaskID       resp.Field
-		Default             resp.Field
-		Mtu                 resp.Field
-		ProjectID           resp.Field
-		SegmentationID      resp.Field
-		TaskID              resp.Field
-		ExtraFields         map[string]resp.Field
+		ID                  respjson.Field
+		CreatedAt           respjson.Field
+		External            respjson.Field
+		Name                respjson.Field
+		PortSecurityEnabled respjson.Field
+		Region              respjson.Field
+		RegionID            respjson.Field
+		Shared              respjson.Field
+		Subnets             respjson.Field
+		Tags                respjson.Field
+		Type                respjson.Field
+		UpdatedAt           respjson.Field
+		CreatorTaskID       respjson.Field
+		Default             respjson.Field
+		Mtu                 respjson.Field
+		ProjectID           respjson.Field
+		SegmentationID      respjson.Field
+		TaskID              respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -1964,27 +1964,27 @@ type NetworkDetails struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  resp.Field
-		CreatedAt           resp.Field
-		External            resp.Field
-		Name                resp.Field
-		PortSecurityEnabled resp.Field
-		Region              resp.Field
-		RegionID            resp.Field
-		Shared              resp.Field
-		Tags                resp.Field
-		Type                resp.Field
-		UpdatedAt           resp.Field
-		CreatorTaskID       resp.Field
-		Default             resp.Field
-		Mtu                 resp.Field
-		ProjectID           resp.Field
-		SegmentationID      resp.Field
-		Subnets             resp.Field
-		TaskID              resp.Field
-		ExtraFields         map[string]resp.Field
+		ID                  respjson.Field
+		CreatedAt           respjson.Field
+		External            respjson.Field
+		Name                respjson.Field
+		PortSecurityEnabled respjson.Field
+		Region              respjson.Field
+		RegionID            respjson.Field
+		Shared              respjson.Field
+		Tags                respjson.Field
+		Type                respjson.Field
+		UpdatedAt           respjson.Field
+		CreatorTaskID       respjson.Field
+		Default             respjson.Field
+		Mtu                 respjson.Field
+		ProjectID           respjson.Field
+		SegmentationID      respjson.Field
+		Subnets             respjson.Field
+		TaskID              respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -2016,19 +2016,19 @@ type NetworkInterface struct {
 	InterfaceName string `json:"interface_name,nullable"`
 	// MAC address of the virtual port
 	MacAddress string `json:"mac_address,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AllowedAddressPairs resp.Field
-		FloatingipDetails   resp.Field
-		IPAssignments       resp.Field
-		NetworkDetails      resp.Field
-		NetworkID           resp.Field
-		PortID              resp.Field
-		PortSecurityEnabled resp.Field
-		SubPorts            resp.Field
-		InterfaceName       resp.Field
-		MacAddress          resp.Field
-		ExtraFields         map[string]resp.Field
+		AllowedAddressPairs respjson.Field
+		FloatingipDetails   respjson.Field
+		IPAssignments       respjson.Field
+		NetworkDetails      respjson.Field
+		NetworkID           respjson.Field
+		PortID              respjson.Field
+		PortSecurityEnabled respjson.Field
+		SubPorts            respjson.Field
+		InterfaceName       respjson.Field
+		MacAddress          respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -2062,20 +2062,20 @@ type NetworkInterfaceSubPort struct {
 	InterfaceName string `json:"interface_name,nullable"`
 	// MAC address of the virtual port
 	MacAddress string `json:"mac_address,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AllowedAddressPairs resp.Field
-		FloatingipDetails   resp.Field
-		IPAssignments       resp.Field
-		NetworkDetails      resp.Field
-		NetworkID           resp.Field
-		PortID              resp.Field
-		PortSecurityEnabled resp.Field
-		SegmentationID      resp.Field
-		SegmentationType    resp.Field
-		InterfaceName       resp.Field
-		MacAddress          resp.Field
-		ExtraFields         map[string]resp.Field
+		AllowedAddressPairs respjson.Field
+		FloatingipDetails   respjson.Field
+		IPAssignments       respjson.Field
+		NetworkDetails      respjson.Field
+		NetworkID           respjson.Field
+		PortID              respjson.Field
+		PortSecurityEnabled respjson.Field
+		SegmentationID      respjson.Field
+		SegmentationType    respjson.Field
+		InterfaceName       respjson.Field
+		MacAddress          respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -2091,11 +2091,11 @@ type NetworkInterfaceList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []NetworkInterface `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -2123,11 +2123,11 @@ type Route struct {
 	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
 	// CIDR.
 	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Destination resp.Field
-		Nexthop     resp.Field
-		ExtraFields map[string]resp.Field
+		Destination respjson.Field
+		Nexthop     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -2188,29 +2188,29 @@ type Subnet struct {
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
 	// Total number of ips in subnet
 	TotalIPs int64 `json:"total_ips,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Cidr           resp.Field
-		CreatedAt      resp.Field
-		EnableDhcp     resp.Field
-		IPVersion      resp.Field
-		Name           resp.Field
-		NetworkID      resp.Field
-		ProjectID      resp.Field
-		Region         resp.Field
-		RegionID       resp.Field
-		Tags           resp.Field
-		UpdatedAt      resp.Field
-		ID             resp.Field
-		AvailableIPs   resp.Field
-		CreatorTaskID  resp.Field
-		DNSNameservers resp.Field
-		GatewayIP      resp.Field
-		HasRouter      resp.Field
-		HostRoutes     resp.Field
-		TaskID         resp.Field
-		TotalIPs       resp.Field
-		ExtraFields    map[string]resp.Field
+		Cidr           respjson.Field
+		CreatedAt      respjson.Field
+		EnableDhcp     respjson.Field
+		IPVersion      respjson.Field
+		Name           respjson.Field
+		NetworkID      respjson.Field
+		ProjectID      respjson.Field
+		Region         respjson.Field
+		RegionID       respjson.Field
+		Tags           respjson.Field
+		UpdatedAt      respjson.Field
+		ID             respjson.Field
+		AvailableIPs   respjson.Field
+		CreatorTaskID  respjson.Field
+		DNSNameservers respjson.Field
+		GatewayIP      respjson.Field
+		HasRouter      respjson.Field
+		HostRoutes     respjson.Field
+		TaskID         respjson.Field
+		TotalIPs       respjson.Field
+		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
 }
@@ -2233,12 +2233,12 @@ type Tag struct {
 	ReadOnly bool `json:"read_only,required"`
 	// Tag value. The maximum size for a value is 1024 bytes.
 	Value string `json:"value,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Key         resp.Field
-		ReadOnly    resp.Field
-		Value       resp.Field
-		ExtraFields map[string]resp.Field
+		Key         respjson.Field
+		ReadOnly    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -2254,10 +2254,10 @@ type TagUpdateMap map[string]string
 type TaskIDList struct {
 	// List of task IDs
 	Tasks []string `json:"tasks,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Tasks       resp.Field
-		ExtraFields map[string]resp.Field
+		Tasks       respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

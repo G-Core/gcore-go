@@ -15,7 +15,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // UserRoleAssignmentService contains methods and other services that help with
@@ -100,17 +100,17 @@ type RoleAssignment struct {
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// User ID
 	UserID int64 `json:"user_id,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          resp.Field
-		AssignedBy  resp.Field
-		ClientID    resp.Field
-		CreatedAt   resp.Field
-		ProjectID   resp.Field
-		Role        resp.Field
-		UpdatedAt   resp.Field
-		UserID      resp.Field
-		ExtraFields map[string]resp.Field
+		ID          respjson.Field
+		AssignedBy  respjson.Field
+		ClientID    respjson.Field
+		CreatedAt   respjson.Field
+		ProjectID   respjson.Field
+		Role        respjson.Field
+		UpdatedAt   respjson.Field
+		UserID      respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -124,10 +124,10 @@ func (r *RoleAssignment) UnmarshalJSON(data []byte) error {
 type RoleAssignmentUpdateDelete struct {
 	// Assignment ID
 	AssignmentID int64 `json:"assignment_id,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AssignmentID resp.Field
-		ExtraFields  map[string]resp.Field
+		AssignmentID respjson.Field
+		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
 }

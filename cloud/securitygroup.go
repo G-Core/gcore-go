@@ -16,7 +16,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // SecurityGroupService contains methods and other services that help with
@@ -254,20 +254,20 @@ type SecurityGroup struct {
 	Description string `json:"description,nullable"`
 	// Security group rules
 	SecurityGroupRules []SecurityGroupRule `json:"security_group_rules"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 resp.Field
-		CreatedAt          resp.Field
-		Name               resp.Field
-		ProjectID          resp.Field
-		Region             resp.Field
-		RegionID           resp.Field
-		RevisionNumber     resp.Field
-		TagsV2             resp.Field
-		UpdatedAt          resp.Field
-		Description        resp.Field
-		SecurityGroupRules resp.Field
-		ExtraFields        map[string]resp.Field
+		ID                 respjson.Field
+		CreatedAt          respjson.Field
+		Name               respjson.Field
+		ProjectID          respjson.Field
+		Region             respjson.Field
+		RegionID           respjson.Field
+		RevisionNumber     respjson.Field
+		TagsV2             respjson.Field
+		UpdatedAt          respjson.Field
+		Description        respjson.Field
+		SecurityGroupRules respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -315,22 +315,22 @@ type SecurityGroupRule struct {
 	RemoteGroupID string `json:"remote_group_id,nullable" format:"uuid4"`
 	// The remote IP prefix that is matched by this security group rule
 	RemoteIPPrefix string `json:"remote_ip_prefix,nullable" format:"ipvanynetwork"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID              resp.Field
-		CreatedAt       resp.Field
-		Direction       resp.Field
-		RevisionNumber  resp.Field
-		SecurityGroupID resp.Field
-		UpdatedAt       resp.Field
-		Description     resp.Field
-		Ethertype       resp.Field
-		PortRangeMax    resp.Field
-		PortRangeMin    resp.Field
-		Protocol        resp.Field
-		RemoteGroupID   resp.Field
-		RemoteIPPrefix  resp.Field
-		ExtraFields     map[string]resp.Field
+		ID              respjson.Field
+		CreatedAt       respjson.Field
+		Direction       respjson.Field
+		RevisionNumber  respjson.Field
+		SecurityGroupID respjson.Field
+		UpdatedAt       respjson.Field
+		Description     respjson.Field
+		Ethertype       respjson.Field
+		PortRangeMax    respjson.Field
+		PortRangeMin    respjson.Field
+		Protocol        respjson.Field
+		RemoteGroupID   respjson.Field
+		RemoteIPPrefix  respjson.Field
+		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
 }

@@ -12,7 +12,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // PlacementGroupService contains methods and other services that help with
@@ -146,16 +146,16 @@ type PlacementGroup struct {
 	RegionID int64 `json:"region_id,required"`
 	// The ID of the server group.
 	ServergroupID string `json:"servergroup_id,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Instances     resp.Field
-		Name          resp.Field
-		Policy        resp.Field
-		ProjectID     resp.Field
-		Region        resp.Field
-		RegionID      resp.Field
-		ServergroupID resp.Field
-		ExtraFields   map[string]resp.Field
+		Instances     respjson.Field
+		Name          respjson.Field
+		Policy        respjson.Field
+		ProjectID     respjson.Field
+		Region        respjson.Field
+		RegionID      respjson.Field
+		ServergroupID respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -171,11 +171,11 @@ type PlacementGroupInstance struct {
 	InstanceID string `json:"instance_id,required"`
 	// The name of the instance, corresponding to the attribute 'name'.
 	InstanceName string `json:"instance_name,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InstanceID   resp.Field
-		InstanceName resp.Field
-		ExtraFields  map[string]resp.Field
+		InstanceID   respjson.Field
+		InstanceName respjson.Field
+		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
 }
@@ -191,11 +191,11 @@ type PlacementGroupList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []PlacementGroup `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

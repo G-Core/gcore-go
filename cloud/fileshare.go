@@ -15,7 +15,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 	"github.com/stainless-sdks/gcore-go/shared/constant"
 )
 
@@ -259,28 +259,28 @@ type FileShare struct {
 	//
 	// Any of "default_share_type", "vast_share_type".
 	VolumeType FileShareVolumeType `json:"volume_type,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID               resp.Field
-		ConnectionPoint  resp.Field
-		CreatedAt        resp.Field
-		CreatorTaskID    resp.Field
-		Name             resp.Field
-		NetworkID        resp.Field
-		NetworkName      resp.Field
-		ProjectID        resp.Field
-		Protocol         resp.Field
-		Region           resp.Field
-		RegionID         resp.Field
-		ShareNetworkName resp.Field
-		Size             resp.Field
-		Status           resp.Field
-		SubnetID         resp.Field
-		SubnetName       resp.Field
-		Tags             resp.Field
-		TaskID           resp.Field
-		VolumeType       resp.Field
-		ExtraFields      map[string]resp.Field
+		ID               respjson.Field
+		ConnectionPoint  respjson.Field
+		CreatedAt        respjson.Field
+		CreatorTaskID    respjson.Field
+		Name             respjson.Field
+		NetworkID        respjson.Field
+		NetworkName      respjson.Field
+		ProjectID        respjson.Field
+		Protocol         respjson.Field
+		Region           respjson.Field
+		RegionID         respjson.Field
+		ShareNetworkName respjson.Field
+		Size             respjson.Field
+		Status           respjson.Field
+		SubnetID         respjson.Field
+		SubnetName       respjson.Field
+		Tags             respjson.Field
+		TaskID           respjson.Field
+		VolumeType       respjson.Field
+		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
 }

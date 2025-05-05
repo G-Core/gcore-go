@@ -17,7 +17,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // FloatingIPService contains methods and other services that help with interacting
@@ -255,28 +255,28 @@ type FloatingIPDetailed struct {
 	TaskID string `json:"task_id,required" format:"uuid4"`
 	// Datetime when the floating IP was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                resp.Field
-		CreatedAt         resp.Field
-		CreatorTaskID     resp.Field
-		DNSDomain         resp.Field
-		DNSName           resp.Field
-		FixedIPAddress    resp.Field
-		FloatingIPAddress resp.Field
-		Instance          resp.Field
-		Loadbalancer      resp.Field
-		PortID            resp.Field
-		ProjectID         resp.Field
-		Region            resp.Field
-		RegionID          resp.Field
-		RouterID          resp.Field
-		Status            resp.Field
-		SubnetID          resp.Field
-		Tags              resp.Field
-		TaskID            resp.Field
-		UpdatedAt         resp.Field
-		ExtraFields       map[string]resp.Field
+		ID                respjson.Field
+		CreatedAt         respjson.Field
+		CreatorTaskID     respjson.Field
+		DNSDomain         respjson.Field
+		DNSName           respjson.Field
+		FixedIPAddress    respjson.Field
+		FloatingIPAddress respjson.Field
+		Instance          respjson.Field
+		Loadbalancer      respjson.Field
+		PortID            respjson.Field
+		ProjectID         respjson.Field
+		Region            respjson.Field
+		RegionID          respjson.Field
+		RouterID          respjson.Field
+		Status            respjson.Field
+		SubnetID          respjson.Field
+		Tags              respjson.Field
+		TaskID            respjson.Field
+		UpdatedAt         respjson.Field
+		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
 }
@@ -339,27 +339,27 @@ type FloatingIPDetailedInstance struct {
 	VmState string `json:"vm_state,required"`
 	// List of volumes
 	Volumes []FloatingIPDetailedInstanceVolume `json:"volumes,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  resp.Field
-		Addresses           resp.Field
-		CreatedAt           resp.Field
-		CreatorTaskID       resp.Field
-		Flavor              resp.Field
-		InstanceDescription resp.Field
-		Name                resp.Field
-		ProjectID           resp.Field
-		Region              resp.Field
-		RegionID            resp.Field
-		SecurityGroups      resp.Field
-		SSHKeyName          resp.Field
-		Status              resp.Field
-		Tags                resp.Field
-		TaskID              resp.Field
-		TaskState           resp.Field
-		VmState             resp.Field
-		Volumes             resp.Field
-		ExtraFields         map[string]resp.Field
+		ID                  respjson.Field
+		Addresses           respjson.Field
+		CreatedAt           respjson.Field
+		CreatorTaskID       respjson.Field
+		Flavor              respjson.Field
+		InstanceDescription respjson.Field
+		Name                respjson.Field
+		ProjectID           respjson.Field
+		Region              respjson.Field
+		RegionID            respjson.Field
+		SecurityGroups      respjson.Field
+		SSHKeyName          respjson.Field
+		Status              respjson.Field
+		Tags                respjson.Field
+		TaskID              respjson.Field
+		TaskState           respjson.Field
+		VmState             respjson.Field
+		Volumes             respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -383,11 +383,11 @@ type FloatingIPDetailedInstanceAddressUnion struct {
 	// This field is from variant [FixedAddress].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
-		Addr          resp.Field
-		Type          resp.Field
-		InterfaceName resp.Field
-		SubnetID      resp.Field
-		SubnetName    resp.Field
+		Addr          respjson.Field
+		Type          respjson.Field
+		InterfaceName respjson.Field
+		SubnetID      respjson.Field
+		SubnetName    respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -424,13 +424,13 @@ type FloatingIPDetailedInstanceFlavor struct {
 	Ram int64 `json:"ram,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FlavorID    resp.Field
-		FlavorName  resp.Field
-		Ram         resp.Field
-		Vcpus       resp.Field
-		ExtraFields map[string]resp.Field
+		FlavorID    respjson.Field
+		FlavorName  respjson.Field
+		Ram         respjson.Field
+		Vcpus       respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -444,10 +444,10 @@ func (r *FloatingIPDetailedInstanceFlavor) UnmarshalJSON(data []byte) error {
 type FloatingIPDetailedInstanceSecurityGroup struct {
 	// Name.
 	Name string `json:"name,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Name        resp.Field
-		ExtraFields map[string]resp.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -463,11 +463,11 @@ type FloatingIPDetailedInstanceVolume struct {
 	ID string `json:"id,required"`
 	// Whether the volume is deleted together with the VM
 	DeleteOnTermination bool `json:"delete_on_termination,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  resp.Field
-		DeleteOnTermination resp.Field
-		ExtraFields         map[string]resp.Field
+		ID                  respjson.Field
+		DeleteOnTermination respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
