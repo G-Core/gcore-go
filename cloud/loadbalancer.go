@@ -61,11 +61,11 @@ func (r *LoadBalancerService) New(ctx context.Context, params LoadBalancerNewPar
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -84,11 +84,11 @@ func (r *LoadBalancerService) Update(ctx context.Context, loadbalancerID string,
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -112,11 +112,11 @@ func (r *LoadBalancerService) List(ctx context.Context, params LoadBalancerListP
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -147,11 +147,11 @@ func (r *LoadBalancerService) Delete(ctx context.Context, loadbalancerID string,
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -173,11 +173,11 @@ func (r *LoadBalancerService) Failover(ctx context.Context, loadbalancerID strin
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -199,11 +199,11 @@ func (r *LoadBalancerService) Get(ctx context.Context, loadbalancerID string, pa
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -225,11 +225,11 @@ func (r *LoadBalancerService) Resize(ctx context.Context, loadbalancerID string,
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -292,8 +292,7 @@ type DetailedLbPool struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                   resp.Field
 		CaSecretID           resp.Field
@@ -328,8 +327,7 @@ func (r *DetailedLbPool) UnmarshalJSON(data []byte) error {
 type DetailedLbPoolListener struct {
 	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID          resp.Field
 		ExtraFields map[string]resp.Field
@@ -346,8 +344,7 @@ func (r *DetailedLbPoolListener) UnmarshalJSON(data []byte) error {
 type DetailedLbPoolLoadbalancer struct {
 	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID          resp.Field
 		ExtraFields map[string]resp.Field
@@ -366,8 +363,7 @@ type DetailedLbPoolList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []DetailedLbPool `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -410,8 +406,7 @@ type DetailedLbPoolMember struct {
 	MonitorPort int64 `json:"monitor_port,nullable"`
 	// Either subnet_id or instance_id should be provided
 	SubnetID string `json:"subnet_id,nullable" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                 resp.Field
 		Address            resp.Field
@@ -450,8 +445,7 @@ type HealthMonitorStatus struct {
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type HealthMonitorType `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                 resp.Field
 		OperatingStatus    resp.Field
@@ -545,8 +539,7 @@ type L7Policy struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                 resp.Field
 		Action             resp.Field
@@ -614,8 +607,7 @@ type L7PolicyList struct {
 	Count int64 `json:"count"`
 	// Objects
 	Results []L7Policy `json:"results"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -673,8 +665,7 @@ type L7Rule struct {
 	Type L7RuleType `json:"type"`
 	// The value to use for the comparison. For example, the file type to compare.
 	Value string `json:"value"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                 resp.Field
 		CompareType        resp.Field
@@ -753,8 +744,7 @@ type L7RuleList struct {
 	Count int64 `json:"count"`
 	// Objects
 	Results []L7Rule `json:"results"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -782,8 +772,7 @@ type LbFlavorList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []LbFlavorListResult `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -819,8 +808,7 @@ type LbFlavorListResult struct {
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus string `json:"price_status,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		FlavorID            resp.Field
 		FlavorName          resp.Field
@@ -876,8 +864,7 @@ type LbHealthMonitor struct {
 	HTTPMethod HTTPMethod `json:"http_method,nullable"`
 	// URL Path. Defaults to '/'
 	URLPath string `json:"url_path,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                 resp.Field
 		AdminStateUp       resp.Field
@@ -956,8 +943,7 @@ type LbListener struct {
 	TimeoutMemberData int64 `json:"timeout_member_data,nullable"`
 	// Load balancer listener users list
 	UserList []LbListenerUserList `json:"user_list"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                   resp.Field
 		ConnectionLimit      resp.Field
@@ -995,8 +981,7 @@ type LbListenerUserList struct {
 	EncryptedPassword string `json:"encrypted_password,required"`
 	// Username to auth via Basic Authentication
 	Username string `json:"username,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		EncryptedPassword resp.Field
 		Username          resp.Field
@@ -1016,8 +1001,7 @@ type LbListenerList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []LbListener `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -1065,8 +1049,7 @@ type LbSessionPersistence struct {
 	PersistenceGranularity string `json:"persistence_granularity,nullable"`
 	// Session persistence timeout. For UDP ports only
 	PersistenceTimeout int64 `json:"persistence_timeout,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Type                   resp.Field
 		CookieName             resp.Field
@@ -1099,8 +1082,7 @@ type ListenerStatus struct {
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                 resp.Field
 		Name               resp.Field
@@ -1140,8 +1122,7 @@ type LoadBalancerStatus struct {
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                 resp.Field
 		Listeners          resp.Field
@@ -1165,8 +1146,7 @@ type LoadBalancerStatusList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []LoadBalancerStatus `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -1196,8 +1176,7 @@ type LoadbalancerMetrics struct {
 	NetworkPpsIngress float64 `json:"network_pps_ingress,nullable"`
 	// Timestamp
 	Time string `json:"time,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		CPUUtil           resp.Field
 		MemoryUtil        resp.Field
@@ -1222,8 +1201,7 @@ type LoadbalancerMetricsList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []LoadbalancerMetrics `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -1254,8 +1232,7 @@ type MemberStatus struct {
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                 resp.Field
 		Address            resp.Field
@@ -1291,8 +1268,7 @@ type PoolStatus struct {
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
 	// Health Monitor of the Pool
 	HealthMonitor HealthMonitorStatus `json:"health_monitor"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                 resp.Field
 		Members            resp.Field
@@ -1364,10 +1340,6 @@ type LoadBalancerNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r LoadBalancerNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1382,11 +1354,6 @@ type LoadBalancerNewParamsFloatingIPUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u LoadBalancerNewParamsFloatingIPUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
 func (u LoadBalancerNewParamsFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[LoadBalancerNewParamsFloatingIPUnion](u.OfNew, u.OfExisting)
 }
@@ -1451,11 +1418,6 @@ type LoadBalancerNewParamsFloatingIPNew struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParamsFloatingIPNew) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerNewParamsFloatingIPNew) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1476,11 +1438,6 @@ type LoadBalancerNewParamsFloatingIPExisting struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParamsFloatingIPExisting) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerNewParamsFloatingIPExisting) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1522,9 +1479,6 @@ type LoadBalancerNewParamsListener struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParamsListener) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r LoadBalancerNewParamsListener) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsListener
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1567,11 +1521,6 @@ type LoadBalancerNewParamsListenerPool struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParamsListenerPool) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerNewParamsListenerPool) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsListenerPool
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1607,11 +1556,6 @@ type LoadBalancerNewParamsListenerPoolHealthmonitor struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParamsListenerPoolHealthmonitor) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerNewParamsListenerPoolHealthmonitor) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsListenerPoolHealthmonitor
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1640,11 +1584,6 @@ type LoadBalancerNewParamsListenerPoolMember struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParamsListenerPoolMember) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerNewParamsListenerPoolMember) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsListenerPoolMember
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1667,11 +1606,6 @@ type LoadBalancerNewParamsListenerPoolSessionPersistence struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParamsListenerPoolSessionPersistence) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerNewParamsListenerPoolSessionPersistence) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsListenerPoolSessionPersistence
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1686,11 +1620,6 @@ type LoadBalancerNewParamsListenerUserList struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParamsListenerUserList) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerNewParamsListenerUserList) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsListenerUserList
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1709,9 +1638,6 @@ type LoadBalancerNewParamsLogging struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerNewParamsLogging) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r LoadBalancerNewParamsLogging) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsLogging
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1732,10 +1658,6 @@ type LoadBalancerUpdateParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r LoadBalancerUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1754,9 +1676,6 @@ type LoadBalancerUpdateParamsLogging struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerUpdateParamsLogging) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r LoadBalancerUpdateParamsLogging) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerUpdateParamsLogging
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1793,10 +1712,6 @@ type LoadBalancerListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [LoadBalancerListParams]'s query parameters as `url.Values`.
 func (r LoadBalancerListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
@@ -1811,10 +1726,6 @@ type LoadBalancerDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type LoadBalancerFailoverParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -1822,10 +1733,6 @@ type LoadBalancerFailoverParams struct {
 	Force param.Opt[bool] `json:"force,omitzero"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerFailoverParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r LoadBalancerFailoverParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerFailoverParams
@@ -1842,10 +1749,6 @@ type LoadBalancerGetParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [LoadBalancerGetParams]'s query parameters as `url.Values`.
 func (r LoadBalancerGetParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
@@ -1861,10 +1764,6 @@ type LoadBalancerResizeParams struct {
 	Flavor string `json:"flavor,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerResizeParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r LoadBalancerResizeParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerResizeParams

@@ -45,7 +45,7 @@ func (r *InferenceRegistryCredentialService) New(ctx context.Context, params Inf
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -64,7 +64,7 @@ func (r *InferenceRegistryCredentialService) List(ctx context.Context, params In
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -95,7 +95,7 @@ func (r *InferenceRegistryCredentialService) Delete(ctx context.Context, credent
 		return
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -116,7 +116,7 @@ func (r *InferenceRegistryCredentialService) Get(ctx context.Context, credential
 		return
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -138,7 +138,7 @@ func (r *InferenceRegistryCredentialService) Replace(ctx context.Context, creden
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -160,8 +160,7 @@ type InferenceRegistryCredential struct {
 	RegistryURL string `json:"registry_url,required"`
 	// Registry username.
 	Username string `json:"username,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Name        resp.Field
 		ProjectID   resp.Field
@@ -189,8 +188,7 @@ type InferenceRegistryCredentialFull struct {
 	RegistryURL string `json:"registry_url,required"`
 	// Registry username.
 	Username string `json:"username,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Name        resp.Field
 		Password    resp.Field
@@ -222,12 +220,6 @@ type InferenceRegistryCredentialNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceRegistryCredentialNewParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-
 func (r InferenceRegistryCredentialNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceRegistryCredentialNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -242,12 +234,6 @@ type InferenceRegistryCredentialListParams struct {
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceRegistryCredentialListParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 // URLQuery serializes [InferenceRegistryCredentialListParams]'s query parameters
@@ -265,22 +251,10 @@ type InferenceRegistryCredentialDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceRegistryCredentialDeleteParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-
 type InferenceRegistryCredentialGetParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceRegistryCredentialGetParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 type InferenceRegistryCredentialReplaceParams struct {
@@ -293,12 +267,6 @@ type InferenceRegistryCredentialReplaceParams struct {
 	// Registry username.
 	Username string `json:"username,required"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceRegistryCredentialReplaceParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 func (r InferenceRegistryCredentialReplaceParams) MarshalJSON() (data []byte, err error) {

@@ -52,11 +52,11 @@ func (r *ReservedFixedIPService) New(ctx context.Context, params ReservedFixedIP
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -116,11 +116,11 @@ func (r *ReservedFixedIPService) List(ctx context.Context, params ReservedFixedI
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -151,11 +151,11 @@ func (r *ReservedFixedIPService) Delete(ctx context.Context, portID string, body
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -177,11 +177,11 @@ func (r *ReservedFixedIPService) Get(ctx context.Context, portID string, query R
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -239,8 +239,7 @@ type ReservedFixedIP struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		AllowedAddressPairs resp.Field
 		Attachments         resp.Field
@@ -279,8 +278,7 @@ type ReservedFixedIPAttachment struct {
 	ResourceID string `json:"resource_id,nullable"`
 	// Resource type
 	ResourceType string `json:"resource_type,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ResourceID   resp.Field
 		ResourceType resp.Field
@@ -303,8 +301,7 @@ type ReservedFixedIPReservation struct {
 	ResourceType string `json:"resource_type,nullable"`
 	// IP reservation status
 	Status string `json:"status,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ResourceID   resp.Field
 		ResourceType resp.Field
@@ -342,10 +339,6 @@ type ReservedFixedIPNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (u ReservedFixedIPNewParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[ReservedFixedIPNewParams](u.OfExternal,
 		u.OfSubnet,
@@ -369,11 +362,6 @@ type ReservedFixedIPNewParamsBodyExternal struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPNewParamsBodyExternal) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r ReservedFixedIPNewParamsBodyExternal) MarshalJSON() (data []byte, err error) {
 	type shadow ReservedFixedIPNewParamsBodyExternal
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -392,11 +380,6 @@ type ReservedFixedIPNewParamsBodySubnet struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPNewParamsBodySubnet) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r ReservedFixedIPNewParamsBodySubnet) MarshalJSON() (data []byte, err error) {
 	type shadow ReservedFixedIPNewParamsBodySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -419,11 +402,6 @@ type ReservedFixedIPNewParamsBodyAnySubnet struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPNewParamsBodyAnySubnet) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r ReservedFixedIPNewParamsBodyAnySubnet) MarshalJSON() (data []byte, err error) {
 	type shadow ReservedFixedIPNewParamsBodyAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -444,11 +422,6 @@ type ReservedFixedIPNewParamsBodyIPAddress struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPNewParamsBodyIPAddress) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r ReservedFixedIPNewParamsBodyIPAddress) MarshalJSON() (data []byte, err error) {
 	type shadow ReservedFixedIPNewParamsBodyIPAddress
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -466,9 +439,6 @@ type ReservedFixedIPNewParamsBodyPort struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPNewParamsBodyPort) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r ReservedFixedIPNewParamsBodyPort) MarshalJSON() (data []byte, err error) {
 	type shadow ReservedFixedIPNewParamsBodyPort
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -501,10 +471,6 @@ type ReservedFixedIPListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [ReservedFixedIPListParams]'s query parameters as
 // `url.Values`.
 func (r ReservedFixedIPListParams) URLQuery() (v url.Values, err error) {
@@ -520,16 +486,8 @@ type ReservedFixedIPDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type ReservedFixedIPGetParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

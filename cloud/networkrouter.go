@@ -48,11 +48,11 @@ func (r *NetworkRouterService) New(ctx context.Context, params NetworkRouterNewP
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -70,11 +70,11 @@ func (r *NetworkRouterService) Update(ctx context.Context, routerID string, para
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -98,11 +98,11 @@ func (r *NetworkRouterService) List(ctx context.Context, params NetworkRouterLis
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -133,11 +133,11 @@ func (r *NetworkRouterService) Delete(ctx context.Context, routerID string, body
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -159,11 +159,11 @@ func (r *NetworkRouterService) AttachSubnet(ctx context.Context, routerID string
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -185,11 +185,11 @@ func (r *NetworkRouterService) DetachSubnet(ctx context.Context, routerID string
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -211,11 +211,11 @@ func (r *NetworkRouterService) Get(ctx context.Context, routerID string, query N
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -259,8 +259,7 @@ type Router struct {
 	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
 	// State of this router's external gateway.
 	ExternalGatewayInfo RouterExternalGatewayInfo `json:"external_gateway_info,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                  resp.Field
 		CreatedAt           resp.Field
@@ -296,8 +295,7 @@ type RouterInterface struct {
 	PortID string `json:"port_id,required" format:"uuid4"`
 	// MAC address of the virtual port
 	MacAddress string `json:"mac_address,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		IPAssignments resp.Field
 		NetworkID     resp.Field
@@ -322,8 +320,7 @@ type RouterExternalGatewayInfo struct {
 	ExternalFixedIPs []IPAssignment `json:"external_fixed_ips,required"`
 	// Id of the external network.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		EnableSnat       resp.Field
 		ExternalFixedIPs resp.Field
@@ -344,8 +341,7 @@ type RouterList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []Router `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -367,9 +363,6 @@ type SubnetIDParam struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SubnetIDParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r SubnetIDParam) MarshalJSON() (data []byte, err error) {
 	type shadow SubnetIDParam
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -388,10 +381,6 @@ type NetworkRouterNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r NetworkRouterNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -406,11 +395,6 @@ type NetworkRouterNewParamsExternalGatewayInfoUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u NetworkRouterNewParamsExternalGatewayInfoUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
 func (u NetworkRouterNewParamsExternalGatewayInfoUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[NetworkRouterNewParamsExternalGatewayInfoUnion](u.OfRouterExternalManualGwSerializer, u.OfRouterExternalDefaultGwSerializer)
 }
@@ -434,9 +418,9 @@ func (u NetworkRouterNewParamsExternalGatewayInfoUnion) GetNetworkID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u NetworkRouterNewParamsExternalGatewayInfoUnion) GetEnableSnat() *bool {
-	if vt := u.OfRouterExternalManualGwSerializer; vt != nil && vt.EnableSnat.IsPresent() {
+	if vt := u.OfRouterExternalManualGwSerializer; vt != nil && vt.EnableSnat.Valid() {
 		return &vt.EnableSnat.Value
-	} else if vt := u.OfRouterExternalDefaultGwSerializer; vt != nil && vt.EnableSnat.IsPresent() {
+	} else if vt := u.OfRouterExternalDefaultGwSerializer; vt != nil && vt.EnableSnat.Valid() {
 		return &vt.EnableSnat.Value
 	}
 	return nil
@@ -465,11 +449,6 @@ type NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer s
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -491,11 +470,6 @@ type NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer 
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -518,9 +492,6 @@ type NetworkRouterNewParamsInterface struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterNewParamsInterface) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r NetworkRouterNewParamsInterface) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterNewParamsInterface
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -542,9 +513,6 @@ type NetworkRouterNewParamsRoute struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterNewParamsRoute) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r NetworkRouterNewParamsRoute) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterNewParamsRoute
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -561,10 +529,6 @@ type NetworkRouterUpdateParams struct {
 	Routes []NetworkRouterUpdateParamsRoute `json:"routes,omitzero"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r NetworkRouterUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterUpdateParams
@@ -586,11 +550,6 @@ type NetworkRouterUpdateParamsExternalGatewayInfo struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterUpdateParamsExternalGatewayInfo) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r NetworkRouterUpdateParamsExternalGatewayInfo) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterUpdateParamsExternalGatewayInfo
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -612,9 +571,6 @@ type NetworkRouterUpdateParamsRoute struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterUpdateParamsRoute) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r NetworkRouterUpdateParamsRoute) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterUpdateParamsRoute
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -629,10 +585,6 @@ type NetworkRouterListParams struct {
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [NetworkRouterListParams]'s query parameters as
 // `url.Values`.
@@ -649,10 +601,6 @@ type NetworkRouterDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type NetworkRouterAttachSubnetParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -666,10 +614,6 @@ type NetworkRouterAttachSubnetParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterAttachSubnetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r NetworkRouterAttachSubnetParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterAttachSubnetParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -682,10 +626,6 @@ type NetworkRouterDetachSubnetParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterDetachSubnetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r NetworkRouterDetachSubnetParams) MarshalJSON() (data []byte, err error) {
 	return json.Marshal(r.SubnetID)
 }
@@ -695,7 +635,3 @@ type NetworkRouterGetParams struct {
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkRouterGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

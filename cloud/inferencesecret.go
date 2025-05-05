@@ -45,7 +45,7 @@ func (r *InferenceSecretService) New(ctx context.Context, params InferenceSecret
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -64,7 +64,7 @@ func (r *InferenceSecretService) List(ctx context.Context, params InferenceSecre
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -95,7 +95,7 @@ func (r *InferenceSecretService) Delete(ctx context.Context, secretName string, 
 		return
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -116,7 +116,7 @@ func (r *InferenceSecretService) Get(ctx context.Context, secretName string, que
 		return
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -137,7 +137,7 @@ func (r *InferenceSecretService) Replace(ctx context.Context, secretName string,
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -157,8 +157,7 @@ type InferenceSecret struct {
 	Name string `json:"name,required"`
 	// Secret type.
 	Type string `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Data        resp.Field
 		Name        resp.Field
@@ -186,10 +185,6 @@ type InferenceSecretNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceSecretNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r InferenceSecretNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceSecretNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -206,10 +201,6 @@ type InferenceSecretListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceSecretListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [InferenceSecretListParams]'s query parameters as
 // `url.Values`.
 func (r InferenceSecretListParams) URLQuery() (v url.Values, err error) {
@@ -225,19 +216,11 @@ type InferenceSecretDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceSecretDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type InferenceSecretGetParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceSecretGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type InferenceSecretReplaceParams struct {
 	// Project ID
@@ -248,10 +231,6 @@ type InferenceSecretReplaceParams struct {
 	Type string `json:"type,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceSecretReplaceParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r InferenceSecretReplaceParams) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceSecretReplaceParams

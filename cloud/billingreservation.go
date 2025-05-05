@@ -108,8 +108,7 @@ type BillingReservation struct {
 	Status string `json:"status,required"`
 	// User status
 	UserStatus string `json:"user_status,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                         resp.Field
 		ActiveFrom                 resp.Field
@@ -157,8 +156,7 @@ type BillingReservationAmountPrices struct {
 	OvercommitPricePerUnit string `json:"overcommit_price_per_unit,required"`
 	// Overcommit price of the item charged for all period reservation
 	OvercommitPriceTotal string `json:"overcommit_price_total,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		CommitPricePerMonth     resp.Field
 		CommitPricePerUnit      resp.Field
@@ -219,8 +217,7 @@ type BillingReservationResource struct {
 	Disk string `json:"disk,nullable"`
 	// Baremetal RAM description
 	Ram string `json:"ram,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ActivityPeriod              resp.Field
 		ActivityPeriodLength        resp.Field
@@ -282,10 +279,6 @@ type BillingReservationListParams struct {
 	Status []string `query:"status,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BillingReservationListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [BillingReservationListParams]'s query parameters as
 // `url.Values`.

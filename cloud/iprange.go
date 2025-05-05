@@ -42,8 +42,7 @@ func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption)
 type IPRanges struct {
 	// IP ranges list
 	Ranges []string `json:"ranges,required" format:"ipv4interface"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Ranges      resp.Field
 		ExtraFields map[string]resp.Field

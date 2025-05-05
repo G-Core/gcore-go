@@ -110,8 +110,7 @@ type QuotaRequestListResponse struct {
 	Description string `json:"description,nullable"`
 	// Datetime when the request was updated.
 	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID              resp.Field
 		ClientID        resp.Field
@@ -137,8 +136,7 @@ type QuotaRequestListResponseRequestedLimits struct {
 	GlobalLimits QuotaRequestListResponseRequestedLimitsGlobalLimits `json:"global_limits"`
 	// Regions and their quota limits
 	RegionalLimits []QuotaRequestListResponseRequestedLimitsRegionalLimit `json:"regional_limits"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		GlobalLimits   resp.Field
 		RegionalLimits resp.Field
@@ -169,8 +167,7 @@ type QuotaRequestListResponseRequestedLimitsGlobalLimits struct {
 	KeypairCountLimit int64 `json:"keypair_count_limit"`
 	// Projects Count limit
 	ProjectCountLimit int64 `json:"project_count_limit"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		InferenceCPUMillicoreCountLimit resp.Field
 		InferenceGPUA100CountLimit      resp.Field
@@ -285,8 +282,7 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	VolumeSnapshotsCountLimit int64 `json:"volume_snapshots_count_limit"`
 	// Snapshots Size, GiB limit
 	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		BaremetalBasicCountLimit          resp.Field
 		BaremetalGPUCountLimit            resp.Field
@@ -361,8 +357,7 @@ type QuotaRequestGetResponse struct {
 	Description string `json:"description,nullable"`
 	// Datetime when the request was updated.
 	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID              resp.Field
 		ClientID        resp.Field
@@ -388,8 +383,7 @@ type QuotaRequestGetResponseRequestedLimits struct {
 	GlobalLimits QuotaRequestGetResponseRequestedLimitsGlobalLimits `json:"global_limits"`
 	// Regions and their quota limits
 	RegionalLimits []QuotaRequestGetResponseRequestedLimitsRegionalLimit `json:"regional_limits"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		GlobalLimits   resp.Field
 		RegionalLimits resp.Field
@@ -420,8 +414,7 @@ type QuotaRequestGetResponseRequestedLimitsGlobalLimits struct {
 	KeypairCountLimit int64 `json:"keypair_count_limit"`
 	// Projects Count limit
 	ProjectCountLimit int64 `json:"project_count_limit"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		InferenceCPUMillicoreCountLimit resp.Field
 		InferenceGPUA100CountLimit      resp.Field
@@ -536,8 +529,7 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	VolumeSnapshotsCountLimit int64 `json:"volume_snapshots_count_limit"`
 	// Snapshots Size, GiB limit
 	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		BaremetalBasicCountLimit          resp.Field
 		BaremetalGPUCountLimit            resp.Field
@@ -607,10 +599,6 @@ type QuotaRequestNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f QuotaRequestNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r QuotaRequestNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow QuotaRequestNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -625,11 +613,6 @@ type QuotaRequestNewParamsRequestedLimits struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f QuotaRequestNewParamsRequestedLimits) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r QuotaRequestNewParamsRequestedLimits) MarshalJSON() (data []byte, err error) {
 	type shadow QuotaRequestNewParamsRequestedLimits
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -654,11 +637,6 @@ type QuotaRequestNewParamsRequestedLimitsGlobalLimits struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f QuotaRequestNewParamsRequestedLimitsGlobalLimits) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r QuotaRequestNewParamsRequestedLimitsGlobalLimits) MarshalJSON() (data []byte, err error) {
 	type shadow QuotaRequestNewParamsRequestedLimitsGlobalLimits
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -762,11 +740,6 @@ type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f QuotaRequestNewParamsRequestedLimitsRegionalLimit) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r QuotaRequestNewParamsRequestedLimitsRegionalLimit) MarshalJSON() (data []byte, err error) {
 	type shadow QuotaRequestNewParamsRequestedLimitsRegionalLimit
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -784,10 +757,6 @@ type QuotaRequestListParams struct {
 	Status []string `query:"status,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f QuotaRequestListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [QuotaRequestListParams]'s query parameters as `url.Values`.
 func (r QuotaRequestListParams) URLQuery() (v url.Values, err error) {

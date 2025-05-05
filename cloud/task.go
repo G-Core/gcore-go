@@ -184,8 +184,7 @@ type Task struct {
 	UpdatedOn string `json:"updated_on,nullable"`
 	// Client, specified in user's JWT
 	UserClientID int64 `json:"user_client_id,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                resp.Field
 		CreatedOn         resp.Field
@@ -299,8 +298,7 @@ type TaskCreatedResources struct {
 	Subnets []string `json:"subnets"`
 	// IDs of created volumes
 	Volumes []string `json:"volumes"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		AIClusters         resp.Field
 		APIKeys            resp.Field
@@ -439,10 +437,6 @@ type TaskListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f TaskListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [TaskListParams]'s query parameters as `url.Values`.
 func (r TaskListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
@@ -466,10 +460,6 @@ type TaskAcknowledgeAllParams struct {
 	RegionID param.Opt[int64] `query:"region_id,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f TaskAcknowledgeAllParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [TaskAcknowledgeAllParams]'s query parameters as
 // `url.Values`.

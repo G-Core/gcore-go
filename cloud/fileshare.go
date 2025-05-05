@@ -49,11 +49,11 @@ func (r *FileShareService) New(ctx context.Context, params FileShareNewParams, o
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -71,11 +71,11 @@ func (r *FileShareService) Update(ctx context.Context, fileShareID string, param
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -99,11 +99,11 @@ func (r *FileShareService) List(ctx context.Context, params FileShareListParams,
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -134,11 +134,11 @@ func (r *FileShareService) Delete(ctx context.Context, fileShareID string, body 
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -160,11 +160,11 @@ func (r *FileShareService) Get(ctx context.Context, fileShareID string, query Fi
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -186,11 +186,11 @@ func (r *FileShareService) Resize(ctx context.Context, fileShareID string, param
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -259,8 +259,7 @@ type FileShare struct {
 	//
 	// Any of "default_share_type", "vast_share_type".
 	VolumeType FileShareVolumeType `json:"volume_type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID               resp.Field
 		ConnectionPoint  resp.Field
@@ -352,10 +351,6 @@ type FileShareNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (u FileShareNewParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[FileShareNewParams](u.OfCreateStandardFileShareSerializer, u.OfCreateVastFileShareSerializer)
 }
@@ -387,11 +382,6 @@ type FileShareNewParamsBodyCreateStandardFileShareSerializer struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareNewParamsBodyCreateStandardFileShareSerializer) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r FileShareNewParamsBodyCreateStandardFileShareSerializer) MarshalJSON() (data []byte, err error) {
 	type shadow FileShareNewParamsBodyCreateStandardFileShareSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -414,11 +404,6 @@ type FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork) MarshalJSON() (data []byte, err error) {
 	type shadow FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -435,11 +420,6 @@ type FileShareNewParamsBodyCreateStandardFileShareSerializerAccess struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareNewParamsBodyCreateStandardFileShareSerializerAccess) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r FileShareNewParamsBodyCreateStandardFileShareSerializerAccess) MarshalJSON() (data []byte, err error) {
 	type shadow FileShareNewParamsBodyCreateStandardFileShareSerializerAccess
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -474,11 +454,6 @@ type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareNewParamsBodyCreateVastFileShareSerializer) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r FileShareNewParamsBodyCreateVastFileShareSerializer) MarshalJSON() (data []byte, err error) {
 	type shadow FileShareNewParamsBodyCreateVastFileShareSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -493,10 +468,6 @@ type FileShareUpdateParams struct {
 	Name string `json:"name,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r FileShareUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow FileShareUpdateParams
@@ -516,10 +487,6 @@ type FileShareListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [FileShareListParams]'s query parameters as `url.Values`.
 func (r FileShareListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
@@ -536,10 +503,6 @@ type FileShareDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type FileShareGetParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -547,10 +510,6 @@ type FileShareGetParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type FileShareResizeParams struct {
 	// Project ID
@@ -561,10 +520,6 @@ type FileShareResizeParams struct {
 	Size int64 `json:"size,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareResizeParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r FileShareResizeParams) MarshalJSON() (data []byte, err error) {
 	type shadow FileShareResizeParams

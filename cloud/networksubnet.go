@@ -44,11 +44,11 @@ func (r *NetworkSubnetService) New(ctx context.Context, params NetworkSubnetNewP
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -66,11 +66,11 @@ func (r *NetworkSubnetService) Update(ctx context.Context, subnetID string, para
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -94,11 +94,11 @@ func (r *NetworkSubnetService) List(ctx context.Context, params NetworkSubnetLis
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -130,11 +130,11 @@ func (r *NetworkSubnetService) Delete(ctx context.Context, subnetID string, body
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -156,11 +156,11 @@ func (r *NetworkSubnetService) Get(ctx context.Context, subnetID string, query N
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -215,10 +215,6 @@ type NetworkSubnetNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkSubnetNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r NetworkSubnetNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkSubnetNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -234,9 +230,6 @@ type NetworkSubnetNewParamsHostRoute struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkSubnetNewParamsHostRoute) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r NetworkSubnetNewParamsHostRoute) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkSubnetNewParamsHostRoute
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -263,10 +256,6 @@ type NetworkSubnetUpdateParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkSubnetUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r NetworkSubnetUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkSubnetUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -282,11 +271,6 @@ type NetworkSubnetUpdateParamsHostRoute struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkSubnetUpdateParamsHostRoute) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r NetworkSubnetUpdateParamsHostRoute) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkSubnetUpdateParamsHostRoute
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -320,10 +304,6 @@ type NetworkSubnetListParams struct {
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkSubnetListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [NetworkSubnetListParams]'s query parameters as
 // `url.Values`.
@@ -362,10 +342,6 @@ type NetworkSubnetDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkSubnetDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type NetworkSubnetGetParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -373,7 +349,3 @@ type NetworkSubnetGetParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f NetworkSubnetGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

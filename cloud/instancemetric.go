@@ -43,11 +43,11 @@ func (r *InstanceMetricService) List(ctx context.Context, instanceID string, par
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -78,8 +78,7 @@ type Metrics struct {
 	NetworkPpsEgress float64 `json:"network_pps_egress,nullable"`
 	// Network in, packets per second
 	NetworkPpsIngress float64 `json:"network_pps_ingress,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Time              resp.Field
 		CPUUtil           resp.Field
@@ -112,8 +111,7 @@ type MetricsDisk struct {
 	DiskIopsWrite float64 `json:"disk_iops_write,nullable"`
 	// Disk attached slot name
 	DiskName string `json:"disk_name,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		DiskBpsRead   resp.Field
 		DiskBpsWrite  resp.Field
@@ -136,8 +134,7 @@ type MetricsList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []Metrics `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -165,10 +162,6 @@ type InstanceMetricListParams struct {
 	TimeUnit InstanceMetricsTimeUnit `json:"time_unit,omitzero,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceMetricListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r InstanceMetricListParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceMetricListParams

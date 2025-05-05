@@ -41,11 +41,11 @@ func (r *LoadBalancerPoolHealthMonitorService) New(ctx context.Context, poolID s
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -68,11 +68,11 @@ func (r *LoadBalancerPoolHealthMonitorService) Delete(ctx context.Context, poolI
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -114,12 +114,6 @@ type LoadBalancerPoolHealthMonitorNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolHealthMonitorNewParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-
 func (r LoadBalancerPoolHealthMonitorNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolHealthMonitorNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -129,10 +123,4 @@ type LoadBalancerPoolHealthMonitorDeleteParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolHealthMonitorDeleteParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }

@@ -69,7 +69,7 @@ func (r *RegionService) Get(ctx context.Context, params RegionGetParams, opts ..
 		return
 	}
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -150,8 +150,7 @@ type Region struct {
 	Zone RegionZone `json:"zone,required"`
 	// Region has DBAAS service
 	HasDbaas bool `json:"has_dbaas"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                   resp.Field
 		AccessLevel          resp.Field
@@ -204,8 +203,7 @@ const (
 type RegionCoordinates struct {
 	Latitude  float64 `json:"latitude,required"`
 	Longitude float64 `json:"longitude,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Latitude    resp.Field
 		Longitude   resp.Field
@@ -273,10 +271,6 @@ type RegionListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegionListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [RegionListParams]'s query parameters as `url.Values`.
 func (r RegionListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
@@ -311,10 +305,6 @@ type RegionGetParams struct {
 	ShowVolumeTypes param.Opt[bool] `query:"show_volume_types,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegionGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [RegionGetParams]'s query parameters as `url.Values`.
 func (r RegionGetParams) URLQuery() (v url.Values, err error) {

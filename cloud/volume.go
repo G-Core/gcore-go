@@ -48,11 +48,11 @@ func (r *VolumeService) New(ctx context.Context, params VolumeNewParams, opts ..
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -70,11 +70,11 @@ func (r *VolumeService) Update(ctx context.Context, volumeID string, params Volu
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -98,11 +98,11 @@ func (r *VolumeService) List(ctx context.Context, params VolumeListParams, opts 
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -133,11 +133,11 @@ func (r *VolumeService) Delete(ctx context.Context, volumeID string, params Volu
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -160,11 +160,11 @@ func (r *VolumeService) AttachToInstance(ctx context.Context, volumeID string, p
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -186,11 +186,11 @@ func (r *VolumeService) ChangeType(ctx context.Context, volumeID string, params 
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -212,11 +212,11 @@ func (r *VolumeService) DetachFromInstance(ctx context.Context, volumeID string,
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -238,11 +238,11 @@ func (r *VolumeService) Get(ctx context.Context, volumeID string, query VolumeGe
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -264,11 +264,11 @@ func (r *VolumeService) Resize(ctx context.Context, volumeID string, params Volu
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -291,11 +291,11 @@ func (r *VolumeService) RevertToLastSnapshot(ctx context.Context, volumeID strin
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -359,8 +359,7 @@ type Volume struct {
 	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
 	// Image metadata for volumes created from an image.
 	VolumeImageMetadata map[string]string `json:"volume_image_metadata,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                  resp.Field
 		Bootable            resp.Field
@@ -434,8 +433,7 @@ type VolumeAttachment struct {
 	InstanceName string `json:"instance_name,nullable"`
 	// The unique identifier of the instance.
 	ServerID string `json:"server_id,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		AttachmentID resp.Field
 		VolumeID     resp.Field
@@ -465,8 +463,7 @@ type VolumeLimiterStats struct {
 	MBpsBaseLimit int64 `json:"MBps_base_limit,required"`
 	// The burst bandwidth limit in megabytes per second (MBps).
 	MBpsBurstLimit int64 `json:"MBps_burst_limit,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		IopsBaseLimit  resp.Field
 		IopsBurstLimit resp.Field
@@ -502,10 +499,6 @@ type VolumeNewParams struct {
 
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (u VolumeNewParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[VolumeNewParams](u.OfImage, u.OfSnapshot, u.OfNewVolume)
@@ -545,9 +538,6 @@ type VolumeNewParamsBodyImage struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeNewParamsBodyImage) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r VolumeNewParamsBodyImage) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeNewParamsBodyImage
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -594,9 +584,6 @@ type VolumeNewParamsBodySnapshot struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeNewParamsBodySnapshot) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r VolumeNewParamsBodySnapshot) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeNewParamsBodySnapshot
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -640,9 +627,6 @@ type VolumeNewParamsBodyNewVolume struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeNewParamsBodyNewVolume) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r VolumeNewParamsBodyNewVolume) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeNewParamsBodyNewVolume
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -663,10 +647,6 @@ type VolumeUpdateParams struct {
 	Name string `json:"name,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r VolumeUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeUpdateParams
@@ -705,10 +685,6 @@ type VolumeListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [VolumeListParams]'s query parameters as `url.Values`.
 func (r VolumeListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
@@ -726,10 +702,6 @@ type VolumeDeleteParams struct {
 	Snapshots param.Opt[string] `query:"snapshots,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [VolumeDeleteParams]'s query parameters as `url.Values`.
 func (r VolumeDeleteParams) URLQuery() (v url.Values, err error) {
@@ -751,10 +723,6 @@ type VolumeAttachToInstanceParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeAttachToInstanceParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r VolumeAttachToInstanceParams) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeAttachToInstanceParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -771,10 +739,6 @@ type VolumeChangeTypeParams struct {
 	VolumeType VolumeChangeTypeParamsVolumeType `json:"volume_type,omitzero,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeChangeTypeParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r VolumeChangeTypeParams) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeChangeTypeParams
@@ -799,10 +763,6 @@ type VolumeDetachFromInstanceParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeDetachFromInstanceParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r VolumeDetachFromInstanceParams) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeDetachFromInstanceParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -816,10 +776,6 @@ type VolumeGetParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type VolumeResizeParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -829,10 +785,6 @@ type VolumeResizeParams struct {
 	Size int64 `json:"size,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeResizeParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r VolumeResizeParams) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeResizeParams
@@ -846,7 +798,3 @@ type VolumeRevertToLastSnapshotParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f VolumeRevertToLastSnapshotParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

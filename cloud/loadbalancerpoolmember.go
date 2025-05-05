@@ -41,11 +41,11 @@ func (r *LoadBalancerPoolMemberService) Add(ctx context.Context, poolID string, 
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -67,11 +67,11 @@ func (r *LoadBalancerPoolMemberService) Remove(ctx context.Context, memberID str
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -112,10 +112,6 @@ type LoadBalancerPoolMemberAddParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolMemberAddParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r LoadBalancerPoolMemberAddParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolMemberAddParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -126,10 +122,4 @@ type LoadBalancerPoolMemberRemoveParams struct {
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	PoolID    string           `path:"pool_id,required" json:"-"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolMemberRemoveParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }

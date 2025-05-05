@@ -43,11 +43,11 @@ func (r *FileShareAccessRuleService) New(ctx context.Context, fileShareID string
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -69,11 +69,11 @@ func (r *FileShareAccessRuleService) List(ctx context.Context, fileShareID strin
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -96,11 +96,11 @@ func (r *FileShareAccessRuleService) Delete(ctx context.Context, accessRuleID st
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -131,8 +131,7 @@ type AccessRule struct {
 	// Any of "active", "applying", "denying", "error", "new", "queued_to_apply",
 	// "queued_to_deny".
 	State AccessRuleState `json:"state,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID          resp.Field
 		AccessLevel resp.Field
@@ -175,8 +174,7 @@ type AccessRuleList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []AccessRule `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -205,10 +203,6 @@ type FileShareAccessRuleNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareAccessRuleNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r FileShareAccessRuleNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow FileShareAccessRuleNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -230,10 +224,6 @@ type FileShareAccessRuleListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareAccessRuleListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type FileShareAccessRuleDeleteParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -243,7 +233,3 @@ type FileShareAccessRuleDeleteParams struct {
 	FileShareID string `path:"file_share_id,required" format:"uuid4" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FileShareAccessRuleDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

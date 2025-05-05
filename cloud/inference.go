@@ -55,8 +55,7 @@ type AwsIamData struct {
 	AwsAccessKeyID string `json:"aws_access_key_id,required"`
 	// AWS IAM secret key.
 	AwsSecretAccessKey string `json:"aws_secret_access_key,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		AwsAccessKeyID     resp.Field
 		AwsSecretAccessKey resp.Field
@@ -75,9 +74,9 @@ func (r *AwsIamData) UnmarshalJSON(data []byte) error {
 //
 // Warning: the fields of the param type will not be present. ToParam should only
 // be used at the last possible moment before sending a request. Test for this with
-// AwsIamDataParam.IsOverridden()
+// AwsIamDataParam.Overrides()
 func (r AwsIamData) ToParam() AwsIamDataParam {
-	return param.OverrideObj[AwsIamDataParam](r.RawJSON())
+	return param.Override[AwsIamDataParam](r.RawJSON())
 }
 
 // The properties AwsAccessKeyID, AwsSecretAccessKey are required.
@@ -89,9 +88,6 @@ type AwsIamDataParam struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f AwsIamDataParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r AwsIamDataParam) MarshalJSON() (data []byte, err error) {
 	type shadow AwsIamDataParam
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -102,8 +98,7 @@ type Capacity struct {
 	Capacity int64 `json:"capacity,required"`
 	// Flavor name.
 	FlavorName string `json:"flavor_name,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Capacity    resp.Field
 		FlavorName  resp.Field
@@ -135,8 +130,7 @@ type ContainerProbe struct {
 	TcpSocket ContainerProbeTcpSocket `json:"tcp_socket,required"`
 	// The timeout for each probe.
 	TimeoutSeconds int64 `json:"timeout_seconds,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Exec                resp.Field
 		FailureThreshold    resp.Field
@@ -162,8 +156,7 @@ type ContainerProbeConfig struct {
 	Enabled bool `json:"enabled,required"`
 	// Probe configuration (exec, http_get or tcp_socket)
 	Probe ContainerProbe `json:"probe,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Enabled     resp.Field
 		Probe       resp.Field
@@ -187,9 +180,6 @@ type ContainerProbeConfigCreateParam struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ContainerProbeConfigCreateParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r ContainerProbeConfigCreateParam) MarshalJSON() (data []byte, err error) {
 	type shadow ContainerProbeConfigCreateParam
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -215,9 +205,6 @@ type ContainerProbeCreateParam struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ContainerProbeCreateParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r ContainerProbeCreateParam) MarshalJSON() (data []byte, err error) {
 	type shadow ContainerProbeCreateParam
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -226,8 +213,7 @@ func (r ContainerProbeCreateParam) MarshalJSON() (data []byte, err error) {
 type ContainerProbeExec struct {
 	// Command to be executed inside the running container.
 	Command []string `json:"command,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Command     resp.Field
 		ExtraFields map[string]resp.Field
@@ -248,9 +234,6 @@ type ContainerProbeExecCreateParam struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ContainerProbeExecCreateParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r ContainerProbeExecCreateParam) MarshalJSON() (data []byte, err error) {
 	type shadow ContainerProbeExecCreateParam
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -267,8 +250,7 @@ type ContainerProbeHTTPGet struct {
 	Port int64 `json:"port,required"`
 	// Schema to use for the HTTP request.
 	Schema string `json:"schema,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Headers     resp.Field
 		Host        resp.Field
@@ -301,9 +283,6 @@ type ContainerProbeHTTPGetCreateParam struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ContainerProbeHTTPGetCreateParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r ContainerProbeHTTPGetCreateParam) MarshalJSON() (data []byte, err error) {
 	type shadow ContainerProbeHTTPGetCreateParam
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -312,8 +291,7 @@ func (r ContainerProbeHTTPGetCreateParam) MarshalJSON() (data []byte, err error)
 type ContainerProbeTcpSocket struct {
 	// Port number to check if it's open.
 	Port int64 `json:"port,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Port        resp.Field
 		ExtraFields map[string]resp.Field
@@ -334,11 +312,6 @@ type ContainerProbeTcpSocketCreateParam struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ContainerProbeTcpSocketCreateParam) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r ContainerProbeTcpSocketCreateParam) MarshalJSON() (data []byte, err error) {
 	type shadow ContainerProbeTcpSocketCreateParam
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -355,8 +328,7 @@ type ContainerScale struct {
 	PollingInterval int64 `json:"polling_interval,required"`
 	// Triggers for scaling actions
 	Triggers ContainerScaleTriggers `json:"triggers,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		CooldownPeriod  resp.Field
 		Max             resp.Field
@@ -379,8 +351,7 @@ type ContainerScaleTriggerRate struct {
 	Rate int64 `json:"rate,required"`
 	// Time window for rate calculation in seconds
 	Window int64 `json:"window,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Rate        resp.Field
 		Window      resp.Field
@@ -412,8 +383,7 @@ type ContainerScaleTriggerSqs struct {
 	ScaleOnFlight bool `json:"scale_on_flight,required"`
 	// Auth secret name
 	SecretName string `json:"secret_name,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ActivationQueueLength resp.Field
 		AwsEndpoint           resp.Field
@@ -437,8 +407,7 @@ func (r *ContainerScaleTriggerSqs) UnmarshalJSON(data []byte) error {
 type ContainerScaleTriggerThreshold struct {
 	// Threshold value for the trigger in percentage
 	Threshold int64 `json:"threshold,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Threshold   resp.Field
 		ExtraFields map[string]resp.Field
@@ -465,8 +434,7 @@ type ContainerScaleTriggers struct {
 	Memory ContainerScaleTriggerThreshold `json:"memory,required"`
 	// SQS trigger configuration
 	Sqs ContainerScaleTriggerSqs `json:"sqs,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		CPU            resp.Field
 		GPUMemory      resp.Field
@@ -490,8 +458,7 @@ type DeployStatus struct {
 	Ready int64 `json:"ready,required"`
 	// Total number of instances
 	Total int64 `json:"total,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Ready       resp.Field
 		Total       resp.Field
@@ -513,8 +480,7 @@ type InferenceProbes struct {
 	ReadinessProbe ContainerProbeConfig `json:"readiness_probe,required"`
 	// Startup probe configuration
 	StartupProbe ContainerProbeConfig `json:"startup_probe,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		LivenessProbe  resp.Field
 		ReadinessProbe resp.Field
@@ -540,9 +506,6 @@ type IngressOptsParam struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f IngressOptsParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r IngressOptsParam) MarshalJSON() (data []byte, err error) {
 	type shadow IngressOptsParam
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -555,8 +518,7 @@ type IngressOptsOut struct {
 	// release the upstream application as soon as possible.By default, the response
 	// buffering is enabled.
 	DisableResponseBuffering bool `json:"disable_response_buffering,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		DisableResponseBuffering resp.Field
 		ExtraFields              map[string]resp.Field
@@ -575,8 +537,7 @@ type RegionCapacity struct {
 	Capacity []Capacity `json:"capacity,required"`
 	// Region ID.
 	RegionID int64 `json:"region_id,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Capacity    resp.Field
 		RegionID    resp.Field
@@ -596,8 +557,7 @@ type RegionCapacityList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []RegionCapacity `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field

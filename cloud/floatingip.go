@@ -48,11 +48,11 @@ func (r *FloatingIPService) New(ctx context.Context, params FloatingIPNewParams,
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -72,11 +72,11 @@ func (r *FloatingIPService) List(ctx context.Context, params FloatingIPListParam
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -107,11 +107,11 @@ func (r *FloatingIPService) Delete(ctx context.Context, floatingIPID string, bod
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -133,11 +133,11 @@ func (r *FloatingIPService) Assign(ctx context.Context, floatingIPID string, par
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -159,11 +159,11 @@ func (r *FloatingIPService) Get(ctx context.Context, floatingIPID string, query 
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -185,11 +185,11 @@ func (r *FloatingIPService) Unassign(ctx context.Context, floatingIPID string, b
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -255,8 +255,7 @@ type FloatingIPDetailed struct {
 	TaskID string `json:"task_id,required" format:"uuid4"`
 	// Datetime when the floating IP was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                resp.Field
 		CreatedAt         resp.Field
@@ -340,8 +339,7 @@ type FloatingIPDetailedInstance struct {
 	VmState string `json:"vm_state,required"`
 	// List of volumes
 	Volumes []FloatingIPDetailedInstanceVolume `json:"volumes,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                  resp.Field
 		Addresses           resp.Field
@@ -426,8 +424,7 @@ type FloatingIPDetailedInstanceFlavor struct {
 	Ram int64 `json:"ram,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		FlavorID    resp.Field
 		FlavorName  resp.Field
@@ -447,8 +444,7 @@ func (r *FloatingIPDetailedInstanceFlavor) UnmarshalJSON(data []byte) error {
 type FloatingIPDetailedInstanceSecurityGroup struct {
 	// Name.
 	Name string `json:"name,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Name        resp.Field
 		ExtraFields map[string]resp.Field
@@ -467,8 +463,7 @@ type FloatingIPDetailedInstanceVolume struct {
 	ID string `json:"id,required"`
 	// Whether the volume is deleted together with the VM
 	DeleteOnTermination bool `json:"delete_on_termination,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                  resp.Field
 		DeleteOnTermination resp.Field
@@ -503,10 +498,6 @@ type FloatingIPNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FloatingIPNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r FloatingIPNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow FloatingIPNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -531,10 +522,6 @@ type FloatingIPListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FloatingIPListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [FloatingIPListParams]'s query parameters as `url.Values`.
 func (r FloatingIPListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
@@ -549,10 +536,6 @@ type FloatingIPDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FloatingIPDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type FloatingIPAssignParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -562,10 +545,6 @@ type FloatingIPAssignParams struct {
 	FixedIPAddress param.Opt[string] `json:"fixed_ip_address,omitzero" format:"ipvanyaddress"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FloatingIPAssignParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r FloatingIPAssignParams) MarshalJSON() (data []byte, err error) {
 	type shadow FloatingIPAssignParams
@@ -578,16 +557,8 @@ type FloatingIPGetParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FloatingIPGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type FloatingIPUnassignParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f FloatingIPUnassignParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

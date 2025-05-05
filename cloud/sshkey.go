@@ -46,7 +46,7 @@ func (r *SSHKeyService) New(ctx context.Context, params SSHKeyNewParams, opts ..
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -63,7 +63,7 @@ func (r *SSHKeyService) Update(ctx context.Context, sshKeyID string, params SSHK
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -86,7 +86,7 @@ func (r *SSHKeyService) List(ctx context.Context, params SSHKeyListParams, opts 
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -117,7 +117,7 @@ func (r *SSHKeyService) Delete(ctx context.Context, sshKeyID string, body SSHKey
 		return
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -138,7 +138,7 @@ func (r *SSHKeyService) Get(ctx context.Context, sshKeyID string, query SSHKeyGe
 		return
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -172,8 +172,7 @@ type SSHKey struct {
 	//
 	// Any of "ACTIVE", "DELETING".
 	State SSHKeyState `json:"state,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID              resp.Field
 		CreatedAt       resp.Field
@@ -234,8 +233,7 @@ type SSHKeyCreated struct {
 	//
 	// Any of "ACTIVE", "DELETING".
 	State SSHKeyCreatedState `json:"state,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID              resp.Field
 		CreatedAt       resp.Field
@@ -285,10 +283,6 @@ type SSHKeyNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SSHKeyNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r SSHKeyNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow SSHKeyNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -301,10 +295,6 @@ type SSHKeyUpdateParams struct {
 	SharedInProject bool `json:"shared_in_project,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SSHKeyUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r SSHKeyUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow SSHKeyUpdateParams
@@ -324,10 +314,6 @@ type SSHKeyListParams struct {
 	OrderBy SSHKeyListParamsOrderBy `query:"order_by,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SSHKeyListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [SSHKeyListParams]'s query parameters as `url.Values`.
 func (r SSHKeyListParams) URLQuery() (v url.Values, err error) {
@@ -353,16 +339,8 @@ type SSHKeyDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SSHKeyDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type SSHKeyGetParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SSHKeyGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

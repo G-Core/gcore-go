@@ -22,8 +22,7 @@ type paramObj = param.APIObject
 type OffsetPage[T any] struct {
 	Results []T   `json:"results"`
 	Count   int64 `json:"count"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Results     resp.Field
 		Count       resp.Field

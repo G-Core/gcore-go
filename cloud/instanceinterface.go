@@ -44,11 +44,11 @@ func (r *InstanceInterfaceService) List(ctx context.Context, instanceID string, 
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -70,11 +70,11 @@ func (r *InstanceInterfaceService) Attach(ctx context.Context, instanceID string
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -133,11 +133,11 @@ func (r *InstanceInterfaceService) Detach(ctx context.Context, instanceID string
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -193,10 +193,6 @@ type InstanceInterfaceListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type InstanceInterfaceAttachParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -223,10 +219,6 @@ type InstanceInterfaceAttachParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (u InstanceInterfaceAttachParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceInterfaceAttachParams](u.OfNewInterfaceExternalExtendSchemaWithDDOS, u.OfNewInterfaceSpecificSubnetSchema, u.OfNewInterfaceAnySubnetSchema, u.OfNewInterfaceReservedFixedIPSchema)
 }
@@ -250,11 +242,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS s
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -279,11 +266,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDD
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -301,11 +283,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDD
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -320,11 +297,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSe
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -349,11 +321,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -372,11 +339,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfil
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -394,11 +356,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfil
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -413,11 +370,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGr
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -447,11 +399,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -476,11 +423,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile str
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -498,11 +440,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileFiel
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -517,11 +454,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup s
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -547,11 +479,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -570,11 +497,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfi
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -592,11 +514,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfi
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -611,11 +528,6 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityG
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -630,10 +542,6 @@ type InstanceInterfaceDetachParams struct {
 	PortID string `json:"port_id,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceInterfaceDetachParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r InstanceInterfaceDetachParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceDetachParams

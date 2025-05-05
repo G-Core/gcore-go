@@ -47,11 +47,11 @@ func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorL
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -69,11 +69,11 @@ func (r *InstanceFlavorService) ListForResize(ctx context.Context, instanceID st
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -95,11 +95,11 @@ func (r *InstanceFlavorService) ListSuitable(ctx context.Context, params Instanc
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -138,8 +138,7 @@ type InstanceFlavor struct {
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus InstanceFlavorPriceStatus `json:"price_status,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Architecture        resp.Field
 		Disabled            resp.Field
@@ -179,8 +178,7 @@ type InstanceFlavorList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []InstanceFlavor `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -209,10 +207,6 @@ type InstanceFlavorListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceFlavorListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [InstanceFlavorListParams]'s query parameters as
 // `url.Values`.
 func (r InstanceFlavorListParams) URLQuery() (v url.Values, err error) {
@@ -228,12 +222,6 @@ type InstanceFlavorListForResizeParams struct {
 	// Set to true if flavor listing should include flavor prices
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceFlavorListForResizeParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 // URLQuery serializes [InstanceFlavorListForResizeParams]'s query parameters as
@@ -254,10 +242,6 @@ type InstanceFlavorListSuitableParams struct {
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceFlavorListSuitableParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r InstanceFlavorListSuitableParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceFlavorListSuitableParams
@@ -302,11 +286,6 @@ type InstanceFlavorListSuitableParamsVolume struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceFlavorListSuitableParamsVolume) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceFlavorListSuitableParamsVolume) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceFlavorListSuitableParamsVolume
 	return param.MarshalObject(r, (*shadow)(&r))

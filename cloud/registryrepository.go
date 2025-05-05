@@ -44,11 +44,11 @@ func (r *RegistryRepositoryService) List(ctx context.Context, registryID int64, 
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -67,11 +67,11 @@ func (r *RegistryRepositoryService) Delete(ctx context.Context, repositoryName s
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -99,8 +99,7 @@ type RegistryRepository struct {
 	RegistryID int64 `json:"registry_id,required"`
 	// Repository modification date-time
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID            resp.Field
 		ArtifactCount resp.Field
@@ -125,8 +124,7 @@ type RegistryRepositoryList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []RegistryRepository `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -147,17 +145,9 @@ type RegistryRepositoryListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegistryRepositoryListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type RegistryRepositoryDeleteParams struct {
 	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	RegistryID int64            `path:"registry_id,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegistryRepositoryDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
