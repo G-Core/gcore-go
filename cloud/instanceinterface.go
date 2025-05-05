@@ -22,6 +22,7 @@ import (
 // the [NewInstanceInterfaceService] method instead.
 type InstanceInterfaceService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewInstanceInterfaceService generates a new service that applies the given
@@ -30,6 +31,7 @@ type InstanceInterfaceService struct {
 func NewInstanceInterfaceService(opts ...option.RequestOption) (r InstanceInterfaceService) {
 	r = InstanceInterfaceService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -85,6 +87,43 @@ func (r *InstanceInterfaceService) Attach(ctx context.Context, instanceID string
 	return
 }
 
+// AttachAndPoll attach interface to instance and poll for the result
+func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID string, params InstanceInterfaceAttachParams, opts ...option.RequestOption) (*NetworkInterfaceList, error) {
+	resource, err := r.Attach(ctx, instanceID, params, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	var listParams InstanceInterfaceListParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.IsPresent() {
+		return nil, errors.New("missing required project_id parameter")
+	}
+	if !params.RegionID.IsPresent() {
+		return nil, errors.New("missing required region_id parameter")
+	}
+	listParams.ProjectID = params.ProjectID
+	listParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.List(ctx, instanceID, listParams, opts...)
+}
+
 // Detach interface from instance
 func (r *InstanceInterfaceService) Detach(ctx context.Context, instanceID string, params InstanceInterfaceDetachParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
@@ -109,6 +148,43 @@ func (r *InstanceInterfaceService) Detach(ctx context.Context, instanceID string
 	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/detach_interface", params.ProjectID.Value, params.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// DetachAndPoll interface from instance and poll for the result
+func (r *InstanceInterfaceService) DetachAndPoll(ctx context.Context, instanceID string, params InstanceInterfaceDetachParams, opts ...option.RequestOption) (*NetworkInterfaceList, error) {
+	resource, err := r.Detach(ctx, instanceID, params, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	var listParams InstanceInterfaceListParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.IsPresent() {
+		return nil, errors.New("missing required project_id parameter")
+	}
+	if !params.RegionID.IsPresent() {
+		return nil, errors.New("missing required region_id parameter")
+	}
+	listParams.ProjectID = params.ProjectID
+	listParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.List(ctx, instanceID, listParams, opts...)
 }
 
 type InstanceInterfaceListParams struct {
