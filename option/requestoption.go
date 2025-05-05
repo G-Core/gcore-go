@@ -290,10 +290,10 @@ func WithCloudRegionID(value int64) RequestOption {
 	})
 }
 
-// WithCloudPollingIntervalMs returns a RequestOption that sets the client setting "cloud_polling_interval_ms".
-func WithCloudPollingIntervalMs(value int64) RequestOption {
+// WithCloudPollingIntervalSeconds returns a RequestOption that sets the client setting "cloud_polling_interval_seconds".
+func WithCloudPollingIntervalSeconds(value int64) RequestOption {
 	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.CloudPollingIntervalMs = value
+		r.CloudPollingIntervalSeconds = value
 		return nil
 	})
 }

@@ -103,7 +103,7 @@ func (r *TaskService) Poll(ctx context.Context, taskID string, opts ...requestco
 	if err != nil {
 		return nil, err
 	}
-	pollingInterval := time.Duration(precfg.CloudPollingIntervalMs) * time.Millisecond
+	pollingInterval := time.Duration(precfg.CloudPollingIntervalSeconds) * time.Second
 
 	// poll the task status until it is finished or an error occurs
 	for {
@@ -112,11 +112,11 @@ func (r *TaskService) Poll(ctx context.Context, taskID string, opts ...requestco
 			return nil, fmt.Errorf("failed to get task status: %w", err)
 		}
 
-		if task.State == "FINISHED" {
+		if task.State == TaskStateFinished {
 			return task, nil
 		}
 
-		if task.State == "ERROR" {
+		if task.State == TaskStateError {
 			return nil, fmt.Errorf("task %s failed with error: %s", taskID, task.Error)
 		}
 
