@@ -40,7 +40,7 @@ func TestFileShareNewWithOptionalParams(t *testing.T) {
 				AccessMode: "ro",
 				IPAddress:  "10.0.0.1",
 			}},
-			Tags: cloud.TagUpdateList{
+			Tags: cloud.TagUpdateMap{
 				"foo": "my-tag-value",
 			},
 			VolumeType: "default_share_type",

@@ -121,7 +121,7 @@ func TestGPUBaremetalClusterImageUploadWithOptionalParams(t *testing.T) {
 		OsType:         cloud.GPUBaremetalClusterImageUploadParamsOsTypeLinux,
 		OsVersion:      gcore.String("19.04"),
 		SSHKey:         cloud.GPUBaremetalClusterImageUploadParamsSSHKeyAllow,
-		Tags: cloud.TagUpdateList{
+		Tags: cloud.TagUpdateMap{
 			"foo": "my-tag-value",
 		},
 	})

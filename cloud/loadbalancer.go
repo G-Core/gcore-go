@@ -1356,7 +1356,7 @@ type LoadBalancerNewParams struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	// IP family for load balancer subnet auto-selection if vip_network_id is specified
 	//
 	// Any of "dual", "ipv4", "ipv6".

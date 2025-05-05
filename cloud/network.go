@@ -188,7 +188,7 @@ type NetworkNewParams struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	// vlan or vxlan network type is allowed. Default value is vxlan
 	//
 	// Any of "vlan", "vxlan".

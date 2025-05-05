@@ -375,7 +375,7 @@ type FileShareNewParamsBodyCreateStandardFileShareSerializer struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	// File share volume type
 	//
 	// Any of "default_share_type".
@@ -462,7 +462,7 @@ type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	// File share protocol
 	//
 	// This field can be elided, and will marshal its zero value as "NFS".
