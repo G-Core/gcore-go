@@ -15,7 +15,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // InferenceSecretService contains methods and other services that help with
@@ -157,12 +157,12 @@ type InferenceSecret struct {
 	Name string `json:"name,required"`
 	// Secret type.
 	Type string `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        resp.Field
-		Name        resp.Field
-		Type        resp.Field
-		ExtraFields map[string]resp.Field
+		Data        respjson.Field
+		Name        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

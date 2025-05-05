@@ -14,7 +14,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // InstanceFlavorService contains methods and other services that help with
@@ -138,22 +138,22 @@ type InstanceFlavor struct {
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus InstanceFlavorPriceStatus `json:"price_status,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Architecture        resp.Field
-		Disabled            resp.Field
-		FlavorID            resp.Field
-		FlavorName          resp.Field
-		OsType              resp.Field
-		Ram                 resp.Field
-		Vcpus               resp.Field
-		Capacity            resp.Field
-		CurrencyCode        resp.Field
-		HardwareDescription resp.Field
-		PricePerHour        resp.Field
-		PricePerMonth       resp.Field
-		PriceStatus         resp.Field
-		ExtraFields         map[string]resp.Field
+		Architecture        respjson.Field
+		Disabled            respjson.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		OsType              respjson.Field
+		Ram                 respjson.Field
+		Vcpus               respjson.Field
+		Capacity            respjson.Field
+		CurrencyCode        respjson.Field
+		HardwareDescription respjson.Field
+		PricePerHour        respjson.Field
+		PricePerMonth       respjson.Field
+		PriceStatus         respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -178,11 +178,11 @@ type InstanceFlavorList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []InstanceFlavor `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

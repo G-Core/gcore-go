@@ -16,7 +16,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 	"github.com/stainless-sdks/gcore-go/shared/constant"
 )
 
@@ -239,30 +239,30 @@ type ReservedFixedIP struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AllowedAddressPairs resp.Field
-		Attachments         resp.Field
-		CreatedAt           resp.Field
-		IsExternal          resp.Field
-		IsVip               resp.Field
-		Name                resp.Field
-		Network             resp.Field
-		NetworkID           resp.Field
-		PortID              resp.Field
-		Region              resp.Field
-		RegionID            resp.Field
-		Reservation         resp.Field
-		Status              resp.Field
-		UpdatedAt           resp.Field
-		CreatorTaskID       resp.Field
-		FixedIPAddress      resp.Field
-		FixedIpv6Address    resp.Field
-		ProjectID           resp.Field
-		SubnetID            resp.Field
-		SubnetV6ID          resp.Field
-		TaskID              resp.Field
-		ExtraFields         map[string]resp.Field
+		AllowedAddressPairs respjson.Field
+		Attachments         respjson.Field
+		CreatedAt           respjson.Field
+		IsExternal          respjson.Field
+		IsVip               respjson.Field
+		Name                respjson.Field
+		Network             respjson.Field
+		NetworkID           respjson.Field
+		PortID              respjson.Field
+		Region              respjson.Field
+		RegionID            respjson.Field
+		Reservation         respjson.Field
+		Status              respjson.Field
+		UpdatedAt           respjson.Field
+		CreatorTaskID       respjson.Field
+		FixedIPAddress      respjson.Field
+		FixedIpv6Address    respjson.Field
+		ProjectID           respjson.Field
+		SubnetID            respjson.Field
+		SubnetV6ID          respjson.Field
+		TaskID              respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -278,11 +278,11 @@ type ReservedFixedIPAttachment struct {
 	ResourceID string `json:"resource_id,nullable"`
 	// Resource type
 	ResourceType string `json:"resource_type,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ResourceID   resp.Field
-		ResourceType resp.Field
-		ExtraFields  map[string]resp.Field
+		ResourceID   respjson.Field
+		ResourceType respjson.Field
+		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
 }
@@ -301,12 +301,12 @@ type ReservedFixedIPReservation struct {
 	ResourceType string `json:"resource_type,nullable"`
 	// IP reservation status
 	Status string `json:"status,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ResourceID   resp.Field
-		ResourceType resp.Field
-		Status       resp.Field
-		ExtraFields  map[string]resp.Field
+		ResourceID   respjson.Field
+		ResourceType respjson.Field
+		Status       respjson.Field
+		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
 }

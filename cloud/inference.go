@@ -10,7 +10,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // InferenceService contains methods and other services that help with interacting
@@ -55,11 +55,11 @@ type AwsIamData struct {
 	AwsAccessKeyID string `json:"aws_access_key_id,required"`
 	// AWS IAM secret key.
 	AwsSecretAccessKey string `json:"aws_secret_access_key,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AwsAccessKeyID     resp.Field
-		AwsSecretAccessKey resp.Field
-		ExtraFields        map[string]resp.Field
+		AwsAccessKeyID     respjson.Field
+		AwsSecretAccessKey respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -98,11 +98,11 @@ type Capacity struct {
 	Capacity int64 `json:"capacity,required"`
 	// Flavor name.
 	FlavorName string `json:"flavor_name,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Capacity    resp.Field
-		FlavorName  resp.Field
-		ExtraFields map[string]resp.Field
+		Capacity    respjson.Field
+		FlavorName  respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -130,17 +130,17 @@ type ContainerProbe struct {
 	TcpSocket ContainerProbeTcpSocket `json:"tcp_socket,required"`
 	// The timeout for each probe.
 	TimeoutSeconds int64 `json:"timeout_seconds,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Exec                resp.Field
-		FailureThreshold    resp.Field
-		HTTPGet             resp.Field
-		InitialDelaySeconds resp.Field
-		PeriodSeconds       resp.Field
-		SuccessThreshold    resp.Field
-		TcpSocket           resp.Field
-		TimeoutSeconds      resp.Field
-		ExtraFields         map[string]resp.Field
+		Exec                respjson.Field
+		FailureThreshold    respjson.Field
+		HTTPGet             respjson.Field
+		InitialDelaySeconds respjson.Field
+		PeriodSeconds       respjson.Field
+		SuccessThreshold    respjson.Field
+		TcpSocket           respjson.Field
+		TimeoutSeconds      respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -156,11 +156,11 @@ type ContainerProbeConfig struct {
 	Enabled bool `json:"enabled,required"`
 	// Probe configuration (exec, http_get or tcp_socket)
 	Probe ContainerProbe `json:"probe,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Enabled     resp.Field
-		Probe       resp.Field
-		ExtraFields map[string]resp.Field
+		Enabled     respjson.Field
+		Probe       respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -213,10 +213,10 @@ func (r ContainerProbeCreateParam) MarshalJSON() (data []byte, err error) {
 type ContainerProbeExec struct {
 	// Command to be executed inside the running container.
 	Command []string `json:"command,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Command     resp.Field
-		ExtraFields map[string]resp.Field
+		Command     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -250,14 +250,14 @@ type ContainerProbeHTTPGet struct {
 	Port int64 `json:"port,required"`
 	// Schema to use for the HTTP request.
 	Schema string `json:"schema,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Headers     resp.Field
-		Host        resp.Field
-		Path        resp.Field
-		Port        resp.Field
-		Schema      resp.Field
-		ExtraFields map[string]resp.Field
+		Headers     respjson.Field
+		Host        respjson.Field
+		Path        respjson.Field
+		Port        respjson.Field
+		Schema      respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -291,10 +291,10 @@ func (r ContainerProbeHTTPGetCreateParam) MarshalJSON() (data []byte, err error)
 type ContainerProbeTcpSocket struct {
 	// Port number to check if it's open.
 	Port int64 `json:"port,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Port        resp.Field
-		ExtraFields map[string]resp.Field
+		Port        respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -328,14 +328,14 @@ type ContainerScale struct {
 	PollingInterval int64 `json:"polling_interval,required"`
 	// Triggers for scaling actions
 	Triggers ContainerScaleTriggers `json:"triggers,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CooldownPeriod  resp.Field
-		Max             resp.Field
-		Min             resp.Field
-		PollingInterval resp.Field
-		Triggers        resp.Field
-		ExtraFields     map[string]resp.Field
+		CooldownPeriod  respjson.Field
+		Max             respjson.Field
+		Min             respjson.Field
+		PollingInterval respjson.Field
+		Triggers        respjson.Field
+		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -351,11 +351,11 @@ type ContainerScaleTriggerRate struct {
 	Rate int64 `json:"rate,required"`
 	// Time window for rate calculation in seconds
 	Window int64 `json:"window,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Rate        resp.Field
-		Window      resp.Field
-		ExtraFields map[string]resp.Field
+		Rate        respjson.Field
+		Window      respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -383,17 +383,17 @@ type ContainerScaleTriggerSqs struct {
 	ScaleOnFlight bool `json:"scale_on_flight,required"`
 	// Auth secret name
 	SecretName string `json:"secret_name,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ActivationQueueLength resp.Field
-		AwsEndpoint           resp.Field
-		AwsRegion             resp.Field
-		QueueLength           resp.Field
-		QueueURL              resp.Field
-		ScaleOnDelayed        resp.Field
-		ScaleOnFlight         resp.Field
-		SecretName            resp.Field
-		ExtraFields           map[string]resp.Field
+		ActivationQueueLength respjson.Field
+		AwsEndpoint           respjson.Field
+		AwsRegion             respjson.Field
+		QueueLength           respjson.Field
+		QueueURL              respjson.Field
+		ScaleOnDelayed        respjson.Field
+		ScaleOnFlight         respjson.Field
+		SecretName            respjson.Field
+		ExtraFields           map[string]respjson.Field
 		raw                   string
 	} `json:"-"`
 }
@@ -407,10 +407,10 @@ func (r *ContainerScaleTriggerSqs) UnmarshalJSON(data []byte) error {
 type ContainerScaleTriggerThreshold struct {
 	// Threshold value for the trigger in percentage
 	Threshold int64 `json:"threshold,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Threshold   resp.Field
-		ExtraFields map[string]resp.Field
+		Threshold   respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -434,15 +434,15 @@ type ContainerScaleTriggers struct {
 	Memory ContainerScaleTriggerThreshold `json:"memory,required"`
 	// SQS trigger configuration
 	Sqs ContainerScaleTriggerSqs `json:"sqs,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CPU            resp.Field
-		GPUMemory      resp.Field
-		GPUUtilization resp.Field
-		HTTP           resp.Field
-		Memory         resp.Field
-		Sqs            resp.Field
-		ExtraFields    map[string]resp.Field
+		CPU            respjson.Field
+		GPUMemory      respjson.Field
+		GPUUtilization respjson.Field
+		HTTP           respjson.Field
+		Memory         respjson.Field
+		Sqs            respjson.Field
+		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
 }
@@ -458,11 +458,11 @@ type DeployStatus struct {
 	Ready int64 `json:"ready,required"`
 	// Total number of instances
 	Total int64 `json:"total,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Ready       resp.Field
-		Total       resp.Field
-		ExtraFields map[string]resp.Field
+		Ready       respjson.Field
+		Total       respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -480,12 +480,12 @@ type InferenceProbes struct {
 	ReadinessProbe ContainerProbeConfig `json:"readiness_probe,required"`
 	// Startup probe configuration
 	StartupProbe ContainerProbeConfig `json:"startup_probe,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		LivenessProbe  resp.Field
-		ReadinessProbe resp.Field
-		StartupProbe   resp.Field
-		ExtraFields    map[string]resp.Field
+		LivenessProbe  respjson.Field
+		ReadinessProbe respjson.Field
+		StartupProbe   respjson.Field
+		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
 }
@@ -518,10 +518,10 @@ type IngressOptsOut struct {
 	// release the upstream application as soon as possible.By default, the response
 	// buffering is enabled.
 	DisableResponseBuffering bool `json:"disable_response_buffering,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		DisableResponseBuffering resp.Field
-		ExtraFields              map[string]resp.Field
+		DisableResponseBuffering respjson.Field
+		ExtraFields              map[string]respjson.Field
 		raw                      string
 	} `json:"-"`
 }
@@ -537,11 +537,11 @@ type RegionCapacity struct {
 	Capacity []Capacity `json:"capacity,required"`
 	// Region ID.
 	RegionID int64 `json:"region_id,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Capacity    resp.Field
-		RegionID    resp.Field
-		ExtraFields map[string]resp.Field
+		Capacity    respjson.Field
+		RegionID    respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -557,11 +557,11 @@ type RegionCapacityList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []RegionCapacity `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

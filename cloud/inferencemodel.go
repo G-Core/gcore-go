@@ -15,7 +15,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // InferenceModelService contains methods and other services that help with
@@ -109,27 +109,27 @@ type MlcatalogModelCard struct {
 	Port int64 `json:"port,required"`
 	// Version of the model.
 	Version string `json:"version,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  resp.Field
-		Category            resp.Field
-		DefaultFlavorName   resp.Field
-		Description         resp.Field
-		Developer           resp.Field
-		DocumentationPage   resp.Field
-		EulaURL             resp.Field
-		ExampleCurlRequest  resp.Field
-		HasEula             resp.Field
-		ImageRegistryID     resp.Field
-		ImageURL            resp.Field
-		InferenceBackend    resp.Field
-		InferenceFrontend   resp.Field
-		ModelID             resp.Field
-		Name                resp.Field
-		OpenAICompatibility resp.Field
-		Port                resp.Field
-		Version             resp.Field
-		ExtraFields         map[string]resp.Field
+		ID                  respjson.Field
+		Category            respjson.Field
+		DefaultFlavorName   respjson.Field
+		Description         respjson.Field
+		Developer           respjson.Field
+		DocumentationPage   respjson.Field
+		EulaURL             respjson.Field
+		ExampleCurlRequest  respjson.Field
+		HasEula             respjson.Field
+		ImageRegistryID     respjson.Field
+		ImageURL            respjson.Field
+		InferenceBackend    respjson.Field
+		InferenceFrontend   respjson.Field
+		ModelID             respjson.Field
+		Name                respjson.Field
+		OpenAICompatibility respjson.Field
+		Port                respjson.Field
+		Version             respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }

@@ -12,7 +12,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // InstanceMetricService contains methods and other services that help with
@@ -78,17 +78,17 @@ type Metrics struct {
 	NetworkPpsEgress float64 `json:"network_pps_egress,nullable"`
 	// Network in, packets per second
 	NetworkPpsIngress float64 `json:"network_pps_ingress,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Time              resp.Field
-		CPUUtil           resp.Field
-		Disks             resp.Field
-		MemoryUtil        resp.Field
-		NetworkBpsEgress  resp.Field
-		NetworkBpsIngress resp.Field
-		NetworkPpsEgress  resp.Field
-		NetworkPpsIngress resp.Field
-		ExtraFields       map[string]resp.Field
+		Time              respjson.Field
+		CPUUtil           respjson.Field
+		Disks             respjson.Field
+		MemoryUtil        respjson.Field
+		NetworkBpsEgress  respjson.Field
+		NetworkBpsIngress respjson.Field
+		NetworkPpsEgress  respjson.Field
+		NetworkPpsIngress respjson.Field
+		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
 }
@@ -111,14 +111,14 @@ type MetricsDisk struct {
 	DiskIopsWrite float64 `json:"disk_iops_write,nullable"`
 	// Disk attached slot name
 	DiskName string `json:"disk_name,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		DiskBpsRead   resp.Field
-		DiskBpsWrite  resp.Field
-		DiskIopsRead  resp.Field
-		DiskIopsWrite resp.Field
-		DiskName      resp.Field
-		ExtraFields   map[string]resp.Field
+		DiskBpsRead   respjson.Field
+		DiskBpsWrite  respjson.Field
+		DiskIopsRead  respjson.Field
+		DiskIopsWrite respjson.Field
+		DiskName      respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -134,11 +134,11 @@ type MetricsList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []Metrics `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

@@ -17,7 +17,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // NetworkRouterService contains methods and other services that help with
@@ -259,23 +259,23 @@ type Router struct {
 	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
 	// State of this router's external gateway.
 	ExternalGatewayInfo RouterExternalGatewayInfo `json:"external_gateway_info,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  resp.Field
-		CreatedAt           resp.Field
-		Distributed         resp.Field
-		Interfaces          resp.Field
-		Name                resp.Field
-		ProjectID           resp.Field
-		Region              resp.Field
-		RegionID            resp.Field
-		Routes              resp.Field
-		Status              resp.Field
-		TaskID              resp.Field
-		UpdatedAt           resp.Field
-		CreatorTaskID       resp.Field
-		ExternalGatewayInfo resp.Field
-		ExtraFields         map[string]resp.Field
+		ID                  respjson.Field
+		CreatedAt           respjson.Field
+		Distributed         respjson.Field
+		Interfaces          respjson.Field
+		Name                respjson.Field
+		ProjectID           respjson.Field
+		Region              respjson.Field
+		RegionID            respjson.Field
+		Routes              respjson.Field
+		Status              respjson.Field
+		TaskID              respjson.Field
+		UpdatedAt           respjson.Field
+		CreatorTaskID       respjson.Field
+		ExternalGatewayInfo respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -295,13 +295,13 @@ type RouterInterface struct {
 	PortID string `json:"port_id,required" format:"uuid4"`
 	// MAC address of the virtual port
 	MacAddress string `json:"mac_address,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		IPAssignments resp.Field
-		NetworkID     resp.Field
-		PortID        resp.Field
-		MacAddress    resp.Field
-		ExtraFields   map[string]resp.Field
+		IPAssignments respjson.Field
+		NetworkID     respjson.Field
+		PortID        respjson.Field
+		MacAddress    respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -320,12 +320,12 @@ type RouterExternalGatewayInfo struct {
 	ExternalFixedIPs []IPAssignment `json:"external_fixed_ips,required"`
 	// Id of the external network.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EnableSnat       resp.Field
-		ExternalFixedIPs resp.Field
-		NetworkID        resp.Field
-		ExtraFields      map[string]resp.Field
+		EnableSnat       respjson.Field
+		ExternalFixedIPs respjson.Field
+		NetworkID        respjson.Field
+		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
 }
@@ -341,11 +341,11 @@ type RouterList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []Router `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

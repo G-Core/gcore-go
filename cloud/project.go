@@ -16,7 +16,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // ProjectService contains methods and other services that help with interacting
@@ -144,18 +144,18 @@ type Project struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          resp.Field
-		ClientID    resp.Field
-		CreatedAt   resp.Field
-		IsDefault   resp.Field
-		Name        resp.Field
-		State       resp.Field
-		DeletedAt   resp.Field
-		Description resp.Field
-		TaskID      resp.Field
-		ExtraFields map[string]resp.Field
+		ID          respjson.Field
+		ClientID    respjson.Field
+		CreatedAt   respjson.Field
+		IsDefault   respjson.Field
+		Name        respjson.Field
+		State       respjson.Field
+		DeletedAt   respjson.Field
+		Description respjson.Field
+		TaskID      respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

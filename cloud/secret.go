@@ -13,7 +13,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // SecretService contains methods and other services that help with interacting
@@ -229,19 +229,19 @@ type Secret struct {
 	// Metadata provided by a user or system for informational purposes. Defaults to
 	// None
 	Mode string `json:"mode,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           resp.Field
-		Name         resp.Field
-		SecretType   resp.Field
-		Status       resp.Field
-		Algorithm    resp.Field
-		BitLength    resp.Field
-		ContentTypes resp.Field
-		Created      resp.Field
-		Expiration   resp.Field
-		Mode         resp.Field
-		ExtraFields  map[string]resp.Field
+		ID           respjson.Field
+		Name         respjson.Field
+		SecretType   respjson.Field
+		Status       respjson.Field
+		Algorithm    respjson.Field
+		BitLength    respjson.Field
+		ContentTypes respjson.Field
+		Created      respjson.Field
+		Expiration   respjson.Field
+		Mode         respjson.Field
+		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
 }
@@ -275,11 +275,11 @@ type SecretListResponse struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []Secret `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

@@ -17,7 +17,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 	"github.com/stainless-sdks/gcore-go/shared/constant"
 	"github.com/tidwall/gjson"
 )
@@ -638,18 +638,18 @@ type InstanceInterface struct {
 	InterfaceName string `json:"interface_name,nullable"`
 	// MAC address of the virtual port
 	MacAddress string `json:"mac_address,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AllowedAddressPairs resp.Field
-		FloatingipDetails   resp.Field
-		IPAssignments       resp.Field
-		NetworkDetails      resp.Field
-		NetworkID           resp.Field
-		PortID              resp.Field
-		PortSecurityEnabled resp.Field
-		InterfaceName       resp.Field
-		MacAddress          resp.Field
-		ExtraFields         map[string]resp.Field
+		AllowedAddressPairs respjson.Field
+		FloatingipDetails   respjson.Field
+		IPAssignments       respjson.Field
+		NetworkDetails      respjson.Field
+		NetworkID           respjson.Field
+		PortID              respjson.Field
+		PortSecurityEnabled respjson.Field
+		InterfaceName       respjson.Field
+		MacAddress          respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }

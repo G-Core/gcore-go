@@ -15,7 +15,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // BillingReservationService contains methods and other services that help with
@@ -108,28 +108,28 @@ type BillingReservation struct {
 	Status string `json:"status,required"`
 	// User status
 	UserStatus string `json:"user_status,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                         resp.Field
-		ActiveFrom                 resp.Field
-		ActiveTo                   resp.Field
-		ActivityPeriod             resp.Field
-		ActivityPeriodLength       resp.Field
-		AmountPrices               resp.Field
-		BillingPlanID              resp.Field
-		CreatedAt                  resp.Field
-		Error                      resp.Field
-		Eta                        resp.Field
-		IsExpirationMessageVisible resp.Field
-		Name                       resp.Field
-		NextStatuses               resp.Field
-		RegionID                   resp.Field
-		RegionName                 resp.Field
-		RemindExpirationMessage    resp.Field
-		Resources                  resp.Field
-		Status                     resp.Field
-		UserStatus                 resp.Field
-		ExtraFields                map[string]resp.Field
+		ID                         respjson.Field
+		ActiveFrom                 respjson.Field
+		ActiveTo                   respjson.Field
+		ActivityPeriod             respjson.Field
+		ActivityPeriodLength       respjson.Field
+		AmountPrices               respjson.Field
+		BillingPlanID              respjson.Field
+		CreatedAt                  respjson.Field
+		Error                      respjson.Field
+		Eta                        respjson.Field
+		IsExpirationMessageVisible respjson.Field
+		Name                       respjson.Field
+		NextStatuses               respjson.Field
+		RegionID                   respjson.Field
+		RegionName                 respjson.Field
+		RemindExpirationMessage    respjson.Field
+		Resources                  respjson.Field
+		Status                     respjson.Field
+		UserStatus                 respjson.Field
+		ExtraFields                map[string]respjson.Field
 		raw                        string
 	} `json:"-"`
 }
@@ -156,16 +156,16 @@ type BillingReservationAmountPrices struct {
 	OvercommitPricePerUnit string `json:"overcommit_price_per_unit,required"`
 	// Overcommit price of the item charged for all period reservation
 	OvercommitPriceTotal string `json:"overcommit_price_total,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CommitPricePerMonth     resp.Field
-		CommitPricePerUnit      resp.Field
-		CommitPriceTotal        resp.Field
-		CurrencyCode            resp.Field
-		OvercommitPricePerMonth resp.Field
-		OvercommitPricePerUnit  resp.Field
-		OvercommitPriceTotal    resp.Field
-		ExtraFields             map[string]resp.Field
+		CommitPricePerMonth     respjson.Field
+		CommitPricePerUnit      respjson.Field
+		CommitPriceTotal        respjson.Field
+		CurrencyCode            respjson.Field
+		OvercommitPricePerMonth respjson.Field
+		OvercommitPricePerUnit  respjson.Field
+		OvercommitPriceTotal    respjson.Field
+		ExtraFields             map[string]respjson.Field
 		raw                     string
 	} `json:"-"`
 }
@@ -217,28 +217,28 @@ type BillingReservationResource struct {
 	Disk string `json:"disk,nullable"`
 	// Baremetal RAM description
 	Ram string `json:"ram,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ActivityPeriod              resp.Field
-		ActivityPeriodLength        resp.Field
-		BillingPlanItemID           resp.Field
-		CommitPricePerMonth         resp.Field
-		CommitPricePerUnit          resp.Field
-		CommitPriceTotal            resp.Field
-		OvercommitBillingPlanItemID resp.Field
-		OvercommitPricePerMonth     resp.Field
-		OvercommitPricePerUnit      resp.Field
-		OvercommitPriceTotal        resp.Field
-		ResourceCount               resp.Field
-		ResourceName                resp.Field
-		ResourceType                resp.Field
-		UnitName                    resp.Field
-		UnitSizeMonth               resp.Field
-		UnitSizeTotal               resp.Field
-		CPU                         resp.Field
-		Disk                        resp.Field
-		Ram                         resp.Field
-		ExtraFields                 map[string]resp.Field
+		ActivityPeriod              respjson.Field
+		ActivityPeriodLength        respjson.Field
+		BillingPlanItemID           respjson.Field
+		CommitPricePerMonth         respjson.Field
+		CommitPricePerUnit          respjson.Field
+		CommitPriceTotal            respjson.Field
+		OvercommitBillingPlanItemID respjson.Field
+		OvercommitPricePerMonth     respjson.Field
+		OvercommitPricePerUnit      respjson.Field
+		OvercommitPriceTotal        respjson.Field
+		ResourceCount               respjson.Field
+		ResourceName                respjson.Field
+		ResourceType                respjson.Field
+		UnitName                    respjson.Field
+		UnitSizeMonth               respjson.Field
+		UnitSizeTotal               respjson.Field
+		CPU                         respjson.Field
+		Disk                        respjson.Field
+		Ram                         respjson.Field
+		ExtraFields                 map[string]respjson.Field
 		raw                         string
 	} `json:"-"`
 }

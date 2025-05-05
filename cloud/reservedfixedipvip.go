@@ -12,7 +12,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // ReservedFixedIPVipService contains methods and other services that help with
@@ -175,14 +175,14 @@ type CandidatePort struct {
 	Network Network `json:"network,required"`
 	// Port ID that shares VIP
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InstanceID    resp.Field
-		InstanceName  resp.Field
-		IPAssignments resp.Field
-		Network       resp.Field
-		PortID        resp.Field
-		ExtraFields   map[string]resp.Field
+		InstanceID    respjson.Field
+		InstanceName  respjson.Field
+		IPAssignments respjson.Field
+		Network       respjson.Field
+		PortID        respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -198,11 +198,11 @@ type CandidatePortList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []CandidatePort `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -224,14 +224,14 @@ type ConnectedPort struct {
 	Network Network `json:"network,required"`
 	// Port ID that shares VIP
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InstanceID    resp.Field
-		InstanceName  resp.Field
-		IPAssignments resp.Field
-		Network       resp.Field
-		PortID        resp.Field
-		ExtraFields   map[string]resp.Field
+		InstanceID    respjson.Field
+		InstanceName  respjson.Field
+		IPAssignments respjson.Field
+		Network       respjson.Field
+		PortID        respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -247,11 +247,11 @@ type ConnectedPortList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []ConnectedPort `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -269,12 +269,12 @@ type IPWithSubnet struct {
 	Subnet Subnet `json:"subnet,required"`
 	// ID of the subnet that allocated the IP
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		IPAddress   resp.Field
-		Subnet      resp.Field
-		SubnetID    resp.Field
-		ExtraFields map[string]resp.Field
+		IPAddress   respjson.Field
+		Subnet      respjson.Field
+		SubnetID    respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

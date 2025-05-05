@@ -16,7 +16,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 	"github.com/stainless-sdks/gcore-go/shared/constant"
 )
 
@@ -359,28 +359,28 @@ type Volume struct {
 	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
 	// Image metadata for volumes created from an image.
 	VolumeImageMetadata map[string]string `json:"volume_image_metadata,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  resp.Field
-		Bootable            resp.Field
-		CreatedAt           resp.Field
-		IsRootVolume        resp.Field
-		Name                resp.Field
-		ProjectID           resp.Field
-		Region              resp.Field
-		RegionID            resp.Field
-		Size                resp.Field
-		Status              resp.Field
-		Tags                resp.Field
-		VolumeType          resp.Field
-		Attachments         resp.Field
-		CreatorTaskID       resp.Field
-		LimiterStats        resp.Field
-		SnapshotIDs         resp.Field
-		TaskID              resp.Field
-		UpdatedAt           resp.Field
-		VolumeImageMetadata resp.Field
-		ExtraFields         map[string]resp.Field
+		ID                  respjson.Field
+		Bootable            respjson.Field
+		CreatedAt           respjson.Field
+		IsRootVolume        respjson.Field
+		Name                respjson.Field
+		ProjectID           respjson.Field
+		Region              respjson.Field
+		RegionID            respjson.Field
+		Size                respjson.Field
+		Status              respjson.Field
+		Tags                respjson.Field
+		VolumeType          respjson.Field
+		Attachments         respjson.Field
+		CreatorTaskID       respjson.Field
+		LimiterStats        respjson.Field
+		SnapshotIDs         respjson.Field
+		TaskID              respjson.Field
+		UpdatedAt           respjson.Field
+		VolumeImageMetadata respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -433,16 +433,16 @@ type VolumeAttachment struct {
 	InstanceName string `json:"instance_name,nullable"`
 	// The unique identifier of the instance.
 	ServerID string `json:"server_id,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AttachmentID resp.Field
-		VolumeID     resp.Field
-		AttachedAt   resp.Field
-		Device       resp.Field
-		FlavorID     resp.Field
-		InstanceName resp.Field
-		ServerID     resp.Field
-		ExtraFields  map[string]resp.Field
+		AttachmentID respjson.Field
+		VolumeID     respjson.Field
+		AttachedAt   respjson.Field
+		Device       respjson.Field
+		FlavorID     respjson.Field
+		InstanceName respjson.Field
+		ServerID     respjson.Field
+		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
 }
@@ -463,13 +463,13 @@ type VolumeLimiterStats struct {
 	MBpsBaseLimit int64 `json:"MBps_base_limit,required"`
 	// The burst bandwidth limit in megabytes per second (MBps).
 	MBpsBurstLimit int64 `json:"MBps_burst_limit,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		IopsBaseLimit  resp.Field
-		IopsBurstLimit resp.Field
-		MBpsBaseLimit  resp.Field
-		MBpsBurstLimit resp.Field
-		ExtraFields    map[string]resp.Field
+		IopsBaseLimit  respjson.Field
+		IopsBurstLimit respjson.Field
+		MBpsBaseLimit  respjson.Field
+		MBpsBurstLimit respjson.Field
+		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
 }

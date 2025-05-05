@@ -9,7 +9,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/apijson"
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // IPRangeService contains methods and other services that help with interacting
@@ -42,10 +42,10 @@ func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption)
 type IPRanges struct {
 	// IP ranges list
 	Ranges []string `json:"ranges,required" format:"ipv4interface"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Ranges      resp.Field
-		ExtraFields map[string]resp.Field
+		Ranges      respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

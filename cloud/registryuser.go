@@ -13,7 +13,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // RegistryUserService contains methods and other services that help with
@@ -182,15 +182,15 @@ type RegistryUser struct {
 	Name string `json:"name,required"`
 	// Read-only user
 	ReadOnly bool `json:"read_only"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          resp.Field
-		CreatedAt   resp.Field
-		Duration    resp.Field
-		ExpiresAt   resp.Field
-		Name        resp.Field
-		ReadOnly    resp.Field
-		ExtraFields map[string]resp.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Duration    respjson.Field
+		ExpiresAt   respjson.Field
+		Name        respjson.Field
+		ReadOnly    respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -216,16 +216,16 @@ type RegistryUserCreated struct {
 	ReadOnly bool `json:"read_only"`
 	// User secret
 	Secret string `json:"secret"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          resp.Field
-		CreatedAt   resp.Field
-		Duration    resp.Field
-		ExpiresAt   resp.Field
-		Name        resp.Field
-		ReadOnly    resp.Field
-		Secret      resp.Field
-		ExtraFields map[string]resp.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Duration    respjson.Field
+		ExpiresAt   respjson.Field
+		Name        respjson.Field
+		ReadOnly    respjson.Field
+		Secret      respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -241,11 +241,11 @@ type RegistryUserList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []RegistryUser `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

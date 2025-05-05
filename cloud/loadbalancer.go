@@ -16,7 +16,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 	"github.com/stainless-sdks/gcore-go/shared/constant"
 	"github.com/tidwall/gjson"
 )
@@ -292,28 +292,28 @@ type DetailedLbPool struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                   resp.Field
-		CaSecretID           resp.Field
-		CrlSecretID          resp.Field
-		LbAlgorithm          resp.Field
-		Listeners            resp.Field
-		Loadbalancers        resp.Field
-		Members              resp.Field
-		Name                 resp.Field
-		OperatingStatus      resp.Field
-		Protocol             resp.Field
-		ProvisioningStatus   resp.Field
-		SecretID             resp.Field
-		SessionPersistence   resp.Field
-		TimeoutClientData    resp.Field
-		TimeoutMemberConnect resp.Field
-		TimeoutMemberData    resp.Field
-		CreatorTaskID        resp.Field
-		Healthmonitor        resp.Field
-		TaskID               resp.Field
-		ExtraFields          map[string]resp.Field
+		ID                   respjson.Field
+		CaSecretID           respjson.Field
+		CrlSecretID          respjson.Field
+		LbAlgorithm          respjson.Field
+		Listeners            respjson.Field
+		Loadbalancers        respjson.Field
+		Members              respjson.Field
+		Name                 respjson.Field
+		OperatingStatus      respjson.Field
+		Protocol             respjson.Field
+		ProvisioningStatus   respjson.Field
+		SecretID             respjson.Field
+		SessionPersistence   respjson.Field
+		TimeoutClientData    respjson.Field
+		TimeoutMemberConnect respjson.Field
+		TimeoutMemberData    respjson.Field
+		CreatorTaskID        respjson.Field
+		Healthmonitor        respjson.Field
+		TaskID               respjson.Field
+		ExtraFields          map[string]respjson.Field
 		raw                  string
 	} `json:"-"`
 }
@@ -327,10 +327,10 @@ func (r *DetailedLbPool) UnmarshalJSON(data []byte) error {
 type DetailedLbPoolListener struct {
 	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          resp.Field
-		ExtraFields map[string]resp.Field
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -344,10 +344,10 @@ func (r *DetailedLbPoolListener) UnmarshalJSON(data []byte) error {
 type DetailedLbPoolLoadbalancer struct {
 	// Resource ID
 	ID string `json:"id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          resp.Field
-		ExtraFields map[string]resp.Field
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -363,11 +363,11 @@ type DetailedLbPoolList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []DetailedLbPool `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -406,19 +406,19 @@ type DetailedLbPoolMember struct {
 	MonitorPort int64 `json:"monitor_port,nullable"`
 	// Either subnet_id or instance_id should be provided
 	SubnetID string `json:"subnet_id,nullable" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 resp.Field
-		Address            resp.Field
-		AdminStateUp       resp.Field
-		OperatingStatus    resp.Field
-		ProtocolPort       resp.Field
-		ProvisioningStatus resp.Field
-		Weight             resp.Field
-		MonitorAddress     resp.Field
-		MonitorPort        resp.Field
-		SubnetID           resp.Field
-		ExtraFields        map[string]resp.Field
+		ID                 respjson.Field
+		Address            respjson.Field
+		AdminStateUp       respjson.Field
+		OperatingStatus    respjson.Field
+		ProtocolPort       respjson.Field
+		ProvisioningStatus respjson.Field
+		Weight             respjson.Field
+		MonitorAddress     respjson.Field
+		MonitorPort        respjson.Field
+		SubnetID           respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -445,13 +445,13 @@ type HealthMonitorStatus struct {
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type HealthMonitorType `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 resp.Field
-		OperatingStatus    resp.Field
-		ProvisioningStatus resp.Field
-		Type               resp.Field
-		ExtraFields        map[string]resp.Field
+		ID                 respjson.Field
+		OperatingStatus    respjson.Field
+		ProvisioningStatus respjson.Field
+		Type               respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -539,26 +539,26 @@ type L7Policy struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 resp.Field
-		Action             resp.Field
-		ListenerID         resp.Field
-		Name               resp.Field
-		OperatingStatus    resp.Field
-		Position           resp.Field
-		ProjectID          resp.Field
-		ProvisioningStatus resp.Field
-		RedirectHTTPCode   resp.Field
-		RedirectPoolID     resp.Field
-		RedirectPrefix     resp.Field
-		RedirectURL        resp.Field
-		Region             resp.Field
-		RegionID           resp.Field
-		Rules              resp.Field
-		Tags               resp.Field
-		TaskID             resp.Field
-		ExtraFields        map[string]resp.Field
+		ID                 respjson.Field
+		Action             respjson.Field
+		ListenerID         respjson.Field
+		Name               respjson.Field
+		OperatingStatus    respjson.Field
+		Position           respjson.Field
+		ProjectID          respjson.Field
+		ProvisioningStatus respjson.Field
+		RedirectHTTPCode   respjson.Field
+		RedirectPoolID     respjson.Field
+		RedirectPrefix     respjson.Field
+		RedirectURL        respjson.Field
+		Region             respjson.Field
+		RegionID           respjson.Field
+		Rules              respjson.Field
+		Tags               respjson.Field
+		TaskID             respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -607,11 +607,11 @@ type L7PolicyList struct {
 	Count int64 `json:"count"`
 	// Objects
 	Results []L7Policy `json:"results"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -665,22 +665,22 @@ type L7Rule struct {
 	Type L7RuleType `json:"type"`
 	// The value to use for the comparison. For example, the file type to compare.
 	Value string `json:"value"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 resp.Field
-		CompareType        resp.Field
-		Invert             resp.Field
-		Key                resp.Field
-		OperatingStatus    resp.Field
-		ProjectID          resp.Field
-		ProvisioningStatus resp.Field
-		Region             resp.Field
-		RegionID           resp.Field
-		Tags               resp.Field
-		TaskID             resp.Field
-		Type               resp.Field
-		Value              resp.Field
-		ExtraFields        map[string]resp.Field
+		ID                 respjson.Field
+		CompareType        respjson.Field
+		Invert             respjson.Field
+		Key                respjson.Field
+		OperatingStatus    respjson.Field
+		ProjectID          respjson.Field
+		ProvisioningStatus respjson.Field
+		Region             respjson.Field
+		RegionID           respjson.Field
+		Tags               respjson.Field
+		TaskID             respjson.Field
+		Type               respjson.Field
+		Value              respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -744,11 +744,11 @@ type L7RuleList struct {
 	Count int64 `json:"count"`
 	// Objects
 	Results []L7Rule `json:"results"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -772,11 +772,11 @@ type LbFlavorList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []LbFlavorListResult `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -808,18 +808,18 @@ type LbFlavorListResult struct {
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus string `json:"price_status,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FlavorID            resp.Field
-		FlavorName          resp.Field
-		HardwareDescription resp.Field
-		Ram                 resp.Field
-		Vcpus               resp.Field
-		CurrencyCode        resp.Field
-		PricePerHour        resp.Field
-		PricePerMonth       resp.Field
-		PriceStatus         resp.Field
-		ExtraFields         map[string]resp.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		HardwareDescription respjson.Field
+		Ram                 respjson.Field
+		Vcpus               respjson.Field
+		CurrencyCode        respjson.Field
+		PricePerHour        respjson.Field
+		PricePerMonth       respjson.Field
+		PriceStatus         respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -864,21 +864,21 @@ type LbHealthMonitor struct {
 	HTTPMethod HTTPMethod `json:"http_method,nullable"`
 	// URL Path. Defaults to '/'
 	URLPath string `json:"url_path,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 resp.Field
-		AdminStateUp       resp.Field
-		Delay              resp.Field
-		MaxRetries         resp.Field
-		MaxRetriesDown     resp.Field
-		OperatingStatus    resp.Field
-		ProvisioningStatus resp.Field
-		Timeout            resp.Field
-		Type               resp.Field
-		ExpectedCodes      resp.Field
-		HTTPMethod         resp.Field
-		URLPath            resp.Field
-		ExtraFields        map[string]resp.Field
+		ID                 respjson.Field
+		AdminStateUp       respjson.Field
+		Delay              respjson.Field
+		MaxRetries         respjson.Field
+		MaxRetriesDown     respjson.Field
+		OperatingStatus    respjson.Field
+		ProvisioningStatus respjson.Field
+		Timeout            respjson.Field
+		Type               respjson.Field
+		ExpectedCodes      respjson.Field
+		HTTPMethod         respjson.Field
+		URLPath            respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -943,29 +943,29 @@ type LbListener struct {
 	TimeoutMemberData int64 `json:"timeout_member_data,nullable"`
 	// Load balancer listener users list
 	UserList []LbListenerUserList `json:"user_list"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                   resp.Field
-		ConnectionLimit      resp.Field
-		InsertHeaders        resp.Field
-		Name                 resp.Field
-		OperatingStatus      resp.Field
-		Protocol             resp.Field
-		ProtocolPort         resp.Field
-		ProvisioningStatus   resp.Field
-		AllowedCidrs         resp.Field
-		CreatorTaskID        resp.Field
-		LoadbalancerID       resp.Field
-		PoolCount            resp.Field
-		SecretID             resp.Field
-		SniSecretID          resp.Field
-		Stats                resp.Field
-		TaskID               resp.Field
-		TimeoutClientData    resp.Field
-		TimeoutMemberConnect resp.Field
-		TimeoutMemberData    resp.Field
-		UserList             resp.Field
-		ExtraFields          map[string]resp.Field
+		ID                   respjson.Field
+		ConnectionLimit      respjson.Field
+		InsertHeaders        respjson.Field
+		Name                 respjson.Field
+		OperatingStatus      respjson.Field
+		Protocol             respjson.Field
+		ProtocolPort         respjson.Field
+		ProvisioningStatus   respjson.Field
+		AllowedCidrs         respjson.Field
+		CreatorTaskID        respjson.Field
+		LoadbalancerID       respjson.Field
+		PoolCount            respjson.Field
+		SecretID             respjson.Field
+		SniSecretID          respjson.Field
+		Stats                respjson.Field
+		TaskID               respjson.Field
+		TimeoutClientData    respjson.Field
+		TimeoutMemberConnect respjson.Field
+		TimeoutMemberData    respjson.Field
+		UserList             respjson.Field
+		ExtraFields          map[string]respjson.Field
 		raw                  string
 	} `json:"-"`
 }
@@ -981,11 +981,11 @@ type LbListenerUserList struct {
 	EncryptedPassword string `json:"encrypted_password,required"`
 	// Username to auth via Basic Authentication
 	Username string `json:"username,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EncryptedPassword resp.Field
-		Username          resp.Field
-		ExtraFields       map[string]resp.Field
+		EncryptedPassword respjson.Field
+		Username          respjson.Field
+		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
 }
@@ -1001,11 +1001,11 @@ type LbListenerList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []LbListener `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1049,13 +1049,13 @@ type LbSessionPersistence struct {
 	PersistenceGranularity string `json:"persistence_granularity,nullable"`
 	// Session persistence timeout. For UDP ports only
 	PersistenceTimeout int64 `json:"persistence_timeout,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type                   resp.Field
-		CookieName             resp.Field
-		PersistenceGranularity resp.Field
-		PersistenceTimeout     resp.Field
-		ExtraFields            map[string]resp.Field
+		Type                   respjson.Field
+		CookieName             respjson.Field
+		PersistenceGranularity respjson.Field
+		PersistenceTimeout     respjson.Field
+		ExtraFields            map[string]respjson.Field
 		raw                    string
 	} `json:"-"`
 }
@@ -1082,14 +1082,14 @@ type ListenerStatus struct {
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 resp.Field
-		Name               resp.Field
-		OperatingStatus    resp.Field
-		Pools              resp.Field
-		ProvisioningStatus resp.Field
-		ExtraFields        map[string]resp.Field
+		ID                 respjson.Field
+		Name               respjson.Field
+		OperatingStatus    respjson.Field
+		Pools              respjson.Field
+		ProvisioningStatus respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -1122,15 +1122,15 @@ type LoadBalancerStatus struct {
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 resp.Field
-		Listeners          resp.Field
-		Name               resp.Field
-		OperatingStatus    resp.Field
-		ProvisioningStatus resp.Field
-		Tags               resp.Field
-		ExtraFields        map[string]resp.Field
+		ID                 respjson.Field
+		Listeners          respjson.Field
+		Name               respjson.Field
+		OperatingStatus    respjson.Field
+		ProvisioningStatus respjson.Field
+		Tags               respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -1146,11 +1146,11 @@ type LoadBalancerStatusList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []LoadBalancerStatus `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1176,16 +1176,16 @@ type LoadbalancerMetrics struct {
 	NetworkPpsIngress float64 `json:"network_pps_ingress,nullable"`
 	// Timestamp
 	Time string `json:"time,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CPUUtil           resp.Field
-		MemoryUtil        resp.Field
-		NetworkBpsEgress  resp.Field
-		NetworkBpsIngress resp.Field
-		NetworkPpsEgress  resp.Field
-		NetworkPpsIngress resp.Field
-		Time              resp.Field
-		ExtraFields       map[string]resp.Field
+		CPUUtil           respjson.Field
+		MemoryUtil        respjson.Field
+		NetworkBpsEgress  respjson.Field
+		NetworkBpsIngress respjson.Field
+		NetworkPpsEgress  respjson.Field
+		NetworkPpsIngress respjson.Field
+		Time              respjson.Field
+		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
 }
@@ -1201,11 +1201,11 @@ type LoadbalancerMetricsList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []LoadbalancerMetrics `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -1232,14 +1232,14 @@ type MemberStatus struct {
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 resp.Field
-		Address            resp.Field
-		OperatingStatus    resp.Field
-		ProtocolPort       resp.Field
-		ProvisioningStatus resp.Field
-		ExtraFields        map[string]resp.Field
+		ID                 respjson.Field
+		Address            respjson.Field
+		OperatingStatus    respjson.Field
+		ProtocolPort       respjson.Field
+		ProvisioningStatus respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -1268,15 +1268,15 @@ type PoolStatus struct {
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
 	// Health Monitor of the Pool
 	HealthMonitor HealthMonitorStatus `json:"health_monitor"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 resp.Field
-		Members            resp.Field
-		Name               resp.Field
-		OperatingStatus    resp.Field
-		ProvisioningStatus resp.Field
-		HealthMonitor      resp.Field
-		ExtraFields        map[string]resp.Field
+		ID                 respjson.Field
+		Members            respjson.Field
+		Name               respjson.Field
+		OperatingStatus    respjson.Field
+		ProvisioningStatus respjson.Field
+		HealthMonitor      respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }

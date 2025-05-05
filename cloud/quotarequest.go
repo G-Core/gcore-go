@@ -16,7 +16,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // QuotaRequestService contains methods and other services that help with
@@ -110,16 +110,16 @@ type QuotaRequestListResponse struct {
 	Description string `json:"description,nullable"`
 	// Datetime when the request was updated.
 	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID              resp.Field
-		ClientID        resp.Field
-		RequestedLimits resp.Field
-		Status          resp.Field
-		CreatedAt       resp.Field
-		Description     resp.Field
-		UpdatedAt       resp.Field
-		ExtraFields     map[string]resp.Field
+		ID              respjson.Field
+		ClientID        respjson.Field
+		RequestedLimits respjson.Field
+		Status          respjson.Field
+		CreatedAt       respjson.Field
+		Description     respjson.Field
+		UpdatedAt       respjson.Field
+		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -136,11 +136,11 @@ type QuotaRequestListResponseRequestedLimits struct {
 	GlobalLimits QuotaRequestListResponseRequestedLimitsGlobalLimits `json:"global_limits"`
 	// Regions and their quota limits
 	RegionalLimits []QuotaRequestListResponseRequestedLimitsRegionalLimit `json:"regional_limits"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		GlobalLimits   resp.Field
-		RegionalLimits resp.Field
-		ExtraFields    map[string]resp.Field
+		GlobalLimits   respjson.Field
+		RegionalLimits respjson.Field
+		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
 }
@@ -167,16 +167,16 @@ type QuotaRequestListResponseRequestedLimitsGlobalLimits struct {
 	KeypairCountLimit int64 `json:"keypair_count_limit"`
 	// Projects Count limit
 	ProjectCountLimit int64 `json:"project_count_limit"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InferenceCPUMillicoreCountLimit resp.Field
-		InferenceGPUA100CountLimit      resp.Field
-		InferenceGPUH100CountLimit      resp.Field
-		InferenceGPUL40sCountLimit      resp.Field
-		InferenceInstanceCountLimit     resp.Field
-		KeypairCountLimit               resp.Field
-		ProjectCountLimit               resp.Field
-		ExtraFields                     map[string]resp.Field
+		InferenceCPUMillicoreCountLimit respjson.Field
+		InferenceGPUA100CountLimit      respjson.Field
+		InferenceGPUH100CountLimit      respjson.Field
+		InferenceGPUL40sCountLimit      respjson.Field
+		InferenceInstanceCountLimit     respjson.Field
+		KeypairCountLimit               respjson.Field
+		ProjectCountLimit               respjson.Field
+		ExtraFields                     map[string]respjson.Field
 		raw                             string
 	} `json:"-"`
 }
@@ -282,56 +282,56 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	VolumeSnapshotsCountLimit int64 `json:"volume_snapshots_count_limit"`
 	// Snapshots Size, GiB limit
 	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BaremetalBasicCountLimit          resp.Field
-		BaremetalGPUCountLimit            resp.Field
-		BaremetalHfCountLimit             resp.Field
-		BaremetalInfrastructureCountLimit resp.Field
-		BaremetalNetworkCountLimit        resp.Field
-		BaremetalStorageCountLimit        resp.Field
-		CaasContainerCountLimit           resp.Field
-		CaasCPUCountLimit                 resp.Field
-		CaasGPUCountLimit                 resp.Field
-		CaasRamSizeLimit                  resp.Field
-		ClusterCountLimit                 resp.Field
-		CPUCountLimit                     resp.Field
-		DbaasPostgresClusterCountLimit    resp.Field
-		ExternalIPCountLimit              resp.Field
-		FaasCPUCountLimit                 resp.Field
-		FaasFunctionCountLimit            resp.Field
-		FaasNamespaceCountLimit           resp.Field
-		FaasRamSizeLimit                  resp.Field
-		FirewallCountLimit                resp.Field
-		FloatingCountLimit                resp.Field
-		GPUCountLimit                     resp.Field
-		GPUVirtualA100CountLimit          resp.Field
-		GPUVirtualH100CountLimit          resp.Field
-		GPUVirtualL40sCountLimit          resp.Field
-		ImageCountLimit                   resp.Field
-		ImageSizeLimit                    resp.Field
-		IpuCountLimit                     resp.Field
-		LaasTopicCountLimit               resp.Field
-		LoadbalancerCountLimit            resp.Field
-		NetworkCountLimit                 resp.Field
-		RamLimit                          resp.Field
-		RegionID                          resp.Field
-		RegistryCountLimit                resp.Field
-		RegistryStorageLimit              resp.Field
-		RouterCountLimit                  resp.Field
-		SecretCountLimit                  resp.Field
-		ServergroupCountLimit             resp.Field
-		SfsCountLimit                     resp.Field
-		SfsSizeLimit                      resp.Field
-		SharedVmCountLimit                resp.Field
-		SnapshotScheduleCountLimit        resp.Field
-		SubnetCountLimit                  resp.Field
-		VmCountLimit                      resp.Field
-		VolumeCountLimit                  resp.Field
-		VolumeSizeLimit                   resp.Field
-		VolumeSnapshotsCountLimit         resp.Field
-		VolumeSnapshotsSizeLimit          resp.Field
-		ExtraFields                       map[string]resp.Field
+		BaremetalBasicCountLimit          respjson.Field
+		BaremetalGPUCountLimit            respjson.Field
+		BaremetalHfCountLimit             respjson.Field
+		BaremetalInfrastructureCountLimit respjson.Field
+		BaremetalNetworkCountLimit        respjson.Field
+		BaremetalStorageCountLimit        respjson.Field
+		CaasContainerCountLimit           respjson.Field
+		CaasCPUCountLimit                 respjson.Field
+		CaasGPUCountLimit                 respjson.Field
+		CaasRamSizeLimit                  respjson.Field
+		ClusterCountLimit                 respjson.Field
+		CPUCountLimit                     respjson.Field
+		DbaasPostgresClusterCountLimit    respjson.Field
+		ExternalIPCountLimit              respjson.Field
+		FaasCPUCountLimit                 respjson.Field
+		FaasFunctionCountLimit            respjson.Field
+		FaasNamespaceCountLimit           respjson.Field
+		FaasRamSizeLimit                  respjson.Field
+		FirewallCountLimit                respjson.Field
+		FloatingCountLimit                respjson.Field
+		GPUCountLimit                     respjson.Field
+		GPUVirtualA100CountLimit          respjson.Field
+		GPUVirtualH100CountLimit          respjson.Field
+		GPUVirtualL40sCountLimit          respjson.Field
+		ImageCountLimit                   respjson.Field
+		ImageSizeLimit                    respjson.Field
+		IpuCountLimit                     respjson.Field
+		LaasTopicCountLimit               respjson.Field
+		LoadbalancerCountLimit            respjson.Field
+		NetworkCountLimit                 respjson.Field
+		RamLimit                          respjson.Field
+		RegionID                          respjson.Field
+		RegistryCountLimit                respjson.Field
+		RegistryStorageLimit              respjson.Field
+		RouterCountLimit                  respjson.Field
+		SecretCountLimit                  respjson.Field
+		ServergroupCountLimit             respjson.Field
+		SfsCountLimit                     respjson.Field
+		SfsSizeLimit                      respjson.Field
+		SharedVmCountLimit                respjson.Field
+		SnapshotScheduleCountLimit        respjson.Field
+		SubnetCountLimit                  respjson.Field
+		VmCountLimit                      respjson.Field
+		VolumeCountLimit                  respjson.Field
+		VolumeSizeLimit                   respjson.Field
+		VolumeSnapshotsCountLimit         respjson.Field
+		VolumeSnapshotsSizeLimit          respjson.Field
+		ExtraFields                       map[string]respjson.Field
 		raw                               string
 	} `json:"-"`
 }
@@ -357,16 +357,16 @@ type QuotaRequestGetResponse struct {
 	Description string `json:"description,nullable"`
 	// Datetime when the request was updated.
 	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID              resp.Field
-		ClientID        resp.Field
-		RequestedLimits resp.Field
-		Status          resp.Field
-		CreatedAt       resp.Field
-		Description     resp.Field
-		UpdatedAt       resp.Field
-		ExtraFields     map[string]resp.Field
+		ID              respjson.Field
+		ClientID        respjson.Field
+		RequestedLimits respjson.Field
+		Status          respjson.Field
+		CreatedAt       respjson.Field
+		Description     respjson.Field
+		UpdatedAt       respjson.Field
+		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -383,11 +383,11 @@ type QuotaRequestGetResponseRequestedLimits struct {
 	GlobalLimits QuotaRequestGetResponseRequestedLimitsGlobalLimits `json:"global_limits"`
 	// Regions and their quota limits
 	RegionalLimits []QuotaRequestGetResponseRequestedLimitsRegionalLimit `json:"regional_limits"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		GlobalLimits   resp.Field
-		RegionalLimits resp.Field
-		ExtraFields    map[string]resp.Field
+		GlobalLimits   respjson.Field
+		RegionalLimits respjson.Field
+		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
 }
@@ -414,16 +414,16 @@ type QuotaRequestGetResponseRequestedLimitsGlobalLimits struct {
 	KeypairCountLimit int64 `json:"keypair_count_limit"`
 	// Projects Count limit
 	ProjectCountLimit int64 `json:"project_count_limit"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InferenceCPUMillicoreCountLimit resp.Field
-		InferenceGPUA100CountLimit      resp.Field
-		InferenceGPUH100CountLimit      resp.Field
-		InferenceGPUL40sCountLimit      resp.Field
-		InferenceInstanceCountLimit     resp.Field
-		KeypairCountLimit               resp.Field
-		ProjectCountLimit               resp.Field
-		ExtraFields                     map[string]resp.Field
+		InferenceCPUMillicoreCountLimit respjson.Field
+		InferenceGPUA100CountLimit      respjson.Field
+		InferenceGPUH100CountLimit      respjson.Field
+		InferenceGPUL40sCountLimit      respjson.Field
+		InferenceInstanceCountLimit     respjson.Field
+		KeypairCountLimit               respjson.Field
+		ProjectCountLimit               respjson.Field
+		ExtraFields                     map[string]respjson.Field
 		raw                             string
 	} `json:"-"`
 }
@@ -529,56 +529,56 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	VolumeSnapshotsCountLimit int64 `json:"volume_snapshots_count_limit"`
 	// Snapshots Size, GiB limit
 	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BaremetalBasicCountLimit          resp.Field
-		BaremetalGPUCountLimit            resp.Field
-		BaremetalHfCountLimit             resp.Field
-		BaremetalInfrastructureCountLimit resp.Field
-		BaremetalNetworkCountLimit        resp.Field
-		BaremetalStorageCountLimit        resp.Field
-		CaasContainerCountLimit           resp.Field
-		CaasCPUCountLimit                 resp.Field
-		CaasGPUCountLimit                 resp.Field
-		CaasRamSizeLimit                  resp.Field
-		ClusterCountLimit                 resp.Field
-		CPUCountLimit                     resp.Field
-		DbaasPostgresClusterCountLimit    resp.Field
-		ExternalIPCountLimit              resp.Field
-		FaasCPUCountLimit                 resp.Field
-		FaasFunctionCountLimit            resp.Field
-		FaasNamespaceCountLimit           resp.Field
-		FaasRamSizeLimit                  resp.Field
-		FirewallCountLimit                resp.Field
-		FloatingCountLimit                resp.Field
-		GPUCountLimit                     resp.Field
-		GPUVirtualA100CountLimit          resp.Field
-		GPUVirtualH100CountLimit          resp.Field
-		GPUVirtualL40sCountLimit          resp.Field
-		ImageCountLimit                   resp.Field
-		ImageSizeLimit                    resp.Field
-		IpuCountLimit                     resp.Field
-		LaasTopicCountLimit               resp.Field
-		LoadbalancerCountLimit            resp.Field
-		NetworkCountLimit                 resp.Field
-		RamLimit                          resp.Field
-		RegionID                          resp.Field
-		RegistryCountLimit                resp.Field
-		RegistryStorageLimit              resp.Field
-		RouterCountLimit                  resp.Field
-		SecretCountLimit                  resp.Field
-		ServergroupCountLimit             resp.Field
-		SfsCountLimit                     resp.Field
-		SfsSizeLimit                      resp.Field
-		SharedVmCountLimit                resp.Field
-		SnapshotScheduleCountLimit        resp.Field
-		SubnetCountLimit                  resp.Field
-		VmCountLimit                      resp.Field
-		VolumeCountLimit                  resp.Field
-		VolumeSizeLimit                   resp.Field
-		VolumeSnapshotsCountLimit         resp.Field
-		VolumeSnapshotsSizeLimit          resp.Field
-		ExtraFields                       map[string]resp.Field
+		BaremetalBasicCountLimit          respjson.Field
+		BaremetalGPUCountLimit            respjson.Field
+		BaremetalHfCountLimit             respjson.Field
+		BaremetalInfrastructureCountLimit respjson.Field
+		BaremetalNetworkCountLimit        respjson.Field
+		BaremetalStorageCountLimit        respjson.Field
+		CaasContainerCountLimit           respjson.Field
+		CaasCPUCountLimit                 respjson.Field
+		CaasGPUCountLimit                 respjson.Field
+		CaasRamSizeLimit                  respjson.Field
+		ClusterCountLimit                 respjson.Field
+		CPUCountLimit                     respjson.Field
+		DbaasPostgresClusterCountLimit    respjson.Field
+		ExternalIPCountLimit              respjson.Field
+		FaasCPUCountLimit                 respjson.Field
+		FaasFunctionCountLimit            respjson.Field
+		FaasNamespaceCountLimit           respjson.Field
+		FaasRamSizeLimit                  respjson.Field
+		FirewallCountLimit                respjson.Field
+		FloatingCountLimit                respjson.Field
+		GPUCountLimit                     respjson.Field
+		GPUVirtualA100CountLimit          respjson.Field
+		GPUVirtualH100CountLimit          respjson.Field
+		GPUVirtualL40sCountLimit          respjson.Field
+		ImageCountLimit                   respjson.Field
+		ImageSizeLimit                    respjson.Field
+		IpuCountLimit                     respjson.Field
+		LaasTopicCountLimit               respjson.Field
+		LoadbalancerCountLimit            respjson.Field
+		NetworkCountLimit                 respjson.Field
+		RamLimit                          respjson.Field
+		RegionID                          respjson.Field
+		RegistryCountLimit                respjson.Field
+		RegistryStorageLimit              respjson.Field
+		RouterCountLimit                  respjson.Field
+		SecretCountLimit                  respjson.Field
+		ServergroupCountLimit             respjson.Field
+		SfsCountLimit                     respjson.Field
+		SfsSizeLimit                      respjson.Field
+		SharedVmCountLimit                respjson.Field
+		SnapshotScheduleCountLimit        respjson.Field
+		SubnetCountLimit                  respjson.Field
+		VmCountLimit                      respjson.Field
+		VolumeCountLimit                  respjson.Field
+		VolumeSizeLimit                   respjson.Field
+		VolumeSnapshotsCountLimit         respjson.Field
+		VolumeSnapshotsSizeLimit          respjson.Field
+		ExtraFields                       map[string]respjson.Field
 		raw                               string
 	} `json:"-"`
 }

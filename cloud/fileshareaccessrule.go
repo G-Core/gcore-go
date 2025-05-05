@@ -12,7 +12,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // FileShareAccessRuleService contains methods and other services that help with
@@ -131,13 +131,13 @@ type AccessRule struct {
 	// Any of "active", "applying", "denying", "error", "new", "queued_to_apply",
 	// "queued_to_deny".
 	State AccessRuleState `json:"state,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          resp.Field
-		AccessLevel resp.Field
-		AccessTo    resp.Field
-		State       resp.Field
-		ExtraFields map[string]resp.Field
+		ID          respjson.Field
+		AccessLevel respjson.Field
+		AccessTo    respjson.Field
+		State       respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -174,11 +174,11 @@ type AccessRuleList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []AccessRule `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

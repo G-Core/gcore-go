@@ -18,7 +18,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 	"github.com/stainless-sdks/gcore-go/shared/constant"
 	"github.com/tidwall/gjson"
 )
@@ -321,29 +321,29 @@ type GPUBaremetalCluster struct {
 	// A name of a new user in the Linux instance. It may be passed with a 'password'
 	// parameter
 	Username string `json:"username,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ClusterID     resp.Field
-		ClusterName   resp.Field
-		ClusterStatus resp.Field
-		CreatedAt     resp.Field
-		CreatorTaskID resp.Field
-		Flavor        resp.Field
-		ImageID       resp.Field
-		ImageName     resp.Field
-		Interfaces    resp.Field
-		Password      resp.Field
-		ProjectID     resp.Field
-		Region        resp.Field
-		RegionID      resp.Field
-		Servers       resp.Field
-		SSHKeyName    resp.Field
-		Tags          resp.Field
-		TaskID        resp.Field
-		TaskStatus    resp.Field
-		UserData      resp.Field
-		Username      resp.Field
-		ExtraFields   map[string]resp.Field
+		ClusterID     respjson.Field
+		ClusterName   respjson.Field
+		ClusterStatus respjson.Field
+		CreatedAt     respjson.Field
+		CreatorTaskID respjson.Field
+		Flavor        respjson.Field
+		ImageID       respjson.Field
+		ImageName     respjson.Field
+		Interfaces    respjson.Field
+		Password      respjson.Field
+		ProjectID     respjson.Field
+		Region        respjson.Field
+		RegionID      respjson.Field
+		Servers       respjson.Field
+		SSHKeyName    respjson.Field
+		Tags          respjson.Field
+		TaskID        respjson.Field
+		TaskStatus    respjson.Field
+		UserData      respjson.Field
+		Username      respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -373,13 +373,13 @@ type GPUBaremetalClusterInterface struct {
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
 	// Network type
 	Type string `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		NetworkID   resp.Field
-		PortID      resp.Field
-		SubnetID    resp.Field
-		Type        resp.Field
-		ExtraFields map[string]resp.Field
+		NetworkID   respjson.Field
+		PortID      respjson.Field
+		SubnetID    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -465,30 +465,30 @@ type GPUBaremetalClusterServer struct {
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
 	VmState GPUBaremetalClusterServerVmState `json:"vm_state,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  resp.Field
-		Addresses           resp.Field
-		BlackholePorts      resp.Field
-		CreatedAt           resp.Field
-		CreatorTaskID       resp.Field
-		DDOSProfile         resp.Field
-		FixedIPAssignments  resp.Field
-		Flavor              resp.Field
-		InstanceDescription resp.Field
-		InstanceIsolation   resp.Field
-		Name                resp.Field
-		ProjectID           resp.Field
-		Region              resp.Field
-		RegionID            resp.Field
-		SecurityGroups      resp.Field
-		SSHKeyName          resp.Field
-		Status              resp.Field
-		Tags                resp.Field
-		TaskID              resp.Field
-		TaskState           resp.Field
-		VmState             resp.Field
-		ExtraFields         map[string]resp.Field
+		ID                  respjson.Field
+		Addresses           respjson.Field
+		BlackholePorts      respjson.Field
+		CreatedAt           respjson.Field
+		CreatorTaskID       respjson.Field
+		DDOSProfile         respjson.Field
+		FixedIPAssignments  respjson.Field
+		Flavor              respjson.Field
+		InstanceDescription respjson.Field
+		InstanceIsolation   respjson.Field
+		Name                respjson.Field
+		ProjectID           respjson.Field
+		Region              respjson.Field
+		RegionID            respjson.Field
+		SecurityGroups      respjson.Field
+		SSHKeyName          respjson.Field
+		Status              respjson.Field
+		Tags                respjson.Field
+		TaskID              respjson.Field
+		TaskState           respjson.Field
+		VmState             respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -512,11 +512,11 @@ type GPUBaremetalClusterServerAddressUnion struct {
 	// This field is from variant [FixedAddress].
 	SubnetName string `json:"subnet_name"`
 	JSON       struct {
-		Addr          resp.Field
-		Type          resp.Field
-		InterfaceName resp.Field
-		SubnetID      resp.Field
-		SubnetName    resp.Field
+		Addr          respjson.Field
+		Type          respjson.Field
+		InterfaceName respjson.Field
+		SubnetID      respjson.Field
+		SubnetName    respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -550,12 +550,12 @@ type GPUBaremetalClusterServerFixedIPAssignment struct {
 	IPAddress string `json:"ip_address,required"`
 	// Interface subnet id
 	SubnetID string `json:"subnet_id,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		External    resp.Field
-		IPAddress   resp.Field
-		SubnetID    resp.Field
-		ExtraFields map[string]resp.Field
+		External    respjson.Field
+		IPAddress   respjson.Field
+		SubnetID    respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -584,17 +584,17 @@ type GPUBaremetalClusterServerFlavor struct {
 	ResourceClass string `json:"resource_class,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Architecture        resp.Field
-		FlavorID            resp.Field
-		FlavorName          resp.Field
-		HardwareDescription resp.Field
-		OsType              resp.Field
-		Ram                 resp.Field
-		ResourceClass       resp.Field
-		Vcpus               resp.Field
-		ExtraFields         map[string]resp.Field
+		Architecture        respjson.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		HardwareDescription respjson.Field
+		OsType              respjson.Field
+		Ram                 respjson.Field
+		ResourceClass       respjson.Field
+		Vcpus               respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -619,15 +619,15 @@ type GPUBaremetalClusterServerFlavorHardwareDescription struct {
 	Network string `json:"network,required"`
 	// Human-readable RAM description
 	Ram string `json:"ram,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CPU         resp.Field
-		Disk        resp.Field
-		GPU         resp.Field
-		License     resp.Field
-		Network     resp.Field
-		Ram         resp.Field
-		ExtraFields map[string]resp.Field
+		CPU         respjson.Field
+		Disk        respjson.Field
+		GPU         respjson.Field
+		License     respjson.Field
+		Network     respjson.Field
+		Ram         respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -641,10 +641,10 @@ func (r *GPUBaremetalClusterServerFlavorHardwareDescription) UnmarshalJSON(data 
 type GPUBaremetalClusterServerSecurityGroup struct {
 	// Name.
 	Name string `json:"name,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Name        resp.Field
-		ExtraFields map[string]resp.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -704,11 +704,11 @@ type GPUBaremetalClusterServerList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []GPUBaremetalClusterServer `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -741,13 +741,13 @@ type GPUBaremetalFlavorUnion struct {
 	// [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice].
 	Price GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice `json:"price"`
 	JSON  struct {
-		Architecture        resp.Field
-		Capacity            resp.Field
-		Disabled            resp.Field
-		HardwareDescription resp.Field
-		HardwareProperties  resp.Field
-		Name                resp.Field
-		Price               resp.Field
+		Architecture        respjson.Field
+		Capacity            respjson.Field
+		Disabled            respjson.Field
+		HardwareDescription respjson.Field
+		HardwareProperties  respjson.Field
+		Name                respjson.Field
+		Price               respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -782,11 +782,11 @@ type GPUBaremetalFlavorUnionHardwareDescription struct {
 	Network string `json:"network"`
 	Ram     string `json:"ram"`
 	JSON    struct {
-		CPU     resp.Field
-		Disk    resp.Field
-		GPU     resp.Field
-		Network resp.Field
-		Ram     resp.Field
+		CPU     respjson.Field
+		Disk    respjson.Field
+		GPU     respjson.Field
+		Network respjson.Field
+		Ram     respjson.Field
 		raw     string
 	} `json:"-"`
 }
@@ -806,9 +806,9 @@ type GPUBaremetalFlavorUnionHardwareProperties struct {
 	GPUManufacturer string `json:"gpu_manufacturer"`
 	GPUModel        string `json:"gpu_model"`
 	JSON            struct {
-		GPUCount        resp.Field
-		GPUManufacturer resp.Field
-		GPUModel        resp.Field
+		GPUCount        respjson.Field
+		GPUManufacturer respjson.Field
+		GPUModel        respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -830,15 +830,15 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice struct {
 	HardwareProperties GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties `json:"hardware_properties,required"`
 	// Flavor name
 	Name string `json:"name,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Architecture        resp.Field
-		Capacity            resp.Field
-		Disabled            resp.Field
-		HardwareDescription resp.Field
-		HardwareProperties  resp.Field
-		Name                resp.Field
-		ExtraFields         map[string]resp.Field
+		Architecture        respjson.Field
+		Capacity            respjson.Field
+		Disabled            respjson.Field
+		HardwareDescription respjson.Field
+		HardwareProperties  respjson.Field
+		Name                respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -861,14 +861,14 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareDescription s
 	Network string `json:"network,required"`
 	// Human-readable RAM description
 	Ram string `json:"ram,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CPU         resp.Field
-		Disk        resp.Field
-		GPU         resp.Field
-		Network     resp.Field
-		Ram         resp.Field
-		ExtraFields map[string]resp.Field
+		CPU         respjson.Field
+		Disk        respjson.Field
+		GPU         respjson.Field
+		Network     respjson.Field
+		Ram         respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -889,12 +889,12 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties st
 	GPUManufacturer string `json:"gpu_manufacturer,required"`
 	// GPU model
 	GPUModel string `json:"gpu_model,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		GPUCount        resp.Field
-		GPUManufacturer resp.Field
-		GPUModel        resp.Field
-		ExtraFields     map[string]resp.Field
+		GPUCount        respjson.Field
+		GPUManufacturer respjson.Field
+		GPUModel        respjson.Field
+		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -922,16 +922,16 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice struct {
 	Name string `json:"name,required"`
 	// Flavor price
 	Price GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice `json:"price,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Architecture        resp.Field
-		Capacity            resp.Field
-		Disabled            resp.Field
-		HardwareDescription resp.Field
-		HardwareProperties  resp.Field
-		Name                resp.Field
-		Price               resp.Field
-		ExtraFields         map[string]resp.Field
+		Architecture        respjson.Field
+		Capacity            respjson.Field
+		Disabled            respjson.Field
+		HardwareDescription respjson.Field
+		HardwareProperties  respjson.Field
+		Name                respjson.Field
+		Price               respjson.Field
+		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -954,14 +954,14 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareDescription stru
 	Network string `json:"network,required"`
 	// Human-readable RAM description
 	Ram string `json:"ram,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CPU         resp.Field
-		Disk        resp.Field
-		GPU         resp.Field
-		Network     resp.Field
-		Ram         resp.Field
-		ExtraFields map[string]resp.Field
+		CPU         respjson.Field
+		Disk        respjson.Field
+		GPU         respjson.Field
+		Network     respjson.Field
+		Ram         respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -982,12 +982,12 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties struc
 	GPUManufacturer string `json:"gpu_manufacturer,required"`
 	// GPU model
 	GPUModel string `json:"gpu_model,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		GPUCount        resp.Field
-		GPUManufacturer resp.Field
-		GPUModel        resp.Field
-		ExtraFields     map[string]resp.Field
+		GPUCount        respjson.Field
+		GPUManufacturer respjson.Field
+		GPUModel        respjson.Field
+		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -1012,13 +1012,13 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice struct {
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus string `json:"price_status,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CurrencyCode  resp.Field
-		PricePerHour  resp.Field
-		PricePerMonth resp.Field
-		PriceStatus   resp.Field
-		ExtraFields   map[string]resp.Field
+		CurrencyCode  respjson.Field
+		PricePerHour  respjson.Field
+		PricePerMonth respjson.Field
+		PriceStatus   respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -1034,11 +1034,11 @@ type GPUBaremetalFlavorList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []GPUBaremetalFlavorUnion `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

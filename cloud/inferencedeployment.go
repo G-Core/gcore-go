@@ -16,7 +16,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // InferenceDeploymentService contains methods and other services that help with
@@ -242,14 +242,14 @@ type Container struct {
 	RegionID int64 `json:"region_id,required"`
 	// Scale for the container
 	Scale ContainerScale `json:"scale,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Address      resp.Field
-		DeployStatus resp.Field
-		ErrorMessage resp.Field
-		RegionID     resp.Field
-		Scale        resp.Field
-		ExtraFields  map[string]resp.Field
+		Address      respjson.Field
+		DeployStatus respjson.Field
+		ErrorMessage respjson.Field
+		RegionID     respjson.Field
+		Scale        respjson.Field
+		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
 }
@@ -319,27 +319,27 @@ type Inference struct {
 	// `scale.min`. If set, this helps in optimizing resource usage by reducing the
 	// number of container instances during periods of inactivity.
 	Timeout int64 `json:"timeout,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Address         resp.Field
-		AuthEnabled     resp.Field
-		Command         resp.Field
-		Containers      resp.Field
-		CreatedAt       resp.Field
-		CredentialsName resp.Field
-		Description     resp.Field
-		Envs            resp.Field
-		FlavorName      resp.Field
-		Image           resp.Field
-		IngressOpts     resp.Field
-		ListeningPort   resp.Field
-		Logging         resp.Field
-		Name            resp.Field
-		Probes          resp.Field
-		ProjectID       resp.Field
-		Status          resp.Field
-		Timeout         resp.Field
-		ExtraFields     map[string]resp.Field
+		Address         respjson.Field
+		AuthEnabled     respjson.Field
+		Command         respjson.Field
+		Containers      respjson.Field
+		CreatedAt       respjson.Field
+		CredentialsName respjson.Field
+		Description     respjson.Field
+		Envs            respjson.Field
+		FlavorName      respjson.Field
+		Image           respjson.Field
+		IngressOpts     respjson.Field
+		ListeningPort   respjson.Field
+		Logging         respjson.Field
+		Name            respjson.Field
+		Probes          respjson.Field
+		ProjectID       respjson.Field
+		Status          respjson.Field
+		Timeout         respjson.Field
+		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -380,11 +380,11 @@ type InferenceApikeySecret struct {
 	//
 	// Any of "PENDING", "READY".
 	Status InferenceApikeySecretStatus `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Secret      resp.Field
-		Status      resp.Field
-		ExtraFields map[string]resp.Field
+		Secret      respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -412,13 +412,13 @@ type InferenceLog struct {
 	RegionID int64 `json:"region_id,required"`
 	// Log message timestamp in ISO 8601 format.
 	Time time.Time `json:"time,required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Message     resp.Field
-		Pod         resp.Field
-		RegionID    resp.Field
-		Time        resp.Field
-		ExtraFields map[string]resp.Field
+		Message     respjson.Field
+		Pod         respjson.Field
+		RegionID    respjson.Field
+		Time        respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

@@ -16,7 +16,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // TaskService contains methods and other services that help with interacting with
@@ -184,30 +184,30 @@ type Task struct {
 	UpdatedOn string `json:"updated_on,nullable"`
 	// Client, specified in user's JWT
 	UserClientID int64 `json:"user_client_id,nullable"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                resp.Field
-		CreatedOn         resp.Field
-		State             resp.Field
-		TaskType          resp.Field
-		UserID            resp.Field
-		AcknowledgedAt    resp.Field
-		AcknowledgedBy    resp.Field
-		ClientID          resp.Field
-		CreatedResources  resp.Field
-		Data              resp.Field
-		DetailedState     resp.Field
-		Error             resp.Field
-		FinishedOn        resp.Field
-		JobID             resp.Field
-		LifecyclePolicyID resp.Field
-		ProjectID         resp.Field
-		RegionID          resp.Field
-		RequestID         resp.Field
-		ScheduleID        resp.Field
-		UpdatedOn         resp.Field
-		UserClientID      resp.Field
-		ExtraFields       map[string]resp.Field
+		ID                respjson.Field
+		CreatedOn         respjson.Field
+		State             respjson.Field
+		TaskType          respjson.Field
+		UserID            respjson.Field
+		AcknowledgedAt    respjson.Field
+		AcknowledgedBy    respjson.Field
+		ClientID          respjson.Field
+		CreatedResources  respjson.Field
+		Data              respjson.Field
+		DetailedState     respjson.Field
+		Error             respjson.Field
+		FinishedOn        respjson.Field
+		JobID             respjson.Field
+		LifecyclePolicyID respjson.Field
+		ProjectID         respjson.Field
+		RegionID          respjson.Field
+		RequestID         respjson.Field
+		ScheduleID        respjson.Field
+		UpdatedOn         respjson.Field
+		UserClientID      respjson.Field
+		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
 }
@@ -298,43 +298,43 @@ type TaskCreatedResources struct {
 	Subnets []string `json:"subnets"`
 	// IDs of created volumes
 	Volumes []string `json:"volumes"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AIClusters         resp.Field
-		APIKeys            resp.Field
-		CaasContainers     resp.Field
-		DDOSProfiles       resp.Field
-		FaasFunctions      resp.Field
-		FaasNamespaces     resp.Field
-		FileShares         resp.Field
-		Floatingips        resp.Field
-		Healthmonitors     resp.Field
-		Heat               resp.Field
-		Images             resp.Field
-		InferenceInstances resp.Field
-		Instances          resp.Field
-		K8sClusters        resp.Field
-		K8sPools           resp.Field
-		L7polices          resp.Field
-		L7rules            resp.Field
-		LaasTopic          resp.Field
-		Listeners          resp.Field
-		Loadbalancers      resp.Field
-		Members            resp.Field
-		Networks           resp.Field
-		Pools              resp.Field
-		Ports              resp.Field
-		PostgreSQLClusters resp.Field
-		Projects           resp.Field
-		RegistryRegistries resp.Field
-		RegistryUsers      resp.Field
-		Routers            resp.Field
-		Secrets            resp.Field
-		Servergroups       resp.Field
-		Snapshots          resp.Field
-		Subnets            resp.Field
-		Volumes            resp.Field
-		ExtraFields        map[string]resp.Field
+		AIClusters         respjson.Field
+		APIKeys            respjson.Field
+		CaasContainers     respjson.Field
+		DDOSProfiles       respjson.Field
+		FaasFunctions      respjson.Field
+		FaasNamespaces     respjson.Field
+		FileShares         respjson.Field
+		Floatingips        respjson.Field
+		Healthmonitors     respjson.Field
+		Heat               respjson.Field
+		Images             respjson.Field
+		InferenceInstances respjson.Field
+		Instances          respjson.Field
+		K8sClusters        respjson.Field
+		K8sPools           respjson.Field
+		L7polices          respjson.Field
+		L7rules            respjson.Field
+		LaasTopic          respjson.Field
+		Listeners          respjson.Field
+		Loadbalancers      respjson.Field
+		Members            respjson.Field
+		Networks           respjson.Field
+		Pools              respjson.Field
+		Ports              respjson.Field
+		PostgreSQLClusters respjson.Field
+		Projects           respjson.Field
+		RegistryRegistries respjson.Field
+		RegistryUsers      respjson.Field
+		Routers            respjson.Field
+		Secrets            respjson.Field
+		Servergroups       respjson.Field
+		Snapshots          respjson.Field
+		Subnets            respjson.Field
+		Volumes            respjson.Field
+		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // RegistryRepositoryService contains methods and other services that help with
@@ -99,16 +99,16 @@ type RegistryRepository struct {
 	RegistryID int64 `json:"registry_id,required"`
 	// Repository modification date-time
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID            resp.Field
-		ArtifactCount resp.Field
-		CreatedAt     resp.Field
-		Name          resp.Field
-		PullCount     resp.Field
-		RegistryID    resp.Field
-		UpdatedAt     resp.Field
-		ExtraFields   map[string]resp.Field
+		ID            respjson.Field
+		ArtifactCount respjson.Field
+		CreatedAt     respjson.Field
+		Name          respjson.Field
+		PullCount     respjson.Field
+		RegistryID    respjson.Field
+		UpdatedAt     respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
@@ -124,11 +124,11 @@ type RegistryRepositoryList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []RegistryRepository `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Count       resp.Field
-		Results     resp.Field
-		ExtraFields map[string]resp.Field
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }

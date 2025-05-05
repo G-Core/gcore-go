@@ -15,7 +15,7 @@ import (
 	"github.com/stainless-sdks/gcore-go/option"
 	"github.com/stainless-sdks/gcore-go/packages/pagination"
 	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/resp"
+	"github.com/stainless-sdks/gcore-go/packages/respjson"
 )
 
 // InferenceRegistryCredentialService contains methods and other services that help
@@ -160,13 +160,13 @@ type InferenceRegistryCredential struct {
 	RegistryURL string `json:"registry_url,required"`
 	// Registry username.
 	Username string `json:"username,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Name        resp.Field
-		ProjectID   resp.Field
-		RegistryURL resp.Field
-		Username    resp.Field
-		ExtraFields map[string]resp.Field
+		Name        respjson.Field
+		ProjectID   respjson.Field
+		RegistryURL respjson.Field
+		Username    respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -188,14 +188,14 @@ type InferenceRegistryCredentialFull struct {
 	RegistryURL string `json:"registry_url,required"`
 	// Registry username.
 	Username string `json:"username,required"`
-	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Name        resp.Field
-		Password    resp.Field
-		ProjectID   resp.Field
-		RegistryURL resp.Field
-		Username    resp.Field
-		ExtraFields map[string]resp.Field
+		Name        respjson.Field
+		Password    respjson.Field
+		ProjectID   respjson.Field
+		RegistryURL respjson.Field
+		Username    respjson.Field
+		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
