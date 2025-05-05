@@ -100,8 +100,7 @@ type RoleAssignment struct {
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// User ID
 	UserID int64 `json:"user_id,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID          resp.Field
 		AssignedBy  resp.Field
@@ -125,8 +124,7 @@ func (r *RoleAssignment) UnmarshalJSON(data []byte) error {
 type RoleAssignmentUpdateDelete struct {
 	// Assignment ID
 	AssignmentID int64 `json:"assignment_id,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		AssignmentID resp.Field
 		ExtraFields  map[string]resp.Field
@@ -152,10 +150,6 @@ type UserRoleAssignmentNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f UserRoleAssignmentNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r UserRoleAssignmentNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow UserRoleAssignmentNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -172,10 +166,6 @@ type UserRoleAssignmentUpdateParams struct {
 	ProjectID param.Opt[int64] `json:"project_id,omitzero"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f UserRoleAssignmentUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r UserRoleAssignmentUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow UserRoleAssignmentUpdateParams
@@ -194,10 +184,6 @@ type UserRoleAssignmentListParams struct {
 	UserID param.Opt[int64] `query:"user_id,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f UserRoleAssignmentListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [UserRoleAssignmentListParams]'s query parameters as
 // `url.Values`.

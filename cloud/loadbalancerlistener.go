@@ -43,11 +43,11 @@ func (r *LoadBalancerListenerService) New(ctx context.Context, params LoadBalanc
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -65,11 +65,11 @@ func (r *LoadBalancerListenerService) Update(ctx context.Context, listenerID str
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -91,11 +91,11 @@ func (r *LoadBalancerListenerService) List(ctx context.Context, params LoadBalan
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -113,11 +113,11 @@ func (r *LoadBalancerListenerService) Delete(ctx context.Context, listenerID str
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -139,11 +139,11 @@ func (r *LoadBalancerListenerService) Get(ctx context.Context, listenerID string
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -193,10 +193,6 @@ type LoadBalancerListenerNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerListenerNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r LoadBalancerListenerNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerListenerNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -211,11 +207,6 @@ type LoadBalancerListenerNewParamsUserList struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerListenerNewParamsUserList) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerListenerNewParamsUserList) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerListenerNewParamsUserList
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -247,10 +238,6 @@ type LoadBalancerListenerUpdateParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerListenerUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r LoadBalancerListenerUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerListenerUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -265,11 +252,6 @@ type LoadBalancerListenerUpdateParamsUserList struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerListenerUpdateParamsUserList) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerListenerUpdateParamsUserList) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerListenerUpdateParamsUserList
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -284,10 +266,6 @@ type LoadBalancerListenerListParams struct {
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerListenerListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [LoadBalancerListenerListParams]'s query parameters as
 // `url.Values`.
@@ -304,10 +282,6 @@ type LoadBalancerListenerDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerListenerDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type LoadBalancerListenerGetParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -315,10 +289,6 @@ type LoadBalancerListenerGetParams struct {
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerListenerGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [LoadBalancerListenerGetParams]'s query parameters as
 // `url.Values`.

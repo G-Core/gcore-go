@@ -41,11 +41,11 @@ func (r *LoadBalancerL7PolicyRuleService) New(ctx context.Context, l7policyID st
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -67,11 +67,11 @@ func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID s
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -93,11 +93,11 @@ func (r *LoadBalancerL7PolicyRuleService) Delete(ctx context.Context, l7ruleID s
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -123,11 +123,11 @@ func (r *LoadBalancerL7PolicyRuleService) Get(ctx context.Context, l7ruleID stri
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -153,11 +153,11 @@ func (r *LoadBalancerL7PolicyRuleService) Replace(ctx context.Context, l7ruleID 
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -199,12 +199,6 @@ type LoadBalancerL7PolicyRuleNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerL7PolicyRuleNewParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-
 func (r LoadBalancerL7PolicyRuleNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerL7PolicyRuleNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -241,12 +235,6 @@ type LoadBalancerL7PolicyRuleListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerL7PolicyRuleListParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-
 type LoadBalancerL7PolicyRuleDeleteParams struct {
 	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -254,23 +242,11 @@ type LoadBalancerL7PolicyRuleDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerL7PolicyRuleDeleteParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-
 type LoadBalancerL7PolicyRuleGetParams struct {
 	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	L7policyID string           `path:"l7policy_id,required" json:"-"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerL7PolicyRuleGetParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 type LoadBalancerL7PolicyRuleReplaceParams struct {
@@ -297,12 +273,6 @@ type LoadBalancerL7PolicyRuleReplaceParams struct {
 	// "SSL_CONN_HAS_CERT", "SSL_DN_FIELD", "SSL_VERIFY_RESULT".
 	Type LoadBalancerL7PolicyRuleReplaceParamsType `json:"type,omitzero"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerL7PolicyRuleReplaceParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 func (r LoadBalancerL7PolicyRuleReplaceParams) MarshalJSON() (data []byte, err error) {

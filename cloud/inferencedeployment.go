@@ -48,7 +48,7 @@ func (r *InferenceDeploymentService) New(ctx context.Context, params InferenceDe
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -65,7 +65,7 @@ func (r *InferenceDeploymentService) Update(ctx context.Context, deploymentName 
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -88,7 +88,7 @@ func (r *InferenceDeploymentService) List(ctx context.Context, params InferenceD
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -118,7 +118,7 @@ func (r *InferenceDeploymentService) Delete(ctx context.Context, deploymentName 
 		return
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -139,7 +139,7 @@ func (r *InferenceDeploymentService) Get(ctx context.Context, deploymentName str
 		return
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -160,7 +160,7 @@ func (r *InferenceDeploymentService) GetAPIKey(ctx context.Context, deploymentNa
 		return
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -189,7 +189,7 @@ func (r *InferenceDeploymentService) Start(ctx context.Context, deploymentName s
 		return
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -218,7 +218,7 @@ func (r *InferenceDeploymentService) Stop(ctx context.Context, deploymentName st
 		return
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -242,8 +242,7 @@ type Container struct {
 	RegionID int64 `json:"region_id,required"`
 	// Scale for the container
 	Scale ContainerScale `json:"scale,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Address      resp.Field
 		DeployStatus resp.Field
@@ -320,8 +319,7 @@ type Inference struct {
 	// `scale.min`. If set, this helps in optimizing resource usage by reducing the
 	// number of container instances during periods of inactivity.
 	Timeout int64 `json:"timeout,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Address         resp.Field
 		AuthEnabled     resp.Field
@@ -382,8 +380,7 @@ type InferenceApikeySecret struct {
 	//
 	// Any of "PENDING", "READY".
 	Status InferenceApikeySecretStatus `json:"status,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Secret      resp.Field
 		Status      resp.Field
@@ -415,8 +412,7 @@ type InferenceLog struct {
 	RegionID int64 `json:"region_id,required"`
 	// Log message timestamp in ISO 8601 format.
 	Time time.Time `json:"time,required" format:"date-time"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Message     resp.Field
 		Pod         resp.Field
@@ -478,10 +474,6 @@ type InferenceDeploymentNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r InferenceDeploymentNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -496,11 +488,6 @@ type InferenceDeploymentNewParamsContainer struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentNewParamsContainer) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentNewParamsContainer) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainer
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -523,11 +510,6 @@ type InferenceDeploymentNewParamsContainerScale struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentNewParamsContainerScale) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentNewParamsContainerScale) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainerScale
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -550,11 +532,6 @@ type InferenceDeploymentNewParamsContainerScaleTriggers struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentNewParamsContainerScaleTriggers) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentNewParamsContainerScaleTriggers) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggers
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -569,11 +546,6 @@ type InferenceDeploymentNewParamsContainerScaleTriggersCPU struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentNewParamsContainerScaleTriggersCPU) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentNewParamsContainerScaleTriggersCPU) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggersCPU
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -588,11 +560,6 @@ type InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -607,11 +574,6 @@ type InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -628,11 +590,6 @@ type InferenceDeploymentNewParamsContainerScaleTriggersHTTP struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentNewParamsContainerScaleTriggersHTTP) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentNewParamsContainerScaleTriggersHTTP) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggersHTTP
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -647,11 +604,6 @@ type InferenceDeploymentNewParamsContainerScaleTriggersMemory struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentNewParamsContainerScaleTriggersMemory) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentNewParamsContainerScaleTriggersMemory) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggersMemory
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -681,11 +633,6 @@ type InferenceDeploymentNewParamsContainerScaleTriggersSqs struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentNewParamsContainerScaleTriggersSqs) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentNewParamsContainerScaleTriggersSqs) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggersSqs
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -704,11 +651,6 @@ type InferenceDeploymentNewParamsLogging struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentNewParamsLogging) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentNewParamsLogging) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsLogging
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -727,11 +669,6 @@ type InferenceDeploymentNewParamsProbes struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentNewParamsProbes) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentNewParamsProbes) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsProbes
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -778,10 +715,6 @@ type InferenceDeploymentUpdateParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r InferenceDeploymentUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -796,11 +729,6 @@ type InferenceDeploymentUpdateParamsContainer struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentUpdateParamsContainer) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentUpdateParamsContainer) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainer
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -823,11 +751,6 @@ type InferenceDeploymentUpdateParamsContainerScale struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentUpdateParamsContainerScale) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentUpdateParamsContainerScale) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainerScale
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -850,11 +773,6 @@ type InferenceDeploymentUpdateParamsContainerScaleTriggers struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentUpdateParamsContainerScaleTriggers) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentUpdateParamsContainerScaleTriggers) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggers
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -869,11 +787,6 @@ type InferenceDeploymentUpdateParamsContainerScaleTriggersCPU struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentUpdateParamsContainerScaleTriggersCPU) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentUpdateParamsContainerScaleTriggersCPU) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggersCPU
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -888,11 +801,6 @@ type InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -907,11 +815,6 @@ type InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization struct 
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -928,11 +831,6 @@ type InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -947,11 +845,6 @@ type InferenceDeploymentUpdateParamsContainerScaleTriggersMemory struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentUpdateParamsContainerScaleTriggersMemory) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentUpdateParamsContainerScaleTriggersMemory) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggersMemory
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -981,11 +874,6 @@ type InferenceDeploymentUpdateParamsContainerScaleTriggersSqs struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentUpdateParamsContainerScaleTriggersSqs) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentUpdateParamsContainerScaleTriggersSqs) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggersSqs
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1004,11 +892,6 @@ type InferenceDeploymentUpdateParamsLogging struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentUpdateParamsLogging) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentUpdateParamsLogging) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsLogging
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1025,11 +908,6 @@ type InferenceDeploymentUpdateParamsProbes struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentUpdateParamsProbes) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InferenceDeploymentUpdateParamsProbes) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsProbes
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1046,10 +924,6 @@ type InferenceDeploymentListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [InferenceDeploymentListParams]'s query parameters as
 // `url.Values`.
 func (r InferenceDeploymentListParams) URLQuery() (v url.Values, err error) {
@@ -1065,30 +939,16 @@ type InferenceDeploymentDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type InferenceDeploymentGetParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type InferenceDeploymentGetAPIKeyParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentGetAPIKeyParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 type InferenceDeploymentStartParams struct {
@@ -1097,16 +957,8 @@ type InferenceDeploymentStartParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentStartParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type InferenceDeploymentStopParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentStopParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

@@ -45,7 +45,7 @@ func (r *InferenceDeploymentLogService) List(ctx context.Context, deploymentName
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -87,10 +87,6 @@ type InferenceDeploymentLogListParams struct {
 	OrderBy InferenceDeploymentLogListParamsOrderBy `query:"order_by,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InferenceDeploymentLogListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [InferenceDeploymentLogListParams]'s query parameters as
 // `url.Values`.

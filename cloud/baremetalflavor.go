@@ -45,11 +45,11 @@ func (r *BaremetalFlavorService) List(ctx context.Context, params BaremetalFlavo
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -67,11 +67,11 @@ func (r *BaremetalFlavorService) ListSuitable(ctx context.Context, params Bareme
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -99,10 +99,6 @@ type BaremetalFlavorListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalFlavorListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [BaremetalFlavorListParams]'s query parameters as
 // `url.Values`.
 func (r BaremetalFlavorListParams) URLQuery() (v url.Values, err error) {
@@ -122,12 +118,6 @@ type BaremetalFlavorListSuitableParams struct {
 	// Image ID
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalFlavorListSuitableParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 func (r BaremetalFlavorListSuitableParams) MarshalJSON() (data []byte, err error) {

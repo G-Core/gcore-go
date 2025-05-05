@@ -44,11 +44,11 @@ func (r *SecretService) New(ctx context.Context, params SecretNewParams, opts ..
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -66,11 +66,11 @@ func (r *SecretService) List(ctx context.Context, query SecretListParams, opts .
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -88,11 +88,11 @@ func (r *SecretService) Delete(ctx context.Context, secretID string, body Secret
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -114,11 +114,11 @@ func (r *SecretService) Get(ctx context.Context, secretID string, query SecretGe
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -140,11 +140,11 @@ func (r *SecretService) UploadTlsCertificate(ctx context.Context, params SecretU
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -187,8 +187,7 @@ type Secret struct {
 	// Metadata provided by a user or system for informational purposes. Defaults to
 	// None
 	Mode string `json:"mode,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID           resp.Field
 		Name         resp.Field
@@ -234,8 +233,7 @@ type SecretListResponse struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []Secret `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -291,10 +289,6 @@ type SecretNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecretNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r SecretNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecretNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -331,29 +325,17 @@ type SecretListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecretListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type SecretDeleteParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecretDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type SecretGetParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecretGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type SecretUploadTlsCertificateParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -366,10 +348,6 @@ type SecretUploadTlsCertificateParams struct {
 	Expiration param.Opt[time.Time] `json:"expiration,omitzero" format:"date-time"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecretUploadTlsCertificateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r SecretUploadTlsCertificateParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecretUploadTlsCertificateParams
@@ -389,11 +367,6 @@ type SecretUploadTlsCertificateParamsPayload struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecretUploadTlsCertificateParamsPayload) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r SecretUploadTlsCertificateParamsPayload) MarshalJSON() (data []byte, err error) {
 	type shadow SecretUploadTlsCertificateParamsPayload
 	return param.MarshalObject(r, (*shadow)(&r))

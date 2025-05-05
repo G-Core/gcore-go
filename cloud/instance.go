@@ -75,11 +75,11 @@ func (r *InstanceService) New(ctx context.Context, params InstanceNewParams, opt
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -97,11 +97,11 @@ func (r *InstanceService) Update(ctx context.Context, instanceID string, params 
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -125,11 +125,11 @@ func (r *InstanceService) List(ctx context.Context, params InstanceListParams, o
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -160,11 +160,11 @@ func (r *InstanceService) Delete(ctx context.Context, instanceID string, params 
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -187,11 +187,11 @@ func (r *InstanceService) Action(ctx context.Context, instanceID string, params 
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -213,11 +213,11 @@ func (r *InstanceService) AddToPlacementGroup(ctx context.Context, instanceID st
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -241,11 +241,11 @@ func (r *InstanceService) AssignSecurityGroup(ctx context.Context, instanceID st
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -267,11 +267,11 @@ func (r *InstanceService) DisablePortSecurity(ctx context.Context, portID string
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -293,11 +293,11 @@ func (r *InstanceService) EnablePortSecurity(ctx context.Context, portID string,
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -325,11 +325,11 @@ func (r *InstanceService) Get(ctx context.Context, instanceID string, query Inst
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -351,11 +351,11 @@ func (r *InstanceService) GetConsole(ctx context.Context, instanceID string, par
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -377,11 +377,11 @@ func (r *InstanceService) RemoveFromPlacementGroup(ctx context.Context, instance
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -403,11 +403,11 @@ func (r *InstanceService) Resize(ctx context.Context, instanceID string, params 
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -431,11 +431,11 @@ func (r *InstanceService) UnassignSecurityGroup(ctx context.Context, instanceID 
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -467,8 +467,7 @@ type InstanceInterface struct {
 	InterfaceName string `json:"interface_name,nullable"`
 	// MAC address of the virtual port
 	MacAddress string `json:"mac_address,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		AllowedAddressPairs resp.Field
 		FloatingipDetails   resp.Field
@@ -557,10 +556,6 @@ type InstanceNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r InstanceNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -577,9 +572,6 @@ type InstanceNewParamsInterfaceUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u InstanceNewParamsInterfaceUnion) IsPresent() bool { return !param.IsOmitted(u) && !u.IsNull() }
 func (u InstanceNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
 }
@@ -607,7 +599,7 @@ func (u InstanceNewParamsInterfaceUnion) GetSubnetID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsInterfaceUnion) GetIPAddress() *string {
-	if vt := u.OfAnySubnet; vt != nil && vt.IPAddress.IsPresent() {
+	if vt := u.OfAnySubnet; vt != nil && vt.IPAddress.Valid() {
 		return &vt.IPAddress.Value
 	}
 	return nil
@@ -637,13 +629,13 @@ func (u InstanceNewParamsInterfaceUnion) GetType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsInterfaceUnion) GetInterfaceName() *string {
-	if vt := u.OfExternal; vt != nil && vt.InterfaceName.IsPresent() {
+	if vt := u.OfExternal; vt != nil && vt.InterfaceName.Valid() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfSubnet; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfSubnet; vt != nil && vt.InterfaceName.Valid() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfAnySubnet; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfAnySubnet; vt != nil && vt.InterfaceName.Valid() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfReservedFixedIP; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfReservedFixedIP; vt != nil && vt.InterfaceName.Valid() {
 		return &vt.InterfaceName.Value
 	}
 	return nil
@@ -811,11 +803,6 @@ type InstanceNewParamsInterfaceExternal struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceExternal) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceExternal) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceExternal
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -828,11 +815,6 @@ type InstanceNewParamsInterfaceExternalSecurityGroup struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceExternalSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceExternalSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceExternalSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -864,9 +846,6 @@ type InstanceNewParamsInterfaceSubnet struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceSubnet) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r InstanceNewParamsInterfaceSubnet) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceSubnet
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -881,11 +860,6 @@ type InstanceNewParamsInterfaceSubnetFloatingIPUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
 func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceNewParamsInterfaceSubnetFloatingIPUnion](u.OfNew, u.OfExisting)
 }
@@ -950,11 +924,6 @@ type InstanceNewParamsInterfaceSubnetFloatingIPNew struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceSubnetFloatingIPNew) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceSubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -975,11 +944,6 @@ type InstanceNewParamsInterfaceSubnetFloatingIPExisting struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceSubnetFloatingIPExisting) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceSubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceSubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -992,11 +956,6 @@ type InstanceNewParamsInterfaceSubnetSecurityGroup struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceSubnetSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceSubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceSubnetSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1026,11 +985,6 @@ type InstanceNewParamsInterfaceAnySubnet struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceAnySubnet) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceAnySubnet) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1045,11 +999,6 @@ type InstanceNewParamsInterfaceAnySubnetFloatingIPUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
 func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceNewParamsInterfaceAnySubnetFloatingIPUnion](u.OfNew, u.OfExisting)
 }
@@ -1114,11 +1063,6 @@ type InstanceNewParamsInterfaceAnySubnetFloatingIPNew struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceAnySubnetFloatingIPNew) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceAnySubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1139,11 +1083,6 @@ type InstanceNewParamsInterfaceAnySubnetFloatingIPExisting struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceAnySubnetFloatingIPExisting) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceAnySubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceAnySubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1156,11 +1095,6 @@ type InstanceNewParamsInterfaceAnySubnetSecurityGroup struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceAnySubnetSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceAnySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceAnySubnetSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1187,11 +1121,6 @@ type InstanceNewParamsInterfaceReservedFixedIP struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceReservedFixedIP) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceReservedFixedIP) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceReservedFixedIP
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1206,11 +1135,6 @@ type InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
 func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion](u.OfNew, u.OfExisting)
 }
@@ -1275,11 +1199,6 @@ type InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1300,11 +1219,6 @@ type InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1317,11 +1231,6 @@ type InstanceNewParamsInterfaceReservedFixedIPSecurityGroup struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsInterfaceReservedFixedIPSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsInterfaceReservedFixedIPSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceReservedFixedIPSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1339,9 +1248,6 @@ type InstanceNewParamsVolumeUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u InstanceNewParamsVolumeUnion) IsPresent() bool { return !param.IsOmitted(u) && !u.IsNull() }
 func (u InstanceNewParamsVolumeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceNewParamsVolumeUnion](u.OfNewVolume,
 		u.OfImage,
@@ -1401,11 +1307,11 @@ func (u InstanceNewParamsVolumeUnion) GetVolumeID() *string {
 func (u InstanceNewParamsVolumeUnion) GetSize() *int64 {
 	if vt := u.OfNewVolume; vt != nil {
 		return (*int64)(&vt.Size)
-	} else if vt := u.OfImage; vt != nil && vt.Size.IsPresent() {
+	} else if vt := u.OfImage; vt != nil && vt.Size.Valid() {
 		return &vt.Size.Value
 	} else if vt := u.OfSnapshot; vt != nil {
 		return (*int64)(&vt.Size)
-	} else if vt := u.OfApptemplate; vt != nil && vt.Size.IsPresent() {
+	} else if vt := u.OfApptemplate; vt != nil && vt.Size.Valid() {
 		return &vt.Size.Value
 	}
 	return nil
@@ -1429,15 +1335,15 @@ func (u InstanceNewParamsVolumeUnion) GetSource() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsVolumeUnion) GetAttachmentTag() *string {
-	if vt := u.OfNewVolume; vt != nil && vt.AttachmentTag.IsPresent() {
+	if vt := u.OfNewVolume; vt != nil && vt.AttachmentTag.Valid() {
 		return &vt.AttachmentTag.Value
-	} else if vt := u.OfImage; vt != nil && vt.AttachmentTag.IsPresent() {
+	} else if vt := u.OfImage; vt != nil && vt.AttachmentTag.Valid() {
 		return &vt.AttachmentTag.Value
-	} else if vt := u.OfSnapshot; vt != nil && vt.AttachmentTag.IsPresent() {
+	} else if vt := u.OfSnapshot; vt != nil && vt.AttachmentTag.Valid() {
 		return &vt.AttachmentTag.Value
-	} else if vt := u.OfApptemplate; vt != nil && vt.AttachmentTag.IsPresent() {
+	} else if vt := u.OfApptemplate; vt != nil && vt.AttachmentTag.Valid() {
 		return &vt.AttachmentTag.Value
-	} else if vt := u.OfExistingVolume; vt != nil && vt.AttachmentTag.IsPresent() {
+	} else if vt := u.OfExistingVolume; vt != nil && vt.AttachmentTag.Valid() {
 		return &vt.AttachmentTag.Value
 	}
 	return nil
@@ -1445,15 +1351,15 @@ func (u InstanceNewParamsVolumeUnion) GetAttachmentTag() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsVolumeUnion) GetDeleteOnTermination() *bool {
-	if vt := u.OfNewVolume; vt != nil && vt.DeleteOnTermination.IsPresent() {
+	if vt := u.OfNewVolume; vt != nil && vt.DeleteOnTermination.Valid() {
 		return &vt.DeleteOnTermination.Value
-	} else if vt := u.OfImage; vt != nil && vt.DeleteOnTermination.IsPresent() {
+	} else if vt := u.OfImage; vt != nil && vt.DeleteOnTermination.Valid() {
 		return &vt.DeleteOnTermination.Value
-	} else if vt := u.OfSnapshot; vt != nil && vt.DeleteOnTermination.IsPresent() {
+	} else if vt := u.OfSnapshot; vt != nil && vt.DeleteOnTermination.Valid() {
 		return &vt.DeleteOnTermination.Value
-	} else if vt := u.OfApptemplate; vt != nil && vt.DeleteOnTermination.IsPresent() {
+	} else if vt := u.OfApptemplate; vt != nil && vt.DeleteOnTermination.Valid() {
 		return &vt.DeleteOnTermination.Value
-	} else if vt := u.OfExistingVolume; vt != nil && vt.DeleteOnTermination.IsPresent() {
+	} else if vt := u.OfExistingVolume; vt != nil && vt.DeleteOnTermination.Valid() {
 		return &vt.DeleteOnTermination.Value
 	}
 	return nil
@@ -1461,13 +1367,13 @@ func (u InstanceNewParamsVolumeUnion) GetDeleteOnTermination() *bool {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsVolumeUnion) GetName() *string {
-	if vt := u.OfNewVolume; vt != nil && vt.Name.IsPresent() {
+	if vt := u.OfNewVolume; vt != nil && vt.Name.Valid() {
 		return &vt.Name.Value
-	} else if vt := u.OfImage; vt != nil && vt.Name.IsPresent() {
+	} else if vt := u.OfImage; vt != nil && vt.Name.Valid() {
 		return &vt.Name.Value
-	} else if vt := u.OfSnapshot; vt != nil && vt.Name.IsPresent() {
+	} else if vt := u.OfSnapshot; vt != nil && vt.Name.Valid() {
 		return &vt.Name.Value
-	} else if vt := u.OfApptemplate; vt != nil && vt.Name.IsPresent() {
+	} else if vt := u.OfApptemplate; vt != nil && vt.Name.Valid() {
 		return &vt.Name.Value
 	}
 	return nil
@@ -1489,13 +1395,13 @@ func (u InstanceNewParamsVolumeUnion) GetTypeName() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InstanceNewParamsVolumeUnion) GetBootIndex() *int64 {
-	if vt := u.OfImage; vt != nil && vt.BootIndex.IsPresent() {
+	if vt := u.OfImage; vt != nil && vt.BootIndex.Valid() {
 		return &vt.BootIndex.Value
-	} else if vt := u.OfSnapshot; vt != nil && vt.BootIndex.IsPresent() {
+	} else if vt := u.OfSnapshot; vt != nil && vt.BootIndex.Valid() {
 		return &vt.BootIndex.Value
-	} else if vt := u.OfApptemplate; vt != nil && vt.BootIndex.IsPresent() {
+	} else if vt := u.OfApptemplate; vt != nil && vt.BootIndex.Valid() {
 		return &vt.BootIndex.Value
-	} else if vt := u.OfExistingVolume; vt != nil && vt.BootIndex.IsPresent() {
+	} else if vt := u.OfExistingVolume; vt != nil && vt.BootIndex.Valid() {
 		return &vt.BootIndex.Value
 	}
 	return nil
@@ -1586,9 +1492,6 @@ type InstanceNewParamsVolumeNewVolume struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsVolumeNewVolume) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r InstanceNewParamsVolumeNewVolume) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsVolumeNewVolume
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1648,9 +1551,6 @@ type InstanceNewParamsVolumeImage struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsVolumeImage) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r InstanceNewParamsVolumeImage) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsVolumeImage
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1697,9 +1597,6 @@ type InstanceNewParamsVolumeSnapshot struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsVolumeSnapshot) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r InstanceNewParamsVolumeSnapshot) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsVolumeSnapshot
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1755,11 +1652,6 @@ type InstanceNewParamsVolumeApptemplate struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsVolumeApptemplate) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsVolumeApptemplate) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsVolumeApptemplate
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1796,11 +1688,6 @@ type InstanceNewParamsVolumeExistingVolume struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsVolumeExistingVolume) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceNewParamsVolumeExistingVolume) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsVolumeExistingVolume
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1813,9 +1700,6 @@ type InstanceNewParamsSecurityGroup struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsSecurityGroup) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r InstanceNewParamsSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1830,10 +1714,6 @@ type InstanceUpdateParams struct {
 	Name string `json:"name,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r InstanceUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceUpdateParams
@@ -1922,10 +1802,6 @@ type InstanceListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [InstanceListParams]'s query parameters as `url.Values`.
 func (r InstanceListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
@@ -2003,10 +1879,6 @@ type InstanceDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [InstanceDeleteParams]'s query parameters as `url.Values`.
 func (r InstanceDeleteParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
@@ -2031,10 +1903,6 @@ type InstanceActionParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceActionParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (u InstanceActionParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceActionParams](u.OfStartActionInstanceSerializer, u.OfBasicActionInstanceSerializer)
 }
@@ -2050,11 +1918,6 @@ type InstanceActionParamsBodyStartActionInstanceSerializer struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceActionParamsBodyStartActionInstanceSerializer) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceActionParamsBodyStartActionInstanceSerializer) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceActionParamsBodyStartActionInstanceSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -2069,11 +1932,6 @@ type InstanceActionParamsBodyBasicActionInstanceSerializer struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceActionParamsBodyBasicActionInstanceSerializer) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceActionParamsBodyBasicActionInstanceSerializer) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceActionParamsBodyBasicActionInstanceSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -2093,12 +1951,6 @@ type InstanceAddToPlacementGroupParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceAddToPlacementGroupParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-
 func (r InstanceAddToPlacementGroupParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceAddToPlacementGroupParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -2112,12 +1964,6 @@ type InstanceAssignSecurityGroupParams struct {
 	// Port security groups mapping
 	PortsSecurityGroupNames []InstanceAssignSecurityGroupParamsPortsSecurityGroupName `json:"ports_security_group_names,omitzero"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceAssignSecurityGroupParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 func (r InstanceAssignSecurityGroupParams) MarshalJSON() (data []byte, err error) {
@@ -2136,11 +1982,6 @@ type InstanceAssignSecurityGroupParamsPortsSecurityGroupName struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceAssignSecurityGroupParamsPortsSecurityGroupName) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceAssignSecurityGroupParamsPortsSecurityGroupName) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceAssignSecurityGroupParamsPortsSecurityGroupName
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -2152,21 +1993,11 @@ type InstanceDisablePortSecurityParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceDisablePortSecurityParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-
 type InstanceEnablePortSecurityParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceEnablePortSecurityParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type InstanceGetParams struct {
 	// Project ID
@@ -2176,10 +2007,6 @@ type InstanceGetParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type InstanceGetConsoleParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -2187,10 +2014,6 @@ type InstanceGetConsoleParams struct {
 	ConsoleType param.Opt[string] `query:"console_type,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceGetConsoleParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [InstanceGetConsoleParams]'s query parameters as
 // `url.Values`.
@@ -2207,12 +2030,6 @@ type InstanceRemoveFromPlacementGroupParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceRemoveFromPlacementGroupParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-
 type InstanceResizeParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -2220,10 +2037,6 @@ type InstanceResizeParams struct {
 	FlavorID string `json:"flavor_id,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceResizeParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r InstanceResizeParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceResizeParams
@@ -2238,12 +2051,6 @@ type InstanceUnassignSecurityGroupParams struct {
 	// Port security groups mapping
 	PortsSecurityGroupNames []InstanceUnassignSecurityGroupParamsPortsSecurityGroupName `json:"ports_security_group_names,omitzero"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceUnassignSecurityGroupParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 func (r InstanceUnassignSecurityGroupParams) MarshalJSON() (data []byte, err error) {
@@ -2262,11 +2069,6 @@ type InstanceUnassignSecurityGroupParamsPortsSecurityGroupName struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceUnassignSecurityGroupParamsPortsSecurityGroupName) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r InstanceUnassignSecurityGroupParamsPortsSecurityGroupName) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceUnassignSecurityGroupParamsPortsSecurityGroupName
 	return param.MarshalObject(r, (*shadow)(&r))

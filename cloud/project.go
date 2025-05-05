@@ -78,7 +78,7 @@ func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, o
 		return
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -95,7 +95,7 @@ func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts .
 		return
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -112,7 +112,7 @@ func (r *ProjectService) Replace(ctx context.Context, params ProjectReplaceParam
 		return
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
@@ -144,8 +144,7 @@ type Project struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID          resp.Field
 		ClientID    resp.Field
@@ -179,10 +178,6 @@ type ProjectNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ProjectNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r ProjectNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow ProjectNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -205,10 +200,6 @@ type ProjectListParams struct {
 	OrderBy ProjectListParamsOrderBy `query:"order_by,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ProjectListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [ProjectListParams]'s query parameters as `url.Values`.
 func (r ProjectListParams) URLQuery() (v url.Values, err error) {
@@ -233,18 +224,10 @@ type ProjectDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ProjectDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type ProjectGetParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ProjectGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type ProjectReplaceParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -254,10 +237,6 @@ type ProjectReplaceParams struct {
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ProjectReplaceParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r ProjectReplaceParams) MarshalJSON() (data []byte, err error) {
 	type shadow ProjectReplaceParams

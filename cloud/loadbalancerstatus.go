@@ -41,11 +41,11 @@ func (r *LoadBalancerStatusService) List(ctx context.Context, query LoadBalancer
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -63,11 +63,11 @@ func (r *LoadBalancerStatusService) Get(ctx context.Context, loadbalancerID stri
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -86,16 +86,8 @@ type LoadBalancerStatusListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerStatusListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type LoadBalancerStatusGetParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerStatusGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

@@ -59,11 +59,11 @@ func (r *GPUBaremetalClusterService) New(ctx context.Context, params GPUBaremeta
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -83,11 +83,11 @@ func (r *GPUBaremetalClusterService) List(ctx context.Context, params GPUBaremet
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -118,11 +118,11 @@ func (r *GPUBaremetalClusterService) Delete(ctx context.Context, clusterID strin
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -144,11 +144,11 @@ func (r *GPUBaremetalClusterService) Get(ctx context.Context, clusterID string, 
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -170,11 +170,11 @@ func (r *GPUBaremetalClusterService) PowercycleAllServers(ctx context.Context, c
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -196,11 +196,11 @@ func (r *GPUBaremetalClusterService) RebootAllServers(ctx context.Context, clust
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -222,11 +222,11 @@ func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID stri
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -248,11 +248,11 @@ func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID strin
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -321,8 +321,7 @@ type GPUBaremetalCluster struct {
 	// A name of a new user in the Linux instance. It may be passed with a 'password'
 	// parameter
 	Username string `json:"username,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ClusterID     resp.Field
 		ClusterName   resp.Field
@@ -374,8 +373,7 @@ type GPUBaremetalClusterInterface struct {
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
 	// Network type
 	Type string `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		NetworkID   resp.Field
 		PortID      resp.Field
@@ -467,8 +465,7 @@ type GPUBaremetalClusterServer struct {
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
 	VmState GPUBaremetalClusterServerVmState `json:"vm_state,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                  resp.Field
 		Addresses           resp.Field
@@ -553,8 +550,7 @@ type GPUBaremetalClusterServerFixedIPAssignment struct {
 	IPAddress string `json:"ip_address,required"`
 	// Interface subnet id
 	SubnetID string `json:"subnet_id,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		External    resp.Field
 		IPAddress   resp.Field
@@ -588,8 +584,7 @@ type GPUBaremetalClusterServerFlavor struct {
 	ResourceClass string `json:"resource_class,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Architecture        resp.Field
 		FlavorID            resp.Field
@@ -624,8 +619,7 @@ type GPUBaremetalClusterServerFlavorHardwareDescription struct {
 	Network string `json:"network,required"`
 	// Human-readable RAM description
 	Ram string `json:"ram,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		CPU         resp.Field
 		Disk        resp.Field
@@ -647,8 +641,7 @@ func (r *GPUBaremetalClusterServerFlavorHardwareDescription) UnmarshalJSON(data 
 type GPUBaremetalClusterServerSecurityGroup struct {
 	// Name.
 	Name string `json:"name,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Name        resp.Field
 		ExtraFields map[string]resp.Field
@@ -711,8 +704,7 @@ type GPUBaremetalClusterServerList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []GPUBaremetalClusterServer `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -838,8 +830,7 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice struct {
 	HardwareProperties GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties `json:"hardware_properties,required"`
 	// Flavor name
 	Name string `json:"name,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Architecture        resp.Field
 		Capacity            resp.Field
@@ -870,8 +861,7 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareDescription s
 	Network string `json:"network,required"`
 	// Human-readable RAM description
 	Ram string `json:"ram,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		CPU         resp.Field
 		Disk        resp.Field
@@ -899,8 +889,7 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties st
 	GPUManufacturer string `json:"gpu_manufacturer,required"`
 	// GPU model
 	GPUModel string `json:"gpu_model,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		GPUCount        resp.Field
 		GPUManufacturer resp.Field
@@ -933,8 +922,7 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice struct {
 	Name string `json:"name,required"`
 	// Flavor price
 	Price GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice `json:"price,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Architecture        resp.Field
 		Capacity            resp.Field
@@ -966,8 +954,7 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareDescription stru
 	Network string `json:"network,required"`
 	// Human-readable RAM description
 	Ram string `json:"ram,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		CPU         resp.Field
 		Disk        resp.Field
@@ -995,8 +982,7 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties struc
 	GPUManufacturer string `json:"gpu_manufacturer,required"`
 	// GPU model
 	GPUModel string `json:"gpu_model,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		GPUCount        resp.Field
 		GPUManufacturer resp.Field
@@ -1026,8 +1012,7 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice struct {
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus string `json:"price_status,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		CurrencyCode  resp.Field
 		PricePerHour  resp.Field
@@ -1049,8 +1034,7 @@ type GPUBaremetalFlavorList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []GPUBaremetalFlavorUnion `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -1091,10 +1075,6 @@ type GPUBaremetalClusterNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r GPUBaremetalClusterNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1110,11 +1090,6 @@ type GPUBaremetalClusterNewParamsInterfaceUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u GPUBaremetalClusterNewParamsInterfaceUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet)
 }
@@ -1140,7 +1115,7 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetSubnetID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetIPAddress() *string {
-	if vt := u.OfAnySubnet; vt != nil && vt.IPAddress.IsPresent() {
+	if vt := u.OfAnySubnet; vt != nil && vt.IPAddress.Valid() {
 		return &vt.IPAddress.Value
 	}
 	return nil
@@ -1160,11 +1135,11 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetInterfaceName() *string {
-	if vt := u.OfExternal; vt != nil && vt.InterfaceName.IsPresent() {
+	if vt := u.OfExternal; vt != nil && vt.InterfaceName.Valid() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfSubnet; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfSubnet; vt != nil && vt.InterfaceName.Valid() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfAnySubnet; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfAnySubnet; vt != nil && vt.InterfaceName.Valid() {
 		return &vt.InterfaceName.Value
 	}
 	return nil
@@ -1265,11 +1240,6 @@ type GPUBaremetalClusterNewParamsInterfaceExternal struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceExternal) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r GPUBaremetalClusterNewParamsInterfaceExternal) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterNewParamsInterfaceExternal
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1295,11 +1265,6 @@ type GPUBaremetalClusterNewParamsInterfaceSubnet struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceSubnet) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r GPUBaremetalClusterNewParamsInterfaceSubnet) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterNewParamsInterfaceSubnet
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1320,11 +1285,6 @@ type GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1352,11 +1312,6 @@ type GPUBaremetalClusterNewParamsInterfaceAnySubnet struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceAnySubnet) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r GPUBaremetalClusterNewParamsInterfaceAnySubnet) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterNewParamsInterfaceAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1377,11 +1332,6 @@ type GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1396,10 +1346,6 @@ type GPUBaremetalClusterListParams struct {
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 // URLQuery serializes [GPUBaremetalClusterListParams]'s query parameters as
 // `url.Values`.
@@ -1424,10 +1370,6 @@ type GPUBaremetalClusterDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [GPUBaremetalClusterDeleteParams]'s query parameters as
 // `url.Values`.
 func (r GPUBaremetalClusterDeleteParams) URLQuery() (v url.Values, err error) {
@@ -1443,32 +1385,16 @@ type GPUBaremetalClusterGetParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type GPUBaremetalClusterPowercycleAllServersParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterPowercycleAllServersParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-
 type GPUBaremetalClusterRebootAllServersParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterRebootAllServersParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 type GPUBaremetalClusterRebuildParams struct {
@@ -1484,10 +1410,6 @@ type GPUBaremetalClusterRebuildParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterRebuildParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r GPUBaremetalClusterRebuildParams) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterRebuildParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1500,10 +1422,6 @@ type GPUBaremetalClusterResizeParams struct {
 	InstancesCount int64 `json:"instances_count,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterResizeParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r GPUBaremetalClusterResizeParams) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterResizeParams

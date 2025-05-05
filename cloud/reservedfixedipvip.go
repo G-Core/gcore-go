@@ -43,11 +43,11 @@ func (r *ReservedFixedIPVipService) ListCandidatePorts(ctx context.Context, port
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -69,11 +69,11 @@ func (r *ReservedFixedIPVipService) ListConnectedPorts(ctx context.Context, port
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -95,11 +95,11 @@ func (r *ReservedFixedIPVipService) ReplaceConnectedPorts(ctx context.Context, p
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -121,11 +121,11 @@ func (r *ReservedFixedIPVipService) Toggle(ctx context.Context, portID string, p
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -147,11 +147,11 @@ func (r *ReservedFixedIPVipService) UpdateConnectedPorts(ctx context.Context, po
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -175,8 +175,7 @@ type CandidatePort struct {
 	Network Network `json:"network,required"`
 	// Port ID that shares VIP
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		InstanceID    resp.Field
 		InstanceName  resp.Field
@@ -199,8 +198,7 @@ type CandidatePortList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []CandidatePort `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -226,8 +224,7 @@ type ConnectedPort struct {
 	Network Network `json:"network,required"`
 	// Port ID that shares VIP
 	PortID string `json:"port_id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		InstanceID    resp.Field
 		InstanceName  resp.Field
@@ -250,8 +247,7 @@ type ConnectedPortList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []ConnectedPort `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -273,8 +269,7 @@ type IPWithSubnet struct {
 	Subnet Subnet `json:"subnet,required"`
 	// ID of the subnet that allocated the IP
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		IPAddress   resp.Field
 		Subnet      resp.Field
@@ -296,22 +291,10 @@ type ReservedFixedIPVipListCandidatePortsParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPVipListCandidatePortsParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-
 type ReservedFixedIPVipListConnectedPortsParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPVipListConnectedPortsParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 type ReservedFixedIPVipReplaceConnectedPortsParams struct {
@@ -320,12 +303,6 @@ type ReservedFixedIPVipReplaceConnectedPortsParams struct {
 	// List of port IDs that will share one VIP
 	PortIDs []string `json:"port_ids,omitzero" format:"uuid4"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPVipReplaceConnectedPortsParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 func (r ReservedFixedIPVipReplaceConnectedPortsParams) MarshalJSON() (data []byte, err error) {
@@ -341,10 +318,6 @@ type ReservedFixedIPVipToggleParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPVipToggleParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r ReservedFixedIPVipToggleParams) MarshalJSON() (data []byte, err error) {
 	type shadow ReservedFixedIPVipToggleParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -356,12 +329,6 @@ type ReservedFixedIPVipUpdateConnectedPortsParams struct {
 	// List of port IDs that will share one VIP
 	PortIDs []string `json:"port_ids,omitzero" format:"uuid4"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f ReservedFixedIPVipUpdateConnectedPortsParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }
 
 func (r ReservedFixedIPVipUpdateConnectedPortsParams) MarshalJSON() (data []byte, err error) {

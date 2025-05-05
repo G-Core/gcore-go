@@ -44,11 +44,11 @@ func (r *RegistryUserService) New(ctx context.Context, registryID int64, params 
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -66,11 +66,11 @@ func (r *RegistryUserService) Update(ctx context.Context, userID int64, params R
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -88,11 +88,11 @@ func (r *RegistryUserService) List(ctx context.Context, registryID int64, query 
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -111,11 +111,11 @@ func (r *RegistryUserService) Delete(ctx context.Context, userID int64, body Reg
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -133,11 +133,11 @@ func (r *RegistryUserService) NewMultiple(ctx context.Context, registryID int64,
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -156,11 +156,11 @@ func (r *RegistryUserService) RefreshSecret(ctx context.Context, userID int64, b
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -182,8 +182,7 @@ type RegistryUser struct {
 	Name string `json:"name,required"`
 	// Read-only user
 	ReadOnly bool `json:"read_only"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID          resp.Field
 		CreatedAt   resp.Field
@@ -217,8 +216,7 @@ type RegistryUserCreated struct {
 	ReadOnly bool `json:"read_only"`
 	// User secret
 	Secret string `json:"secret"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID          resp.Field
 		CreatedAt   resp.Field
@@ -243,8 +241,7 @@ type RegistryUserList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []RegistryUser `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -277,10 +274,6 @@ type RegistryUserNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegistryUserNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r RegistryUserNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow RegistryUserNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -297,10 +290,6 @@ type RegistryUserUpdateParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegistryUserUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r RegistryUserUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow RegistryUserUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -312,20 +301,12 @@ type RegistryUserListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegistryUserListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type RegistryUserDeleteParams struct {
 	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	RegistryID int64            `path:"registry_id,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegistryUserDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type RegistryUserNewMultipleParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -334,10 +315,6 @@ type RegistryUserNewMultipleParams struct {
 	Users []RegistryUserNewMultipleParamsUser `json:"users,omitzero,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegistryUserNewMultipleParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r RegistryUserNewMultipleParams) MarshalJSON() (data []byte, err error) {
 	type shadow RegistryUserNewMultipleParams
@@ -361,11 +338,6 @@ type RegistryUserNewMultipleParamsUser struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegistryUserNewMultipleParamsUser) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r RegistryUserNewMultipleParamsUser) MarshalJSON() (data []byte, err error) {
 	type shadow RegistryUserNewMultipleParamsUser
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -377,7 +349,3 @@ type RegistryUserRefreshSecretParams struct {
 	RegistryID int64            `path:"registry_id,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegistryUserRefreshSecretParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

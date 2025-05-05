@@ -274,7 +274,7 @@ func TestInstanceAssignSecurityGroupWithOptionalParams(t *testing.T) {
 			RegionID:  gcore.Int(0),
 			Name:      gcore.String("some_name"),
 			PortsSecurityGroupNames: []cloud.InstanceAssignSecurityGroupParamsPortsSecurityGroupName{{
-				PortID:             param.NullOpt[string](),
+				PortID:             param.Null[string](),
 				SecurityGroupNames: []string{"some_name"},
 			}, {
 				PortID:             gcore.String("ee2402d0-f0cd-4503-9b75-69be1d11c5f1"),
@@ -487,7 +487,7 @@ func TestInstanceUnassignSecurityGroupWithOptionalParams(t *testing.T) {
 			RegionID:  gcore.Int(0),
 			Name:      gcore.String("some_name"),
 			PortsSecurityGroupNames: []cloud.InstanceUnassignSecurityGroupParamsPortsSecurityGroupName{{
-				PortID:             param.NullOpt[string](),
+				PortID:             param.Null[string](),
 				SecurityGroupNames: []string{"some_name"},
 			}, {
 				PortID:             gcore.String("ee2402d0-f0cd-4503-9b75-69be1d11c5f1"),

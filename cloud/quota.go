@@ -52,7 +52,7 @@ func (r *QuotaService) GetByRegion(ctx context.Context, query QuotaGetByRegionPa
 		return
 	}
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -74,8 +74,7 @@ type QuotaGetAllResponse struct {
 	GlobalQuotas QuotaGetAllResponseGlobalQuotas `json:"global_quotas"`
 	// Regional entity quotas. Only contains initialized quotas.
 	RegionalQuotas []QuotaGetAllResponseRegionalQuota `json:"regional_quotas"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		GlobalQuotas   resp.Field
 		RegionalQuotas resp.Field
@@ -120,8 +119,7 @@ type QuotaGetAllResponseGlobalQuotas struct {
 	ProjectCountLimit int64 `json:"project_count_limit"`
 	// Projects Count usage
 	ProjectCountUsage int64 `json:"project_count_usage"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		InferenceCPUMillicoreCountLimit resp.Field
 		InferenceCPUMillicoreCountUsage resp.Field
@@ -335,8 +333,7 @@ type QuotaGetAllResponseRegionalQuota struct {
 	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit"`
 	// Snapshots Size, GiB usage
 	VolumeSnapshotsSizeUsage int64 `json:"volume_snapshots_size_usage"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		BaremetalBasicCountLimit          resp.Field
 		BaremetalBasicCountUsage          resp.Field
@@ -629,8 +626,7 @@ type QuotaGetByRegionResponse struct {
 	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit"`
 	// Snapshots Size, GiB usage
 	VolumeSnapshotsSizeUsage int64 `json:"volume_snapshots_size_usage"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		BaremetalBasicCountLimit          resp.Field
 		BaremetalBasicCountUsage          resp.Field
@@ -765,8 +761,7 @@ type QuotaGetGlobalResponse struct {
 	ProjectCountLimit int64 `json:"project_count_limit"`
 	// Projects Count usage
 	ProjectCountUsage int64 `json:"project_count_usage"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		InferenceCPUMillicoreCountLimit resp.Field
 		InferenceCPUMillicoreCountUsage resp.Field
@@ -800,7 +795,3 @@ type QuotaGetByRegionParams struct {
 	ClientID int64 `path:"client_id,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f QuotaGetByRegionParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

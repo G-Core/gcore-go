@@ -72,7 +72,7 @@ func TestInstanceInterfaceAttachWithOptionalParams(t *testing.T) {
 							"0": 45046,
 							"1": 45047,
 						},
-						Value: param.NullOpt[string](),
+						Value: param.Null[string](),
 					}},
 					ProfileTemplateName: gcore.String("profile_template_name"),
 				},

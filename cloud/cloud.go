@@ -81,8 +81,7 @@ type AllowedAddressPairs struct {
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	// MAC address of the port specified in allowed_address_pairs
 	MacAddress string `json:"mac_address,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		IPAddress   resp.Field
 		MacAddress  resp.Field
@@ -132,8 +131,7 @@ type BaremetalFlavor struct {
 	// Count of reserved but not used nodes. If a client don't have reservations for
 	// the flavor, it's None.
 	ReservedInStock int64 `json:"reserved_in_stock,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Architecture        resp.Field
 		Disabled            resp.Field
@@ -175,8 +173,7 @@ type BaremetalFlavorList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []BaremetalFlavor `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -212,8 +209,7 @@ type BlackholePort struct {
 	// Notification destination IP address
 	DestinationIP string `json:"DestinationIP,required"`
 	ID            int64  `json:"ID,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		AlarmEnd      resp.Field
 		AlarmStart    resp.Field
@@ -277,8 +273,7 @@ const (
 type Console struct {
 	// Remote console information
 	RemoteConsole ConsoleRemoteConsole `json:"remote_console,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		RemoteConsole resp.Field
 		ExtraFields   map[string]resp.Field
@@ -297,8 +292,7 @@ type ConsoleRemoteConsole struct {
 	Protocol string `json:"protocol,required"`
 	Type     string `json:"type,required"`
 	URL      string `json:"url,required" format:"uri"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Protocol    resp.Field
 		Type        resp.Field
@@ -327,8 +321,7 @@ type DDOSProfile struct {
 	Protocols []any             `json:"protocols,nullable"`
 	Site      string            `json:"site,nullable"`
 	Status    DDOSProfileStatus `json:"status,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                         resp.Field
 		ProfileTemplate            resp.Field
@@ -361,8 +354,7 @@ type DDOSProfileField struct {
 	Required         bool   `json:"required,nullable"`
 	ValidationSchema any    `json:"validation_schema"`
 	Value            string `json:"value,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID               resp.Field
 		Default          resp.Field
@@ -391,8 +383,7 @@ type DDOSProfileOptionList struct {
 	Active bool `json:"active,nullable"`
 	// Activate BGP protocol.
 	Bgp bool `json:"bgp,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Active      resp.Field
 		Bgp         resp.Field
@@ -412,8 +403,7 @@ type DDOSProfileStatus struct {
 	ErrorDescription string `json:"error_description,required"`
 	// Profile status
 	Status string `json:"status,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ErrorDescription resp.Field
 		Status           resp.Field
@@ -433,8 +423,7 @@ type DDOSProfileTemplate struct {
 	Name        string                     `json:"name,required"`
 	Description string                     `json:"description,nullable"`
 	Fields      []DDOSProfileTemplateField `json:"fields"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID          resp.Field
 		Name        resp.Field
@@ -459,8 +448,7 @@ type DDOSProfileTemplateField struct {
 	FieldType        string `json:"field_type,nullable"`
 	Required         bool   `json:"required,nullable"`
 	ValidationSchema any    `json:"validation_schema"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID               resp.Field
 		Name             resp.Field
@@ -500,8 +488,7 @@ type FixedAddress struct {
 	SubnetName string `json:"subnet_name,required"`
 	// Type of the address
 	Type constant.Fixed `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Addr          resp.Field
 		InterfaceName resp.Field
@@ -531,8 +518,7 @@ type FixedAddressShort struct {
 	InterfaceName string `json:"interface_name,required"`
 	// Type of the address
 	Type constant.Fixed `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Addr          resp.Field
 		InterfaceName resp.Field
@@ -561,8 +547,7 @@ type FlavorHardwareDescription struct {
 	Network string `json:"network,nullable"`
 	// Human-readable RAM description
 	Ram string `json:"ram,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		CPU         resp.Field
 		Disk        resp.Field
@@ -587,8 +572,7 @@ type FloatingAddress struct {
 	Addr string `json:"addr,required"`
 	// Type of the address
 	Type constant.Floating `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Addr        resp.Field
 		Type        resp.Field
@@ -653,8 +637,7 @@ type FloatingIP struct {
 	TaskID string `json:"task_id,required" format:"uuid4"`
 	// Datetime when the floating IP was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                resp.Field
 		CreatedAt         resp.Field
@@ -731,8 +714,7 @@ type GPUImage struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID           resp.Field
 		CreatedAt    resp.Field
@@ -766,8 +748,7 @@ type GPUImageList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []GPUImage `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -850,8 +831,7 @@ type Image struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID             resp.Field
 		CreatedAt      resp.Field
@@ -936,8 +916,7 @@ type ImageList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []Image `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -1012,8 +991,7 @@ type Instance struct {
 	VmState InstanceVmState `json:"vm_state,required"`
 	// List of volumes
 	Volumes []InstanceVolume `json:"volumes,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                  resp.Field
 		Addresses           resp.Field
@@ -1099,8 +1077,7 @@ type InstanceFixedIPAssignment struct {
 	IPAddress string `json:"ip_address,required"`
 	// Interface subnet id
 	SubnetID string `json:"subnet_id,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		External    resp.Field
 		IPAddress   resp.Field
@@ -1216,8 +1193,7 @@ type InstanceFlavorInstanceFlavor struct {
 	Ram int64 `json:"ram,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Architecture        resp.Field
 		FlavorID            resp.Field
@@ -1243,8 +1219,7 @@ type InstanceFlavorInstanceFlavorHardwareDescription struct {
 	Ram string `json:"ram,required"`
 	// CPU description
 	Vcpus string `json:"vcpus,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Ram         resp.Field
 		Vcpus       resp.Field
@@ -1277,8 +1252,7 @@ type InstanceFlavorBareMetalFlavor struct {
 	ResourceClass string `json:"resource_class,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Architecture        resp.Field
 		FlavorID            resp.Field
@@ -1311,8 +1285,7 @@ type InstanceFlavorBareMetalFlavorHardwareDescription struct {
 	Network string `json:"network,required"`
 	// Human-readable RAM description
 	Ram string `json:"ram,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		CPU         resp.Field
 		Disk        resp.Field
@@ -1348,8 +1321,7 @@ type InstanceFlavorGPUClusterFlavor struct {
 	ResourceClass string `json:"resource_class,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Architecture        resp.Field
 		FlavorID            resp.Field
@@ -1384,8 +1356,7 @@ type InstanceFlavorGPUClusterFlavorHardwareDescription struct {
 	Network string `json:"network,required"`
 	// Human-readable RAM description
 	Ram string `json:"ram,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		CPU         resp.Field
 		Disk        resp.Field
@@ -1407,8 +1378,7 @@ func (r *InstanceFlavorGPUClusterFlavorHardwareDescription) UnmarshalJSON(data [
 type InstanceSecurityGroup struct {
 	// Name.
 	Name string `json:"name,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Name        resp.Field
 		ExtraFields map[string]resp.Field
@@ -1471,8 +1441,7 @@ type InstanceVolume struct {
 	ID string `json:"id,required"`
 	// Whether the volume is deleted together with the VM
 	DeleteOnTermination bool `json:"delete_on_termination,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                  resp.Field
 		DeleteOnTermination resp.Field
@@ -1490,8 +1459,7 @@ func (r *InstanceVolume) UnmarshalJSON(data []byte) error {
 type InstanceIsolation struct {
 	// The reason of instance isolation if it is isolated from external internet.
 	Reason string `json:"reason,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Reason      resp.Field
 		ExtraFields map[string]resp.Field
@@ -1510,8 +1478,7 @@ type InstanceList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []Instance `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -1546,8 +1513,7 @@ type IPAssignment struct {
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	// ID of the subnet that allocated the IP
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		IPAddress   resp.Field
 		SubnetID    resp.Field
@@ -1572,8 +1538,7 @@ const (
 type LaasIndexRetentionPolicy struct {
 	// Duration of days for which logs must be kept.
 	Period int64 `json:"period,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Period      resp.Field
 		ExtraFields map[string]resp.Field
@@ -1592,9 +1557,9 @@ func (r *LaasIndexRetentionPolicy) UnmarshalJSON(data []byte) error {
 //
 // Warning: the fields of the param type will not be present. ToParam should only
 // be used at the last possible moment before sending a request. Test for this with
-// LaasIndexRetentionPolicyParam.IsOverridden()
+// LaasIndexRetentionPolicyParam.Overrides()
 func (r LaasIndexRetentionPolicy) ToParam() LaasIndexRetentionPolicyParam {
-	return param.OverrideObj[LaasIndexRetentionPolicyParam](r.RawJSON())
+	return param.Override[LaasIndexRetentionPolicyParam](r.RawJSON())
 }
 
 // The property Period is required.
@@ -1604,9 +1569,6 @@ type LaasIndexRetentionPolicyParam struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LaasIndexRetentionPolicyParam) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r LaasIndexRetentionPolicyParam) MarshalJSON() (data []byte, err error) {
 	type shadow LaasIndexRetentionPolicyParam
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1677,8 +1639,7 @@ type LoadBalancer struct {
 	VipPortID string `json:"vip_port_id,nullable" format:"uuid4"`
 	// List of VRRP IP addresses
 	VrrpIPs []LoadBalancerVrrpIP `json:"vrrp_ips"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                    resp.Field
 		CreatedAt             resp.Field
@@ -1720,8 +1681,7 @@ type LoadBalancerAdditionalVip struct {
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	// Subnet UUID
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		IPAddress   resp.Field
 		SubnetID    resp.Field
@@ -1746,8 +1706,7 @@ type LoadBalancerFlavor struct {
 	Ram int64 `json:"ram,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		FlavorID    resp.Field
 		FlavorName  resp.Field
@@ -1767,8 +1726,7 @@ func (r *LoadBalancerFlavor) UnmarshalJSON(data []byte) error {
 type LoadBalancerListener struct {
 	// Listener ID
 	ID string `json:"id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID          resp.Field
 		ExtraFields map[string]resp.Field
@@ -1791,8 +1749,7 @@ type LoadBalancerVrrpIP struct {
 	Role LoadBalancerInstanceRole `json:"role,required"`
 	// Subnet UUID
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		IPAddress   resp.Field
 		Role        resp.Field
@@ -1845,8 +1802,7 @@ type LoadBalancerStatistics struct {
 	RequestErrors int64 `json:"request_errors,required"`
 	// Total connections handled
 	TotalConnections int64 `json:"total_connections,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ActiveConnections resp.Field
 		BytesIn           resp.Field
@@ -1873,8 +1829,7 @@ type Logging struct {
 	TopicName string `json:"topic_name,required"`
 	// Logs retention policy
 	RetentionPolicy LaasIndexRetentionPolicy `json:"retention_policy,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		DestinationRegionID resp.Field
 		Enabled             resp.Field
@@ -1935,8 +1890,7 @@ type Network struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                  resp.Field
 		CreatedAt           resp.Field
@@ -2010,8 +1964,7 @@ type NetworkDetails struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                  resp.Field
 		CreatedAt           resp.Field
@@ -2063,8 +2016,7 @@ type NetworkInterface struct {
 	InterfaceName string `json:"interface_name,nullable"`
 	// MAC address of the virtual port
 	MacAddress string `json:"mac_address,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		AllowedAddressPairs resp.Field
 		FloatingipDetails   resp.Field
@@ -2110,8 +2062,7 @@ type NetworkInterfaceSubPort struct {
 	InterfaceName string `json:"interface_name,nullable"`
 	// MAC address of the virtual port
 	MacAddress string `json:"mac_address,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		AllowedAddressPairs resp.Field
 		FloatingipDetails   resp.Field
@@ -2140,8 +2091,7 @@ type NetworkInterfaceList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []NetworkInterface `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -2173,8 +2123,7 @@ type Route struct {
 	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
 	// CIDR.
 	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Destination resp.Field
 		Nexthop     resp.Field
@@ -2239,8 +2188,7 @@ type Subnet struct {
 	TaskID string `json:"task_id,nullable" format:"uuid4"`
 	// Total number of ips in subnet
 	TotalIPs int64 `json:"total_ips,nullable"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Cidr           resp.Field
 		CreatedAt      resp.Field
@@ -2285,8 +2233,7 @@ type Tag struct {
 	ReadOnly bool `json:"read_only,required"`
 	// Tag value. The maximum size for a value is 1024 bytes.
 	Value string `json:"value,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Key         resp.Field
 		ReadOnly    resp.Field
@@ -2307,8 +2254,7 @@ type TagUpdateMap map[string]string
 type TaskIDList struct {
 	// List of task IDs
 	Tasks []string `json:"tasks,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Tasks       resp.Field
 		ExtraFields map[string]resp.Field

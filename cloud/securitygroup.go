@@ -49,11 +49,11 @@ func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewP
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -71,11 +71,11 @@ func (r *SecurityGroupService) Update(ctx context.Context, groupID string, param
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -99,11 +99,11 @@ func (r *SecurityGroupService) List(ctx context.Context, params SecurityGroupLis
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -135,11 +135,11 @@ func (r *SecurityGroupService) Delete(ctx context.Context, groupID string, body 
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -162,11 +162,11 @@ func (r *SecurityGroupService) Copy(ctx context.Context, groupID string, params 
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -188,11 +188,11 @@ func (r *SecurityGroupService) Get(ctx context.Context, groupID string, query Se
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -214,11 +214,11 @@ func (r *SecurityGroupService) RevertToDefault(ctx context.Context, groupID stri
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -254,8 +254,7 @@ type SecurityGroup struct {
 	Description string `json:"description,nullable"`
 	// Security group rules
 	SecurityGroupRules []SecurityGroupRule `json:"security_group_rules"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                 resp.Field
 		CreatedAt          resp.Field
@@ -316,8 +315,7 @@ type SecurityGroupRule struct {
 	RemoteGroupID string `json:"remote_group_id,nullable" format:"uuid4"`
 	// The remote IP prefix that is matched by this security group rule
 	RemoteIPPrefix string `json:"remote_ip_prefix,nullable" format:"ipvanynetwork"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID              resp.Field
 		CreatedAt       resp.Field
@@ -401,10 +399,6 @@ type SecurityGroupNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r SecurityGroupNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -429,11 +423,6 @@ type SecurityGroupNewParamsSecurityGroup struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupNewParamsSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r SecurityGroupNewParamsSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupNewParamsSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -467,11 +456,6 @@ type SecurityGroupNewParamsSecurityGroupSecurityGroupRule struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupNewParamsSecurityGroupSecurityGroupRule) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r SecurityGroupNewParamsSecurityGroupSecurityGroupRule) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupNewParamsSecurityGroupSecurityGroupRule
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -498,10 +482,6 @@ type SecurityGroupUpdateParams struct {
 	ChangedRules []SecurityGroupUpdateParamsChangedRule `json:"changed_rules,omitzero"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r SecurityGroupUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupUpdateParams
@@ -545,11 +525,6 @@ type SecurityGroupUpdateParamsChangedRule struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupUpdateParamsChangedRule) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r SecurityGroupUpdateParamsChangedRule) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupUpdateParamsChangedRule
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -586,10 +561,6 @@ type SecurityGroupListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [SecurityGroupListParams]'s query parameters as
 // `url.Values`.
 func (r SecurityGroupListParams) URLQuery() (v url.Values, err error) {
@@ -605,10 +576,6 @@ type SecurityGroupDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type SecurityGroupCopyParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -616,10 +583,6 @@ type SecurityGroupCopyParams struct {
 	Name string `json:"name,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupCopyParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r SecurityGroupCopyParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupCopyParams
@@ -632,18 +595,8 @@ type SecurityGroupGetParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type SecurityGroupRevertToDefaultParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupRevertToDefaultParams) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
 }

@@ -47,11 +47,11 @@ func (r *LoadBalancerPoolService) New(ctx context.Context, params LoadBalancerPo
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -71,11 +71,11 @@ func (r *LoadBalancerPoolService) Update(ctx context.Context, poolID string, par
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -97,11 +97,11 @@ func (r *LoadBalancerPoolService) List(ctx context.Context, params LoadBalancerP
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -119,11 +119,11 @@ func (r *LoadBalancerPoolService) Delete(ctx context.Context, poolID string, bod
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -145,11 +145,11 @@ func (r *LoadBalancerPoolService) Get(ctx context.Context, poolID string, query 
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -200,10 +200,6 @@ type LoadBalancerPoolNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r LoadBalancerPoolNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -239,11 +235,6 @@ type LoadBalancerPoolNewParamsHealthmonitor struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolNewParamsHealthmonitor) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerPoolNewParamsHealthmonitor) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolNewParamsHealthmonitor
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -272,9 +263,6 @@ type LoadBalancerPoolNewParamsMember struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolNewParamsMember) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 func (r LoadBalancerPoolNewParamsMember) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolNewParamsMember
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -297,11 +285,6 @@ type LoadBalancerPoolNewParamsSessionPersistence struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolNewParamsSessionPersistence) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerPoolNewParamsSessionPersistence) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolNewParamsSessionPersistence
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -342,10 +325,6 @@ type LoadBalancerPoolUpdateParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r LoadBalancerPoolUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -381,11 +360,6 @@ type LoadBalancerPoolUpdateParamsHealthmonitor struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolUpdateParamsHealthmonitor) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerPoolUpdateParamsHealthmonitor) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolUpdateParamsHealthmonitor
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -414,11 +388,6 @@ type LoadBalancerPoolUpdateParamsMember struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolUpdateParamsMember) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerPoolUpdateParamsMember) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolUpdateParamsMember
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -441,11 +410,6 @@ type LoadBalancerPoolUpdateParamsSessionPersistence struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolUpdateParamsSessionPersistence) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r LoadBalancerPoolUpdateParamsSessionPersistence) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolUpdateParamsSessionPersistence
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -464,10 +428,6 @@ type LoadBalancerPoolListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [LoadBalancerPoolListParams]'s query parameters as
 // `url.Values`.
 func (r LoadBalancerPoolListParams) URLQuery() (v url.Values, err error) {
@@ -483,16 +443,8 @@ type LoadBalancerPoolDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type LoadBalancerPoolGetParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerPoolGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

@@ -43,11 +43,11 @@ func (r *PlacementGroupService) New(ctx context.Context, params PlacementGroupNe
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -65,11 +65,11 @@ func (r *PlacementGroupService) List(ctx context.Context, query PlacementGroupLi
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -87,11 +87,11 @@ func (r *PlacementGroupService) Delete(ctx context.Context, groupID string, body
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -113,11 +113,11 @@ func (r *PlacementGroupService) Get(ctx context.Context, groupID string, query P
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.IsPresent() {
+	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !query.RegionID.IsPresent() {
+	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -146,8 +146,7 @@ type PlacementGroup struct {
 	RegionID int64 `json:"region_id,required"`
 	// The ID of the server group.
 	ServergroupID string `json:"servergroup_id,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Instances     resp.Field
 		Name          resp.Field
@@ -172,8 +171,7 @@ type PlacementGroupInstance struct {
 	InstanceID string `json:"instance_id,required"`
 	// The name of the instance, corresponding to the attribute 'name'.
 	InstanceName string `json:"instance_name,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		InstanceID   resp.Field
 		InstanceName resp.Field
@@ -193,8 +191,7 @@ type PlacementGroupList struct {
 	Count int64 `json:"count,required"`
 	// Objects
 	Results []PlacementGroup `json:"results,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Count       resp.Field
 		Results     resp.Field
@@ -221,10 +218,6 @@ type PlacementGroupNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f PlacementGroupNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r PlacementGroupNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow PlacementGroupNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -245,26 +238,14 @@ type PlacementGroupListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f PlacementGroupListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type PlacementGroupDeleteParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f PlacementGroupDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type PlacementGroupGetParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f PlacementGroupGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

@@ -68,11 +68,11 @@ func (r *BaremetalServerService) New(ctx context.Context, params BaremetalServer
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -92,11 +92,11 @@ func (r *BaremetalServerService) List(ctx context.Context, params BaremetalServe
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -127,11 +127,11 @@ func (r *BaremetalServerService) Rebuild(ctx context.Context, serverID string, p
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -159,8 +159,7 @@ type BaremetalFixedAddress struct {
 	SubnetName string `json:"subnet_name,required"`
 	// Type of the address
 	Type constant.Fixed `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Addr          resp.Field
 		InterfaceName resp.Field
@@ -183,8 +182,7 @@ type BaremetalFloatingAddress struct {
 	Addr string `json:"addr,required"`
 	// Type of the address
 	Type constant.Floating `json:"type,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Addr        resp.Field
 		Type        resp.Field
@@ -253,8 +251,7 @@ type BaremetalServer struct {
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
 	VmState BaremetalServerVmState `json:"vm_state,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		ID                 resp.Field
 		Addresses          resp.Field
@@ -333,8 +330,7 @@ type BaremetalServerFixedIPAssignment struct {
 	IPAddress string `json:"ip_address,required"`
 	// Interface subnet id
 	SubnetID string `json:"subnet_id,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		External    resp.Field
 		IPAddress   resp.Field
@@ -368,8 +364,7 @@ type BaremetalServerFlavor struct {
 	ResourceClass string `json:"resource_class,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		Architecture        resp.Field
 		FlavorID            resp.Field
@@ -402,8 +397,7 @@ type BaremetalServerFlavorHardwareDescription struct {
 	Network string `json:"network,required"`
 	// Human-readable RAM description
 	Ram string `json:"ram,required"`
-	// Metadata for the response, check the presence of optional fields with the
-	// [resp.Field.IsPresent] method.
+	// JSON contains metadata for fields, check presence with [resp.Field.Valid].
 	JSON struct {
 		CPU         resp.Field
 		Disk        resp.Field
@@ -520,10 +514,6 @@ type BaremetalServerNewParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 func (r BaremetalServerNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -540,11 +530,6 @@ type BaremetalServerNewParamsInterfaceUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u BaremetalServerNewParamsInterfaceUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
 func (u BaremetalServerNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[BaremetalServerNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
 }
@@ -572,7 +557,7 @@ func (u BaremetalServerNewParamsInterfaceUnion) GetSubnetID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u BaremetalServerNewParamsInterfaceUnion) GetIPAddress() *string {
-	if vt := u.OfAnySubnet; vt != nil && vt.IPAddress.IsPresent() {
+	if vt := u.OfAnySubnet; vt != nil && vt.IPAddress.Valid() {
 		return &vt.IPAddress.Value
 	}
 	return nil
@@ -602,13 +587,13 @@ func (u BaremetalServerNewParamsInterfaceUnion) GetType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u BaremetalServerNewParamsInterfaceUnion) GetInterfaceName() *string {
-	if vt := u.OfExternal; vt != nil && vt.InterfaceName.IsPresent() {
+	if vt := u.OfExternal; vt != nil && vt.InterfaceName.Valid() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfSubnet; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfSubnet; vt != nil && vt.InterfaceName.Valid() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfAnySubnet; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfAnySubnet; vt != nil && vt.InterfaceName.Valid() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfReservedFixedIP; vt != nil && vt.InterfaceName.IsPresent() {
+	} else if vt := u.OfReservedFixedIP; vt != nil && vt.InterfaceName.Valid() {
 		return &vt.InterfaceName.Value
 	}
 	return nil
@@ -626,13 +611,13 @@ func (u BaremetalServerNewParamsInterfaceUnion) GetIPFamily() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u BaremetalServerNewParamsInterfaceUnion) GetPortGroup() *int64 {
-	if vt := u.OfExternal; vt != nil && vt.PortGroup.IsPresent() {
+	if vt := u.OfExternal; vt != nil && vt.PortGroup.Valid() {
 		return &vt.PortGroup.Value
-	} else if vt := u.OfSubnet; vt != nil && vt.PortGroup.IsPresent() {
+	} else if vt := u.OfSubnet; vt != nil && vt.PortGroup.Valid() {
 		return &vt.PortGroup.Value
-	} else if vt := u.OfAnySubnet; vt != nil && vt.PortGroup.IsPresent() {
+	} else if vt := u.OfAnySubnet; vt != nil && vt.PortGroup.Valid() {
 		return &vt.PortGroup.Value
-	} else if vt := u.OfReservedFixedIP; vt != nil && vt.PortGroup.IsPresent() {
+	} else if vt := u.OfReservedFixedIP; vt != nil && vt.PortGroup.Valid() {
 		return &vt.PortGroup.Value
 	}
 	return nil
@@ -759,11 +744,6 @@ type BaremetalServerNewParamsInterfaceExternal struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceExternal) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r BaremetalServerNewParamsInterfaceExternal) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceExternal
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -797,11 +777,6 @@ type BaremetalServerNewParamsInterfaceSubnet struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceSubnet) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r BaremetalServerNewParamsInterfaceSubnet) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceSubnet
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -816,11 +791,6 @@ type BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
 func (u BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion](u.OfNew, u.OfExisting)
 }
@@ -885,11 +855,6 @@ type BaremetalServerNewParamsInterfaceSubnetFloatingIPNew struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceSubnetFloatingIPNew) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r BaremetalServerNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceSubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -910,11 +875,6 @@ type BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -946,11 +906,6 @@ type BaremetalServerNewParamsInterfaceAnySubnet struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceAnySubnet) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r BaremetalServerNewParamsInterfaceAnySubnet) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -965,11 +920,6 @@ type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
 func (u BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion](u.OfNew, u.OfExisting)
 }
@@ -1034,11 +984,6 @@ type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1059,11 +1004,6 @@ type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1092,11 +1032,6 @@ type BaremetalServerNewParamsInterfaceReservedFixedIP struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceReservedFixedIP) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r BaremetalServerNewParamsInterfaceReservedFixedIP) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceReservedFixedIP
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1111,11 +1046,6 @@ type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
 func (u BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion](u.OfNew, u.OfExisting)
 }
@@ -1180,11 +1110,6 @@ type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1205,11 +1130,6 @@ type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1228,11 +1148,6 @@ type BaremetalServerNewParamsDDOSProfile struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsDDOSProfile) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r BaremetalServerNewParamsDDOSProfile) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1250,11 +1165,6 @@ type BaremetalServerNewParamsDDOSProfileField struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerNewParamsDDOSProfileField) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
 func (r BaremetalServerNewParamsDDOSProfileField) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
@@ -1270,11 +1180,6 @@ type BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion struct {
 	paramUnion
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
 func (u BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion](u.OfAnyArray, u.OfInt, u.OfString)
 }
@@ -1363,10 +1268,6 @@ type BaremetalServerListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [BaremetalServerListParams]'s query parameters as
 // `url.Values`.
 func (r BaremetalServerListParams) URLQuery() (v url.Values, err error) {
@@ -1433,10 +1334,6 @@ type BaremetalServerRebuildParams struct {
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f BaremetalServerRebuildParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r BaremetalServerRebuildParams) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerRebuildParams

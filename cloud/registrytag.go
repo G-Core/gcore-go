@@ -42,11 +42,11 @@ func (r *RegistryTagService) Delete(ctx context.Context, tagName string, body Re
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -75,7 +75,3 @@ type RegistryTagDeleteParams struct {
 	Digest         string           `path:"digest,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f RegistryTagDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }

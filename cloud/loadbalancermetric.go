@@ -41,11 +41,11 @@ func (r *LoadBalancerMetricService) List(ctx context.Context, loadbalancerID str
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -69,10 +69,6 @@ type LoadBalancerMetricListParams struct {
 	TimeUnit InstanceMetricsTimeUnit `json:"time_unit,omitzero,required"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f LoadBalancerMetricListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r LoadBalancerMetricListParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerMetricListParams

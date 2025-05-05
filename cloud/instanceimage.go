@@ -43,11 +43,11 @@ func (r *InstanceImageService) Update(ctx context.Context, imageID string, param
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -70,11 +70,11 @@ func (r *InstanceImageService) List(ctx context.Context, params InstanceImageLis
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -92,11 +92,11 @@ func (r *InstanceImageService) Delete(ctx context.Context, imageID string, body 
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -118,11 +118,11 @@ func (r *InstanceImageService) NewFromVolume(ctx context.Context, params Instanc
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -140,11 +140,11 @@ func (r *InstanceImageService) Get(ctx context.Context, imageID string, params I
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -166,11 +166,11 @@ func (r *InstanceImageService) Upload(ctx context.Context, params InstanceImageU
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -210,10 +210,6 @@ type InstanceImageUpdateParams struct {
 	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceImageUpdateParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r InstanceImageUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceImageUpdateParams
@@ -273,10 +269,6 @@ type InstanceImageListParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceImageListParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [InstanceImageListParams]'s query parameters as
 // `url.Values`.
 func (r InstanceImageListParams) URLQuery() (v url.Values, err error) {
@@ -300,10 +292,6 @@ type InstanceImageDeleteParams struct {
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceImageDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 type InstanceImageNewFromVolumeParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -346,10 +334,6 @@ type InstanceImageNewFromVolumeParams struct {
 	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceImageNewFromVolumeParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r InstanceImageNewFromVolumeParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceImageNewFromVolumeParams
@@ -412,10 +396,6 @@ type InstanceImageGetParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceImageGetParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 // URLQuery serializes [InstanceImageGetParams]'s query parameters as `url.Values`.
 func (r InstanceImageGetParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
@@ -468,10 +448,6 @@ type InstanceImageUploadParams struct {
 	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceImageUploadParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r InstanceImageUploadParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceImageUploadParams

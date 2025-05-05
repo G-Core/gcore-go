@@ -41,11 +41,11 @@ func (r *SecurityGroupRuleService) New(ctx context.Context, groupID string, para
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -68,11 +68,11 @@ func (r *SecurityGroupRuleService) Delete(ctx context.Context, ruleID string, bo
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -94,11 +94,11 @@ func (r *SecurityGroupRuleService) Replace(ctx context.Context, ruleID string, p
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -140,10 +140,6 @@ type SecurityGroupRuleNewParams struct {
 	Protocol SecurityGroupRuleNewParamsProtocol `json:"protocol,omitzero"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupRuleNewParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r SecurityGroupRuleNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupRuleNewParams
@@ -202,10 +198,6 @@ type SecurityGroupRuleDeleteParams struct {
 	paramObj
 }
 
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupRuleDeleteParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-
 type SecurityGroupRuleReplaceParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -239,10 +231,6 @@ type SecurityGroupRuleReplaceParams struct {
 	Protocol SecurityGroupRuleReplaceParamsProtocol `json:"protocol,omitzero"`
 	paramObj
 }
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f SecurityGroupRuleReplaceParams) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
 
 func (r SecurityGroupRuleReplaceParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupRuleReplaceParams
