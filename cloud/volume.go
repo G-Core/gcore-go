@@ -532,7 +532,7 @@ type VolumeNewParamsBodyImage struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	// Volume type. Defaults to `standard`. If not specified for source `snapshot`,
 	// volume type will be derived from the snapshot volume.
 	//
@@ -581,7 +581,7 @@ type VolumeNewParamsBodySnapshot struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	// Volume type. Defaults to `standard`. If not specified for source `snapshot`,
 	// volume type will be derived from the snapshot volume.
 	//
@@ -627,7 +627,7 @@ type VolumeNewParamsBodyNewVolume struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	// Volume type. Defaults to `standard`. If not specified for source `snapshot`,
 	// volume type will be derived from the snapshot volume.
 	//

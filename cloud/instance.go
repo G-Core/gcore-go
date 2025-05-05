@@ -724,7 +724,7 @@ type InstanceNewParams struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -1673,7 +1673,7 @@ func (u InstanceNewParamsVolumeUnion) GetBootIndex() *int64 {
 }
 
 // Returns a pointer to the underlying variant's Tags property, if present.
-func (u InstanceNewParamsVolumeUnion) GetTags() TagUpdateList {
+func (u InstanceNewParamsVolumeUnion) GetTags() TagUpdateMap {
 	if vt := u.OfNewVolume; vt != nil {
 		return vt.Tags
 	} else if vt := u.OfImage; vt != nil {
@@ -1735,7 +1735,7 @@ type InstanceNewParamsVolumeNewVolume struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	// Volume type name. Supported values:
 	//
 	//   - `standard` - Network SSD block storage offering stable performance with high
@@ -1796,7 +1796,7 @@ type InstanceNewParamsVolumeImage struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	// Volume type name. Supported values:
 	//
 	//   - `standard` - Network SSD block storage offering stable performance with high
@@ -1855,7 +1855,7 @@ type InstanceNewParamsVolumeSnapshot struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	// Specifies the volume type. If omitted, the type from the source volume will be
 	// used by default.
 	//
@@ -1904,7 +1904,7 @@ type InstanceNewParamsVolumeApptemplate struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	// Volume type name. Supported values:
 	//
 	//   - `standard` - Network SSD block storage offering stable performance with high
@@ -1959,7 +1959,7 @@ type InstanceNewParamsVolumeExistingVolume struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	// Existing available volume will be attached to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "existing-volume".

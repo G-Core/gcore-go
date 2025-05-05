@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"time"
 
 	"github.com/stainless-sdks/gcore-go/internal/apijson"
 	"github.com/stainless-sdks/gcore-go/internal/apiquery"
@@ -161,7 +162,7 @@ func (r *GPUBaremetalClusterService) Get(ctx context.Context, clusterID string, 
 }
 
 // Stops and then starts all cluster servers, effectively performing a hard reboot.
-func (r *GPUBaremetalClusterService) PowercycleAllServers(ctx context.Context, clusterID string, body GPUBaremetalClusterPowercycleAllServersParams, opts ...option.RequestOption) (res *GPUClusterServerList, err error) {
+func (r *GPUBaremetalClusterService) PowercycleAllServers(ctx context.Context, clusterID string, body GPUBaremetalClusterPowercycleAllServersParams, opts ...option.RequestOption) (res *GPUBaremetalClusterServerList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -187,7 +188,7 @@ func (r *GPUBaremetalClusterService) PowercycleAllServers(ctx context.Context, c
 }
 
 // Reboot all bare metal GPU cluster servers
-func (r *GPUBaremetalClusterService) RebootAllServers(ctx context.Context, clusterID string, body GPUBaremetalClusterRebootAllServersParams, opts ...option.RequestOption) (res *GPUClusterServerList, err error) {
+func (r *GPUBaremetalClusterService) RebootAllServers(ctx context.Context, clusterID string, body GPUBaremetalClusterRebootAllServersParams, opts ...option.RequestOption) (res *GPUBaremetalClusterServerList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -296,7 +297,7 @@ type GPUBaremetalCluster struct {
 	// Region ID
 	RegionID int64 `json:"region_id,required"`
 	// GPU cluster servers
-	Servers []GPUClusterServer `json:"servers,required"`
+	Servers []GPUBaremetalClusterServer `json:"servers,required"`
 	// Keypair name to inject into new cluster(s)
 	SSHKeyName string `json:"ssh_key_name,required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
@@ -407,6 +408,324 @@ const (
 	GPUBaremetalClusterTaskStatusPostDeploySetup GPUBaremetalClusterTaskStatus = "POST_DEPLOY_SETUP"
 	GPUBaremetalClusterTaskStatusVipuController  GPUBaremetalClusterTaskStatus = "VIPU_CONTROLLER"
 )
+
+type GPUBaremetalClusterServer struct {
+	// GPU server ID
+	ID string `json:"id,required" format:"uuid4"`
+	// Map of network_name to list of addresses in that network
+	Addresses map[string][]GPUBaremetalClusterServerAddressUnion `json:"addresses,required"`
+	// IP addresses of the instances that are blackholed by DDoS mitigation system
+	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
+	// Datetime when GPU server was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Task that created this entity
+	CreatorTaskID string `json:"creator_task_id,required"`
+	// Advanced DDoS protection profile. It is always `null` if query parameter
+	// `with_ddos=true` is not set.
+	DDOSProfile DDOSProfile `json:"ddos_profile,required"`
+	// Fixed IP assigned to instance
+	FixedIPAssignments []GPUBaremetalClusterServerFixedIPAssignment `json:"fixed_ip_assignments,required"`
+	// Flavor
+	Flavor GPUBaremetalClusterServerFlavor `json:"flavor,required"`
+	// Instance description
+	InstanceDescription string `json:"instance_description,required"`
+	// Instance isolation information
+	InstanceIsolation InstanceIsolation `json:"instance_isolation,required"`
+	// GPU server name
+	Name string `json:"name,required"`
+	// Project ID
+	ProjectID int64 `json:"project_id,required"`
+	// Region name
+	Region string `json:"region,required"`
+	// Region ID
+	RegionID int64 `json:"region_id,required"`
+	// Security groups
+	SecurityGroups []GPUBaremetalClusterServerSecurityGroup `json:"security_groups,required"`
+	// SSH key name assigned to instance
+	SSHKeyName string `json:"ssh_key_name,required"`
+	// Instance status
+	//
+	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
+	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
+	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
+	// "UNKNOWN", "VERIFY_RESIZE".
+	Status GPUBaremetalClusterServerStatus `json:"status,required"`
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
+	Tags []Tag `json:"tags,required"`
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
+	TaskID string `json:"task_id,required"`
+	// Task state
+	TaskState string `json:"task_state,required"`
+	// Virtual machine state (active)
+	//
+	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
+	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
+	VmState GPUBaremetalClusterServerVmState `json:"vm_state,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		ID                  resp.Field
+		Addresses           resp.Field
+		BlackholePorts      resp.Field
+		CreatedAt           resp.Field
+		CreatorTaskID       resp.Field
+		DDOSProfile         resp.Field
+		FixedIPAssignments  resp.Field
+		Flavor              resp.Field
+		InstanceDescription resp.Field
+		InstanceIsolation   resp.Field
+		Name                resp.Field
+		ProjectID           resp.Field
+		Region              resp.Field
+		RegionID            resp.Field
+		SecurityGroups      resp.Field
+		SSHKeyName          resp.Field
+		Status              resp.Field
+		Tags                resp.Field
+		TaskID              resp.Field
+		TaskState           resp.Field
+		VmState             resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalClusterServer) RawJSON() string { return r.JSON.raw }
+func (r *GPUBaremetalClusterServer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GPUBaremetalClusterServerAddressUnion contains all possible properties and
+// values from [FloatingAddress], [FixedAddressShort], [FixedAddress].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type GPUBaremetalClusterServerAddressUnion struct {
+	Addr          string `json:"addr"`
+	Type          string `json:"type"`
+	InterfaceName string `json:"interface_name"`
+	// This field is from variant [FixedAddress].
+	SubnetID string `json:"subnet_id"`
+	// This field is from variant [FixedAddress].
+	SubnetName string `json:"subnet_name"`
+	JSON       struct {
+		Addr          resp.Field
+		Type          resp.Field
+		InterfaceName resp.Field
+		SubnetID      resp.Field
+		SubnetName    resp.Field
+		raw           string
+	} `json:"-"`
+}
+
+func (u GPUBaremetalClusterServerAddressUnion) AsFloatingIPAddress() (v FloatingAddress) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u GPUBaremetalClusterServerAddressUnion) AsFixedIPAddressShort() (v FixedAddressShort) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u GPUBaremetalClusterServerAddressUnion) AsFixedIPAddress() (v FixedAddress) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u GPUBaremetalClusterServerAddressUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *GPUBaremetalClusterServerAddressUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GPUBaremetalClusterServerFixedIPAssignment struct {
+	// Is network external
+	External bool `json:"external,required"`
+	// Ip address
+	IPAddress string `json:"ip_address,required"`
+	// Interface subnet id
+	SubnetID string `json:"subnet_id,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		External    resp.Field
+		IPAddress   resp.Field
+		SubnetID    resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalClusterServerFixedIPAssignment) RawJSON() string { return r.JSON.raw }
+func (r *GPUBaremetalClusterServerFixedIPAssignment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Flavor
+type GPUBaremetalClusterServerFlavor struct {
+	// CPU architecture
+	Architecture string `json:"architecture,required"`
+	// Flavor ID is the same as name
+	FlavorID string `json:"flavor_id,required"`
+	// Flavor name
+	FlavorName string `json:"flavor_name,required"`
+	// Additional hardware description
+	HardwareDescription GPUBaremetalClusterServerFlavorHardwareDescription `json:"hardware_description,required"`
+	// Operating system
+	OsType string `json:"os_type,required"`
+	// RAM size in MiB
+	Ram int64 `json:"ram,required"`
+	// Flavor resource class for mapping to hardware capacity
+	ResourceClass string `json:"resource_class,required"`
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
+	Vcpus int64 `json:"vcpus,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Architecture        resp.Field
+		FlavorID            resp.Field
+		FlavorName          resp.Field
+		HardwareDescription resp.Field
+		OsType              resp.Field
+		Ram                 resp.Field
+		ResourceClass       resp.Field
+		Vcpus               resp.Field
+		ExtraFields         map[string]resp.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalClusterServerFlavor) RawJSON() string { return r.JSON.raw }
+func (r *GPUBaremetalClusterServerFlavor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Additional hardware description
+type GPUBaremetalClusterServerFlavorHardwareDescription struct {
+	// Human-readable CPU description
+	CPU string `json:"cpu,required"`
+	// Human-readable disk description
+	Disk string `json:"disk,required"`
+	// Human-readable GPU description
+	GPU string `json:"gpu,required"`
+	// If the flavor is licensed, this field contains the license type
+	License string `json:"license,required"`
+	// Human-readable NIC description
+	Network string `json:"network,required"`
+	// Human-readable RAM description
+	Ram string `json:"ram,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		CPU         resp.Field
+		Disk        resp.Field
+		GPU         resp.Field
+		License     resp.Field
+		Network     resp.Field
+		Ram         resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalClusterServerFlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
+func (r *GPUBaremetalClusterServerFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GPUBaremetalClusterServerSecurityGroup struct {
+	// Name.
+	Name string `json:"name,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Name        resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalClusterServerSecurityGroup) RawJSON() string { return r.JSON.raw }
+func (r *GPUBaremetalClusterServerSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Instance status
+type GPUBaremetalClusterServerStatus string
+
+const (
+	GPUBaremetalClusterServerStatusActive           GPUBaremetalClusterServerStatus = "ACTIVE"
+	GPUBaremetalClusterServerStatusBuild            GPUBaremetalClusterServerStatus = "BUILD"
+	GPUBaremetalClusterServerStatusDeleted          GPUBaremetalClusterServerStatus = "DELETED"
+	GPUBaremetalClusterServerStatusError            GPUBaremetalClusterServerStatus = "ERROR"
+	GPUBaremetalClusterServerStatusHardReboot       GPUBaremetalClusterServerStatus = "HARD_REBOOT"
+	GPUBaremetalClusterServerStatusMigrating        GPUBaremetalClusterServerStatus = "MIGRATING"
+	GPUBaremetalClusterServerStatusPassword         GPUBaremetalClusterServerStatus = "PASSWORD"
+	GPUBaremetalClusterServerStatusPaused           GPUBaremetalClusterServerStatus = "PAUSED"
+	GPUBaremetalClusterServerStatusReboot           GPUBaremetalClusterServerStatus = "REBOOT"
+	GPUBaremetalClusterServerStatusRebuild          GPUBaremetalClusterServerStatus = "REBUILD"
+	GPUBaremetalClusterServerStatusRescue           GPUBaremetalClusterServerStatus = "RESCUE"
+	GPUBaremetalClusterServerStatusResize           GPUBaremetalClusterServerStatus = "RESIZE"
+	GPUBaremetalClusterServerStatusRevertResize     GPUBaremetalClusterServerStatus = "REVERT_RESIZE"
+	GPUBaremetalClusterServerStatusShelved          GPUBaremetalClusterServerStatus = "SHELVED"
+	GPUBaremetalClusterServerStatusShelvedOffloaded GPUBaremetalClusterServerStatus = "SHELVED_OFFLOADED"
+	GPUBaremetalClusterServerStatusShutoff          GPUBaremetalClusterServerStatus = "SHUTOFF"
+	GPUBaremetalClusterServerStatusSoftDeleted      GPUBaremetalClusterServerStatus = "SOFT_DELETED"
+	GPUBaremetalClusterServerStatusSuspended        GPUBaremetalClusterServerStatus = "SUSPENDED"
+	GPUBaremetalClusterServerStatusUnknown          GPUBaremetalClusterServerStatus = "UNKNOWN"
+	GPUBaremetalClusterServerStatusVerifyResize     GPUBaremetalClusterServerStatus = "VERIFY_RESIZE"
+)
+
+// Virtual machine state (active)
+type GPUBaremetalClusterServerVmState string
+
+const (
+	GPUBaremetalClusterServerVmStateActive           GPUBaremetalClusterServerVmState = "active"
+	GPUBaremetalClusterServerVmStateBuilding         GPUBaremetalClusterServerVmState = "building"
+	GPUBaremetalClusterServerVmStateDeleted          GPUBaremetalClusterServerVmState = "deleted"
+	GPUBaremetalClusterServerVmStateError            GPUBaremetalClusterServerVmState = "error"
+	GPUBaremetalClusterServerVmStatePaused           GPUBaremetalClusterServerVmState = "paused"
+	GPUBaremetalClusterServerVmStateRescued          GPUBaremetalClusterServerVmState = "rescued"
+	GPUBaremetalClusterServerVmStateResized          GPUBaremetalClusterServerVmState = "resized"
+	GPUBaremetalClusterServerVmStateShelved          GPUBaremetalClusterServerVmState = "shelved"
+	GPUBaremetalClusterServerVmStateShelvedOffloaded GPUBaremetalClusterServerVmState = "shelved_offloaded"
+	GPUBaremetalClusterServerVmStateSoftDeleted      GPUBaremetalClusterServerVmState = "soft-deleted"
+	GPUBaremetalClusterServerVmStateStopped          GPUBaremetalClusterServerVmState = "stopped"
+	GPUBaremetalClusterServerVmStateSuspended        GPUBaremetalClusterServerVmState = "suspended"
+)
+
+type GPUBaremetalClusterServerList struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []GPUBaremetalClusterServer `json:"results,required"`
+	// Metadata for the response, check the presence of optional fields with the
+	// [resp.Field.IsPresent] method.
+	JSON struct {
+		Count       resp.Field
+		Results     resp.Field
+		ExtraFields map[string]resp.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalClusterServerList) RawJSON() string { return r.JSON.raw }
+func (r *GPUBaremetalClusterServerList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // GPUBaremetalFlavorUnion contains all possible properties and values from
 // [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice],
@@ -768,7 +1087,7 @@ type GPUBaremetalClusterNewParams struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateList `json:"tags,omitzero"`
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
 

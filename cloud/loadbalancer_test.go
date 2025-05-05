@@ -111,7 +111,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 		Name:                  gcore.String("new_load_balancer"),
 		NameTemplate:          gcore.String("lb_name_template"),
 		PreferredConnectivity: cloud.LoadBalancerMemberConnectivityL2,
-		Tags: cloud.TagUpdateList{
+		Tags: cloud.TagUpdateMap{
 			"foo": "my-tag-value",
 		},
 		VipIPFamily:  cloud.InterfaceIPFamilyDual,
