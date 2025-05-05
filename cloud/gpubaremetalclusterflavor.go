@@ -61,9 +61,9 @@ type GPUBaremetalClusterFlavorListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Flag for filtering disabled flavors in the region.
+	// Set to `true` to remove the disabled flavors from the response.
 	HideDisabled param.Opt[bool] `query:"hide_disabled,omitzero" json:"-"`
-	// Set to true if the response should include flavor prices.
+	// Set to `true` if the response should include flavor prices.
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	paramObj
 }

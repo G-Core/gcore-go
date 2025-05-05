@@ -49,16 +49,24 @@ func NewInstanceService(opts ...option.RequestOption) (r InstanceService) {
 	return
 }
 
-// Create one or many instances or basic VMs. For Linux instances, use the
-// 'username' and 'password' to create a new user. When only 'password' is
-// provided, it is set as the password for the default user of the image. The
-// 'user_data' is ignored when the 'password' is specified. Use the 'user_data'
-// field to provide a cloud-init script in base64 to apply configurations to the
-// instance. For Windows instances, the 'username' cannot be specified in the
-// request. Use the 'password' field to set the password for the 'Admin' user on
-// Windows. Use the 'user_data' field to provide a cloudbase-init script in base64
-// to create new users on Windows. The password of the Admin user cannot be updated
-// via 'user_data'.
+// For Linux,
+//
+//   - Use the `user_data` field to provide a
+//     <a href=https://cloudinit.readthedocs.io/en/latest/reference/examples.html>cloud-init
+//     script</a> in base64 to apply configurations to the instance.
+//   - Specify the `username` and `password` to create a new user.
+//   - When only `password` is provided, it is set as the password for the default
+//     user of the image.
+//   - The `user_data` is ignored when the `password` is specified.
+//
+// For Windows,
+//
+//   - Use the `user_data` field to provide a
+//     <a href=https://cloudbase-init.readthedocs.io/en/latest/userdata.html#cloud-config>cloudbase-init
+//     script</a> in base64 to create new users on Windows.
+//   - Use the `password` field to set the password for the 'Admin' user on Windows.
+//   - The password of the Admin user cannot be updated via `user_data`.
+//   - The `username` cannot be specified in the request.
 func (r *InstanceService) New(ctx context.Context, params InstanceNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -490,16 +498,25 @@ type InstanceNewParams struct {
 	// The flavor of the instance.
 	Flavor string `json:"flavor,required"`
 	// A list of network interfaces for the instance. You can create one or more
-	// interfaces—private, public, or both.
+	// interfaces - private, public, or both.
 	Interfaces []InstanceNewParamsInterfaceUnion `json:"interfaces,omitzero,required"`
-	// List of volumes for instances
-	Volumes []InstanceNewParamsVolume `json:"volumes,omitzero,required"`
-	// Specifies the name of the SSH keypair, created via the `/v1/ssh_keys` endpoint.
+	// List of volumes that will be attached to the instance.
+	Volumes []InstanceNewParamsVolumeUnion `json:"volumes,omitzero,required"`
+	// Specifies the name of the SSH keypair, created via the
+	// <a href="#operation/SSHKeyCollectionViewSet.post">/v1/ssh_keys endpoint</a>.
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
 	// Set to `true` if creating the instance from an `apptemplate`. This allows
 	// application ports in the security group for instances created from a marketplace
 	// application template.
 	AllowAppPorts param.Opt[bool] `json:"allow_app_ports,omitzero"`
+	// Instance name.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// If you want the instance name to be automatically generated based on IP
+	// addresses, you can provide a name template instead of specifying the name
+	// manually. The template should include a placeholder that will be replaced during
+	// provisioning. Supported placeholders are: `{ip_octets}` (last 3 octets of the
+	// IP), `{two_ip_octets}`, and `{one_ip_octet}`.
+	NameTemplate param.Opt[string] `json:"name_template,omitzero"`
 	// For Linux instances, 'username' and 'password' are used to create a new user.
 	// When only 'password' is provided, it is set as the password for the default user
 	// of the image. For Windows instances, 'username' cannot be specified. Use the
@@ -507,11 +524,15 @@ type InstanceNewParams struct {
 	// 'user_data' field to provide a script to create new users on Windows. The
 	// password of the Admin user cannot be updated via 'user_data'.
 	Password param.Opt[string] `json:"password,omitzero"`
-	// Server group ID for instance placement policy. Can be an anti-affinity,
-	// affinity, or soft-anti-affinity group. `anti-affinity` ensures instances are
-	// placed on different hosts for high availability. `affinity` places instances on
-	// the same host for low-latency communication. `soft-anti-affinity` tries to place
-	// instances on different hosts but allows sharing if needed.
+	// Placement group ID for instance placement policy.
+	//
+	// Supported group types:
+	//
+	//   - `anti-affinity`: Ensures instances are placed on different hosts for high
+	//     availability.
+	//   - `affinity`: Places instances on the same host for low-latency communication.
+	//   - `soft-anti-affinity`: Tries to place instances on different hosts but allows
+	//     sharing if needed.
 	ServergroupID param.Opt[string] `json:"servergroup_id,omitzero" format:"uuid4"`
 	// String in base64 format. For Linux instances, 'user_data' is ignored when
 	// 'password' field is provided. For Windows instances, Admin user password is set
@@ -525,16 +546,7 @@ type InstanceNewParams struct {
 	// Parameters for the application template if creating the instance from an
 	// `apptemplate`.
 	Configuration any `json:"configuration,omitzero"`
-	// If you want instance names to be automatically generated using IP octets, you
-	// can specify name templates instead of setting names manually.Provide a list of
-	// templated names that should be replaced using the selected template. The
-	// following template formats are supported: `{ip_octets}`, `{two_ip_octets}`, and
-	// `{one_ip_octet}`.
-	NameTemplates []string `json:"name_templates,omitzero"`
-	// List of instance names. Specify one name to create a single instance.
-	Names []string `json:"names,omitzero"`
-	// Applies only to instances and is ignored for bare metal. Specifies security
-	// group UUIDs to be applied to all instance network interfaces.
+	// Specifies security group UUIDs to be applied to all instance network interfaces.
 	SecurityGroups []InstanceNewParamsSecurityGroup `json:"security_groups,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
@@ -643,20 +655,6 @@ func (u InstanceNewParamsInterfaceUnion) GetIPFamily() *string {
 		return (*string)(&vt.IPFamily)
 	} else if vt := u.OfAnySubnet; vt != nil {
 		return (*string)(&vt.IPFamily)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceUnion) GetPortGroup() *int64 {
-	if vt := u.OfExternal; vt != nil && vt.PortGroup.IsPresent() {
-		return &vt.PortGroup.Value
-	} else if vt := u.OfSubnet; vt != nil && vt.PortGroup.IsPresent() {
-		return &vt.PortGroup.Value
-	} else if vt := u.OfAnySubnet; vt != nil && vt.PortGroup.IsPresent() {
-		return &vt.PortGroup.Value
-	} else if vt := u.OfReservedFixedIP; vt != nil && vt.PortGroup.IsPresent() {
-		return &vt.PortGroup.Value
 	}
 	return nil
 }
@@ -800,14 +798,11 @@ type InstanceNewParamsInterfaceExternal struct {
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Applicable only to bare metal. Each group is added to a separate trunk.
-	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// Applies only to instances and is ignored for bare metal. Specifies security
-	// group UUIDs to be applied to the instance network interface.
+	// Specifies security group UUIDs to be applied to the instance network interface.
 	SecurityGroups []InstanceNewParamsInterfaceExternalSecurityGroup `json:"security_groups,omitzero"`
 	// A public IP address will be assigned to the instance.
 	//
@@ -856,12 +851,9 @@ type InstanceNewParamsInterfaceSubnet struct {
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Applicable only to bare metal. Each group is added to a separate trunk.
-	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP InstanceNewParamsInterfaceSubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// Applies only to instances and is ignored for bare metal. Specifies security
-	// group UUIDs to be applied to the instance network interface.
+	// Specifies security group UUIDs to be applied to the instance network interface.
 	SecurityGroups []InstanceNewParamsInterfaceSubnetSecurityGroup `json:"security_groups,omitzero"`
 	// The instance will get an IP address from the selected network. If you choose to
 	// add a floating IP, the instance will be reachable from the internet. Otherwise,
@@ -1019,16 +1011,13 @@ type InstanceNewParamsInterfaceAnySubnet struct {
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
 	// You can specify a specific IP address from your subnet.
 	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipvanyaddress"`
-	// Applicable only to bare metal. Each group is added to a separate trunk.
-	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP InstanceNewParamsInterfaceAnySubnetFloatingIPUnion `json:"floating_ip,omitzero"`
 	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// Applies only to instances and is ignored for bare metal. Specifies security
-	// group UUIDs to be applied to the instance network interface.
+	// Specifies security group UUIDs to be applied to the instance network interface.
 	SecurityGroups []InstanceNewParamsInterfaceAnySubnetSecurityGroup `json:"security_groups,omitzero"`
 	// Instance will be attached to a subnet with the largest count of free IPs.
 	//
@@ -1184,12 +1173,9 @@ type InstanceNewParamsInterfaceReservedFixedIP struct {
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Applicable only to bare metal. Each group is added to a separate trunk.
-	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion `json:"floating_ip,omitzero"`
-	// Applies only to instances and is ignored for bare metal. Specifies security
-	// group UUIDs to be applied to the instance network interface.
+	// Specifies security group UUIDs to be applied to the instance network interface.
 	SecurityGroups []InstanceNewParamsInterfaceReservedFixedIPSecurityGroup `json:"security_groups,omitzero"`
 	// An existing available reserved fixed IP will be attached to the instance. If the
 	// reserved IP is not public and you choose to add a floating IP, the instance will
@@ -1341,71 +1327,483 @@ func (r InstanceNewParamsInterfaceReservedFixedIPSecurityGroup) MarshalJSON() (d
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// The property Source is required.
-type InstanceNewParamsVolume struct {
-	// Volume source. For `image`, specify `image_id` and `size`. For `new-volume`,
-	// specify `size`. For `existing-volume`, specify `volume_id`. For `snapshot`,
-	// specify `snapshot_id`. For `apptemplate`, specify `apptemplate_id`.
-	//
-	// Any of "apptemplate", "existing-volume", "image", "new-volume", "snapshot".
-	Source string `json:"source,omitzero,required"`
-	// App template ID. Required if `source` is `apptemplate`
-	ApptemplateID param.Opt[string] `json:"apptemplate_id,omitzero"`
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type InstanceNewParamsVolumeUnion struct {
+	OfNewVolume      *InstanceNewParamsVolumeNewVolume      `json:",omitzero,inline"`
+	OfImage          *InstanceNewParamsVolumeImage          `json:",omitzero,inline"`
+	OfSnapshot       *InstanceNewParamsVolumeSnapshot       `json:",omitzero,inline"`
+	OfApptemplate    *InstanceNewParamsVolumeApptemplate    `json:",omitzero,inline"`
+	OfExistingVolume *InstanceNewParamsVolumeExistingVolume `json:",omitzero,inline"`
+	paramUnion
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (u InstanceNewParamsVolumeUnion) IsPresent() bool { return !param.IsOmitted(u) && !u.IsNull() }
+func (u InstanceNewParamsVolumeUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion[InstanceNewParamsVolumeUnion](u.OfNewVolume,
+		u.OfImage,
+		u.OfSnapshot,
+		u.OfApptemplate,
+		u.OfExistingVolume)
+}
+
+func (u *InstanceNewParamsVolumeUnion) asAny() any {
+	if !param.IsOmitted(u.OfNewVolume) {
+		return u.OfNewVolume
+	} else if !param.IsOmitted(u.OfImage) {
+		return u.OfImage
+	} else if !param.IsOmitted(u.OfSnapshot) {
+		return u.OfSnapshot
+	} else if !param.IsOmitted(u.OfApptemplate) {
+		return u.OfApptemplate
+	} else if !param.IsOmitted(u.OfExistingVolume) {
+		return u.OfExistingVolume
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InstanceNewParamsVolumeUnion) GetImageID() *string {
+	if vt := u.OfImage; vt != nil {
+		return &vt.ImageID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InstanceNewParamsVolumeUnion) GetSnapshotID() *string {
+	if vt := u.OfSnapshot; vt != nil {
+		return &vt.SnapshotID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InstanceNewParamsVolumeUnion) GetApptemplateID() *string {
+	if vt := u.OfApptemplate; vt != nil {
+		return &vt.ApptemplateID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InstanceNewParamsVolumeUnion) GetVolumeID() *string {
+	if vt := u.OfExistingVolume; vt != nil {
+		return &vt.VolumeID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InstanceNewParamsVolumeUnion) GetSize() *int64 {
+	if vt := u.OfNewVolume; vt != nil {
+		return (*int64)(&vt.Size)
+	} else if vt := u.OfImage; vt != nil && vt.Size.IsPresent() {
+		return &vt.Size.Value
+	} else if vt := u.OfSnapshot; vt != nil {
+		return (*int64)(&vt.Size)
+	} else if vt := u.OfApptemplate; vt != nil && vt.Size.IsPresent() {
+		return &vt.Size.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InstanceNewParamsVolumeUnion) GetSource() *string {
+	if vt := u.OfNewVolume; vt != nil {
+		return (*string)(&vt.Source)
+	} else if vt := u.OfImage; vt != nil {
+		return (*string)(&vt.Source)
+	} else if vt := u.OfSnapshot; vt != nil {
+		return (*string)(&vt.Source)
+	} else if vt := u.OfApptemplate; vt != nil {
+		return (*string)(&vt.Source)
+	} else if vt := u.OfExistingVolume; vt != nil {
+		return (*string)(&vt.Source)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InstanceNewParamsVolumeUnion) GetAttachmentTag() *string {
+	if vt := u.OfNewVolume; vt != nil && vt.AttachmentTag.IsPresent() {
+		return &vt.AttachmentTag.Value
+	} else if vt := u.OfImage; vt != nil && vt.AttachmentTag.IsPresent() {
+		return &vt.AttachmentTag.Value
+	} else if vt := u.OfSnapshot; vt != nil && vt.AttachmentTag.IsPresent() {
+		return &vt.AttachmentTag.Value
+	} else if vt := u.OfApptemplate; vt != nil && vt.AttachmentTag.IsPresent() {
+		return &vt.AttachmentTag.Value
+	} else if vt := u.OfExistingVolume; vt != nil && vt.AttachmentTag.IsPresent() {
+		return &vt.AttachmentTag.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InstanceNewParamsVolumeUnion) GetDeleteOnTermination() *bool {
+	if vt := u.OfNewVolume; vt != nil && vt.DeleteOnTermination.IsPresent() {
+		return &vt.DeleteOnTermination.Value
+	} else if vt := u.OfImage; vt != nil && vt.DeleteOnTermination.IsPresent() {
+		return &vt.DeleteOnTermination.Value
+	} else if vt := u.OfSnapshot; vt != nil && vt.DeleteOnTermination.IsPresent() {
+		return &vt.DeleteOnTermination.Value
+	} else if vt := u.OfApptemplate; vt != nil && vt.DeleteOnTermination.IsPresent() {
+		return &vt.DeleteOnTermination.Value
+	} else if vt := u.OfExistingVolume; vt != nil && vt.DeleteOnTermination.IsPresent() {
+		return &vt.DeleteOnTermination.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InstanceNewParamsVolumeUnion) GetName() *string {
+	if vt := u.OfNewVolume; vt != nil && vt.Name.IsPresent() {
+		return &vt.Name.Value
+	} else if vt := u.OfImage; vt != nil && vt.Name.IsPresent() {
+		return &vt.Name.Value
+	} else if vt := u.OfSnapshot; vt != nil && vt.Name.IsPresent() {
+		return &vt.Name.Value
+	} else if vt := u.OfApptemplate; vt != nil && vt.Name.IsPresent() {
+		return &vt.Name.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InstanceNewParamsVolumeUnion) GetTypeName() *string {
+	if vt := u.OfNewVolume; vt != nil {
+		return (*string)(&vt.TypeName)
+	} else if vt := u.OfImage; vt != nil {
+		return (*string)(&vt.TypeName)
+	} else if vt := u.OfSnapshot; vt != nil {
+		return (*string)(&vt.TypeName)
+	} else if vt := u.OfApptemplate; vt != nil {
+		return (*string)(&vt.TypeName)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InstanceNewParamsVolumeUnion) GetBootIndex() *int64 {
+	if vt := u.OfImage; vt != nil && vt.BootIndex.IsPresent() {
+		return &vt.BootIndex.Value
+	} else if vt := u.OfSnapshot; vt != nil && vt.BootIndex.IsPresent() {
+		return &vt.BootIndex.Value
+	} else if vt := u.OfApptemplate; vt != nil && vt.BootIndex.IsPresent() {
+		return &vt.BootIndex.Value
+	} else if vt := u.OfExistingVolume; vt != nil && vt.BootIndex.IsPresent() {
+		return &vt.BootIndex.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's Tags property, if present.
+func (u InstanceNewParamsVolumeUnion) GetTags() TagUpdateList {
+	if vt := u.OfNewVolume; vt != nil {
+		return vt.Tags
+	} else if vt := u.OfImage; vt != nil {
+		return vt.Tags
+	} else if vt := u.OfSnapshot; vt != nil {
+		return vt.Tags
+	} else if vt := u.OfApptemplate; vt != nil {
+		return vt.Tags
+	} else if vt := u.OfExistingVolume; vt != nil {
+		return vt.Tags
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[InstanceNewParamsVolumeUnion](
+		"source",
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(InstanceNewParamsVolumeNewVolume{}),
+			DiscriminatorValue: "new-volume",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(InstanceNewParamsVolumeImage{}),
+			DiscriminatorValue: "image",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(InstanceNewParamsVolumeSnapshot{}),
+			DiscriminatorValue: "snapshot",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(InstanceNewParamsVolumeApptemplate{}),
+			DiscriminatorValue: "apptemplate",
+		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(InstanceNewParamsVolumeExistingVolume{}),
+			DiscriminatorValue: "existing-volume",
+		},
+	)
+}
+
+// The properties Size, Source are required.
+type InstanceNewParamsVolumeNewVolume struct {
+	// Volume size in GiB.
+	Size int64 `json:"size,required"`
 	// Block device attachment tag (not exposed in the normal tags)
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// 0 means that this is the primary boot device. A unique positive value is set for
-	// the other bootable devices. A negative number means that the boot is prohibited.
-	BootIndex param.Opt[int64] `json:"boot_index,omitzero"`
-	// Whether the volume should be deleted along with the VM
+	// Set to `true` to automatically delete the volume when the instance is deleted.
 	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
-	// Image ID. Required if `source` is `image`
-	ImageID param.Opt[string] `json:"image_id,omitzero" format:"uuid4"`
 	// The name of the volume. If not specified, a name will be generated
 	// automatically.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Required when the `source` is either `new-volume` or `image`. If specified for
-	// the `snapshot` or `existing-volume` `source`, the value must match the size of
-	// the snapshot or the existing volume, respectively.
-	Size param.Opt[int64] `json:"size,omitzero"`
-	// Volume snapshot ID. Required if `source` is `snapshot`
-	SnapshotID param.Opt[string] `json:"snapshot_id,omitzero" format:"uuid4"`
-	// Volume ID. Required if `source` is `existing-volume`
-	VolumeID param.Opt[string] `json:"volume_id,omitzero" format:"uuid4"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
 	Tags TagUpdateList `json:"tags,omitzero"`
-	// Volume type name. Supported values: `standard` – Network SSD block storage
-	// offering stable performance with high random I/O and data reliability (6 IOPS
-	// per 1 GiB, 0.4 MB/s per 1 GiB). Max IOPS: 4500. Max bandwidth: 300 MB/s.
-	// `ssd_hiiops` – High-performance SSD storage for latency-sensitive transactional
-	// workloads (60 IOPS per 1 GiB, 2.5 MB/s per 1 GiB). Max IOPS: 9000. Max
-	// bandwidth: 500 MB/s. `ssd_lowlatency` – SSD storage optimized for low-latency
-	// and real-time processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and
-	// volume resizing are not supported for `ssd_lowlatency`.
+	// Volume type name. Supported values:
+	//
+	//   - `standard` - Network SSD block storage offering stable performance with high
+	//     random I/O and data reliability (6 IOPS per 1 GiB, 0.4 MB/s per 1 GiB). Max
+	//     IOPS: 4500. Max bandwidth: 300 MB/s.
+	//   - `ssd_hiiops` - High-performance SSD storage for latency-sensitive
+	//     transactional workloads (60 IOPS per 1 GiB, 2.5 MB/s per 1 GiB). Max
+	//     IOPS: 9000. Max bandwidth: 500 MB/s.
+	//   - `ssd_lowlatency` - SSD storage optimized for low-latency and real-time
+	//     processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and volume
+	//     resizing are **not** supported for `ssd_lowlatency`.
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`
+	// New volume will be created from scratch and attached to the instance.
+	//
+	// This field can be elided, and will marshal its zero value as "new-volume".
+	Source constant.NewVolume `json:"source,required"`
 	paramObj
 }
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f InstanceNewParamsVolume) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
-func (r InstanceNewParamsVolume) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsVolume
+func (f InstanceNewParamsVolumeNewVolume) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r InstanceNewParamsVolumeNewVolume) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsVolumeNewVolume
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 func init() {
-	apijson.RegisterFieldValidator[InstanceNewParamsVolume](
-		"Source", false, "apptemplate", "existing-volume", "image", "new-volume", "snapshot",
-	)
-	apijson.RegisterFieldValidator[InstanceNewParamsVolume](
+	apijson.RegisterFieldValidator[InstanceNewParamsVolumeNewVolume](
 		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
 	)
+}
+
+// The properties ImageID, Source are required.
+type InstanceNewParamsVolumeImage struct {
+	// Image ID.
+	ImageID string `json:"image_id,required" format:"uuid4"`
+	// Block device attachment tag (not exposed in the normal tags)
+	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
+	// - `0` means that this is the primary boot device;
+	// - A unique positive value is set for the secondary bootable devices;
+	// - A negative number means that the boot is prohibited.
+	BootIndex param.Opt[int64] `json:"boot_index,omitzero"`
+	// Set to `true` to automatically delete the volume when the instance is deleted.
+	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
+	// The name of the volume. If not specified, a name will be generated
+	// automatically.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Volume size in GiB.
+	//
+	// - For instances: **specify the desired volume size explicitly**.
+	// - For basic VMs: the size is set automatically based on the flavor.
+	Size param.Opt[int64] `json:"size,omitzero"`
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
+	Tags TagUpdateList `json:"tags,omitzero"`
+	// Volume type name. Supported values:
+	//
+	//   - `standard` - Network SSD block storage offering stable performance with high
+	//     random I/O and data reliability (6 IOPS per 1 GiB, 0.4 MB/s per 1 GiB). Max
+	//     IOPS: 4500. Max bandwidth: 300 MB/s.
+	//   - `ssd_hiiops` - High-performance SSD storage for latency-sensitive
+	//     transactional workloads (60 IOPS per 1 GiB, 2.5 MB/s per 1 GiB). Max
+	//     IOPS: 9000. Max bandwidth: 500 MB/s.
+	//   - `ssd_lowlatency` - SSD storage optimized for low-latency and real-time
+	//     processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and volume
+	//     resizing are **not** supported for `ssd_lowlatency`.
+	//
+	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
+	TypeName string `json:"type_name,omitzero"`
+	// New volume will be created from the image and attached to the instance. Specify
+	// `boot_index=0` to boot from this volume.
+	//
+	// This field can be elided, and will marshal its zero value as "image".
+	Source constant.Image `json:"source,required"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f InstanceNewParamsVolumeImage) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r InstanceNewParamsVolumeImage) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsVolumeImage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InstanceNewParamsVolumeImage](
+		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+	)
+}
+
+// The properties Size, SnapshotID, Source are required.
+type InstanceNewParamsVolumeSnapshot struct {
+	// Volume size in GiB.
+	Size int64 `json:"size,required"`
+	// Snapshot ID.
+	SnapshotID string `json:"snapshot_id,required" format:"uuid4"`
+	// Block device attachment tag (not exposed in the normal tags)
+	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
+	// - `0` means that this is the primary boot device;
+	// - A unique positive value is set for the secondary bootable devices;
+	// - A negative number means that the boot is prohibited.
+	BootIndex param.Opt[int64] `json:"boot_index,omitzero"`
+	// Set to `true` to automatically delete the volume when the instance is deleted.
+	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
+	// The name of the volume. If not specified, a name will be generated
+	// automatically.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
+	Tags TagUpdateList `json:"tags,omitzero"`
+	// Specifies the volume type. If omitted, the type from the source volume will be
+	// used by default.
+	//
+	// Any of "ssd_hiiops", "standard".
+	TypeName string `json:"type_name,omitzero"`
+	// New volume will be created from the snapshot and attached to the instance.
+	//
+	// This field can be elided, and will marshal its zero value as "snapshot".
+	Source constant.Snapshot `json:"source,required"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f InstanceNewParamsVolumeSnapshot) IsPresent() bool { return !param.IsOmitted(f) && !f.IsNull() }
+func (r InstanceNewParamsVolumeSnapshot) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsVolumeSnapshot
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InstanceNewParamsVolumeSnapshot](
+		"TypeName", false, "ssd_hiiops", "standard",
+	)
+}
+
+// The properties ApptemplateID, Source are required.
+type InstanceNewParamsVolumeApptemplate struct {
+	// App template ID.
+	ApptemplateID string `json:"apptemplate_id,required"`
+	// Block device attachment tag (not exposed in the normal tags)
+	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
+	// - `0` means that this is the primary boot device;
+	// - A unique positive value is set for the secondary bootable devices;
+	// - A negative number means that the boot is prohibited.
+	BootIndex param.Opt[int64] `json:"boot_index,omitzero"`
+	// Set to `true` to automatically delete the volume when the instance is deleted.
+	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
+	// The name of the volume. If not specified, a name will be generated
+	// automatically.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Volume size in GiB.
+	Size param.Opt[int64] `json:"size,omitzero"`
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
+	Tags TagUpdateList `json:"tags,omitzero"`
+	// Volume type name. Supported values:
+	//
+	//   - `standard` - Network SSD block storage offering stable performance with high
+	//     random I/O and data reliability (6 IOPS per 1 GiB, 0.4 MB/s per 1 GiB). Max
+	//     IOPS: 4500. Max bandwidth: 300 MB/s.
+	//   - `ssd_hiiops` - High-performance SSD storage for latency-sensitive
+	//     transactional workloads (60 IOPS per 1 GiB, 2.5 MB/s per 1 GiB). Max
+	//     IOPS: 9000. Max bandwidth: 500 MB/s.
+	//   - `ssd_lowlatency` - SSD storage optimized for low-latency and real-time
+	//     processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and volume
+	//     resizing are **not** supported for `ssd_lowlatency`.
+	//
+	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
+	TypeName string `json:"type_name,omitzero"`
+	// New volume will be created from the app template and attached to the instance.
+	//
+	// This field can be elided, and will marshal its zero value as "apptemplate".
+	Source constant.Apptemplate `json:"source,required"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f InstanceNewParamsVolumeApptemplate) IsPresent() bool {
+	return !param.IsOmitted(f) && !f.IsNull()
+}
+func (r InstanceNewParamsVolumeApptemplate) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsVolumeApptemplate
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InstanceNewParamsVolumeApptemplate](
+		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+	)
+}
+
+// The properties Source, VolumeID are required.
+type InstanceNewParamsVolumeExistingVolume struct {
+	// Volume ID.
+	VolumeID string `json:"volume_id,required" format:"uuid4"`
+	// Block device attachment tag (not exposed in the normal tags)
+	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
+	// - `0` means that this is the primary boot device;
+	// - A unique positive value is set for the secondary bootable devices;
+	// - A negative number means that the boot is prohibited.
+	BootIndex param.Opt[int64] `json:"boot_index,omitzero"`
+	// Set to `true` to automatically delete the volume when the instance is deleted.
+	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Some tags are read-only and cannot be
+	// modified by the user. Tags are also integrated with cost reports, allowing cost
+	// data to be filtered based on tag keys or values.
+	Tags TagUpdateList `json:"tags,omitzero"`
+	// Existing available volume will be attached to the instance.
+	//
+	// This field can be elided, and will marshal its zero value as "existing-volume".
+	Source constant.ExistingVolume `json:"source,required"`
+	paramObj
+}
+
+// IsPresent returns true if the field's value is not omitted and not the JSON
+// "null". To check if this field is omitted, use [param.IsOmitted].
+func (f InstanceNewParamsVolumeExistingVolume) IsPresent() bool {
+	return !param.IsOmitted(f) && !f.IsNull()
+}
+func (r InstanceNewParamsVolumeExistingVolume) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsVolumeExistingVolume
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // The property ID is required.

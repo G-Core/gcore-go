@@ -49,7 +49,7 @@ func NewGPUBaremetalClusterService(opts ...option.RequestOption) (r GPUBaremetal
 	return
 }
 
-// Create a new GPU cluster.
+// Create bare metal GPU cluster
 func (r *GPUBaremetalClusterService) New(ctx context.Context, params GPUBaremetalClusterNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -71,7 +71,7 @@ func (r *GPUBaremetalClusterService) New(ctx context.Context, params GPUBaremeta
 	return
 }
 
-// List GPU clusters
+// List bare metal GPU clusters
 func (r *GPUBaremetalClusterService) List(ctx context.Context, params GPUBaremetalClusterListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[GPUBaremetalCluster], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -103,12 +103,12 @@ func (r *GPUBaremetalClusterService) List(ctx context.Context, params GPUBaremet
 	return res, nil
 }
 
-// List GPU clusters
+// List bare metal GPU clusters
 func (r *GPUBaremetalClusterService) ListAutoPaging(ctx context.Context, params GPUBaremetalClusterListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[GPUBaremetalCluster] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Delete GPU cluster
+// Delete bare metal GPU cluster
 func (r *GPUBaremetalClusterService) Delete(ctx context.Context, clusterID string, params GPUBaremetalClusterDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -134,7 +134,7 @@ func (r *GPUBaremetalClusterService) Delete(ctx context.Context, clusterID strin
 	return
 }
 
-// Get GPU cluster
+// Get bare metal GPU cluster
 func (r *GPUBaremetalClusterService) Get(ctx context.Context, clusterID string, query GPUBaremetalClusterGetParams, opts ...option.RequestOption) (res *GPUBaremetalCluster, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -160,7 +160,7 @@ func (r *GPUBaremetalClusterService) Get(ctx context.Context, clusterID string, 
 	return
 }
 
-// Powercycle (stop and start) all GPU cluster nodes, aka hard reboot
+// Stops and then starts all cluster servers, effectively performing a hard reboot.
 func (r *GPUBaremetalClusterService) PowercycleAllServers(ctx context.Context, clusterID string, body GPUBaremetalClusterPowercycleAllServersParams, opts ...option.RequestOption) (res *GPUClusterServerList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -186,7 +186,7 @@ func (r *GPUBaremetalClusterService) PowercycleAllServers(ctx context.Context, c
 	return
 }
 
-// Reboot all GPU cluster nodes
+// Reboot all bare metal GPU cluster servers
 func (r *GPUBaremetalClusterService) RebootAllServers(ctx context.Context, clusterID string, body GPUBaremetalClusterRebootAllServersParams, opts ...option.RequestOption) (res *GPUClusterServerList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -212,8 +212,7 @@ func (r *GPUBaremetalClusterService) RebootAllServers(ctx context.Context, clust
 	return
 }
 
-// Rebuild one or many nodes from GPU cluster. All cluster nodes need to be
-// provided to change the cluster image.
+// All cluster nodes must be specified to update the cluster image.
 func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID string, params GPUBaremetalClusterRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -239,7 +238,7 @@ func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID stri
 	return
 }
 
-// Resize an existing AI GPU cluster.
+// Resize bare metal GPU cluster
 func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID string, params GPUBaremetalClusterResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -754,25 +753,16 @@ type GPUBaremetalClusterNewParams struct {
 	Flavor string `json:"flavor,required"`
 	// Image ID
 	ImageID string `json:"image_id,required" format:"uuid4"`
-	// Subnet IPs and floating IPs
+	// A list of network interfaces for the server. You can create one or more
+	// interfaces - private, public, or both.
 	Interfaces []GPUBaremetalClusterNewParamsInterfaceUnion `json:"interfaces,omitzero,required"`
 	// GPU Cluster name
 	Name string `json:"name,required"`
 	// Number of servers to create
 	InstancesCount param.Opt[int64] `json:"instances_count,omitzero"`
-	// A password for a bare metal server. This parameter is used to set a password for
-	// the "Admin" user on a Windows instance, a default user or a new user on a Linux
-	// instance
-	Password param.Opt[string] `json:"password,omitzero"`
-	// Specifies the name of the SSH keypair, created via the `/v1/ssh_keys` endpoint.
+	// Specifies the name of the SSH keypair, created via the
+	// <a href="#operation/SSHKeyCollectionViewSet.post">/v1/ssh_keys endpoint</a>.
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
-	// String in base64 format. Must not be passed together with 'username' or
-	// 'password'. Examples of the user_data:
-	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html
-	UserData param.Opt[string] `json:"user_data,omitzero"`
-	// A name of a new user in the Linux instance. It may be passed with a 'password'
-	// parameter
-	Username param.Opt[string] `json:"username,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Some tags are read-only and cannot be
@@ -795,10 +785,9 @@ func (r GPUBaremetalClusterNewParams) MarshalJSON() (data []byte, err error) {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type GPUBaremetalClusterNewParamsInterfaceUnion struct {
-	OfExternal        *GPUBaremetalClusterNewParamsInterfaceExternal        `json:",omitzero,inline"`
-	OfSubnet          *GPUBaremetalClusterNewParamsInterfaceSubnet          `json:",omitzero,inline"`
-	OfAnySubnet       *GPUBaremetalClusterNewParamsInterfaceAnySubnet       `json:",omitzero,inline"`
-	OfReservedFixedIP *GPUBaremetalClusterNewParamsInterfaceReservedFixedIP `json:",omitzero,inline"`
+	OfExternal  *GPUBaremetalClusterNewParamsInterfaceExternal  `json:",omitzero,inline"`
+	OfSubnet    *GPUBaremetalClusterNewParamsInterfaceSubnet    `json:",omitzero,inline"`
+	OfAnySubnet *GPUBaremetalClusterNewParamsInterfaceAnySubnet `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -808,7 +797,7 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) IsPresent() bool {
 	return !param.IsOmitted(u) && !u.IsNull()
 }
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
+	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet)
 }
 
 func (u *GPUBaremetalClusterNewParamsInterfaceUnion) asAny() any {
@@ -818,8 +807,6 @@ func (u *GPUBaremetalClusterNewParamsInterfaceUnion) asAny() any {
 		return u.OfSubnet
 	} else if !param.IsOmitted(u.OfAnySubnet) {
 		return u.OfAnySubnet
-	} else if !param.IsOmitted(u.OfReservedFixedIP) {
-		return u.OfReservedFixedIP
 	}
 	return nil
 }
@@ -841,22 +828,12 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetIPAddress() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetPortID() *string {
-	if vt := u.OfReservedFixedIP; vt != nil {
-		return &vt.PortID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetType() *string {
 	if vt := u.OfExternal; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSubnet; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfAnySubnet; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfReservedFixedIP; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -870,8 +847,6 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetInterfaceName() *string {
 		return &vt.InterfaceName.Value
 	} else if vt := u.OfAnySubnet; vt != nil && vt.InterfaceName.IsPresent() {
 		return &vt.InterfaceName.Value
-	} else if vt := u.OfReservedFixedIP; vt != nil && vt.InterfaceName.IsPresent() {
-		return &vt.InterfaceName.Value
 	}
 	return nil
 }
@@ -882,20 +857,6 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetIPFamily() *string {
 		return (*string)(&vt.IPFamily)
 	} else if vt := u.OfAnySubnet; vt != nil {
 		return (*string)(&vt.IPFamily)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetPortGroup() *int64 {
-	if vt := u.OfExternal; vt != nil && vt.PortGroup.IsPresent() {
-		return &vt.PortGroup.Value
-	} else if vt := u.OfSubnet; vt != nil && vt.PortGroup.IsPresent() {
-		return &vt.PortGroup.Value
-	} else if vt := u.OfAnySubnet; vt != nil && vt.PortGroup.IsPresent() {
-		return &vt.PortGroup.Value
-	} else if vt := u.OfReservedFixedIP; vt != nil && vt.PortGroup.IsPresent() {
-		return &vt.PortGroup.Value
 	}
 	return nil
 }
@@ -913,70 +874,25 @@ func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetNetworkID() *string {
 // Returns a subunion which exports methods to access subproperties
 //
 // Or use AsAny() to get the underlying value
-func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetSecurityGroups() (res gpuBaremetalClusterNewParamsInterfaceUnionSecurityGroups) {
-	if vt := u.OfExternal; vt != nil {
-		res.any = &vt.SecurityGroups
-	} else if vt := u.OfSubnet; vt != nil {
-		res.any = &vt.SecurityGroups
-	} else if vt := u.OfAnySubnet; vt != nil {
-		res.any = &vt.SecurityGroups
-	} else if vt := u.OfReservedFixedIP; vt != nil {
-		res.any = &vt.SecurityGroups
-	}
-	return
-}
-
-// Can have the runtime types
-// [_[]GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup],
-// [_[]GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup],
-// [_[]GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup],
-// [_[]GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup]
-type gpuBaremetalClusterNewParamsInterfaceUnionSecurityGroups struct{ any }
-
-// Use the following switch statement to get the type of the union:
-//
-//	switch u.AsAny().(type) {
-//	case *[]cloud.GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup:
-//	case *[]cloud.GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup:
-//	case *[]cloud.GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup:
-//	case *[]cloud.GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup:
-//	default:
-//	    fmt.Errorf("not present")
-//	}
-func (u gpuBaremetalClusterNewParamsInterfaceUnionSecurityGroups) AsAny() any { return u.any }
-
-// Returns a subunion which exports methods to access subproperties
-//
-// Or use AsAny() to get the underlying value
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) GetFloatingIP() (res gpuBaremetalClusterNewParamsInterfaceUnionFloatingIP) {
 	if vt := u.OfSubnet; vt != nil {
-		res.any = vt.FloatingIP.asAny()
+		res.any = &vt.FloatingIP
 	} else if vt := u.OfAnySubnet; vt != nil {
-		res.any = vt.FloatingIP.asAny()
-	} else if vt := u.OfReservedFixedIP; vt != nil {
-		res.any = vt.FloatingIP.asAny()
+		res.any = &vt.FloatingIP
 	}
 	return
 }
 
 // Can have the runtime types
-// [*GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew],
-// [*GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting],
-// [*GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew],
-// [*GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting],
-// [*GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew],
-// [*GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting]
+// [*GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP],
+// [*GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP]
 type gpuBaremetalClusterNewParamsInterfaceUnionFloatingIP struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
-//	case *cloud.GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew:
-//	case *cloud.GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting:
-//	case *cloud.GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew:
-//	case *cloud.GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting:
-//	case *cloud.GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew:
-//	case *cloud.GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting:
+//	case *cloud.GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP:
+//	case *cloud.GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -985,25 +901,10 @@ func (u gpuBaremetalClusterNewParamsInterfaceUnionFloatingIP) AsAny() any { retu
 // Returns a pointer to the underlying variant's property, if present.
 func (u gpuBaremetalClusterNewParamsInterfaceUnionFloatingIP) GetSource() *string {
 	switch vt := u.any.(type) {
-	case *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion:
-		return vt.GetSource()
-	case *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion:
-		return vt.GetSource()
-	case *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion:
-		return vt.GetSource()
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u gpuBaremetalClusterNewParamsInterfaceUnionFloatingIP) GetExistingFloatingID() *string {
-	switch vt := u.any.(type) {
-	case *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion:
-		return vt.GetExistingFloatingID()
-	case *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion:
-		return vt.GetExistingFloatingID()
-	case *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion:
-		return vt.GetExistingFloatingID()
+	case *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP:
+		return (*string)(&vt.Source)
+	case *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP:
+		return (*string)(&vt.Source)
 	}
 	return nil
 }
@@ -1026,31 +927,19 @@ func init() {
 			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceAnySubnet{}),
 			DiscriminatorValue: "any_subnet",
 		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceReservedFixedIP{}),
-			DiscriminatorValue: "reserved_fixed_ip",
-		},
 	)
 }
 
-// Instance will be attached to default external network
-//
 // The property Type is required.
 type GPUBaremetalClusterNewParamsInterfaceExternal struct {
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Applicable only to bare metal. Each group is added to a separate trunk.
-	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// Applies only to instances and is ignored for bare metal. Specifies security
-	// group UUIDs to be applied to the instance network interface.
-	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup `json:"security_groups,omitzero"`
-	// A public IP address will be assigned to the instance.
+	// A public IP address will be assigned to the server.
 	//
 	// This field can be elided, and will marshal its zero value as "external".
 	Type constant.External `json:"type,required"`
@@ -1067,43 +956,17 @@ func (r GPUBaremetalClusterNewParamsInterfaceExternal) MarshalJSON() (data []byt
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// The property ID is required.
-type GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup struct {
-	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceExternalSecurityGroup
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// The instance will get an IP address from the selected network. If you choose to
-// add a floating IP, the instance will be reachable from the internet. Otherwise,
-// it will only have a private IP within the network.
-//
 // The properties NetworkID, SubnetID, Type are required.
 type GPUBaremetalClusterNewParamsInterfaceSubnet struct {
-	// The network where the instance will be connected.
+	// The network where the server will be connected.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
-	// The instance will get an IP address from this subnet.
+	// The server will get an IP address from this subnet.
 	SubnetID string `json:"subnet_id,required" format:"uuid4"`
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Applicable only to bare metal. Each group is added to a separate trunk.
-	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Allows the instance to have a public IP that can be reached from the internet.
-	FloatingIP GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// Applies only to instances and is ignored for bare metal. Specifies security
-	// group UUIDs to be applied to the instance network interface.
-	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup `json:"security_groups,omitzero"`
+	// Floating IP config for this subnet attachment
+	FloatingIP GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP `json:"floating_ip,omitzero"`
 	// The instance will get an IP address from the selected network. If you choose to
 	// add a floating IP, the instance will be reachable from the internet. Otherwise,
 	// it will only have a private IP within the network.
@@ -1123,157 +986,47 @@ func (r GPUBaremetalClusterNewParamsInterfaceSubnet) MarshalJSON() (data []byte,
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion struct {
-	OfNew      *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew      `json:",omitzero,inline"`
-	OfExisting *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting `json:",omitzero,inline"`
-	paramUnion
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
-func (u GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion](u.OfNew, u.OfExisting)
-}
-
-func (u *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNew) {
-		return u.OfNew
-	} else if !param.IsOmitted(u.OfExisting) {
-		return u.OfExisting
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExisting; vt != nil {
-		return &vt.ExistingFloatingID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNew; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfExisting; vt != nil {
-		return (*string)(&vt.Source)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion](
-		"source",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew{}),
-			DiscriminatorValue: "new",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting{}),
-			DiscriminatorValue: "existing",
-		},
-	)
-}
-
-func NewGPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew() GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew {
-	return GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew{
+func NewGPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP() GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP {
+	return GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP{
 		Source: "new",
 	}
 }
 
+// Floating IP config for this subnet attachment
+//
 // This struct has a constant value, construct it with
-// [NewGPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew].
-type GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew struct {
-	// A new floating IP will be created and attached to the instance. A floating IP is
-	// a public IP that makes the instance accessible from the internet, even if it
-	// only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
+// [NewGPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP].
+type GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP struct {
 	Source constant.New `json:"source,required"`
 	paramObj
 }
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// The properties ExistingFloatingID, Source are required.
-type GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting struct {
-	// An existing available floating IP id must be specified if the source is set to
-	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// An existing available floating IP will be attached to the instance. A floating
-	// IP is a public IP that makes the instance accessible from the internet, even if
-	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	//
-	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source,required"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPExisting
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// The property ID is required.
-type GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup struct {
-	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup
+func (r GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 // The properties NetworkID, Type are required.
 type GPUBaremetalClusterNewParamsInterfaceAnySubnet struct {
-	// The network where the instance will be connected.
+	// The network where the server will be connected.
 	NetworkID string `json:"network_id,required" format:"uuid4"`
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
 	// You can specify a specific IP address from your subnet.
 	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipvanyaddress"`
-	// Applicable only to bare metal. Each group is added to a separate trunk.
-	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Allows the instance to have a public IP that can be reached from the internet.
-	FloatingIP GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion `json:"floating_ip,omitzero"`
+	// Allows the server to have a public IP that can be reached from the internet.
+	FloatingIP GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP `json:"floating_ip,omitzero"`
 	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// Applies only to instances and is ignored for bare metal. Specifies security
-	// group UUIDs to be applied to the instance network interface.
-	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup `json:"security_groups,omitzero"`
-	// Instance will be attached to a subnet with the largest count of free IPs.
+	// Server will be attached to a subnet with the largest count of free IPs.
 	//
 	// This field can be elided, and will marshal its zero value as "any_subnet".
 	Type constant.AnySubnet `json:"type,required"`
@@ -1290,297 +1043,28 @@ func (r GPUBaremetalClusterNewParamsInterfaceAnySubnet) MarshalJSON() (data []by
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion struct {
-	OfNew      *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew      `json:",omitzero,inline"`
-	OfExisting *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting `json:",omitzero,inline"`
-	paramUnion
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
-func (u GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion](u.OfNew, u.OfExisting)
-}
-
-func (u *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNew) {
-		return u.OfNew
-	} else if !param.IsOmitted(u.OfExisting) {
-		return u.OfExisting
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExisting; vt != nil {
-		return &vt.ExistingFloatingID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNew; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfExisting; vt != nil {
-		return (*string)(&vt.Source)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPUnion](
-		"source",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew{}),
-			DiscriminatorValue: "new",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting{}),
-			DiscriminatorValue: "existing",
-		},
-	)
-}
-
-func NewGPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew() GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew {
-	return GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew{
+func NewGPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP() GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP {
+	return GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP{
 		Source: "new",
 	}
 }
 
+// Allows the server to have a public IP that can be reached from the internet.
+//
 // This struct has a constant value, construct it with
-// [NewGPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew].
-type GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew struct {
-	// A new floating IP will be created and attached to the instance. A floating IP is
-	// a public IP that makes the instance accessible from the internet, even if it
-	// only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
+// [NewGPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP].
+type GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP struct {
 	Source constant.New `json:"source,required"`
 	paramObj
 }
 
 // IsPresent returns true if the field's value is not omitted and not the JSON
 // "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew) IsPresent() bool {
+func (f GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP) IsPresent() bool {
 	return !param.IsOmitted(f) && !f.IsNull()
 }
-func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPNew
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// The properties ExistingFloatingID, Source are required.
-type GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting struct {
-	// An existing available floating IP id must be specified if the source is set to
-	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// An existing available floating IP will be attached to the instance. A floating
-	// IP is a public IP that makes the instance accessible from the internet, even if
-	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	//
-	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source,required"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIPExisting
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// The property ID is required.
-type GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup struct {
-	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceAnySubnetSecurityGroup
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// The properties PortID, Type are required.
-type GPUBaremetalClusterNewParamsInterfaceReservedFixedIP struct {
-	// Network ID the subnet belongs to. Port will be plugged in this network.
-	PortID string `json:"port_id,required"`
-	// Interface name. Defaults to `null` and is returned as `null` in the API response
-	// if not set.
-	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Applicable only to bare metal. Each group is added to a separate trunk.
-	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Allows the instance to have a public IP that can be reached from the internet.
-	FloatingIP GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion `json:"floating_ip,omitzero"`
-	// Applies only to instances and is ignored for bare metal. Specifies security
-	// group UUIDs to be applied to the instance network interface.
-	SecurityGroups []GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup `json:"security_groups,omitzero"`
-	// An existing available reserved fixed IP will be attached to the instance. If the
-	// reserved IP is not public and you choose to add a floating IP, the instance will
-	// be accessible from the internet.
-	//
-	// This field can be elided, and will marshal its zero value as
-	// "reserved_fixed_ip".
-	Type constant.ReservedFixedIP `json:"type,required"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceReservedFixedIP) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r GPUBaremetalClusterNewParamsInterfaceReservedFixedIP) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceReservedFixedIP
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
-	OfNew      *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew      `json:",omitzero,inline"`
-	OfExisting *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting `json:",omitzero,inline"`
-	paramUnion
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (u GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion) IsPresent() bool {
-	return !param.IsOmitted(u) && !u.IsNull()
-}
-func (u GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion](u.OfNew, u.OfExisting)
-}
-
-func (u *GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNew) {
-		return u.OfNew
-	} else if !param.IsOmitted(u.OfExisting) {
-		return u.OfExisting
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExisting; vt != nil {
-		return &vt.ExistingFloatingID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNew; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfExisting; vt != nil {
-		return (*string)(&vt.Source)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPUnion](
-		"source",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew{}),
-			DiscriminatorValue: "new",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting{}),
-			DiscriminatorValue: "existing",
-		},
-	)
-}
-
-func NewGPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew() GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew {
-	return GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew{
-		Source: "new",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewGPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew].
-type GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
-	// A new floating IP will be created and attached to the instance. A floating IP is
-	// a public IP that makes the instance accessible from the internet, even if it
-	// only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	Source constant.New `json:"source,required"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPNew
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// The properties ExistingFloatingID, Source are required.
-type GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
-	// An existing available floating IP id must be specified if the source is set to
-	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
-	// An existing available floating IP will be attached to the instance. A floating
-	// IP is a public IP that makes the instance accessible from the internet, even if
-	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	//
-	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source,required"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceReservedFixedIPFloatingIPExisting
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-// The property ID is required.
-type GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup struct {
-	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
-	paramObj
-}
-
-// IsPresent returns true if the field's value is not omitted and not the JSON
-// "null". To check if this field is omitted, use [param.IsOmitted].
-func (f GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup) IsPresent() bool {
-	return !param.IsOmitted(f) && !f.IsNull()
-}
-func (r GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterNewParamsInterfaceReservedFixedIPSecurityGroup
+func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 

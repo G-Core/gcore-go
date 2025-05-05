@@ -42,7 +42,24 @@ func NewBaremetalServerService(opts ...option.RequestOption) (r BaremetalServerS
 	return
 }
 
-// Create a new bare metal server or multiple servers
+// For Linux,
+//
+//   - Use the `user_data` field to provide a
+//     <a href=https://cloudinit.readthedocs.io/en/latest/reference/examples.html>cloud-init
+//     script</a> in base64 to apply configurations to the instance.
+//   - Specify the `username` and `password` to create a new user.
+//   - When only `password` is provided, it is set as the password for the default
+//     user of the image.
+//   - The `user_data` is ignored when the `password` is specified.
+//
+// For Windows,
+//
+//   - Use the `user_data` field to provide a
+//     <a href=https://cloudbase-init.readthedocs.io/en/latest/userdata.html#cloud-config>cloudbase-init
+//     script</a> in base64 to create new users on Windows.
+//   - Use the `password` field to set the password for the 'Admin' user on Windows.
+//   - The password of the Admin user cannot be updated via `user_data`.
+//   - The `username` cannot be specified in the request.
 func (r *BaremetalServerService) New(ctx context.Context, params BaremetalServerNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -183,10 +200,14 @@ func (r *BaremetalFloatingAddress) UnmarshalJSON(data []byte) error {
 }
 
 type BaremetalServer struct {
+	// Bare metal server ID
+	ID string `json:"id,required" format:"uuid4"`
 	// Map of network_name to list of addresses in that network
 	Addresses map[string][]BaremetalServerAddressUnion `json:"addresses,required"`
 	// IP addresses of the instances that are blackholed by DDoS mitigation system
 	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
+	// Datetime when bare metal server was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required"`
 	// Bare metal advanced DDoS protection profile. It is always `null` if query
@@ -194,18 +215,12 @@ type BaremetalServer struct {
 	DDOSProfile DDOSProfile `json:"ddos_profile,required"`
 	// Fixed IP assigned to instance
 	FixedIPAssignments []BaremetalServerFixedIPAssignment `json:"fixed_ip_assignments,required"`
-	// Flavor
+	// Flavor details
 	Flavor BaremetalServerFlavor `json:"flavor,required"`
-	// Datetime when bare metal server was created
-	InstanceCreated time.Time `json:"instance_created,required" format:"date-time"`
-	// Bare metal server description
-	InstanceDescription string `json:"instance_description,required"`
-	// Bare metal server ID
-	InstanceID string `json:"instance_id,required" format:"uuid4"`
 	// Instance isolation information
 	InstanceIsolation InstanceIsolation `json:"instance_isolation,required"`
 	// Bare metal server name
-	InstanceName string `json:"instance_name,required"`
+	Name string `json:"name,required"`
 	// Project ID
 	ProjectID int64 `json:"project_id,required"`
 	// Region name
@@ -241,28 +256,27 @@ type BaremetalServer struct {
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
-		Addresses           resp.Field
-		BlackholePorts      resp.Field
-		CreatorTaskID       resp.Field
-		DDOSProfile         resp.Field
-		FixedIPAssignments  resp.Field
-		Flavor              resp.Field
-		InstanceCreated     resp.Field
-		InstanceDescription resp.Field
-		InstanceID          resp.Field
-		InstanceIsolation   resp.Field
-		InstanceName        resp.Field
-		ProjectID           resp.Field
-		Region              resp.Field
-		RegionID            resp.Field
-		SSHKeyName          resp.Field
-		Status              resp.Field
-		Tags                resp.Field
-		TaskID              resp.Field
-		TaskState           resp.Field
-		VmState             resp.Field
-		ExtraFields         map[string]resp.Field
-		raw                 string
+		ID                 resp.Field
+		Addresses          resp.Field
+		BlackholePorts     resp.Field
+		CreatedAt          resp.Field
+		CreatorTaskID      resp.Field
+		DDOSProfile        resp.Field
+		FixedIPAssignments resp.Field
+		Flavor             resp.Field
+		InstanceIsolation  resp.Field
+		Name               resp.Field
+		ProjectID          resp.Field
+		Region             resp.Field
+		RegionID           resp.Field
+		SSHKeyName         resp.Field
+		Status             resp.Field
+		Tags               resp.Field
+		TaskID             resp.Field
+		TaskState          resp.Field
+		VmState            resp.Field
+		ExtraFields        map[string]resp.Field
+		raw                string
 	} `json:"-"`
 }
 
@@ -336,7 +350,7 @@ func (r *BaremetalServerFixedIPAssignment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Flavor
+// Flavor details
 type BaremetalServerFlavor struct {
 	// CPU architecture
 	Architecture string `json:"architecture,required"`
@@ -459,14 +473,23 @@ type BaremetalServerNewParams struct {
 	// The flavor of the instance.
 	Flavor string `json:"flavor,required"`
 	// A list of network interfaces for the server. You can create one or more
-	// interfaces—private, public, or both.
+	// interfaces - private, public, or both.
 	Interfaces []BaremetalServerNewParamsInterfaceUnion `json:"interfaces,omitzero,required"`
-	// Specifies the name of the SSH keypair, created via the `/v1/ssh_keys` endpoint.
+	// Specifies the name of the SSH keypair, created via the
+	// <a href="#operation/SSHKeyCollectionViewSet.post">/v1/ssh_keys endpoint</a>.
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
 	// Apptemplate ID. Either `image_id` or `apptemplate_id` is required.
 	ApptemplateID param.Opt[string] `json:"apptemplate_id,omitzero"`
 	// Image ID. Either `image_id` or `apptemplate_id` is required.
 	ImageID param.Opt[string] `json:"image_id,omitzero" format:"uuid4"`
+	// Server name.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// If you want server names to be automatically generated based on IP addresses,
+	// you can provide a name template instead of specifying the name manually. The
+	// template should include a placeholder that will be replaced during provisioning.
+	// Supported placeholders are: `{ip_octets}` (last 3 octets of the IP),
+	// `{two_ip_octets}`, and `{one_ip_octet}`.
+	NameTemplate param.Opt[string] `json:"name_template,omitzero"`
 	// For Linux instances, 'username' and 'password' are used to create a new user.
 	// When only 'password' is provided, it is set as the password for the default user
 	// of the image. For Windows instances, 'username' cannot be specified. Use the
@@ -488,14 +511,6 @@ type BaremetalServerNewParams struct {
 	AppConfig any `json:"app_config,omitzero"`
 	// Enable advanced DDoS protection for the server
 	DDOSProfile BaremetalServerNewParamsDDOSProfile `json:"ddos_profile,omitzero"`
-	// If you want server names to be automatically generated using IP octets, you can
-	// specify name templates instead of setting names manually.Provide a list of
-	// templated names that should be replaced using the selected template. The
-	// following template formats are supported: `{ip_octets}`, `{two_ip_octets}`, and
-	// `{one_ip_octet}`.
-	NameTemplates []string `json:"name_templates,omitzero"`
-	// List of server names. Specify one name to create a single server.
-	Names []string `json:"names,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Some tags are read-only and cannot be
@@ -729,7 +744,9 @@ type BaremetalServerNewParamsInterfaceExternal struct {
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Applicable only to bare metal. Each group is added to a separate trunk.
+	// Specifies the trunk group to which this interface belongs. Applicable only for
+	// bare metal servers. Each unique port group is mapped to a separate trunk port.
+	// Use this to control how interfaces are grouped across trunks.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
 	//
@@ -765,7 +782,9 @@ type BaremetalServerNewParamsInterfaceSubnet struct {
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Applicable only to bare metal. Each group is added to a separate trunk.
+	// Specifies the trunk group to which this interface belongs. Applicable only for
+	// bare metal servers. Each unique port group is mapped to a separate trunk port.
+	// Use this to control how interfaces are grouped across trunks.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion `json:"floating_ip,omitzero"`
@@ -910,7 +929,9 @@ type BaremetalServerNewParamsInterfaceAnySubnet struct {
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
 	// You can specify a specific IP address from your subnet.
 	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipvanyaddress"`
-	// Applicable only to bare metal. Each group is added to a separate trunk.
+	// Specifies the trunk group to which this interface belongs. Applicable only for
+	// bare metal servers. Each unique port group is mapped to a separate trunk port.
+	// Use this to control how interfaces are grouped across trunks.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion `json:"floating_ip,omitzero"`
@@ -1055,7 +1076,9 @@ type BaremetalServerNewParamsInterfaceReservedFixedIP struct {
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Applicable only to bare metal. Each group is added to a separate trunk.
+	// Specifies the trunk group to which this interface belongs. Applicable only for
+	// bare metal servers. Each unique port group is mapped to a separate trunk port.
+	// Use this to control how interfaces are grouped across trunks.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion `json:"floating_ip,omitzero"`
