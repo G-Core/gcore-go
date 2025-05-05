@@ -35,7 +35,7 @@ func NewGPUBaremetalClusterServerService(opts ...option.RequestOption) (r GPUBar
 	return
 }
 
-// Remove single node from GPU cluster.
+// Delete bare metal GPU server from cluster
 func (r *GPUBaremetalClusterServerService) Delete(ctx context.Context, instanceID string, params GPUBaremetalClusterServerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -65,7 +65,7 @@ func (r *GPUBaremetalClusterServerService) Delete(ctx context.Context, instanceI
 	return
 }
 
-// Attach interface to GPU cluster node
+// Attach interface to bare metal GPU cluster server
 func (r *GPUBaremetalClusterServerService) AttachInterface(ctx context.Context, instanceID string, params GPUBaremetalClusterServerAttachInterfaceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -91,7 +91,7 @@ func (r *GPUBaremetalClusterServerService) AttachInterface(ctx context.Context, 
 	return
 }
 
-// Detach interface from GPU cluster node
+// Detach interface from bare metal GPU cluster server
 func (r *GPUBaremetalClusterServerService) DetachInterface(ctx context.Context, instanceID string, params GPUBaremetalClusterServerDetachInterfaceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -117,7 +117,7 @@ func (r *GPUBaremetalClusterServerService) DetachInterface(ctx context.Context, 
 	return
 }
 
-// Get GPU cluster node console URL
+// Get bare metal GPU cluster server console URL
 func (r *GPUBaremetalClusterServerService) GetConsole(ctx context.Context, instanceID string, query GPUBaremetalClusterServerGetConsoleParams, opts ...option.RequestOption) (res *Console, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -143,7 +143,7 @@ func (r *GPUBaremetalClusterServerService) GetConsole(ctx context.Context, insta
 	return
 }
 
-// Powercycle (stop and start) one GPU cluster node, aka hard reboot
+// Stops and then starts the server, effectively performing a hard reboot.
 func (r *GPUBaremetalClusterServerService) Powercycle(ctx context.Context, instanceID string, body GPUBaremetalClusterServerPowercycleParams, opts ...option.RequestOption) (res *GPUClusterServer, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -169,7 +169,7 @@ func (r *GPUBaremetalClusterServerService) Powercycle(ctx context.Context, insta
 	return
 }
 
-// Reboot one GPU cluster node
+// Reboot one bare metal GPU cluster server
 func (r *GPUBaremetalClusterServerService) Reboot(ctx context.Context, instanceID string, body GPUBaremetalClusterServerRebootParams, opts ...option.RequestOption) (res *GPUClusterServer, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

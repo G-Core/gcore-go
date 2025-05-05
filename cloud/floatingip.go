@@ -290,20 +290,20 @@ func (r *FloatingIPDetailed) UnmarshalJSON(data []byte) error {
 
 // Instance the floating IP is attached to
 type FloatingIPDetailedInstance struct {
+	// Instance ID
+	ID string `json:"id,required" format:"uuid4"`
 	// Map of network_name to list of addresses in that network
 	Addresses map[string][]FloatingIPDetailedInstanceAddressUnion `json:"addresses,required"`
+	// Datetime when instance was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required"`
 	// Flavor
 	Flavor FloatingIPDetailedInstanceFlavor `json:"flavor,required"`
-	// Datetime when instance was created
-	InstanceCreated time.Time `json:"instance_created,required" format:"date-time"`
 	// Instance description
 	InstanceDescription string `json:"instance_description,required"`
-	// Instance ID
-	InstanceID string `json:"instance_id,required" format:"uuid4"`
 	// Instance name
-	InstanceName string `json:"instance_name,required"`
+	Name string `json:"name,required"`
 	// Project ID
 	ProjectID int64 `json:"project_id,required"`
 	// Region name
@@ -343,13 +343,13 @@ type FloatingIPDetailedInstance struct {
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
+		ID                  resp.Field
 		Addresses           resp.Field
+		CreatedAt           resp.Field
 		CreatorTaskID       resp.Field
 		Flavor              resp.Field
-		InstanceCreated     resp.Field
 		InstanceDescription resp.Field
-		InstanceID          resp.Field
-		InstanceName        resp.Field
+		Name                resp.Field
 		ProjectID           resp.Field
 		Region              resp.Field
 		RegionID            resp.Field

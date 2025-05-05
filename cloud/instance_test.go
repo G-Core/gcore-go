@@ -36,32 +36,27 @@ func TestInstanceNewWithOptionalParams(t *testing.T) {
 			OfExternal: &cloud.InstanceNewParamsInterfaceExternal{
 				InterfaceName: gcore.String("eth0"),
 				IPFamily:      cloud.InterfaceIPFamilyIpv4,
-				PortGroup:     gcore.Int(0),
 				SecurityGroups: []cloud.InstanceNewParamsInterfaceExternalSecurityGroup{{
 					ID: "ae74714c-c380-48b4-87f8-758d656cdad6",
 				}},
 			},
 		}},
-		Volumes: []cloud.InstanceNewParamsVolume{{
-			Source:              "image",
-			ApptemplateID:       gcore.String("grafana"),
-			AttachmentTag:       gcore.String("root"),
-			BootIndex:           gcore.Int(0),
-			DeleteOnTermination: gcore.Bool(false),
-			ImageID:             gcore.String("f01fd9a0-9548-48ba-82dc-a8c8b2d6f2f1"),
-			Name:                gcore.String("boot-volume"),
-			Size:                gcore.Int(10),
-			SnapshotID:          gcore.String("f01fd9a0-9548-48ba-82dc-a8c8b2d6f2f1"),
-			Tags: cloud.TagUpdateList{
-				"foo": "my-tag-value",
+		Volumes: []cloud.InstanceNewParamsVolumeUnion{{
+			OfNewVolume: &cloud.InstanceNewParamsVolumeNewVolume{
+				Size:                20,
+				AttachmentTag:       gcore.String("boot"),
+				DeleteOnTermination: gcore.Bool(false),
+				Name:                gcore.String("boot-volume"),
+				Tags: cloud.TagUpdateList{
+					"foo": "my-tag-value",
+				},
+				TypeName: "ssd_hiiops",
 			},
-			TypeName: "ssd_hiiops",
-			VolumeID: gcore.String("f01fd9a0-9548-48ba-82dc-a8c8b2d6f2f1"),
 		}},
 		AllowAppPorts: gcore.Bool(true),
 		Configuration: map[string]interface{}{},
-		NameTemplates: []string{"my-instance-{ip_octets}"},
-		Names:         []string{"my-instance"},
+		Name:          gcore.String("my-instance"),
+		NameTemplate:  gcore.String("name_template"),
 		Password:      gcore.String("password"),
 		SecurityGroups: []cloud.InstanceNewParamsSecurityGroup{{
 			ID: "ae74714c-c380-48b4-87f8-758d656cdad6",

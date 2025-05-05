@@ -165,7 +165,7 @@ func TestVolumeAttachToInstanceWithOptionalParams(t *testing.T) {
 			ProjectID:     gcore.Int(1),
 			RegionID:      gcore.Int(1),
 			InstanceID:    "169942e0-9b53-42df-95ef-1a8b6525c2bd",
-			AttachmentTag: gcore.String("root"),
+			AttachmentTag: gcore.String("boot"),
 		},
 	)
 	if err != nil {

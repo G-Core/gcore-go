@@ -32,7 +32,7 @@ func NewGPUBaremetalClusterInterfaceService(opts ...option.RequestOption) (r GPU
 	return
 }
 
-// List network interfaces attached to GPU cluster servers
+// Returns the network interfaces attached to the servers in the cluster.
 func (r *GPUBaremetalClusterInterfaceService) List(ctx context.Context, clusterID string, query GPUBaremetalClusterInterfaceListParams, opts ...option.RequestOption) (res *NetworkInterfaceList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

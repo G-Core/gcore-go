@@ -557,12 +557,8 @@ type FlavorHardwareDescription struct {
 	Ephemeral string `json:"ephemeral,nullable"`
 	// Human-readable GPU description
 	GPU string `json:"gpu,nullable"`
-	// Human-readable IPU description of AI cluster
-	Ipu string `json:"ipu,nullable"`
 	// Human-readable NIC description
 	Network string `json:"network,nullable"`
-	// Human-readable count of poplar servers of AI cluster
-	PoplarCount int64 `json:"poplar_count,nullable"`
 	// Human-readable RAM description
 	Ram string `json:"ram,nullable"`
 	// Metadata for the response, check the presence of optional fields with the
@@ -572,9 +568,7 @@ type FlavorHardwareDescription struct {
 		Disk        resp.Field
 		Ephemeral   resp.Field
 		GPU         resp.Field
-		Ipu         resp.Field
 		Network     resp.Field
-		PoplarCount resp.Field
 		Ram         resp.Field
 		ExtraFields map[string]resp.Field
 		raw         string
@@ -699,10 +693,14 @@ const (
 )
 
 type GPUClusterServer struct {
+	// GPU server ID
+	ID string `json:"id,required" format:"uuid4"`
 	// Map of network_name to list of addresses in that network
 	Addresses map[string][]GPUClusterServerAddressUnion `json:"addresses,required"`
 	// IP addresses of the instances that are blackholed by DDoS mitigation system
 	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
+	// Datetime when GPU server was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required"`
 	// Advanced DDoS protection profile. It is always `null` if query parameter
@@ -712,16 +710,12 @@ type GPUClusterServer struct {
 	FixedIPAssignments []GPUClusterServerFixedIPAssignment `json:"fixed_ip_assignments,required"`
 	// Flavor
 	Flavor GPUClusterServerFlavor `json:"flavor,required"`
-	// Datetime when instance was created
-	InstanceCreated time.Time `json:"instance_created,required" format:"date-time"`
 	// Instance description
 	InstanceDescription string `json:"instance_description,required"`
-	// Instance ID
-	InstanceID string `json:"instance_id,required" format:"uuid4"`
 	// Instance isolation information
 	InstanceIsolation InstanceIsolation `json:"instance_isolation,required"`
-	// Instance name
-	InstanceName string `json:"instance_name,required"`
+	// GPU server name
+	Name string `json:"name,required"`
 	// Project ID
 	ProjectID int64 `json:"project_id,required"`
 	// Region name
@@ -759,17 +753,17 @@ type GPUClusterServer struct {
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
+		ID                  resp.Field
 		Addresses           resp.Field
 		BlackholePorts      resp.Field
+		CreatedAt           resp.Field
 		CreatorTaskID       resp.Field
 		DDOSProfile         resp.Field
 		FixedIPAssignments  resp.Field
 		Flavor              resp.Field
-		InstanceCreated     resp.Field
 		InstanceDescription resp.Field
-		InstanceID          resp.Field
 		InstanceIsolation   resp.Field
-		InstanceName        resp.Field
+		Name                resp.Field
 		ProjectID           resp.Field
 		Region              resp.Field
 		RegionID            resp.Field
@@ -1277,10 +1271,14 @@ func (r *ImageList) UnmarshalJSON(data []byte) error {
 }
 
 type Instance struct {
+	// Instance ID
+	ID string `json:"id,required" format:"uuid4"`
 	// Map of network_name to list of addresses in that network
 	Addresses map[string][]InstanceAddressUnion `json:"addresses,required"`
 	// IP addresses of the instances that are blackholed by DDoS mitigation system
 	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
+	// Datetime when instance was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required"`
 	// Advanced DDoS protection profile. It is always `null` if query parameter
@@ -1290,16 +1288,12 @@ type Instance struct {
 	FixedIPAssignments []InstanceFixedIPAssignment `json:"fixed_ip_assignments,required"`
 	// Flavor
 	Flavor InstanceFlavorUnion `json:"flavor,required"`
-	// Datetime when instance was created
-	InstanceCreated time.Time `json:"instance_created,required" format:"date-time"`
 	// Instance description
 	InstanceDescription string `json:"instance_description,required"`
-	// Instance ID
-	InstanceID string `json:"instance_id,required" format:"uuid4"`
 	// Instance isolation information
 	InstanceIsolation InstanceIsolation `json:"instance_isolation,required"`
 	// Instance name
-	InstanceName string `json:"instance_name,required"`
+	Name string `json:"name,required"`
 	// Project ID
 	ProjectID int64 `json:"project_id,required"`
 	// Region name
@@ -1339,17 +1333,17 @@ type Instance struct {
 	// Metadata for the response, check the presence of optional fields with the
 	// [resp.Field.IsPresent] method.
 	JSON struct {
+		ID                  resp.Field
 		Addresses           resp.Field
 		BlackholePorts      resp.Field
+		CreatedAt           resp.Field
 		CreatorTaskID       resp.Field
 		DDOSProfile         resp.Field
 		FixedIPAssignments  resp.Field
 		Flavor              resp.Field
-		InstanceCreated     resp.Field
 		InstanceDescription resp.Field
-		InstanceID          resp.Field
 		InstanceIsolation   resp.Field
-		InstanceName        resp.Field
+		Name                resp.Field
 		ProjectID           resp.Field
 		Region              resp.Field
 		RegionID            resp.Field

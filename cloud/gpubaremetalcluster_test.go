@@ -33,27 +33,18 @@ func TestGPUBaremetalClusterNewWithOptionalParams(t *testing.T) {
 		ImageID:   "f01fd9a0-9548-48ba-82dc-a8c8b2d6f2f1",
 		Interfaces: []cloud.GPUBaremetalClusterNewParamsInterfaceUnion{{
 			OfSubnet: &cloud.GPUBaremetalClusterNewParamsInterfaceSubnet{
-				NetworkID: "024a29e9-b4b7-4c91-9a46-505be123d9f8",
-				SubnetID:  "91200a6c-07e0-42aa-98da-32d1f6545ae7",
-				FloatingIP: cloud.GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPUnion{
-					OfNew: &cloud.GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIPNew{},
-				},
+				NetworkID:     "024a29e9-b4b7-4c91-9a46-505be123d9f8",
+				SubnetID:      "91200a6c-07e0-42aa-98da-32d1f6545ae7",
+				FloatingIP:    cloud.NewGPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP(),
 				InterfaceName: gcore.String("interface_name"),
-				PortGroup:     gcore.Int(0),
-				SecurityGroups: []cloud.GPUBaremetalClusterNewParamsInterfaceSubnetSecurityGroup{{
-					ID: "ae74714c-c380-48b4-87f8-758d656cdad6",
-				}},
 			},
 		}},
 		Name:           "my-gpu-cluster",
 		InstancesCount: gcore.Int(1),
-		Password:       gcore.String("password"),
 		SSHKeyName:     gcore.String("my-ssh-key"),
 		Tags: cloud.TagUpdateList{
 			"foo": "my-tag-value",
 		},
-		UserData: gcore.String("user_data"),
-		Username: gcore.String("username"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
