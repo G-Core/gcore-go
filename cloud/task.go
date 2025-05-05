@@ -94,8 +94,8 @@ func (r *TaskService) Get(ctx context.Context, taskID string, opts ...option.Req
 	return
 }
 
-// Poll for task status until it is finished, an error occurs or the context is done. It uses a default polling interval
-// of 1 second which can be overridden.
+// Poll for task status until it is finished, an error occurs, or the context is done. It uses a default polling interval
+// of 1 second which can be overridden to values greater than 0 (otherwise the default value is used).
 func (r *TaskService) Poll(ctx context.Context, taskID string, opts ...requestconfig.RequestOption) (*Task, error) {
 	// extract polling interval from options, if not explicitly set, the default value is used
 	opts = append(r.Options[:], opts...)
@@ -104,6 +104,10 @@ func (r *TaskService) Poll(ctx context.Context, taskID string, opts ...requestco
 		return nil, err
 	}
 	pollingInterval := time.Duration(precfg.CloudPollingIntervalSeconds) * time.Second
+	// ensure the polling interval is at least 1 second
+	if pollingInterval < time.Second {
+		pollingInterval = time.Second
+	}
 
 	// poll the task status until it is finished or an error occurs
 	for {
