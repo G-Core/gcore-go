@@ -28,8 +28,8 @@ func TestSecretNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Secrets.New(context.TODO(), cloud.SecretNewParams{
-		ProjectID:              gcore.Int(0),
-		RegionID:               gcore.Int(0),
+		ProjectID:              gcore.Int(1),
+		RegionID:               gcore.Int(1),
 		Name:                   "AES key",
 		Payload:                "aGVsbG8sIHRlc3Qgc3RyaW5nCg==",
 		PayloadContentEncoding: cloud.SecretNewParamsPayloadContentEncodingBase64,
@@ -62,8 +62,8 @@ func TestSecretList(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Secrets.List(context.TODO(), cloud.SecretListParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(1),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -88,10 +88,10 @@ func TestSecretDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.Secrets.Delete(
 		context.TODO(),
-		"secret_id",
+		"bfc7824b-31b6-4a28-a0c4-7df137139215",
 		cloud.SecretDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -117,10 +117,10 @@ func TestSecretGet(t *testing.T) {
 	)
 	_, err := client.Cloud.Secrets.Get(
 		context.TODO(),
-		"secret_id",
+		"bfc7824b-31b6-4a28-a0c4-7df137139215",
 		cloud.SecretGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -145,8 +145,8 @@ func TestSecretUploadTlsCertificateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Secrets.UploadTlsCertificate(context.TODO(), cloud.SecretUploadTlsCertificateParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(1),
 		Name:      "Load balancer certificate #1",
 		Payload: cloud.SecretUploadTlsCertificateParamsPayload{
 			Certificate:      "<certificate>",
