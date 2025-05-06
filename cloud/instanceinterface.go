@@ -103,10 +103,10 @@ func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID
 	var listParams InstanceInterfaceListParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		return nil, errors.New("missing required project_id parameter")
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		return nil, errors.New("missing required region_id parameter")
 	}
 	listParams.ProjectID = params.ProjectID
@@ -166,10 +166,10 @@ func (r *InstanceInterfaceService) DetachAndPoll(ctx context.Context, instanceID
 	var listParams InstanceInterfaceListParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		return nil, errors.New("missing required project_id parameter")
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		return nil, errors.New("missing required region_id parameter")
 	}
 	listParams.ProjectID = params.ProjectID

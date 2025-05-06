@@ -105,11 +105,11 @@ func (r *InstanceService) NewAndPoll(ctx context.Context, params InstanceNewPara
 	var getParams InstanceGetParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -125,7 +125,7 @@ func (r *InstanceService) NewAndPoll(ctx context.Context, params InstanceNewPara
 		return nil, err
 	}
 
-	if !task.JSON.CreatedResources.IsPresent() || len(task.CreatedResources.Instances) != 1 {
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Instances) != 1 {
 		return nil, errors.New("expected exactly one instance to be created in a task")
 	}
 	resourceID := task.CreatedResources.Instances[0]
@@ -280,10 +280,10 @@ func (r *InstanceService) ActionAndPoll(ctx context.Context, instanceID string, 
 	var getParams InstanceGetParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		return nil, errors.New("missing required project_id parameter")
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		return nil, errors.New("missing required region_id parameter")
 	}
 	getParams.ProjectID = params.ProjectID
@@ -343,10 +343,10 @@ func (r *InstanceService) AddToPlacementGroupAndPoll(ctx context.Context, instan
 	var getParams InstanceGetParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		return nil, errors.New("missing required project_id parameter")
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		return nil, errors.New("missing required region_id parameter")
 	}
 	getParams.ProjectID = params.ProjectID
@@ -544,10 +544,10 @@ func (r *InstanceService) RemoveFromPlacementGroupAndPoll(ctx context.Context, i
 	var getParams InstanceGetParams
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.IsPresent() {
+	if !body.ProjectID.Valid() {
 		return nil, errors.New("missing required project_id parameter")
 	}
-	if !body.RegionID.IsPresent() {
+	if !body.RegionID.Valid() {
 		return nil, errors.New("missing required region_id parameter")
 	}
 	getParams.ProjectID = body.ProjectID

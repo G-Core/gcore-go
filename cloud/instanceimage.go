@@ -166,10 +166,10 @@ func (r *InstanceImageService) NewFromVolumeAndPoll(ctx context.Context, params 
 	var getParams InstanceImageGetParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		return nil, errors.New("missing required project_id parameter")
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		return nil, errors.New("missing required region_id parameter")
 	}
 	getParams.ProjectID = params.ProjectID
@@ -184,7 +184,7 @@ func (r *InstanceImageService) NewFromVolumeAndPoll(ctx context.Context, params 
 		return nil, err
 	}
 
-	if !task.JSON.CreatedResources.IsPresent() || len(task.CreatedResources.Images) != 1 {
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Images) != 1 {
 		return nil, errors.New("expected exactly one image to be created in a task")
 	}
 	resourceID := task.CreatedResources.Images[0]
@@ -255,10 +255,10 @@ func (r *InstanceImageService) UploadAndPoll(ctx context.Context, params Instanc
 	var getParams InstanceImageGetParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		return nil, errors.New("missing required project_id parameter")
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		return nil, errors.New("missing required region_id parameter")
 	}
 	getParams.ProjectID = params.ProjectID
@@ -273,7 +273,7 @@ func (r *InstanceImageService) UploadAndPoll(ctx context.Context, params Instanc
 		return nil, err
 	}
 
-	if !task.JSON.CreatedResources.IsPresent() || len(task.CreatedResources.Images) != 1 {
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Images) != 1 {
 		return nil, errors.New("expected exactly one image to be created in a task")
 	}
 	resourceID := task.CreatedResources.Images[0]

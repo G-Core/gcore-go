@@ -74,11 +74,11 @@ func (r *SecretService) NewAndPoll(ctx context.Context, params SecretNewParams, 
 	var getParams SecretGetParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.IsPresent() {
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.IsPresent() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -92,7 +92,7 @@ func (r *SecretService) NewAndPoll(ctx context.Context, params SecretNewParams, 
 		return nil, err
 	}
 
-	if !task.JSON.CreatedResources.IsPresent() || len(task.CreatedResources.Secrets) != 1 {
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Secrets) != 1 {
 		return nil, errors.New("expected exactly one secret to be created in a task")
 	}
 	resourceID := task.CreatedResources.Secrets[0]
