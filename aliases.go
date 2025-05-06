@@ -3,8 +3,8 @@
 package gcore
 
 import (
-	"github.com/stainless-sdks/gcore-go/internal/apierror"
-	"github.com/stainless-sdks/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/internal/apierror"
+	"github.com/G-Core/gcore-go/packages/param"
 )
 
 // aliased to make [param.APIUnion] private when embedding

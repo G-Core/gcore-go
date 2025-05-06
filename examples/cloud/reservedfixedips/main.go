@@ -3,14 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/shared/constant"
+	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/shared/constant"
 	"log"
 	"os"
 
-	"github.com/stainless-sdks/gcore-go"
-	"github.com/stainless-sdks/gcore-go/cloud"
-	"github.com/stainless-sdks/gcore-go/option"
+	"github.com/G-Core/gcore-go"
+	"github.com/G-Core/gcore-go/cloud"
+	"github.com/G-Core/gcore-go/option"
 )
 
 func main() {

@@ -12,14 +12,14 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/stainless-sdks/gcore-go/internal/apijson"
-	"github.com/stainless-sdks/gcore-go/internal/apiquery"
-	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
-	"github.com/stainless-sdks/gcore-go/option"
-	"github.com/stainless-sdks/gcore-go/packages/pagination"
-	"github.com/stainless-sdks/gcore-go/packages/param"
-	"github.com/stainless-sdks/gcore-go/packages/respjson"
-	"github.com/stainless-sdks/gcore-go/shared/constant"
+	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
+	"github.com/G-Core/gcore-go/internal/requestconfig"
+	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
+	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
+	"github.com/G-Core/gcore-go/shared/constant"
 	"github.com/tidwall/gjson"
 )
 

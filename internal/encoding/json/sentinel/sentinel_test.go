@@ -1,7 +1,7 @@
 package sentinel_test
 
 import (
-	"github.com/stainless-sdks/gcore-go/internal/encoding/json/sentinel"
+	"github.com/G-Core/gcore-go/internal/encoding/json/sentinel"
 	"reflect"
 	"slices"
 	"testing"
