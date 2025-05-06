@@ -2,7 +2,7 @@
 
 <a href="https://pkg.go.dev/github.com/G-Core/gcore-go"><img src="https://pkg.go.dev/badge/github.com/G-Core/gcore-go.svg" alt="Go Reference"></a>
 
-The Gcore Go library provides convenient access to the [Gcore REST API](https://docs.gcore.com)
+The Gcore Go library provides convenient access to the [Gcore REST API](https://api.gcore.com/docs)
 from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
