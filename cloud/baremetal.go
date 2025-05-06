@@ -3,7 +3,7 @@
 package cloud
 
 import (
-	"github.com/stainless-sdks/gcore-go/option"
+	"github.com/G-Core/gcore-go/option"
 )
 
 // BaremetalService contains methods and other services that help with interacting

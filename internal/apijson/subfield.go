@@ -1,7 +1,7 @@
 package apijson
 
 import (
-	"github.com/stainless-sdks/gcore-go/packages/respjson"
+	"github.com/G-Core/gcore-go/packages/respjson"
 	"reflect"
 )
 

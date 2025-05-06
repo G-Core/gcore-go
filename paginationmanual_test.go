@@ -7,10 +7,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/gcore-go"
-	"github.com/stainless-sdks/gcore-go/cloud"
-	"github.com/stainless-sdks/gcore-go/internal/testutil"
-	"github.com/stainless-sdks/gcore-go/option"
+	"github.com/G-Core/gcore-go"
+	"github.com/G-Core/gcore-go/cloud"
+	"github.com/G-Core/gcore-go/internal/testutil"
+	"github.com/G-Core/gcore-go/option"
 )
 
 func TestManualPagination(t *testing.T) {

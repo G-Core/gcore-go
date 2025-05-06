@@ -3,7 +3,7 @@ package param
 import (
 	"encoding/json"
 	"fmt"
-	shimjson "github.com/stainless-sdks/gcore-go/internal/encoding/json"
+	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"time"
 )
 

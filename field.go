@@ -1,7 +1,7 @@
 package gcore
 
 import (
-	"github.com/stainless-sdks/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/param"
 	"io"
 	"time"
 )
