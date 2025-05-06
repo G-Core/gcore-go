@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/param"
 )
 
 type Struct struct {

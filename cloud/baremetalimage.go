@@ -9,10 +9,10 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/gcore-go/internal/apiquery"
-	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
-	"github.com/stainless-sdks/gcore-go/option"
-	"github.com/stainless-sdks/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/internal/apiquery"
+	"github.com/G-Core/gcore-go/internal/requestconfig"
+	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/param"
 )
 
 // BaremetalImageService contains methods and other services that help with

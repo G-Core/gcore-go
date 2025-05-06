@@ -1,7 +1,7 @@
 package sentinel
 
 import (
-	"github.com/stainless-sdks/gcore-go/internal/encoding/json/shims"
+	"github.com/G-Core/gcore-go/internal/encoding/json/shims"
 	"reflect"
 	"sync"
 )

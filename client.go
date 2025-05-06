@@ -8,9 +8,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/stainless-sdks/gcore-go/cloud"
-	"github.com/stainless-sdks/gcore-go/internal/requestconfig"
-	"github.com/stainless-sdks/gcore-go/option"
+	"github.com/G-Core/gcore-go/cloud"
+	"github.com/G-Core/gcore-go/internal/requestconfig"
+	"github.com/G-Core/gcore-go/option"
 )
 
 // Client creates a struct with services and top level methods that help with

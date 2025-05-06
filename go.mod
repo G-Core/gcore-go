@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/gcore-go
+module github.com/G-Core/gcore-go
 
 go 1.21
 

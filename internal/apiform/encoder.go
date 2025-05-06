@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/stainless-sdks/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/param"
 )
 
 var encoders sync.Map // map[encoderEntry]encoderFunc
