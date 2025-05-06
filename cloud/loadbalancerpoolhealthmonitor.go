@@ -97,7 +97,7 @@ type LoadBalancerPoolHealthMonitorNewParams struct {
 	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
-	Type HealthMonitorType `json:"type,omitzero,required"`
+	Type LbHealthMonitorType `json:"type,omitzero,required"`
 	// Can only be used together with `HTTP` or `HTTPS` health monitor type.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
 	// Number of failures before the member is switched to ERROR state.

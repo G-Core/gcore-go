@@ -89,7 +89,7 @@ func (r *LoadBalancerPoolService) Update(ctx context.Context, poolID string, par
 }
 
 // List load balancer pools
-func (r *LoadBalancerPoolService) List(ctx context.Context, params LoadBalancerPoolListParams, opts ...option.RequestOption) (res *DetailedLbPoolList, err error) {
+func (r *LoadBalancerPoolService) List(ctx context.Context, params LoadBalancerPoolListParams, opts ...option.RequestOption) (res *LoadBalancerPoolList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -137,7 +137,7 @@ func (r *LoadBalancerPoolService) Delete(ctx context.Context, poolID string, bod
 }
 
 // Get load balancer pool
-func (r *LoadBalancerPoolService) Get(ctx context.Context, poolID string, query LoadBalancerPoolGetParams, opts ...option.RequestOption) (res *DetailedLbPool, err error) {
+func (r *LoadBalancerPoolService) Get(ctx context.Context, poolID string, query LoadBalancerPoolGetParams, opts ...option.RequestOption) (res *LoadBalancerPool, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -218,7 +218,7 @@ type LoadBalancerPoolNewParamsHealthmonitor struct {
 	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
-	Type HealthMonitorType `json:"type,omitzero,required"`
+	Type LbHealthMonitorType `json:"type,omitzero,required"`
 	// Can only be used together with `HTTP` or `HTTPS` health monitor type.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
 	// Number of failures before the member is switched to ERROR state.
@@ -275,7 +275,7 @@ type LoadBalancerPoolNewParamsSessionPersistence struct {
 	// Session persistence type
 	//
 	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
-	Type SessionPersistenceType `json:"type,omitzero,required"`
+	Type LbSessionPersistenceType `json:"type,omitzero,required"`
 	// Should be set if app cookie or http cookie is used
 	CookieName param.Opt[string] `json:"cookie_name,omitzero"`
 	// Subnet mask if source_ip is used. For UDP ports only
@@ -356,7 +356,7 @@ type LoadBalancerPoolUpdateParamsHealthmonitor struct {
 	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
-	Type HealthMonitorType `json:"type,omitzero"`
+	Type LbHealthMonitorType `json:"type,omitzero"`
 	paramObj
 }
 
@@ -400,7 +400,7 @@ type LoadBalancerPoolUpdateParamsSessionPersistence struct {
 	// Session persistence type
 	//
 	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
-	Type SessionPersistenceType `json:"type,omitzero,required"`
+	Type LbSessionPersistenceType `json:"type,omitzero,required"`
 	// Should be set if app cookie or http cookie is used
 	CookieName param.Opt[string] `json:"cookie_name,omitzero"`
 	// Subnet mask if source_ip is used. For UDP ports only

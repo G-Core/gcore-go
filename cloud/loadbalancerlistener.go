@@ -83,7 +83,7 @@ func (r *LoadBalancerListenerService) Update(ctx context.Context, listenerID str
 }
 
 // List load balancer listeners
-func (r *LoadBalancerListenerService) List(ctx context.Context, params LoadBalancerListenerListParams, opts ...option.RequestOption) (res *LbListenerList, err error) {
+func (r *LoadBalancerListenerService) List(ctx context.Context, params LoadBalancerListenerListParams, opts ...option.RequestOption) (res *LoadBalancerListenerList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -131,7 +131,7 @@ func (r *LoadBalancerListenerService) Delete(ctx context.Context, listenerID str
 }
 
 // Get listener
-func (r *LoadBalancerListenerService) Get(ctx context.Context, listenerID string, params LoadBalancerListenerGetParams, opts ...option.RequestOption) (res *LbListener, err error) {
+func (r *LoadBalancerListenerService) Get(ctx context.Context, listenerID string, params LoadBalancerListenerGetParams, opts ...option.RequestOption) (res *LoadBalancerListenerDetail, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
