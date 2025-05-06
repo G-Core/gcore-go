@@ -242,190 +242,62 @@ func (r *LoadBalancerService) Resize(ctx context.Context, loadbalancerID string,
 	return
 }
 
-type DetailedLbPool struct {
-	// Pool ID
+type HealthMonitor struct {
+	// Health monitor ID
 	ID string `json:"id,required" format:"uuid4"`
-	// Secret ID of CA certificate bundle
-	CaSecretID string `json:"ca_secret_id,required" format:"uuid4"`
-	// Secret ID of CA revocation list file
-	CrlSecretID string `json:"crl_secret_id,required" format:"uuid4"`
-	// Load balancer algorithm
-	//
-	// Any of "LEAST_CONNECTIONS", "ROUND_ROBIN", "SOURCE_IP".
-	LbAlgorithm LbAlgorithm `json:"lb_algorithm,required"`
-	// Listeners IDs
-	Listeners []DetailedLbPoolListener `json:"listeners,required"`
-	// Load balancers IDs
-	Loadbalancers []DetailedLbPoolLoadbalancer `json:"loadbalancers,required"`
-	// Pool members
-	Members []DetailedLbPoolMember `json:"members,required"`
-	// Pool name
-	Name string `json:"name,required"`
-	// Pool operating status
-	//
-	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// Protocol
-	//
-	// Any of "HTTP", "HTTPS", "PROXY", "PROXYV2", "TCP", "UDP".
-	Protocol LbPoolProtocol `json:"protocol,required"`
-	// Pool lifecycle status
-	//
-	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
-	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// Secret ID for TLS client authentication to the member servers
-	SecretID string `json:"secret_id,required" format:"uuid4"`
-	// Session persistence parameters
-	SessionPersistence LbSessionPersistence `json:"session_persistence,required"`
-	// Frontend client inactivity timeout in milliseconds
-	TimeoutClientData int64 `json:"timeout_client_data,required"`
-	// Backend member connection timeout in milliseconds
-	TimeoutMemberConnect int64 `json:"timeout_member_connect,required"`
-	// Backend member inactivity timeout in milliseconds
-	TimeoutMemberData int64 `json:"timeout_member_data,required"`
-	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// Health monitor parameters
-	Healthmonitor LbHealthMonitor `json:"healthmonitor,nullable"`
-	// The UUID of the active task that currently holds a lock on the resource. This
-	// lock prevents concurrent modifications to ensure consistency. If `null`, the
-	// resource is not locked.
-	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                   respjson.Field
-		CaSecretID           respjson.Field
-		CrlSecretID          respjson.Field
-		LbAlgorithm          respjson.Field
-		Listeners            respjson.Field
-		Loadbalancers        respjson.Field
-		Members              respjson.Field
-		Name                 respjson.Field
-		OperatingStatus      respjson.Field
-		Protocol             respjson.Field
-		ProvisioningStatus   respjson.Field
-		SecretID             respjson.Field
-		SessionPersistence   respjson.Field
-		TimeoutClientData    respjson.Field
-		TimeoutMemberConnect respjson.Field
-		TimeoutMemberData    respjson.Field
-		CreatorTaskID        respjson.Field
-		Healthmonitor        respjson.Field
-		TaskID               respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DetailedLbPool) RawJSON() string { return r.JSON.raw }
-func (r *DetailedLbPool) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DetailedLbPoolListener struct {
-	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DetailedLbPoolListener) RawJSON() string { return r.JSON.raw }
-func (r *DetailedLbPoolListener) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DetailedLbPoolLoadbalancer struct {
-	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DetailedLbPoolLoadbalancer) RawJSON() string { return r.JSON.raw }
-func (r *DetailedLbPoolLoadbalancer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DetailedLbPoolList struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []DetailedLbPool `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DetailedLbPoolList) RawJSON() string { return r.JSON.raw }
-func (r *DetailedLbPoolList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DetailedLbPoolMember struct {
-	// Member ID must be provided if an existing member is being updated
-	ID string `json:"id,required" format:"uuid4"`
-	// Member IP address
-	Address string `json:"address,required" format:"ipvanyaddress"`
 	// true if enabled. Defaults to true
 	AdminStateUp bool `json:"admin_state_up,required"`
-	// Member operating status of the entity
+	// The time, in seconds, between sending probes to members
+	Delay int64 `json:"delay,required"`
+	// Number of successes before the member is switched to ONLINE state
+	MaxRetries int64 `json:"max_retries,required"`
+	// Number of failures before the member is switched to ERROR state
+	MaxRetriesDown int64 `json:"max_retries_down,required"`
+	// Health Monitor operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// Member IP port
-	ProtocolPort int64 `json:"protocol_port,required"`
-	// Pool member lifecycle status
+	// Health monitor lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// Member weight. Valid values: 0 to 256, defaults to 1
-	Weight int64 `json:"weight,required"`
-	// An alternate IP address used for health monitoring of a backend member. Default
-	// is null which monitors the member address.
-	MonitorAddress string `json:"monitor_address,nullable" format:"ipvanyaddress"`
-	// An alternate protocol port used for health monitoring of a backend member.
-	// Default is null which monitors the member protocol_port.
-	MonitorPort int64 `json:"monitor_port,nullable"`
-	// Either subnet_id or instance_id should be provided
-	SubnetID string `json:"subnet_id,nullable" format:"uuid4"`
+	// The maximum time to connect. Must be less than the delay value
+	Timeout int64 `json:"timeout,required"`
+	// Health monitor type. Once health monitor is created, cannot be changed.
+	//
+	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
+	Type          LbHealthMonitorType `json:"type,required"`
+	ExpectedCodes string              `json:"expected_codes,nullable"`
+	// HTTP method
+	//
+	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
+	// "TRACE".
+	HTTPMethod HTTPMethod `json:"http_method,nullable"`
+	// URL Path. Defaults to '/'
+	URLPath string `json:"url_path,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
-		Address            respjson.Field
 		AdminStateUp       respjson.Field
+		Delay              respjson.Field
+		MaxRetries         respjson.Field
+		MaxRetriesDown     respjson.Field
 		OperatingStatus    respjson.Field
-		ProtocolPort       respjson.Field
 		ProvisioningStatus respjson.Field
-		Weight             respjson.Field
-		MonitorAddress     respjson.Field
-		MonitorPort        respjson.Field
-		SubnetID           respjson.Field
+		Timeout            respjson.Field
+		Type               respjson.Field
+		ExpectedCodes      respjson.Field
+		HTTPMethod         respjson.Field
+		URLPath            respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r DetailedLbPoolMember) RawJSON() string { return r.JSON.raw }
-func (r *DetailedLbPoolMember) UnmarshalJSON(data []byte) error {
+func (r HealthMonitor) RawJSON() string { return r.JSON.raw }
+func (r *HealthMonitor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -444,7 +316,7 @@ type HealthMonitorStatus struct {
 	// Type of the Health Monitor
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
-	Type HealthMonitorType `json:"type,required"`
+	Type LbHealthMonitorType `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -462,40 +334,170 @@ func (r *HealthMonitorStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type HealthMonitorType string
+type LbAlgorithm string
 
 const (
-	HealthMonitorTypeHTTP       HealthMonitorType = "HTTP"
-	HealthMonitorTypeHTTPS      HealthMonitorType = "HTTPS"
-	HealthMonitorTypeK8S        HealthMonitorType = "K8S"
-	HealthMonitorTypePing       HealthMonitorType = "PING"
-	HealthMonitorTypeTcp        HealthMonitorType = "TCP"
-	HealthMonitorTypeTlsHello   HealthMonitorType = "TLS-HELLO"
-	HealthMonitorTypeUdpConnect HealthMonitorType = "UDP-CONNECT"
+	LbAlgorithmLeastConnections LbAlgorithm = "LEAST_CONNECTIONS"
+	LbAlgorithmRoundRobin       LbAlgorithm = "ROUND_ROBIN"
+	LbAlgorithmSourceIP         LbAlgorithm = "SOURCE_IP"
 )
 
-type HTTPMethod string
+type LbHealthMonitorType string
 
 const (
-	HTTPMethodConnect HTTPMethod = "CONNECT"
-	HTTPMethodDelete  HTTPMethod = "DELETE"
-	HTTPMethodGet     HTTPMethod = "GET"
-	HTTPMethodHead    HTTPMethod = "HEAD"
-	HTTPMethodOptions HTTPMethod = "OPTIONS"
-	HTTPMethodPatch   HTTPMethod = "PATCH"
-	HTTPMethodPost    HTTPMethod = "POST"
-	HTTPMethodPut     HTTPMethod = "PUT"
-	HTTPMethodTrace   HTTPMethod = "TRACE"
+	LbHealthMonitorTypeHTTP       LbHealthMonitorType = "HTTP"
+	LbHealthMonitorTypeHTTPS      LbHealthMonitorType = "HTTPS"
+	LbHealthMonitorTypeK8S        LbHealthMonitorType = "K8S"
+	LbHealthMonitorTypePing       LbHealthMonitorType = "PING"
+	LbHealthMonitorTypeTcp        LbHealthMonitorType = "TCP"
+	LbHealthMonitorTypeTlsHello   LbHealthMonitorType = "TLS-HELLO"
+	LbHealthMonitorTypeUdpConnect LbHealthMonitorType = "UDP-CONNECT"
 )
+
+type LbListenerProtocol string
+
+const (
+	LbListenerProtocolHTTP            LbListenerProtocol = "HTTP"
+	LbListenerProtocolHTTPS           LbListenerProtocol = "HTTPS"
+	LbListenerProtocolPrometheus      LbListenerProtocol = "PROMETHEUS"
+	LbListenerProtocolTcp             LbListenerProtocol = "TCP"
+	LbListenerProtocolTerminatedHTTPS LbListenerProtocol = "TERMINATED_HTTPS"
+	LbListenerProtocolUdp             LbListenerProtocol = "UDP"
+)
+
+type LbPoolProtocol string
+
+const (
+	LbPoolProtocolHTTP    LbPoolProtocol = "HTTP"
+	LbPoolProtocolHTTPS   LbPoolProtocol = "HTTPS"
+	LbPoolProtocolProxy   LbPoolProtocol = "PROXY"
+	LbPoolProtocolProxyv2 LbPoolProtocol = "PROXYV2"
+	LbPoolProtocolTcp     LbPoolProtocol = "TCP"
+	LbPoolProtocolUdp     LbPoolProtocol = "UDP"
+)
+
+type LbSessionPersistenceType string
+
+const (
+	LbSessionPersistenceTypeAppCookie  LbSessionPersistenceType = "APP_COOKIE"
+	LbSessionPersistenceTypeHTTPCookie LbSessionPersistenceType = "HTTP_COOKIE"
+	LbSessionPersistenceTypeSourceIP   LbSessionPersistenceType = "SOURCE_IP"
+)
+
+type ListenerStatus struct {
+	// UUID of the entity
+	ID string `json:"id,required" format:"uuid"`
+	// Name of the load balancer listener
+	Name string `json:"name,required"`
+	// Operating status of the entity
+	//
+	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	// Pools of the Listeners
+	Pools []PoolStatus `json:"pools,required"`
+	// Provisioning status of the entity
+	//
+	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
+	// "PENDING_UPDATE".
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		Name               respjson.Field
+		OperatingStatus    respjson.Field
+		Pools              respjson.Field
+		ProvisioningStatus respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ListenerStatus) RawJSON() string { return r.JSON.raw }
+func (r *ListenerStatus) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerFlavorDetail struct {
+	// Flavor ID is the same as name
+	FlavorID string `json:"flavor_id,required"`
+	// Flavor name
+	FlavorName string `json:"flavor_name,required"`
+	// Additional hardware description.
+	HardwareDescription FlavorHardwareDescription `json:"hardware_description,required"`
+	// RAM size in MiB
+	Ram int64 `json:"ram,required"`
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
+	Vcpus int64 `json:"vcpus,required"`
+	// Currency code. Shown if the include_prices query parameter if set to true
+	CurrencyCode string `json:"currency_code,nullable"`
+	// Price per hour. Shown if the include_prices query parameter if set to true
+	PricePerHour float64 `json:"price_per_hour,nullable"`
+	// Price per month. Shown if the include_prices query parameter if set to true
+	PricePerMonth float64 `json:"price_per_month,nullable"`
+	// Price status for the UI
+	//
+	// Any of "error", "hide", "show".
+	PriceStatus LoadBalancerFlavorDetailPriceStatus `json:"price_status,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		HardwareDescription respjson.Field
+		Ram                 respjson.Field
+		Vcpus               respjson.Field
+		CurrencyCode        respjson.Field
+		PricePerHour        respjson.Field
+		PricePerMonth       respjson.Field
+		PriceStatus         respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerFlavorDetail) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerFlavorDetail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Price status for the UI
+type LoadBalancerFlavorDetailPriceStatus string
+
+const (
+	LoadBalancerFlavorDetailPriceStatusError LoadBalancerFlavorDetailPriceStatus = "error"
+	LoadBalancerFlavorDetailPriceStatusHide  LoadBalancerFlavorDetailPriceStatus = "hide"
+	LoadBalancerFlavorDetailPriceStatusShow  LoadBalancerFlavorDetailPriceStatus = "show"
+)
+
+type LoadBalancerFlavorList struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []LoadBalancerFlavorDetail `json:"results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerFlavorList) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerFlavorList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // L7Policy schema
-type L7Policy struct {
+type LoadBalancerL7Policy struct {
 	// ID
 	ID string `json:"id"`
 	// Action
 	//
 	// Any of "REDIRECT_PREFIX", "REDIRECT_TO_POOL", "REDIRECT_TO_URL", "REJECT".
-	Action L7PolicyAction `json:"action"`
+	Action LoadBalancerL7PolicyAction `json:"action"`
 	// Listener ID
 	ListenerID string `json:"listener_id"`
 	// Human-readable name of the policy
@@ -503,14 +505,14 @@ type L7Policy struct {
 	// L7 policy operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus L7PolicyOperatingStatus `json:"operating_status"`
+	OperatingStatus LoadBalancerL7PolicyOperatingStatus `json:"operating_status"`
 	// The position of this policy on the listener. Positions start at 1.
 	Position int64 `json:"position"`
 	// Project ID
 	ProjectID int64 `json:"project_id"`
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus L7PolicyProvisioningStatus `json:"provisioning_status"`
+	ProvisioningStatus LoadBalancerL7PolicyProvisioningStatus `json:"provisioning_status"`
 	// Requests matching this policy will be redirected to the specified URL or Prefix
 	// URL with the HTTP response code. Valid if action is REDIRECT_TO_URL or
 	// REDIRECT_PREFIX. Valid options are 301, 302, 303, 307, or 308. Default is 302.
@@ -532,7 +534,7 @@ type L7Policy struct {
 	// together. A request must match all the policy’s rules to match the policy.If you
 	// need to express a logical OR operation between rules, then do this by creating
 	// multiple policies with the same action.
-	Rules []L7Rule `json:"rules"`
+	Rules []LoadBalancerL7Rule `json:"rules"`
 	// A list of simple strings assigned to the resource.
 	Tags []string `json:"tags"`
 	// The UUID of the active task that currently holds a lock on the resource. This
@@ -564,49 +566,49 @@ type L7Policy struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r L7Policy) RawJSON() string { return r.JSON.raw }
-func (r *L7Policy) UnmarshalJSON(data []byte) error {
+func (r LoadBalancerL7Policy) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerL7Policy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Action
-type L7PolicyAction string
+type LoadBalancerL7PolicyAction string
 
 const (
-	L7PolicyActionRedirectPrefix L7PolicyAction = "REDIRECT_PREFIX"
-	L7PolicyActionRedirectToPool L7PolicyAction = "REDIRECT_TO_POOL"
-	L7PolicyActionRedirectToURL  L7PolicyAction = "REDIRECT_TO_URL"
-	L7PolicyActionReject         L7PolicyAction = "REJECT"
+	LoadBalancerL7PolicyActionRedirectPrefix LoadBalancerL7PolicyAction = "REDIRECT_PREFIX"
+	LoadBalancerL7PolicyActionRedirectToPool LoadBalancerL7PolicyAction = "REDIRECT_TO_POOL"
+	LoadBalancerL7PolicyActionRedirectToURL  LoadBalancerL7PolicyAction = "REDIRECT_TO_URL"
+	LoadBalancerL7PolicyActionReject         LoadBalancerL7PolicyAction = "REJECT"
 )
 
 // L7 policy operating status
-type L7PolicyOperatingStatus string
+type LoadBalancerL7PolicyOperatingStatus string
 
 const (
-	L7PolicyOperatingStatusDegraded  L7PolicyOperatingStatus = "DEGRADED"
-	L7PolicyOperatingStatusDraining  L7PolicyOperatingStatus = "DRAINING"
-	L7PolicyOperatingStatusError     L7PolicyOperatingStatus = "ERROR"
-	L7PolicyOperatingStatusNoMonitor L7PolicyOperatingStatus = "NO_MONITOR"
-	L7PolicyOperatingStatusOffline   L7PolicyOperatingStatus = "OFFLINE"
-	L7PolicyOperatingStatusOnline    L7PolicyOperatingStatus = "ONLINE"
+	LoadBalancerL7PolicyOperatingStatusDegraded  LoadBalancerL7PolicyOperatingStatus = "DEGRADED"
+	LoadBalancerL7PolicyOperatingStatusDraining  LoadBalancerL7PolicyOperatingStatus = "DRAINING"
+	LoadBalancerL7PolicyOperatingStatusError     LoadBalancerL7PolicyOperatingStatus = "ERROR"
+	LoadBalancerL7PolicyOperatingStatusNoMonitor LoadBalancerL7PolicyOperatingStatus = "NO_MONITOR"
+	LoadBalancerL7PolicyOperatingStatusOffline   LoadBalancerL7PolicyOperatingStatus = "OFFLINE"
+	LoadBalancerL7PolicyOperatingStatusOnline    LoadBalancerL7PolicyOperatingStatus = "ONLINE"
 )
 
-type L7PolicyProvisioningStatus string
+type LoadBalancerL7PolicyProvisioningStatus string
 
 const (
-	L7PolicyProvisioningStatusActive        L7PolicyProvisioningStatus = "ACTIVE"
-	L7PolicyProvisioningStatusDeleted       L7PolicyProvisioningStatus = "DELETED"
-	L7PolicyProvisioningStatusError         L7PolicyProvisioningStatus = "ERROR"
-	L7PolicyProvisioningStatusPendingCreate L7PolicyProvisioningStatus = "PENDING_CREATE"
-	L7PolicyProvisioningStatusPendingDelete L7PolicyProvisioningStatus = "PENDING_DELETE"
-	L7PolicyProvisioningStatusPendingUpdate L7PolicyProvisioningStatus = "PENDING_UPDATE"
+	LoadBalancerL7PolicyProvisioningStatusActive        LoadBalancerL7PolicyProvisioningStatus = "ACTIVE"
+	LoadBalancerL7PolicyProvisioningStatusDeleted       LoadBalancerL7PolicyProvisioningStatus = "DELETED"
+	LoadBalancerL7PolicyProvisioningStatusError         LoadBalancerL7PolicyProvisioningStatus = "ERROR"
+	LoadBalancerL7PolicyProvisioningStatusPendingCreate LoadBalancerL7PolicyProvisioningStatus = "PENDING_CREATE"
+	LoadBalancerL7PolicyProvisioningStatusPendingDelete LoadBalancerL7PolicyProvisioningStatus = "PENDING_DELETE"
+	LoadBalancerL7PolicyProvisioningStatusPendingUpdate LoadBalancerL7PolicyProvisioningStatus = "PENDING_UPDATE"
 )
 
-type L7PolicyList struct {
+type LoadBalancerL7PolicyList struct {
 	// Number of objects
 	Count int64 `json:"count"`
 	// Objects
-	Results []L7Policy `json:"results"`
+	Results []LoadBalancerL7Policy `json:"results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -617,8 +619,8 @@ type L7PolicyList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r L7PolicyList) RawJSON() string { return r.JSON.raw }
-func (r *L7PolicyList) UnmarshalJSON(data []byte) error {
+func (r LoadBalancerL7PolicyList) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerL7PolicyList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -626,13 +628,13 @@ func (r *L7PolicyList) UnmarshalJSON(data []byte) error {
 // together. A request must match all the policy’s rules to match the policy. If
 // you need to express a logical OR operation between rules, then do this by
 // creating multiple policies with the same action.
-type L7Rule struct {
+type LoadBalancerL7Rule struct {
 	// L7Rule ID
 	ID string `json:"id"`
 	// The comparison type for the L7 rule
 	//
 	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
-	CompareType L7RuleCompareType `json:"compare_type"`
+	CompareType LoadBalancerL7RuleCompareType `json:"compare_type"`
 	// When true the logic of the rule is inverted. For example, with invert true,
 	// 'equal to' would become 'not equal to'. Default is false.
 	Invert bool `json:"invert"`
@@ -642,12 +644,12 @@ type L7Rule struct {
 	// L7 policy operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus L7RuleOperatingStatus `json:"operating_status"`
+	OperatingStatus LoadBalancerL7RuleOperatingStatus `json:"operating_status"`
 	// Project ID
 	ProjectID int64 `json:"project_id"`
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus L7RuleProvisioningStatus `json:"provisioning_status"`
+	ProvisioningStatus LoadBalancerL7RuleProvisioningStatus `json:"provisioning_status"`
 	// Region name
 	Region string `json:"region"`
 	// Region ID
@@ -662,7 +664,7 @@ type L7Rule struct {
 	//
 	// Any of "COOKIE", "FILE_TYPE", "HEADER", "HOST_NAME", "PATH",
 	// "SSL_CONN_HAS_CERT", "SSL_DN_FIELD", "SSL_VERIFY_RESULT".
-	Type L7RuleType `json:"type"`
+	Type LoadBalancerL7RuleType `json:"type"`
 	// The value to use for the comparison. For example, the file type to compare.
 	Value string `json:"value"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -686,64 +688,64 @@ type L7Rule struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r L7Rule) RawJSON() string { return r.JSON.raw }
-func (r *L7Rule) UnmarshalJSON(data []byte) error {
+func (r LoadBalancerL7Rule) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerL7Rule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The comparison type for the L7 rule
-type L7RuleCompareType string
+type LoadBalancerL7RuleCompareType string
 
 const (
-	L7RuleCompareTypeContains   L7RuleCompareType = "CONTAINS"
-	L7RuleCompareTypeEndsWith   L7RuleCompareType = "ENDS_WITH"
-	L7RuleCompareTypeEqualTo    L7RuleCompareType = "EQUAL_TO"
-	L7RuleCompareTypeRegex      L7RuleCompareType = "REGEX"
-	L7RuleCompareTypeStartsWith L7RuleCompareType = "STARTS_WITH"
+	LoadBalancerL7RuleCompareTypeContains   LoadBalancerL7RuleCompareType = "CONTAINS"
+	LoadBalancerL7RuleCompareTypeEndsWith   LoadBalancerL7RuleCompareType = "ENDS_WITH"
+	LoadBalancerL7RuleCompareTypeEqualTo    LoadBalancerL7RuleCompareType = "EQUAL_TO"
+	LoadBalancerL7RuleCompareTypeRegex      LoadBalancerL7RuleCompareType = "REGEX"
+	LoadBalancerL7RuleCompareTypeStartsWith LoadBalancerL7RuleCompareType = "STARTS_WITH"
 )
 
 // L7 policy operating status
-type L7RuleOperatingStatus string
+type LoadBalancerL7RuleOperatingStatus string
 
 const (
-	L7RuleOperatingStatusDegraded  L7RuleOperatingStatus = "DEGRADED"
-	L7RuleOperatingStatusDraining  L7RuleOperatingStatus = "DRAINING"
-	L7RuleOperatingStatusError     L7RuleOperatingStatus = "ERROR"
-	L7RuleOperatingStatusNoMonitor L7RuleOperatingStatus = "NO_MONITOR"
-	L7RuleOperatingStatusOffline   L7RuleOperatingStatus = "OFFLINE"
-	L7RuleOperatingStatusOnline    L7RuleOperatingStatus = "ONLINE"
+	LoadBalancerL7RuleOperatingStatusDegraded  LoadBalancerL7RuleOperatingStatus = "DEGRADED"
+	LoadBalancerL7RuleOperatingStatusDraining  LoadBalancerL7RuleOperatingStatus = "DRAINING"
+	LoadBalancerL7RuleOperatingStatusError     LoadBalancerL7RuleOperatingStatus = "ERROR"
+	LoadBalancerL7RuleOperatingStatusNoMonitor LoadBalancerL7RuleOperatingStatus = "NO_MONITOR"
+	LoadBalancerL7RuleOperatingStatusOffline   LoadBalancerL7RuleOperatingStatus = "OFFLINE"
+	LoadBalancerL7RuleOperatingStatusOnline    LoadBalancerL7RuleOperatingStatus = "ONLINE"
 )
 
-type L7RuleProvisioningStatus string
+type LoadBalancerL7RuleProvisioningStatus string
 
 const (
-	L7RuleProvisioningStatusActive        L7RuleProvisioningStatus = "ACTIVE"
-	L7RuleProvisioningStatusDeleted       L7RuleProvisioningStatus = "DELETED"
-	L7RuleProvisioningStatusError         L7RuleProvisioningStatus = "ERROR"
-	L7RuleProvisioningStatusPendingCreate L7RuleProvisioningStatus = "PENDING_CREATE"
-	L7RuleProvisioningStatusPendingDelete L7RuleProvisioningStatus = "PENDING_DELETE"
-	L7RuleProvisioningStatusPendingUpdate L7RuleProvisioningStatus = "PENDING_UPDATE"
+	LoadBalancerL7RuleProvisioningStatusActive        LoadBalancerL7RuleProvisioningStatus = "ACTIVE"
+	LoadBalancerL7RuleProvisioningStatusDeleted       LoadBalancerL7RuleProvisioningStatus = "DELETED"
+	LoadBalancerL7RuleProvisioningStatusError         LoadBalancerL7RuleProvisioningStatus = "ERROR"
+	LoadBalancerL7RuleProvisioningStatusPendingCreate LoadBalancerL7RuleProvisioningStatus = "PENDING_CREATE"
+	LoadBalancerL7RuleProvisioningStatusPendingDelete LoadBalancerL7RuleProvisioningStatus = "PENDING_DELETE"
+	LoadBalancerL7RuleProvisioningStatusPendingUpdate LoadBalancerL7RuleProvisioningStatus = "PENDING_UPDATE"
 )
 
 // The L7 rule type
-type L7RuleType string
+type LoadBalancerL7RuleType string
 
 const (
-	L7RuleTypeCookie          L7RuleType = "COOKIE"
-	L7RuleTypeFileType        L7RuleType = "FILE_TYPE"
-	L7RuleTypeHeader          L7RuleType = "HEADER"
-	L7RuleTypeHostName        L7RuleType = "HOST_NAME"
-	L7RuleTypePath            L7RuleType = "PATH"
-	L7RuleTypeSslConnHasCert  L7RuleType = "SSL_CONN_HAS_CERT"
-	L7RuleTypeSslDnField      L7RuleType = "SSL_DN_FIELD"
-	L7RuleTypeSslVerifyResult L7RuleType = "SSL_VERIFY_RESULT"
+	LoadBalancerL7RuleTypeCookie          LoadBalancerL7RuleType = "COOKIE"
+	LoadBalancerL7RuleTypeFileType        LoadBalancerL7RuleType = "FILE_TYPE"
+	LoadBalancerL7RuleTypeHeader          LoadBalancerL7RuleType = "HEADER"
+	LoadBalancerL7RuleTypeHostName        LoadBalancerL7RuleType = "HOST_NAME"
+	LoadBalancerL7RuleTypePath            LoadBalancerL7RuleType = "PATH"
+	LoadBalancerL7RuleTypeSslConnHasCert  LoadBalancerL7RuleType = "SSL_CONN_HAS_CERT"
+	LoadBalancerL7RuleTypeSslDnField      LoadBalancerL7RuleType = "SSL_DN_FIELD"
+	LoadBalancerL7RuleTypeSslVerifyResult LoadBalancerL7RuleType = "SSL_VERIFY_RESULT"
 )
 
-type L7RuleList struct {
+type LoadBalancerL7RuleList struct {
 	// Number of objects
 	Count int64 `json:"count"`
 	// Objects
-	Results []L7Rule `json:"results"`
+	Results []LoadBalancerL7Rule `json:"results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -754,142 +756,12 @@ type L7RuleList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r L7RuleList) RawJSON() string { return r.JSON.raw }
-func (r *L7RuleList) UnmarshalJSON(data []byte) error {
+func (r LoadBalancerL7RuleList) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerL7RuleList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LbAlgorithm string
-
-const (
-	LbAlgorithmLeastConnections LbAlgorithm = "LEAST_CONNECTIONS"
-	LbAlgorithmRoundRobin       LbAlgorithm = "ROUND_ROBIN"
-	LbAlgorithmSourceIP         LbAlgorithm = "SOURCE_IP"
-)
-
-type LbFlavorList struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []LbFlavorListResult `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LbFlavorList) RawJSON() string { return r.JSON.raw }
-func (r *LbFlavorList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LbFlavorListResult struct {
-	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
-	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
-	// Additional hardware description.
-	HardwareDescription FlavorHardwareDescription `json:"hardware_description,required"`
-	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
-	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus,required"`
-	// Currency code. Shown if the include_prices query parameter if set to true
-	CurrencyCode string `json:"currency_code,nullable"`
-	// Price per hour. Shown if the include_prices query parameter if set to true
-	PricePerHour float64 `json:"price_per_hour,nullable"`
-	// Price per month. Shown if the include_prices query parameter if set to true
-	PricePerMonth float64 `json:"price_per_month,nullable"`
-	// Price status for the UI
-	//
-	// Any of "error", "hide", "show".
-	PriceStatus string `json:"price_status,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		FlavorID            respjson.Field
-		FlavorName          respjson.Field
-		HardwareDescription respjson.Field
-		Ram                 respjson.Field
-		Vcpus               respjson.Field
-		CurrencyCode        respjson.Field
-		PricePerHour        respjson.Field
-		PricePerMonth       respjson.Field
-		PriceStatus         respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LbFlavorListResult) RawJSON() string { return r.JSON.raw }
-func (r *LbFlavorListResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LbHealthMonitor struct {
-	// Health monitor ID
-	ID string `json:"id,required" format:"uuid4"`
-	// true if enabled. Defaults to true
-	AdminStateUp bool `json:"admin_state_up,required"`
-	// The time, in seconds, between sending probes to members
-	Delay int64 `json:"delay,required"`
-	// Number of successes before the member is switched to ONLINE state
-	MaxRetries int64 `json:"max_retries,required"`
-	// Number of failures before the member is switched to ERROR state
-	MaxRetriesDown int64 `json:"max_retries_down,required"`
-	// Health Monitor operating status
-	//
-	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// Health monitor lifecycle status
-	//
-	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
-	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// The maximum time to connect. Must be less than the delay value
-	Timeout int64 `json:"timeout,required"`
-	// Health monitor type. Once health monitor is created, cannot be changed.
-	//
-	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
-	Type          HealthMonitorType `json:"type,required"`
-	ExpectedCodes string            `json:"expected_codes,nullable"`
-	// HTTP method
-	//
-	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
-	// "TRACE".
-	HTTPMethod HTTPMethod `json:"http_method,nullable"`
-	// URL Path. Defaults to '/'
-	URLPath string `json:"url_path,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                 respjson.Field
-		AdminStateUp       respjson.Field
-		Delay              respjson.Field
-		MaxRetries         respjson.Field
-		MaxRetriesDown     respjson.Field
-		OperatingStatus    respjson.Field
-		ProvisioningStatus respjson.Field
-		Timeout            respjson.Field
-		Type               respjson.Field
-		ExpectedCodes      respjson.Field
-		HTTPMethod         respjson.Field
-		URLPath            respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LbHealthMonitor) RawJSON() string { return r.JSON.raw }
-func (r *LbHealthMonitor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LbListener struct {
+type LoadBalancerListenerDetail struct {
 	// Load balancer listener ID
 	ID string `json:"id,required" format:"uuid4"`
 	// Limit of simultaneous connections
@@ -942,7 +814,7 @@ type LbListener struct {
 	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData int64 `json:"timeout_member_data,nullable"`
 	// Load balancer listener users list
-	UserList []LbListenerUserList `json:"user_list"`
+	UserList []LoadBalancerListenerDetailUserList `json:"user_list"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
@@ -971,12 +843,12 @@ type LbListener struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r LbListener) RawJSON() string { return r.JSON.raw }
-func (r *LbListener) UnmarshalJSON(data []byte) error {
+func (r LoadBalancerListenerDetail) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerListenerDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LbListenerUserList struct {
+type LoadBalancerListenerDetailUserList struct {
 	// Encrypted password to auth via Basic Authentication
 	EncryptedPassword string `json:"encrypted_password,required"`
 	// Username to auth via Basic Authentication
@@ -991,16 +863,16 @@ type LbListenerUserList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r LbListenerUserList) RawJSON() string { return r.JSON.raw }
-func (r *LbListenerUserList) UnmarshalJSON(data []byte) error {
+func (r LoadBalancerListenerDetailUserList) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerListenerDetailUserList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LbListenerList struct {
+type LoadBalancerListenerList struct {
 	// Number of objects
 	Count int64 `json:"count,required"`
 	// Objects
-	Results []LbListener `json:"results,required"`
+	Results []LoadBalancerListenerDetail `json:"results,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -1011,92 +883,199 @@ type LbListenerList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r LbListenerList) RawJSON() string { return r.JSON.raw }
-func (r *LbListenerList) UnmarshalJSON(data []byte) error {
+func (r LoadBalancerListenerList) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerListenerList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LbListenerProtocol string
-
-const (
-	LbListenerProtocolHTTP            LbListenerProtocol = "HTTP"
-	LbListenerProtocolHTTPS           LbListenerProtocol = "HTTPS"
-	LbListenerProtocolPrometheus      LbListenerProtocol = "PROMETHEUS"
-	LbListenerProtocolTcp             LbListenerProtocol = "TCP"
-	LbListenerProtocolTerminatedHTTPS LbListenerProtocol = "TERMINATED_HTTPS"
-	LbListenerProtocolUdp             LbListenerProtocol = "UDP"
-)
-
-type LbPoolProtocol string
-
-const (
-	LbPoolProtocolHTTP    LbPoolProtocol = "HTTP"
-	LbPoolProtocolHTTPS   LbPoolProtocol = "HTTPS"
-	LbPoolProtocolProxy   LbPoolProtocol = "PROXY"
-	LbPoolProtocolProxyv2 LbPoolProtocol = "PROXYV2"
-	LbPoolProtocolTcp     LbPoolProtocol = "TCP"
-	LbPoolProtocolUdp     LbPoolProtocol = "UDP"
-)
-
-type LbSessionPersistence struct {
-	// Session persistence type
-	//
-	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
-	Type SessionPersistenceType `json:"type,required"`
-	// Should be set if app cookie or http cookie is used
-	CookieName string `json:"cookie_name,nullable"`
-	// Subnet mask if source_ip is used. For UDP ports only
-	PersistenceGranularity string `json:"persistence_granularity,nullable"`
-	// Session persistence timeout. For UDP ports only
-	PersistenceTimeout int64 `json:"persistence_timeout,nullable"`
+type LoadBalancerMetrics struct {
+	// CPU utilization, % (max 100% for multi-core)
+	CPUUtil float64 `json:"cpu_util,nullable"`
+	// RAM utilization, %
+	MemoryUtil float64 `json:"memory_util,nullable"`
+	// Network out, bytes per second
+	NetworkBpsEgress float64 `json:"network_Bps_egress,nullable"`
+	// Network in, bytes per second
+	NetworkBpsIngress float64 `json:"network_Bps_ingress,nullable"`
+	// Network out, packets per second
+	NetworkPpsEgress float64 `json:"network_pps_egress,nullable"`
+	// Network in, packets per second
+	NetworkPpsIngress float64 `json:"network_pps_ingress,nullable"`
+	// Timestamp
+	Time string `json:"time,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type                   respjson.Field
-		CookieName             respjson.Field
-		PersistenceGranularity respjson.Field
-		PersistenceTimeout     respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
+		CPUUtil           respjson.Field
+		MemoryUtil        respjson.Field
+		NetworkBpsEgress  respjson.Field
+		NetworkBpsIngress respjson.Field
+		NetworkPpsEgress  respjson.Field
+		NetworkPpsIngress respjson.Field
+		Time              respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r LbSessionPersistence) RawJSON() string { return r.JSON.raw }
-func (r *LbSessionPersistence) UnmarshalJSON(data []byte) error {
+func (r LoadBalancerMetrics) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ListenerStatus struct {
-	// UUID of the entity
-	ID string `json:"id,required" format:"uuid"`
-	// Name of the load balancer listener
+type LoadBalancerMetricsList struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []LoadBalancerMetrics `json:"results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerMetricsList) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerMetricsList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerPool struct {
+	// Pool ID
+	ID string `json:"id,required" format:"uuid4"`
+	// Secret ID of CA certificate bundle
+	CaSecretID string `json:"ca_secret_id,required" format:"uuid4"`
+	// Secret ID of CA revocation list file
+	CrlSecretID string `json:"crl_secret_id,required" format:"uuid4"`
+	// Load balancer algorithm
+	//
+	// Any of "LEAST_CONNECTIONS", "ROUND_ROBIN", "SOURCE_IP".
+	LbAlgorithm LbAlgorithm `json:"lb_algorithm,required"`
+	// Listeners IDs
+	Listeners []LoadBalancerPoolListener `json:"listeners,required"`
+	// Load balancers IDs
+	Loadbalancers []LoadBalancerPoolLoadbalancer `json:"loadbalancers,required"`
+	// Pool members
+	Members []Member `json:"members,required"`
+	// Pool name
 	Name string `json:"name,required"`
-	// Operating status of the entity
+	// Pool operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// Pools of the Listeners
-	Pools []PoolStatus `json:"pools,required"`
-	// Provisioning status of the entity
+	// Protocol
+	//
+	// Any of "HTTP", "HTTPS", "PROXY", "PROXYV2", "TCP", "UDP".
+	Protocol LbPoolProtocol `json:"protocol,required"`
+	// Pool lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	// Secret ID for TLS client authentication to the member servers
+	SecretID string `json:"secret_id,required" format:"uuid4"`
+	// Session persistence parameters
+	SessionPersistence SessionPersistence `json:"session_persistence,required"`
+	// Frontend client inactivity timeout in milliseconds
+	TimeoutClientData int64 `json:"timeout_client_data,required"`
+	// Backend member connection timeout in milliseconds
+	TimeoutMemberConnect int64 `json:"timeout_member_connect,required"`
+	// Backend member inactivity timeout in milliseconds
+	TimeoutMemberData int64 `json:"timeout_member_data,required"`
+	// Task that created this entity
+	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
+	// Health monitor parameters
+	Healthmonitor HealthMonitor `json:"healthmonitor,nullable"`
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
+	TaskID string `json:"task_id,nullable" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		Name               respjson.Field
-		OperatingStatus    respjson.Field
-		Pools              respjson.Field
-		ProvisioningStatus respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                   respjson.Field
+		CaSecretID           respjson.Field
+		CrlSecretID          respjson.Field
+		LbAlgorithm          respjson.Field
+		Listeners            respjson.Field
+		Loadbalancers        respjson.Field
+		Members              respjson.Field
+		Name                 respjson.Field
+		OperatingStatus      respjson.Field
+		Protocol             respjson.Field
+		ProvisioningStatus   respjson.Field
+		SecretID             respjson.Field
+		SessionPersistence   respjson.Field
+		TimeoutClientData    respjson.Field
+		TimeoutMemberConnect respjson.Field
+		TimeoutMemberData    respjson.Field
+		CreatorTaskID        respjson.Field
+		Healthmonitor        respjson.Field
+		TaskID               respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r ListenerStatus) RawJSON() string { return r.JSON.raw }
-func (r *ListenerStatus) UnmarshalJSON(data []byte) error {
+func (r LoadBalancerPool) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerPool) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerPoolListener struct {
+	// Resource ID
+	ID string `json:"id,required" format:"uuid4"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerPoolListener) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerPoolListener) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerPoolLoadbalancer struct {
+	// Resource ID
+	ID string `json:"id,required" format:"uuid4"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerPoolLoadbalancer) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerPoolLoadbalancer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerPoolList struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []LoadBalancerPool `json:"results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerPoolList) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerPoolList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1161,58 +1140,54 @@ func (r *LoadBalancerStatusList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LoadbalancerMetrics struct {
-	// CPU utilization, % (max 100% for multi-core)
-	CPUUtil float64 `json:"cpu_util,nullable"`
-	// RAM utilization, %
-	MemoryUtil float64 `json:"memory_util,nullable"`
-	// Network out, bytes per second
-	NetworkBpsEgress float64 `json:"network_Bps_egress,nullable"`
-	// Network in, bytes per second
-	NetworkBpsIngress float64 `json:"network_Bps_ingress,nullable"`
-	// Network out, packets per second
-	NetworkPpsEgress float64 `json:"network_pps_egress,nullable"`
-	// Network in, packets per second
-	NetworkPpsIngress float64 `json:"network_pps_ingress,nullable"`
-	// Timestamp
-	Time string `json:"time,nullable"`
+type Member struct {
+	// Member ID must be provided if an existing member is being updated
+	ID string `json:"id,required" format:"uuid4"`
+	// Member IP address
+	Address string `json:"address,required" format:"ipvanyaddress"`
+	// true if enabled. Defaults to true
+	AdminStateUp bool `json:"admin_state_up,required"`
+	// Member operating status of the entity
+	//
+	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	// Member IP port
+	ProtocolPort int64 `json:"protocol_port,required"`
+	// Pool member lifecycle status
+	//
+	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
+	// "PENDING_UPDATE".
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	// Member weight. Valid values: 0 to 256, defaults to 1
+	Weight int64 `json:"weight,required"`
+	// An alternate IP address used for health monitoring of a backend member. Default
+	// is null which monitors the member address.
+	MonitorAddress string `json:"monitor_address,nullable" format:"ipvanyaddress"`
+	// An alternate protocol port used for health monitoring of a backend member.
+	// Default is null which monitors the member protocol_port.
+	MonitorPort int64 `json:"monitor_port,nullable"`
+	// Either subnet_id or instance_id should be provided
+	SubnetID string `json:"subnet_id,nullable" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CPUUtil           respjson.Field
-		MemoryUtil        respjson.Field
-		NetworkBpsEgress  respjson.Field
-		NetworkBpsIngress respjson.Field
-		NetworkPpsEgress  respjson.Field
-		NetworkPpsIngress respjson.Field
-		Time              respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		ID                 respjson.Field
+		Address            respjson.Field
+		AdminStateUp       respjson.Field
+		OperatingStatus    respjson.Field
+		ProtocolPort       respjson.Field
+		ProvisioningStatus respjson.Field
+		Weight             respjson.Field
+		MonitorAddress     respjson.Field
+		MonitorPort        respjson.Field
+		SubnetID           respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r LoadbalancerMetrics) RawJSON() string { return r.JSON.raw }
-func (r *LoadbalancerMetrics) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LoadbalancerMetricsList struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []LoadbalancerMetrics `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadbalancerMetricsList) RawJSON() string { return r.JSON.raw }
-func (r *LoadbalancerMetricsList) UnmarshalJSON(data []byte) error {
+func (r Member) RawJSON() string { return r.JSON.raw }
+func (r *Member) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1287,13 +1262,33 @@ func (r *PoolStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SessionPersistenceType string
+type SessionPersistence struct {
+	// Session persistence type
+	//
+	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
+	Type LbSessionPersistenceType `json:"type,required"`
+	// Should be set if app cookie or http cookie is used
+	CookieName string `json:"cookie_name,nullable"`
+	// Subnet mask if source_ip is used. For UDP ports only
+	PersistenceGranularity string `json:"persistence_granularity,nullable"`
+	// Session persistence timeout. For UDP ports only
+	PersistenceTimeout int64 `json:"persistence_timeout,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type                   respjson.Field
+		CookieName             respjson.Field
+		PersistenceGranularity respjson.Field
+		PersistenceTimeout     respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
 
-const (
-	SessionPersistenceTypeAppCookie  SessionPersistenceType = "APP_COOKIE"
-	SessionPersistenceTypeHTTPCookie SessionPersistenceType = "HTTP_COOKIE"
-	SessionPersistenceTypeSourceIP   SessionPersistenceType = "SOURCE_IP"
-)
+// Returns the unmodified JSON received from the API
+func (r SessionPersistence) RawJSON() string { return r.JSON.raw }
+func (r *SessionPersistence) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type LoadBalancerNewParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -1539,7 +1534,7 @@ type LoadBalancerNewParamsListenerPoolHealthmonitor struct {
 	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
-	Type HealthMonitorType `json:"type,omitzero,required"`
+	Type LbHealthMonitorType `json:"type,omitzero,required"`
 	// Can only be used together with `HTTP` or `HTTPS` health monitor type.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
 	// Number of failures before the member is switched to ERROR state.
@@ -1596,7 +1591,7 @@ type LoadBalancerNewParamsListenerPoolSessionPersistence struct {
 	// Session persistence type
 	//
 	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
-	Type SessionPersistenceType `json:"type,omitzero,required"`
+	Type LbSessionPersistenceType `json:"type,omitzero,required"`
 	// Should be set if app cookie or http cookie is used
 	CookieName param.Opt[string] `json:"cookie_name,omitzero"`
 	// Subnet mask if source_ip is used. For UDP ports only

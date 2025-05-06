@@ -52,7 +52,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 					Delay:          10,
 					MaxRetries:     3,
 					Timeout:        5,
-					Type:           cloud.HealthMonitorTypeHTTP,
+					Type:           cloud.LbHealthMonitorTypeHTTP,
 					ExpectedCodes:  gcore.String("200,301,302"),
 					HTTPMethod:     cloud.HTTPMethodGet,
 					MaxRetriesDown: gcore.Int(3),
@@ -81,7 +81,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 				}},
 				SecretID: gcore.String("secret_id"),
 				SessionPersistence: cloud.LoadBalancerNewParamsListenerPoolSessionPersistence{
-					Type:                   cloud.SessionPersistenceTypeAppCookie,
+					Type:                   cloud.LbSessionPersistenceTypeAppCookie,
 					CookieName:             gcore.String("cookie_name"),
 					PersistenceGranularity: gcore.String("persistence_granularity"),
 					PersistenceTimeout:     gcore.Int(0),

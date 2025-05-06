@@ -763,6 +763,20 @@ func (r *GPUImageList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type HTTPMethod string
+
+const (
+	HTTPMethodConnect HTTPMethod = "CONNECT"
+	HTTPMethodDelete  HTTPMethod = "DELETE"
+	HTTPMethodGet     HTTPMethod = "GET"
+	HTTPMethodHead    HTTPMethod = "HEAD"
+	HTTPMethodOptions HTTPMethod = "OPTIONS"
+	HTTPMethodPatch   HTTPMethod = "PATCH"
+	HTTPMethodPost    HTTPMethod = "POST"
+	HTTPMethodPut     HTTPMethod = "PUT"
+	HTTPMethodTrace   HTTPMethod = "TRACE"
+)
+
 type Image struct {
 	// Image ID
 	ID string `json:"id,required"`

@@ -33,7 +33,7 @@ func NewLoadBalancerMetricService(opts ...option.RequestOption) (r LoadBalancerM
 }
 
 // Get loadbalancer metrics, including cpu, memory and network
-func (r *LoadBalancerMetricService) List(ctx context.Context, loadbalancerID string, params LoadBalancerMetricListParams, opts ...option.RequestOption) (res *LoadbalancerMetricsList, err error) {
+func (r *LoadBalancerMetricService) List(ctx context.Context, loadbalancerID string, params LoadBalancerMetricListParams, opts ...option.RequestOption) (res *LoadBalancerMetricsList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {

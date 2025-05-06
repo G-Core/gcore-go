@@ -59,7 +59,7 @@ func (r *LoadBalancerL7PolicyRuleService) New(ctx context.Context, l7policyID st
 }
 
 // List load balancer L7 policy rules
-func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID string, query LoadBalancerL7PolicyRuleListParams, opts ...option.RequestOption) (res *L7RuleList, err error) {
+func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID string, query LoadBalancerL7PolicyRuleListParams, opts ...option.RequestOption) (res *LoadBalancerL7RuleList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -115,7 +115,7 @@ func (r *LoadBalancerL7PolicyRuleService) Delete(ctx context.Context, l7ruleID s
 }
 
 // Get load balancer L7 rule
-func (r *LoadBalancerL7PolicyRuleService) Get(ctx context.Context, l7ruleID string, query LoadBalancerL7PolicyRuleGetParams, opts ...option.RequestOption) (res *L7Rule, err error) {
+func (r *LoadBalancerL7PolicyRuleService) Get(ctx context.Context, l7ruleID string, query LoadBalancerL7PolicyRuleGetParams, opts ...option.RequestOption) (res *LoadBalancerL7Rule, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
