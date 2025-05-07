@@ -1587,6 +1587,9 @@ func (r LaasIndexRetentionPolicyParam) MarshalJSON() (data []byte, err error) {
 	type shadow LaasIndexRetentionPolicyParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LaasIndexRetentionPolicyParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type LoadBalancer struct {
 	// Load balancer ID

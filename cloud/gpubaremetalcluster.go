@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -20,7 +19,6 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 	"github.com/G-Core/gcore-go/shared/constant"
-	"github.com/tidwall/gjson"
 )
 
 // GPUBaremetalClusterService contains methods and other services that help with
@@ -1079,6 +1077,9 @@ func (r GPUBaremetalClusterNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Only one field can be non-zero.
 //
@@ -1092,6 +1093,9 @@ type GPUBaremetalClusterNewParamsInterfaceUnion struct {
 
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet)
+}
+func (u *GPUBaremetalClusterNewParamsInterfaceUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *GPUBaremetalClusterNewParamsInterfaceUnion) asAny() any {
@@ -1206,21 +1210,9 @@ func (u gpuBaremetalClusterNewParamsInterfaceUnionFloatingIP) GetSource() *strin
 func init() {
 	apijson.RegisterUnion[GPUBaremetalClusterNewParamsInterfaceUnion](
 		"type",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceExternal{}),
-			DiscriminatorValue: "external",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceSubnet{}),
-			DiscriminatorValue: "subnet",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(GPUBaremetalClusterNewParamsInterfaceAnySubnet{}),
-			DiscriminatorValue: "any_subnet",
-		},
+		apijson.Discriminator[GPUBaremetalClusterNewParamsInterfaceExternal]("external"),
+		apijson.Discriminator[GPUBaremetalClusterNewParamsInterfaceSubnet]("subnet"),
+		apijson.Discriminator[GPUBaremetalClusterNewParamsInterfaceAnySubnet]("any_subnet"),
 	)
 }
 
@@ -1243,6 +1235,9 @@ type GPUBaremetalClusterNewParamsInterfaceExternal struct {
 func (r GPUBaremetalClusterNewParamsInterfaceExternal) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterNewParamsInterfaceExternal
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterNewParamsInterfaceExternal) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties NetworkID, SubnetID, Type are required.
@@ -1269,6 +1264,9 @@ func (r GPUBaremetalClusterNewParamsInterfaceSubnet) MarshalJSON() (data []byte,
 	type shadow GPUBaremetalClusterNewParamsInterfaceSubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterNewParamsInterfaceSubnet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func NewGPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP() GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP {
 	return GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP{
@@ -1288,6 +1286,9 @@ type GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP struct {
 func (r GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties NetworkID, Type are required.
@@ -1316,6 +1317,9 @@ func (r GPUBaremetalClusterNewParamsInterfaceAnySubnet) MarshalJSON() (data []by
 	type shadow GPUBaremetalClusterNewParamsInterfaceAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterNewParamsInterfaceAnySubnet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func NewGPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP() GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP {
 	return GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP{
@@ -1335,6 +1339,9 @@ type GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP struct {
 func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type GPUBaremetalClusterListParams struct {
@@ -1414,6 +1421,9 @@ func (r GPUBaremetalClusterRebuildParams) MarshalJSON() (data []byte, err error)
 	type shadow GPUBaremetalClusterRebuildParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterRebuildParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type GPUBaremetalClusterResizeParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -1426,4 +1436,7 @@ type GPUBaremetalClusterResizeParams struct {
 func (r GPUBaremetalClusterResizeParams) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterResizeParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterResizeParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

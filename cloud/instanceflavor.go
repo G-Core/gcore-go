@@ -247,6 +247,9 @@ func (r InstanceFlavorListSuitableParams) MarshalJSON() (data []byte, err error)
 	type shadow InstanceFlavorListSuitableParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceFlavorListSuitableParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // URLQuery serializes [InstanceFlavorListSuitableParams]'s query parameters as
 // `url.Values`.
@@ -290,12 +293,15 @@ func (r InstanceFlavorListSuitableParamsVolume) MarshalJSON() (data []byte, err 
 	type shadow InstanceFlavorListSuitableParamsVolume
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceFlavorListSuitableParamsVolume) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[InstanceFlavorListSuitableParamsVolume](
-		"Source", false, "apptemplate", "existing-volume", "image", "new-volume", "snapshot",
+		"source", "apptemplate", "existing-volume", "image", "new-volume", "snapshot",
 	)
 	apijson.RegisterFieldValidator[InstanceFlavorListSuitableParamsVolume](
-		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
 	)
 }

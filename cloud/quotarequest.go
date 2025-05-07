@@ -603,6 +603,9 @@ func (r QuotaRequestNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow QuotaRequestNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *QuotaRequestNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Limits you want to increase.
 type QuotaRequestNewParamsRequestedLimits struct {
@@ -616,6 +619,9 @@ type QuotaRequestNewParamsRequestedLimits struct {
 func (r QuotaRequestNewParamsRequestedLimits) MarshalJSON() (data []byte, err error) {
 	type shadow QuotaRequestNewParamsRequestedLimits
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *QuotaRequestNewParamsRequestedLimits) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Global entity quota limits
@@ -640,6 +646,9 @@ type QuotaRequestNewParamsRequestedLimitsGlobalLimits struct {
 func (r QuotaRequestNewParamsRequestedLimitsGlobalLimits) MarshalJSON() (data []byte, err error) {
 	type shadow QuotaRequestNewParamsRequestedLimitsGlobalLimits
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *QuotaRequestNewParamsRequestedLimitsGlobalLimits) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
@@ -743,6 +752,9 @@ type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
 func (r QuotaRequestNewParamsRequestedLimitsRegionalLimit) MarshalJSON() (data []byte, err error) {
 	type shadow QuotaRequestNewParamsRequestedLimitsRegionalLimit
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *QuotaRequestNewParamsRequestedLimitsRegionalLimit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type QuotaRequestListParams struct {

@@ -189,6 +189,9 @@ func (r InferenceSecretNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceSecretNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceSecretNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type InferenceSecretListParams struct {
 	// Project ID
@@ -235,4 +238,7 @@ type InferenceSecretReplaceParams struct {
 func (r InferenceSecretReplaceParams) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceSecretReplaceParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceSecretReplaceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

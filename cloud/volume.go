@@ -503,6 +503,9 @@ type VolumeNewParams struct {
 func (u VolumeNewParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[VolumeNewParams](u.OfImage, u.OfSnapshot, u.OfNewVolume)
 }
+func (r *VolumeNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties ImageID, Name, Size, Source are required.
 type VolumeNewParamsBodyImage struct {
@@ -542,10 +545,13 @@ func (r VolumeNewParamsBodyImage) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeNewParamsBodyImage
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *VolumeNewParamsBodyImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[VolumeNewParamsBodyImage](
-		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
 	)
 }
 
@@ -588,10 +594,13 @@ func (r VolumeNewParamsBodySnapshot) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeNewParamsBodySnapshot
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *VolumeNewParamsBodySnapshot) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[VolumeNewParamsBodySnapshot](
-		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
 	)
 }
 
@@ -631,10 +640,13 @@ func (r VolumeNewParamsBodyNewVolume) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeNewParamsBodyNewVolume
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *VolumeNewParamsBodyNewVolume) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[VolumeNewParamsBodyNewVolume](
-		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
 	)
 }
 
@@ -651,6 +663,9 @@ type VolumeUpdateParams struct {
 func (r VolumeUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VolumeUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type VolumeListParams struct {
@@ -727,6 +742,9 @@ func (r VolumeAttachToInstanceParams) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeAttachToInstanceParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *VolumeAttachToInstanceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type VolumeChangeTypeParams struct {
 	// Project ID
@@ -743,6 +761,9 @@ type VolumeChangeTypeParams struct {
 func (r VolumeChangeTypeParams) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeChangeTypeParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VolumeChangeTypeParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // New volume type name
@@ -767,6 +788,9 @@ func (r VolumeDetachFromInstanceParams) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeDetachFromInstanceParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *VolumeDetachFromInstanceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type VolumeGetParams struct {
 	// Project ID
@@ -789,6 +813,9 @@ type VolumeResizeParams struct {
 func (r VolumeResizeParams) MarshalJSON() (data []byte, err error) {
 	type shadow VolumeResizeParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VolumeResizeParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type VolumeRevertToLastSnapshotParams struct {

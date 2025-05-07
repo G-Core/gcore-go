@@ -354,6 +354,9 @@ type FileShareNewParams struct {
 func (u FileShareNewParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[FileShareNewParams](u.OfCreateStandardFileShareSerializer, u.OfCreateVastFileShareSerializer)
 }
+func (r *FileShareNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties Name, Network, Protocol, Size are required.
 type FileShareNewParamsBodyCreateStandardFileShareSerializer struct {
@@ -386,10 +389,13 @@ func (r FileShareNewParamsBodyCreateStandardFileShareSerializer) MarshalJSON() (
 	type shadow FileShareNewParamsBodyCreateStandardFileShareSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *FileShareNewParamsBodyCreateStandardFileShareSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[FileShareNewParamsBodyCreateStandardFileShareSerializer](
-		"VolumeType", false, "default_share_type",
+		"volume_type", "default_share_type",
 	)
 }
 
@@ -408,6 +414,9 @@ func (r FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork) MarshalJ
 	type shadow FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties AccessMode, IPAddress are required.
 type FileShareNewParamsBodyCreateStandardFileShareSerializerAccess struct {
@@ -424,10 +433,13 @@ func (r FileShareNewParamsBodyCreateStandardFileShareSerializerAccess) MarshalJS
 	type shadow FileShareNewParamsBodyCreateStandardFileShareSerializerAccess
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *FileShareNewParamsBodyCreateStandardFileShareSerializerAccess) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[FileShareNewParamsBodyCreateStandardFileShareSerializerAccess](
-		"AccessMode", false, "ro", "rw",
+		"access_mode", "ro", "rw",
 	)
 }
 
@@ -458,6 +470,9 @@ func (r FileShareNewParamsBodyCreateVastFileShareSerializer) MarshalJSON() (data
 	type shadow FileShareNewParamsBodyCreateVastFileShareSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *FileShareNewParamsBodyCreateVastFileShareSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type FileShareUpdateParams struct {
 	// Project ID
@@ -472,6 +487,9 @@ type FileShareUpdateParams struct {
 func (r FileShareUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow FileShareUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type FileShareListParams struct {
@@ -524,4 +542,7 @@ type FileShareResizeParams struct {
 func (r FileShareResizeParams) MarshalJSON() (data []byte, err error) {
 	type shadow FileShareResizeParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareResizeParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

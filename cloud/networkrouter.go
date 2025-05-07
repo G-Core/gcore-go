@@ -367,6 +367,9 @@ func (r SubnetIDParam) MarshalJSON() (data []byte, err error) {
 	type shadow SubnetIDParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *SubnetIDParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type NetworkRouterNewParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -385,6 +388,9 @@ func (r NetworkRouterNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *NetworkRouterNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Only one field can be non-zero.
 //
@@ -397,6 +403,9 @@ type NetworkRouterNewParamsExternalGatewayInfoUnion struct {
 
 func (u NetworkRouterNewParamsExternalGatewayInfoUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[NetworkRouterNewParamsExternalGatewayInfoUnion](u.OfRouterExternalManualGwSerializer, u.OfRouterExternalDefaultGwSerializer)
+}
+func (u *NetworkRouterNewParamsExternalGatewayInfoUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *NetworkRouterNewParamsExternalGatewayInfoUnion) asAny() any {
@@ -453,10 +462,13 @@ func (r NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerialize
 	type shadow NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer](
-		"Type", false, "manual",
+		"type", "manual",
 	)
 }
 
@@ -474,10 +486,13 @@ func (r NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializ
 	type shadow NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer](
-		"Type", false, "default",
+		"type", "default",
 	)
 }
 
@@ -496,10 +511,13 @@ func (r NetworkRouterNewParamsInterface) MarshalJSON() (data []byte, err error) 
 	type shadow NetworkRouterNewParamsInterface
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *NetworkRouterNewParamsInterface) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[NetworkRouterNewParamsInterface](
-		"Type", false, "subnet",
+		"type", "subnet",
 	)
 }
 
@@ -517,6 +535,9 @@ func (r NetworkRouterNewParamsRoute) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterNewParamsRoute
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *NetworkRouterNewParamsRoute) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type NetworkRouterUpdateParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -533,6 +554,9 @@ type NetworkRouterUpdateParams struct {
 func (r NetworkRouterUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *NetworkRouterUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // New external gateway.
@@ -554,10 +578,13 @@ func (r NetworkRouterUpdateParamsExternalGatewayInfo) MarshalJSON() (data []byte
 	type shadow NetworkRouterUpdateParamsExternalGatewayInfo
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *NetworkRouterUpdateParamsExternalGatewayInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[NetworkRouterUpdateParamsExternalGatewayInfo](
-		"Type", false, "manual",
+		"type", "manual",
 	)
 }
 
@@ -574,6 +601,9 @@ type NetworkRouterUpdateParamsRoute struct {
 func (r NetworkRouterUpdateParamsRoute) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkRouterUpdateParamsRoute
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *NetworkRouterUpdateParamsRoute) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NetworkRouterListParams struct {
@@ -618,6 +648,9 @@ func (r NetworkRouterAttachSubnetParams) MarshalJSON() (data []byte, err error) 
 	type shadow NetworkRouterAttachSubnetParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *NetworkRouterAttachSubnetParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type NetworkRouterDetachSubnetParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -628,6 +661,9 @@ type NetworkRouterDetachSubnetParams struct {
 
 func (r NetworkRouterDetachSubnetParams) MarshalJSON() (data []byte, err error) {
 	return json.Marshal(r.SubnetID)
+}
+func (r *NetworkRouterDetachSubnetParams) UnmarshalJSON(data []byte) error {
+	return r.SubnetID.UnmarshalJSON(data)
 }
 
 type NetworkRouterGetParams struct {

@@ -222,6 +222,9 @@ func (r PlacementGroupNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow PlacementGroupNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *PlacementGroupNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The server group policy.
 type PlacementGroupNewParamsPolicy string

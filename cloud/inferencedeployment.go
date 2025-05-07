@@ -478,6 +478,9 @@ func (r InferenceDeploymentNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties RegionID, Scale are required.
 type InferenceDeploymentNewParamsContainer struct {
@@ -491,6 +494,9 @@ type InferenceDeploymentNewParamsContainer struct {
 func (r InferenceDeploymentNewParamsContainer) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainer
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentNewParamsContainer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Scale for the container
@@ -514,6 +520,9 @@ func (r InferenceDeploymentNewParamsContainerScale) MarshalJSON() (data []byte, 
 	type shadow InferenceDeploymentNewParamsContainerScale
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentNewParamsContainerScale) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Triggers for scaling actions
 type InferenceDeploymentNewParamsContainerScaleTriggers struct {
@@ -536,6 +545,9 @@ func (r InferenceDeploymentNewParamsContainerScaleTriggers) MarshalJSON() (data 
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggers
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentNewParamsContainerScaleTriggers) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // CPU trigger configuration
 //
@@ -549,6 +561,9 @@ type InferenceDeploymentNewParamsContainerScaleTriggersCPU struct {
 func (r InferenceDeploymentNewParamsContainerScaleTriggersCPU) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggersCPU
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentNewParamsContainerScaleTriggersCPU) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // GPU memory trigger configuration. Calculated by DCGM_FI_DEV_MEM_COPY_UTIL metric
@@ -564,6 +579,9 @@ func (r InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory) MarshalJSON
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // GPU utilization trigger configuration. Calculated by DCGM_FI_DEV_GPU_UTIL metric
 //
@@ -577,6 +595,9 @@ type InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization struct {
 func (r InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // HTTP trigger configuration
@@ -594,6 +615,9 @@ func (r InferenceDeploymentNewParamsContainerScaleTriggersHTTP) MarshalJSON() (d
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggersHTTP
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentNewParamsContainerScaleTriggersHTTP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Memory trigger configuration
 //
@@ -607,6 +631,9 @@ type InferenceDeploymentNewParamsContainerScaleTriggersMemory struct {
 func (r InferenceDeploymentNewParamsContainerScaleTriggersMemory) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggersMemory
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentNewParamsContainerScaleTriggersMemory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // SQS trigger configuration
@@ -637,6 +664,9 @@ func (r InferenceDeploymentNewParamsContainerScaleTriggersSqs) MarshalJSON() (da
 	type shadow InferenceDeploymentNewParamsContainerScaleTriggersSqs
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentNewParamsContainerScaleTriggersSqs) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Logging configuration for the inference instance
 type InferenceDeploymentNewParamsLogging struct {
@@ -655,6 +685,9 @@ func (r InferenceDeploymentNewParamsLogging) MarshalJSON() (data []byte, err err
 	type shadow InferenceDeploymentNewParamsLogging
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentNewParamsLogging) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Probes configured for all containers of the inference instance. If probes are
 // not provided, and the image_name is from a the Model Catalog registry, the
@@ -672,6 +705,9 @@ type InferenceDeploymentNewParamsProbes struct {
 func (r InferenceDeploymentNewParamsProbes) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentNewParamsProbes
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentNewParamsProbes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type InferenceDeploymentUpdateParams struct {
@@ -719,6 +755,9 @@ func (r InferenceDeploymentUpdateParams) MarshalJSON() (data []byte, err error) 
 	type shadow InferenceDeploymentUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties RegionID, Scale are required.
 type InferenceDeploymentUpdateParamsContainer struct {
@@ -732,6 +771,9 @@ type InferenceDeploymentUpdateParamsContainer struct {
 func (r InferenceDeploymentUpdateParamsContainer) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainer
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsContainer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Scale for the container
@@ -755,6 +797,9 @@ func (r InferenceDeploymentUpdateParamsContainerScale) MarshalJSON() (data []byt
 	type shadow InferenceDeploymentUpdateParamsContainerScale
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentUpdateParamsContainerScale) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Triggers for scaling actions
 type InferenceDeploymentUpdateParamsContainerScaleTriggers struct {
@@ -777,6 +822,9 @@ func (r InferenceDeploymentUpdateParamsContainerScaleTriggers) MarshalJSON() (da
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggers
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentUpdateParamsContainerScaleTriggers) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // CPU trigger configuration
 //
@@ -790,6 +838,9 @@ type InferenceDeploymentUpdateParamsContainerScaleTriggersCPU struct {
 func (r InferenceDeploymentUpdateParamsContainerScaleTriggersCPU) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggersCPU
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersCPU) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // GPU memory trigger configuration. Calculated by DCGM_FI_DEV_MEM_COPY_UTIL metric
@@ -805,6 +856,9 @@ func (r InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory) MarshalJ
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // GPU utilization trigger configuration. Calculated by DCGM_FI_DEV_GPU_UTIL metric
 //
@@ -818,6 +872,9 @@ type InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization struct 
 func (r InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // HTTP trigger configuration
@@ -835,6 +892,9 @@ func (r InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP) MarshalJSON()
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Memory trigger configuration
 //
@@ -848,6 +908,9 @@ type InferenceDeploymentUpdateParamsContainerScaleTriggersMemory struct {
 func (r InferenceDeploymentUpdateParamsContainerScaleTriggersMemory) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggersMemory
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersMemory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // SQS trigger configuration
@@ -878,6 +941,9 @@ func (r InferenceDeploymentUpdateParamsContainerScaleTriggersSqs) MarshalJSON() 
 	type shadow InferenceDeploymentUpdateParamsContainerScaleTriggersSqs
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersSqs) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Logging configuration for the inference instance
 type InferenceDeploymentUpdateParamsLogging struct {
@@ -896,6 +962,9 @@ func (r InferenceDeploymentUpdateParamsLogging) MarshalJSON() (data []byte, err 
 	type shadow InferenceDeploymentUpdateParamsLogging
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceDeploymentUpdateParamsLogging) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Probes configured for all containers of the inference instance.
 type InferenceDeploymentUpdateParamsProbes struct {
@@ -911,6 +980,9 @@ type InferenceDeploymentUpdateParamsProbes struct {
 func (r InferenceDeploymentUpdateParamsProbes) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceDeploymentUpdateParamsProbes
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type InferenceDeploymentListParams struct {

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -117,6 +118,9 @@ type LoadBalancerPoolHealthMonitorNewParams struct {
 func (r LoadBalancerPoolHealthMonitorNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolHealthMonitorNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerPoolHealthMonitorNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type LoadBalancerPoolHealthMonitorDeleteParams struct {

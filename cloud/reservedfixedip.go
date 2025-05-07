@@ -346,6 +346,9 @@ func (u ReservedFixedIPNewParams) MarshalJSON() ([]byte, error) {
 		u.OfIPAddress,
 		u.OfPort)
 }
+func (r *ReservedFixedIPNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The property Type is required.
 type ReservedFixedIPNewParamsBodyExternal struct {
@@ -366,6 +369,9 @@ func (r ReservedFixedIPNewParamsBodyExternal) MarshalJSON() (data []byte, err er
 	type shadow ReservedFixedIPNewParamsBodyExternal
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *ReservedFixedIPNewParamsBodyExternal) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties SubnetID, Type are required.
 type ReservedFixedIPNewParamsBodySubnet struct {
@@ -383,6 +389,9 @@ type ReservedFixedIPNewParamsBodySubnet struct {
 func (r ReservedFixedIPNewParamsBodySubnet) MarshalJSON() (data []byte, err error) {
 	type shadow ReservedFixedIPNewParamsBodySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ReservedFixedIPNewParamsBodySubnet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties NetworkID, Type are required.
@@ -406,6 +415,9 @@ func (r ReservedFixedIPNewParamsBodyAnySubnet) MarshalJSON() (data []byte, err e
 	type shadow ReservedFixedIPNewParamsBodyAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *ReservedFixedIPNewParamsBodyAnySubnet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties IPAddress, NetworkID, Type are required.
 type ReservedFixedIPNewParamsBodyIPAddress struct {
@@ -426,6 +438,9 @@ func (r ReservedFixedIPNewParamsBodyIPAddress) MarshalJSON() (data []byte, err e
 	type shadow ReservedFixedIPNewParamsBodyIPAddress
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *ReservedFixedIPNewParamsBodyIPAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties PortID, Type are required.
 type ReservedFixedIPNewParamsBodyPort struct {
@@ -442,6 +457,9 @@ type ReservedFixedIPNewParamsBodyPort struct {
 func (r ReservedFixedIPNewParamsBodyPort) MarshalJSON() (data []byte, err error) {
 	type shadow ReservedFixedIPNewParamsBodyPort
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ReservedFixedIPNewParamsBodyPort) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type ReservedFixedIPListParams struct {

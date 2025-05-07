@@ -243,6 +243,9 @@ type GPUBaremetalClusterServerAttachInterfaceParams struct {
 func (u GPUBaremetalClusterServerAttachInterfaceParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[GPUBaremetalClusterServerAttachInterfaceParams](u.OfNewInterfaceExternalExtendSchemaWithDDOS, u.OfNewInterfaceSpecificSubnetSchema, u.OfNewInterfaceAnySubnetSchema, u.OfNewInterfaceReservedFixedIPSchema)
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Instance will be attached to default external network
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOS struct {
@@ -267,10 +270,13 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalEx
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOS
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOS) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOS](
-		"IPFamily", false, "dual", "ipv4", "ipv6",
+		"ip_family", "dual", "ipv4", "ipv6",
 	)
 }
 
@@ -291,6 +297,9 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalEx
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField struct {
 	// ID of DDoS profile field
@@ -308,6 +317,9 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalEx
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // MandatoryIdSchema schema
 //
@@ -321,6 +333,9 @@ type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExten
 func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Instance will be attached to specified subnet
@@ -346,6 +361,9 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSu
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchema
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchema) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Advanced DDoS protection.
 //
@@ -364,6 +382,9 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSu
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField struct {
 	// ID of DDoS profile field
@@ -381,6 +402,9 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSu
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // MandatoryIdSchema schema
 //
@@ -394,6 +418,9 @@ type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubne
 func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Instance will be attached to the network subnet with the largest count of
@@ -424,10 +451,13 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetS
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchema
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchema) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchema](
-		"IPFamily", false, "dual", "ipv4", "ipv6",
+		"ip_family", "dual", "ipv4", "ipv6",
 	)
 }
 
@@ -448,6 +478,9 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetS
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField struct {
 	// ID of DDoS profile field
@@ -465,6 +498,9 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetS
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // MandatoryIdSchema schema
 //
@@ -478,6 +514,9 @@ type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSche
 func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Instance will be attached to the given port. Floating IP will be created and
@@ -504,6 +543,9 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFi
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchema
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchema) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Advanced DDoS protection.
 //
@@ -522,6 +564,9 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFi
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField struct {
 	// ID of DDoS profile field
@@ -539,6 +584,9 @@ func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFi
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // MandatoryIdSchema schema
 //
@@ -552,6 +600,9 @@ type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixed
 func (r GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type GPUBaremetalClusterServerDetachInterfaceParams struct {
@@ -567,6 +618,9 @@ type GPUBaremetalClusterServerDetachInterfaceParams struct {
 func (r GPUBaremetalClusterServerDetachInterfaceParams) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterServerDetachInterfaceParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterServerDetachInterfaceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type GPUBaremetalClusterServerGetConsoleParams struct {

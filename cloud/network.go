@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
@@ -200,6 +201,9 @@ func (r NetworkNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *NetworkNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // vlan or vxlan network type is allowed. Default value is vxlan
 type NetworkNewParamsType string
@@ -220,6 +224,9 @@ type NetworkUpdateParams struct {
 func (r NetworkUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *NetworkUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NetworkListParams struct {

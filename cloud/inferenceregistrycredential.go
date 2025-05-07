@@ -224,6 +224,9 @@ func (r InferenceRegistryCredentialNewParams) MarshalJSON() (data []byte, err er
 	type shadow InferenceRegistryCredentialNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InferenceRegistryCredentialNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type InferenceRegistryCredentialListParams struct {
 	// Project ID
@@ -272,4 +275,7 @@ type InferenceRegistryCredentialReplaceParams struct {
 func (r InferenceRegistryCredentialReplaceParams) MarshalJSON() (data []byte, err error) {
 	type shadow InferenceRegistryCredentialReplaceParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceRegistryCredentialReplaceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

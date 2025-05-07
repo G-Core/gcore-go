@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
@@ -219,6 +220,9 @@ func (r NetworkSubnetNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkSubnetNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *NetworkSubnetNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties Destination, Nexthop are required.
 type NetworkSubnetNewParamsHostRoute struct {
@@ -233,6 +237,9 @@ type NetworkSubnetNewParamsHostRoute struct {
 func (r NetworkSubnetNewParamsHostRoute) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkSubnetNewParamsHostRoute
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *NetworkSubnetNewParamsHostRoute) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NetworkSubnetUpdateParams struct {
@@ -260,6 +267,9 @@ func (r NetworkSubnetUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkSubnetUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *NetworkSubnetUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties Destination, Nexthop are required.
 type NetworkSubnetUpdateParamsHostRoute struct {
@@ -274,6 +284,9 @@ type NetworkSubnetUpdateParamsHostRoute struct {
 func (r NetworkSubnetUpdateParamsHostRoute) MarshalJSON() (data []byte, err error) {
 	type shadow NetworkSubnetUpdateParamsHostRoute
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *NetworkSubnetUpdateParamsHostRoute) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NetworkSubnetListParams struct {

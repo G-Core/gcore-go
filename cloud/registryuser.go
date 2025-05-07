@@ -278,6 +278,9 @@ func (r RegistryUserNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow RegistryUserNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *RegistryUserNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type RegistryUserUpdateParams struct {
 	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -293,6 +296,9 @@ type RegistryUserUpdateParams struct {
 func (r RegistryUserUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow RegistryUserUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *RegistryUserUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type RegistryUserListParams struct {
@@ -320,6 +326,9 @@ func (r RegistryUserNewMultipleParams) MarshalJSON() (data []byte, err error) {
 	type shadow RegistryUserNewMultipleParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *RegistryUserNewMultipleParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties Duration, Name are required.
 type RegistryUserNewMultipleParamsUser struct {
@@ -341,6 +350,9 @@ type RegistryUserNewMultipleParamsUser struct {
 func (r RegistryUserNewMultipleParamsUser) MarshalJSON() (data []byte, err error) {
 	type shadow RegistryUserNewMultipleParamsUser
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *RegistryUserNewMultipleParamsUser) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type RegistryUserRefreshSecretParams struct {
