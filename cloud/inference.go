@@ -92,6 +92,9 @@ func (r AwsIamDataParam) MarshalJSON() (data []byte, err error) {
 	type shadow AwsIamDataParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *AwsIamDataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type Capacity struct {
 	// Available capacity.
@@ -184,6 +187,9 @@ func (r ContainerProbeConfigCreateParam) MarshalJSON() (data []byte, err error) 
 	type shadow ContainerProbeConfigCreateParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *ContainerProbeConfigCreateParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type ContainerProbeCreateParam struct {
 	// The number of consecutive probe failures that mark the container as unhealthy.
@@ -208,6 +214,9 @@ type ContainerProbeCreateParam struct {
 func (r ContainerProbeCreateParam) MarshalJSON() (data []byte, err error) {
 	type shadow ContainerProbeCreateParam
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ContainerProbeCreateParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type ContainerProbeExec struct {
@@ -237,6 +246,9 @@ type ContainerProbeExecCreateParam struct {
 func (r ContainerProbeExecCreateParam) MarshalJSON() (data []byte, err error) {
 	type shadow ContainerProbeExecCreateParam
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ContainerProbeExecCreateParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type ContainerProbeHTTPGet struct {
@@ -287,6 +299,9 @@ func (r ContainerProbeHTTPGetCreateParam) MarshalJSON() (data []byte, err error)
 	type shadow ContainerProbeHTTPGetCreateParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *ContainerProbeHTTPGetCreateParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type ContainerProbeTcpSocket struct {
 	// Port number to check if it's open.
@@ -315,6 +330,9 @@ type ContainerProbeTcpSocketCreateParam struct {
 func (r ContainerProbeTcpSocketCreateParam) MarshalJSON() (data []byte, err error) {
 	type shadow ContainerProbeTcpSocketCreateParam
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ContainerProbeTcpSocketCreateParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type ContainerScale struct {
@@ -509,6 +527,9 @@ type IngressOptsParam struct {
 func (r IngressOptsParam) MarshalJSON() (data []byte, err error) {
 	type shadow IngressOptsParam
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *IngressOptsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type IngressOptsOut struct {

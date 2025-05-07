@@ -154,6 +154,9 @@ func (r UserRoleAssignmentNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow UserRoleAssignmentNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *UserRoleAssignmentNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type UserRoleAssignmentUpdateParams struct {
 	// User role
@@ -170,6 +173,9 @@ type UserRoleAssignmentUpdateParams struct {
 func (r UserRoleAssignmentUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow UserRoleAssignmentUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UserRoleAssignmentUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type UserRoleAssignmentListParams struct {

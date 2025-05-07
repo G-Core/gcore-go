@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -203,6 +204,9 @@ func (r LoadBalancerL7PolicyRuleNewParams) MarshalJSON() (data []byte, err error
 	type shadow LoadBalancerL7PolicyRuleNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerL7PolicyRuleNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The comparison type for the L7 rule
 type LoadBalancerL7PolicyRuleNewParamsCompareType string
@@ -278,6 +282,9 @@ type LoadBalancerL7PolicyRuleReplaceParams struct {
 func (r LoadBalancerL7PolicyRuleReplaceParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerL7PolicyRuleReplaceParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerL7PolicyRuleReplaceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The comparison type for the L7 rule

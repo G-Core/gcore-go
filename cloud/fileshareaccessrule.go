@@ -207,6 +207,9 @@ func (r FileShareAccessRuleNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow FileShareAccessRuleNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *FileShareAccessRuleNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Access mode
 type FileShareAccessRuleNewParamsAccessMode string

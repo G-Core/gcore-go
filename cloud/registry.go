@@ -262,6 +262,9 @@ func (r RegistryNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow RegistryNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *RegistryNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type RegistryListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -292,4 +295,7 @@ type RegistryResizeParams struct {
 func (r RegistryResizeParams) MarshalJSON() (data []byte, err error) {
 	type shadow RegistryResizeParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *RegistryResizeParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

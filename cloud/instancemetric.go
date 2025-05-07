@@ -167,3 +167,6 @@ func (r InstanceMetricListParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceMetricListParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceMetricListParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}

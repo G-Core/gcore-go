@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -19,7 +18,6 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 	"github.com/G-Core/gcore-go/shared/constant"
-	"github.com/tidwall/gjson"
 )
 
 // InstanceService contains methods and other services that help with interacting
@@ -560,6 +558,9 @@ func (r InstanceNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Only one field can be non-zero.
 //
@@ -574,6 +575,9 @@ type InstanceNewParamsInterfaceUnion struct {
 
 func (u InstanceNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
+}
+func (u *InstanceNewParamsInterfaceUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *InstanceNewParamsInterfaceUnion) asAny() any {
@@ -760,26 +764,10 @@ func (u instanceNewParamsInterfaceUnionFloatingIP) GetExistingFloatingID() *stri
 func init() {
 	apijson.RegisterUnion[InstanceNewParamsInterfaceUnion](
 		"type",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceExternal{}),
-			DiscriminatorValue: "external",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceSubnet{}),
-			DiscriminatorValue: "subnet",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceAnySubnet{}),
-			DiscriminatorValue: "any_subnet",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceReservedFixedIP{}),
-			DiscriminatorValue: "reserved_fixed_ip",
-		},
+		apijson.Discriminator[InstanceNewParamsInterfaceExternal]("external"),
+		apijson.Discriminator[InstanceNewParamsInterfaceSubnet]("subnet"),
+		apijson.Discriminator[InstanceNewParamsInterfaceAnySubnet]("any_subnet"),
+		apijson.Discriminator[InstanceNewParamsInterfaceReservedFixedIP]("reserved_fixed_ip"),
 	)
 }
 
@@ -807,6 +795,9 @@ func (r InstanceNewParamsInterfaceExternal) MarshalJSON() (data []byte, err erro
 	type shadow InstanceNewParamsInterfaceExternal
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsInterfaceExternal) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The property ID is required.
 type InstanceNewParamsInterfaceExternalSecurityGroup struct {
@@ -818,6 +809,9 @@ type InstanceNewParamsInterfaceExternalSecurityGroup struct {
 func (r InstanceNewParamsInterfaceExternalSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceExternalSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceNewParamsInterfaceExternalSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The instance will get an IP address from the selected network. If you choose to
@@ -850,6 +844,9 @@ func (r InstanceNewParamsInterfaceSubnet) MarshalJSON() (data []byte, err error)
 	type shadow InstanceNewParamsInterfaceSubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsInterfaceSubnet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Only one field can be non-zero.
 //
@@ -862,6 +859,9 @@ type InstanceNewParamsInterfaceSubnetFloatingIPUnion struct {
 
 func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceNewParamsInterfaceSubnetFloatingIPUnion](u.OfNew, u.OfExisting)
+}
+func (u *InstanceNewParamsInterfaceSubnetFloatingIPUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *InstanceNewParamsInterfaceSubnetFloatingIPUnion) asAny() any {
@@ -894,16 +894,8 @@ func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) GetSource() *string {
 func init() {
 	apijson.RegisterUnion[InstanceNewParamsInterfaceSubnetFloatingIPUnion](
 		"source",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceSubnetFloatingIPNew{}),
-			DiscriminatorValue: "new",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceSubnetFloatingIPExisting{}),
-			DiscriminatorValue: "existing",
-		},
+		apijson.Discriminator[InstanceNewParamsInterfaceSubnetFloatingIPNew]("new"),
+		apijson.Discriminator[InstanceNewParamsInterfaceSubnetFloatingIPExisting]("existing"),
 	)
 }
 
@@ -928,6 +920,9 @@ func (r InstanceNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() (data []byt
 	type shadow InstanceNewParamsInterfaceSubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsInterfaceSubnetFloatingIPNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties ExistingFloatingID, Source are required.
 type InstanceNewParamsInterfaceSubnetFloatingIPExisting struct {
@@ -948,6 +943,9 @@ func (r InstanceNewParamsInterfaceSubnetFloatingIPExisting) MarshalJSON() (data 
 	type shadow InstanceNewParamsInterfaceSubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsInterfaceSubnetFloatingIPExisting) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The property ID is required.
 type InstanceNewParamsInterfaceSubnetSecurityGroup struct {
@@ -959,6 +957,9 @@ type InstanceNewParamsInterfaceSubnetSecurityGroup struct {
 func (r InstanceNewParamsInterfaceSubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceSubnetSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceNewParamsInterfaceSubnetSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties NetworkID, Type are required.
@@ -989,6 +990,9 @@ func (r InstanceNewParamsInterfaceAnySubnet) MarshalJSON() (data []byte, err err
 	type shadow InstanceNewParamsInterfaceAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsInterfaceAnySubnet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Only one field can be non-zero.
 //
@@ -1001,6 +1005,9 @@ type InstanceNewParamsInterfaceAnySubnetFloatingIPUnion struct {
 
 func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceNewParamsInterfaceAnySubnetFloatingIPUnion](u.OfNew, u.OfExisting)
+}
+func (u *InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) asAny() any {
@@ -1033,16 +1040,8 @@ func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) GetSource() *string 
 func init() {
 	apijson.RegisterUnion[InstanceNewParamsInterfaceAnySubnetFloatingIPUnion](
 		"source",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceAnySubnetFloatingIPNew{}),
-			DiscriminatorValue: "new",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceAnySubnetFloatingIPExisting{}),
-			DiscriminatorValue: "existing",
-		},
+		apijson.Discriminator[InstanceNewParamsInterfaceAnySubnetFloatingIPNew]("new"),
+		apijson.Discriminator[InstanceNewParamsInterfaceAnySubnetFloatingIPExisting]("existing"),
 	)
 }
 
@@ -1067,6 +1066,9 @@ func (r InstanceNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON() (data []
 	type shadow InstanceNewParamsInterfaceAnySubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsInterfaceAnySubnetFloatingIPNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties ExistingFloatingID, Source are required.
 type InstanceNewParamsInterfaceAnySubnetFloatingIPExisting struct {
@@ -1087,6 +1089,9 @@ func (r InstanceNewParamsInterfaceAnySubnetFloatingIPExisting) MarshalJSON() (da
 	type shadow InstanceNewParamsInterfaceAnySubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsInterfaceAnySubnetFloatingIPExisting) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The property ID is required.
 type InstanceNewParamsInterfaceAnySubnetSecurityGroup struct {
@@ -1098,6 +1103,9 @@ type InstanceNewParamsInterfaceAnySubnetSecurityGroup struct {
 func (r InstanceNewParamsInterfaceAnySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceAnySubnetSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceNewParamsInterfaceAnySubnetSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties PortID, Type are required.
@@ -1125,6 +1133,9 @@ func (r InstanceNewParamsInterfaceReservedFixedIP) MarshalJSON() (data []byte, e
 	type shadow InstanceNewParamsInterfaceReservedFixedIP
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsInterfaceReservedFixedIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Only one field can be non-zero.
 //
@@ -1137,6 +1148,9 @@ type InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
 
 func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion](u.OfNew, u.OfExisting)
+}
+func (u *InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) asAny() any {
@@ -1169,16 +1183,8 @@ func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetSource() *s
 func init() {
 	apijson.RegisterUnion[InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion](
 		"source",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew{}),
-			DiscriminatorValue: "new",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting{}),
-			DiscriminatorValue: "existing",
-		},
+		apijson.Discriminator[InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew]("new"),
+		apijson.Discriminator[InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting]("existing"),
 	)
 }
 
@@ -1203,6 +1209,9 @@ func (r InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew) MarshalJSON() (d
 	type shadow InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties ExistingFloatingID, Source are required.
 type InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
@@ -1223,6 +1232,9 @@ func (r InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting) MarshalJSON
 	type shadow InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The property ID is required.
 type InstanceNewParamsInterfaceReservedFixedIPSecurityGroup struct {
@@ -1234,6 +1246,9 @@ type InstanceNewParamsInterfaceReservedFixedIPSecurityGroup struct {
 func (r InstanceNewParamsInterfaceReservedFixedIPSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsInterfaceReservedFixedIPSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceNewParamsInterfaceReservedFixedIPSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Only one field can be non-zero.
@@ -1254,6 +1269,9 @@ func (u InstanceNewParamsVolumeUnion) MarshalJSON() ([]byte, error) {
 		u.OfSnapshot,
 		u.OfApptemplate,
 		u.OfExistingVolume)
+}
+func (u *InstanceNewParamsVolumeUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *InstanceNewParamsVolumeUnion) asAny() any {
@@ -1426,31 +1444,11 @@ func (u InstanceNewParamsVolumeUnion) GetTags() TagUpdateMap {
 func init() {
 	apijson.RegisterUnion[InstanceNewParamsVolumeUnion](
 		"source",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsVolumeNewVolume{}),
-			DiscriminatorValue: "new-volume",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsVolumeImage{}),
-			DiscriminatorValue: "image",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsVolumeSnapshot{}),
-			DiscriminatorValue: "snapshot",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsVolumeApptemplate{}),
-			DiscriminatorValue: "apptemplate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(InstanceNewParamsVolumeExistingVolume{}),
-			DiscriminatorValue: "existing-volume",
-		},
+		apijson.Discriminator[InstanceNewParamsVolumeNewVolume]("new-volume"),
+		apijson.Discriminator[InstanceNewParamsVolumeImage]("image"),
+		apijson.Discriminator[InstanceNewParamsVolumeSnapshot]("snapshot"),
+		apijson.Discriminator[InstanceNewParamsVolumeApptemplate]("apptemplate"),
+		apijson.Discriminator[InstanceNewParamsVolumeExistingVolume]("existing-volume"),
 	)
 }
 
@@ -1496,10 +1494,13 @@ func (r InstanceNewParamsVolumeNewVolume) MarshalJSON() (data []byte, err error)
 	type shadow InstanceNewParamsVolumeNewVolume
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsVolumeNewVolume) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[InstanceNewParamsVolumeNewVolume](
-		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
 	)
 }
 
@@ -1555,10 +1556,13 @@ func (r InstanceNewParamsVolumeImage) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsVolumeImage
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsVolumeImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[InstanceNewParamsVolumeImage](
-		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
 	)
 }
 
@@ -1601,10 +1605,13 @@ func (r InstanceNewParamsVolumeSnapshot) MarshalJSON() (data []byte, err error) 
 	type shadow InstanceNewParamsVolumeSnapshot
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsVolumeSnapshot) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[InstanceNewParamsVolumeSnapshot](
-		"TypeName", false, "ssd_hiiops", "standard",
+		"type_name", "ssd_hiiops", "standard",
 	)
 }
 
@@ -1656,10 +1663,13 @@ func (r InstanceNewParamsVolumeApptemplate) MarshalJSON() (data []byte, err erro
 	type shadow InstanceNewParamsVolumeApptemplate
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsVolumeApptemplate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[InstanceNewParamsVolumeApptemplate](
-		"TypeName", false, "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
 	)
 }
 
@@ -1692,6 +1702,9 @@ func (r InstanceNewParamsVolumeExistingVolume) MarshalJSON() (data []byte, err e
 	type shadow InstanceNewParamsVolumeExistingVolume
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceNewParamsVolumeExistingVolume) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The property ID is required.
 type InstanceNewParamsSecurityGroup struct {
@@ -1703,6 +1716,9 @@ type InstanceNewParamsSecurityGroup struct {
 func (r InstanceNewParamsSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceNewParamsSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceNewParamsSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type InstanceUpdateParams struct {
@@ -1718,6 +1734,9 @@ type InstanceUpdateParams struct {
 func (r InstanceUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type InstanceListParams struct {
@@ -1906,6 +1925,9 @@ type InstanceActionParams struct {
 func (u InstanceActionParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceActionParams](u.OfStartActionInstanceSerializer, u.OfBasicActionInstanceSerializer)
 }
+func (r *InstanceActionParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The property Action is required.
 type InstanceActionParamsBodyStartActionInstanceSerializer struct {
@@ -1922,6 +1944,9 @@ func (r InstanceActionParamsBodyStartActionInstanceSerializer) MarshalJSON() (da
 	type shadow InstanceActionParamsBodyStartActionInstanceSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceActionParamsBodyStartActionInstanceSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The property Action is required.
 type InstanceActionParamsBodyBasicActionInstanceSerializer struct {
@@ -1936,10 +1961,13 @@ func (r InstanceActionParamsBodyBasicActionInstanceSerializer) MarshalJSON() (da
 	type shadow InstanceActionParamsBodyBasicActionInstanceSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceActionParamsBodyBasicActionInstanceSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[InstanceActionParamsBodyBasicActionInstanceSerializer](
-		"Action", false, "reboot", "reboot_hard", "resume", "stop", "suspend",
+		"action", "reboot", "reboot_hard", "resume", "stop", "suspend",
 	)
 }
 
@@ -1954,6 +1982,9 @@ type InstanceAddToPlacementGroupParams struct {
 func (r InstanceAddToPlacementGroupParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceAddToPlacementGroupParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceAddToPlacementGroupParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type InstanceAssignSecurityGroupParams struct {
@@ -1970,6 +2001,9 @@ func (r InstanceAssignSecurityGroupParams) MarshalJSON() (data []byte, err error
 	type shadow InstanceAssignSecurityGroupParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceAssignSecurityGroupParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Port security group names
 //
@@ -1985,6 +2019,9 @@ type InstanceAssignSecurityGroupParamsPortsSecurityGroupName struct {
 func (r InstanceAssignSecurityGroupParamsPortsSecurityGroupName) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceAssignSecurityGroupParamsPortsSecurityGroupName
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceAssignSecurityGroupParamsPortsSecurityGroupName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type InstanceDisablePortSecurityParams struct {
@@ -2042,6 +2079,9 @@ func (r InstanceResizeParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceResizeParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceResizeParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type InstanceUnassignSecurityGroupParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -2056,6 +2096,9 @@ type InstanceUnassignSecurityGroupParams struct {
 func (r InstanceUnassignSecurityGroupParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceUnassignSecurityGroupParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceUnassignSecurityGroupParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Port security group names
@@ -2072,4 +2115,7 @@ type InstanceUnassignSecurityGroupParamsPortsSecurityGroupName struct {
 func (r InstanceUnassignSecurityGroupParamsPortsSecurityGroupName) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceUnassignSecurityGroupParamsPortsSecurityGroupName
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceUnassignSecurityGroupParamsPortsSecurityGroupName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
