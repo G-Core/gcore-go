@@ -403,6 +403,9 @@ func (r SecurityGroupNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *SecurityGroupNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Security group
 //
@@ -426,6 +429,9 @@ type SecurityGroupNewParamsSecurityGroup struct {
 func (r SecurityGroupNewParamsSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupNewParamsSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SecurityGroupNewParamsSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type SecurityGroupNewParamsSecurityGroupSecurityGroupRule struct {
@@ -460,16 +466,19 @@ func (r SecurityGroupNewParamsSecurityGroupSecurityGroupRule) MarshalJSON() (dat
 	type shadow SecurityGroupNewParamsSecurityGroupSecurityGroupRule
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *SecurityGroupNewParamsSecurityGroupSecurityGroupRule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[SecurityGroupNewParamsSecurityGroupSecurityGroupRule](
-		"Direction", false, "egress", "ingress",
+		"direction", "egress", "ingress",
 	)
 	apijson.RegisterFieldValidator[SecurityGroupNewParamsSecurityGroupSecurityGroupRule](
-		"Ethertype", false, "IPv4", "IPv6",
+		"ethertype", "IPv4", "IPv6",
 	)
 	apijson.RegisterFieldValidator[SecurityGroupNewParamsSecurityGroupSecurityGroupRule](
-		"Protocol", false, "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp",
+		"protocol", "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp",
 	)
 }
 
@@ -486,6 +495,9 @@ type SecurityGroupUpdateParams struct {
 func (r SecurityGroupUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SecurityGroupUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Action is required.
@@ -529,19 +541,22 @@ func (r SecurityGroupUpdateParamsChangedRule) MarshalJSON() (data []byte, err er
 	type shadow SecurityGroupUpdateParamsChangedRule
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *SecurityGroupUpdateParamsChangedRule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsChangedRule](
-		"Action", false, "create", "delete",
+		"action", "create", "delete",
 	)
 	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsChangedRule](
-		"Direction", false, "egress", "ingress",
+		"direction", "egress", "ingress",
 	)
 	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsChangedRule](
-		"Ethertype", true, "IPv4", "IPv6",
+		"ethertype", "IPv4", "IPv6",
 	)
 	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsChangedRule](
-		"Protocol", false, "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp",
+		"protocol", "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp",
 	)
 }
 
@@ -587,6 +602,9 @@ type SecurityGroupCopyParams struct {
 func (r SecurityGroupCopyParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupCopyParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SecurityGroupCopyParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type SecurityGroupGetParams struct {

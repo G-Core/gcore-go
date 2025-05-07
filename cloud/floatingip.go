@@ -502,6 +502,9 @@ func (r FloatingIPNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow FloatingIPNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *FloatingIPNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type FloatingIPListParams struct {
 	// Project ID
@@ -549,6 +552,9 @@ type FloatingIPAssignParams struct {
 func (r FloatingIPAssignParams) MarshalJSON() (data []byte, err error) {
 	type shadow FloatingIPAssignParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FloatingIPAssignParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type FloatingIPGetParams struct {

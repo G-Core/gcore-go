@@ -182,6 +182,9 @@ func (r ProjectNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow ProjectNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *ProjectNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type ProjectListParams struct {
 	// Client ID filter for administrators.
@@ -241,4 +244,7 @@ type ProjectReplaceParams struct {
 func (r ProjectReplaceParams) MarshalJSON() (data []byte, err error) {
 	type shadow ProjectReplaceParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ProjectReplaceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

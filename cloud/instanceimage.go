@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
@@ -316,6 +317,9 @@ func (r InstanceImageUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceImageUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceImageUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Specifies the type of firmware with which to boot the guest.
 type InstanceImageUpdateParamsHwFirmwareType string
@@ -440,6 +444,9 @@ func (r InstanceImageNewFromVolumeParams) MarshalJSON() (data []byte, err error)
 	type shadow InstanceImageNewFromVolumeParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceImageNewFromVolumeParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Image CPU architecture type: `aarch64`, `x86_64`
 type InstanceImageNewFromVolumeParamsArchitecture string
@@ -553,6 +560,9 @@ type InstanceImageUploadParams struct {
 func (r InstanceImageUploadParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceImageUploadParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceImageUploadParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Image CPU architecture type: `aarch64`, `x86_64`

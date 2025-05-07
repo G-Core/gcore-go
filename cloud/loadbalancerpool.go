@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
@@ -204,6 +205,9 @@ func (r LoadBalancerPoolNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerPoolNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Health monitor details
 //
@@ -239,6 +243,9 @@ func (r LoadBalancerPoolNewParamsHealthmonitor) MarshalJSON() (data []byte, err 
 	type shadow LoadBalancerPoolNewParamsHealthmonitor
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerPoolNewParamsHealthmonitor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties Address, ProtocolPort are required.
 type LoadBalancerPoolNewParamsMember struct {
@@ -267,6 +274,9 @@ func (r LoadBalancerPoolNewParamsMember) MarshalJSON() (data []byte, err error) 
 	type shadow LoadBalancerPoolNewParamsMember
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerPoolNewParamsMember) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Session persistence details
 //
@@ -288,6 +298,9 @@ type LoadBalancerPoolNewParamsSessionPersistence struct {
 func (r LoadBalancerPoolNewParamsSessionPersistence) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolNewParamsSessionPersistence
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerPoolNewParamsSessionPersistence) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type LoadBalancerPoolUpdateParams struct {
@@ -329,6 +342,9 @@ func (r LoadBalancerPoolUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerPoolUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // New pool health monitor settings
 //
@@ -364,6 +380,9 @@ func (r LoadBalancerPoolUpdateParamsHealthmonitor) MarshalJSON() (data []byte, e
 	type shadow LoadBalancerPoolUpdateParamsHealthmonitor
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerPoolUpdateParamsHealthmonitor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties Address, ProtocolPort are required.
 type LoadBalancerPoolUpdateParamsMember struct {
@@ -392,6 +411,9 @@ func (r LoadBalancerPoolUpdateParamsMember) MarshalJSON() (data []byte, err erro
 	type shadow LoadBalancerPoolUpdateParamsMember
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerPoolUpdateParamsMember) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // New session persistence settings
 //
@@ -413,6 +435,9 @@ type LoadBalancerPoolUpdateParamsSessionPersistence struct {
 func (r LoadBalancerPoolUpdateParamsSessionPersistence) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerPoolUpdateParamsSessionPersistence
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerPoolUpdateParamsSessionPersistence) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type LoadBalancerPoolListParams struct {

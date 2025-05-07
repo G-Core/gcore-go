@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
@@ -197,6 +198,9 @@ func (r LoadBalancerListenerNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerListenerNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerListenerNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerListenerNewParamsUserList struct {
@@ -210,6 +214,9 @@ type LoadBalancerListenerNewParamsUserList struct {
 func (r LoadBalancerListenerNewParamsUserList) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerListenerNewParamsUserList
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerListenerNewParamsUserList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type LoadBalancerListenerUpdateParams struct {
@@ -242,6 +249,9 @@ func (r LoadBalancerListenerUpdateParams) MarshalJSON() (data []byte, err error)
 	type shadow LoadBalancerListenerUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerListenerUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerListenerUpdateParamsUserList struct {
@@ -255,6 +265,9 @@ type LoadBalancerListenerUpdateParamsUserList struct {
 func (r LoadBalancerListenerUpdateParamsUserList) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerListenerUpdateParamsUserList
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerListenerUpdateParamsUserList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type LoadBalancerListenerListParams struct {

@@ -337,6 +337,9 @@ func (r SecretNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecretNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *SecretNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The encoding used for the payload to be able to include it in the JSON request.
 // Currently only base64 is supported
@@ -405,6 +408,9 @@ func (r SecretUploadTlsCertificateParams) MarshalJSON() (data []byte, err error)
 	type shadow SecretUploadTlsCertificateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *SecretUploadTlsCertificateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Secret payload.
 //
@@ -422,4 +428,7 @@ type SecretUploadTlsCertificateParamsPayload struct {
 func (r SecretUploadTlsCertificateParamsPayload) MarshalJSON() (data []byte, err error) {
 	type shadow SecretUploadTlsCertificateParamsPayload
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SecretUploadTlsCertificateParamsPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

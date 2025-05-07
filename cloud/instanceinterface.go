@@ -222,6 +222,9 @@ type InstanceInterfaceAttachParams struct {
 func (u InstanceInterfaceAttachParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[InstanceInterfaceAttachParams](u.OfNewInterfaceExternalExtendSchemaWithDDOS, u.OfNewInterfaceSpecificSubnetSchema, u.OfNewInterfaceAnySubnetSchema, u.OfNewInterfaceReservedFixedIPSchema)
 }
+func (r *InstanceInterfaceAttachParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Instance will be attached to default external network
 type InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS struct {
@@ -246,10 +249,13 @@ func (r InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDO
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS](
-		"IPFamily", false, "dual", "ipv4", "ipv6",
+		"ip_family", "dual", "ipv4", "ipv6",
 	)
 }
 
@@ -270,6 +276,9 @@ func (r InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDO
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField struct {
 	// ID of DDoS profile field
@@ -287,6 +296,9 @@ func (r InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDO
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // MandatoryIdSchema schema
 //
@@ -300,6 +312,9 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSe
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Instance will be attached to specified subnet
@@ -325,6 +340,9 @@ func (r InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema) Marsh
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Advanced DDoS protection.
 //
@@ -343,6 +361,9 @@ func (r InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSPro
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField struct {
 	// ID of DDoS profile field
@@ -360,6 +381,9 @@ func (r InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSPro
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // MandatoryIdSchema schema
 //
@@ -373,6 +397,9 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGr
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Instance will be attached to the network subnet with the largest count of
@@ -403,10 +430,13 @@ func (r InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema) MarshalJSO
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 func init() {
 	apijson.RegisterFieldValidator[InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema](
-		"IPFamily", false, "dual", "ipv4", "ipv6",
+		"ip_family", "dual", "ipv4", "ipv6",
 	)
 }
 
@@ -427,6 +457,9 @@ func (r InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile)
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField struct {
 	// ID of DDoS profile field
@@ -444,6 +477,9 @@ func (r InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileF
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // MandatoryIdSchema schema
 //
@@ -457,6 +493,9 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup s
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Instance will be attached to the given port. Floating IP will be created and
@@ -483,6 +522,9 @@ func (r InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema) Mars
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Advanced DDoS protection.
 //
@@ -501,6 +543,9 @@ func (r InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSPr
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField struct {
 	// ID of DDoS profile field
@@ -518,6 +563,9 @@ func (r InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSPr
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // MandatoryIdSchema schema
 //
@@ -531,6 +579,9 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityG
 func (r InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type InstanceInterfaceDetachParams struct {
@@ -546,4 +597,7 @@ type InstanceInterfaceDetachParams struct {
 func (r InstanceInterfaceDetachParams) MarshalJSON() (data []byte, err error) {
 	type shadow InstanceInterfaceDetachParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceInterfaceDetachParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

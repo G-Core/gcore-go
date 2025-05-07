@@ -309,6 +309,9 @@ func (r ReservedFixedIPVipReplaceConnectedPortsParams) MarshalJSON() (data []byt
 	type shadow ReservedFixedIPVipReplaceConnectedPortsParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *ReservedFixedIPVipReplaceConnectedPortsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type ReservedFixedIPVipToggleParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -322,6 +325,9 @@ func (r ReservedFixedIPVipToggleParams) MarshalJSON() (data []byte, err error) {
 	type shadow ReservedFixedIPVipToggleParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *ReservedFixedIPVipToggleParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type ReservedFixedIPVipUpdateConnectedPortsParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -334,4 +340,7 @@ type ReservedFixedIPVipUpdateConnectedPortsParams struct {
 func (r ReservedFixedIPVipUpdateConnectedPortsParams) MarshalJSON() (data []byte, err error) {
 	type shadow ReservedFixedIPVipUpdateConnectedPortsParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ReservedFixedIPVipUpdateConnectedPortsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

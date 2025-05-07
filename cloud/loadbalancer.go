@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -18,7 +17,6 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 	"github.com/G-Core/gcore-go/shared/constant"
-	"github.com/tidwall/gjson"
 )
 
 // LoadBalancerService contains methods and other services that help with
@@ -1339,6 +1337,9 @@ func (r LoadBalancerNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Only one field can be non-zero.
 //
@@ -1351,6 +1352,9 @@ type LoadBalancerNewParamsFloatingIPUnion struct {
 
 func (u LoadBalancerNewParamsFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[LoadBalancerNewParamsFloatingIPUnion](u.OfNew, u.OfExisting)
+}
+func (u *LoadBalancerNewParamsFloatingIPUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *LoadBalancerNewParamsFloatingIPUnion) asAny() any {
@@ -1383,16 +1387,8 @@ func (u LoadBalancerNewParamsFloatingIPUnion) GetSource() *string {
 func init() {
 	apijson.RegisterUnion[LoadBalancerNewParamsFloatingIPUnion](
 		"source",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(LoadBalancerNewParamsFloatingIPNew{}),
-			DiscriminatorValue: "new",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(LoadBalancerNewParamsFloatingIPExisting{}),
-			DiscriminatorValue: "existing",
-		},
+		apijson.Discriminator[LoadBalancerNewParamsFloatingIPNew]("new"),
+		apijson.Discriminator[LoadBalancerNewParamsFloatingIPExisting]("existing"),
 	)
 }
 
@@ -1417,6 +1413,9 @@ func (r LoadBalancerNewParamsFloatingIPNew) MarshalJSON() (data []byte, err erro
 	type shadow LoadBalancerNewParamsFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerNewParamsFloatingIPNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties ExistingFloatingID, Source are required.
 type LoadBalancerNewParamsFloatingIPExisting struct {
@@ -1436,6 +1435,9 @@ type LoadBalancerNewParamsFloatingIPExisting struct {
 func (r LoadBalancerNewParamsFloatingIPExisting) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerNewParamsFloatingIPExisting) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Name, Protocol, ProtocolPort are required.
@@ -1477,6 +1479,9 @@ type LoadBalancerNewParamsListener struct {
 func (r LoadBalancerNewParamsListener) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsListener
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerNewParamsListener) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties LbAlgorithm, Name, Protocol are required.
@@ -1520,6 +1525,9 @@ func (r LoadBalancerNewParamsListenerPool) MarshalJSON() (data []byte, err error
 	type shadow LoadBalancerNewParamsListenerPool
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerNewParamsListenerPool) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Health monitor details
 //
@@ -1555,6 +1563,9 @@ func (r LoadBalancerNewParamsListenerPoolHealthmonitor) MarshalJSON() (data []by
 	type shadow LoadBalancerNewParamsListenerPoolHealthmonitor
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerNewParamsListenerPoolHealthmonitor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties Address, ProtocolPort are required.
 type LoadBalancerNewParamsListenerPoolMember struct {
@@ -1583,6 +1594,9 @@ func (r LoadBalancerNewParamsListenerPoolMember) MarshalJSON() (data []byte, err
 	type shadow LoadBalancerNewParamsListenerPoolMember
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerNewParamsListenerPoolMember) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Session persistence details
 //
@@ -1605,6 +1619,9 @@ func (r LoadBalancerNewParamsListenerPoolSessionPersistence) MarshalJSON() (data
 	type shadow LoadBalancerNewParamsListenerPoolSessionPersistence
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerNewParamsListenerPoolSessionPersistence) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerNewParamsListenerUserList struct {
@@ -1618,6 +1635,9 @@ type LoadBalancerNewParamsListenerUserList struct {
 func (r LoadBalancerNewParamsListenerUserList) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsListenerUserList
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerNewParamsListenerUserList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Logging configuration
@@ -1636,6 +1656,9 @@ type LoadBalancerNewParamsLogging struct {
 func (r LoadBalancerNewParamsLogging) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerNewParamsLogging
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerNewParamsLogging) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type LoadBalancerUpdateParams struct {
@@ -1657,6 +1680,9 @@ func (r LoadBalancerUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Logging configuration
 type LoadBalancerUpdateParamsLogging struct {
@@ -1674,6 +1700,9 @@ type LoadBalancerUpdateParamsLogging struct {
 func (r LoadBalancerUpdateParamsLogging) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerUpdateParamsLogging
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerUpdateParamsLogging) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type LoadBalancerListParams struct {
@@ -1733,6 +1762,9 @@ func (r LoadBalancerFailoverParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerFailoverParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *LoadBalancerFailoverParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type LoadBalancerGetParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -1763,4 +1795,7 @@ type LoadBalancerResizeParams struct {
 func (r LoadBalancerResizeParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerResizeParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerResizeParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

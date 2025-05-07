@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -196,6 +197,9 @@ type GPUBaremetalClusterImageUploadParams struct {
 func (r GPUBaremetalClusterImageUploadParams) MarshalJSON() (data []byte, err error) {
 	type shadow GPUBaremetalClusterImageUploadParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterImageUploadParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Image architecture type: aarch64, x86_64

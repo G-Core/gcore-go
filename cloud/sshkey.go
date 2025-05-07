@@ -287,6 +287,9 @@ func (r SSHKeyNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow SSHKeyNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *SSHKeyNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type SSHKeyUpdateParams struct {
 	// Project ID
@@ -299,6 +302,9 @@ type SSHKeyUpdateParams struct {
 func (r SSHKeyUpdateParams) MarshalJSON() (data []byte, err error) {
 	type shadow SSHKeyUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SSHKeyUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type SSHKeyListParams struct {

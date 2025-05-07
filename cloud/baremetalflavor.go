@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
@@ -123,6 +124,9 @@ type BaremetalFlavorListSuitableParams struct {
 func (r BaremetalFlavorListSuitableParams) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalFlavorListSuitableParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BaremetalFlavorListSuitableParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [BaremetalFlavorListSuitableParams]'s query parameters as

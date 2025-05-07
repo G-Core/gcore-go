@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -145,6 +146,9 @@ func (r SecurityGroupRuleNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupRuleNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *SecurityGroupRuleNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Ingress or egress, which is the direction in which the security group is applied
 type SecurityGroupRuleNewParamsDirection string
@@ -235,6 +239,9 @@ type SecurityGroupRuleReplaceParams struct {
 func (r SecurityGroupRuleReplaceParams) MarshalJSON() (data []byte, err error) {
 	type shadow SecurityGroupRuleReplaceParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SecurityGroupRuleReplaceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Ingress or egress, which is the direction in which the security group rule is

@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -20,7 +19,6 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 	"github.com/G-Core/gcore-go/shared/constant"
-	"github.com/tidwall/gjson"
 )
 
 // BaremetalServerService contains methods and other services that help with
@@ -518,6 +516,9 @@ func (r BaremetalServerNewParams) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *BaremetalServerNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Only one field can be non-zero.
 //
@@ -532,6 +533,9 @@ type BaremetalServerNewParamsInterfaceUnion struct {
 
 func (u BaremetalServerNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[BaremetalServerNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
+}
+func (u *BaremetalServerNewParamsInterfaceUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *BaremetalServerNewParamsInterfaceUnion) asAny() any {
@@ -699,26 +703,10 @@ func (u baremetalServerNewParamsInterfaceUnionFloatingIP) GetExistingFloatingID(
 func init() {
 	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceUnion](
 		"type",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceExternal{}),
-			DiscriminatorValue: "external",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceSubnet{}),
-			DiscriminatorValue: "subnet",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceAnySubnet{}),
-			DiscriminatorValue: "any_subnet",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceReservedFixedIP{}),
-			DiscriminatorValue: "reserved_fixed_ip",
-		},
+		apijson.Discriminator[BaremetalServerNewParamsInterfaceExternal]("external"),
+		apijson.Discriminator[BaremetalServerNewParamsInterfaceSubnet]("subnet"),
+		apijson.Discriminator[BaremetalServerNewParamsInterfaceAnySubnet]("any_subnet"),
+		apijson.Discriminator[BaremetalServerNewParamsInterfaceReservedFixedIP]("reserved_fixed_ip"),
 	)
 }
 
@@ -747,6 +735,9 @@ type BaremetalServerNewParamsInterfaceExternal struct {
 func (r BaremetalServerNewParamsInterfaceExternal) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceExternal
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BaremetalServerNewParamsInterfaceExternal) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The instance will get an IP address from the selected network. If you choose to
@@ -781,6 +772,9 @@ func (r BaremetalServerNewParamsInterfaceSubnet) MarshalJSON() (data []byte, err
 	type shadow BaremetalServerNewParamsInterfaceSubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *BaremetalServerNewParamsInterfaceSubnet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Only one field can be non-zero.
 //
@@ -793,6 +787,9 @@ type BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion struct {
 
 func (u BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion](u.OfNew, u.OfExisting)
+}
+func (u *BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) asAny() any {
@@ -825,16 +822,8 @@ func (u BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) GetSource() *str
 func init() {
 	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion](
 		"source",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceSubnetFloatingIPNew{}),
-			DiscriminatorValue: "new",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting{}),
-			DiscriminatorValue: "existing",
-		},
+		apijson.Discriminator[BaremetalServerNewParamsInterfaceSubnetFloatingIPNew]("new"),
+		apijson.Discriminator[BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting]("existing"),
 	)
 }
 
@@ -859,6 +848,9 @@ func (r BaremetalServerNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() (dat
 	type shadow BaremetalServerNewParamsInterfaceSubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *BaremetalServerNewParamsInterfaceSubnetFloatingIPNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties ExistingFloatingID, Source are required.
 type BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting struct {
@@ -878,6 +870,9 @@ type BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting struct {
 func (r BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties NetworkID, Type are required.
@@ -910,6 +905,9 @@ func (r BaremetalServerNewParamsInterfaceAnySubnet) MarshalJSON() (data []byte, 
 	type shadow BaremetalServerNewParamsInterfaceAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *BaremetalServerNewParamsInterfaceAnySubnet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Only one field can be non-zero.
 //
@@ -922,6 +920,9 @@ type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion struct {
 
 func (u BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion](u.OfNew, u.OfExisting)
+}
+func (u *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) asAny() any {
@@ -954,16 +955,8 @@ func (u BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) GetSource() *
 func init() {
 	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion](
 		"source",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew{}),
-			DiscriminatorValue: "new",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting{}),
-			DiscriminatorValue: "existing",
-		},
+		apijson.Discriminator[BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew]("new"),
+		apijson.Discriminator[BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting]("existing"),
 	)
 }
 
@@ -988,6 +981,9 @@ func (r BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON() (
 	type shadow BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties ExistingFloatingID, Source are required.
 type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting struct {
@@ -1007,6 +1003,9 @@ type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting struct {
 func (r BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties PortID, Type are required.
@@ -1036,6 +1035,9 @@ func (r BaremetalServerNewParamsInterfaceReservedFixedIP) MarshalJSON() (data []
 	type shadow BaremetalServerNewParamsInterfaceReservedFixedIP
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *BaremetalServerNewParamsInterfaceReservedFixedIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Only one field can be non-zero.
 //
@@ -1048,6 +1050,9 @@ type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
 
 func (u BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion](u.OfNew, u.OfExisting)
+}
+func (u *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) asAny() any {
@@ -1080,16 +1085,8 @@ func (u BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetSour
 func init() {
 	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion](
 		"source",
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew{}),
-			DiscriminatorValue: "new",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting{}),
-			DiscriminatorValue: "existing",
-		},
+		apijson.Discriminator[BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew]("new"),
+		apijson.Discriminator[BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting]("existing"),
 	)
 }
 
@@ -1114,6 +1111,9 @@ func (r BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew) MarshalJS
 	type shadow BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties ExistingFloatingID, Source are required.
 type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
@@ -1134,6 +1134,9 @@ func (r BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting) Mars
 	type shadow BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Enable advanced DDoS protection for the server
 //
@@ -1152,6 +1155,9 @@ func (r BaremetalServerNewParamsDDOSProfile) MarshalJSON() (data []byte, err err
 	type shadow BaremetalServerNewParamsDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *BaremetalServerNewParamsDDOSProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type BaremetalServerNewParamsDDOSProfileField struct {
 	// ID of DDoS profile field
@@ -1169,6 +1175,9 @@ func (r BaremetalServerNewParamsDDOSProfileField) MarshalJSON() (data []byte, er
 	type shadow BaremetalServerNewParamsDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *BaremetalServerNewParamsDDOSProfileField) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Only one field can be non-zero.
 //
@@ -1182,6 +1191,9 @@ type BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion struct {
 
 func (u BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion[BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion](u.OfAnyArray, u.OfInt, u.OfString)
+}
+func (u *BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) asAny() any {
@@ -1338,4 +1350,7 @@ type BaremetalServerRebuildParams struct {
 func (r BaremetalServerRebuildParams) MarshalJSON() (data []byte, err error) {
 	type shadow BaremetalServerRebuildParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BaremetalServerRebuildParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

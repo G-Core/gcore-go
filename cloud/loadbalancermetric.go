@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -73,4 +74,7 @@ type LoadBalancerMetricListParams struct {
 func (r LoadBalancerMetricListParams) MarshalJSON() (data []byte, err error) {
 	type shadow LoadBalancerMetricListParams
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerMetricListParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
