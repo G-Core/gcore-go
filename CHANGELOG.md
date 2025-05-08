@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.0 (2025-05-08)
+
+Full Changelog: [v0.1.0-alpha.2...v0.1.0](https://github.com/G-Core/gcore-go/compare/v0.1.0-alpha.2...v0.1.0)
+
+### Features
+
+* **api:** aggregated API specs update ([25ef71e](https://github.com/G-Core/gcore-go/commit/25ef71edc7712eb81350f2bf71d313d4192dcb33))
+* **client:** experimental support for unmarshalling into param structs ([efcbafb](https://github.com/G-Core/gcore-go/commit/efcbafb002002b2b29ac5a8ba4f7f1481893420d))
+
+
+### Bug Fixes
+
+* **client:** clean up reader resources ([6a70d50](https://github.com/G-Core/gcore-go/commit/6a70d5044390fc7e459bda20118657ac5b94d5d6))
+* **client:** correctly update body in WithJSONSet ([f9c6ace](https://github.com/G-Core/gcore-go/commit/f9c6ace9a743446071759c92731e07cc3c4ebbb5))
+* **client:** unmarshal responses properly ([4be7a0c](https://github.com/G-Core/gcore-go/commit/4be7a0c66414b11a645f6f1660a58090bed5c0d3))
+
 ## 0.1.0-alpha.2 (2025-05-06)
 
 Full Changelog: [v0.1.0-alpha.1...v0.1.0-alpha.2](https://github.com/G-Core/gcore-go/compare/v0.1.0-alpha.1...v0.1.0-alpha.2)
