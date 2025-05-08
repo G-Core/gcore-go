@@ -27,8 +27,8 @@ func TestNetworkNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Networks.New(context.TODO(), cloud.NetworkNewParams{
-		ProjectID:    gcore.Int(0),
-		RegionID:     gcore.Int(0),
+		ProjectID:    gcore.Int(1),
+		RegionID:     gcore.Int(1),
 		Name:         "my network",
 		CreateRouter: gcore.Bool(true),
 		Tags: cloud.TagUpdateMap{
@@ -59,10 +59,10 @@ func TestNetworkUpdate(t *testing.T) {
 	)
 	_, err := client.Cloud.Networks.Update(
 		context.TODO(),
-		"network_id",
+		"b39792c3-3160-4356-912e-ba396c95cdcf",
 		cloud.NetworkUpdateParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			Name:      "some_name",
 		},
 	)
@@ -88,12 +88,12 @@ func TestNetworkListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Networks.List(context.TODO(), cloud.NetworkListParams{
-		ProjectID:   gcore.Int(0),
-		RegionID:    gcore.Int(0),
-		Limit:       gcore.Int(0),
+		ProjectID:   gcore.Int(1),
+		RegionID:    gcore.Int(1),
+		Limit:       gcore.Int(1000),
 		Offset:      gcore.Int(0),
-		OrderBy:     gcore.String("order_by"),
-		TagKey:      []string{"string"},
+		OrderBy:     cloud.NetworkListParamsOrderByCreatedAtDesc,
+		TagKey:      []string{"key1", "key2"},
 		TagKeyValue: gcore.String("tag_key_value"),
 	})
 	if err != nil {
@@ -119,10 +119,10 @@ func TestNetworkDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.Networks.Delete(
 		context.TODO(),
-		"network_id",
+		"b39792c3-3160-4356-912e-ba396c95cdcf",
 		cloud.NetworkDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -148,10 +148,10 @@ func TestNetworkGet(t *testing.T) {
 	)
 	_, err := client.Cloud.Networks.Get(
 		context.TODO(),
-		"network_id",
+		"b39792c3-3160-4356-912e-ba396c95cdcf",
 		cloud.NetworkGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
