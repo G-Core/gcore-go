@@ -1868,17 +1868,27 @@ type Network struct {
 	ID string `json:"id,required" format:"uuid4"`
 	// Datetime when the network was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Task that created this entity
+	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
+	// True if network has is_default attribute
+	Default bool `json:"default,required"`
 	// True if the network `router:external` attribute
 	External bool `json:"external,required"`
+	// MTU (maximum transmission unit). Default value is 1450
+	Mtu int64 `json:"mtu,required"`
 	// Network name
 	Name string `json:"name,required"`
 	// Indicates port_security_enabled status of all newly created in the network
 	// ports.
 	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	// Project ID
+	ProjectID int64 `json:"project_id,required"`
 	// Region name
 	Region string `json:"region,required"`
 	// Region ID
 	RegionID int64 `json:"region_id,required"`
+	// Id of network segment
+	SegmentationID int64 `json:"segmentation_id,required"`
 	// True when the network is shared with your project by external owner
 	Shared bool `json:"shared,required"`
 	// List of subnetworks
@@ -1889,44 +1899,34 @@ type Network struct {
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
+	TaskID string `json:"task_id,required" format:"uuid4"`
 	// Network type (vlan, vxlan)
 	Type string `json:"type,required"`
 	// Datetime when the network was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// True if network has is_default attribute
-	Default bool `json:"default,nullable"`
-	// MTU (maximum transmission unit). Default value is 1450
-	Mtu int64 `json:"mtu"`
-	// Project ID
-	ProjectID int64 `json:"project_id,nullable"`
-	// Id of network segment
-	SegmentationID int64 `json:"segmentation_id,nullable"`
-	// The UUID of the active task that currently holds a lock on the resource. This
-	// lock prevents concurrent modifications to ensure consistency. If `null`, the
-	// resource is not locked.
-	TaskID string `json:"task_id,nullable" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
 		CreatedAt           respjson.Field
+		CreatorTaskID       respjson.Field
+		Default             respjson.Field
 		External            respjson.Field
+		Mtu                 respjson.Field
 		Name                respjson.Field
 		PortSecurityEnabled respjson.Field
+		ProjectID           respjson.Field
 		Region              respjson.Field
 		RegionID            respjson.Field
+		SegmentationID      respjson.Field
 		Shared              respjson.Field
 		Subnets             respjson.Field
 		Tags                respjson.Field
+		TaskID              respjson.Field
 		Type                respjson.Field
 		UpdatedAt           respjson.Field
-		CreatorTaskID       respjson.Field
-		Default             respjson.Field
-		Mtu                 respjson.Field
-		ProjectID           respjson.Field
-		SegmentationID      respjson.Field
-		TaskID              respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -1943,64 +1943,65 @@ type NetworkDetails struct {
 	ID string `json:"id,required" format:"uuid4"`
 	// Datetime when the network was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Task that created this entity
+	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
+	// True if network has is_default attribute
+	Default bool `json:"default,required"`
 	// True if the network `router:external` attribute
 	External bool `json:"external,required"`
+	// MTU (maximum transmission unit). Default value is 1450
+	Mtu int64 `json:"mtu,required"`
 	// Network name
 	Name string `json:"name,required"`
 	// Indicates port_security_enabled status of all newly created in the network
 	// ports.
 	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	// Project ID
+	ProjectID int64 `json:"project_id,required"`
 	// Region name
 	Region string `json:"region,required"`
 	// Region ID
 	RegionID int64 `json:"region_id,required"`
+	// Id of network segment
+	SegmentationID int64 `json:"segmentation_id,required"`
 	// True when the network is shared with your project by external owner
 	Shared bool `json:"shared,required"`
+	// List of subnets associated with the network
+	Subnets []Subnet `json:"subnets,required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags,required"`
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
+	TaskID string `json:"task_id,required" format:"uuid4"`
 	// Network type (vlan, vxlan)
 	Type string `json:"type,required"`
 	// Datetime when the network was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// True if network has is_default attribute
-	Default bool `json:"default,nullable"`
-	// MTU (maximum transmission unit). Default value is 1450
-	Mtu int64 `json:"mtu"`
-	// Project ID
-	ProjectID int64 `json:"project_id,nullable"`
-	// Id of network segment
-	SegmentationID int64    `json:"segmentation_id,nullable"`
-	Subnets        []Subnet `json:"subnets,nullable"`
-	// The UUID of the active task that currently holds a lock on the resource. This
-	// lock prevents concurrent modifications to ensure consistency. If `null`, the
-	// resource is not locked.
-	TaskID string `json:"task_id,nullable" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
 		CreatedAt           respjson.Field
-		External            respjson.Field
-		Name                respjson.Field
-		PortSecurityEnabled respjson.Field
-		Region              respjson.Field
-		RegionID            respjson.Field
-		Shared              respjson.Field
-		Tags                respjson.Field
-		Type                respjson.Field
-		UpdatedAt           respjson.Field
 		CreatorTaskID       respjson.Field
 		Default             respjson.Field
+		External            respjson.Field
 		Mtu                 respjson.Field
+		Name                respjson.Field
+		PortSecurityEnabled respjson.Field
 		ProjectID           respjson.Field
+		Region              respjson.Field
+		RegionID            respjson.Field
 		SegmentationID      respjson.Field
+		Shared              respjson.Field
 		Subnets             respjson.Field
+		Tags                respjson.Field
 		TaskID              respjson.Field
+		Type                respjson.Field
+		UpdatedAt           respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
