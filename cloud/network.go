@@ -178,8 +178,10 @@ func (r *NetworkService) Get(ctx context.Context, networkID string, query Networ
 }
 
 type NetworkNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Network name
 	Name string `json:"name,required"`
 	// Defaults to True
@@ -214,8 +216,10 @@ const (
 )
 
 type NetworkUpdateParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Name.
 	Name string `json:"name,required"`
 	paramObj
@@ -230,19 +234,25 @@ func (r *NetworkUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Limit the number of returned limit request entities.
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result.
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Order networks by fields and directions (name.asc). Default is `created_at.asc`.
-	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
-	// Filter by tag key-value pairs. Must be a valid JSON string. curl -G
-	// --data-urlencode "tag_key_value={"key": "value"}" --url
-	// "http://localhost:1111/v1/networks/1/1"
+	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
+	// "tag_key_value={"key": "value"}" --url
+	// "https://example.com/cloud/v1/resource/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// Filter by tag keys.
+	// Ordering networks list result by `name`, `created_at` fields of the network and
+	// directions (`created_at.desc`).
+	//
+	// Any of "created_at.asc", "created_at.desc", "name.asc", "name.desc".
+	OrderBy NetworkListParamsOrderBy `query:"order_by,omitzero" json:"-"`
+	// Optional. Filter by tag keys. ?tag_key=key1&tag_key=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
@@ -255,14 +265,29 @@ func (r NetworkListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Ordering networks list result by `name`, `created_at` fields of the network and
+// directions (`created_at.desc`).
+type NetworkListParamsOrderBy string
+
+const (
+	NetworkListParamsOrderByCreatedAtAsc  NetworkListParamsOrderBy = "created_at.asc"
+	NetworkListParamsOrderByCreatedAtDesc NetworkListParamsOrderBy = "created_at.desc"
+	NetworkListParamsOrderByNameAsc       NetworkListParamsOrderBy = "name.asc"
+	NetworkListParamsOrderByNameDesc      NetworkListParamsOrderBy = "name.desc"
+)
+
 type NetworkDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type NetworkGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
