@@ -41,3 +41,28 @@ jobs:
 
       - name: Run tests
         run: ./scripts/test
+  detect_breaking_changes:
+    name: detect-breaking-changes
+    if: github.event_name == 'pull_request'
+    # Don't try to detect breaking changes if linting fails with the change. That means it's already failing
+    # and will likely fail at an earlier revision for the same reason, which doesn't indicate a breaking
+    # change.
+    needs: lint
+    runs-on: ${{ github.repository == 'stainless-sdks/gcore-go' && 'depot-ubuntu-24.04' || 'ubuntu-latest' }}
+    steps:
+      - name: Calculate fetch-depth
+        run: |
+          echo "FETCH_DEPTH=$(expr ${{ github.event.pull_request.commits }} + 1)" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v4
+        with:
+          # Ensure we can check out the pull request base in the script below.
+          fetch-depth: ${{ env.FETCH_DEPTH }}
+
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: ./go.mod
+
+      - name: Detect breaking changes
+        run: ./scripts/detect-breaking-changes ${{ github.event.pull_request.base.sha }}
