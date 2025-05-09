@@ -812,3 +812,34 @@ Response Types:
 Methods:
 
 - <code title="post /cloud/v1/instances/{project_id}/{region_id}/{instance_id}/metrics">client.Cloud.Instances.Metrics.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceMetricService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, instanceID <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceMetricListParams">InstanceMetricListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#MetricsList">MetricsList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# Waap
+
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDomainStatus">WaapDomainStatus</a>
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapAPIURLs">WaapAPIURLs</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDetailedDomain">WaapDetailedDomain</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDomainDDOSSettings">WaapDomainDDOSSettings</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDomainSettings">WaapDomainSettings</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDomainStatus">WaapDomainStatus</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapSummaryDomain">WaapSummaryDomain</a>
+
+## Domains
+
+Methods:
+
+- <code title="patch /waap/v1/domains/{domain_id}">client.Waap.Domains.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, domainID <a href="https://pkg.go.dev/builtin#int64">int64</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainUpdateParams">DomainUpdateParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="get /waap/v1/domains">client.Waap.Domains.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainListParams">DomainListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapSummaryDomain">WaapSummaryDomain</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /waap/v1/domains/{domain_id}">client.Waap.Domains.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, domainID <a href="https://pkg.go.dev/builtin#int64">int64</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="get /waap/v1/domains/{domain_id}">client.Waap.Domains.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, domainID <a href="https://pkg.go.dev/builtin#int64">int64</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDetailedDomain">WaapDetailedDomain</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+### Settings
+
+Methods:
+
+- <code title="patch /waap/v1/domains/{domain_id}/settings">client.Waap.Domains.Settings.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainSettingService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, domainID <a href="https://pkg.go.dev/builtin#int64">int64</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainSettingUpdateParams">DomainSettingUpdateParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="get /waap/v1/domains/{domain_id}/settings">client.Waap.Domains.Settings.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainSettingService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, domainID <a href="https://pkg.go.dev/builtin#int64">int64</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDomainSettings">WaapDomainSettings</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
