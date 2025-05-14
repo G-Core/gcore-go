@@ -152,27 +152,20 @@ func (r *InstanceImageService) NewFromVolume(ctx context.Context, params Instanc
 }
 
 // NewFromVolumeAndPoll create image from volume and poll for the result
-func (r *InstanceImageService) NewFromVolumeAndPoll(ctx context.Context, params InstanceImageNewFromVolumeParams, opts ...option.RequestOption) (*Image, error) {
+func (r *InstanceImageService) NewFromVolumeAndPoll(ctx context.Context, params InstanceImageNewFromVolumeParams, opts ...option.RequestOption) (v *Image, err error) {
 	resource, err := r.NewFromVolume(ctx, params, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
-
 	var getParams InstanceImageGetParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		return nil, errors.New("missing required project_id parameter")
-	}
-	if !params.RegionID.Valid() {
-		return nil, errors.New("missing required region_id parameter")
-	}
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
@@ -182,13 +175,14 @@ func (r *InstanceImageService) NewFromVolumeAndPoll(ctx context.Context, params 
 	taskID := resource.Tasks[0]
 	task, err := r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Images) != 1 {
 		return nil, errors.New("expected exactly one image to be created in a task")
 	}
 	resourceID := task.CreatedResources.Images[0]
+
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
@@ -241,27 +235,20 @@ func (r *InstanceImageService) Upload(ctx context.Context, params InstanceImageU
 }
 
 // UploadAndPoll upload image and poll for the result
-func (r *InstanceImageService) UploadAndPoll(ctx context.Context, params InstanceImageUploadParams, opts ...option.RequestOption) (*Image, error) {
+func (r *InstanceImageService) UploadAndPoll(ctx context.Context, params InstanceImageUploadParams, opts ...option.RequestOption) (v *Image, err error) {
 	resource, err := r.Upload(ctx, params, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
-
 	var getParams InstanceImageGetParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		return nil, errors.New("missing required project_id parameter")
-	}
-	if !params.RegionID.Valid() {
-		return nil, errors.New("missing required region_id parameter")
-	}
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
@@ -271,13 +258,14 @@ func (r *InstanceImageService) UploadAndPoll(ctx context.Context, params Instanc
 	taskID := resource.Tasks[0]
 	task, err := r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Images) != 1 {
 		return nil, errors.New("expected exactly one image to be created in a task")
 	}
 	resourceID := task.CreatedResources.Images[0]
+
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 

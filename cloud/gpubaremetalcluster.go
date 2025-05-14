@@ -33,6 +33,7 @@ type GPUBaremetalClusterService struct {
 	Servers    GPUBaremetalClusterServerService
 	Flavors    GPUBaremetalClusterFlavorService
 	Images     GPUBaremetalClusterImageService
+	tasks      TaskService
 }
 
 // NewGPUBaremetalClusterService generates a new service that applies the given
@@ -45,6 +46,7 @@ func NewGPUBaremetalClusterService(opts ...option.RequestOption) (r GPUBaremetal
 	r.Servers = NewGPUBaremetalClusterServerService(opts...)
 	r.Flavors = NewGPUBaremetalClusterFlavorService(opts...)
 	r.Images = NewGPUBaremetalClusterImageService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -261,6 +263,101 @@ func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID strin
 	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%v/%v/%s/resize", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a new GPU bare metal cluster and polls for completion
+func (r *GPUBaremetalClusterService) NewAndPoll(ctx context.Context, params GPUBaremetalClusterNewParams, opts ...option.RequestOption) (v *GPUBaremetalCluster, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams GPUBaremetalClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.AIClusters) != 1 {
+		return nil, errors.New("expected exactly one GPU bare metal cluster to be created in a task")
+	}
+	resourceID := task.CreatedResources.AIClusters[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
+// RebuildAndPoll rebuilds a GPU bare metal cluster and polls for completion
+func (r *GPUBaremetalClusterService) RebuildAndPoll(ctx context.Context, clusterID string, params GPUBaremetalClusterRebuildParams, opts ...option.RequestOption) (v *GPUBaremetalCluster, err error) {
+	resource, err := r.Rebuild(ctx, clusterID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams GPUBaremetalClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	return r.Get(ctx, clusterID, getParams, opts...)
+}
+
+// ResizeAndPoll resizes a GPU bare metal cluster and polls for completion
+func (r *GPUBaremetalClusterService) ResizeAndPoll(ctx context.Context, clusterID string, params GPUBaremetalClusterResizeParams, opts ...option.RequestOption) (v *GPUBaremetalCluster, err error) {
+	resource, err := r.Resize(ctx, clusterID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams GPUBaremetalClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	return r.Get(ctx, clusterID, getParams, opts...)
 }
 
 type GPUBaremetalCluster struct {
