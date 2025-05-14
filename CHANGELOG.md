@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.2.0 (2025-05-14)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/G-Core/gcore-go/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* **baremetal:** add polling methods ([#44](https://github.com/G-Core/gcore-go/issues/44)) ([8ecfae6](https://github.com/G-Core/gcore-go/commit/8ecfae61c990cef04009f147fb189577fdfa68eb))
+* **client:** add support for endpoint-specific base URLs in python ([a2aecac](https://github.com/G-Core/gcore-go/commit/a2aecacc89fa34860c1545ea35a785dfdcea8177))
+* **gpu_cloud:** add polling methods ([#48](https://github.com/G-Core/gcore-go/issues/48)) ([29120d3](https://github.com/G-Core/gcore-go/commit/29120d343b3f5aebabeffef18a3af56d1d5bc29f))
+* **inference:** add polling methods ([#47](https://github.com/G-Core/gcore-go/issues/47)) ([701ac2d](https://github.com/G-Core/gcore-go/commit/701ac2dec8b816a472e0557f4081fcafc1c9e107))
+* **loadbalancers:** add polling methods ([#46](https://github.com/G-Core/gcore-go/issues/46)) ([06b83ed](https://github.com/G-Core/gcore-go/commit/06b83ed4db6b0f89bab7e7ba9402969d1884a1d2))
+
+
+### Refactors
+
+* **instances,secrets,reserved_ips:** harmonize polling methods ([#50](https://github.com/G-Core/gcore-go/issues/50)) ([918660c](https://github.com/G-Core/gcore-go/commit/918660c91fda57cfd3742c7c498aba223a4db2fe))
+
 ## 0.1.0 (2025-05-08)
 
 Full Changelog: [v0.1.0-alpha.2...v0.1.0](https://github.com/G-Core/gcore-go/compare/v0.1.0-alpha.2...v0.1.0)
