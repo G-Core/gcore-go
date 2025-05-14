@@ -88,27 +88,20 @@ func (r *InstanceInterfaceService) Attach(ctx context.Context, instanceID string
 }
 
 // AttachAndPoll attach interface to instance and poll for the result
-func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID string, params InstanceInterfaceAttachParams, opts ...option.RequestOption) (*NetworkInterfaceList, error) {
+func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID string, params InstanceInterfaceAttachParams, opts ...option.RequestOption) (v *NetworkInterfaceList, err error) {
 	resource, err := r.Attach(ctx, instanceID, params, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
-
 	var listParams InstanceInterfaceListParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		return nil, errors.New("missing required project_id parameter")
-	}
-	if !params.RegionID.Valid() {
-		return nil, errors.New("missing required region_id parameter")
-	}
 	listParams.ProjectID = params.ProjectID
 	listParams.RegionID = params.RegionID
 
@@ -118,7 +111,7 @@ func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	return r.List(ctx, instanceID, listParams, opts...)
@@ -151,27 +144,20 @@ func (r *InstanceInterfaceService) Detach(ctx context.Context, instanceID string
 }
 
 // DetachAndPoll interface from instance and poll for the result
-func (r *InstanceInterfaceService) DetachAndPoll(ctx context.Context, instanceID string, params InstanceInterfaceDetachParams, opts ...option.RequestOption) (*NetworkInterfaceList, error) {
+func (r *InstanceInterfaceService) DetachAndPoll(ctx context.Context, instanceID string, params InstanceInterfaceDetachParams, opts ...option.RequestOption) (v *NetworkInterfaceList, err error) {
 	resource, err := r.Detach(ctx, instanceID, params, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
-
 	var listParams InstanceInterfaceListParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		return nil, errors.New("missing required project_id parameter")
-	}
-	if !params.RegionID.Valid() {
-		return nil, errors.New("missing required region_id parameter")
-	}
 	listParams.ProjectID = params.ProjectID
 	listParams.RegionID = params.RegionID
 
@@ -181,7 +167,7 @@ func (r *InstanceInterfaceService) DetachAndPoll(ctx context.Context, instanceID
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	return r.List(ctx, instanceID, listParams, opts...)

@@ -63,7 +63,7 @@ func (r *SecretService) New(ctx context.Context, params SecretNewParams, opts ..
 func (r *SecretService) NewAndPoll(ctx context.Context, params SecretNewParams, opts ...option.RequestOption) (v *Secret, err error) {
 	resource, err := r.New(ctx, params, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	opts = append(r.Options[:], opts...)
@@ -74,14 +74,8 @@ func (r *SecretService) NewAndPoll(ctx context.Context, params SecretNewParams, 
 	var getParams SecretGetParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return
-	}
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
 
 	if len(resource.Tasks) != 1 {
 		return nil, errors.New("expected exactly one task to be created")
@@ -89,13 +83,14 @@ func (r *SecretService) NewAndPoll(ctx context.Context, params SecretNewParams, 
 	taskID := resource.Tasks[0]
 	task, err := r.task.Poll(ctx, taskID, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Secrets) != 1 {
 		return nil, errors.New("expected exactly one secret to be created in a task")
 	}
 	resourceID := task.CreatedResources.Secrets[0]
+
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
