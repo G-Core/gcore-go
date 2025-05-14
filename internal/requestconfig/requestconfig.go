@@ -206,11 +206,14 @@ type HTTPDoer interface {
 // Editing the variables inside RequestConfig directly is unstable api. Prefer
 // composing the RequestOption instead if possible.
 type RequestConfig struct {
-	MaxRetries                  int
-	RequestTimeout              time.Duration
-	Context                     context.Context
-	Request                     *http.Request
-	BaseURL                     *url.URL
+	MaxRetries     int
+	RequestTimeout time.Duration
+	Context        context.Context
+	Request        *http.Request
+	BaseURL        *url.URL
+	// DefaultBaseURL will be used if BaseURL is not explicitly overridden using
+	// WithBaseURL.
+	DefaultBaseURL              *url.URL
 	CustomHTTPDoer              HTTPDoer
 	HTTPClient                  *http.Client
 	Middlewares                 []middleware
@@ -380,7 +383,11 @@ func retryDelay(res *http.Response, retryCount int) time.Duration {
 
 func (cfg *RequestConfig) Execute() (err error) {
 	if cfg.BaseURL == nil {
-		return fmt.Errorf("requestconfig: base url is not set")
+		if cfg.DefaultBaseURL != nil {
+			cfg.BaseURL = cfg.DefaultBaseURL
+		} else {
+			return fmt.Errorf("requestconfig: base url is not set")
+		}
 	}
 
 	cfg.Request.URL, err = cfg.BaseURL.Parse(strings.TrimLeft(cfg.Request.URL.String(), "/"))
@@ -616,4 +623,18 @@ func PreRequestOptions(opts ...RequestOption) (RequestConfig, error) {
 		}
 	}
 	return cfg, nil
+}
+
+// WithDefaultBaseURL returns a RequestOption that sets the client's default Base URL.
+// This is always overridden by setting a base URL with WithBaseURL.
+// WithBaseURL should be used instead of WithDefaultBaseURL except in internal code.
+func WithDefaultBaseURL(baseURL string) RequestOption {
+	u, err := url.Parse(baseURL)
+	return RequestOptionFunc(func(r *RequestConfig) error {
+		if err != nil {
+			return err
+		}
+		r.DefaultBaseURL = u
+		return nil
+	})
 }
