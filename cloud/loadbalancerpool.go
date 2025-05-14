@@ -26,6 +26,7 @@ type LoadBalancerPoolService struct {
 	Options        []option.RequestOption
 	HealthMonitors LoadBalancerPoolHealthMonitorService
 	Members        LoadBalancerPoolMemberService
+	tasks          TaskService
 }
 
 // NewLoadBalancerPoolService generates a new service that applies the given
@@ -36,6 +37,7 @@ func NewLoadBalancerPoolService(opts ...option.RequestOption) (r LoadBalancerPoo
 	r.Options = opts
 	r.HealthMonitors = NewLoadBalancerPoolHealthMonitorService(opts...)
 	r.Members = NewLoadBalancerPoolMemberService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -161,6 +163,87 @@ func (r *LoadBalancerPoolService) Get(ctx context.Context, poolID string, query 
 	path := fmt.Sprintf("cloud/v1/lbpools/%v/%v/%s", query.ProjectID.Value, query.RegionID.Value, poolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a new pool and polls for completion
+func (r *LoadBalancerPoolService) NewAndPoll(ctx context.Context, params LoadBalancerPoolNewParams, opts ...option.RequestOption) (v *LoadBalancerPool, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams LoadBalancerPoolGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Pools) != 1 {
+		return nil, errors.New("expected exactly one pool to be created in a task")
+	}
+	resourceID := task.CreatedResources.Pools[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
+// DeleteAndPoll deletes a pool and polls for completion
+func (r *LoadBalancerPoolService) DeleteAndPoll(ctx context.Context, poolID string, params LoadBalancerPoolDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, poolID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = append(r.Options[:], opts...)
+	if len(resource.Tasks) != 1 {
+		return errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
+}
+
+// UpdateAndPoll updates a pool and polls for completion
+func (r *LoadBalancerPoolService) UpdateAndPoll(ctx context.Context, poolID string, params LoadBalancerPoolUpdateParams, opts ...option.RequestOption) (v *LoadBalancerPool, err error) {
+	resource, err := r.Update(ctx, poolID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams LoadBalancerPoolGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Get(ctx, poolID, getParams, opts...)
 }
 
 type LoadBalancerPoolNewParams struct {

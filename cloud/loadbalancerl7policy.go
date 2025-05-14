@@ -23,6 +23,7 @@ import (
 type LoadBalancerL7PolicyService struct {
 	Options []option.RequestOption
 	Rules   LoadBalancerL7PolicyRuleService
+	tasks   TaskService
 }
 
 // NewLoadBalancerL7PolicyService generates a new service that applies the given
@@ -32,6 +33,7 @@ func NewLoadBalancerL7PolicyService(opts ...option.RequestOption) (r LoadBalance
 	r = LoadBalancerL7PolicyService{}
 	r.Options = opts
 	r.Rules = NewLoadBalancerL7PolicyRuleService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -155,6 +157,92 @@ func (r *LoadBalancerL7PolicyService) Replace(ctx context.Context, l7policyID st
 	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, l7policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a new L7 policy and polls for completion
+func (r *LoadBalancerL7PolicyService) NewAndPoll(ctx context.Context, params LoadBalancerL7PolicyNewParams, opts ...option.RequestOption) (v *LoadBalancerL7Policy, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams LoadBalancerL7PolicyGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.L7polices) != 1 {
+		return nil, errors.New("expected exactly one L7 policy to be created in a task")
+	}
+	resourceID := task.CreatedResources.L7polices[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
+// DeleteAndPoll deletes an L7 policy and polls for completion
+func (r *LoadBalancerL7PolicyService) DeleteAndPoll(ctx context.Context, l7policyID string, body LoadBalancerL7PolicyDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, l7policyID, body, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = append(r.Options[:], opts...)
+	if len(resource.Tasks) != 1 {
+		return errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
+}
+
+// ReplaceAndPoll replaces an L7 policy and polls for completion
+func (r *LoadBalancerL7PolicyService) ReplaceAndPoll(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyReplaceParams, opts ...option.RequestOption) (v *LoadBalancerL7Policy, err error) {
+	resource, err := r.Replace(ctx, l7policyID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams LoadBalancerL7PolicyGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.L7polices) != 1 {
+		return nil, errors.New("expected exactly one L7 policy to be created in a task")
+	}
+	resourceID := task.CreatedResources.L7polices[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
 type LoadBalancerL7PolicyNewParams struct {
