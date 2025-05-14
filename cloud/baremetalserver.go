@@ -29,6 +29,7 @@ import (
 // the [NewBaremetalServerService] method instead.
 type BaremetalServerService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewBaremetalServerService generates a new service that applies the given options
@@ -37,6 +38,7 @@ type BaremetalServerService struct {
 func NewBaremetalServerService(opts ...option.RequestOption) (r BaremetalServerService) {
 	r = BaremetalServerService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -1353,4 +1355,93 @@ func (r BaremetalServerRebuildParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *BaremetalServerRebuildParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// NewAndPoll create bare metal server and poll for the result
+func (r *BaremetalServerService) NewAndPoll(ctx context.Context, params BaremetalServerNewParams, opts ...option.RequestOption) (v *BaremetalServer, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Instances) != 1 {
+		return nil, errors.New("expected exactly one bare metal server to be created in a task")
+	}
+	resourceID := task.CreatedResources.Instances[0]
+
+	// Use List to find the created server
+	var listParams BaremetalServerListParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	listParams.ProjectID = params.ProjectID
+	listParams.RegionID = params.RegionID
+	listParams.Uuid = param.NewOpt(resourceID)
+
+	servers, err := r.List(ctx, listParams, opts...)
+	if err != nil {
+		return
+	}
+
+	if len(servers.Results) == 0 {
+		return nil, errors.New("server not found after creation")
+	}
+
+	return &servers.Results[0], nil
+}
+
+// RebuildAndPoll rebuild bare metal server and poll for the result
+func (r *BaremetalServerService) RebuildAndPoll(ctx context.Context, serverID string, params BaremetalServerRebuildParams, opts ...option.RequestOption) (v *BaremetalServer, err error) {
+	resource, err := r.Rebuild(ctx, serverID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	// Use List to find the rebuilt server
+	var listParams BaremetalServerListParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	listParams.ProjectID = params.ProjectID
+	listParams.RegionID = params.RegionID
+	listParams.Uuid = param.NewOpt(serverID)
+
+	servers, err := r.List(ctx, listParams, opts...)
+	if err != nil {
+		return
+	}
+
+	if len(servers.Results) == 0 {
+		return nil, errors.New("server not found after rebuild")
+	}
+
+	return &servers.Results[0], nil
 }
