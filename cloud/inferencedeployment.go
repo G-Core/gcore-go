@@ -28,6 +28,7 @@ import (
 type InferenceDeploymentService struct {
 	Options []option.RequestOption
 	Logs    InferenceDeploymentLogService
+	tasks   TaskService
 }
 
 // NewInferenceDeploymentService generates a new service that applies the given
@@ -37,6 +38,7 @@ func NewInferenceDeploymentService(opts ...option.RequestOption) (r InferenceDep
 	r = InferenceDeploymentService{}
 	r.Options = opts
 	r.Logs = NewInferenceDeploymentLogService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -1033,4 +1035,81 @@ type InferenceDeploymentStopParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
+}
+
+// NewAndPoll creates a new inference deployment and polls for completion
+func (r *InferenceDeploymentService) NewAndPoll(ctx context.Context, params InferenceDeploymentNewParams, opts ...option.RequestOption) (v *Inference, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams InferenceDeploymentGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	getParams.ProjectID = params.ProjectID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.InferenceInstances) != 1 {
+		return nil, errors.New("expected exactly one inference deployment to be created in a task")
+	}
+	resourceID := task.CreatedResources.InferenceInstances[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
+// DeleteAndPoll deletes an inference deployment and polls for completion
+func (r *InferenceDeploymentService) DeleteAndPoll(ctx context.Context, deploymentName string, params InferenceDeploymentDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, deploymentName, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = append(r.Options[:], opts...)
+	if len(resource.Tasks) != 1 {
+		return errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
+}
+
+// UpdateAndPoll updates an inference deployment and polls for completion
+func (r *InferenceDeploymentService) UpdateAndPoll(ctx context.Context, deploymentName string, params InferenceDeploymentUpdateParams, opts ...option.RequestOption) (v *Inference, err error) {
+	resource, err := r.Update(ctx, deploymentName, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams InferenceDeploymentGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	getParams.ProjectID = params.ProjectID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Get(ctx, deploymentName, getParams, opts...)
 }
