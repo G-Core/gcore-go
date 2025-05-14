@@ -24,6 +24,7 @@ import (
 // the [NewLoadBalancerListenerService] method instead.
 type LoadBalancerListenerService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewLoadBalancerListenerService generates a new service that applies the given
@@ -32,6 +33,7 @@ type LoadBalancerListenerService struct {
 func NewLoadBalancerListenerService(opts ...option.RequestOption) (r LoadBalancerListenerService) {
 	r = LoadBalancerListenerService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -155,6 +157,87 @@ func (r *LoadBalancerListenerService) Get(ctx context.Context, listenerID string
 	path := fmt.Sprintf("cloud/v1/lblisteners/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, listenerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a new listener and polls for completion
+func (r *LoadBalancerListenerService) NewAndPoll(ctx context.Context, params LoadBalancerListenerNewParams, opts ...option.RequestOption) (v *LoadBalancerListenerDetail, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams LoadBalancerListenerGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Listeners) != 1 {
+		return nil, errors.New("expected exactly one listener to be created in a task")
+	}
+	resourceID := task.CreatedResources.Listeners[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
+// DeleteAndPoll deletes a listener and polls for completion
+func (r *LoadBalancerListenerService) DeleteAndPoll(ctx context.Context, listenerID string, params LoadBalancerListenerDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, listenerID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = append(r.Options[:], opts...)
+	if len(resource.Tasks) != 1 {
+		return errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
+}
+
+// UpdateAndPoll updates a listener and polls for completion
+func (r *LoadBalancerListenerService) UpdateAndPoll(ctx context.Context, listenerID string, params LoadBalancerListenerUpdateParams, opts ...option.RequestOption) (v *LoadBalancerListenerDetail, err error) {
+	resource, err := r.Update(ctx, listenerID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams LoadBalancerListenerGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	return r.Get(ctx, listenerID, getParams, opts...)
 }
 
 type LoadBalancerListenerNewParams struct {
