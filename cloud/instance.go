@@ -92,7 +92,7 @@ func (r *InstanceService) New(ctx context.Context, params InstanceNewParams, opt
 func (r *InstanceService) NewAndPoll(ctx context.Context, params InstanceNewParams, opts ...option.RequestOption) (v *Instance, err error) {
 	resource, err := r.New(ctx, params, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	opts = append(r.Options[:], opts...)
@@ -103,14 +103,6 @@ func (r *InstanceService) NewAndPoll(ctx context.Context, params InstanceNewPara
 	var getParams InstanceGetParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return
-	}
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
@@ -120,13 +112,14 @@ func (r *InstanceService) NewAndPoll(ctx context.Context, params InstanceNewPara
 	taskID := resource.Tasks[0]
 	task, err := r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Instances) != 1 {
 		return nil, errors.New("expected exactly one instance to be created in a task")
 	}
 	resourceID := task.CreatedResources.Instances[0]
+
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
@@ -263,27 +256,20 @@ func (r *InstanceService) Action(ctx context.Context, instanceID string, params 
 }
 
 // ActionAndPoll perform an action on the instance and poll for completion
-func (r *InstanceService) ActionAndPoll(ctx context.Context, instanceID string, params InstanceActionParams, opts ...option.RequestOption) (*Instance, error) {
+func (r *InstanceService) ActionAndPoll(ctx context.Context, instanceID string, params InstanceActionParams, opts ...option.RequestOption) (v *Instance, err error) {
 	resource, err := r.Action(ctx, instanceID, params, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
-
 	var getParams InstanceGetParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		return nil, errors.New("missing required project_id parameter")
-	}
-	if !params.RegionID.Valid() {
-		return nil, errors.New("missing required region_id parameter")
-	}
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
@@ -293,7 +279,7 @@ func (r *InstanceService) ActionAndPoll(ctx context.Context, instanceID string, 
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	return r.Get(ctx, instanceID, getParams, opts...)
@@ -326,27 +312,20 @@ func (r *InstanceService) AddToPlacementGroup(ctx context.Context, instanceID st
 }
 
 // AddToPlacementGroupAndPoll add instance to placement group and poll for completion
-func (r *InstanceService) AddToPlacementGroupAndPoll(ctx context.Context, instanceID string, params InstanceAddToPlacementGroupParams, opts ...option.RequestOption) (*Instance, error) {
+func (r *InstanceService) AddToPlacementGroupAndPoll(ctx context.Context, instanceID string, params InstanceAddToPlacementGroupParams, opts ...option.RequestOption) (v *Instance, err error) {
 	resource, err := r.AddToPlacementGroup(ctx, instanceID, params, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
-
 	var getParams InstanceGetParams
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		return nil, errors.New("missing required project_id parameter")
-	}
-	if !params.RegionID.Valid() {
-		return nil, errors.New("missing required region_id parameter")
-	}
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
@@ -356,7 +335,7 @@ func (r *InstanceService) AddToPlacementGroupAndPoll(ctx context.Context, instan
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	return r.Get(ctx, instanceID, getParams, opts...)
@@ -527,27 +506,20 @@ func (r *InstanceService) RemoveFromPlacementGroup(ctx context.Context, instance
 }
 
 // RRemoveFromPlacementGroupAndPoll remove instance from placement group and poll for completion
-func (r *InstanceService) RemoveFromPlacementGroupAndPoll(ctx context.Context, instanceID string, body InstanceRemoveFromPlacementGroupParams, opts ...option.RequestOption) (*Instance, error) {
+func (r *InstanceService) RemoveFromPlacementGroupAndPoll(ctx context.Context, instanceID string, body InstanceRemoveFromPlacementGroupParams, opts ...option.RequestOption) (v *Instance, err error) {
 	resource, err := r.RemoveFromPlacementGroup(ctx, instanceID, body, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
-
 	var getParams InstanceGetParams
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.Valid() {
-		return nil, errors.New("missing required project_id parameter")
-	}
-	if !body.RegionID.Valid() {
-		return nil, errors.New("missing required region_id parameter")
-	}
 	getParams.ProjectID = body.ProjectID
 	getParams.RegionID = body.RegionID
 
@@ -557,7 +529,7 @@ func (r *InstanceService) RemoveFromPlacementGroupAndPoll(ctx context.Context, i
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	return r.Get(ctx, instanceID, getParams, opts...)
@@ -587,6 +559,36 @@ func (r *InstanceService) Resize(ctx context.Context, instanceID string, params 
 	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/changeflavor", params.ProjectID.Value, params.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// ResizeAndPoll change flavor of the instance and poll for completion
+func (r *InstanceService) ResizeAndPoll(ctx context.Context, instanceID string, params InstanceResizeParams, opts ...option.RequestOption) (v *Instance, err error) {
+	resource, err := r.Resize(ctx, instanceID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams InstanceGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	return r.Get(ctx, instanceID, getParams, opts...)
 }
 
 // Un-assign the security group to the server. To un-assign multiple security
