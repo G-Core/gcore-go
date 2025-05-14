@@ -22,6 +22,7 @@ import (
 // the [NewGPUBaremetalClusterImageService] method instead.
 type GPUBaremetalClusterImageService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewGPUBaremetalClusterImageService generates a new service that applies the
@@ -30,6 +31,7 @@ type GPUBaremetalClusterImageService struct {
 func NewGPUBaremetalClusterImageService(opts ...option.RequestOption) (r GPUBaremetalClusterImageService) {
 	r = GPUBaremetalClusterImageService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -127,6 +129,56 @@ func (r *GPUBaremetalClusterImageService) Upload(ctx context.Context, params GPU
 	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/images", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// UploadAndPoll uploads a new bare metal GPU image and polls for completion
+func (r *GPUBaremetalClusterImageService) UploadAndPoll(ctx context.Context, params GPUBaremetalClusterImageUploadParams, opts ...option.RequestOption) (v *GPUImage, err error) {
+	resource, err := r.Upload(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams GPUBaremetalClusterImageGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Images) != 1 {
+		return nil, errors.New("expected exactly one image to be created in a task")
+	}
+	resourceID := task.CreatedResources.Images[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
+// DeleteAndPoll deletes a bare metal GPU image and polls for completion
+func (r *GPUBaremetalClusterImageService) DeleteAndPoll(ctx context.Context, imageID string, params GPUBaremetalClusterImageDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, imageID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) != 1 {
+		return errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }
 
 type GPUBaremetalClusterImageListParams struct {
