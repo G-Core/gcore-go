@@ -1160,9 +1160,20 @@ type GPUBaremetalClusterNewParams struct {
 	Name string `json:"name,required"`
 	// Number of servers to create
 	InstancesCount param.Opt[int64] `json:"instances_count,omitzero"`
+	// A password for a bare metal server. This parameter is used to set a password for
+	// the "Admin" user on a Windows instance, a default user or a new user on a Linux
+	// instance
+	Password param.Opt[string] `json:"password,omitzero"`
 	// Specifies the name of the SSH keypair, created via the
 	// <a href="#operation/SSHKeyCollectionViewSet.post">/v1/ssh_keys endpoint</a>.
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
+	// String in base64 format. Must not be passed together with 'username' or
+	// 'password'. Examples of the user_data:
+	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+	UserData param.Opt[string] `json:"user_data,omitzero"`
+	// A name of a new user in the Linux instance. It may be passed with a 'password'
+	// parameter
+	Username param.Opt[string] `json:"username,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Some tags are read-only and cannot be

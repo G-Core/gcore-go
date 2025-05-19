@@ -272,6 +272,11 @@ type BillingReservationListParams struct {
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Region for reservation
 	RegionID param.Opt[int64] `query:"region_id,omitzero" json:"-"`
+	// Order by field and direction.
+	//
+	// Any of "active_from.asc", "active_from.desc", "active_to.asc", "active_to.desc",
+	// "created_at.asc", "created_at.desc".
+	OrderBy BillingReservationListParamsOrderBy `query:"order_by,omitzero" json:"-"`
 	// Field for fixed a status by reservation workflow
 	//
 	// Any of "ACTIVATED", "APPROVED", "COPIED", "CREATED", "EXPIRED", "REJECTED",
@@ -288,3 +293,15 @@ func (r BillingReservationListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Order by field and direction.
+type BillingReservationListParamsOrderBy string
+
+const (
+	BillingReservationListParamsOrderByActiveFromAsc  BillingReservationListParamsOrderBy = "active_from.asc"
+	BillingReservationListParamsOrderByActiveFromDesc BillingReservationListParamsOrderBy = "active_from.desc"
+	BillingReservationListParamsOrderByActiveToAsc    BillingReservationListParamsOrderBy = "active_to.asc"
+	BillingReservationListParamsOrderByActiveToDesc   BillingReservationListParamsOrderBy = "active_to.desc"
+	BillingReservationListParamsOrderByCreatedAtAsc   BillingReservationListParamsOrderBy = "created_at.asc"
+	BillingReservationListParamsOrderByCreatedAtDesc  BillingReservationListParamsOrderBy = "created_at.desc"
+)
