@@ -37,6 +37,7 @@ func TestBillingReservationListWithOptionalParams(t *testing.T) {
 		Limit:           gcore.Int(1),
 		MetricName:      gcore.String("metric_name"),
 		Offset:          gcore.Int(0),
+		OrderBy:         cloud.BillingReservationListParamsOrderByActiveFromAsc,
 		RegionID:        gcore.Int(0),
 		Status:          []string{"ACTIVATED"},
 	})
