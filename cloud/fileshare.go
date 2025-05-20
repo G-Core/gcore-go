@@ -255,6 +255,10 @@ type FileShare struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id,required" format:"uuid4"`
+	// File share type name
+	//
+	// Any of "standard", "vast".
+	TypeName FileShareTypeName `json:"type_name,required"`
 	// File share disk type
 	//
 	// Any of "default_share_type", "vast_share_type".
@@ -279,6 +283,7 @@ type FileShare struct {
 		SubnetName       respjson.Field
 		Tags             respjson.Field
 		TaskID           respjson.Field
+		TypeName         respjson.Field
 		VolumeType       respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
@@ -323,6 +328,14 @@ const (
 	FileShareStatusUnmanageError                  FileShareStatus = "unmanage_error"
 	FileShareStatusUnmanageStarting               FileShareStatus = "unmanage_starting"
 	FileShareStatusUnmanaged                      FileShareStatus = "unmanaged"
+)
+
+// File share type name
+type FileShareTypeName string
+
+const (
+	FileShareTypeNameStandard FileShareTypeName = "standard"
+	FileShareTypeNameVast     FileShareTypeName = "vast"
 )
 
 // File share disk type
@@ -499,9 +512,15 @@ type FileShareListParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// File share name. Uses partial match.
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// File share type name
+	//
+	// Any of "standard", "vast".
+	TypeName FileShareListParamsTypeName `query:"type_name,omitzero" json:"-"`
 	paramObj
 }
 
@@ -512,6 +531,14 @@ func (r FileShareListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// File share type name
+type FileShareListParamsTypeName string
+
+const (
+	FileShareListParamsTypeNameStandard FileShareListParamsTypeName = "standard"
+	FileShareListParamsTypeNameVast     FileShareListParamsTypeName = "vast"
+)
 
 type FileShareDeleteParams struct {
 	// Project ID
