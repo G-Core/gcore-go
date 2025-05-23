@@ -32,6 +32,7 @@ func TestTaskListWithOptionalParams(t *testing.T) {
 		IsAcknowledged: gcore.Bool(true),
 		Limit:          gcore.Int(100),
 		Offset:         gcore.Int(0),
+		OrderBy:        cloud.TaskListParamsOrderByAsc,
 		ProjectID:      []int64{0, 0},
 		RegionID:       []int64{0, 0},
 		Sorting:        cloud.TaskListParamsSortingAsc,
