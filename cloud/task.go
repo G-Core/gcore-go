@@ -248,8 +248,6 @@ type TaskCreatedResources struct {
 	Floatingips []string `json:"floatingips"`
 	// IDs of created health monitors
 	Healthmonitors []string `json:"healthmonitors"`
-	// IDs of created heat resources
-	Heat []string `json:"heat"`
 	// IDs of created images
 	Images []string `json:"images"`
 	// IDs of created inference instances
@@ -309,7 +307,6 @@ type TaskCreatedResources struct {
 		FileShares         respjson.Field
 		Floatingips        respjson.Field
 		Healthmonitors     respjson.Field
-		Heat               respjson.Field
 		Images             respjson.Field
 		InferenceInstances respjson.Field
 		Instances          respjson.Field
@@ -425,15 +422,20 @@ type TaskListParams struct {
 	// The region ID to filter the tasks by region. Supports multiple values of kind
 	// key=value1&key=value2
 	RegionID []int64 `query:"region_id,omitzero" json:"-"`
-	// Sorting by creation date. Oldest first, or most recent first
-	//
-	// Any of "asc", "desc".
-	Sorting TaskListParamsSorting `query:"sorting,omitzero" json:"-"`
 	// Filter the tasks by state. Supports multiple values of kind
 	// key=value1&key=value2
 	//
 	// Any of "ERROR", "FINISHED", "NEW", "RUNNING".
 	State []string `query:"state,omitzero" json:"-"`
+	// Sorting by creation date. Oldest first, or most recent first
+	//
+	// Any of "asc", "desc".
+	OrderBy TaskListParamsOrderBy `query:"order_by,omitzero" json:"-"`
+	// (DEPRECATED Use 'order_by' instead) Sorting by creation date. Oldest first, or
+	// most recent first
+	//
+	// Any of "asc", "desc".
+	Sorting TaskListParamsSorting `query:"sorting,omitzero" json:"-"`
 	paramObj
 }
 
@@ -446,6 +448,15 @@ func (r TaskListParams) URLQuery() (v url.Values, err error) {
 }
 
 // Sorting by creation date. Oldest first, or most recent first
+type TaskListParamsOrderBy string
+
+const (
+	TaskListParamsOrderByAsc  TaskListParamsOrderBy = "asc"
+	TaskListParamsOrderByDesc TaskListParamsOrderBy = "desc"
+)
+
+// (DEPRECATED Use 'order_by' instead) Sorting by creation date. Oldest first, or
+// most recent first
 type TaskListParamsSorting string
 
 const (
