@@ -24,6 +24,7 @@ import (
 // the [NewGPUBaremetalClusterServerService] method instead.
 type GPUBaremetalClusterServerService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewGPUBaremetalClusterServerService generates a new service that applies the
@@ -32,6 +33,7 @@ type GPUBaremetalClusterServerService struct {
 func NewGPUBaremetalClusterServerService(opts ...option.RequestOption) (r GPUBaremetalClusterServerService) {
 	r = GPUBaremetalClusterServerService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -63,6 +65,21 @@ func (r *GPUBaremetalClusterServerService) Delete(ctx context.Context, instanceI
 	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%v/%v/%s/node/%s", params.ProjectID.Value, params.RegionID.Value, params.ClusterID, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
 	return
+}
+
+// DeleteAndPoll deletes a bare metal GPU server from cluster and polls for completion
+func (r *GPUBaremetalClusterServerService) DeleteAndPoll(ctx context.Context, instanceID string, params GPUBaremetalClusterServerDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, instanceID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) != 1 {
+		return errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }
 
 // Attach interface to bare metal GPU cluster server

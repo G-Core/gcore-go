@@ -1,21 +1,20 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package cloud_test
+package waap_test
 
 import (
 	"context"
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/G-Core/gcore-go"
-	"github.com/G-Core/gcore-go/cloud"
 	"github.com/G-Core/gcore-go/internal/testutil"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/waap"
 )
 
-func TestBillingReservationListWithOptionalParams(t *testing.T) {
+func TestDomainSettingUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,20 +26,19 @@ func TestBillingReservationListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.BillingReservations.List(context.TODO(), cloud.BillingReservationListParams{
-		ActivatedFrom:   gcore.Time(time.Now()),
-		ActivatedTo:     gcore.Time(time.Now()),
-		CreatedFrom:     gcore.Time(time.Now()),
-		CreatedTo:       gcore.Time(time.Now()),
-		DeactivatedFrom: gcore.Time(time.Now()),
-		DeactivatedTo:   gcore.Time(time.Now()),
-		Limit:           gcore.Int(1),
-		MetricName:      gcore.String("metric_name"),
-		Offset:          gcore.Int(0),
-		OrderBy:         cloud.BillingReservationListParamsOrderByActiveFromAsc,
-		RegionID:        gcore.Int(0),
-		Status:          []string{"ACTIVATED"},
-	})
+	err := client.Waap.Domains.Settings.Update(
+		context.TODO(),
+		0,
+		waap.DomainSettingUpdateParams{
+			API: waap.DomainSettingUpdateParamsAPI{
+				APIURLs: []string{"api/v1/.*", "v2/.*"},
+			},
+			DDOS: waap.DomainSettingUpdateParamsDDOS{
+				BurstThreshold:  gcore.Int(30),
+				GlobalThreshold: gcore.Int(250),
+			},
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -50,7 +48,7 @@ func TestBillingReservationListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBillingReservationGet(t *testing.T) {
+func TestDomainSettingGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -62,7 +60,7 @@ func TestBillingReservationGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.BillingReservations.Get(context.TODO(), 0)
+	_, err := client.Waap.Domains.Settings.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

@@ -101,7 +101,9 @@ func TestFileShareListWithOptionalParams(t *testing.T) {
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(1),
 		Limit:     gcore.Int(1000),
+		Name:      gcore.String("test-sfs"),
 		Offset:    gcore.Int(0),
+		TypeName:  cloud.FileShareListParamsTypeNameStandard,
 	})
 	if err != nil {
 		var apierr *gcore.Error

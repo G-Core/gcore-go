@@ -33,6 +33,7 @@ type GPUBaremetalClusterService struct {
 	Servers    GPUBaremetalClusterServerService
 	Flavors    GPUBaremetalClusterFlavorService
 	Images     GPUBaremetalClusterImageService
+	tasks      TaskService
 }
 
 // NewGPUBaremetalClusterService generates a new service that applies the given
@@ -45,6 +46,7 @@ func NewGPUBaremetalClusterService(opts ...option.RequestOption) (r GPUBaremetal
 	r.Servers = NewGPUBaremetalClusterServerService(opts...)
 	r.Flavors = NewGPUBaremetalClusterFlavorService(opts...)
 	r.Images = NewGPUBaremetalClusterImageService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -261,6 +263,101 @@ func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID strin
 	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%v/%v/%s/resize", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a new GPU bare metal cluster and polls for completion
+func (r *GPUBaremetalClusterService) NewAndPoll(ctx context.Context, params GPUBaremetalClusterNewParams, opts ...option.RequestOption) (v *GPUBaremetalCluster, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams GPUBaremetalClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.AIClusters) != 1 {
+		return nil, errors.New("expected exactly one GPU bare metal cluster to be created in a task")
+	}
+	resourceID := task.CreatedResources.AIClusters[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
+// RebuildAndPoll rebuilds a GPU bare metal cluster and polls for completion
+func (r *GPUBaremetalClusterService) RebuildAndPoll(ctx context.Context, clusterID string, params GPUBaremetalClusterRebuildParams, opts ...option.RequestOption) (v *GPUBaremetalCluster, err error) {
+	resource, err := r.Rebuild(ctx, clusterID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams GPUBaremetalClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	return r.Get(ctx, clusterID, getParams, opts...)
+}
+
+// ResizeAndPoll resizes a GPU bare metal cluster and polls for completion
+func (r *GPUBaremetalClusterService) ResizeAndPoll(ctx context.Context, clusterID string, params GPUBaremetalClusterResizeParams, opts ...option.RequestOption) (v *GPUBaremetalCluster, err error) {
+	resource, err := r.Resize(ctx, clusterID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams GPUBaremetalClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	return r.Get(ctx, clusterID, getParams, opts...)
 }
 
 type GPUBaremetalCluster struct {
@@ -1061,9 +1158,20 @@ type GPUBaremetalClusterNewParams struct {
 	Name string `json:"name,required"`
 	// Number of servers to create
 	InstancesCount param.Opt[int64] `json:"instances_count,omitzero"`
+	// A password for a bare metal server. This parameter is used to set a password for
+	// the "Admin" user on a Windows instance, a default user or a new user on a Linux
+	// instance
+	Password param.Opt[string] `json:"password,omitzero"`
 	// Specifies the name of the SSH keypair, created via the
 	// <a href="#operation/SSHKeyCollectionViewSet.post">/v1/ssh_keys endpoint</a>.
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
+	// String in base64 format. Must not be passed together with 'username' or
+	// 'password'. Examples of the user_data:
+	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+	UserData param.Opt[string] `json:"user_data,omitzero"`
+	// A name of a new user in the Linux instance. It may be passed with a 'password'
+	// parameter
+	Username param.Opt[string] `json:"username,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Some tags are read-only and cannot be

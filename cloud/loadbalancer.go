@@ -33,6 +33,7 @@ type LoadBalancerService struct {
 	Pools      LoadBalancerPoolService
 	Metrics    LoadBalancerMetricService
 	Statuses   LoadBalancerStatusService
+	tasks      TaskService
 }
 
 // NewLoadBalancerService generates a new service that applies the given options to
@@ -47,6 +48,7 @@ func NewLoadBalancerService(opts ...option.RequestOption) (r LoadBalancerService
 	r.Pools = NewLoadBalancerPoolService(opts...)
 	r.Metrics = NewLoadBalancerMetricService(opts...)
 	r.Statuses = NewLoadBalancerStatusService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -238,6 +240,119 @@ func (r *LoadBalancerService) Resize(ctx context.Context, loadbalancerID string,
 	path := fmt.Sprintf("cloud/v1/loadbalancers/%v/%v/%s/resize", params.ProjectID.Value, params.RegionID.Value, loadbalancerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// NewAndPoll create load balancer and poll for the result
+func (r *LoadBalancerService) NewAndPoll(ctx context.Context, params LoadBalancerNewParams, opts ...option.RequestOption) (v *LoadBalancer, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams LoadBalancerGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Loadbalancers) != 1 {
+		return nil, errors.New("expected exactly one load balancer to be created in a task")
+	}
+	resourceID := task.CreatedResources.Loadbalancers[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
+// DeleteAndPoll delete load balancer and poll for completion
+func (r *LoadBalancerService) DeleteAndPoll(ctx context.Context, loadbalancerID string, params LoadBalancerDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, loadbalancerID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = append(r.Options[:], opts...)
+	if len(resource.Tasks) != 1 {
+		return errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
+}
+
+// FailoverAndPoll failover load balancer and poll for completion
+func (r *LoadBalancerService) FailoverAndPoll(ctx context.Context, loadbalancerID string, params LoadBalancerFailoverParams, opts ...option.RequestOption) (v *LoadBalancer, err error) {
+	resource, err := r.Failover(ctx, loadbalancerID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+
+	var getParams LoadBalancerGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	return r.Get(ctx, loadbalancerID, getParams, opts...)
+}
+
+// ResizeAndPoll resize load balancer and poll for completion
+func (r *LoadBalancerService) ResizeAndPoll(ctx context.Context, loadbalancerID string, params LoadBalancerResizeParams, opts ...option.RequestOption) (v *LoadBalancer, err error) {
+	resource, err := r.Resize(ctx, loadbalancerID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+
+	var getParams LoadBalancerGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	return r.Get(ctx, loadbalancerID, getParams, opts...)
 }
 
 type HealthMonitor struct {
@@ -529,7 +644,7 @@ type LoadBalancerL7Policy struct {
 	// Region ID
 	RegionID int64 `json:"region_id"`
 	// Rules. All the rules associated with a given policy are logically ANDed
-	// together. A request must match all the policy’s rules to match the policy.If you
+	// together. A request must match all the policy's rules to match the policy.If you
 	// need to express a logical OR operation between rules, then do this by creating
 	// multiple policies with the same action.
 	Rules []LoadBalancerL7Rule `json:"rules"`
