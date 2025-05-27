@@ -190,8 +190,14 @@ func (r *QuotaRequestListResponseRequestedLimitsGlobalLimits) UnmarshalJSON(data
 type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	// Basic bare metal servers count limit
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
+	// Baremetal A100 GPU card count limit
+	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
 	// AI GPU bare metal servers count limit
 	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
+	// Baremetal H100 GPU card count limit
+	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
+	// Baremetal L40S GPU card count limit
+	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
 	// High-frequency bare metal servers count limit
 	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
 	// Infrastructure bare metal servers count limit
@@ -285,7 +291,10 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BaremetalBasicCountLimit          respjson.Field
+		BaremetalGPUA100CountLimit        respjson.Field
 		BaremetalGPUCountLimit            respjson.Field
+		BaremetalGPUH100CountLimit        respjson.Field
+		BaremetalGPUL40sCountLimit        respjson.Field
 		BaremetalHfCountLimit             respjson.Field
 		BaremetalInfrastructureCountLimit respjson.Field
 		BaremetalNetworkCountLimit        respjson.Field
@@ -437,8 +446,14 @@ func (r *QuotaRequestGetResponseRequestedLimitsGlobalLimits) UnmarshalJSON(data 
 type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	// Basic bare metal servers count limit
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
+	// Baremetal A100 GPU card count limit
+	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
 	// AI GPU bare metal servers count limit
 	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
+	// Baremetal H100 GPU card count limit
+	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
+	// Baremetal L40S GPU card count limit
+	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
 	// High-frequency bare metal servers count limit
 	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
 	// Infrastructure bare metal servers count limit
@@ -532,7 +547,10 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BaremetalBasicCountLimit          respjson.Field
+		BaremetalGPUA100CountLimit        respjson.Field
 		BaremetalGPUCountLimit            respjson.Field
+		BaremetalGPUH100CountLimit        respjson.Field
+		BaremetalGPUL40sCountLimit        respjson.Field
 		BaremetalHfCountLimit             respjson.Field
 		BaremetalInfrastructureCountLimit respjson.Field
 		BaremetalNetworkCountLimit        respjson.Field
@@ -654,8 +672,14 @@ func (r *QuotaRequestNewParamsRequestedLimitsGlobalLimits) UnmarshalJSON(data []
 type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
 	// Basic bare metal servers count limit
 	BaremetalBasicCountLimit param.Opt[int64] `json:"baremetal_basic_count_limit,omitzero"`
+	// Baremetal A100 GPU card count limit
+	BaremetalGPUA100CountLimit param.Opt[int64] `json:"baremetal_gpu_a100_count_limit,omitzero"`
 	// AI GPU bare metal servers count limit
 	BaremetalGPUCountLimit param.Opt[int64] `json:"baremetal_gpu_count_limit,omitzero"`
+	// Baremetal H100 GPU card count limit
+	BaremetalGPUH100CountLimit param.Opt[int64] `json:"baremetal_gpu_h100_count_limit,omitzero"`
+	// Baremetal L40S GPU card count limit
+	BaremetalGPUL40sCountLimit param.Opt[int64] `json:"baremetal_gpu_l40s_count_limit,omitzero"`
 	// High-frequency bare metal servers count limit
 	BaremetalHfCountLimit param.Opt[int64] `json:"baremetal_hf_count_limit,omitzero"`
 	// Infrastructure bare metal servers count limit

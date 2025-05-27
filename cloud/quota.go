@@ -151,10 +151,22 @@ type QuotaGetAllResponseRegionalQuota struct {
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
 	// Basic bare metal servers count usage
 	BaremetalBasicCountUsage int64 `json:"baremetal_basic_count_usage"`
+	// Baremetal A100 GPU card count limit
+	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
+	// Baremetal A100 GPU card count usage
+	BaremetalGPUA100CountUsage int64 `json:"baremetal_gpu_a100_count_usage"`
 	// AI GPU bare metal servers count limit
 	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
 	// AI GPU bare metal servers count usage
 	BaremetalGPUCountUsage int64 `json:"baremetal_gpu_count_usage"`
+	// Baremetal H100 GPU card count limit
+	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
+	// Baremetal H100 GPU card count usage
+	BaremetalGPUH100CountUsage int64 `json:"baremetal_gpu_h100_count_usage"`
+	// Baremetal L40S GPU card count limit
+	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
+	// Baremetal L40S GPU card count usage
+	BaremetalGPUL40sCountUsage int64 `json:"baremetal_gpu_l40s_count_usage"`
 	// High-frequency bare metal servers count limit
 	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
 	// High-frequency bare metal servers count usage
@@ -337,8 +349,14 @@ type QuotaGetAllResponseRegionalQuota struct {
 	JSON struct {
 		BaremetalBasicCountLimit          respjson.Field
 		BaremetalBasicCountUsage          respjson.Field
+		BaremetalGPUA100CountLimit        respjson.Field
+		BaremetalGPUA100CountUsage        respjson.Field
 		BaremetalGPUCountLimit            respjson.Field
 		BaremetalGPUCountUsage            respjson.Field
+		BaremetalGPUH100CountLimit        respjson.Field
+		BaremetalGPUH100CountUsage        respjson.Field
+		BaremetalGPUL40sCountLimit        respjson.Field
+		BaremetalGPUL40sCountUsage        respjson.Field
 		BaremetalHfCountLimit             respjson.Field
 		BaremetalHfCountUsage             respjson.Field
 		BaremetalInfrastructureCountLimit respjson.Field
@@ -444,10 +462,22 @@ type QuotaGetByRegionResponse struct {
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
 	// Basic bare metal servers count usage
 	BaremetalBasicCountUsage int64 `json:"baremetal_basic_count_usage"`
+	// Baremetal A100 GPU card count limit
+	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
+	// Baremetal A100 GPU card count usage
+	BaremetalGPUA100CountUsage int64 `json:"baremetal_gpu_a100_count_usage"`
 	// AI GPU bare metal servers count limit
 	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
 	// AI GPU bare metal servers count usage
 	BaremetalGPUCountUsage int64 `json:"baremetal_gpu_count_usage"`
+	// Baremetal H100 GPU card count limit
+	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
+	// Baremetal H100 GPU card count usage
+	BaremetalGPUH100CountUsage int64 `json:"baremetal_gpu_h100_count_usage"`
+	// Baremetal L40S GPU card count limit
+	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
+	// Baremetal L40S GPU card count usage
+	BaremetalGPUL40sCountUsage int64 `json:"baremetal_gpu_l40s_count_usage"`
 	// High-frequency bare metal servers count limit
 	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
 	// High-frequency bare metal servers count usage
@@ -630,8 +660,14 @@ type QuotaGetByRegionResponse struct {
 	JSON struct {
 		BaremetalBasicCountLimit          respjson.Field
 		BaremetalBasicCountUsage          respjson.Field
+		BaremetalGPUA100CountLimit        respjson.Field
+		BaremetalGPUA100CountUsage        respjson.Field
 		BaremetalGPUCountLimit            respjson.Field
 		BaremetalGPUCountUsage            respjson.Field
+		BaremetalGPUH100CountLimit        respjson.Field
+		BaremetalGPUH100CountUsage        respjson.Field
+		BaremetalGPUL40sCountLimit        respjson.Field
+		BaremetalGPUL40sCountUsage        respjson.Field
 		BaremetalHfCountLimit             respjson.Field
 		BaremetalHfCountUsage             respjson.Field
 		BaremetalInfrastructureCountLimit respjson.Field
