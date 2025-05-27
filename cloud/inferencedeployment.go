@@ -715,16 +715,10 @@ func (r *InferenceDeploymentNewParamsProbes) UnmarshalJSON(data []byte) error {
 type InferenceDeploymentUpdateParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// Set to `true` to enable API key authentication for the inference instance.
-	// `"Authorization": "Bearer *****"` or `"X-Api-Key": "*****"` header is required
-	// for the requests to the instance if enabled
-	AuthEnabled param.Opt[bool] `json:"auth_enabled,omitzero"`
 	// Registry credentials name
 	CredentialsName param.Opt[string] `json:"credentials_name,omitzero"`
 	// Inference instance description.
 	Description param.Opt[string] `json:"description,omitzero"`
-	// Flavor name for the inference instance.
-	FlavorName param.Opt[string] `json:"flavor_name,omitzero"`
 	// Docker image for the inference instance. This field should contain the image
 	// name and tag in the format 'name:tag', e.g., 'nginx:latest'. It defaults to
 	// Docker Hub as the image registry, but any accessible Docker image URL can be
@@ -738,6 +732,12 @@ type InferenceDeploymentUpdateParams struct {
 	// number of container instances during periods of inactivity. The default value
 	// when the parameter is not set is 120.
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
+	// Set to `true` to enable API key authentication for the inference instance.
+	// `"Authorization": "Bearer *****"` or `"X-Api-Key": "*****"` header is required
+	// for the requests to the instance if enabled
+	AuthEnabled param.Opt[bool] `json:"auth_enabled,omitzero"`
+	// Flavor name for the inference instance.
+	FlavorName param.Opt[string] `json:"flavor_name,omitzero"`
 	// Command to be executed when running a container from an image.
 	Command []string `json:"command,omitzero"`
 	// List of containers for the inference instance.
@@ -971,11 +971,11 @@ func (r *InferenceDeploymentUpdateParamsLogging) UnmarshalJSON(data []byte) erro
 // Probes configured for all containers of the inference instance.
 type InferenceDeploymentUpdateParamsProbes struct {
 	// Liveness probe configuration
-	LivenessProbe ContainerProbeConfigCreateParam `json:"liveness_probe,omitzero"`
+	LivenessProbe InferenceDeploymentUpdateParamsProbesLivenessProbe `json:"liveness_probe,omitzero"`
 	// Readiness probe configuration
-	ReadinessProbe ContainerProbeConfigCreateParam `json:"readiness_probe,omitzero"`
+	ReadinessProbe InferenceDeploymentUpdateParamsProbesReadinessProbe `json:"readiness_probe,omitzero"`
 	// Startup probe configuration
-	StartupProbe ContainerProbeConfigCreateParam `json:"startup_probe,omitzero"`
+	StartupProbe InferenceDeploymentUpdateParamsProbesStartupProbe `json:"startup_probe,omitzero"`
 	paramObj
 }
 
@@ -984,6 +984,303 @@ func (r InferenceDeploymentUpdateParamsProbes) MarshalJSON() (data []byte, err e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *InferenceDeploymentUpdateParamsProbes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Liveness probe configuration
+type InferenceDeploymentUpdateParamsProbesLivenessProbe struct {
+	// Whether the probe is enabled or not.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Probe configuration (exec, http_get or tcp_socket)
+	Probe InferenceDeploymentUpdateParamsProbesLivenessProbeProbe `json:"probe,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesLivenessProbe) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesLivenessProbe
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesLivenessProbe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Probe configuration (exec, http_get or tcp_socket)
+type InferenceDeploymentUpdateParamsProbesLivenessProbeProbe struct {
+	// The number of consecutive probe failures that mark the container as unhealthy.
+	FailureThreshold param.Opt[int64] `json:"failure_threshold,omitzero"`
+	// The initial delay before starting the first probe.
+	InitialDelaySeconds param.Opt[int64] `json:"initial_delay_seconds,omitzero"`
+	// How often (in seconds) to perform the probe.
+	PeriodSeconds param.Opt[int64] `json:"period_seconds,omitzero"`
+	// The number of consecutive successful probes that mark the container as healthy.
+	SuccessThreshold param.Opt[int64] `json:"success_threshold,omitzero"`
+	// The timeout for each probe.
+	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
+	// Exec probe configuration
+	Exec InferenceDeploymentUpdateParamsProbesLivenessProbeProbeExec `json:"exec,omitzero"`
+	// HTTP GET probe configuration
+	HTTPGet InferenceDeploymentUpdateParamsProbesLivenessProbeProbeHTTPGet `json:"http_get,omitzero"`
+	// TCP socket probe configuration
+	TcpSocket InferenceDeploymentUpdateParamsProbesLivenessProbeProbeTcpSocket `json:"tcp_socket,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesLivenessProbeProbe) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesLivenessProbeProbe
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesLivenessProbeProbe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Exec probe configuration
+type InferenceDeploymentUpdateParamsProbesLivenessProbeProbeExec struct {
+	// Command to be executed inside the running container.
+	Command []string `json:"command,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesLivenessProbeProbeExec) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesLivenessProbeProbeExec
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesLivenessProbeProbeExec) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// HTTP GET probe configuration
+type InferenceDeploymentUpdateParamsProbesLivenessProbeProbeHTTPGet struct {
+	// Host name to send HTTP request to.
+	Host param.Opt[string] `json:"host,omitzero"`
+	// The endpoint to send the HTTP request to.
+	Path param.Opt[string] `json:"path,omitzero"`
+	// Port number the probe should connect to.
+	Port param.Opt[int64] `json:"port,omitzero"`
+	// Schema to use for the HTTP request.
+	Schema param.Opt[string] `json:"schema,omitzero"`
+	// HTTP headers to be sent with the request.
+	Headers map[string]string `json:"headers,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesLivenessProbeProbeHTTPGet) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesLivenessProbeProbeHTTPGet
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesLivenessProbeProbeHTTPGet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TCP socket probe configuration
+type InferenceDeploymentUpdateParamsProbesLivenessProbeProbeTcpSocket struct {
+	// Port number to check if it's open.
+	Port param.Opt[int64] `json:"port,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesLivenessProbeProbeTcpSocket) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesLivenessProbeProbeTcpSocket
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesLivenessProbeProbeTcpSocket) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Readiness probe configuration
+type InferenceDeploymentUpdateParamsProbesReadinessProbe struct {
+	// Whether the probe is enabled or not.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Probe configuration (exec, http_get or tcp_socket)
+	Probe InferenceDeploymentUpdateParamsProbesReadinessProbeProbe `json:"probe,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesReadinessProbe) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesReadinessProbe
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesReadinessProbe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Probe configuration (exec, http_get or tcp_socket)
+type InferenceDeploymentUpdateParamsProbesReadinessProbeProbe struct {
+	// The number of consecutive probe failures that mark the container as unhealthy.
+	FailureThreshold param.Opt[int64] `json:"failure_threshold,omitzero"`
+	// The initial delay before starting the first probe.
+	InitialDelaySeconds param.Opt[int64] `json:"initial_delay_seconds,omitzero"`
+	// How often (in seconds) to perform the probe.
+	PeriodSeconds param.Opt[int64] `json:"period_seconds,omitzero"`
+	// The number of consecutive successful probes that mark the container as healthy.
+	SuccessThreshold param.Opt[int64] `json:"success_threshold,omitzero"`
+	// The timeout for each probe.
+	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
+	// Exec probe configuration
+	Exec InferenceDeploymentUpdateParamsProbesReadinessProbeProbeExec `json:"exec,omitzero"`
+	// HTTP GET probe configuration
+	HTTPGet InferenceDeploymentUpdateParamsProbesReadinessProbeProbeHTTPGet `json:"http_get,omitzero"`
+	// TCP socket probe configuration
+	TcpSocket InferenceDeploymentUpdateParamsProbesReadinessProbeProbeTcpSocket `json:"tcp_socket,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesReadinessProbeProbe) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesReadinessProbeProbe
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesReadinessProbeProbe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Exec probe configuration
+type InferenceDeploymentUpdateParamsProbesReadinessProbeProbeExec struct {
+	// Command to be executed inside the running container.
+	Command []string `json:"command,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesReadinessProbeProbeExec) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesReadinessProbeProbeExec
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesReadinessProbeProbeExec) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// HTTP GET probe configuration
+type InferenceDeploymentUpdateParamsProbesReadinessProbeProbeHTTPGet struct {
+	// Host name to send HTTP request to.
+	Host param.Opt[string] `json:"host,omitzero"`
+	// The endpoint to send the HTTP request to.
+	Path param.Opt[string] `json:"path,omitzero"`
+	// Port number the probe should connect to.
+	Port param.Opt[int64] `json:"port,omitzero"`
+	// Schema to use for the HTTP request.
+	Schema param.Opt[string] `json:"schema,omitzero"`
+	// HTTP headers to be sent with the request.
+	Headers map[string]string `json:"headers,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesReadinessProbeProbeHTTPGet) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesReadinessProbeProbeHTTPGet
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesReadinessProbeProbeHTTPGet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TCP socket probe configuration
+type InferenceDeploymentUpdateParamsProbesReadinessProbeProbeTcpSocket struct {
+	// Port number to check if it's open.
+	Port param.Opt[int64] `json:"port,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesReadinessProbeProbeTcpSocket) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesReadinessProbeProbeTcpSocket
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesReadinessProbeProbeTcpSocket) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Startup probe configuration
+type InferenceDeploymentUpdateParamsProbesStartupProbe struct {
+	// Whether the probe is enabled or not.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Probe configuration (exec, http_get or tcp_socket)
+	Probe InferenceDeploymentUpdateParamsProbesStartupProbeProbe `json:"probe,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesStartupProbe) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesStartupProbe
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesStartupProbe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Probe configuration (exec, http_get or tcp_socket)
+type InferenceDeploymentUpdateParamsProbesStartupProbeProbe struct {
+	// The number of consecutive probe failures that mark the container as unhealthy.
+	FailureThreshold param.Opt[int64] `json:"failure_threshold,omitzero"`
+	// The initial delay before starting the first probe.
+	InitialDelaySeconds param.Opt[int64] `json:"initial_delay_seconds,omitzero"`
+	// How often (in seconds) to perform the probe.
+	PeriodSeconds param.Opt[int64] `json:"period_seconds,omitzero"`
+	// The number of consecutive successful probes that mark the container as healthy.
+	SuccessThreshold param.Opt[int64] `json:"success_threshold,omitzero"`
+	// The timeout for each probe.
+	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
+	// Exec probe configuration
+	Exec InferenceDeploymentUpdateParamsProbesStartupProbeProbeExec `json:"exec,omitzero"`
+	// HTTP GET probe configuration
+	HTTPGet InferenceDeploymentUpdateParamsProbesStartupProbeProbeHTTPGet `json:"http_get,omitzero"`
+	// TCP socket probe configuration
+	TcpSocket InferenceDeploymentUpdateParamsProbesStartupProbeProbeTcpSocket `json:"tcp_socket,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesStartupProbeProbe) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesStartupProbeProbe
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesStartupProbeProbe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Exec probe configuration
+type InferenceDeploymentUpdateParamsProbesStartupProbeProbeExec struct {
+	// Command to be executed inside the running container.
+	Command []string `json:"command,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesStartupProbeProbeExec) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesStartupProbeProbeExec
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesStartupProbeProbeExec) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// HTTP GET probe configuration
+type InferenceDeploymentUpdateParamsProbesStartupProbeProbeHTTPGet struct {
+	// Host name to send HTTP request to.
+	Host param.Opt[string] `json:"host,omitzero"`
+	// The endpoint to send the HTTP request to.
+	Path param.Opt[string] `json:"path,omitzero"`
+	// Port number the probe should connect to.
+	Port param.Opt[int64] `json:"port,omitzero"`
+	// Schema to use for the HTTP request.
+	Schema param.Opt[string] `json:"schema,omitzero"`
+	// HTTP headers to be sent with the request.
+	Headers map[string]string `json:"headers,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesStartupProbeProbeHTTPGet) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesStartupProbeProbeHTTPGet
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesStartupProbeProbeHTTPGet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TCP socket probe configuration
+type InferenceDeploymentUpdateParamsProbesStartupProbeProbeTcpSocket struct {
+	// Port number to check if it's open.
+	Port param.Opt[int64] `json:"port,omitzero"`
+	paramObj
+}
+
+func (r InferenceDeploymentUpdateParamsProbesStartupProbeProbeTcpSocket) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceDeploymentUpdateParamsProbesStartupProbeProbeTcpSocket
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceDeploymentUpdateParamsProbesStartupProbeProbeTcpSocket) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -253,77 +253,77 @@ func TestInferenceDeploymentUpdateWithOptionalParams(t *testing.T) {
 				TopicName: gcore.String("my-log-name"),
 			},
 			Probes: cloud.InferenceDeploymentUpdateParamsProbes{
-				LivenessProbe: cloud.ContainerProbeConfigCreateParam{
-					Enabled: true,
-					Probe: cloud.ContainerProbeCreateParam{
-						Exec: cloud.ContainerProbeExecCreateParam{
+				LivenessProbe: cloud.InferenceDeploymentUpdateParamsProbesLivenessProbe{
+					Enabled: gcore.Bool(true),
+					Probe: cloud.InferenceDeploymentUpdateParamsProbesLivenessProbeProbe{
+						Exec: cloud.InferenceDeploymentUpdateParamsProbesLivenessProbeProbeExec{
 							Command: []string{"ls", "-l"},
 						},
 						FailureThreshold: gcore.Int(3),
-						HTTPGet: cloud.ContainerProbeHTTPGetCreateParam{
-							Port: 80,
+						HTTPGet: cloud.InferenceDeploymentUpdateParamsProbesLivenessProbeProbeHTTPGet{
 							Headers: map[string]string{
 								"Authorization": "Bearer token 123",
 							},
 							Host:   gcore.String("127.0.0.1"),
 							Path:   gcore.String("/healthz"),
+							Port:   gcore.Int(80),
 							Schema: gcore.String("HTTP"),
 						},
 						InitialDelaySeconds: gcore.Int(0),
 						PeriodSeconds:       gcore.Int(5),
 						SuccessThreshold:    gcore.Int(1),
-						TcpSocket: cloud.ContainerProbeTcpSocketCreateParam{
-							Port: 80,
+						TcpSocket: cloud.InferenceDeploymentUpdateParamsProbesLivenessProbeProbeTcpSocket{
+							Port: gcore.Int(80),
 						},
 						TimeoutSeconds: gcore.Int(1),
 					},
 				},
-				ReadinessProbe: cloud.ContainerProbeConfigCreateParam{
-					Enabled: true,
-					Probe: cloud.ContainerProbeCreateParam{
-						Exec: cloud.ContainerProbeExecCreateParam{
+				ReadinessProbe: cloud.InferenceDeploymentUpdateParamsProbesReadinessProbe{
+					Enabled: gcore.Bool(true),
+					Probe: cloud.InferenceDeploymentUpdateParamsProbesReadinessProbeProbe{
+						Exec: cloud.InferenceDeploymentUpdateParamsProbesReadinessProbeProbeExec{
 							Command: []string{"ls", "-l"},
 						},
 						FailureThreshold: gcore.Int(3),
-						HTTPGet: cloud.ContainerProbeHTTPGetCreateParam{
-							Port: 80,
+						HTTPGet: cloud.InferenceDeploymentUpdateParamsProbesReadinessProbeProbeHTTPGet{
 							Headers: map[string]string{
 								"Authorization": "Bearer token 123",
 							},
 							Host:   gcore.String("127.0.0.1"),
 							Path:   gcore.String("/healthz"),
+							Port:   gcore.Int(80),
 							Schema: gcore.String("HTTP"),
 						},
 						InitialDelaySeconds: gcore.Int(0),
 						PeriodSeconds:       gcore.Int(5),
 						SuccessThreshold:    gcore.Int(1),
-						TcpSocket: cloud.ContainerProbeTcpSocketCreateParam{
-							Port: 80,
+						TcpSocket: cloud.InferenceDeploymentUpdateParamsProbesReadinessProbeProbeTcpSocket{
+							Port: gcore.Int(80),
 						},
 						TimeoutSeconds: gcore.Int(1),
 					},
 				},
-				StartupProbe: cloud.ContainerProbeConfigCreateParam{
-					Enabled: true,
-					Probe: cloud.ContainerProbeCreateParam{
-						Exec: cloud.ContainerProbeExecCreateParam{
+				StartupProbe: cloud.InferenceDeploymentUpdateParamsProbesStartupProbe{
+					Enabled: gcore.Bool(true),
+					Probe: cloud.InferenceDeploymentUpdateParamsProbesStartupProbeProbe{
+						Exec: cloud.InferenceDeploymentUpdateParamsProbesStartupProbeProbeExec{
 							Command: []string{"ls", "-l"},
 						},
 						FailureThreshold: gcore.Int(3),
-						HTTPGet: cloud.ContainerProbeHTTPGetCreateParam{
-							Port: 80,
+						HTTPGet: cloud.InferenceDeploymentUpdateParamsProbesStartupProbeProbeHTTPGet{
 							Headers: map[string]string{
 								"Authorization": "Bearer token 123",
 							},
 							Host:   gcore.String("127.0.0.1"),
 							Path:   gcore.String("/healthz"),
+							Port:   gcore.Int(80),
 							Schema: gcore.String("HTTP"),
 						},
 						InitialDelaySeconds: gcore.Int(0),
 						PeriodSeconds:       gcore.Int(5),
 						SuccessThreshold:    gcore.Int(1),
-						TcpSocket: cloud.ContainerProbeTcpSocketCreateParam{
-							Port: 80,
+						TcpSocket: cloud.InferenceDeploymentUpdateParamsProbesStartupProbeProbeTcpSocket{
+							Port: gcore.Int(80),
 						},
 						TimeoutSeconds: gcore.Int(1),
 					},
