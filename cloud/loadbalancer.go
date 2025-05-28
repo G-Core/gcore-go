@@ -277,7 +277,8 @@ func (r *LoadBalancerService) NewAndPoll(ctx context.Context, params LoadBalance
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
-// DeleteAndPoll delete load balancer and poll for completion
+// DeleteAndPoll delete load balancer and poll for completion of the first task. Use the [TaskService.Poll] method if
+// you need to poll for all tasks.
 func (r *LoadBalancerService) DeleteAndPoll(ctx context.Context, loadbalancerID string, params LoadBalancerDeleteParams, opts ...option.RequestOption) error {
 	resource, err := r.Delete(ctx, loadbalancerID, params, opts...)
 	if err != nil {
@@ -285,15 +286,17 @@ func (r *LoadBalancerService) DeleteAndPoll(ctx context.Context, loadbalancerID 
 	}
 
 	opts = append(r.Options[:], opts...)
-	if len(resource.Tasks) != 1 {
-		return errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
 	}
+
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	return err
 }
 
-// FailoverAndPoll failover load balancer and poll for completion
+// FailoverAndPoll failover load balancer and poll for completion of the first task. Use the [TaskService.Poll] method if
+// you need to poll for all tasks.
 func (r *LoadBalancerService) FailoverAndPoll(ctx context.Context, loadbalancerID string, params LoadBalancerFailoverParams, opts ...option.RequestOption) (v *LoadBalancer, err error) {
 	resource, err := r.Failover(ctx, loadbalancerID, params, opts...)
 	if err != nil {
@@ -312,8 +315,8 @@ func (r *LoadBalancerService) FailoverAndPoll(ctx context.Context, loadbalancerI
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
@@ -324,7 +327,8 @@ func (r *LoadBalancerService) FailoverAndPoll(ctx context.Context, loadbalancerI
 	return r.Get(ctx, loadbalancerID, getParams, opts...)
 }
 
-// ResizeAndPoll resize load balancer and poll for completion
+// ResizeAndPoll resize load balancer and poll for completion of the first task. Use the [TaskService.Poll] method if
+// you need to poll for all tasks.
 func (r *LoadBalancerService) ResizeAndPoll(ctx context.Context, loadbalancerID string, params LoadBalancerResizeParams, opts ...option.RequestOption) (v *LoadBalancer, err error) {
 	resource, err := r.Resize(ctx, loadbalancerID, params, opts...)
 	if err != nil {
@@ -343,8 +347,8 @@ func (r *LoadBalancerService) ResizeAndPoll(ctx context.Context, loadbalancerID 
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)

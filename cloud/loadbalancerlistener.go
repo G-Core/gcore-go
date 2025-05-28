@@ -194,7 +194,8 @@ func (r *LoadBalancerListenerService) NewAndPoll(ctx context.Context, params Loa
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
-// DeleteAndPoll deletes a listener and polls for completion
+// DeleteAndPoll deletes a listener and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
 func (r *LoadBalancerListenerService) DeleteAndPoll(ctx context.Context, listenerID string, params LoadBalancerListenerDeleteParams, opts ...option.RequestOption) error {
 	resource, err := r.Delete(ctx, listenerID, params, opts...)
 	if err != nil {
@@ -202,15 +203,16 @@ func (r *LoadBalancerListenerService) DeleteAndPoll(ctx context.Context, listene
 	}
 
 	opts = append(r.Options[:], opts...)
-	if len(resource.Tasks) != 1 {
-		return errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	return err
 }
 
-// UpdateAndPoll updates a listener and polls for completion
+// UpdateAndPoll updates a listener and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
 func (r *LoadBalancerListenerService) UpdateAndPoll(ctx context.Context, listenerID string, params LoadBalancerListenerUpdateParams, opts ...option.RequestOption) (v *LoadBalancerListenerDetail, err error) {
 	resource, err := r.Update(ctx, listenerID, params, opts...)
 	if err != nil {
@@ -228,8 +230,8 @@ func (r *LoadBalancerListenerService) UpdateAndPoll(ctx context.Context, listene
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)

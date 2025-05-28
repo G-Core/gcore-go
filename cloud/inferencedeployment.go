@@ -1070,7 +1070,8 @@ func (r *InferenceDeploymentService) NewAndPoll(ctx context.Context, params Infe
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
-// DeleteAndPoll deletes an inference deployment and polls for completion
+// DeleteAndPoll deletes an inference deployment and polls for completion of the first task. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
 func (r *InferenceDeploymentService) DeleteAndPoll(ctx context.Context, deploymentName string, params InferenceDeploymentDeleteParams, opts ...option.RequestOption) error {
 	resource, err := r.Delete(ctx, deploymentName, params, opts...)
 	if err != nil {
@@ -1078,15 +1079,16 @@ func (r *InferenceDeploymentService) DeleteAndPoll(ctx context.Context, deployme
 	}
 
 	opts = append(r.Options[:], opts...)
-	if len(resource.Tasks) != 1 {
-		return errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	return err
 }
 
-// UpdateAndPoll updates an inference deployment and polls for completion
+// UpdateAndPoll updates an inference deployment and polls for completion of the first task. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
 func (r *InferenceDeploymentService) UpdateAndPoll(ctx context.Context, deploymentName string, params InferenceDeploymentUpdateParams, opts ...option.RequestOption) (v *Inference, err error) {
 	resource, err := r.Update(ctx, deploymentName, params, opts...)
 	if err != nil {
@@ -1102,8 +1104,8 @@ func (r *InferenceDeploymentService) UpdateAndPoll(ctx context.Context, deployme
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	getParams.ProjectID = params.ProjectID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)

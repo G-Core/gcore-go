@@ -87,7 +87,8 @@ func (r *InstanceInterfaceService) Attach(ctx context.Context, instanceID string
 	return
 }
 
-// AttachAndPoll attach interface to instance and poll for the result
+// AttachAndPoll attach interface to instance and poll for the completion of the first task. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
 func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID string, params InstanceInterfaceAttachParams, opts ...option.RequestOption) (v *NetworkInterfaceList, err error) {
 	resource, err := r.Attach(ctx, instanceID, params, opts...)
 	if err != nil {
@@ -105,8 +106,8 @@ func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID
 	listParams.ProjectID = params.ProjectID
 	listParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
@@ -143,7 +144,8 @@ func (r *InstanceInterfaceService) Detach(ctx context.Context, instanceID string
 	return
 }
 
-// DetachAndPoll interface from instance and poll for the result
+// DetachAndPoll interface from instance and poll for the completion of the first task. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
 func (r *InstanceInterfaceService) DetachAndPoll(ctx context.Context, instanceID string, params InstanceInterfaceDetachParams, opts ...option.RequestOption) (v *NetworkInterfaceList, err error) {
 	resource, err := r.Detach(ctx, instanceID, params, opts...)
 	if err != nil {
@@ -161,8 +163,8 @@ func (r *InstanceInterfaceService) DetachAndPoll(ctx context.Context, instanceID
 	listParams.ProjectID = params.ProjectID
 	listParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)

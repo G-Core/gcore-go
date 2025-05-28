@@ -300,7 +300,8 @@ func (r *GPUBaremetalClusterService) NewAndPoll(ctx context.Context, params GPUB
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
-// RebuildAndPoll rebuilds a GPU bare metal cluster and polls for completion
+// RebuildAndPoll rebuilds a GPU bare metal cluster and polls for completion of the first task. Use the
+// [TaskService.Poll] method if you need to poll for all tasks.
 func (r *GPUBaremetalClusterService) RebuildAndPoll(ctx context.Context, clusterID string, params GPUBaremetalClusterRebuildParams, opts ...option.RequestOption) (v *GPUBaremetalCluster, err error) {
 	resource, err := r.Rebuild(ctx, clusterID, params, opts...)
 	if err != nil {
@@ -318,8 +319,8 @@ func (r *GPUBaremetalClusterService) RebuildAndPoll(ctx context.Context, cluster
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
@@ -330,7 +331,8 @@ func (r *GPUBaremetalClusterService) RebuildAndPoll(ctx context.Context, cluster
 	return r.Get(ctx, clusterID, getParams, opts...)
 }
 
-// ResizeAndPoll resizes a GPU bare metal cluster and polls for completion
+// ResizeAndPoll resizes a GPU bare metal cluster and polls for completion of the first task. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
 func (r *GPUBaremetalClusterService) ResizeAndPoll(ctx context.Context, clusterID string, params GPUBaremetalClusterResizeParams, opts ...option.RequestOption) (v *GPUBaremetalCluster, err error) {
 	resource, err := r.Resize(ctx, clusterID, params, opts...)
 	if err != nil {
@@ -348,8 +350,8 @@ func (r *GPUBaremetalClusterService) ResizeAndPoll(ctx context.Context, clusterI
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)

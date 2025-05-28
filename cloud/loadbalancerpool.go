@@ -200,7 +200,8 @@ func (r *LoadBalancerPoolService) NewAndPoll(ctx context.Context, params LoadBal
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
-// DeleteAndPoll deletes a pool and polls for completion
+// DeleteAndPoll deletes a pool and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
 func (r *LoadBalancerPoolService) DeleteAndPoll(ctx context.Context, poolID string, params LoadBalancerPoolDeleteParams, opts ...option.RequestOption) error {
 	resource, err := r.Delete(ctx, poolID, params, opts...)
 	if err != nil {
@@ -208,15 +209,16 @@ func (r *LoadBalancerPoolService) DeleteAndPoll(ctx context.Context, poolID stri
 	}
 
 	opts = append(r.Options[:], opts...)
-	if len(resource.Tasks) != 1 {
-		return errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	return err
 }
 
-// UpdateAndPoll updates a pool and polls for completion
+// UpdateAndPoll updates a pool and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// // need to poll for all tasks.
 func (r *LoadBalancerPoolService) UpdateAndPoll(ctx context.Context, poolID string, params LoadBalancerPoolUpdateParams, opts ...option.RequestOption) (v *LoadBalancerPool, err error) {
 	resource, err := r.Update(ctx, poolID, params, opts...)
 	if err != nil {
@@ -234,8 +236,8 @@ func (r *LoadBalancerPoolService) UpdateAndPoll(ctx context.Context, poolID stri
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)

@@ -1404,7 +1404,8 @@ func (r *BaremetalServerService) NewAndPoll(ctx context.Context, params Baremeta
 	return &servers.Results[0], nil
 }
 
-// RebuildAndPoll rebuild bare metal server and poll for the result
+// RebuildAndPoll rebuild bare metal server and poll for the completion of the first task.  Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
 func (r *BaremetalServerService) RebuildAndPoll(ctx context.Context, serverID string, params BaremetalServerRebuildParams, opts ...option.RequestOption) (v *BaremetalServer, err error) {
 	resource, err := r.Rebuild(ctx, serverID, params, opts...)
 	if err != nil {
@@ -1417,8 +1418,8 @@ func (r *BaremetalServerService) RebuildAndPoll(ctx context.Context, serverID st
 		return
 	}
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
