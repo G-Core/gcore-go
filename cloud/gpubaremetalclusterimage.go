@@ -131,7 +131,8 @@ func (r *GPUBaremetalClusterImageService) Upload(ctx context.Context, params GPU
 	return
 }
 
-// UploadAndPoll uploads a new bare metal GPU image and polls for completion
+// UploadAndPoll uploads a new bare metal GPU image and polls for completion of the first task. Use the
+// [TaskService.Poll] method if you need to poll for all tasks.
 func (r *GPUBaremetalClusterImageService) UploadAndPoll(ctx context.Context, params GPUBaremetalClusterImageUploadParams, opts ...option.RequestOption) (v *GPUImage, err error) {
 	resource, err := r.Upload(ctx, params, opts...)
 	if err != nil {
@@ -149,8 +150,8 @@ func (r *GPUBaremetalClusterImageService) UploadAndPoll(ctx context.Context, par
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	task, err := r.tasks.Poll(ctx, taskID, opts...)
@@ -166,15 +167,16 @@ func (r *GPUBaremetalClusterImageService) UploadAndPoll(ctx context.Context, par
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
-// DeleteAndPoll deletes a bare metal GPU image and polls for completion
+// DeleteAndPoll deletes a bare metal GPU image and polls for completion of the first task. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
 func (r *GPUBaremetalClusterImageService) DeleteAndPoll(ctx context.Context, imageID string, params GPUBaremetalClusterImageDeleteParams, opts ...option.RequestOption) error {
 	resource, err := r.Delete(ctx, imageID, params, opts...)
 	if err != nil {
 		return err
 	}
 
-	if len(resource.Tasks) != 1 {
-		return errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)

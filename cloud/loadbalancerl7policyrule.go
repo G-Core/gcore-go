@@ -213,7 +213,8 @@ func (r *LoadBalancerL7PolicyRuleService) NewAndPoll(ctx context.Context, l7poli
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
-// DeleteAndPoll deletes an L7 rule and polls for completion
+// DeleteAndPoll deletes an L7 rule and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
 func (r *LoadBalancerL7PolicyRuleService) DeleteAndPoll(ctx context.Context, l7ruleID string, body LoadBalancerL7PolicyRuleDeleteParams, opts ...option.RequestOption) error {
 	resource, err := r.Delete(ctx, l7ruleID, body, opts...)
 	if err != nil {
@@ -221,15 +222,16 @@ func (r *LoadBalancerL7PolicyRuleService) DeleteAndPoll(ctx context.Context, l7r
 	}
 
 	opts = append(r.Options[:], opts...)
-	if len(resource.Tasks) != 1 {
-		return errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	return err
 }
 
-// ReplaceAndPoll replaces an L7 rule and polls for completion
+// ReplaceAndPoll replaces an L7 rule and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
 func (r *LoadBalancerL7PolicyRuleService) ReplaceAndPoll(ctx context.Context, l7ruleID string, params LoadBalancerL7PolicyRuleReplaceParams, opts ...option.RequestOption) (v *LoadBalancerL7Rule, err error) {
 	resource, err := r.Replace(ctx, l7ruleID, params, opts...)
 	if err != nil {
@@ -248,8 +250,8 @@ func (r *LoadBalancerL7PolicyRuleService) ReplaceAndPoll(ctx context.Context, l7
 	getParams.RegionID = params.RegionID
 	getParams.L7policyID = params.L7policyID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)

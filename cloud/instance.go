@@ -212,7 +212,8 @@ func (r *InstanceService) Delete(ctx context.Context, instanceID string, params 
 	return
 }
 
-// DeleteAndPoll delete instance and poll for completion
+// DeleteAndPoll delete instance and poll for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
 func (r *InstanceService) DeleteAndPoll(ctx context.Context, instanceID string, params InstanceDeleteParams, opts ...option.RequestOption) error {
 	resource, err := r.Delete(ctx, instanceID, params, opts...)
 	if err != nil {
@@ -220,8 +221,8 @@ func (r *InstanceService) DeleteAndPoll(ctx context.Context, instanceID string, 
 	}
 
 	opts = append(r.Options[:], opts...)
-	if len(resource.Tasks) != 1 {
-		return errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
@@ -311,7 +312,8 @@ func (r *InstanceService) AddToPlacementGroup(ctx context.Context, instanceID st
 	return
 }
 
-// AddToPlacementGroupAndPoll add instance to placement group and poll for completion
+// AddToPlacementGroupAndPoll add instance to placement group and poll for completion of the first task. Use the
+// [TaskService.Poll] method if you need to poll for all tasks.
 func (r *InstanceService) AddToPlacementGroupAndPoll(ctx context.Context, instanceID string, params InstanceAddToPlacementGroupParams, opts ...option.RequestOption) (v *Instance, err error) {
 	resource, err := r.AddToPlacementGroup(ctx, instanceID, params, opts...)
 	if err != nil {
@@ -329,8 +331,8 @@ func (r *InstanceService) AddToPlacementGroupAndPoll(ctx context.Context, instan
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
@@ -505,7 +507,8 @@ func (r *InstanceService) RemoveFromPlacementGroup(ctx context.Context, instance
 	return
 }
 
-// RRemoveFromPlacementGroupAndPoll remove instance from placement group and poll for completion
+// RemoveFromPlacementGroupAndPoll remove instance from placement group and poll for completion of the first task. Use
+// the [TaskService.Poll] method if you need to poll for all tasks.
 func (r *InstanceService) RemoveFromPlacementGroupAndPoll(ctx context.Context, instanceID string, body InstanceRemoveFromPlacementGroupParams, opts ...option.RequestOption) (v *Instance, err error) {
 	resource, err := r.RemoveFromPlacementGroup(ctx, instanceID, body, opts...)
 	if err != nil {
@@ -523,8 +526,8 @@ func (r *InstanceService) RemoveFromPlacementGroupAndPoll(ctx context.Context, i
 	getParams.ProjectID = body.ProjectID
 	getParams.RegionID = body.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
@@ -561,7 +564,8 @@ func (r *InstanceService) Resize(ctx context.Context, instanceID string, params 
 	return
 }
 
-// ResizeAndPoll change flavor of the instance and poll for completion
+// ResizeAndPoll change flavor of the instance and poll for completion of the first task. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
 func (r *InstanceService) ResizeAndPoll(ctx context.Context, instanceID string, params InstanceResizeParams, opts ...option.RequestOption) (v *Instance, err error) {
 	resource, err := r.Resize(ctx, instanceID, params, opts...)
 	if err != nil {
@@ -579,8 +583,8 @@ func (r *InstanceService) ResizeAndPoll(ctx context.Context, instanceID string, 
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)

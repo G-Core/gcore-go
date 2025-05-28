@@ -112,7 +112,8 @@ func (r *InstanceImageService) Delete(ctx context.Context, imageID string, body 
 	return
 }
 
-// DeleteAndPoll delete the image and poll for completion
+// DeleteAndPoll delete the image and poll for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
 func (r *InstanceImageService) DeleteAndPoll(ctx context.Context, imageID string, body InstanceImageDeleteParams, opts ...option.RequestOption) error {
 	resource, err := r.Delete(ctx, imageID, body, opts...)
 	if err != nil {
@@ -120,8 +121,8 @@ func (r *InstanceImageService) DeleteAndPoll(ctx context.Context, imageID string
 	}
 
 	opts = append(r.Options[:], opts...)
-	if len(resource.Tasks) != 1 {
-		return errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
 	}
 
 	taskID := resource.Tasks[0]
@@ -234,7 +235,8 @@ func (r *InstanceImageService) Upload(ctx context.Context, params InstanceImageU
 	return
 }
 
-// UploadAndPoll upload image and poll for the result
+// UploadAndPoll upload image and poll for the task completion. Use the [TaskService.Poll] method if you need to poll
+// for all tasks.
 func (r *InstanceImageService) UploadAndPoll(ctx context.Context, params InstanceImageUploadParams, opts ...option.RequestOption) (v *Image, err error) {
 	resource, err := r.Upload(ctx, params, opts...)
 	if err != nil {
@@ -252,8 +254,8 @@ func (r *InstanceImageService) UploadAndPoll(ctx context.Context, params Instanc
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	task, err := r.tasks.Poll(ctx, taskID, opts...)

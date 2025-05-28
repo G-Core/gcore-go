@@ -194,7 +194,8 @@ func (r *LoadBalancerL7PolicyService) NewAndPoll(ctx context.Context, params Loa
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
-// DeleteAndPoll deletes an L7 policy and polls for completion
+// DeleteAndPoll deletes an L7 policy and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
 func (r *LoadBalancerL7PolicyService) DeleteAndPoll(ctx context.Context, l7policyID string, body LoadBalancerL7PolicyDeleteParams, opts ...option.RequestOption) error {
 	resource, err := r.Delete(ctx, l7policyID, body, opts...)
 	if err != nil {
@@ -202,15 +203,16 @@ func (r *LoadBalancerL7PolicyService) DeleteAndPoll(ctx context.Context, l7polic
 	}
 
 	opts = append(r.Options[:], opts...)
-	if len(resource.Tasks) != 1 {
-		return errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	return err
 }
 
-// ReplaceAndPoll replaces an L7 policy and polls for completion
+// ReplaceAndPoll replaces an L7 policy and polls for completion of the first task. Use the [TaskService.Poll] method if
+// you need to poll for all tasks.
 func (r *LoadBalancerL7PolicyService) ReplaceAndPoll(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyReplaceParams, opts ...option.RequestOption) (v *LoadBalancerL7Policy, err error) {
 	resource, err := r.Replace(ctx, l7policyID, params, opts...)
 	if err != nil {
@@ -228,21 +230,16 @@ func (r *LoadBalancerL7PolicyService) ReplaceAndPoll(ctx context.Context, l7poli
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
 		return
 	}
 
-	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.L7polices) != 1 {
-		return nil, errors.New("expected exactly one L7 policy to be created in a task")
-	}
-	resourceID := task.CreatedResources.L7polices[0]
-
-	return r.Get(ctx, resourceID, getParams, opts...)
+	return r.Get(ctx, l7policyID, getParams, opts...)
 }
 
 type LoadBalancerL7PolicyNewParams struct {
