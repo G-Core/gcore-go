@@ -49,7 +49,7 @@ func TestSecretNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestSecretList(t *testing.T) {
+func TestSecretListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -64,6 +64,8 @@ func TestSecretList(t *testing.T) {
 	_, err := client.Cloud.Secrets.List(context.TODO(), cloud.SecretListParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(1),
+		Limit:     gcore.Int(1000),
+		Offset:    gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error

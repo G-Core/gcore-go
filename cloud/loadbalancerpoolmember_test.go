@@ -28,10 +28,10 @@ func TestLoadBalancerPoolMemberAddWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Pools.Members.Add(
 		context.TODO(),
-		"pool_id",
+		"00000000-0000-4000-8000-000000000000",
 		cloud.LoadBalancerPoolMemberAddParams{
-			ProjectID:      gcore.Int(0),
-			RegionID:       gcore.Int(0),
+			ProjectID:      gcore.Int(1),
+			RegionID:       gcore.Int(1),
 			Address:        "192.168.40.33",
 			ProtocolPort:   80,
 			AdminStateUp:   gcore.Bool(false),
@@ -65,11 +65,11 @@ func TestLoadBalancerPoolMemberRemove(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Pools.Members.Remove(
 		context.TODO(),
-		"member_id",
+		"00000000-0000-4000-8000-000000000000",
 		cloud.LoadBalancerPoolMemberRemoveParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			PoolID:    "pool_id",
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			PoolID:    "00000000-0000-4000-8000-000000000000",
 		},
 	)
 	if err != nil {

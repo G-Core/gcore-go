@@ -27,8 +27,8 @@ func TestLoadBalancerListenerNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.LoadBalancers.Listeners.New(context.TODO(), cloud.LoadBalancerListenerNewParams{
-		ProjectID:            gcore.Int(0),
-		RegionID:             gcore.Int(0),
+		ProjectID:            gcore.Int(1),
+		RegionID:             gcore.Int(1),
 		LoadbalancerID:       "30f4f55b-4a7c-48e0-9954-5cddfee216e7",
 		Name:                 "my_listener",
 		Protocol:             cloud.LbListenerProtocolHTTP,
@@ -69,10 +69,10 @@ func TestLoadBalancerListenerUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Listeners.Update(
 		context.TODO(),
-		"listener_id",
+		"00000000-0000-4000-8000-000000000000",
 		cloud.LoadBalancerListenerUpdateParams{
-			ProjectID:            gcore.Int(0),
-			RegionID:             gcore.Int(0),
+			ProjectID:            gcore.Int(1),
+			RegionID:             gcore.Int(1),
 			AllowedCidrs:         []string{"10.0.0.0/8"},
 			ConnectionLimit:      gcore.Int(100000),
 			Name:                 gcore.String("new_listener_name"),
@@ -109,9 +109,9 @@ func TestLoadBalancerListenerListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.LoadBalancers.Listeners.List(context.TODO(), cloud.LoadBalancerListenerListParams{
-		ProjectID:      gcore.Int(0),
-		RegionID:       gcore.Int(0),
-		LoadbalancerID: gcore.String("loadbalancer_id"),
+		ProjectID:      gcore.Int(1),
+		RegionID:       gcore.Int(1),
+		LoadbalancerID: gcore.String("00000000-0000-4000-8000-000000000000"),
 		ShowStats:      gcore.Bool(true),
 	})
 	if err != nil {
@@ -137,10 +137,10 @@ func TestLoadBalancerListenerDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Listeners.Delete(
 		context.TODO(),
-		"listener_id",
+		"00000000-0000-4000-8000-000000000000",
 		cloud.LoadBalancerListenerDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -166,10 +166,10 @@ func TestLoadBalancerListenerGetWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Listeners.Get(
 		context.TODO(),
-		"listener_id",
+		"00000000-0000-4000-8000-000000000000",
 		cloud.LoadBalancerListenerGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			ShowStats: gcore.Bool(true),
 		},
 	)
