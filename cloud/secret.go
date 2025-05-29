@@ -36,6 +36,8 @@ func NewSecretService(opts ...option.RequestOption) (r SecretService) {
 }
 
 // Create secret
+//
+// Deprecated: deprecated
 func (r *SecretService) New(ctx context.Context, params SecretNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
