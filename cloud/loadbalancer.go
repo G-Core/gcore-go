@@ -881,17 +881,25 @@ func (r *LoadBalancerL7RuleList) UnmarshalJSON(data []byte) error {
 type LoadBalancerListenerDetail struct {
 	// Load balancer listener ID
 	ID string `json:"id,required" format:"uuid4"`
+	// Network CIDRs from which service will be accessible
+	AllowedCidrs []string `json:"allowed_cidrs,required" format:"ipvanynetwork"`
 	// Limit of simultaneous connections
 	ConnectionLimit int64 `json:"connection_limit,required"`
+	// Task that created this entity
+	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
 	// Dictionary of additional header insertion into HTTP headers. Only used with HTTP
 	// and TERMINATED_HTTPS protocols.
 	InsertHeaders any `json:"insert_headers,required"`
+	// Load balancer ID
+	LoadbalancerID string `json:"loadbalancer_id,required" format:"uuid4"`
 	// Load balancer listener name
 	Name string `json:"name,required"`
 	// Listener operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	// Number of pools (for UI)
+	PoolCount int64 `json:"pool_count,required"`
 	// Load balancer protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROMETHEUS", "TCP", "TERMINATED_HTTPS", "UDP".
@@ -903,49 +911,41 @@ type LoadBalancerListenerDetail struct {
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// Network CIDRs from which service will be accessible
-	AllowedCidrs []string `json:"allowed_cidrs,nullable" format:"ipvanynetwork"`
-	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// Load balancer ID
-	LoadbalancerID string `json:"loadbalancer_id,nullable" format:"uuid4"`
-	// Number of pools (for UI)
-	PoolCount int64 `json:"pool_count,nullable"`
 	// ID of the secret where PKCS12 file is stored for TERMINATED_HTTPS or PROMETHEUS
 	// load balancer
-	SecretID string `json:"secret_id,nullable"`
+	SecretID string `json:"secret_id,required"`
 	// List of secret's ID containing PKCS12 format certificate/key bundles for
 	// TERMINATED_HTTPS or PROMETHEUS listeners
-	SniSecretID []string `json:"sni_secret_id,nullable"`
+	SniSecretID []string `json:"sni_secret_id,required"`
 	// Statistics of the load balancer. It is available only in get functions by a
 	// flag.
-	Stats LoadBalancerStatistics `json:"stats,nullable"`
+	Stats LoadBalancerStatistics `json:"stats,required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,nullable" format:"uuid4"`
+	TaskID string `json:"task_id,required" format:"uuid4"`
 	// Frontend client inactivity timeout in milliseconds
-	TimeoutClientData int64 `json:"timeout_client_data,nullable"`
+	TimeoutClientData int64 `json:"timeout_client_data,required"`
 	// Backend member connection timeout in milliseconds
-	TimeoutMemberConnect int64 `json:"timeout_member_connect,nullable"`
+	TimeoutMemberConnect int64 `json:"timeout_member_connect,required"`
 	// Backend member inactivity timeout in milliseconds
-	TimeoutMemberData int64 `json:"timeout_member_data,nullable"`
+	TimeoutMemberData int64 `json:"timeout_member_data,required"`
 	// Load balancer listener users list
-	UserList []LoadBalancerListenerDetailUserList `json:"user_list"`
+	UserList []LoadBalancerListenerDetailUserList `json:"user_list,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
+		AllowedCidrs         respjson.Field
 		ConnectionLimit      respjson.Field
+		CreatorTaskID        respjson.Field
 		InsertHeaders        respjson.Field
+		LoadbalancerID       respjson.Field
 		Name                 respjson.Field
 		OperatingStatus      respjson.Field
+		PoolCount            respjson.Field
 		Protocol             respjson.Field
 		ProtocolPort         respjson.Field
 		ProvisioningStatus   respjson.Field
-		AllowedCidrs         respjson.Field
-		CreatorTaskID        respjson.Field
-		LoadbalancerID       respjson.Field
-		PoolCount            respjson.Field
 		SecretID             respjson.Field
 		SniSecretID          respjson.Field
 		Stats                respjson.Field
@@ -982,26 +982,6 @@ type LoadBalancerListenerDetailUserList struct {
 // Returns the unmodified JSON received from the API
 func (r LoadBalancerListenerDetailUserList) RawJSON() string { return r.JSON.raw }
 func (r *LoadBalancerListenerDetailUserList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LoadBalancerListenerList struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []LoadBalancerListenerDetail `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerListenerList) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerListenerList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1057,142 +1037,6 @@ type LoadBalancerMetricsList struct {
 // Returns the unmodified JSON received from the API
 func (r LoadBalancerMetricsList) RawJSON() string { return r.JSON.raw }
 func (r *LoadBalancerMetricsList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LoadBalancerPool struct {
-	// Pool ID
-	ID string `json:"id,required" format:"uuid4"`
-	// Secret ID of CA certificate bundle
-	CaSecretID string `json:"ca_secret_id,required" format:"uuid4"`
-	// Secret ID of CA revocation list file
-	CrlSecretID string `json:"crl_secret_id,required" format:"uuid4"`
-	// Load balancer algorithm
-	//
-	// Any of "LEAST_CONNECTIONS", "ROUND_ROBIN", "SOURCE_IP".
-	LbAlgorithm LbAlgorithm `json:"lb_algorithm,required"`
-	// Listeners IDs
-	Listeners []LoadBalancerPoolListener `json:"listeners,required"`
-	// Load balancers IDs
-	Loadbalancers []LoadBalancerPoolLoadbalancer `json:"loadbalancers,required"`
-	// Pool members
-	Members []Member `json:"members,required"`
-	// Pool name
-	Name string `json:"name,required"`
-	// Pool operating status
-	//
-	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// Protocol
-	//
-	// Any of "HTTP", "HTTPS", "PROXY", "PROXYV2", "TCP", "UDP".
-	Protocol LbPoolProtocol `json:"protocol,required"`
-	// Pool lifecycle status
-	//
-	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
-	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// Secret ID for TLS client authentication to the member servers
-	SecretID string `json:"secret_id,required" format:"uuid4"`
-	// Session persistence parameters
-	SessionPersistence SessionPersistence `json:"session_persistence,required"`
-	// Frontend client inactivity timeout in milliseconds
-	TimeoutClientData int64 `json:"timeout_client_data,required"`
-	// Backend member connection timeout in milliseconds
-	TimeoutMemberConnect int64 `json:"timeout_member_connect,required"`
-	// Backend member inactivity timeout in milliseconds
-	TimeoutMemberData int64 `json:"timeout_member_data,required"`
-	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
-	// Health monitor parameters
-	Healthmonitor HealthMonitor `json:"healthmonitor,nullable"`
-	// The UUID of the active task that currently holds a lock on the resource. This
-	// lock prevents concurrent modifications to ensure consistency. If `null`, the
-	// resource is not locked.
-	TaskID string `json:"task_id,nullable" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                   respjson.Field
-		CaSecretID           respjson.Field
-		CrlSecretID          respjson.Field
-		LbAlgorithm          respjson.Field
-		Listeners            respjson.Field
-		Loadbalancers        respjson.Field
-		Members              respjson.Field
-		Name                 respjson.Field
-		OperatingStatus      respjson.Field
-		Protocol             respjson.Field
-		ProvisioningStatus   respjson.Field
-		SecretID             respjson.Field
-		SessionPersistence   respjson.Field
-		TimeoutClientData    respjson.Field
-		TimeoutMemberConnect respjson.Field
-		TimeoutMemberData    respjson.Field
-		CreatorTaskID        respjson.Field
-		Healthmonitor        respjson.Field
-		TaskID               respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerPool) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerPool) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LoadBalancerPoolListener struct {
-	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerPoolListener) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerPoolListener) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LoadBalancerPoolLoadbalancer struct {
-	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerPoolLoadbalancer) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerPoolLoadbalancer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LoadBalancerPoolList struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []LoadBalancerPool `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerPoolList) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerPoolList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

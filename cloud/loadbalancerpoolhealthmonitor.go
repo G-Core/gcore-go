@@ -87,8 +87,10 @@ func (r *LoadBalancerPoolHealthMonitorService) Delete(ctx context.Context, poolI
 }
 
 type LoadBalancerPoolHealthMonitorNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// The time, in seconds, between sending probes to members
 	Delay int64 `json:"delay,required"`
 	// Number of successes before the member is switched to ONLINE state
@@ -124,7 +126,9 @@ func (r *LoadBalancerPoolHealthMonitorNewParams) UnmarshalJSON(data []byte) erro
 }
 
 type LoadBalancerPoolHealthMonitorDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
