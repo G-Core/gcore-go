@@ -28,10 +28,10 @@ func TestLoadBalancerPoolHealthMonitorNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Pools.HealthMonitors.New(
 		context.TODO(),
-		"pool_id",
+		"00000000-0000-4000-8000-000000000000",
 		cloud.LoadBalancerPoolHealthMonitorNewParams{
-			ProjectID:      gcore.Int(0),
-			RegionID:       gcore.Int(0),
+			ProjectID:      gcore.Int(1),
+			RegionID:       gcore.Int(1),
 			Delay:          10,
 			MaxRetries:     2,
 			Timeout:        5,
@@ -65,10 +65,10 @@ func TestLoadBalancerPoolHealthMonitorDelete(t *testing.T) {
 	)
 	err := client.Cloud.LoadBalancers.Pools.HealthMonitors.Delete(
 		context.TODO(),
-		"pool_id",
+		"00000000-0000-4000-8000-000000000000",
 		cloud.LoadBalancerPoolHealthMonitorDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {

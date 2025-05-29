@@ -90,8 +90,10 @@ func (r *LoadBalancerPoolMemberService) Remove(ctx context.Context, memberID str
 }
 
 type LoadBalancerPoolMemberAddParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Member IP address
 	Address string `json:"address,required" format:"ipvanyaddress"`
 	// Member IP port
@@ -122,8 +124,11 @@ func (r *LoadBalancerPoolMemberAddParams) UnmarshalJSON(data []byte) error {
 }
 
 type LoadBalancerPoolMemberRemoveParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	PoolID    string           `path:"pool_id,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Pool ID
+	PoolID string `path:"pool_id,required" format:"uuid4" json:"-"`
 	paramObj
 }

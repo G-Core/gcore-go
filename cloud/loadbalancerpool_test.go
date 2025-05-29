@@ -27,8 +27,8 @@ func TestLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.LoadBalancers.Pools.New(context.TODO(), cloud.LoadBalancerPoolNewParams{
-		ProjectID:   gcore.Int(0),
-		RegionID:    gcore.Int(0),
+		ProjectID:   gcore.Int(1),
+		RegionID:    gcore.Int(1),
 		LbAlgorithm: cloud.LbAlgorithmLeastConnections,
 		Name:        "pool_name",
 		Protocol:    cloud.LbPoolProtocolHTTP,
@@ -99,10 +99,10 @@ func TestLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Pools.Update(
 		context.TODO(),
-		"pool_id",
+		"00000000-0000-4000-8000-000000000000",
 		cloud.LoadBalancerPoolUpdateParams{
-			ProjectID:   gcore.Int(0),
-			RegionID:    gcore.Int(0),
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(1),
 			CaSecretID:  gcore.String("ca_secret_id"),
 			CrlSecretID: gcore.String("crl_secret_id"),
 			Healthmonitor: cloud.LoadBalancerPoolUpdateParamsHealthmonitor{
@@ -162,11 +162,11 @@ func TestLoadBalancerPoolListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.LoadBalancers.Pools.List(context.TODO(), cloud.LoadBalancerPoolListParams{
-		ProjectID:      gcore.Int(0),
-		RegionID:       gcore.Int(0),
+		ProjectID:      gcore.Int(1),
+		RegionID:       gcore.Int(1),
 		Details:        gcore.Bool(true),
-		ListenerID:     gcore.String("listener_id"),
-		LoadbalancerID: gcore.String("loadbalancer_id"),
+		ListenerID:     gcore.String("00000000-0000-4000-8000-000000000000"),
+		LoadbalancerID: gcore.String("00000000-0000-4000-8000-000000000000"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -191,10 +191,10 @@ func TestLoadBalancerPoolDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Pools.Delete(
 		context.TODO(),
-		"pool_id",
+		"00000000-0000-4000-8000-000000000000",
 		cloud.LoadBalancerPoolDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -220,10 +220,10 @@ func TestLoadBalancerPoolGet(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Pools.Get(
 		context.TODO(),
-		"pool_id",
+		"00000000-0000-4000-8000-000000000000",
 		cloud.LoadBalancerPoolGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {

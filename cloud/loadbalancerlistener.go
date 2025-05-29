@@ -14,6 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // LoadBalancerListenerService contains methods and other services that help with
@@ -86,7 +87,7 @@ func (r *LoadBalancerListenerService) Update(ctx context.Context, listenerID str
 }
 
 // List load balancer listeners
-func (r *LoadBalancerListenerService) List(ctx context.Context, params LoadBalancerListenerListParams, opts ...option.RequestOption) (res *LoadBalancerListenerList, err error) {
+func (r *LoadBalancerListenerService) List(ctx context.Context, params LoadBalancerListenerListParams, opts ...option.RequestOption) (res *LoadBalancerListenerListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -242,9 +243,31 @@ func (r *LoadBalancerListenerService) UpdateAndPoll(ctx context.Context, listene
 	return r.Get(ctx, listenerID, getParams, opts...)
 }
 
+type LoadBalancerListenerListResponse struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []LoadBalancerListenerDetail `json:"results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerListenerListResponse) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerListenerListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type LoadBalancerListenerNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Load balancer ID
 	LoadbalancerID string `json:"loadbalancer_id,required" format:"uuid4"`
 	// Load balancer listener name
@@ -305,8 +328,10 @@ func (r *LoadBalancerListenerNewParamsUserList) UnmarshalJSON(data []byte) error
 }
 
 type LoadBalancerListenerUpdateParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// ID of the secret where PKCS12 file is stored for TERMINATED_HTTPS or PROMETHEUS
 	// load balancer
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
@@ -356,11 +381,13 @@ func (r *LoadBalancerListenerUpdateParamsUserList) UnmarshalJSON(data []byte) er
 }
 
 type LoadBalancerListenerListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Load balancer ID
-	LoadbalancerID param.Opt[string] `query:"loadbalancer_id,omitzero" json:"-"`
-	// Show statistics
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Load Balancer ID
+	LoadbalancerID param.Opt[string] `query:"loadbalancer_id,omitzero" format:"uuid4" json:"-"`
+	// Show stats
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
 	paramObj
 }
@@ -375,15 +402,19 @@ func (r LoadBalancerListenerListParams) URLQuery() (v url.Values, err error) {
 }
 
 type LoadBalancerListenerDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerListenerGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Show statistics
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Show stats
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
 	paramObj
 }
