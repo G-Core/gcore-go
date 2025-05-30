@@ -14,7 +14,6 @@ import (
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
-	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // LoadBalancerPoolService contains methods and other services that help with
@@ -139,7 +138,7 @@ func (r *LoadBalancerPoolService) Delete(ctx context.Context, poolID string, bod
 }
 
 // Get load balancer pool
-func (r *LoadBalancerPoolService) Get(ctx context.Context, poolID string, query LoadBalancerPoolGetParams, opts ...option.RequestOption) (res *LoadBalancerPoolGetResponse, err error) {
+func (r *LoadBalancerPoolService) Get(ctx context.Context, poolID string, query LoadBalancerPoolGetParams, opts ...option.RequestOption) (res *LoadBalancerPool, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -162,122 +161,6 @@ func (r *LoadBalancerPoolService) Get(ctx context.Context, poolID string, query 
 	path := fmt.Sprintf("cloud/v1/lbpools/%v/%v/%s", query.ProjectID.Value, query.RegionID.Value, poolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
-}
-
-type LoadBalancerPoolGetResponse struct {
-	// Pool ID
-	ID string `json:"id,required" format:"uuid4"`
-	// Secret ID of CA certificate bundle
-	CaSecretID string `json:"ca_secret_id,required" format:"uuid4"`
-	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
-	// Secret ID of CA revocation list file
-	CrlSecretID string `json:"crl_secret_id,required" format:"uuid4"`
-	// Health monitor parameters
-	Healthmonitor HealthMonitor `json:"healthmonitor,required"`
-	// Load balancer algorithm
-	//
-	// Any of "LEAST_CONNECTIONS", "ROUND_ROBIN", "SOURCE_IP".
-	LbAlgorithm LbAlgorithm `json:"lb_algorithm,required"`
-	// Listeners IDs
-	Listeners []LoadBalancerPoolGetResponseListener `json:"listeners,required"`
-	// Load balancers IDs
-	Loadbalancers []LoadBalancerPoolGetResponseLoadbalancer `json:"loadbalancers,required"`
-	// Pool members
-	Members []Member `json:"members,required"`
-	// Pool name
-	Name string `json:"name,required"`
-	// Pool operating status
-	//
-	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// Protocol
-	//
-	// Any of "HTTP", "HTTPS", "PROXY", "PROXYV2", "TCP", "UDP".
-	Protocol LbPoolProtocol `json:"protocol,required"`
-	// Pool lifecycle status
-	//
-	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
-	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// Secret ID for TLS client authentication to the member servers
-	SecretID string `json:"secret_id,required" format:"uuid4"`
-	// Session persistence parameters
-	SessionPersistence SessionPersistence `json:"session_persistence,required"`
-	// The UUID of the active task that currently holds a lock on the resource. This
-	// lock prevents concurrent modifications to ensure consistency. If `null`, the
-	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
-	// Frontend client inactivity timeout in milliseconds
-	TimeoutClientData int64 `json:"timeout_client_data,required"`
-	// Backend member connection timeout in milliseconds
-	TimeoutMemberConnect int64 `json:"timeout_member_connect,required"`
-	// Backend member inactivity timeout in milliseconds
-	TimeoutMemberData int64 `json:"timeout_member_data,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                   respjson.Field
-		CaSecretID           respjson.Field
-		CreatorTaskID        respjson.Field
-		CrlSecretID          respjson.Field
-		Healthmonitor        respjson.Field
-		LbAlgorithm          respjson.Field
-		Listeners            respjson.Field
-		Loadbalancers        respjson.Field
-		Members              respjson.Field
-		Name                 respjson.Field
-		OperatingStatus      respjson.Field
-		Protocol             respjson.Field
-		ProvisioningStatus   respjson.Field
-		SecretID             respjson.Field
-		SessionPersistence   respjson.Field
-		TaskID               respjson.Field
-		TimeoutClientData    respjson.Field
-		TimeoutMemberConnect respjson.Field
-		TimeoutMemberData    respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerPoolGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerPoolGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LoadBalancerPoolGetResponseListener struct {
-	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerPoolGetResponseListener) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerPoolGetResponseListener) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LoadBalancerPoolGetResponseLoadbalancer struct {
-	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerPoolGetResponseLoadbalancer) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerPoolGetResponseLoadbalancer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type LoadBalancerPoolNewParams struct {
