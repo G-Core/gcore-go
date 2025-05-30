@@ -310,9 +310,12 @@ type Inference struct {
 	//     explains the failure reason.
 	//   - `ACTIVE` - The instance is running and ready to accept requests.
 	//   - `DISABLED` - The instance is disabled and not accepting any requests.
+	//   - `PENDING` - The instance is running but scaled to zero. It will be
+	//     automatically scaled up when a request is made.
 	//   - `DELETING` - The instance is being deleted.
 	//
-	// Any of "ACTIVE", "DELETING", "DEPLOYING", "DISABLED", "PARTIALLYDEPLOYED".
+	// Any of "ACTIVE", "DELETING", "DEPLOYING", "DISABLED", "PARTIALLYDEPLOYED",
+	// "PENDING".
 	Status InferenceStatus `json:"status,required"`
 	// Specifies the duration in seconds without any requests after which the
 	// containers will be downscaled to their minimum scale value as defined by
@@ -362,6 +365,8 @@ func (r *Inference) UnmarshalJSON(data []byte) error {
 //     explains the failure reason.
 //   - `ACTIVE` - The instance is running and ready to accept requests.
 //   - `DISABLED` - The instance is disabled and not accepting any requests.
+//   - `PENDING` - The instance is running but scaled to zero. It will be
+//     automatically scaled up when a request is made.
 //   - `DELETING` - The instance is being deleted.
 type InferenceStatus string
 
@@ -371,6 +376,7 @@ const (
 	InferenceStatusDeploying         InferenceStatus = "DEPLOYING"
 	InferenceStatusDisabled          InferenceStatus = "DISABLED"
 	InferenceStatusPartiallydeployed InferenceStatus = "PARTIALLYDEPLOYED"
+	InferenceStatusPending           InferenceStatus = "PENDING"
 )
 
 type InferenceApikeySecret struct {
