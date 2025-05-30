@@ -14,7 +14,6 @@ import (
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
-	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // LoadBalancerListenerService contains methods and other services that help with
@@ -87,7 +86,7 @@ func (r *LoadBalancerListenerService) Update(ctx context.Context, listenerID str
 }
 
 // List load balancer listeners
-func (r *LoadBalancerListenerService) List(ctx context.Context, params LoadBalancerListenerListParams, opts ...option.RequestOption) (res *LoadBalancerListenerListResponse, err error) {
+func (r *LoadBalancerListenerService) List(ctx context.Context, params LoadBalancerListenerListParams, opts ...option.RequestOption) (res *LoadBalancerListenerList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
