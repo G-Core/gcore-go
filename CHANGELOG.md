@@ -1,5 +1,49 @@
 # Changelog
 
+## 0.2.0 (2025-05-31)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/G-Core/gcore-go/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* **api:** aggregated API specs update ([305ca08](https://github.com/G-Core/gcore-go/commit/305ca085feb74b165189478e3db2b698c7a9a7a2))
+* **api:** aggregated API specs update ([2773920](https://github.com/G-Core/gcore-go/commit/277392043efa9455f073245893bdafb63a5cd85a))
+* **api:** aggregated API specs update ([baf23f3](https://github.com/G-Core/gcore-go/commit/baf23f364f20ea963c9c0bc27114c19418142f88))
+* **api:** aggregated API specs update ([6edcefd](https://github.com/G-Core/gcore-go/commit/6edcefd749a376c763b6539ae0ced377de002d9f))
+* **api:** aggregated API specs update ([b0ef96e](https://github.com/G-Core/gcore-go/commit/b0ef96e07096fb42689ec38775f29e9fb530c4c6))
+* **api:** aggregated API specs update ([08a51f0](https://github.com/G-Core/gcore-go/commit/08a51f0af8f09cc2edad98519724f2063489e1df))
+* **baremetal:** add polling methods ([#44](https://github.com/G-Core/gcore-go/issues/44)) ([8ecfae6](https://github.com/G-Core/gcore-go/commit/8ecfae61c990cef04009f147fb189577fdfa68eb))
+* **client:** add support for endpoint-specific base URLs in python ([c4544bf](https://github.com/G-Core/gcore-go/commit/c4544bf5b6de1a6130122c82b86474cabb250ced))
+* **gpu_cloud:** add polling methods ([#48](https://github.com/G-Core/gcore-go/issues/48)) ([29120d3](https://github.com/G-Core/gcore-go/commit/29120d343b3f5aebabeffef18a3af56d1d5bc29f))
+* **inference:** add polling methods ([#47](https://github.com/G-Core/gcore-go/issues/47)) ([701ac2d](https://github.com/G-Core/gcore-go/commit/701ac2dec8b816a472e0557f4081fcafc1c9e107))
+* **loadbalancers:** add polling methods ([#46](https://github.com/G-Core/gcore-go/issues/46)) ([06b83ed](https://github.com/G-Core/gcore-go/commit/06b83ed4db6b0f89bab7e7ba9402969d1884a1d2))
+
+
+### Bug Fixes
+
+* **ci:** do not always skip breaking change detection ([09df252](https://github.com/G-Core/gcore-go/commit/09df252f58c27a46a23edca36e53600976967aba))
+* **client:** correctly set stream key for multipart ([12358b0](https://github.com/G-Core/gcore-go/commit/12358b02ba69ea667aabe16444bf9aba202790cf))
+* **client:** don't panic on marshal with extra null field ([8d58bb5](https://github.com/G-Core/gcore-go/commit/8d58bb5b48c78f21fe33b7eae7d33d2bfabc1d0e))
+* correct unmarshalling of root body params ([14f5785](https://github.com/G-Core/gcore-go/commit/14f57856f77acf5edde9453cdc1e0b572138475a))
+* fix error ([3283861](https://github.com/G-Core/gcore-go/commit/32838616080bacdadd68cb58f38c8f366cefa6cd))
+* **instances,baremetal,loadbalancers,inference,gpu_cloud:** don't fail if nr tasks gt 1 ([ab92204](https://github.com/G-Core/gcore-go/commit/ab9220404ac62b430b603adc7689356f75a8df4e))
+
+
+### Chores
+
+* **api:** mark some methods as deprecated ([44e481e](https://github.com/G-Core/gcore-go/commit/44e481e0661d563a2c184393af02a9099c4a6ca4))
+* **docs:** grammar improvements ([d620989](https://github.com/G-Core/gcore-go/commit/d62098926b2b66925667a38e24527307d0d700a2))
+* improve devcontainer setup ([327fbee](https://github.com/G-Core/gcore-go/commit/327fbee5d54ceee8cc2a0c7482d397193af95ca6))
+* **internal:** codegen related update ([7eb57b9](https://github.com/G-Core/gcore-go/commit/7eb57b9cb996447db74f75f716f0486b3be75af5))
+* make go mod tidy continue on error ([6312a23](https://github.com/G-Core/gcore-go/commit/6312a23250cdb8ecd2f6e949b880bbfb950adb76))
+
+
+### Refactors
+
+* **instances,secrets,reserved_ips:** harmonize polling methods ([#50](https://github.com/G-Core/gcore-go/issues/50)) ([918660c](https://github.com/G-Core/gcore-go/commit/918660c91fda57cfd3742c7c498aba223a4db2fe))
+* **loadbalancers:** change oas schema names ([a3595c5](https://github.com/G-Core/gcore-go/commit/a3595c50e185b15d3cdda8bc5433b602ec670188))
+* **loadbalancers:** use correct schema for loadbalancer pool ([7bedefc](https://github.com/G-Core/gcore-go/commit/7bedefc237d163e153ad2f0e1246316cff53b4f2))
+
 ## 0.1.0 (2025-05-08)
 
 Full Changelog: [v0.1.0-alpha.2...v0.1.0](https://github.com/G-Core/gcore-go/compare/v0.1.0-alpha.2...v0.1.0)
