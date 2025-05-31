@@ -663,7 +663,7 @@ func (r NetworkRouterDetachSubnetParams) MarshalJSON() (data []byte, err error) 
 	return json.Marshal(r.SubnetID)
 }
 func (r *NetworkRouterDetachSubnetParams) UnmarshalJSON(data []byte) error {
-	return r.SubnetID.UnmarshalJSON(data)
+	return json.Unmarshal(data, &r.SubnetID)
 }
 
 type NetworkRouterGetParams struct {
