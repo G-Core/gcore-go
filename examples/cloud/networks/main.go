@@ -208,105 +208,6 @@ func listSubnets(ctx context.Context, networkID string) error {
 	return nil
 }
 
-func createRouter(ctx context.Context) (string, error) {
-	fmt.Println("\n=== CREATE ROUTER ===")
-	client := gcore.NewClient()
-	params := cloud.NetworkRouterNewParams{
-		Name: "example-router",
-	}
-
-	taskIDList, err := client.Cloud.Networks.Routers.New(ctx, params)
-	if err != nil {
-		return "", err
-	}
-
-	taskID := taskIDList.Tasks[0]
-	task, err := client.Cloud.Tasks.Poll(ctx, taskID)
-	if err != nil {
-		return "", err
-	}
-
-	if len(task.CreatedResources.Routers) == 0 {
-		return "", fmt.Errorf("no router created")
-	}
-
-	routerID := task.CreatedResources.Routers[0]
-	fmt.Println("Created Router ID:", routerID)
-	fmt.Println("===================")
-	return routerID, nil
-}
-
-func getRouter(ctx context.Context, routerID string) error {
-	fmt.Println("\n=== GET ROUTER ===")
-	client := gcore.NewClient()
-	router, err := client.Cloud.Networks.Routers.Get(ctx, routerID, cloud.NetworkRouterGetParams{})
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("Router ID: %s, Name: %s\n", router.ID, router.Name)
-	fmt.Println("==================")
-	return nil
-}
-
-func updateRouter(ctx context.Context, routerID, newName string) error {
-	fmt.Println("\n=== UPDATE ROUTER ===")
-	client := gcore.NewClient()
-	params := cloud.NetworkRouterUpdateParams{
-		Name: gcore.String(newName),
-	}
-
-	router, err := client.Cloud.Networks.Routers.Update(ctx, routerID, params)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("Updated router name to:", router.Name)
-	fmt.Println("=======================")
-	return nil
-}
-
-func deleteRouter(ctx context.Context, routerID string) error {
-	fmt.Println("\n=== DELETE ROUTER ===")
-	client := gcore.NewClient()
-	params := cloud.NetworkRouterDeleteParams{}
-	taskIDList, err := client.Cloud.Networks.Routers.Delete(ctx, routerID, params)
-	if err != nil {
-		return err
-	}
-
-	if len(taskIDList.Tasks) > 0 {
-		_, err = client.Cloud.Tasks.Poll(ctx, taskIDList.Tasks[0])
-		if err != nil {
-			return err
-		}
-	}
-
-	fmt.Println("Deleted Router", routerID)
-	fmt.Println("===================")
-	return nil
-}
-
-func listRouters(ctx context.Context) error {
-	fmt.Println("\n=== LIST ROUTERS ===")
-	client := gcore.NewClient()
-	params := cloud.NetworkRouterListParams{
-		Limit: gcore.Int(100),
-	}
-	pager := client.Cloud.Networks.Routers.ListAutoPaging(ctx, params)
-	count := 0
-	for pager.Next() {
-		router := pager.Current()
-		count++
-		fmt.Printf("%d. Router ID: %s, Name: %s\n", count, router.ID, router.Name)
-	}
-	if count == 0 {
-		fmt.Println("No routers found.")
-	}
-	fmt.Println("=====================")
-	return pager.Err()
-}
-
 func main() {
 	ctx := context.Background()
 
@@ -329,11 +230,6 @@ func main() {
 	err = listNetworks(ctx)
 	if err != nil {
 		log.Fatalf("failed to list networks: %v", err)
-	}
-
-	err = listRouters(ctx)
-	if err != nil {
-		log.Fatalf("failed to list routers: %v", err)
 	}
 
 	subnetCIDR := "192.168.123.0/24"
@@ -359,21 +255,6 @@ func main() {
 		log.Fatalf("failed to list subnets: %v", err)
 	}
 
-	routerID, err := createRouter(ctx)
-	if err != nil {
-		log.Fatalf("failed to create router: %v", err)
-	}
-
-	err = getRouter(ctx, routerID)
-	if err != nil {
-		log.Fatalf("failed to get router: %v", err)
-	}
-
-	err = updateRouter(ctx, routerID, "example-router-updated")
-	if err != nil {
-		log.Fatalf("failed to update router: %v", err)
-	}
-
 	err = listSubnets(ctx, networkID)
 	if err != nil {
 		log.Fatalf("failed to list subnets: %v", err)
@@ -382,11 +263,6 @@ func main() {
 	err = deleteSubnet(ctx, subnetID)
 	if err != nil {
 		log.Fatalf("failed to delete subnet: %v", err)
-	}
-
-	err = deleteRouter(ctx, routerID)
-	if err != nil {
-		log.Fatalf("failed to delete router: %v", err)
 	}
 
 	err = deleteNetwork(ctx, networkID)
