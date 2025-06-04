@@ -208,7 +208,7 @@ type InstanceInterfaceAttachParams struct {
 }
 
 func (u InstanceInterfaceAttachParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[InstanceInterfaceAttachParams](u.OfNewInterfaceExternalExtendSchemaWithDDOS, u.OfNewInterfaceSpecificSubnetSchema, u.OfNewInterfaceAnySubnetSchema, u.OfNewInterfaceReservedFixedIPSchema)
+	return param.MarshalUnion(u, u.OfNewInterfaceExternalExtendSchemaWithDDOS, u.OfNewInterfaceSpecificSubnetSchema, u.OfNewInterfaceAnySubnetSchema, u.OfNewInterfaceReservedFixedIPSchema)
 }
 func (r *InstanceInterfaceAttachParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
