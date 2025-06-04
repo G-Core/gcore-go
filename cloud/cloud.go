@@ -1573,7 +1573,7 @@ func (r *LaasIndexRetentionPolicy) UnmarshalJSON(data []byte) error {
 // be used at the last possible moment before sending a request. Test for this with
 // LaasIndexRetentionPolicyParam.Overrides()
 func (r LaasIndexRetentionPolicy) ToParam() LaasIndexRetentionPolicyParam {
-	return param.Override[LaasIndexRetentionPolicyParam](r.RawJSON())
+	return param.Override[LaasIndexRetentionPolicyParam](json.RawMessage(r.RawJSON()))
 }
 
 // The property Period is required.
