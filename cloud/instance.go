@@ -574,7 +574,7 @@ type InstanceNewParamsInterfaceUnion struct {
 }
 
 func (u InstanceNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[InstanceNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
+	return param.MarshalUnion(u, u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
 }
 func (u *InstanceNewParamsInterfaceUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -858,7 +858,7 @@ type InstanceNewParamsInterfaceSubnetFloatingIPUnion struct {
 }
 
 func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[InstanceNewParamsInterfaceSubnetFloatingIPUnion](u.OfNew, u.OfExisting)
+	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
 }
 func (u *InstanceNewParamsInterfaceSubnetFloatingIPUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1004,7 +1004,7 @@ type InstanceNewParamsInterfaceAnySubnetFloatingIPUnion struct {
 }
 
 func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[InstanceNewParamsInterfaceAnySubnetFloatingIPUnion](u.OfNew, u.OfExisting)
+	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
 }
 func (u *InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1147,7 +1147,7 @@ type InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
 }
 
 func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion](u.OfNew, u.OfExisting)
+	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
 }
 func (u *InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1264,7 +1264,7 @@ type InstanceNewParamsVolumeUnion struct {
 }
 
 func (u InstanceNewParamsVolumeUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[InstanceNewParamsVolumeUnion](u.OfNewVolume,
+	return param.MarshalUnion(u, u.OfNewVolume,
 		u.OfImage,
 		u.OfSnapshot,
 		u.OfApptemplate,
@@ -1923,7 +1923,7 @@ type InstanceActionParams struct {
 }
 
 func (u InstanceActionParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[InstanceActionParams](u.OfStartActionInstanceSerializer, u.OfBasicActionInstanceSerializer)
+	return param.MarshalUnion(u, u.OfStartActionInstanceSerializer, u.OfBasicActionInstanceSerializer)
 }
 func (r *InstanceActionParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)

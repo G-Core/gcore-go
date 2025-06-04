@@ -532,7 +532,7 @@ type BaremetalServerNewParamsInterfaceUnion struct {
 }
 
 func (u BaremetalServerNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[BaremetalServerNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
+	return param.MarshalUnion(u, u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
 }
 func (u *BaremetalServerNewParamsInterfaceUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -786,7 +786,7 @@ type BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion struct {
 }
 
 func (u BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion](u.OfNew, u.OfExisting)
+	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
 }
 func (u *BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -919,7 +919,7 @@ type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion struct {
 }
 
 func (u BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion](u.OfNew, u.OfExisting)
+	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
 }
 func (u *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1049,7 +1049,7 @@ type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
 }
 
 func (u BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion](u.OfNew, u.OfExisting)
+	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
 }
 func (u *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1190,7 +1190,7 @@ type BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion struct {
 }
 
 func (u BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion](u.OfAnyArray, u.OfInt, u.OfString)
+	return param.MarshalUnion(u, u.OfAnyArray, u.OfInt, u.OfString)
 }
 func (u *BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)

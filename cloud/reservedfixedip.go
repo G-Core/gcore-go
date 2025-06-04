@@ -298,7 +298,7 @@ type ReservedFixedIPNewParams struct {
 }
 
 func (u ReservedFixedIPNewParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[ReservedFixedIPNewParams](u.OfExternal,
+	return param.MarshalUnion(u, u.OfExternal,
 		u.OfSubnet,
 		u.OfAnySubnet,
 		u.OfIPAddress,
