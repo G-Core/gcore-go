@@ -4,6 +4,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -76,7 +77,7 @@ func (r *AwsIamData) UnmarshalJSON(data []byte) error {
 // be used at the last possible moment before sending a request. Test for this with
 // AwsIamDataParam.Overrides()
 func (r AwsIamData) ToParam() AwsIamDataParam {
-	return param.Override[AwsIamDataParam](r.RawJSON())
+	return param.Override[AwsIamDataParam](json.RawMessage(r.RawJSON()))
 }
 
 // The properties AwsAccessKeyID, AwsSecretAccessKey are required.
