@@ -17,7 +17,7 @@ func main() {
 	// No need to pass the API key explicitly — it will automatically be read from the GCORE_API_KEY environment variable if omitted
 	//apiKey := os.Getenv("GCORE_API_KEY")
 	// Will use Production API URL if omitted
-	//baseURL := os.Getenv("GCORE_API_URL")
+	//baseURL := os.Getenv("GCORE_BASE_URL")
 
 	// TODO set cloud project and region IDs before running
 	cloudProjectID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
