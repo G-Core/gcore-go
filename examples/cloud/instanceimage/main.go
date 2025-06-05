@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/G-Core/gcore-go"
-	"github.com/G-Core/gcore-go/cloud"
-	"github.com/G-Core/gcore-go/option"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/G-Core/gcore-go"
+	"github.com/G-Core/gcore-go/cloud"
+	"github.com/G-Core/gcore-go/option"
 )
 
 func main() {
@@ -17,29 +18,39 @@ func main() {
 	// Will use Production API URL if omitted
 	//baseURL := os.Getenv("GCORE_API_URL")
 
-	// TODO set cloud project and region IDs before running
-	cloudProjectId, _ := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
-	cloudRegionId, _ := strconv.ParseInt(os.Getenv("GCORE_CLOUD_REGION_ID"), 10, 64)
+	// TODO set cloud project ID before running
+	cloudProjectID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
+	if err != nil {
+		log.Fatalf("GCORE_CLOUD_PROJECT_ID environment variable is required and must be a valid integer")
+	}
+
+	// TODO set cloud region ID before running
+	cloudRegionID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_REGION_ID"), 10, 64)
+	if err != nil {
+		log.Fatalf("GCORE_CLOUD_REGION_ID environment variable is required and must be a valid integer")
+	}
 
 	client := gcore.NewClient(
 		//option.WithAPIKey(apiKey),
 		//option.WithBaseURL(baseURL),
-		option.WithCloudProjectID(cloudProjectId),
-		option.WithCloudRegionID(cloudRegionId),
+		option.WithCloudProjectID(cloudProjectID),
+		option.WithCloudRegionID(cloudRegionID),
 	)
 
 	// TODO set bootable volume ID before running
-	volumeId := os.Getenv("GCORE_CLOUD_VOLUME_ID")
-	if os.Getenv("GCORE_CLOUD_VOLUME_ID") == "" {
-		log.Fatal("GCORE_CLOUD_VOLUME_ID environment variable is not set")
+	volumeID := os.Getenv("GCORE_CLOUD_VOLUME_ID")
+	if volumeID == "" {
+		log.Fatalf("GCORE_CLOUD_VOLUME_ID environment variable is not set")
 	}
 
-	// Create an image and use its ID for other operations
-	imageID := createImageFromVolume(&client, volumeId)
+	// Create an image from volume and use its ID for other operations
+	volumeImageID := createImageFromVolume(&client, volumeID)
+	uploadedImageID := uploadImage(&client)
 	listImages(&client)
-	getImage(&client, imageID)
-	updateImage(&client, imageID)
-	deleteImage(&client, imageID)
+	getImage(&client, volumeImageID)
+	updateImage(&client, volumeImageID)
+	deleteImage(&client, uploadedImageID)
+	deleteImage(&client, volumeImageID)
 }
 
 func createImageFromVolume(client *gcore.Client, volumeId string) string {
@@ -47,25 +58,18 @@ func createImageFromVolume(client *gcore.Client, volumeId string) string {
 
 	params := cloud.InstanceImageNewFromVolumeParams{
 		VolumeID: volumeId,
-		Name:     gcore.String("sdk-image-go-example").Value,
-		OsType:   cloud.InstanceImageNewFromVolumeParamsOsType(gcore.String("linux").Value),
+		Name:     "gcore-go-example",
 	}
 
-	taskIDList, err := client.Cloud.Instances.Images.NewFromVolume(context.Background(), params)
+	image, err := client.Cloud.Instances.Images.NewFromVolumeAndPoll(context.Background(), params)
 	if err != nil {
 		log.Fatalf("Error creating image: %v", err)
 	}
 
-	task, err := client.Cloud.Tasks.Poll(context.Background(), taskIDList.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling task: %v", err)
-	}
-
-	imageID := task.CreatedResources.Images[0]
-	fmt.Printf("Created Image ID: %s\n", imageID)
+	fmt.Printf("Created Image ID: %s\n", image.ID)
 	fmt.Println("================================")
 
-	return imageID
+	return image.ID
 }
 
 func listImages(client *gcore.Client) {
@@ -99,7 +103,7 @@ func updateImage(client *gcore.Client, imageID string) {
 	fmt.Println("\n=== UPDATE IMAGE ===")
 
 	params := cloud.InstanceImageUpdateParams{
-		Name: gcore.String("sdk-image-go-example-updated"),
+		Name: gcore.String("gcore-go-example-updated"),
 	}
 
 	updatedImage, err := client.Cloud.Instances.Images.Update(context.Background(), imageID, params)
@@ -111,17 +115,36 @@ func updateImage(client *gcore.Client, imageID string) {
 	fmt.Println("====================")
 }
 
+func uploadImage(client *gcore.Client) string {
+	fmt.Println("\n=== UPLOAD IMAGE ===")
+
+	params := cloud.InstanceImageUploadParams{
+		Name:         "gcore-go-example-uploaded",
+		URL:          "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img",
+		OsType:       cloud.InstanceImageUploadParamsOsTypeLinux,
+		Architecture: cloud.InstanceImageUploadParamsArchitectureX86_64,
+		SSHKey:       cloud.InstanceImageUploadParamsSSHKeyAllow,
+		OsDistro:     gcore.String("Ubuntu"),
+		OsVersion:    gcore.String("24.04"),
+	}
+
+	image, err := client.Cloud.Instances.Images.UploadAndPoll(context.Background(), params)
+	if err != nil {
+		log.Fatalf("Error uploading image: %v", err)
+	}
+
+	fmt.Printf("Uploaded Image ID: %s\n", image.ID)
+	fmt.Println("====================")
+
+	return image.ID
+}
+
 func deleteImage(client *gcore.Client, imageID string) {
 	fmt.Println("\n=== DELETE IMAGE ===")
 
-	taskList, err := client.Cloud.Instances.Images.Delete(context.Background(), imageID, cloud.InstanceImageDeleteParams{})
+	err := client.Cloud.Instances.Images.DeleteAndPoll(context.Background(), imageID, cloud.InstanceImageDeleteParams{})
 	if err != nil {
 		log.Fatalf("Error deleting image: %v", err)
-	}
-
-	_, err = client.Cloud.Tasks.Poll(context.Background(), taskList.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling delete task: %v", err)
 	}
 
 	fmt.Printf("Image with ID %s successfully deleted\n", imageID)
