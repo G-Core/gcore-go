@@ -4,22 +4,20 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
-	"github.com/G-Core/gcore-go/option"
 )
 
 func main() {
 	// No need to pass the API key explicitly — it will automatically be read from the GCORE_API_KEY environment variable if omitted
-	apiKey := os.Getenv("GCORE_API_KEY")
+	//apiKey := os.Getenv("GCORE_API_KEY")
 	// Will use Production API URL if omitted
-	baseURL := os.Getenv("GCORE_API_URL")
+	//baseURL := os.Getenv("GCORE_API_URL")
 
 	client := gcore.NewClient(
-		option.WithAPIKey(apiKey),
-		option.WithBaseURL(baseURL),
+	//option.WithAPIKey(apiKey),
+	//option.WithBaseURL(baseURL),
 	)
 
 	// Create a project and use its ID for other operations
@@ -37,7 +35,7 @@ func createProject(client *gcore.Client) int64 {
 	fmt.Println("\n=== CREATE PROJECT ===")
 
 	project, err := client.Cloud.Projects.New(context.Background(), cloud.ProjectNewParams{
-		Name:        "New Test Project",
+		Name:        "gcore-go-example",
 		Description: gcore.String("Project created via SDK example"),
 	})
 	if err != nil {
@@ -124,7 +122,7 @@ func updateProject(client *gcore.Client, projectID int64) {
 
 	project, err := client.Cloud.Projects.Replace(context.Background(), cloud.ProjectReplaceParams{
 		ProjectID:   gcore.Int(projectID),
-		Name:        "Updated Project Name",
+		Name:        "gcore-go-example-updated",
 		Description: gcore.String("Updated project description"),
 	})
 	if err != nil {

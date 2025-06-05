@@ -4,21 +4,19 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/G-Core/gcore-go"
-	"github.com/G-Core/gcore-go/option"
 )
 
 func main() {
 	// No need to pass the API key explicitly — it will automatically be read from the GCORE_API_KEY environment variable if omitted
-	apiKey := os.Getenv("GCORE_API_KEY")
+	//apiKey := os.Getenv("GCORE_API_KEY")
 	// Will use Production API URL if omitted
-	baseURL := os.Getenv("GCORE_API_URL")
+	//baseURL := os.Getenv("GCORE_API_URL")
 
 	client := gcore.NewClient(
-		option.WithAPIKey(apiKey),
-		option.WithBaseURL(baseURL),
+	//option.WithAPIKey(apiKey),
+	//option.WithBaseURL(baseURL),
 	)
 
 	listIPRanges(&client)

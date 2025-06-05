@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/G-Core/gcore-go"
-	"github.com/G-Core/gcore-go/cloud"
-	"github.com/G-Core/gcore-go/option"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/G-Core/gcore-go"
+	"github.com/G-Core/gcore-go/cloud"
+	"github.com/G-Core/gcore-go/option"
 )
 
 func main() {
@@ -18,12 +19,15 @@ func main() {
 	//baseURL := os.Getenv("GCORE_API_URL")
 
 	// TODO set cloud project ID before running
-	cloudProjectId, _ := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
+	cloudProjectID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
+	if err != nil {
+		log.Fatalf("GCORE_CLOUD_PROJECT_ID environment variable is required and must be a valid integer")
+	}
 
 	client := gcore.NewClient(
 		//option.WithAPIKey(apiKey),
 		//option.WithBaseURL(baseURL),
-		option.WithCloudProjectID(cloudProjectId),
+		option.WithCloudProjectID(cloudProjectID),
 	)
 
 	// Create an SSH key and use its ID for other operations
@@ -40,7 +44,7 @@ func createSSHKey(client *gcore.Client) string {
 	fmt.Println("\n=== CREATE SSH KEY ===")
 
 	sshKey, err := client.Cloud.SSHKeys.New(context.Background(), cloud.SSHKeyNewParams{
-		Name: "New Test SSH Key",
+		Name: "gcore-go-example",
 	})
 	if err != nil {
 		log.Fatalf("Error creating SSH key: %v", err)

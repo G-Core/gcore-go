@@ -19,13 +19,13 @@ func main() {
 	//baseURL := os.Getenv("GCORE_API_URL")
 
 	// TODO set cloud project ID before running
-	cloudProjectId, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
+	cloudProjectID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
 	if err != nil {
 		log.Fatalf("GCORE_CLOUD_PROJECT_ID environment variable is required and must be a valid integer")
 	}
 
 	// TODO set cloud region ID before running
-	cloudRegionId, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_REGION_ID"), 10, 64)
+	cloudRegionID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_REGION_ID"), 10, 64)
 	if err != nil {
 		log.Fatalf("GCORE_CLOUD_REGION_ID environment variable is required and must be a valid integer")
 	}
@@ -33,8 +33,8 @@ func main() {
 	client := gcore.NewClient(
 		//option.WithAPIKey(apiKey),
 		//option.WithBaseURL(baseURL),
-		option.WithCloudProjectID(cloudProjectId),
-		option.WithCloudRegionID(cloudRegionId),
+		option.WithCloudProjectID(cloudProjectID),
+		option.WithCloudRegionID(cloudRegionID),
 	)
 
 	// Create a security group and use its ID for other operations
@@ -56,8 +56,8 @@ func createSecurityGroup(client *gcore.Client) string {
 
 	sg, err := client.Cloud.SecurityGroups.New(context.Background(), cloud.SecurityGroupNewParams{
 		SecurityGroup: cloud.SecurityGroupNewParamsSecurityGroup{
-			Name:        "gcore-go-sdk-example",
-			Description: gcore.String("gcore-go-sdk-example security group"),
+			Name:        "gcore-go-example",
+			Description: gcore.String("gcore-go-example security group"),
 		},
 	})
 	if err != nil {
@@ -101,7 +101,7 @@ func updateSecurityGroup(client *gcore.Client, groupID string) {
 	fmt.Println("\n=== UPDATE SECURITY GROUP ===")
 
 	sg, err := client.Cloud.SecurityGroups.Update(context.Background(), groupID, cloud.SecurityGroupUpdateParams{
-		Name: gcore.String("gcore-go-sdk-example-updated"),
+		Name: gcore.String("gcore-go-example-updated"),
 	})
 	if err != nil {
 		log.Fatalf("Error updating security group: %v", err)

@@ -53,11 +53,11 @@ func main() {
 	deleteImage(&client, volumeImageID)
 }
 
-func createImageFromVolume(client *gcore.Client, volumeId string) string {
+func createImageFromVolume(client *gcore.Client, volumeID string) string {
 	fmt.Println("\n=== CREATE IMAGE FROM VOLUME ===")
 
 	params := cloud.InstanceImageNewFromVolumeParams{
-		VolumeID: volumeId,
+		VolumeID: volumeID,
 		Name:     "gcore-go-example",
 	}
 
@@ -68,6 +68,30 @@ func createImageFromVolume(client *gcore.Client, volumeId string) string {
 
 	fmt.Printf("Created Image ID: %s\n", image.ID)
 	fmt.Println("================================")
+
+	return image.ID
+}
+
+func uploadImage(client *gcore.Client) string {
+	fmt.Println("\n=== UPLOAD IMAGE ===")
+
+	params := cloud.InstanceImageUploadParams{
+		Name:         "gcore-go-example-uploaded",
+		URL:          "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img",
+		OsType:       cloud.InstanceImageUploadParamsOsTypeLinux,
+		Architecture: cloud.InstanceImageUploadParamsArchitectureX86_64,
+		SSHKey:       cloud.InstanceImageUploadParamsSSHKeyAllow,
+		OsDistro:     gcore.String("Ubuntu"),
+		OsVersion:    gcore.String("24.04"),
+	}
+
+	image, err := client.Cloud.Instances.Images.UploadAndPoll(context.Background(), params)
+	if err != nil {
+		log.Fatalf("Error uploading image: %v", err)
+	}
+
+	fmt.Printf("Uploaded Image ID: %s\n", image.ID)
+	fmt.Println("====================")
 
 	return image.ID
 }
@@ -113,30 +137,6 @@ func updateImage(client *gcore.Client, imageID string) {
 
 	fmt.Printf("Updated Image ID: %s, Name: %s\n", updatedImage.ID, updatedImage.Name)
 	fmt.Println("====================")
-}
-
-func uploadImage(client *gcore.Client) string {
-	fmt.Println("\n=== UPLOAD IMAGE ===")
-
-	params := cloud.InstanceImageUploadParams{
-		Name:         "gcore-go-example-uploaded",
-		URL:          "https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img",
-		OsType:       cloud.InstanceImageUploadParamsOsTypeLinux,
-		Architecture: cloud.InstanceImageUploadParamsArchitectureX86_64,
-		SSHKey:       cloud.InstanceImageUploadParamsSSHKeyAllow,
-		OsDistro:     gcore.String("Ubuntu"),
-		OsVersion:    gcore.String("24.04"),
-	}
-
-	image, err := client.Cloud.Instances.Images.UploadAndPoll(context.Background(), params)
-	if err != nil {
-		log.Fatalf("Error uploading image: %v", err)
-	}
-
-	fmt.Printf("Uploaded Image ID: %s\n", image.ID)
-	fmt.Println("====================")
-
-	return image.ID
 }
 
 func deleteImage(client *gcore.Client, imageID string) {

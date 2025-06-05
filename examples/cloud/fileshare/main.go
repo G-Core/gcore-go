@@ -20,13 +20,13 @@ func main() {
 	//baseURL := os.Getenv("GCORE_API_URL")
 
 	// TODO set cloud project ID before running
-	cloudProjectId, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
+	cloudProjectID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
 	if err != nil {
 		log.Fatalf("GCORE_CLOUD_PROJECT_ID environment variable is required and must be a valid integer")
 	}
 
 	// TODO set cloud region ID before running
-	cloudRegionId, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_REGION_ID"), 10, 64)
+	cloudRegionID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_REGION_ID"), 10, 64)
 	if err != nil {
 		log.Fatalf("GCORE_CLOUD_REGION_ID environment variable is required and must be a valid integer")
 	}
@@ -40,8 +40,8 @@ func main() {
 	client := gcore.NewClient(
 		//option.WithAPIKey(apiKey),
 		//option.WithBaseURL(baseURL),
-		option.WithCloudProjectID(cloudProjectId),
-		option.WithCloudRegionID(cloudRegionId),
+		option.WithCloudProjectID(cloudProjectID),
+		option.WithCloudRegionID(cloudRegionID),
 	)
 
 	// Create a File Share and use its details for other operations
