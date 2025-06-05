@@ -53,7 +53,7 @@ func createFloatingIP(client *gcore.Client) *cloud.FloatingIP {
 	params := cloud.FloatingIPNewParams{
 		PortID:         param.Opt[string]{}, // Unassigned at creation, omitted field
 		FixedIPAddress: param.Opt[string]{}, // Omitted field
-		Tags:           map[string]string{"example": "floatingip"},
+		Tags:           map[string]string{"name": "gcore-go-example"},
 	}
 
 	taskIDs, err := client.Cloud.FloatingIPs.New(context.Background(), params)
@@ -153,6 +153,6 @@ func deleteFloatingIP(client *gcore.Client, floatingIPID string) {
 		log.Fatalf("Error polling task for floating IP deletion: %v", err)
 	}
 
-	fmt.Printf("Floating IP with ID %s successfully deleted", floatingIPID)
+	fmt.Printf("Floating IP with ID %s successfully deleted\n", floatingIPID)
 	fmt.Println("===========================")
 }
