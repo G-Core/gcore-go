@@ -9,19 +9,17 @@ import (
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
-	"github.com/G-Core/gcore-go/option"
 )
 
 func main() {
-	// API key is read automatically from the GCORE_API_KEY environment variable if omitted
-	apiKey := os.Getenv("GCORE_API_KEY")
-	// Base URL is read automatically from the GCORE_API_URL environment variable if omitted,
-	// defaulting to the Production API URL.
-	baseURL := os.Getenv("GCORE_API_URL")
+	// No need to pass the API key explicitly — it will automatically be read from the GCORE_API_KEY environment variable if omitted
+	//apiKey := os.Getenv("GCORE_API_KEY")
+	// Will use Production API URL if omitted
+	//baseURL := os.Getenv("GCORE_API_URL")
 
 	client := gcore.NewClient(
-		option.WithAPIKey(apiKey),
-		option.WithBaseURL(baseURL), // Pass baseURL, it will be ignored if empty
+	//option.WithAPIKey(apiKey),
+	//option.WithBaseURL(baseURL),
 	)
 
 	getTaskByID(&client)

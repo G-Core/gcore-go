@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/G-Core/gcore-go"
-	"github.com/G-Core/gcore-go/cloud"
-	"github.com/G-Core/gcore-go/option"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/G-Core/gcore-go"
+	"github.com/G-Core/gcore-go/cloud"
+	"github.com/G-Core/gcore-go/option"
 )
 
 func main() {
@@ -18,12 +19,15 @@ func main() {
 	//baseURL := os.Getenv("GCORE_API_URL")
 
 	// TODO set cloud project ID before running
-	cloudProjectId, _ := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
+	cloudProjectID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
+	if err != nil {
+		log.Fatalf("GCORE_CLOUD_PROJECT_ID environment variable is required and must be a valid integer")
+	}
 
 	client := gcore.NewClient(
 		//option.WithAPIKey(apiKey),
 		//option.WithBaseURL(baseURL),
-		option.WithCloudRegionID(cloudProjectId),
+		option.WithCloudProjectID(cloudProjectID),
 	)
 
 	// Create a router and use its ID for other operations
@@ -40,7 +44,7 @@ func createRouter(client *gcore.Client) string {
 	fmt.Println("\n=== CREATE ROUTER ===")
 
 	taskIDList, err := client.Cloud.Networks.Routers.New(context.Background(), cloud.NetworkRouterNewParams{
-		Name: "example-router",
+		Name: "gcore-go-example",
 	})
 	if err != nil {
 		log.Fatalf("Error creating router: %v", err)
@@ -129,7 +133,7 @@ func updateRouter(client *gcore.Client, routerID string) {
 	fmt.Println("\n=== UPDATE ROUTER ===")
 
 	params := cloud.NetworkRouterUpdateParams{
-		Name: gcore.String("example-router-updated"),
+		Name: gcore.String("gcore-go-example-updated"),
 	}
 
 	router, err := client.Cloud.Networks.Routers.Update(context.Background(), routerID, params)

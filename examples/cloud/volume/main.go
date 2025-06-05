@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/G-Core/gcore-go"
-	"github.com/G-Core/gcore-go/cloud"
-	"github.com/G-Core/gcore-go/option"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/G-Core/gcore-go"
+	"github.com/G-Core/gcore-go/cloud"
+	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/shared/constant"
 )
 
 func main() {
@@ -18,14 +20,20 @@ func main() {
 	//baseURL := os.Getenv("GCORE_API_URL")
 
 	// TODO set cloud project and region IDs before running
-	cloudProjectId, _ := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
-	cloudRegionId, _ := strconv.ParseInt(os.Getenv("GCORE_CLOUD_REGION_ID"), 10, 64)
+	cloudProjectID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
+	if err != nil {
+		log.Fatalf("Error parsing GCORE_CLOUD_PROJECT_ID: %v", err)
+	}
+	cloudRegionID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_REGION_ID"), 10, 64)
+	if err != nil {
+		log.Fatalf("Error parsing GCORE_CLOUD_REGION_ID: %v", err)
+	}
 
 	client := gcore.NewClient(
 		//option.WithAPIKey(apiKey),
 		//option.WithBaseURL(baseURL),
-		option.WithCloudProjectID(cloudProjectId),
-		option.WithCloudRegionID(cloudRegionId),
+		option.WithCloudProjectID(cloudProjectID),
+		option.WithCloudRegionID(cloudRegionID),
 	)
 
 	// TODO set instance ID before running
@@ -51,9 +59,9 @@ func createVolume(client *gcore.Client) string {
 
 	params := cloud.VolumeNewParams{
 		OfNewVolume: &cloud.VolumeNewParamsBodyNewVolume{
-			Name:   "gcore-go-sdk-example",
+			Name:   "gcore-go-example",
 			Size:   1,
-			Source: "new-volume",
+			Source: constant.NewVolume("").Default(),
 		},
 	}
 
@@ -105,7 +113,7 @@ func updateVolume(client *gcore.Client, volumeID string) {
 	fmt.Println("\n=== UPDATE VOLUME ===")
 
 	params := cloud.VolumeUpdateParams{
-		Name: "gcore-go-sdk-example-updated",
+		Name: "gcore-go-example-updated",
 	}
 
 	volume, err := client.Cloud.Volumes.Update(context.Background(), volumeID, params)
