@@ -121,6 +121,8 @@ type Region struct {
 	HasBaremetal bool `json:"has_baremetal,required"`
 	// Region has basic vm capability
 	HasBasicVm bool `json:"has_basic_vm,required"`
+	// Region has DBAAS service
+	HasDbaas bool `json:"has_dbaas,required"`
 	// Region has managed kubernetes capability
 	HasK8s bool `json:"has_k8s,required"`
 	// Region has KVM virtualization capability
@@ -148,8 +150,6 @@ type Region struct {
 	//
 	// Any of "AMERICAS", "APAC", "EMEA", "RUSSIA_AND_CIS".
 	Zone RegionZone `json:"zone,required"`
-	// Region has DBAAS service
-	HasDbaas bool `json:"has_dbaas"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
@@ -169,6 +169,7 @@ type Region struct {
 		HasAIGPU             respjson.Field
 		HasBaremetal         respjson.Field
 		HasBasicVm           respjson.Field
+		HasDbaas             respjson.Field
 		HasK8s               respjson.Field
 		HasKvm               respjson.Field
 		HasSfs               respjson.Field
@@ -179,7 +180,6 @@ type Region struct {
 		TaskID               respjson.Field
 		VlanPhysicalNetwork  respjson.Field
 		Zone                 respjson.Field
-		HasDbaas             respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
 	} `json:"-"`
