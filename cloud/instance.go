@@ -176,7 +176,7 @@ func (r *InstanceService) Delete(ctx context.Context, instanceID string, params 
 }
 
 // The action can be one of: start, stop, reboot, powercycle, suspend or resume.
-// Suspend and resume are not available for baremetal instances.
+// Suspend and resume are not available for bare metal instances.
 func (r *InstanceService) Action(ctx context.Context, instanceID string, params InstanceActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
