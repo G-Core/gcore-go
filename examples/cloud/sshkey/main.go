@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
@@ -13,18 +14,24 @@ import (
 
 func main() {
 	// No need to pass the API key explicitly — it will automatically be read from the GCORE_API_KEY environment variable if omitted
-	apiKey := os.Getenv("GCORE_API_KEY")
+	//apiKey := os.Getenv("GCORE_API_KEY")
 	// Will use Production API URL if omitted
-	baseURL := os.Getenv("GCORE_API_URL")
+	//baseURL := os.Getenv("GCORE_BASE_URL")
+
+	// TODO set cloud project ID before running
+	cloudProjectID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
+	if err != nil {
+		log.Fatalf("GCORE_CLOUD_PROJECT_ID environment variable is required and must be a valid integer")
+	}
 
 	client := gcore.NewClient(
-		option.WithAPIKey(apiKey),
-		option.WithBaseURL(baseURL),
+		//option.WithAPIKey(apiKey),
+		//option.WithBaseURL(baseURL),
+		option.WithCloudProjectID(cloudProjectID),
 	)
 
 	// Create an SSH key and use its ID for other operations
 	sshKeyID := createSSHKey(&client)
-
 	listAllSSHKeys(&client)
 	listSSHKeysWithFilters(&client)
 	listSSHKeysWithAutopager(&client)
@@ -37,7 +44,7 @@ func createSSHKey(client *gcore.Client) string {
 	fmt.Println("\n=== CREATE SSH KEY ===")
 
 	sshKey, err := client.Cloud.SSHKeys.New(context.Background(), cloud.SSHKeyNewParams{
-		Name: "New Test SSH Key",
+		Name: "gcore-go-example",
 	})
 	if err != nil {
 		log.Fatalf("Error creating SSH key: %v", err)
@@ -47,18 +54,6 @@ func createSSHKey(client *gcore.Client) string {
 	fmt.Println("=======================")
 
 	return sshKey.ID
-}
-
-func getSSHKeyByID(client *gcore.Client, sshKeyID string) {
-	fmt.Println("\n=== GET SSH KEY BY ID ===")
-
-	sshKey, err := client.Cloud.SSHKeys.Get(context.Background(), sshKeyID, cloud.SSHKeyGetParams{})
-	if err != nil {
-		log.Fatalf("Error getting SSH key: %v", err)
-	}
-
-	fmt.Printf("SSH Key ID: %s, Name: %s\n", sshKey.ID, sshKey.Name)
-	fmt.Println("=========================")
 }
 
 func listAllSSHKeys(client *gcore.Client) {
@@ -114,6 +109,18 @@ func listSSHKeysWithAutopager(client *gcore.Client) {
 	}
 
 	fmt.Println("=====================================")
+}
+
+func getSSHKeyByID(client *gcore.Client, sshKeyID string) {
+	fmt.Println("\n=== GET SSH KEY BY ID ===")
+
+	sshKey, err := client.Cloud.SSHKeys.Get(context.Background(), sshKeyID, cloud.SSHKeyGetParams{})
+	if err != nil {
+		log.Fatalf("Error getting SSH key: %v", err)
+	}
+
+	fmt.Printf("SSH Key ID: %s, Name: %s\n", sshKey.ID, sshKey.Name)
+	fmt.Println("=========================")
 }
 
 func updateSSHKey(client *gcore.Client, sshKeyID string) {

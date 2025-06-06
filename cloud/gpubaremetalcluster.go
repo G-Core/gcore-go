@@ -1202,7 +1202,7 @@ type GPUBaremetalClusterNewParamsInterfaceUnion struct {
 }
 
 func (u GPUBaremetalClusterNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[GPUBaremetalClusterNewParamsInterfaceUnion](u.OfExternal, u.OfSubnet, u.OfAnySubnet)
+	return param.MarshalUnion(u, u.OfExternal, u.OfSubnet, u.OfAnySubnet)
 }
 func (u *GPUBaremetalClusterNewParamsInterfaceUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)

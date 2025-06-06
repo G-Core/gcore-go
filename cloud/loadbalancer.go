@@ -1660,7 +1660,7 @@ type LoadBalancerNewParamsFloatingIPUnion struct {
 }
 
 func (u LoadBalancerNewParamsFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[LoadBalancerNewParamsFloatingIPUnion](u.OfNew, u.OfExisting)
+	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
 }
 func (u *LoadBalancerNewParamsFloatingIPUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)

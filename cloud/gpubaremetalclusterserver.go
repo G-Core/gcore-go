@@ -259,7 +259,7 @@ type GPUBaremetalClusterServerAttachInterfaceParams struct {
 }
 
 func (u GPUBaremetalClusterServerAttachInterfaceParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[GPUBaremetalClusterServerAttachInterfaceParams](u.OfNewInterfaceExternalExtendSchemaWithDDOS, u.OfNewInterfaceSpecificSubnetSchema, u.OfNewInterfaceAnySubnetSchema, u.OfNewInterfaceReservedFixedIPSchema)
+	return param.MarshalUnion(u, u.OfNewInterfaceExternalExtendSchemaWithDDOS, u.OfNewInterfaceSpecificSubnetSchema, u.OfNewInterfaceAnySubnetSchema, u.OfNewInterfaceReservedFixedIPSchema)
 }
 func (r *GPUBaremetalClusterServerAttachInterfaceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)

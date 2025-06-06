@@ -501,7 +501,7 @@ type VolumeNewParams struct {
 }
 
 func (u VolumeNewParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[VolumeNewParams](u.OfImage, u.OfSnapshot, u.OfNewVolume)
+	return param.MarshalUnion(u, u.OfImage, u.OfSnapshot, u.OfNewVolume)
 }
 func (r *VolumeNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
