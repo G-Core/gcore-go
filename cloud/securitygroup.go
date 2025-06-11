@@ -568,7 +568,7 @@ type SecurityGroupListParams struct {
 	// Offset value is used to exclude the first set of records from the result.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Filter by tag key-value pairs. Must be a valid JSON string. curl -G
-	// --data-urlencode "tag_key_value={"key": "value"}" --url
+	// --data-urlencode "`tag_key_value`={"key": "value"}" --url
 	// "http://localhost:1111/v1/securitygroups/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Filter by tag keys.

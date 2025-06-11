@@ -38,7 +38,7 @@ func NewSSHKeyService(opts ...option.RequestOption) (r SSHKeyService) {
 	return
 }
 
-// To generate a key, omit the public_key parameter from the request body
+// To generate a key, omit the `public_key` parameter from the request body
 func (r *SSHKeyService) New(ctx context.Context, params SSHKeyNewParams, opts ...option.RequestOption) (res *SSHKeyCreated, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -212,12 +212,9 @@ type SSHKeyCreated struct {
 	Name string `json:"name,required"`
 	// The private part of an SSH key is the confidential portion of the key pair. It
 	// should never be shared or exposed. This key is used to prove your identity when
-	// connecting to a server.
-	//
-	// If you omit the `public_key`, the platform will generate a key for you. The
-	// private_key will be returned **once** in the API response. Be sure to save it
-	// securely, as it cannot be retrieved again later.
-	//
+	// connecting to a server. If you omit the `public_key`, the platform will generate
+	// a key for you. The `private_key` will be returned \*\*once\*\* in the API
+	// response. Be sure to save it securely, as it cannot be retrieved again later.
 	// Best practice: Save the private key to a secure location on your machine (e.g.,
 	// `~/.ssh/id_ed25519`) and set the file permissions to be readable only by you.
 	PrivateKey string `json:"private_key,required"`
@@ -275,8 +272,8 @@ type SSHKeyNewParams struct {
 	//   - If you’re uploading your own key, provide the public part here (usually found
 	//     in a file like `id_ed25519.pub`).
 	//   - If you want the platform to generate an Ed25519 key pair for you, leave this
-	//     field empty — the system will return the private key in the response **once
-	//     only**.
+	//     field empty — the system will return the private key in the response \*\*once
+	//     only\*\*.
 	PublicKey param.Opt[string] `json:"public_key,omitzero"`
 	// SSH key is shared with all users in the project
 	SharedInProject param.Opt[bool] `json:"shared_in_project,omitzero"`

@@ -77,9 +77,9 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 }
 
 type AllowedAddressPairs struct {
-	// Subnet mask or IP address of the port specified in allowed_address_pairs
+	// Subnet mask or IP address of the port specified in `allowed_address_pairs`
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
-	// MAC address of the port specified in allowed_address_pairs
+	// MAC address of the port specified in `allowed_address_pairs`
 	MacAddress string `json:"mac_address,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -116,13 +116,13 @@ type BaremetalFlavor struct {
 	Vcpus int64 `json:"vcpus,required"`
 	// Number of available instances of given configuration
 	Capacity int64 `json:"capacity,nullable"`
-	// Currency code. Shown if the include_prices query parameter if set to true
+	// Currency code. Shown if the `include_prices` query parameter if set to true
 	CurrencyCode string `json:"currency_code,nullable"`
 	// Additional hardware description
 	HardwareDescription map[string]string `json:"hardware_description"`
-	// Price per hour. Shown if the include_prices query parameter if set to true
+	// Price per hour. Shown if the `include_prices` query parameter if set to true
 	PricePerHour float64 `json:"price_per_hour,nullable"`
-	// Price per month. Shown if the include_prices query parameter if set to true
+	// Price per month. Shown if the `include_prices` query parameter if set to true
 	PricePerMonth float64 `json:"price_per_month,nullable"`
 	// Price status for the UI
 	//
@@ -818,7 +818,7 @@ type Image struct {
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// Image visibility. Globally visible images are public
 	Visibility string `json:"visibility,required"`
-	// An image architecture type: aarch64, x86_64
+	// An image architecture type: aarch64, `x86_64`
 	//
 	// Any of "aarch64", "x86_64".
 	Architecture ImageArchitecture `json:"architecture"`
@@ -892,7 +892,7 @@ const (
 	ImageOsTypeWindows ImageOsType = "windows"
 )
 
-// An image architecture type: aarch64, x86_64
+// An image architecture type: aarch64, `x86_64`
 type ImageArchitecture string
 
 const (
@@ -948,7 +948,7 @@ func (r *ImageList) UnmarshalJSON(data []byte) error {
 type Instance struct {
 	// Instance ID
 	ID string `json:"id,required" format:"uuid4"`
-	// Map of network_name to list of addresses in that network
+	// Map of `network_name` to list of addresses in that network
 	Addresses map[string][]InstanceAddressUnion `json:"addresses,required"`
 	// IP addresses of the instances that are blackholed by DDoS mitigation system
 	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
@@ -1870,7 +1870,7 @@ type Network struct {
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
-	// True if network has is_default attribute
+	// True if network has `is_default` attribute
 	Default bool `json:"default,required"`
 	// True if the network `router:external` attribute
 	External bool `json:"external,required"`
@@ -1878,7 +1878,7 @@ type Network struct {
 	Mtu int64 `json:"mtu,required"`
 	// Network name
 	Name string `json:"name,required"`
-	// Indicates port_security_enabled status of all newly created in the network
+	// Indicates `port_security_enabled` status of all newly created in the network
 	// ports.
 	PortSecurityEnabled bool `json:"port_security_enabled,required"`
 	// Project ID
@@ -1945,7 +1945,7 @@ type NetworkDetails struct {
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
-	// True if network has is_default attribute
+	// True if network has `is_default` attribute
 	Default bool `json:"default,required"`
 	// True if the network `router:external` attribute
 	External bool `json:"external,required"`
@@ -1953,7 +1953,7 @@ type NetworkDetails struct {
 	Mtu int64 `json:"mtu,required"`
 	// Network name
 	Name string `json:"name,required"`
-	// Indicates port_security_enabled status of all newly created in the network
+	// Indicates `port_security_enabled` status of all newly created in the network
 	// ports.
 	PortSecurityEnabled bool `json:"port_security_enabled,required"`
 	// Project ID

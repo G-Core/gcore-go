@@ -143,7 +143,7 @@ type UserRoleAssignmentNewParams struct {
 	Role string `json:"role,required"`
 	// User ID
 	UserID int64 `json:"user_id,required"`
-	// Client ID. Required if project_id is specified
+	// Client ID. Required if `project_id` is specified
 	ClientID param.Opt[int64] `json:"client_id,omitzero"`
 	// Project ID
 	ProjectID param.Opt[int64] `json:"project_id,omitzero"`
@@ -163,7 +163,7 @@ type UserRoleAssignmentUpdateParams struct {
 	Role string `json:"role,required"`
 	// User ID
 	UserID int64 `json:"user_id,required"`
-	// Client ID. Required if project_id is specified
+	// Client ID. Required if `project_id` is specified
 	ClientID param.Opt[int64] `json:"client_id,omitzero"`
 	// Project ID
 	ProjectID param.Opt[int64] `json:"project_id,omitzero"`

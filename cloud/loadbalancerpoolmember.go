@@ -100,15 +100,15 @@ type LoadBalancerPoolMemberAddParams struct {
 	ProtocolPort int64 `json:"protocol_port,required"`
 	// true if enabled. Defaults to true
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
-	// Either subnet_id or instance_id should be provided
+	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
 	// An alternate IP address used for health monitoring of a backend member. Default
 	// is null which monitors the member address.
 	MonitorAddress param.Opt[string] `json:"monitor_address,omitzero" format:"ipvanyaddress"`
 	// An alternate protocol port used for health monitoring of a backend member.
-	// Default is null which monitors the member protocol_port.
+	// Default is null which monitors the member `protocol_port`.
 	MonitorPort param.Opt[int64] `json:"monitor_port,omitzero"`
-	// Either subnet_id or instance_id should be provided
+	// Either `subnet_id` or `instance_id` should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
 	// Member weight. Valid values: 0 to 256, defaults to 1
 	Weight param.Opt[int64] `json:"weight,omitzero"`

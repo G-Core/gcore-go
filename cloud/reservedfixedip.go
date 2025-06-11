@@ -399,7 +399,7 @@ type ReservedFixedIPNewParamsBodyAnySubnet struct {
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// Must be 'any_subnet'.
+	// Must be '`any_subnet`'.
 	//
 	// This field can be elided, and will marshal its zero value as "any_subnet".
 	Type constant.AnySubnet `json:"type,required"`
@@ -422,7 +422,7 @@ type ReservedFixedIPNewParamsBodyIPAddress struct {
 	NetworkID string `json:"network_id,required" format:"uuid4"`
 	// If reserved fixed IP is a VIP
 	IsVip param.Opt[bool] `json:"is_vip,omitzero"`
-	// Must be 'ip_address'.
+	// Must be '`ip_address`'.
 	//
 	// This field can be elided, and will marshal its zero value as "ip_address".
 	Type constant.IPAddress `json:"type,required"`
@@ -475,9 +475,9 @@ type ReservedFixedIPListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Offset value is used to exclude the first set of records from the result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Ordering reserved fixed IP list result by name, status, updated_at, created_at
-	// or fixed_ip_address fields of the reserved fixed IP and directions (status.asc),
-	// default is "fixed_ip_address.asc"
+	// Ordering reserved fixed IP list result by name, status, `updated_at`,
+	// `created_at` or `fixed_ip_address` fields of the reserved fixed IP and
+	// directions (status.asc), default is "`fixed_ip_address`.asc"
 	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
 	// Set to true if the response should only list VIPs
 	VipOnly param.Opt[bool] `query:"vip_only,omitzero" json:"-"`
