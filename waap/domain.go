@@ -23,8 +23,11 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewDomainService] method instead.
 type DomainService struct {
-	Options  []option.RequestOption
-	Settings DomainSettingService
+	Options       []option.RequestOption
+	Settings      DomainSettingService
+	CustomRules   DomainCustomRuleService
+	FirewallRules DomainFirewallRuleService
+	AdvancedRules DomainAdvancedRuleService
 }
 
 // NewDomainService generates a new service that applies the given options to each
@@ -34,6 +37,9 @@ func NewDomainService(opts ...option.RequestOption) (r DomainService) {
 	r = DomainService{}
 	r.Options = opts
 	r.Settings = NewDomainSettingService(opts...)
+	r.CustomRules = NewDomainCustomRuleService(opts...)
+	r.FirewallRules = NewDomainFirewallRuleService(opts...)
+	r.AdvancedRules = NewDomainAdvancedRuleService(opts...)
 	return
 }
 
