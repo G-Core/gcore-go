@@ -67,6 +67,10 @@ func (r *DomainSettingUpdateParams) UnmarshalJSON(data []byte) error {
 
 // Editable API settings of a domain
 type DomainSettingUpdateParamsAPI struct {
+	// Indicates if the domain is an API domain. All requests to an API domain are
+	// treated as API requests. If this is set to true then the `api_urls` field is
+	// ignored.
+	IsAPI param.Opt[bool] `json:"is_api,omitzero"`
 	// The API URLs for a domain. If your domain has a common base URL for all API
 	// paths, it can be set here
 	APIURLs []string `json:"api_urls,omitzero"`

@@ -313,7 +313,7 @@ type GPUBaremetalCluster struct {
 	// "POPLAR_SERVERS", "POST_DEPLOY_SETUP", "VIPU_CONTROLLER".
 	TaskStatus GPUBaremetalClusterTaskStatus `json:"task_status,required"`
 	// String in base64 format. Must not be passed together with 'username' or
-	// 'password'. Examples of the user_data:
+	// 'password'. Examples of the `user_data`:
 	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData string `json:"user_data,required"`
 	// A name of a new user in the Linux instance. It may be passed with a 'password'
@@ -408,7 +408,7 @@ const (
 type GPUBaremetalClusterServer struct {
 	// GPU server ID
 	ID string `json:"id,required" format:"uuid4"`
-	// Map of network_name to list of addresses in that network
+	// Map of `network_name` to list of addresses in that network
 	Addresses map[string][]GPUBaremetalClusterServerAddressUnion `json:"addresses,required"`
 	// IP addresses of the instances that are blackholed by DDoS mitigation system
 	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
@@ -1000,11 +1000,11 @@ func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties) 
 
 // Flavor price
 type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice struct {
-	// Currency code. Shown if the include_prices query parameter if set to true
+	// Currency code. Shown if the `include_prices` query parameter if set to true
 	CurrencyCode string `json:"currency_code,required"`
-	// Price per hour. Shown if the include_prices query parameter if set to true
+	// Price per hour. Shown if the `include_prices` query parameter if set to true
 	PricePerHour float64 `json:"price_per_hour,required"`
-	// Price per month. Shown if the include_prices query parameter if set to true
+	// Price per month. Shown if the `include_prices` query parameter if set to true
 	PricePerMonth float64 `json:"price_per_month,required"`
 	// Price status for the UI
 	//
@@ -1066,10 +1066,10 @@ type GPUBaremetalClusterNewParams struct {
 	// instance
 	Password param.Opt[string] `json:"password,omitzero"`
 	// Specifies the name of the SSH keypair, created via the
-	// <a href="#operation/SSHKeyCollectionViewSet.post">/v1/ssh_keys endpoint</a>.
+	// [/v1/`ssh_keys` endpoint](#operation/SSHKeyCollectionViewSet.post).
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
 	// String in base64 format. Must not be passed together with 'username' or
-	// 'password'. Examples of the user_data:
+	// 'password'. Examples of the `user_data`:
 	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	// A name of a new user in the Linux instance. It may be passed with a 'password'
@@ -1381,7 +1381,7 @@ type GPUBaremetalClusterDeleteParams struct {
 	// used with floatings.
 	DeleteFloatings param.Opt[bool] `query:"delete_floatings,omitzero" json:"-"`
 	// Comma separated list of floating ids that should be deleted. Can't be used with
-	// delete_floatings.
+	// `delete_floatings`.
 	Floatings param.Opt[string] `query:"floatings,omitzero" json:"-"`
 	// Comma separated list of port IDs to be deleted with the servers
 	ReservedFixedIPs param.Opt[string] `query:"reserved_fixed_ips,omitzero" json:"-"`
@@ -1422,7 +1422,7 @@ type GPUBaremetalClusterRebuildParams struct {
 	Nodes []string `json:"nodes,omitzero,required"`
 	// AI GPU image ID
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
-	// String in base64 format.Examples of the user_data:
+	// String in base64 format.Examples of the `user_data`:
 	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	paramObj

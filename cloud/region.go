@@ -87,7 +87,7 @@ type Region struct {
 	AccessLevel RegionAccessLevel `json:"access_level,required"`
 	// AI service API endpoint ID
 	AIServiceEndpointID int64 `json:"ai_service_endpoint_id,required"`
-	// List of available volume types, 'standard', 'ssd_hiiops', 'cold'].
+	// List of available volume types, 'standard', '`ssd_hiiops`', 'cold'].
 	AvailableVolumeTypes []string `json:"available_volume_types,required"`
 	// Coordinates of the region
 	Coordinates RegionCoordinates `json:"coordinates,required"`

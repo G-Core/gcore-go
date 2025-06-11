@@ -257,15 +257,15 @@ type LoadBalancerPoolNewParamsMember struct {
 	ProtocolPort int64 `json:"protocol_port,required"`
 	// true if enabled. Defaults to true
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
-	// Either subnet_id or instance_id should be provided
+	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
 	// An alternate IP address used for health monitoring of a backend member. Default
 	// is null which monitors the member address.
 	MonitorAddress param.Opt[string] `json:"monitor_address,omitzero" format:"ipvanyaddress"`
 	// An alternate protocol port used for health monitoring of a backend member.
-	// Default is null which monitors the member protocol_port.
+	// Default is null which monitors the member `protocol_port`.
 	MonitorPort param.Opt[int64] `json:"monitor_port,omitzero"`
-	// Either subnet_id or instance_id should be provided
+	// Either `subnet_id` or `instance_id` should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
 	// Member weight. Valid values: 0 to 256, defaults to 1
 	Weight param.Opt[int64] `json:"weight,omitzero"`
@@ -290,7 +290,7 @@ type LoadBalancerPoolNewParamsSessionPersistence struct {
 	Type LbSessionPersistenceType `json:"type,omitzero,required"`
 	// Should be set if app cookie or http cookie is used
 	CookieName param.Opt[string] `json:"cookie_name,omitzero"`
-	// Subnet mask if source_ip is used. For UDP ports only
+	// Subnet mask if `source_ip` is used. For UDP ports only
 	PersistenceGranularity param.Opt[string] `json:"persistence_granularity,omitzero"`
 	// Session persistence timeout. For UDP ports only
 	PersistenceTimeout param.Opt[int64] `json:"persistence_timeout,omitzero"`
@@ -396,15 +396,15 @@ type LoadBalancerPoolUpdateParamsMember struct {
 	ProtocolPort int64 `json:"protocol_port,required"`
 	// true if enabled. Defaults to true
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
-	// Either subnet_id or instance_id should be provided
+	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
 	// An alternate IP address used for health monitoring of a backend member. Default
 	// is null which monitors the member address.
 	MonitorAddress param.Opt[string] `json:"monitor_address,omitzero" format:"ipvanyaddress"`
 	// An alternate protocol port used for health monitoring of a backend member.
-	// Default is null which monitors the member protocol_port.
+	// Default is null which monitors the member `protocol_port`.
 	MonitorPort param.Opt[int64] `json:"monitor_port,omitzero"`
-	// Either subnet_id or instance_id should be provided
+	// Either `subnet_id` or `instance_id` should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
 	// Member weight. Valid values: 0 to 256, defaults to 1
 	Weight param.Opt[int64] `json:"weight,omitzero"`
@@ -429,7 +429,7 @@ type LoadBalancerPoolUpdateParamsSessionPersistence struct {
 	Type LbSessionPersistenceType `json:"type,omitzero,required"`
 	// Should be set if app cookie or http cookie is used
 	CookieName param.Opt[string] `json:"cookie_name,omitzero"`
-	// Subnet mask if source_ip is used. For UDP ports only
+	// Subnet mask if `source_ip` is used. For UDP ports only
 	PersistenceGranularity param.Opt[string] `json:"persistence_granularity,omitzero"`
 	// Session persistence timeout. For UDP ports only
 	PersistenceTimeout param.Opt[int64] `json:"persistence_timeout,omitzero"`

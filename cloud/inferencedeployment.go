@@ -175,10 +175,10 @@ func (r *InferenceDeploymentService) GetAPIKey(ctx context.Context, deploymentNa
 
 // This operation initializes an inference deployment after it was stopped, making
 // it available to handle inference requests again. The instance will launch with
-// the **minimum** number of replicas defined in the scaling settings.
+// the \*\*minimum\*\* number of replicas defined in the scaling settings.
 //
-//   - If the minimum replicas are set to **0**, the instance will initially start
-//     with **0** replicas.
+//   - If the minimum replicas are set to \*\*0\*\*, the instance will initially
+//     start with \*\*0\*\* replicas.
 //   - It will automatically scale up when it receives requests or SQS messages,
 //     according to the configured scaling rules.
 func (r *InferenceDeploymentService) Start(ctx context.Context, deploymentName string, body InferenceDeploymentStartParams, opts ...option.RequestOption) (err error) {
@@ -203,13 +203,13 @@ func (r *InferenceDeploymentService) Start(ctx context.Context, deploymentName s
 }
 
 // This operation shuts down an inference deployment, making it unavailable for
-// handling requests. The deployment will scale down to **0** replicas, overriding
-// any minimum replica settings.
+// handling requests. The deployment will scale down to \*\*0\*\* replicas,
+// overriding any minimum replica settings.
 //
-//   - Once stopped, the deployment will **not** process any inference requests or
-//     SQS messages.
-//   - It will **not** restart automatically and must be started manually.
-//   - While stopped, the deployment will **not** incur any charges.
+//   - Once stopped, the deployment will \*\*not\*\* process any inference requests
+//     or SQS messages.
+//   - It will \*\*not\*\* restart automatically and must be started manually.
+//   - While stopped, the deployment will \*\*not\*\* incur any charges.
 func (r *InferenceDeploymentService) Stop(ctx context.Context, deploymentName string, body InferenceDeploymentStopParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -264,8 +264,8 @@ type Inference struct {
 	// Address of the inference instance
 	Address string `json:"address,required" format:"uri"`
 	// `true` if instance uses API key authentication.
-	// `"Authorization": "Bearer *****"` or `"X-Api-Key": "*****"` header is required
-	// for the requests to the instance if enabled.
+	// `"Authorization": "Bearer \*\*\*\*\*"` or `"X-Api-Key": "\*\*\*\*\*"` header is
+	// required for the requests to the instance if enabled.
 	AuthEnabled bool `json:"auth_enabled,required"`
 	// Command to be executed when running a container from an image.
 	Command string `json:"command,required"`
@@ -298,9 +298,7 @@ type Inference struct {
 	Probes InferenceProbes `json:"probes,required"`
 	// Project ID. If not provided, your default project ID will be used.
 	ProjectID int64 `json:"project_id,required"`
-	// Inference instance status.
-	//
-	// Value can be one of the following:
+	// Inference instance status. Value can be one of the following:
 	//
 	//   - `DEPLOYING` - The instance is being deployed. Containers are not yet created.
 	//   - `PARTIALLYDEPLOYED` - All containers have been created, but some may not be
@@ -353,9 +351,7 @@ func (r *Inference) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Inference instance status.
-//
-// Value can be one of the following:
+// Inference instance status. Value can be one of the following:
 //
 //   - `DEPLOYING` - The instance is being deployed. Containers are not yet created.
 //   - `PARTIALLYDEPLOYED` - All containers have been created, but some may not be
@@ -462,15 +458,15 @@ type InferenceDeploymentNewParams struct {
 	// when the parameter is not set is 120.
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
 	// Set to `true` to enable API key authentication for the inference instance.
-	// `"Authorization": "Bearer *****"` or `"X-Api-Key": "*****"` header is required
-	// for the requests to the instance if enabled
+	// `"Authorization": "Bearer \*\*\*\*\*"` or `"X-Api-Key": "\*\*\*\*\*"` header is
+	// required for the requests to the instance if enabled
 	AuthEnabled param.Opt[bool] `json:"auth_enabled,omitzero"`
 	// Command to be executed when running a container from an image.
 	Command []string `json:"command,omitzero"`
 	// Logging configuration for the inference instance
 	Logging InferenceDeploymentNewParamsLogging `json:"logging,omitzero"`
 	// Probes configured for all containers of the inference instance. If probes are
-	// not provided, and the image_name is from a the Model Catalog registry, the
+	// not provided, and the `image_name` is from a the Model Catalog registry, the
 	// default probes will be used.
 	Probes InferenceDeploymentNewParamsProbes `json:"probes,omitzero"`
 	// Environment variables for the inference instance.
@@ -534,9 +530,11 @@ func (r *InferenceDeploymentNewParamsContainerScale) UnmarshalJSON(data []byte) 
 type InferenceDeploymentNewParamsContainerScaleTriggers struct {
 	// CPU trigger configuration
 	CPU InferenceDeploymentNewParamsContainerScaleTriggersCPU `json:"cpu,omitzero"`
-	// GPU memory trigger configuration. Calculated by DCGM_FI_DEV_MEM_COPY_UTIL metric
+	// GPU memory trigger configuration. Calculated by `DCGM_FI_DEV_MEM_COPY_UTIL`
+	// metric
 	GPUMemory InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory `json:"gpu_memory,omitzero"`
-	// GPU utilization trigger configuration. Calculated by DCGM_FI_DEV_GPU_UTIL metric
+	// GPU utilization trigger configuration. Calculated by `DCGM_FI_DEV_GPU_UTIL`
+	// metric
 	GPUUtilization InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization `json:"gpu_utilization,omitzero"`
 	// HTTP trigger configuration
 	HTTP InferenceDeploymentNewParamsContainerScaleTriggersHTTP `json:"http,omitzero"`
@@ -572,7 +570,8 @@ func (r *InferenceDeploymentNewParamsContainerScaleTriggersCPU) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// GPU memory trigger configuration. Calculated by DCGM_FI_DEV_MEM_COPY_UTIL metric
+// GPU memory trigger configuration. Calculated by `DCGM_FI_DEV_MEM_COPY_UTIL`
+// metric
 //
 // The property Threshold is required.
 type InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory struct {
@@ -589,7 +588,8 @@ func (r *InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// GPU utilization trigger configuration. Calculated by DCGM_FI_DEV_GPU_UTIL metric
+// GPU utilization trigger configuration. Calculated by `DCGM_FI_DEV_GPU_UTIL`
+// metric
 //
 // The property Threshold is required.
 type InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization struct {
@@ -696,7 +696,7 @@ func (r *InferenceDeploymentNewParamsLogging) UnmarshalJSON(data []byte) error {
 }
 
 // Probes configured for all containers of the inference instance. If probes are
-// not provided, and the image_name is from a the Model Catalog registry, the
+// not provided, and the `image_name` is from a the Model Catalog registry, the
 // default probes will be used.
 type InferenceDeploymentNewParamsProbes struct {
 	// Liveness probe configuration
@@ -737,8 +737,8 @@ type InferenceDeploymentUpdateParams struct {
 	// when the parameter is not set is 120.
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
 	// Set to `true` to enable API key authentication for the inference instance.
-	// `"Authorization": "Bearer *****"` or `"X-Api-Key": "*****"` header is required
-	// for the requests to the instance if enabled
+	// `"Authorization": "Bearer \*\*\*\*\*"` or `"X-Api-Key": "\*\*\*\*\*"` header is
+	// required for the requests to the instance if enabled
 	AuthEnabled param.Opt[bool] `json:"auth_enabled,omitzero"`
 	// Flavor name for the inference instance.
 	FlavorName param.Opt[string] `json:"flavor_name,omitzero"`
@@ -811,9 +811,11 @@ func (r *InferenceDeploymentUpdateParamsContainerScale) UnmarshalJSON(data []byt
 type InferenceDeploymentUpdateParamsContainerScaleTriggers struct {
 	// CPU trigger configuration
 	CPU InferenceDeploymentUpdateParamsContainerScaleTriggersCPU `json:"cpu,omitzero"`
-	// GPU memory trigger configuration. Calculated by DCGM_FI_DEV_MEM_COPY_UTIL metric
+	// GPU memory trigger configuration. Calculated by `DCGM_FI_DEV_MEM_COPY_UTIL`
+	// metric
 	GPUMemory InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory `json:"gpu_memory,omitzero"`
-	// GPU utilization trigger configuration. Calculated by DCGM_FI_DEV_GPU_UTIL metric
+	// GPU utilization trigger configuration. Calculated by `DCGM_FI_DEV_GPU_UTIL`
+	// metric
 	GPUUtilization InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization `json:"gpu_utilization,omitzero"`
 	// HTTP trigger configuration
 	HTTP InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP `json:"http,omitzero"`
@@ -849,7 +851,8 @@ func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersCPU) UnmarshalJSON
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// GPU memory trigger configuration. Calculated by DCGM_FI_DEV_MEM_COPY_UTIL metric
+// GPU memory trigger configuration. Calculated by `DCGM_FI_DEV_MEM_COPY_UTIL`
+// metric
 //
 // The property Threshold is required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory struct {
@@ -866,7 +869,8 @@ func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory) Unmarsh
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// GPU utilization trigger configuration. Calculated by DCGM_FI_DEV_GPU_UTIL metric
+// GPU utilization trigger configuration. Calculated by `DCGM_FI_DEV_GPU_UTIL`
+// metric
 //
 // The property Threshold is required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization struct {
@@ -995,7 +999,7 @@ func (r *InferenceDeploymentUpdateParamsProbes) UnmarshalJSON(data []byte) error
 type InferenceDeploymentUpdateParamsProbesLivenessProbe struct {
 	// Whether the probe is enabled or not.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Probe configuration (exec, http_get or tcp_socket)
+	// Probe configuration (exec, `http_get` or `tcp_socket`)
 	Probe InferenceDeploymentUpdateParamsProbesLivenessProbeProbe `json:"probe,omitzero"`
 	paramObj
 }
@@ -1008,7 +1012,7 @@ func (r *InferenceDeploymentUpdateParamsProbesLivenessProbe) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Probe configuration (exec, http_get or tcp_socket)
+// Probe configuration (exec, `http_get` or `tcp_socket`)
 type InferenceDeploymentUpdateParamsProbesLivenessProbeProbe struct {
 	// The number of consecutive probe failures that mark the container as unhealthy.
 	FailureThreshold param.Opt[int64] `json:"failure_threshold,omitzero"`
@@ -1094,7 +1098,7 @@ func (r *InferenceDeploymentUpdateParamsProbesLivenessProbeProbeTcpSocket) Unmar
 type InferenceDeploymentUpdateParamsProbesReadinessProbe struct {
 	// Whether the probe is enabled or not.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Probe configuration (exec, http_get or tcp_socket)
+	// Probe configuration (exec, `http_get` or `tcp_socket`)
 	Probe InferenceDeploymentUpdateParamsProbesReadinessProbeProbe `json:"probe,omitzero"`
 	paramObj
 }
@@ -1107,7 +1111,7 @@ func (r *InferenceDeploymentUpdateParamsProbesReadinessProbe) UnmarshalJSON(data
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Probe configuration (exec, http_get or tcp_socket)
+// Probe configuration (exec, `http_get` or `tcp_socket`)
 type InferenceDeploymentUpdateParamsProbesReadinessProbeProbe struct {
 	// The number of consecutive probe failures that mark the container as unhealthy.
 	FailureThreshold param.Opt[int64] `json:"failure_threshold,omitzero"`
@@ -1193,7 +1197,7 @@ func (r *InferenceDeploymentUpdateParamsProbesReadinessProbeProbeTcpSocket) Unma
 type InferenceDeploymentUpdateParamsProbesStartupProbe struct {
 	// Whether the probe is enabled or not.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Probe configuration (exec, http_get or tcp_socket)
+	// Probe configuration (exec, `http_get` or `tcp_socket`)
 	Probe InferenceDeploymentUpdateParamsProbesStartupProbeProbe `json:"probe,omitzero"`
 	paramObj
 }
@@ -1206,7 +1210,7 @@ func (r *InferenceDeploymentUpdateParamsProbesStartupProbe) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Probe configuration (exec, http_get or tcp_socket)
+// Probe configuration (exec, `http_get` or `tcp_socket`)
 type InferenceDeploymentUpdateParamsProbesStartupProbeProbe struct {
 	// The number of consecutive probe failures that mark the container as unhealthy.
 	FailureThreshold param.Opt[int64] `json:"failure_threshold,omitzero"`

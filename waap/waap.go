@@ -31,27 +31,7 @@ func NewWaapService(opts ...option.RequestOption) (r WaapService) {
 	return
 }
 
-// API settings of a domain
-type WaapAPIURLs struct {
-	// The API URLs for a domain. If your domain has a common base URL for all API
-	// paths, it can be set here
-	APIURLs []string `json:"api_urls"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		APIURLs     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WaapAPIURLs) RawJSON() string { return r.JSON.raw }
-func (r *WaapAPIURLs) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Represents a WAAP domain, serving as a singular unit within the WAAP service.
-//
 // Each domain functions autonomously, possessing its own set of rules and
 // configurations to manage web application firewall settings and behaviors.
 type WaapDetailedDomain struct {
@@ -142,7 +122,7 @@ func (r *WaapDomainDDOSSettings) UnmarshalJSON(data []byte) error {
 // Settings for a domain.
 type WaapDomainSettings struct {
 	// API settings of a domain
-	API WaapAPIURLs `json:"api,required"`
+	API WaapDomainSettingsAPI `json:"api,required"`
 	// DDoS settings for a domain.
 	DDOS WaapDomainDDOSSettings `json:"ddos,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -157,6 +137,30 @@ type WaapDomainSettings struct {
 // Returns the unmodified JSON received from the API
 func (r WaapDomainSettings) RawJSON() string { return r.JSON.raw }
 func (r *WaapDomainSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// API settings of a domain
+type WaapDomainSettingsAPI struct {
+	// The API URLs for a domain. If your domain has a common base URL for all API
+	// paths, it can be set here
+	APIURLs []string `json:"api_urls"`
+	// Indicates if the domain is an API domain. All requests to an API domain are
+	// treated as API requests. If this is set to true then the `api_urls` field is
+	// ignored.
+	IsAPI bool `json:"is_api"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIURLs     respjson.Field
+		IsAPI       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDomainSettingsAPI) RawJSON() string { return r.JSON.raw }
+func (r *WaapDomainSettingsAPI) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

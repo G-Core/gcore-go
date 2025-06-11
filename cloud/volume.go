@@ -516,9 +516,9 @@ type VolumeNewParamsBodyImage struct {
 	// Volume size in GiB
 	Size int64 `json:"size,required"`
 	// Block device attachment tag (not exposed in the user tags). Only used in
-	// conjunction with instance_id_to_attach_to
+	// conjunction with `instance_id_to_attach_to`
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// instance_id to attach newly-created volume to
+	// `instance_id` to attach newly-created volume to
 	InstanceIDToAttachTo param.Opt[string] `json:"instance_id_to_attach_to,omitzero"`
 	// List of lifecycle policy IDs (snapshot creation schedules) to associate with the
 	// volume
@@ -562,9 +562,9 @@ type VolumeNewParamsBodySnapshot struct {
 	// Snapshot ID
 	SnapshotID string `json:"snapshot_id,required" format:"uuid4"`
 	// Block device attachment tag (not exposed in the user tags). Only used in
-	// conjunction with instance_id_to_attach_to
+	// conjunction with `instance_id_to_attach_to`
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// instance_id to attach newly-created volume to
+	// `instance_id` to attach newly-created volume to
 	InstanceIDToAttachTo param.Opt[string] `json:"instance_id_to_attach_to,omitzero"`
 	// Volume size in GiB. If specified, value must be equal to respective snapshot
 	// size
@@ -611,9 +611,9 @@ type VolumeNewParamsBodyNewVolume struct {
 	// Volume size in GiB
 	Size int64 `json:"size,required"`
 	// Block device attachment tag (not exposed in the user tags). Only used in
-	// conjunction with instance_id_to_attach_to
+	// conjunction with `instance_id_to_attach_to`
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// instance_id to attach newly-created volume to
+	// `instance_id` to attach newly-created volume to
 	InstanceIDToAttachTo param.Opt[string] `json:"instance_id_to_attach_to,omitzero"`
 	// List of lifecycle policy IDs (snapshot creation schedules) to associate with the
 	// volume
@@ -685,17 +685,17 @@ type VolumeListParams struct {
 	InstanceID param.Opt[string] `query:"instance_id,omitzero" format:"uuid4" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Filter volumes by name_part inclusion in volume name.Any substring can be used
+	// Filter volumes by `name_part` inclusion in volume name.Any substring can be used
 	// and volumes will be returned with names containing the substring.
 	NamePart param.Opt[string] `query:"name_part,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
-	// "tag_key_value={"key": "value"}" --url
+	// "`tag_key_value`={"key": "value"}" --url
 	// "https://example.com/cloud/v1/resource/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// Optional. Filter by tag keys. ?tag_key=key1&tag_key=key2
+	// Optional. Filter by tag keys. ?`tag_key`=key1&`tag_key`=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }

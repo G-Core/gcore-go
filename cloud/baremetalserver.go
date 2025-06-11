@@ -43,18 +43,15 @@ func NewBaremetalServerService(opts ...option.RequestOption) (r BaremetalServerS
 // For Linux,
 //
 //   - Use the `user_data` field to provide a
-//     <a href=https://cloudinit.readthedocs.io/en/latest/reference/examples.html>cloud-init
-//     script</a> in base64 to apply configurations to the instance.
+//     [cloud-init script](https://cloudinit.readthedocs.io/en/latest/reference/examples.html)
+//     in base64 to apply configurations to the instance.
 //   - Specify the `username` and `password` to create a new user.
 //   - When only `password` is provided, it is set as the password for the default
 //     user of the image.
-//   - The `user_data` is ignored when the `password` is specified.
-//
-// For Windows,
-//
+//   - The `user_data` is ignored when the `password` is specified. For Windows,
 //   - Use the `user_data` field to provide a
-//     <a href=https://cloudbase-init.readthedocs.io/en/latest/userdata.html#cloud-config>cloudbase-init
-//     script</a> in base64 to create new users on Windows.
+//     [cloudbase-init script](https://cloudbase-init.readthedocs.io/en/latest/userdata.html#cloud-config)
+//     in base64 to create new users on Windows.
 //   - Use the `password` field to set the password for the 'Admin' user on Windows.
 //   - The password of the Admin user cannot be updated via `user_data`.
 //   - The `username` cannot be specified in the request.
@@ -198,7 +195,7 @@ func (r *BaremetalFloatingAddress) UnmarshalJSON(data []byte) error {
 type BaremetalServer struct {
 	// Bare metal server ID
 	ID string `json:"id,required" format:"uuid4"`
-	// Map of network_name to list of addresses in that network
+	// Map of `network_name` to list of addresses in that network
 	Addresses map[string][]BaremetalServerAddressUnion `json:"addresses,required"`
 	// IP addresses of the instances that are blackholed by DDoS mitigation system
 	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
@@ -468,7 +465,7 @@ type BaremetalServerNewParams struct {
 	// interfaces - private, public, or both.
 	Interfaces []BaremetalServerNewParamsInterfaceUnion `json:"interfaces,omitzero,required"`
 	// Specifies the name of the SSH keypair, created via the
-	// <a href="#operation/SSHKeyCollectionViewSet.post">/v1/ssh_keys endpoint</a>.
+	// [/v1/`ssh_keys` endpoint](#operation/SSHKeyCollectionViewSet.post).
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
 	// Apptemplate ID. Either `image_id` or `apptemplate_id` is required.
 	ApptemplateID param.Opt[string] `json:"apptemplate_id,omitzero"`
@@ -479,20 +476,20 @@ type BaremetalServerNewParams struct {
 	// If you want server names to be automatically generated based on IP addresses,
 	// you can provide a name template instead of specifying the name manually. The
 	// template should include a placeholder that will be replaced during provisioning.
-	// Supported placeholders are: `{ip_octets}` (last 3 octets of the IP),
-	// `{two_ip_octets}`, and `{one_ip_octet}`.
+	// Supported placeholders are: `{`ip_octets`}` (last 3 octets of the IP),
+	// `{`two_ip_octets`}`, and `{`one_ip_octet`}`.
 	NameTemplate param.Opt[string] `json:"name_template,omitzero"`
 	// For Linux instances, 'username' and 'password' are used to create a new user.
 	// When only 'password' is provided, it is set as the password for the default user
 	// of the image. For Windows instances, 'username' cannot be specified. Use the
 	// 'password' field to set the password for the 'Admin' user on Windows. Use the
-	// 'user_data' field to provide a script to create new users on Windows. The
-	// password of the Admin user cannot be updated via 'user_data'.
+	// '`user_data`' field to provide a script to create new users on Windows. The
+	// password of the Admin user cannot be updated via '`user_data`'.
 	Password param.Opt[string] `json:"password,omitzero"`
-	// String in base64 format. For Linux instances, 'user_data' is ignored when
+	// String in base64 format. For Linux instances, '`user_data`' is ignored when
 	// 'password' field is provided. For Windows instances, Admin user password is set
-	// by 'password' field and cannot be updated via 'user_data'. Examples of the
-	// user_data: https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+	// by 'password' field and cannot be updated via '`user_data`'. Examples of the
+	// `user_data`: https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	// For Linux instances, 'username' and 'password' are used to create a new user.
 	// For Windows instances, 'username' cannot be specified. Use 'password' field to
@@ -1164,9 +1161,9 @@ type BaremetalServerNewParamsDDOSProfileField struct {
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
 	// Name of DDoS profile field
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
-	// Basic type value. Only one of 'value' or 'field_value' must be specified.
+	// Basic type value. Only one of 'value' or '`field_value`' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified.
+	// Complex value. Only one of 'value' or '`field_value`' must be specified.
 	FieldValue BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion `json:"field_value,omitzero"`
 	paramObj
 }
@@ -1217,9 +1214,9 @@ type BaremetalServerListParams struct {
 	// Filters the instances by a date and time stamp when the instances last changed
 	// status.
 	ChangesSince param.Opt[time.Time] `query:"changes-since,omitzero" format:"date-time" json:"-"`
-	// Filter out instances by flavor_id. Flavor id must match exactly.
+	// Filter out instances by `flavor_id`. Flavor id must match exactly.
 	FlavorID param.Opt[string] `query:"flavor_id,omitzero" json:"-"`
-	// Filter out instances by flavor_prefix.
+	// Filter out instances by `flavor_prefix`.
 	FlavorPrefix param.Opt[string] `query:"flavor_prefix,omitzero" json:"-"`
 	// Include managed k8s worker nodes
 	IncludeK8s param.Opt[bool] `query:"include_k8s,omitzero" json:"-"`
@@ -1240,11 +1237,11 @@ type BaremetalServerListParams struct {
 	OnlyIsolated param.Opt[bool] `query:"only_isolated,omitzero" json:"-"`
 	// Return bare metals only with external fixed IP addresses.
 	OnlyWithFixedExternalIP param.Opt[bool] `query:"only_with_fixed_external_ip,omitzero" json:"-"`
-	// Filter result by ddos protection profile name. Effective only with with_ddos set
-	// to true.
+	// Filter result by ddos protection profile name. Effective only with `with_ddos`
+	// set to true.
 	ProfileName param.Opt[string] `query:"profile_name,omitzero" json:"-"`
 	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
-	// "tag_key_value={"key": "value"}" --url
+	// "`tag_key_value`={"key": "value"}" --url
 	// "https://example.com/cloud/v1/resource/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Filter the server list result by the UUID of the server. Allowed UUID part
@@ -1260,8 +1257,8 @@ type BaremetalServerListParams struct {
 	// Any of "created.asc", "created.desc", "name.asc", "name.desc", "status.asc",
 	// "status.desc".
 	OrderBy BaremetalServerListParamsOrderBy `query:"order_by,omitzero" json:"-"`
-	// Filter result by DDoS protection_status. Effective only with with_ddos set to
-	// true. (Active, Queued or Error)
+	// Filter result by DDoS `protection_status`. Effective only with `with_ddos` set
+	// to true. (Active, Queued or Error)
 	//
 	// Any of "Active", "Queued", "Error".
 	ProtectionStatus BaremetalServerListParamsProtectionStatus `query:"protection_status,omitzero" json:"-"`
@@ -1270,10 +1267,10 @@ type BaremetalServerListParams struct {
 	// Any of "ACTIVE", "BUILD", "ERROR", "HARD_REBOOT", "REBOOT", "REBUILD", "RESCUE",
 	// "SHUTOFF", "SUSPENDED".
 	Status BaremetalServerListParamsStatus `query:"status,omitzero" json:"-"`
-	// Optional. Filter by tag values. ?tag_value=value1&tag_value=value2
+	// Optional. Filter by tag values. ?`tag_value`=value1&`tag_value`=value2
 	TagValue []string `query:"tag_value,omitzero" json:"-"`
 	// Return bare metals either only with advanced or only basic DDoS protection.
-	// Effective only with with_ddos set to true. (advanced or basic)
+	// Effective only with `with_ddos` set to true. (advanced or basic)
 	//
 	// Any of "basic", "advanced".
 	TypeDDOSProfile BaremetalServerListParamsTypeDDOSProfile `query:"type_ddos_profile,omitzero" json:"-"`
@@ -1301,8 +1298,8 @@ const (
 	BaremetalServerListParamsOrderByStatusDesc  BaremetalServerListParamsOrderBy = "status.desc"
 )
 
-// Filter result by DDoS protection_status. Effective only with with_ddos set to
-// true. (Active, Queued or Error)
+// Filter result by DDoS `protection_status`. Effective only with `with_ddos` set
+// to true. (Active, Queued or Error)
 type BaremetalServerListParamsProtectionStatus string
 
 const (
@@ -1327,7 +1324,7 @@ const (
 )
 
 // Return bare metals either only with advanced or only basic DDoS protection.
-// Effective only with with_ddos set to true. (advanced or basic)
+// Effective only with `with_ddos` set to true. (advanced or basic)
 type BaremetalServerListParamsTypeDDOSProfile string
 
 const (
@@ -1341,7 +1338,7 @@ type BaremetalServerRebuildParams struct {
 	// Image ID
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
 	// String in base64 format. Must not be passed together with 'username' or
-	// 'password'. Examples of the user_data:
+	// 'password'. Examples of the `user_data`:
 	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	paramObj

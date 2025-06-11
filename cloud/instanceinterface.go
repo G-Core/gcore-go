@@ -209,9 +209,9 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDD
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
 	// Name of DDoS profile field
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
-	// Basic type value. Only one of 'value' or 'field_value' must be specified.
+	// Basic type value. Only one of 'value' or '`field_value`' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified.
+	// Complex value. Only one of 'value' or '`field_value`' must be specified.
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
@@ -294,9 +294,9 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfil
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
 	// Name of DDoS profile field
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
-	// Basic type value. Only one of 'value' or 'field_value' must be specified.
+	// Basic type value. Only one of 'value' or '`field_value`' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified.
+	// Complex value. Only one of 'value' or '`field_value`' must be specified.
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
@@ -337,7 +337,7 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema struct {
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
 	// Each group will be added to the separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Must be 'any_subnet'
+	// Must be '`any_subnet`'
 	Type param.Opt[string] `json:"type,omitzero"`
 	// Advanced DDoS protection.
 	DDOSProfile InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile `json:"ddos_profile,omitzero"`
@@ -390,9 +390,9 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileFiel
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
 	// Name of DDoS profile field
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
-	// Basic type value. Only one of 'value' or 'field_value' must be specified.
+	// Basic type value. Only one of 'value' or '`field_value`' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified.
+	// Complex value. Only one of 'value' or '`field_value`' must be specified.
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
@@ -433,7 +433,7 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema struct {
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
 	// Each group will be added to the separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Must be 'reserved_fixed_ip'. Union tag
+	// Must be '`reserved_fixed_ip`'. Union tag
 	Type param.Opt[string] `json:"type,omitzero"`
 	// Advanced DDoS protection.
 	DDOSProfile InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile `json:"ddos_profile,omitzero"`
@@ -476,9 +476,9 @@ type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfi
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
 	// Name of DDoS profile field
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
-	// Basic type value. Only one of 'value' or 'field_value' must be specified.
+	// Basic type value. Only one of 'value' or '`field_value`' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified.
+	// Complex value. Only one of 'value' or '`field_value`' must be specified.
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
