@@ -65,8 +65,17 @@ TEST_PATHS=(
 	cloud/instanceinterface_test.go
 	cloud/instanceimage_test.go
 	cloud/instancemetric_test.go
+	waap/waap_test.go
+	waap/statistic_test.go
 	waap/domain_test.go
 	waap/domainsetting_test.go
+	waap/domaincustomrule_test.go
+	waap/domainfirewallrule_test.go
+	waap/domainadvancedrule_test.go
+	waap/custompageset_test.go
+	waap/advancedrule_test.go
+	waap/tag_test.go
+	waap/organization_test.go
 	usage_test.go
 	paginationauto_test.go
 	paginationmanual_test.go
