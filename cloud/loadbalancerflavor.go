@@ -34,7 +34,7 @@ func NewLoadBalancerFlavorService(opts ...option.RequestOption) (r LoadBalancerF
 	return
 }
 
-// Retrieve a list of load balancer flavors. When the include_prices query
+// Retrieve a list of load balancer flavors. When the `include_prices` query
 // parameter is specified, the list shows prices. A client in trial mode gets all
 // price values as 0. If you get Pricing Error contact the support
 func (r *LoadBalancerFlavorService) List(ctx context.Context, params LoadBalancerFlavorListParams, opts ...option.RequestOption) (res *LoadBalancerFlavorList, err error) {

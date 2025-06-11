@@ -195,7 +195,7 @@ type NetworkSubnetNewParams struct {
 	// creation.
 	RouterIDToConnect param.Opt[string] `json:"router_id_to_connect,omitzero" format:"uuid4"`
 	// True if the network's router should get a gateway in this subnet. Must be
-	// explicitly 'false' when gateway_ip is null.
+	// explicitly 'false' when `gateway_ip` is null.
 	ConnectToNetworkRouter param.Opt[bool] `json:"connect_to_network_router,omitzero"`
 	// True if DHCP should be enabled
 	EnableDhcp param.Opt[bool] `json:"enable_dhcp,omitzero"`
@@ -302,7 +302,7 @@ type NetworkSubnetListParams struct {
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
-	// "tag_key_value={"key": "value"}" --url
+	// "`tag_key_value`={"key": "value"}" --url
 	// "https://example.com/cloud/v1/resource/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Ordering subnets list result by `name`, `created_at`, `updated_at`,
@@ -313,7 +313,7 @@ type NetworkSubnetListParams struct {
 	// "created_at.asc", "created_at.desc", "name.asc", "name.desc", "total_ips.asc",
 	// "total_ips.desc", "updated_at.asc", "updated_at.desc".
 	OrderBy NetworkSubnetListParamsOrderBy `query:"order_by,omitzero" json:"-"`
-	// Optional. Filter by tag keys. ?tag_key=key1&tag_key=key2
+	// Optional. Filter by tag keys. ?`tag_key`=key1&`tag_key`=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }

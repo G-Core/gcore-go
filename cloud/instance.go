@@ -52,18 +52,15 @@ func NewInstanceService(opts ...option.RequestOption) (r InstanceService) {
 // For Linux,
 //
 //   - Use the `user_data` field to provide a
-//     <a href=https://cloudinit.readthedocs.io/en/latest/reference/examples.html>cloud-init
-//     script</a> in base64 to apply configurations to the instance.
+//     [cloud-init script](https://cloudinit.readthedocs.io/en/latest/reference/examples.html)
+//     in base64 to apply configurations to the instance.
 //   - Specify the `username` and `password` to create a new user.
 //   - When only `password` is provided, it is set as the password for the default
 //     user of the image.
-//   - The `user_data` is ignored when the `password` is specified.
-//
-// For Windows,
-//
+//   - The `user_data` is ignored when the `password` is specified. For Windows,
 //   - Use the `user_data` field to provide a
-//     <a href=https://cloudbase-init.readthedocs.io/en/latest/userdata.html#cloud-config>cloudbase-init
-//     script</a> in base64 to create new users on Windows.
+//     [cloudbase-init script](https://cloudbase-init.readthedocs.io/en/latest/userdata.html#cloud-config)
+//     in base64 to create new users on Windows.
 //   - Use the `password` field to set the password for the 'Admin' user on Windows.
 //   - The password of the Admin user cannot be updated via `user_data`.
 //   - The `username` cannot be specified in the request.
@@ -344,7 +341,7 @@ func (r *InstanceService) AddToPlacementGroupAndPoll(ctx context.Context, instan
 }
 
 // Assign the security group to the server. To assign multiple security groups to
-// all ports, use the NULL value for the port_id field
+// all ports, use the NULL value for the `port_id` field
 func (r *InstanceService) AssignSecurityGroup(ctx context.Context, instanceID string, params InstanceAssignSecurityGroupParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -423,7 +420,7 @@ func (r *InstanceService) EnablePortSecurity(ctx context.Context, portID string,
 	return
 }
 
-// **Cookie Parameters**:
+// \*\*Cookie Parameters\*\*:
 //
 //   - `language` (str, optional): Language for the response content. Affects the
 //     `ddos_profile` field. Supported values:
@@ -596,7 +593,7 @@ func (r *InstanceService) ResizeAndPoll(ctx context.Context, instanceID string, 
 }
 
 // Un-assign the security group to the server. To un-assign multiple security
-// groups to all ports, use the NULL value for the port_id field
+// groups to all ports, use the NULL value for the `port_id` field
 func (r *InstanceService) UnassignSecurityGroup(ctx context.Context, instanceID string, params InstanceUnassignSecurityGroupParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -677,7 +674,7 @@ type InstanceNewParams struct {
 	// List of volumes that will be attached to the instance.
 	Volumes []InstanceNewParamsVolumeUnion `json:"volumes,omitzero,required"`
 	// Specifies the name of the SSH keypair, created via the
-	// <a href="#operation/SSHKeyCollectionViewSet.post">/v1/ssh_keys endpoint</a>.
+	// [/v1/`ssh_keys` endpoint](#operation/SSHKeyCollectionViewSet.post).
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
 	// Set to `true` if creating the instance from an `apptemplate`. This allows
 	// application ports in the security group for instances created from a marketplace
@@ -688,19 +685,17 @@ type InstanceNewParams struct {
 	// If you want the instance name to be automatically generated based on IP
 	// addresses, you can provide a name template instead of specifying the name
 	// manually. The template should include a placeholder that will be replaced during
-	// provisioning. Supported placeholders are: `{ip_octets}` (last 3 octets of the
-	// IP), `{two_ip_octets}`, and `{one_ip_octet}`.
+	// provisioning. Supported placeholders are: `{`ip_octets`}` (last 3 octets of the
+	// IP), `{`two_ip_octets`}`, and `{`one_ip_octet`}`.
 	NameTemplate param.Opt[string] `json:"name_template,omitzero"`
 	// For Linux instances, 'username' and 'password' are used to create a new user.
 	// When only 'password' is provided, it is set as the password for the default user
 	// of the image. For Windows instances, 'username' cannot be specified. Use the
 	// 'password' field to set the password for the 'Admin' user on Windows. Use the
-	// 'user_data' field to provide a script to create new users on Windows. The
-	// password of the Admin user cannot be updated via 'user_data'.
+	// '`user_data`' field to provide a script to create new users on Windows. The
+	// password of the Admin user cannot be updated via '`user_data`'.
 	Password param.Opt[string] `json:"password,omitzero"`
-	// Placement group ID for instance placement policy.
-	//
-	// Supported group types:
+	// Placement group ID for instance placement policy. Supported group types:
 	//
 	//   - `anti-affinity`: Ensures instances are placed on different hosts for high
 	//     availability.
@@ -708,10 +703,10 @@ type InstanceNewParams struct {
 	//   - `soft-anti-affinity`: Tries to place instances on different hosts but allows
 	//     sharing if needed.
 	ServergroupID param.Opt[string] `json:"servergroup_id,omitzero" format:"uuid4"`
-	// String in base64 format. For Linux instances, 'user_data' is ignored when
+	// String in base64 format. For Linux instances, '`user_data`' is ignored when
 	// 'password' field is provided. For Windows instances, Admin user password is set
-	// by 'password' field and cannot be updated via 'user_data'. Examples of the
-	// user_data: https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+	// by 'password' field and cannot be updated via '`user_data`'. Examples of the
+	// `user_data`: https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	// For Linux instances, 'username' and 'password' are used to create a new user.
 	// For Windows instances, 'username' cannot be specified. Use 'password' field to
@@ -1656,7 +1651,7 @@ type InstanceNewParamsVolumeNewVolume struct {
 	//     IOPS: 9000. Max bandwidth: 500 MB/s.
 	//   - `ssd_lowlatency` - SSD storage optimized for low-latency and real-time
 	//     processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and volume
-	//     resizing are **not** supported for `ssd_lowlatency`.
+	//     resizing are \*\*not\*\* supported for `ssd_lowlatency`.
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`
@@ -1698,7 +1693,7 @@ type InstanceNewParamsVolumeImage struct {
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Volume size in GiB.
 	//
-	// - For instances: **specify the desired volume size explicitly**.
+	// - For instances: \*\*specify the desired volume size explicitly\*\*.
 	// - For basic VMs: the size is set automatically based on the flavor.
 	Size param.Opt[int64] `json:"size,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
@@ -1717,7 +1712,7 @@ type InstanceNewParamsVolumeImage struct {
 	//     IOPS: 9000. Max bandwidth: 500 MB/s.
 	//   - `ssd_lowlatency` - SSD storage optimized for low-latency and real-time
 	//     processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and volume
-	//     resizing are **not** supported for `ssd_lowlatency`.
+	//     resizing are \*\*not\*\* supported for `ssd_lowlatency`.
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`
@@ -1825,7 +1820,7 @@ type InstanceNewParamsVolumeApptemplate struct {
 	//     IOPS: 9000. Max bandwidth: 500 MB/s.
 	//   - `ssd_lowlatency` - SSD storage optimized for low-latency and real-time
 	//     processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and volume
-	//     resizing are **not** supported for `ssd_lowlatency`.
+	//     resizing are \*\*not\*\* supported for `ssd_lowlatency`.
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`
@@ -1932,9 +1927,9 @@ type InstanceListParams struct {
 	ExcludeFlavorPrefix param.Opt[string] `query:"exclude_flavor_prefix,omitzero" json:"-"`
 	// Exclude instances with specified security group name
 	ExcludeSecgroup param.Opt[string] `query:"exclude_secgroup,omitzero" json:"-"`
-	// Filter out instances by flavor_id. Flavor id must match exactly.
+	// Filter out instances by `flavor_id`. Flavor id must match exactly.
 	FlavorID param.Opt[string] `query:"flavor_id,omitzero" json:"-"`
-	// Filter out instances by flavor_prefix.
+	// Filter out instances by `flavor_prefix`.
 	FlavorPrefix param.Opt[string] `query:"flavor_prefix,omitzero" json:"-"`
 	// Include GPU clusters' servers
 	IncludeAI param.Opt[bool] `query:"include_ai,omitzero" json:"-"`
@@ -1959,11 +1954,11 @@ type InstanceListParams struct {
 	OnlyIsolated param.Opt[bool] `query:"only_isolated,omitzero" json:"-"`
 	// Return bare metals only with external fixed IP addresses.
 	OnlyWithFixedExternalIP param.Opt[bool] `query:"only_with_fixed_external_ip,omitzero" json:"-"`
-	// Filter result by ddos protection profile name. Effective only with with_ddos set
-	// to true.
+	// Filter result by ddos protection profile name. Effective only with `with_ddos`
+	// set to true.
 	ProfileName param.Opt[string] `query:"profile_name,omitzero" json:"-"`
 	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
-	// "tag_key_value={"key": "value"}" --url
+	// "`tag_key_value`={"key": "value"}" --url
 	// "https://example.com/cloud/v1/resource/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Filter the server list result by the UUID of the server. Allowed UUID part
@@ -1977,8 +1972,8 @@ type InstanceListParams struct {
 	//
 	// Any of "created.asc", "created.desc", "name.asc", "name.desc".
 	OrderBy InstanceListParamsOrderBy `query:"order_by,omitzero" json:"-"`
-	// Filter result by DDoS protection_status. if parameter is provided. Effective
-	// only with with_ddos set to true. (Active, Queued or Error)
+	// Filter result by DDoS `protection_status`. if parameter is provided. Effective
+	// only with `with_ddos` set to true. (Active, Queued or Error)
 	//
 	// Any of "Active", "Queued", "Error".
 	ProtectionStatus InstanceListParamsProtectionStatus `query:"protection_status,omitzero" json:"-"`
@@ -1988,10 +1983,10 @@ type InstanceListParams struct {
 	// "REBOOT", "REBUILD", "RESIZE", "REVERT_RESIZE", "SHELVED", "SHELVED_OFFLOADED",
 	// "SHUTOFF", "SOFT_DELETED", "SUSPENDED", "VERIFY_RESIZE".
 	Status InstanceListParamsStatus `query:"status,omitzero" json:"-"`
-	// Optional. Filter by tag values. ?tag_value=value1&tag_value=value2
+	// Optional. Filter by tag values. ?`tag_value`=value1&`tag_value`=value2
 	TagValue []string `query:"tag_value,omitzero" json:"-"`
 	// Return bare metals either only with advanced or only basic DDoS protection.
-	// Effective only with with_ddos set to true. (advanced or basic)
+	// Effective only with `with_ddos` set to true. (advanced or basic)
 	//
 	// Any of "basic", "advanced".
 	TypeDDOSProfile InstanceListParamsTypeDDOSProfile `query:"type_ddos_profile,omitzero" json:"-"`
@@ -2016,8 +2011,8 @@ const (
 	InstanceListParamsOrderByNameDesc    InstanceListParamsOrderBy = "name.desc"
 )
 
-// Filter result by DDoS protection_status. if parameter is provided. Effective
-// only with with_ddos set to true. (Active, Queued or Error)
+// Filter result by DDoS `protection_status`. if parameter is provided. Effective
+// only with `with_ddos` set to true. (Active, Queued or Error)
 type InstanceListParamsProtectionStatus string
 
 const (
@@ -2049,7 +2044,7 @@ const (
 )
 
 // Return bare metals either only with advanced or only basic DDoS protection.
-// Effective only with with_ddos set to true. (advanced or basic)
+// Effective only with `with_ddos` set to true. (advanced or basic)
 type InstanceListParamsTypeDDOSProfile string
 
 const (

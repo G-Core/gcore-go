@@ -547,11 +547,11 @@ type LoadBalancerFlavorDetail struct {
 	Ram int64 `json:"ram,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus,required"`
-	// Currency code. Shown if the include_prices query parameter if set to true
+	// Currency code. Shown if the `include_prices` query parameter if set to true
 	CurrencyCode string `json:"currency_code,nullable"`
-	// Price per hour. Shown if the include_prices query parameter if set to true
+	// Price per hour. Shown if the `include_prices` query parameter if set to true
 	PricePerHour float64 `json:"price_per_hour,nullable"`
-	// Price per month. Shown if the include_prices query parameter if set to true
+	// Price per month. Shown if the `include_prices` query parameter if set to true
 	PricePerMonth float64 `json:"price_per_month,nullable"`
 	// Price status for the UI
 	//
@@ -632,17 +632,17 @@ type LoadBalancerL7Policy struct {
 	// "PENDING_UPDATE".
 	ProvisioningStatus LoadBalancerL7PolicyProvisioningStatus `json:"provisioning_status"`
 	// Requests matching this policy will be redirected to the specified URL or Prefix
-	// URL with the HTTP response code. Valid if action is REDIRECT_TO_URL or
-	// REDIRECT_PREFIX. Valid options are 301, 302, 303, 307, or 308. Default is 302.
+	// URL with the HTTP response code. Valid if action is `REDIRECT_TO_URL` or
+	// `REDIRECT_PREFIX`. Valid options are 301, 302, 303, 307, or 308. Default is 302.
 	RedirectHTTPCode int64 `json:"redirect_http_code"`
 	// Requests matching this policy will be redirected to the pool with this ID. Only
-	// valid if action is REDIRECT_TO_POOL.
+	// valid if action is `REDIRECT_TO_POOL`.
 	RedirectPoolID string `json:"redirect_pool_id"`
 	// Requests matching this policy will be redirected to this Prefix URL. Only valid
-	// if action is REDIRECT_PREFIX.
+	// if action is `REDIRECT_PREFIX`.
 	RedirectPrefix string `json:"redirect_prefix"`
 	// Requests matching this policy will be redirected to this URL. Only valid if
-	// action is REDIRECT_TO_URL.
+	// action is `REDIRECT_TO_URL`.
 	RedirectURL string `json:"redirect_url"`
 	// Region name
 	Region string `json:"region"`
@@ -889,7 +889,7 @@ type LoadBalancerListenerDetail struct {
 	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
 	// Dictionary of additional header insertion into HTTP headers. Only used with HTTP
-	// and TERMINATED_HTTPS protocols.
+	// and `TERMINATED_HTTPS` protocols.
 	InsertHeaders any `json:"insert_headers,required"`
 	// Load balancer ID
 	LoadbalancerID string `json:"loadbalancer_id,required" format:"uuid4"`
@@ -912,11 +912,11 @@ type LoadBalancerListenerDetail struct {
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// ID of the secret where PKCS12 file is stored for TERMINATED_HTTPS or PROMETHEUS
-	// load balancer
+	// ID of the secret where PKCS12 file is stored for `TERMINATED_HTTPS` or
+	// PROMETHEUS load balancer
 	SecretID string `json:"secret_id,required"`
 	// List of secret's ID containing PKCS12 format certificate/key bundles for
-	// TERMINATED_HTTPS or PROMETHEUS listeners
+	// `TERMINATED_HTTPS` or PROMETHEUS listeners
 	SniSecretID []string `json:"sni_secret_id,required"`
 	// Statistics of the load balancer. It is available only in get functions by a
 	// flag.
@@ -1471,9 +1471,9 @@ type Member struct {
 	// is null which monitors the member address.
 	MonitorAddress string `json:"monitor_address,nullable" format:"ipvanyaddress"`
 	// An alternate protocol port used for health monitoring of a backend member.
-	// Default is null which monitors the member protocol_port.
+	// Default is null which monitors the member `protocol_port`.
 	MonitorPort int64 `json:"monitor_port,nullable"`
-	// Either subnet_id or instance_id should be provided
+	// Either `subnet_id` or `instance_id` should be provided
 	SubnetID string `json:"subnet_id,nullable" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1576,7 +1576,7 @@ type SessionPersistence struct {
 	Type LbSessionPersistenceType `json:"type,required"`
 	// Should be set if app cookie or http cookie is used
 	CookieName string `json:"cookie_name,nullable"`
-	// Subnet mask if source_ip is used. For UDP ports only
+	// Subnet mask if `source_ip` is used. For UDP ports only
 	PersistenceGranularity string `json:"persistence_granularity,nullable"`
 	// Session persistence timeout. For UDP ports only
 	PersistenceTimeout int64 `json:"persistence_timeout,nullable"`
@@ -1607,13 +1607,13 @@ type LoadBalancerNewParams struct {
 	// Load balancer name which will be changed by template.
 	NameTemplate param.Opt[string] `json:"name_template,omitzero"`
 	// Network ID for load balancer. If not specified, default external network will be
-	// used. Mutually exclusive with vip_port_id
+	// used. Mutually exclusive with `vip_port_id`
 	VipNetworkID param.Opt[string] `json:"vip_network_id,omitzero" format:"uuid4"`
 	// Existing Reserved Fixed IP port ID for load balancer. Mutually exclusive with
-	// vip_network_id
+	// `vip_network_id`
 	VipPortID param.Opt[string] `json:"vip_port_id,omitzero" format:"uuid4"`
-	// Subnet ID for load balancer. If not specified, any subnet from vip_network_id
-	// will be selected. Ignored when vip_network_id is not specified.
+	// Subnet ID for load balancer. If not specified, any subnet from `vip_network_id`
+	// will be selected. Ignored when `vip_network_id` is not specified.
 	VipSubnetID param.Opt[string] `json:"vip_subnet_id,omitzero" format:"uuid4"`
 	// Floating IP configuration for assignment
 	FloatingIP LoadBalancerNewParamsFloatingIPUnion `json:"floating_ip,omitzero"`
@@ -1624,8 +1624,9 @@ type LoadBalancerNewParams struct {
 	Logging LoadBalancerNewParamsLogging `json:"logging,omitzero"`
 	// Preferred option to establish connectivity between load balancer and its pools
 	// members. L2 provides best performance, L3 provides less IPs usage. It is taking
-	// effect only if instance_id + ip_address is provided, not subnet_id + ip_address,
-	// because we're considering this as intentional subnet_id specification.
+	// effect only if `instance_id` + `ip_address` is provided, not `subnet_id` +
+	// `ip_address`, because we're considering this as intentional `subnet_id`
+	// specification.
 	//
 	// Any of "L2", "L3".
 	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity,omitzero"`
@@ -1635,7 +1636,8 @@ type LoadBalancerNewParams struct {
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
 	Tags TagUpdateMap `json:"tags,omitzero"`
-	// IP family for load balancer subnet auto-selection if vip_network_id is specified
+	// IP family for load balancer subnet auto-selection if `vip_network_id` is
+	// specified
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	VipIPFamily InterfaceIPFamily `json:"vip_ip_family,omitzero"`
@@ -1768,17 +1770,17 @@ type LoadBalancerNewParamsListener struct {
 	// Limit of the simultaneous connections
 	ConnectionLimit param.Opt[int64] `json:"connection_limit,omitzero"`
 	// Add headers X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto to requests.
-	// Only used with HTTP or TERMINATED_HTTPS protocols.
+	// Only used with HTTP or `TERMINATED_HTTPS` protocols.
 	InsertXForwarded param.Opt[bool] `json:"insert_x_forwarded,omitzero"`
-	// ID of the secret where PKCS12 file is stored for TERMINATED_HTTPS or PROMETHEUS
-	// listener
+	// ID of the secret where PKCS12 file is stored for `TERMINATED_HTTPS` or
+	// PROMETHEUS listener
 	SecretID param.Opt[string] `json:"secret_id,omitzero"`
 	// Network CIDRs from which service will be accessible
 	AllowedCidrs []string `json:"allowed_cidrs,omitzero" format:"ipvanynetwork"`
 	// Member pools
 	Pools []LoadBalancerNewParamsListenerPool `json:"pools,omitzero"`
 	// List of secrets IDs containing PKCS12 format certificate/key bundles for
-	// TERMINATED_HTTPS or PROMETHEUS listeners
+	// `TERMINATED_HTTPS` or PROMETHEUS listeners
 	SniSecretID []string `json:"sni_secret_id,omitzero" format:"uuid4"`
 	// Load balancer listener list of username and encrypted password items
 	UserList []LoadBalancerNewParamsListenerUserList `json:"user_list,omitzero"`
@@ -1884,15 +1886,15 @@ type LoadBalancerNewParamsListenerPoolMember struct {
 	ProtocolPort int64 `json:"protocol_port,required"`
 	// true if enabled. Defaults to true
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
-	// Either subnet_id or instance_id should be provided
+	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
 	// An alternate IP address used for health monitoring of a backend member. Default
 	// is null which monitors the member address.
 	MonitorAddress param.Opt[string] `json:"monitor_address,omitzero" format:"ipvanyaddress"`
 	// An alternate protocol port used for health monitoring of a backend member.
-	// Default is null which monitors the member protocol_port.
+	// Default is null which monitors the member `protocol_port`.
 	MonitorPort param.Opt[int64] `json:"monitor_port,omitzero"`
-	// Either subnet_id or instance_id should be provided
+	// Either `subnet_id` or `instance_id` should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
 	// Member weight. Valid values: 0 to 256, defaults to 1
 	Weight param.Opt[int64] `json:"weight,omitzero"`
@@ -1917,7 +1919,7 @@ type LoadBalancerNewParamsListenerPoolSessionPersistence struct {
 	Type LbSessionPersistenceType `json:"type,omitzero,required"`
 	// Should be set if app cookie or http cookie is used
 	CookieName param.Opt[string] `json:"cookie_name,omitzero"`
-	// Subnet mask if source_ip is used. For UDP ports only
+	// Subnet mask if `source_ip` is used. For UDP ports only
 	PersistenceGranularity param.Opt[string] `json:"persistence_granularity,omitzero"`
 	// Session persistence timeout. For UDP ports only
 	PersistenceTimeout param.Opt[int64] `json:"persistence_timeout,omitzero"`
@@ -2027,15 +2029,15 @@ type LoadBalancerListParams struct {
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Offset value is used to exclude the first set of records from the result.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Ordering Load Balancer list result by name, created_at, updated_at,
-	// operating_status, provisioning_status, vip_address, vip_ip_family and flavor
-	// fields of the load balancer and directions (name.asc), default is
-	// "created_at.asc"
+	// Ordering Load Balancer list result by name, `created_at`, `updated_at`,
+	// `operating_status`, `provisioning_status`, `vip_address`, `vip_ip_family` and
+	// flavor fields of the load balancer and directions (name.asc), default is
+	// "`created_at`.asc"
 	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
 	// Show statistics
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
 	// Filter by tag key-value pairs. Must be a valid JSON string. curl -G
-	// --data-urlencode "tag_key_value={"key": "value"}" --url
+	// --data-urlencode "`tag_key_value`={"key": "value"}" --url
 	// "http://localhost:1111/v1/loadbalancers/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Show Advanced DDoS protection profile, if exists

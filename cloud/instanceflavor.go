@@ -36,7 +36,7 @@ func NewInstanceFlavorService(opts ...option.RequestOption) (r InstanceFlavorSer
 	return
 }
 
-// Retrieve a list of flavors. When the include_prices query parameter is
+// Retrieve a list of flavors. When the `include_prices` query parameter is
 // specified, the list shows prices. A client in trial mode gets all price values
 // as 0. If you get Pricing Error contact the support
 func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) (res *InstanceFlavorList, err error) {
@@ -126,13 +126,13 @@ type InstanceFlavor struct {
 	Vcpus int64 `json:"vcpus,required"`
 	// Number of available instances of given configuration
 	Capacity int64 `json:"capacity,nullable"`
-	// Currency code. Shown if the include_prices query parameter if set to true
+	// Currency code. Shown if the `include_prices` query parameter if set to true
 	CurrencyCode string `json:"currency_code,nullable"`
 	// Additional hardware description
 	HardwareDescription map[string]string `json:"hardware_description"`
-	// Price per hour. Shown if the include_prices query parameter if set to true
+	// Price per hour. Shown if the `include_prices` query parameter if set to true
 	PricePerHour float64 `json:"price_per_hour,nullable"`
-	// Price per month. Shown if the include_prices query parameter if set to true
+	// Price per month. Shown if the `include_prices` query parameter if set to true
 	PricePerMonth float64 `json:"price_per_month,nullable"`
 	// Price status for the UI
 	//
@@ -282,7 +282,8 @@ type InstanceFlavorListSuitableParamsVolume struct {
 	SnapshotID param.Opt[string] `json:"snapshot_id,omitzero"`
 	// Volume ID. Mandatory if volume is pre-existing volume
 	VolumeID param.Opt[string] `json:"volume_id,omitzero"`
-	// One of 'standard', 'ssd_hiiops', 'ssd_local', 'ssd_lowlatency', 'cold', 'ultra'
+	// One of 'standard', '`ssd_hiiops`', '`ssd_local`', '`ssd_lowlatency`', 'cold',
+	// 'ultra'
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`

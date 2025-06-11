@@ -821,7 +821,6 @@ Params Types:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapAPIURLs">WaapAPIURLs</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDetailedDomain">WaapDetailedDomain</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDomainDDOSSettings">WaapDomainDDOSSettings</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDomainSettings">WaapDomainSettings</a>

@@ -256,17 +256,17 @@ type LoadBalancerL7PolicyNewParams struct {
 	// The position of this policy on the listener. Positions start at 1.
 	Position param.Opt[int64] `json:"position,omitzero"`
 	// Requests matching this policy will be redirected to the specified URL or Prefix
-	// URL with the HTTP response code. Valid if action is REDIRECT_TO_URL or
-	// REDIRECT_PREFIX. Valid options are 301, 302, 303, 307, or 308. Default is 302.
+	// URL with the HTTP response code. Valid if action is `REDIRECT_TO_URL` or
+	// `REDIRECT_PREFIX`. Valid options are 301, 302, 303, 307, or 308. Default is 302.
 	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
 	// Requests matching this policy will be redirected to the pool withthis ID. Only
-	// valid if action is REDIRECT_TO_POOL.
+	// valid if action is `REDIRECT_TO_POOL`.
 	RedirectPoolID param.Opt[string] `json:"redirect_pool_id,omitzero"`
 	// Requests matching this policy will be redirected to this Prefix URL. Only valid
-	// if action is REDIRECT_PREFIX.
+	// if action is `REDIRECT_PREFIX`.
 	RedirectPrefix param.Opt[string] `json:"redirect_prefix,omitzero"`
 	// Requests matching this policy will be redirected to this URL. Only valid if
-	// action is REDIRECT_TO_URL.
+	// action is `REDIRECT_TO_URL`.
 	RedirectURL param.Opt[string] `json:"redirect_url,omitzero"`
 	// A list of simple strings assigned to the resource.
 	Tags []string `json:"tags,omitzero"`
@@ -321,17 +321,17 @@ type LoadBalancerL7PolicyReplaceParams struct {
 	// The position of this policy on the listener. Positions start at 1.
 	Position param.Opt[int64] `json:"position,omitzero"`
 	// Requests matching this policy will be redirected to the specified URL or Prefix
-	// URL with the HTTP response code. Valid if action is REDIRECT_TO_URL or
-	// REDIRECT_PREFIX. Valid options are 301, 302, 303, 307, or 308. Default is 302.
+	// URL with the HTTP response code. Valid if action is `REDIRECT_TO_URL` or
+	// `REDIRECT_PREFIX`. Valid options are 301, 302, 303, 307, or 308. Default is 302.
 	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
 	// Requests matching this policy will be redirected to the pool with this ID. Only
-	// valid if action is REDIRECT_TO_POOL.
+	// valid if action is `REDIRECT_TO_POOL`.
 	RedirectPoolID param.Opt[string] `json:"redirect_pool_id,omitzero"`
 	// Requests matching this policy will be redirected to this Prefix URL. Only valid
-	// if action is REDIRECT_PREFIX.
+	// if action is `REDIRECT_PREFIX`.
 	RedirectPrefix param.Opt[string] `json:"redirect_prefix,omitzero"`
 	// Requests matching this policy will be redirected to this URL. Only valid if
-	// action is REDIRECT_TO_URL.
+	// action is `REDIRECT_TO_URL`.
 	RedirectURL param.Opt[string] `json:"redirect_url,omitzero"`
 	// A list of simple strings assigned to the resource.
 	Tags []string `json:"tags,omitzero"`
