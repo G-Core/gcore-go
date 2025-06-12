@@ -177,10 +177,10 @@ func (r *InferenceDeploymentService) GetAPIKey(ctx context.Context, deploymentNa
 
 // This operation initializes an inference deployment after it was stopped, making
 // it available to handle inference requests again. The instance will launch with
-// the \*\*minimum\*\* number of replicas defined in the scaling settings.
+// the **minimum** number of replicas defined in the scaling settings.
 //
-//   - If the minimum replicas are set to \*\*0\*\*, the instance will initially
-//     start with \*\*0\*\* replicas.
+//   - If the minimum replicas are set to **0**, the instance will initially start
+//     with **0** replicas.
 //   - It will automatically scale up when it receives requests or SQS messages,
 //     according to the configured scaling rules.
 func (r *InferenceDeploymentService) Start(ctx context.Context, deploymentName string, body InferenceDeploymentStartParams, opts ...option.RequestOption) (err error) {
@@ -205,13 +205,13 @@ func (r *InferenceDeploymentService) Start(ctx context.Context, deploymentName s
 }
 
 // This operation shuts down an inference deployment, making it unavailable for
-// handling requests. The deployment will scale down to \*\*0\*\* replicas,
-// overriding any minimum replica settings.
+// handling requests. The deployment will scale down to **0** replicas, overriding
+// any minimum replica settings.
 //
-//   - Once stopped, the deployment will \*\*not\*\* process any inference requests
-//     or SQS messages.
-//   - It will \*\*not\*\* restart automatically and must be started manually.
-//   - While stopped, the deployment will \*\*not\*\* incur any charges.
+//   - Once stopped, the deployment will **not** process any inference requests or
+//     SQS messages.
+//   - It will **not** restart automatically and must be started manually.
+//   - While stopped, the deployment will **not** incur any charges.
 func (r *InferenceDeploymentService) Stop(ctx context.Context, deploymentName string, body InferenceDeploymentStopParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -266,8 +266,8 @@ type Inference struct {
 	// Address of the inference instance
 	Address string `json:"address,required" format:"uri"`
 	// `true` if instance uses API key authentication.
-	// `"Authorization": "Bearer \*\*\*\*\*"` or `"X-Api-Key": "\*\*\*\*\*"` header is
-	// required for the requests to the instance if enabled.
+	// `"Authorization": "Bearer ****\*"` or `"X-Api-Key": "****\*"` header is required
+	// for the requests to the instance if enabled.
 	AuthEnabled bool `json:"auth_enabled,required"`
 	// Command to be executed when running a container from an image.
 	Command string `json:"command,required"`
@@ -460,8 +460,8 @@ type InferenceDeploymentNewParams struct {
 	// when the parameter is not set is 120.
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
 	// Set to `true` to enable API key authentication for the inference instance.
-	// `"Authorization": "Bearer \*\*\*\*\*"` or `"X-Api-Key": "\*\*\*\*\*"` header is
-	// required for the requests to the instance if enabled
+	// `"Authorization": "Bearer ****\*"` or `"X-Api-Key": "****\*"` header is required
+	// for the requests to the instance if enabled
 	AuthEnabled param.Opt[bool] `json:"auth_enabled,omitzero"`
 	// Command to be executed when running a container from an image.
 	Command []string `json:"command,omitzero"`
@@ -739,8 +739,8 @@ type InferenceDeploymentUpdateParams struct {
 	// when the parameter is not set is 120.
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
 	// Set to `true` to enable API key authentication for the inference instance.
-	// `"Authorization": "Bearer \*\*\*\*\*"` or `"X-Api-Key": "\*\*\*\*\*"` header is
-	// required for the requests to the instance if enabled
+	// `"Authorization": "Bearer ****\*"` or `"X-Api-Key": "****\*"` header is required
+	// for the requests to the instance if enabled
 	AuthEnabled param.Opt[bool] `json:"auth_enabled,omitzero"`
 	// Flavor name for the inference instance.
 	FlavorName param.Opt[string] `json:"flavor_name,omitzero"`

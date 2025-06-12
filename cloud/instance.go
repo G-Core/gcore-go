@@ -420,7 +420,7 @@ func (r *InstanceService) EnablePortSecurity(ctx context.Context, portID string,
 	return
 }
 
-// \*\*Cookie Parameters\*\*:
+// **Cookie Parameters**:
 //
 //   - `language` (str, optional): Language for the response content. Affects the
 //     `ddos_profile` field. Supported values:
@@ -674,7 +674,7 @@ type InstanceNewParams struct {
 	// List of volumes that will be attached to the instance.
 	Volumes []InstanceNewParamsVolumeUnion `json:"volumes,omitzero,required"`
 	// Specifies the name of the SSH keypair, created via the
-	// [/v1/`ssh_keys` endpoint](#operation/SSHKeyCollectionViewSet.post).
+	// [/v1/`ssh_keys` endpoint](/api-reference/ssh-keys/add-or-generate-ssh-key).
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
 	// Set to `true` if creating the instance from an `apptemplate`. This allows
 	// application ports in the security group for instances created from a marketplace
@@ -1651,7 +1651,7 @@ type InstanceNewParamsVolumeNewVolume struct {
 	//     IOPS: 9000. Max bandwidth: 500 MB/s.
 	//   - `ssd_lowlatency` - SSD storage optimized for low-latency and real-time
 	//     processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and volume
-	//     resizing are \*\*not\*\* supported for `ssd_lowlatency`.
+	//     resizing are **not** supported for `ssd_lowlatency`.
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`
@@ -1693,7 +1693,7 @@ type InstanceNewParamsVolumeImage struct {
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Volume size in GiB.
 	//
-	// - For instances: \*\*specify the desired volume size explicitly\*\*.
+	// - For instances: **specify the desired volume size explicitly**.
 	// - For basic VMs: the size is set automatically based on the flavor.
 	Size param.Opt[int64] `json:"size,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
@@ -1712,7 +1712,7 @@ type InstanceNewParamsVolumeImage struct {
 	//     IOPS: 9000. Max bandwidth: 500 MB/s.
 	//   - `ssd_lowlatency` - SSD storage optimized for low-latency and real-time
 	//     processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and volume
-	//     resizing are \*\*not\*\* supported for `ssd_lowlatency`.
+	//     resizing are **not** supported for `ssd_lowlatency`.
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`
@@ -1820,7 +1820,7 @@ type InstanceNewParamsVolumeApptemplate struct {
 	//     IOPS: 9000. Max bandwidth: 500 MB/s.
 	//   - `ssd_lowlatency` - SSD storage optimized for low-latency and real-time
 	//     processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and volume
-	//     resizing are \*\*not\*\* supported for `ssd_lowlatency`.
+	//     resizing are **not** supported for `ssd_lowlatency`.
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
 	TypeName string `json:"type_name,omitzero"`
