@@ -467,7 +467,7 @@ type BaremetalServerNewParams struct {
 	// interfaces - private, public, or both.
 	Interfaces []BaremetalServerNewParamsInterfaceUnion `json:"interfaces,omitzero,required"`
 	// Specifies the name of the SSH keypair, created via the
-	// [/v1/`ssh_keys` endpoint](#operation/SSHKeyCollectionViewSet.post).
+	// [/v1/`ssh_keys` endpoint](/api-reference/ssh-keys/add-or-generate-ssh-key).
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
 	// Apptemplate ID. Either `image_id` or `apptemplate_id` is required.
 	ApptemplateID param.Opt[string] `json:"apptemplate_id,omitzero"`
