@@ -1,0 +1,1956 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package waap
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"net/url"
+
+	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
+	"github.com/G-Core/gcore-go/internal/requestconfig"
+	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
+	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
+)
+
+// DomainCustomRuleService contains methods and other services that help with
+// interacting with the gcore API.
+//
+// Note, unlike clients, this service does not read variables from the environment
+// automatically. You should not instantiate this service directly, and instead use
+// the [NewDomainCustomRuleService] method instead.
+type DomainCustomRuleService struct {
+	Options []option.RequestOption
+}
+
+// NewDomainCustomRuleService generates a new service that applies the given
+// options to each request. These options are applied after the parent client's
+// options (if there is one), and before any request-specific options.
+func NewDomainCustomRuleService(opts ...option.RequestOption) (r DomainCustomRuleService) {
+	r = DomainCustomRuleService{}
+	r.Options = opts
+	return
+}
+
+// Create a custom rule
+func (r *DomainCustomRuleService) New(ctx context.Context, domainID int64, body DomainCustomRuleNewParams, opts ...option.RequestOption) (res *CustomRule, err error) {
+	opts = append(r.Options[:], opts...)
+	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules", domainID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+// Only properties present in the request will be updated
+func (r *DomainCustomRuleService) Update(ctx context.Context, ruleID int64, params DomainCustomRuleUpdateParams, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/%v", params.DomainID, ruleID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
+	return
+}
+
+// Extracts a list of custom rules assigned to a domain, offering filter, ordering,
+// and pagination capabilities
+func (r *DomainCustomRuleService) List(ctx context.Context, domainID int64, query DomainCustomRuleListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[CustomRule], err error) {
+	var raw *http.Response
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules", domainID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Extracts a list of custom rules assigned to a domain, offering filter, ordering,
+// and pagination capabilities
+func (r *DomainCustomRuleService) ListAutoPaging(ctx context.Context, domainID int64, query DomainCustomRuleListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[CustomRule] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, domainID, query, opts...))
+}
+
+// Delete a custom rule
+func (r *DomainCustomRuleService) Delete(ctx context.Context, ruleID int64, body DomainCustomRuleDeleteParams, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/%v", body.DomainID, ruleID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return
+}
+
+// Delete multiple WAAP rules
+func (r *DomainCustomRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainCustomRuleDeleteMultipleParams, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/bulk_delete", domainID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	return
+}
+
+// Extracts a specific custom rule assigned to a domain
+func (r *DomainCustomRuleService) Get(ctx context.Context, ruleID int64, query DomainCustomRuleGetParams, opts ...option.RequestOption) (res *CustomRule, err error) {
+	opts = append(r.Options[:], opts...)
+	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/%v", query.DomainID, ruleID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
+// Toggle a custom rule
+func (r *DomainCustomRuleService) Toggle(ctx context.Context, action CustomerRuleState, body DomainCustomRuleToggleParams, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/%v/%v", body.DomainID, body.RuleID, action)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, nil, opts...)
+	return
+}
+
+// An WAAP rule applied to a domain
+type CustomRule struct {
+	// The unique identifier for the rule
+	ID int64 `json:"id,required"`
+	// The action that a WAAP rule takes when triggered
+	Action CustomRuleAction `json:"action,required"`
+	// The conditions required for the WAAP engine to trigger the rule. Rules may have
+	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
+	Conditions []CustomRuleCondition `json:"conditions,required"`
+	// Whether or not the rule is enabled
+	Enabled bool `json:"enabled,required"`
+	// The name assigned to the rule
+	Name string `json:"name,required"`
+	// The description assigned to the rule
+	Description string `json:"description,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Action      respjson.Field
+		Conditions  respjson.Field
+		Enabled     respjson.Field
+		Name        respjson.Field
+		Description respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRule) RawJSON() string { return r.JSON.raw }
+func (r *CustomRule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The action that a WAAP rule takes when triggered
+type CustomRuleAction struct {
+	// The WAAP allowed the request
+	Allow any `json:"allow,nullable"`
+	// WAAP block action behavior could be configured with response status code and
+	// action duration.
+	Block CustomRuleActionBlock `json:"block,nullable"`
+	// The WAAP presented the user with a captcha
+	Captcha any `json:"captcha,nullable"`
+	// The WAAP performed automatic browser validation
+	Handshake any `json:"handshake,nullable"`
+	// The WAAP monitored the request but took no action
+	Monitor any `json:"monitor,nullable"`
+	// WAAP tag action gets a list of tags to tag the request scope with
+	Tag CustomRuleActionTag `json:"tag,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Allow       respjson.Field
+		Block       respjson.Field
+		Captcha     respjson.Field
+		Handshake   respjson.Field
+		Monitor     respjson.Field
+		Tag         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleAction) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WAAP block action behavior could be configured with response status code and
+// action duration.
+type CustomRuleActionBlock struct {
+	// How long a rule's block action will apply to subsequent requests. Can be
+	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
+	// represent time format (seconds, minutes, hours, or days)
+	ActionDuration string `json:"action_duration,nullable"`
+	// Designates the HTTP status code to deliver when a request is blocked.
+	//
+	// Any of 403, 405, 418, 429.
+	StatusCode int64 `json:"status_code,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ActionDuration respjson.Field
+		StatusCode     respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleActionBlock) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleActionBlock) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WAAP tag action gets a list of tags to tag the request scope with
+type CustomRuleActionTag struct {
+	// The list of user defined tags to tag the request with
+	Tags []string `json:"tags,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Tags        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleActionTag) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleActionTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The criteria of an incoming web request and the models of the various values
+// those criteria can take
+type CustomRuleCondition struct {
+	// Match the requested Content-Type
+	ContentType CustomRuleConditionContentType `json:"content_type,nullable"`
+	// Match the country that the request originated from
+	Country CustomRuleConditionCountry `json:"country,nullable"`
+	// Match the incoming file extension
+	FileExtension CustomRuleConditionFileExtension `json:"file_extension,nullable"`
+	// Match an incoming request header
+	Header CustomRuleConditionHeader `json:"header,nullable"`
+	// Match when an incoming request header is present
+	HeaderExists CustomRuleConditionHeaderExists `json:"header_exists,nullable"`
+	// Match the incoming HTTP method
+	HTTPMethod CustomRuleConditionHTTPMethod `json:"http_method,nullable"`
+	// Match the incoming request against a single IP address
+	IP CustomRuleConditionIP `json:"ip,nullable"`
+	// Match the incoming request against an IP range
+	IPRange CustomRuleConditionIPRange `json:"ip_range,nullable"`
+	// Match the organization the request originated from, as determined by a WHOIS
+	// lookup of the requesting IP
+	Organization CustomRuleConditionOrganization `json:"organization,nullable"`
+	// Match the type of organization that owns the IP address making an incoming
+	// request
+	OwnerTypes CustomRuleConditionOwnerTypes `json:"owner_types,nullable"`
+	// Match the rate at which requests come in that match certain conditions
+	RequestRate CustomRuleConditionRequestRate `json:"request_rate,nullable"`
+	// Match a response header
+	ResponseHeader CustomRuleConditionResponseHeader `json:"response_header,nullable"`
+	// Match when a response header is present
+	ResponseHeaderExists CustomRuleConditionResponseHeaderExists `json:"response_header_exists,nullable"`
+	// Match the number of dynamic page requests made in a WAAP session
+	SessionRequestCount CustomRuleConditionSessionRequestCount `json:"session_request_count,nullable"`
+	// Matches requests based on specified tags
+	Tags CustomRuleConditionTags `json:"tags,nullable"`
+	// Match the incoming request URL
+	URL CustomRuleConditionURL `json:"url,nullable"`
+	// Match the user agent making the request
+	UserAgent CustomRuleConditionUserAgent `json:"user_agent,nullable"`
+	// Matches requests based on user-defined tags
+	UserDefinedTags CustomRuleConditionUserDefinedTags `json:"user_defined_tags,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContentType          respjson.Field
+		Country              respjson.Field
+		FileExtension        respjson.Field
+		Header               respjson.Field
+		HeaderExists         respjson.Field
+		HTTPMethod           respjson.Field
+		IP                   respjson.Field
+		IPRange              respjson.Field
+		Organization         respjson.Field
+		OwnerTypes           respjson.Field
+		RequestRate          respjson.Field
+		ResponseHeader       respjson.Field
+		ResponseHeaderExists respjson.Field
+		SessionRequestCount  respjson.Field
+		Tags                 respjson.Field
+		URL                  respjson.Field
+		UserAgent            respjson.Field
+		UserDefinedTags      respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleCondition) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the requested Content-Type
+type CustomRuleConditionContentType struct {
+	// The list of content types to match against
+	ContentType []string `json:"content_type,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContentType respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionContentType) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionContentType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the country that the request originated from
+type CustomRuleConditionCountry struct {
+	// A list of ISO 3166-1 alpha-2 formatted strings representing the countries to
+	// match against
+	CountryCode []string `json:"country_code,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CountryCode respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionCountry) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionCountry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming file extension
+type CustomRuleConditionFileExtension struct {
+	// The list of file extensions to match against
+	FileExtension []string `json:"file_extension,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FileExtension respjson.Field
+		Negation      respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionFileExtension) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionFileExtension) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match an incoming request header
+type CustomRuleConditionHeader struct {
+	// The request header name
+	Header string `json:"header,required"`
+	// The request header value
+	Value string `json:"value,required"`
+	// The type of matching condition for header and value.
+	//
+	// Any of "Exact", "Contains".
+	MatchType string `json:"match_type"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Header      respjson.Field
+		Value       respjson.Field
+		MatchType   respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionHeader) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match when an incoming request header is present
+type CustomRuleConditionHeaderExists struct {
+	// The request header name
+	Header string `json:"header,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Header      respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionHeaderExists) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionHeaderExists) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming HTTP method
+type CustomRuleConditionHTTPMethod struct {
+	// HTTP methods and descriptions Methods from the following RFCs are all observed:
+	//
+	// - RFC 7231: Hypertext Transfer Protocol (HTTP/1.1), obsoletes 2616
+	// - RFC 5789: PATCH Method for HTTP
+	//
+	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
+	// "TRACE".
+	HTTPMethod string `json:"http_method,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HTTPMethod  respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionHTTPMethod) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionHTTPMethod) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming request against a single IP address
+type CustomRuleConditionIP struct {
+	// A single IPv4 or IPv6 address
+	IPAddress string `json:"ip_address,required" format:"ipv4"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IPAddress   respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionIP) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming request against an IP range
+type CustomRuleConditionIPRange struct {
+	// The lower bound IPv4 or IPv6 address to match against
+	LowerBound string `json:"lower_bound,required" format:"ipv4"`
+	// The upper bound IPv4 or IPv6 address to match against
+	UpperBound string `json:"upper_bound,required" format:"ipv4"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		LowerBound  respjson.Field
+		UpperBound  respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionIPRange) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionIPRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the organization the request originated from, as determined by a WHOIS
+// lookup of the requesting IP
+type CustomRuleConditionOrganization struct {
+	// The organization to match against
+	Organization string `json:"organization,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Organization respjson.Field
+		Negation     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionOrganization) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionOrganization) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the type of organization that owns the IP address making an incoming
+// request
+type CustomRuleConditionOwnerTypes struct {
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// Match the type of organization that owns the IP address making an incoming
+	// request
+	//
+	// Any of "COMMERCIAL", "EDUCATIONAL", "GOVERNMENT", "HOSTING_SERVICES", "ISP",
+	// "MOBILE_NETWORK", "NETWORK", "RESERVED".
+	OwnerTypes []string `json:"owner_types"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Negation    respjson.Field
+		OwnerTypes  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionOwnerTypes) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionOwnerTypes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the rate at which requests come in that match certain conditions
+type CustomRuleConditionRequestRate struct {
+	// A regular expression matching the URL path of the incoming request
+	PathPattern string `json:"path_pattern,required"`
+	// The number of incoming requests over the given time that can trigger a request
+	// rate condition
+	Requests int64 `json:"requests,required"`
+	// The number of seconds that the WAAP measures incoming requests over before
+	// triggering a request rate condition
+	Time int64 `json:"time,required"`
+	// Possible HTTP request methods that can trigger a request rate condition
+	//
+	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
+	// "TRACE".
+	HTTPMethods []string `json:"http_methods,nullable"`
+	// A list of source IPs that can trigger a request rate condition
+	IPs []string `json:"ips,nullable" format:"ipv4"`
+	// A user-defined tag that can be included in incoming requests and used to trigger
+	// a request rate condition
+	UserDefinedTag string `json:"user_defined_tag,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PathPattern    respjson.Field
+		Requests       respjson.Field
+		Time           respjson.Field
+		HTTPMethods    respjson.Field
+		IPs            respjson.Field
+		UserDefinedTag respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionRequestRate) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionRequestRate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match a response header
+type CustomRuleConditionResponseHeader struct {
+	// The response header name
+	Header string `json:"header,required"`
+	// The response header value
+	Value string `json:"value,required"`
+	// The type of matching condition for header and value.
+	//
+	// Any of "Exact", "Contains".
+	MatchType string `json:"match_type"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Header      respjson.Field
+		Value       respjson.Field
+		MatchType   respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionResponseHeader) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionResponseHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match when a response header is present
+type CustomRuleConditionResponseHeaderExists struct {
+	// The response header name
+	Header string `json:"header,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Header      respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionResponseHeaderExists) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionResponseHeaderExists) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the number of dynamic page requests made in a WAAP session
+type CustomRuleConditionSessionRequestCount struct {
+	// The number of dynamic requests in the session
+	RequestCount int64 `json:"request_count,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RequestCount respjson.Field
+		Negation     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionSessionRequestCount) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionSessionRequestCount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Matches requests based on specified tags
+type CustomRuleConditionTags struct {
+	// A list of tags to match against the request tags
+	Tags []string `json:"tags,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Tags        respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionTags) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionTags) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming request URL
+type CustomRuleConditionURL struct {
+	// The pattern to match against the request URL. If `match_type` is `Regex` the
+	// value must be a valid regular expression that does not use lookahead or
+	// lookbehind constructs
+	URL string `json:"url,required"`
+	// The type of matching condition.
+	//
+	// Any of "Exact", "Contains", "Regex".
+	MatchType string `json:"match_type"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		MatchType   respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionURL) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the user agent making the request
+type CustomRuleConditionUserAgent struct {
+	// The user agent value to match
+	UserAgent string `json:"user_agent,required"`
+	// The type of matching condition.
+	//
+	// Any of "Exact", "Contains".
+	MatchType string `json:"match_type"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		UserAgent   respjson.Field
+		MatchType   respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionUserAgent) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionUserAgent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Matches requests based on user-defined tags
+type CustomRuleConditionUserDefinedTags struct {
+	// A list of user-defined tags to match against the request tags
+	Tags []string `json:"tags,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Tags        respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CustomRuleConditionUserDefinedTags) RawJSON() string { return r.JSON.raw }
+func (r *CustomRuleConditionUserDefinedTags) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DomainCustomRuleNewParams struct {
+	// The action that a WAAP rule takes when triggered
+	Action DomainCustomRuleNewParamsAction `json:"action,omitzero,required"`
+	// The conditions required for the WAAP engine to trigger the rule. Rules may have
+	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
+	Conditions []DomainCustomRuleNewParamsCondition `json:"conditions,omitzero,required"`
+	// Whether or not the rule is enabled
+	Enabled bool `json:"enabled,required"`
+	// The name assigned to the rule
+	Name string `json:"name,required"`
+	// The description assigned to the rule
+	Description param.Opt[string] `json:"description,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The action that a WAAP rule takes when triggered
+type DomainCustomRuleNewParamsAction struct {
+	// The WAAP allowed the request
+	Allow any `json:"allow,omitzero"`
+	// WAAP block action behavior could be configured with response status code and
+	// action duration.
+	Block DomainCustomRuleNewParamsActionBlock `json:"block,omitzero"`
+	// The WAAP presented the user with a captcha
+	Captcha any `json:"captcha,omitzero"`
+	// The WAAP performed automatic browser validation
+	Handshake any `json:"handshake,omitzero"`
+	// The WAAP monitored the request but took no action
+	Monitor any `json:"monitor,omitzero"`
+	// WAAP tag action gets a list of tags to tag the request scope with
+	Tag DomainCustomRuleNewParamsActionTag `json:"tag,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsAction) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsAction
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WAAP block action behavior could be configured with response status code and
+// action duration.
+type DomainCustomRuleNewParamsActionBlock struct {
+	// How long a rule's block action will apply to subsequent requests. Can be
+	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
+	// represent time format (seconds, minutes, hours, or days)
+	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
+	// Designates the HTTP status code to deliver when a request is blocked.
+	//
+	// Any of 403, 405, 418, 429.
+	StatusCode int64 `json:"status_code,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsActionBlock) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsActionBlock
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsActionBlock) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DomainCustomRuleNewParamsActionBlock](
+		"status_code", 403, 405, 418, 429,
+	)
+}
+
+// WAAP tag action gets a list of tags to tag the request scope with
+//
+// The property Tags is required.
+type DomainCustomRuleNewParamsActionTag struct {
+	// The list of user defined tags to tag the request with
+	Tags []string `json:"tags,omitzero,required"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsActionTag) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsActionTag
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsActionTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The criteria of an incoming web request and the models of the various values
+// those criteria can take
+type DomainCustomRuleNewParamsCondition struct {
+	// Match the requested Content-Type
+	ContentType DomainCustomRuleNewParamsConditionContentType `json:"content_type,omitzero"`
+	// Match the country that the request originated from
+	Country DomainCustomRuleNewParamsConditionCountry `json:"country,omitzero"`
+	// Match the incoming file extension
+	FileExtension DomainCustomRuleNewParamsConditionFileExtension `json:"file_extension,omitzero"`
+	// Match an incoming request header
+	Header DomainCustomRuleNewParamsConditionHeader `json:"header,omitzero"`
+	// Match when an incoming request header is present
+	HeaderExists DomainCustomRuleNewParamsConditionHeaderExists `json:"header_exists,omitzero"`
+	// Match the incoming HTTP method
+	HTTPMethod DomainCustomRuleNewParamsConditionHTTPMethod `json:"http_method,omitzero"`
+	// Match the incoming request against a single IP address
+	IP DomainCustomRuleNewParamsConditionIP `json:"ip,omitzero"`
+	// Match the incoming request against an IP range
+	IPRange DomainCustomRuleNewParamsConditionIPRange `json:"ip_range,omitzero"`
+	// Match the organization the request originated from, as determined by a WHOIS
+	// lookup of the requesting IP
+	Organization DomainCustomRuleNewParamsConditionOrganization `json:"organization,omitzero"`
+	// Match the type of organization that owns the IP address making an incoming
+	// request
+	OwnerTypes DomainCustomRuleNewParamsConditionOwnerTypes `json:"owner_types,omitzero"`
+	// Match the rate at which requests come in that match certain conditions
+	RequestRate DomainCustomRuleNewParamsConditionRequestRate `json:"request_rate,omitzero"`
+	// Match a response header
+	ResponseHeader DomainCustomRuleNewParamsConditionResponseHeader `json:"response_header,omitzero"`
+	// Match when a response header is present
+	ResponseHeaderExists DomainCustomRuleNewParamsConditionResponseHeaderExists `json:"response_header_exists,omitzero"`
+	// Match the number of dynamic page requests made in a WAAP session
+	SessionRequestCount DomainCustomRuleNewParamsConditionSessionRequestCount `json:"session_request_count,omitzero"`
+	// Matches requests based on specified tags
+	Tags DomainCustomRuleNewParamsConditionTags `json:"tags,omitzero"`
+	// Match the incoming request URL
+	URL DomainCustomRuleNewParamsConditionURL `json:"url,omitzero"`
+	// Match the user agent making the request
+	UserAgent DomainCustomRuleNewParamsConditionUserAgent `json:"user_agent,omitzero"`
+	// Matches requests based on user-defined tags
+	UserDefinedTags DomainCustomRuleNewParamsConditionUserDefinedTags `json:"user_defined_tags,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsCondition) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsCondition
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the requested Content-Type
+//
+// The property ContentType is required.
+type DomainCustomRuleNewParamsConditionContentType struct {
+	// The list of content types to match against
+	ContentType []string `json:"content_type,omitzero,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionContentType) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionContentType
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionContentType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the country that the request originated from
+//
+// The property CountryCode is required.
+type DomainCustomRuleNewParamsConditionCountry struct {
+	// A list of ISO 3166-1 alpha-2 formatted strings representing the countries to
+	// match against
+	CountryCode []string `json:"country_code,omitzero,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionCountry) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionCountry
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionCountry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming file extension
+//
+// The property FileExtension is required.
+type DomainCustomRuleNewParamsConditionFileExtension struct {
+	// The list of file extensions to match against
+	FileExtension []string `json:"file_extension,omitzero,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionFileExtension) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionFileExtension
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionFileExtension) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match an incoming request header
+//
+// The properties Header, Value are required.
+type DomainCustomRuleNewParamsConditionHeader struct {
+	// The request header name
+	Header string `json:"header,required"`
+	// The request header value
+	Value string `json:"value,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	// The type of matching condition for header and value.
+	//
+	// Any of "Exact", "Contains".
+	MatchType string `json:"match_type,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionHeader) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DomainCustomRuleNewParamsConditionHeader](
+		"match_type", "Exact", "Contains",
+	)
+}
+
+// Match when an incoming request header is present
+//
+// The property Header is required.
+type DomainCustomRuleNewParamsConditionHeaderExists struct {
+	// The request header name
+	Header string `json:"header,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionHeaderExists) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionHeaderExists
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionHeaderExists) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming HTTP method
+//
+// The property HTTPMethod is required.
+type DomainCustomRuleNewParamsConditionHTTPMethod struct {
+	// HTTP methods and descriptions Methods from the following RFCs are all observed:
+	//
+	// - RFC 7231: Hypertext Transfer Protocol (HTTP/1.1), obsoletes 2616
+	// - RFC 5789: PATCH Method for HTTP
+	//
+	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
+	// "TRACE".
+	HTTPMethod string `json:"http_method,omitzero,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionHTTPMethod) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionHTTPMethod
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionHTTPMethod) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DomainCustomRuleNewParamsConditionHTTPMethod](
+		"http_method", "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE",
+	)
+}
+
+// Match the incoming request against a single IP address
+//
+// The property IPAddress is required.
+type DomainCustomRuleNewParamsConditionIP struct {
+	// A single IPv4 or IPv6 address
+	IPAddress string `json:"ip_address,required" format:"ipv4"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionIP) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionIP
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming request against an IP range
+//
+// The properties LowerBound, UpperBound are required.
+type DomainCustomRuleNewParamsConditionIPRange struct {
+	// The lower bound IPv4 or IPv6 address to match against
+	LowerBound string `json:"lower_bound,required" format:"ipv4"`
+	// The upper bound IPv4 or IPv6 address to match against
+	UpperBound string `json:"upper_bound,required" format:"ipv4"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionIPRange) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionIPRange
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionIPRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the organization the request originated from, as determined by a WHOIS
+// lookup of the requesting IP
+//
+// The property Organization is required.
+type DomainCustomRuleNewParamsConditionOrganization struct {
+	// The organization to match against
+	Organization string `json:"organization,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionOrganization) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionOrganization
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionOrganization) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the type of organization that owns the IP address making an incoming
+// request
+type DomainCustomRuleNewParamsConditionOwnerTypes struct {
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	// Match the type of organization that owns the IP address making an incoming
+	// request
+	//
+	// Any of "COMMERCIAL", "EDUCATIONAL", "GOVERNMENT", "HOSTING_SERVICES", "ISP",
+	// "MOBILE_NETWORK", "NETWORK", "RESERVED".
+	OwnerTypes []string `json:"owner_types,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionOwnerTypes) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionOwnerTypes
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionOwnerTypes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the rate at which requests come in that match certain conditions
+//
+// The properties PathPattern, Requests, Time are required.
+type DomainCustomRuleNewParamsConditionRequestRate struct {
+	// A regular expression matching the URL path of the incoming request
+	PathPattern string `json:"path_pattern,required"`
+	// The number of incoming requests over the given time that can trigger a request
+	// rate condition
+	Requests int64 `json:"requests,required"`
+	// The number of seconds that the WAAP measures incoming requests over before
+	// triggering a request rate condition
+	Time int64 `json:"time,required"`
+	// A user-defined tag that can be included in incoming requests and used to trigger
+	// a request rate condition
+	UserDefinedTag param.Opt[string] `json:"user_defined_tag,omitzero"`
+	// Possible HTTP request methods that can trigger a request rate condition
+	//
+	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
+	// "TRACE".
+	HTTPMethods []string `json:"http_methods,omitzero"`
+	// A list of source IPs that can trigger a request rate condition
+	IPs []string `json:"ips,omitzero" format:"ipv4"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionRequestRate) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionRequestRate
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionRequestRate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match a response header
+//
+// The properties Header, Value are required.
+type DomainCustomRuleNewParamsConditionResponseHeader struct {
+	// The response header name
+	Header string `json:"header,required"`
+	// The response header value
+	Value string `json:"value,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	// The type of matching condition for header and value.
+	//
+	// Any of "Exact", "Contains".
+	MatchType string `json:"match_type,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionResponseHeader) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionResponseHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionResponseHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DomainCustomRuleNewParamsConditionResponseHeader](
+		"match_type", "Exact", "Contains",
+	)
+}
+
+// Match when a response header is present
+//
+// The property Header is required.
+type DomainCustomRuleNewParamsConditionResponseHeaderExists struct {
+	// The response header name
+	Header string `json:"header,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionResponseHeaderExists) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionResponseHeaderExists
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionResponseHeaderExists) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the number of dynamic page requests made in a WAAP session
+//
+// The property RequestCount is required.
+type DomainCustomRuleNewParamsConditionSessionRequestCount struct {
+	// The number of dynamic requests in the session
+	RequestCount int64 `json:"request_count,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionSessionRequestCount) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionSessionRequestCount
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionSessionRequestCount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Matches requests based on specified tags
+//
+// The property Tags is required.
+type DomainCustomRuleNewParamsConditionTags struct {
+	// A list of tags to match against the request tags
+	Tags []string `json:"tags,omitzero,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionTags) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionTags
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionTags) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming request URL
+//
+// The property URL is required.
+type DomainCustomRuleNewParamsConditionURL struct {
+	// The pattern to match against the request URL. If `match_type` is `Regex` the
+	// value must be a valid regular expression that does not use lookahead or
+	// lookbehind constructs
+	URL string `json:"url,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	// The type of matching condition.
+	//
+	// Any of "Exact", "Contains", "Regex".
+	MatchType string `json:"match_type,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionURL) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionURL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DomainCustomRuleNewParamsConditionURL](
+		"match_type", "Exact", "Contains", "Regex",
+	)
+}
+
+// Match the user agent making the request
+//
+// The property UserAgent is required.
+type DomainCustomRuleNewParamsConditionUserAgent struct {
+	// The user agent value to match
+	UserAgent string `json:"user_agent,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	// The type of matching condition.
+	//
+	// Any of "Exact", "Contains".
+	MatchType string `json:"match_type,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionUserAgent) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionUserAgent
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionUserAgent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DomainCustomRuleNewParamsConditionUserAgent](
+		"match_type", "Exact", "Contains",
+	)
+}
+
+// Matches requests based on user-defined tags
+//
+// The property Tags is required.
+type DomainCustomRuleNewParamsConditionUserDefinedTags struct {
+	// A list of user-defined tags to match against the request tags
+	Tags []string `json:"tags,omitzero,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionUserDefinedTags) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionUserDefinedTags
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionUserDefinedTags) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DomainCustomRuleUpdateParams struct {
+	// The domain ID
+	DomainID int64 `path:"domain_id,required" json:"-"`
+	// The description assigned to the rule
+	Description param.Opt[string] `json:"description,omitzero"`
+	// Whether or not the rule is enabled
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// The name assigned to the rule
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The action that a WAAP rule takes when triggered
+	Action DomainCustomRuleUpdateParamsAction `json:"action,omitzero"`
+	// The conditions required for the WAAP engine to trigger the rule. Rules may have
+	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
+	Conditions []DomainCustomRuleUpdateParamsCondition `json:"conditions,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The action that a WAAP rule takes when triggered
+type DomainCustomRuleUpdateParamsAction struct {
+	// The WAAP allowed the request
+	Allow any `json:"allow,omitzero"`
+	// WAAP block action behavior could be configured with response status code and
+	// action duration.
+	Block DomainCustomRuleUpdateParamsActionBlock `json:"block,omitzero"`
+	// The WAAP presented the user with a captcha
+	Captcha any `json:"captcha,omitzero"`
+	// The WAAP performed automatic browser validation
+	Handshake any `json:"handshake,omitzero"`
+	// The WAAP monitored the request but took no action
+	Monitor any `json:"monitor,omitzero"`
+	// WAAP tag action gets a list of tags to tag the request scope with
+	Tag DomainCustomRuleUpdateParamsActionTag `json:"tag,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsAction) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsAction
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WAAP block action behavior could be configured with response status code and
+// action duration.
+type DomainCustomRuleUpdateParamsActionBlock struct {
+	// How long a rule's block action will apply to subsequent requests. Can be
+	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
+	// represent time format (seconds, minutes, hours, or days)
+	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
+	// Designates the HTTP status code to deliver when a request is blocked.
+	//
+	// Any of 403, 405, 418, 429.
+	StatusCode int64 `json:"status_code,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsActionBlock) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsActionBlock
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsActionBlock) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DomainCustomRuleUpdateParamsActionBlock](
+		"status_code", 403, 405, 418, 429,
+	)
+}
+
+// WAAP tag action gets a list of tags to tag the request scope with
+//
+// The property Tags is required.
+type DomainCustomRuleUpdateParamsActionTag struct {
+	// The list of user defined tags to tag the request with
+	Tags []string `json:"tags,omitzero,required"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsActionTag) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsActionTag
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsActionTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The criteria of an incoming web request and the models of the various values
+// those criteria can take
+type DomainCustomRuleUpdateParamsCondition struct {
+	// Match the requested Content-Type
+	ContentType DomainCustomRuleUpdateParamsConditionContentType `json:"content_type,omitzero"`
+	// Match the country that the request originated from
+	Country DomainCustomRuleUpdateParamsConditionCountry `json:"country,omitzero"`
+	// Match the incoming file extension
+	FileExtension DomainCustomRuleUpdateParamsConditionFileExtension `json:"file_extension,omitzero"`
+	// Match an incoming request header
+	Header DomainCustomRuleUpdateParamsConditionHeader `json:"header,omitzero"`
+	// Match when an incoming request header is present
+	HeaderExists DomainCustomRuleUpdateParamsConditionHeaderExists `json:"header_exists,omitzero"`
+	// Match the incoming HTTP method
+	HTTPMethod DomainCustomRuleUpdateParamsConditionHTTPMethod `json:"http_method,omitzero"`
+	// Match the incoming request against a single IP address
+	IP DomainCustomRuleUpdateParamsConditionIP `json:"ip,omitzero"`
+	// Match the incoming request against an IP range
+	IPRange DomainCustomRuleUpdateParamsConditionIPRange `json:"ip_range,omitzero"`
+	// Match the organization the request originated from, as determined by a WHOIS
+	// lookup of the requesting IP
+	Organization DomainCustomRuleUpdateParamsConditionOrganization `json:"organization,omitzero"`
+	// Match the type of organization that owns the IP address making an incoming
+	// request
+	OwnerTypes DomainCustomRuleUpdateParamsConditionOwnerTypes `json:"owner_types,omitzero"`
+	// Match the rate at which requests come in that match certain conditions
+	RequestRate DomainCustomRuleUpdateParamsConditionRequestRate `json:"request_rate,omitzero"`
+	// Match a response header
+	ResponseHeader DomainCustomRuleUpdateParamsConditionResponseHeader `json:"response_header,omitzero"`
+	// Match when a response header is present
+	ResponseHeaderExists DomainCustomRuleUpdateParamsConditionResponseHeaderExists `json:"response_header_exists,omitzero"`
+	// Match the number of dynamic page requests made in a WAAP session
+	SessionRequestCount DomainCustomRuleUpdateParamsConditionSessionRequestCount `json:"session_request_count,omitzero"`
+	// Matches requests based on specified tags
+	Tags DomainCustomRuleUpdateParamsConditionTags `json:"tags,omitzero"`
+	// Match the incoming request URL
+	URL DomainCustomRuleUpdateParamsConditionURL `json:"url,omitzero"`
+	// Match the user agent making the request
+	UserAgent DomainCustomRuleUpdateParamsConditionUserAgent `json:"user_agent,omitzero"`
+	// Matches requests based on user-defined tags
+	UserDefinedTags DomainCustomRuleUpdateParamsConditionUserDefinedTags `json:"user_defined_tags,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsCondition) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsCondition
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the requested Content-Type
+//
+// The property ContentType is required.
+type DomainCustomRuleUpdateParamsConditionContentType struct {
+	// The list of content types to match against
+	ContentType []string `json:"content_type,omitzero,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionContentType) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionContentType
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionContentType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the country that the request originated from
+//
+// The property CountryCode is required.
+type DomainCustomRuleUpdateParamsConditionCountry struct {
+	// A list of ISO 3166-1 alpha-2 formatted strings representing the countries to
+	// match against
+	CountryCode []string `json:"country_code,omitzero,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionCountry) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionCountry
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionCountry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming file extension
+//
+// The property FileExtension is required.
+type DomainCustomRuleUpdateParamsConditionFileExtension struct {
+	// The list of file extensions to match against
+	FileExtension []string `json:"file_extension,omitzero,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionFileExtension) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionFileExtension
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionFileExtension) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match an incoming request header
+//
+// The properties Header, Value are required.
+type DomainCustomRuleUpdateParamsConditionHeader struct {
+	// The request header name
+	Header string `json:"header,required"`
+	// The request header value
+	Value string `json:"value,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	// The type of matching condition for header and value.
+	//
+	// Any of "Exact", "Contains".
+	MatchType string `json:"match_type,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionHeader) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DomainCustomRuleUpdateParamsConditionHeader](
+		"match_type", "Exact", "Contains",
+	)
+}
+
+// Match when an incoming request header is present
+//
+// The property Header is required.
+type DomainCustomRuleUpdateParamsConditionHeaderExists struct {
+	// The request header name
+	Header string `json:"header,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionHeaderExists) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionHeaderExists
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionHeaderExists) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming HTTP method
+//
+// The property HTTPMethod is required.
+type DomainCustomRuleUpdateParamsConditionHTTPMethod struct {
+	// HTTP methods and descriptions Methods from the following RFCs are all observed:
+	//
+	// - RFC 7231: Hypertext Transfer Protocol (HTTP/1.1), obsoletes 2616
+	// - RFC 5789: PATCH Method for HTTP
+	//
+	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
+	// "TRACE".
+	HTTPMethod string `json:"http_method,omitzero,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionHTTPMethod) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionHTTPMethod
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionHTTPMethod) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DomainCustomRuleUpdateParamsConditionHTTPMethod](
+		"http_method", "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE",
+	)
+}
+
+// Match the incoming request against a single IP address
+//
+// The property IPAddress is required.
+type DomainCustomRuleUpdateParamsConditionIP struct {
+	// A single IPv4 or IPv6 address
+	IPAddress string `json:"ip_address,required" format:"ipv4"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionIP) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionIP
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming request against an IP range
+//
+// The properties LowerBound, UpperBound are required.
+type DomainCustomRuleUpdateParamsConditionIPRange struct {
+	// The lower bound IPv4 or IPv6 address to match against
+	LowerBound string `json:"lower_bound,required" format:"ipv4"`
+	// The upper bound IPv4 or IPv6 address to match against
+	UpperBound string `json:"upper_bound,required" format:"ipv4"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionIPRange) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionIPRange
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionIPRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the organization the request originated from, as determined by a WHOIS
+// lookup of the requesting IP
+//
+// The property Organization is required.
+type DomainCustomRuleUpdateParamsConditionOrganization struct {
+	// The organization to match against
+	Organization string `json:"organization,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionOrganization) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionOrganization
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionOrganization) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the type of organization that owns the IP address making an incoming
+// request
+type DomainCustomRuleUpdateParamsConditionOwnerTypes struct {
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	// Match the type of organization that owns the IP address making an incoming
+	// request
+	//
+	// Any of "COMMERCIAL", "EDUCATIONAL", "GOVERNMENT", "HOSTING_SERVICES", "ISP",
+	// "MOBILE_NETWORK", "NETWORK", "RESERVED".
+	OwnerTypes []string `json:"owner_types,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionOwnerTypes) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionOwnerTypes
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionOwnerTypes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the rate at which requests come in that match certain conditions
+//
+// The properties PathPattern, Requests, Time are required.
+type DomainCustomRuleUpdateParamsConditionRequestRate struct {
+	// A regular expression matching the URL path of the incoming request
+	PathPattern string `json:"path_pattern,required"`
+	// The number of incoming requests over the given time that can trigger a request
+	// rate condition
+	Requests int64 `json:"requests,required"`
+	// The number of seconds that the WAAP measures incoming requests over before
+	// triggering a request rate condition
+	Time int64 `json:"time,required"`
+	// A user-defined tag that can be included in incoming requests and used to trigger
+	// a request rate condition
+	UserDefinedTag param.Opt[string] `json:"user_defined_tag,omitzero"`
+	// Possible HTTP request methods that can trigger a request rate condition
+	//
+	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
+	// "TRACE".
+	HTTPMethods []string `json:"http_methods,omitzero"`
+	// A list of source IPs that can trigger a request rate condition
+	IPs []string `json:"ips,omitzero" format:"ipv4"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionRequestRate) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionRequestRate
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionRequestRate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match a response header
+//
+// The properties Header, Value are required.
+type DomainCustomRuleUpdateParamsConditionResponseHeader struct {
+	// The response header name
+	Header string `json:"header,required"`
+	// The response header value
+	Value string `json:"value,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	// The type of matching condition for header and value.
+	//
+	// Any of "Exact", "Contains".
+	MatchType string `json:"match_type,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionResponseHeader) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionResponseHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionResponseHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DomainCustomRuleUpdateParamsConditionResponseHeader](
+		"match_type", "Exact", "Contains",
+	)
+}
+
+// Match when a response header is present
+//
+// The property Header is required.
+type DomainCustomRuleUpdateParamsConditionResponseHeaderExists struct {
+	// The response header name
+	Header string `json:"header,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionResponseHeaderExists) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionResponseHeaderExists
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionResponseHeaderExists) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the number of dynamic page requests made in a WAAP session
+//
+// The property RequestCount is required.
+type DomainCustomRuleUpdateParamsConditionSessionRequestCount struct {
+	// The number of dynamic requests in the session
+	RequestCount int64 `json:"request_count,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionSessionRequestCount) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionSessionRequestCount
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionSessionRequestCount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Matches requests based on specified tags
+//
+// The property Tags is required.
+type DomainCustomRuleUpdateParamsConditionTags struct {
+	// A list of tags to match against the request tags
+	Tags []string `json:"tags,omitzero,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionTags) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionTags
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionTags) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming request URL
+//
+// The property URL is required.
+type DomainCustomRuleUpdateParamsConditionURL struct {
+	// The pattern to match against the request URL. If `match_type` is `Regex` the
+	// value must be a valid regular expression that does not use lookahead or
+	// lookbehind constructs
+	URL string `json:"url,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	// The type of matching condition.
+	//
+	// Any of "Exact", "Contains", "Regex".
+	MatchType string `json:"match_type,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionURL) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionURL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DomainCustomRuleUpdateParamsConditionURL](
+		"match_type", "Exact", "Contains", "Regex",
+	)
+}
+
+// Match the user agent making the request
+//
+// The property UserAgent is required.
+type DomainCustomRuleUpdateParamsConditionUserAgent struct {
+	// The user agent value to match
+	UserAgent string `json:"user_agent,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	// The type of matching condition.
+	//
+	// Any of "Exact", "Contains".
+	MatchType string `json:"match_type,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionUserAgent) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionUserAgent
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionUserAgent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DomainCustomRuleUpdateParamsConditionUserAgent](
+		"match_type", "Exact", "Contains",
+	)
+}
+
+// Matches requests based on user-defined tags
+//
+// The property Tags is required.
+type DomainCustomRuleUpdateParamsConditionUserDefinedTags struct {
+	// A list of user-defined tags to match against the request tags
+	Tags []string `json:"tags,omitzero,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionUserDefinedTags) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionUserDefinedTags
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionUserDefinedTags) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DomainCustomRuleListParams struct {
+	// Filter rules based on their description. Supports '\*' as a wildcard character.
+	Description param.Opt[string] `query:"description,omitzero" json:"-"`
+	// Filter rules based on their active status
+	Enabled param.Opt[bool] `query:"enabled,omitzero" json:"-"`
+	// Number of items to return
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter rules based on their name. Supports '\*' as a wildcard character.
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
+	// Number of items to skip
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Determine the field to order results by
+	//
+	// Any of "id", "name", "description", "enabled", "action", "-id", "-name",
+	// "-description", "-enabled", "-action".
+	Ordering DomainCustomRuleListParamsOrdering `query:"ordering,omitzero" json:"-"`
+	// Filter to refine results by specific actions
+	//
+	// Any of "allow", "block", "captcha", "handshake", "monitor", "tag".
+	Action RuleActionType `query:"action,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [DomainCustomRuleListParams]'s query parameters as
+// `url.Values`.
+func (r DomainCustomRuleListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Determine the field to order results by
+type DomainCustomRuleListParamsOrdering string
+
+const (
+	DomainCustomRuleListParamsOrderingID               DomainCustomRuleListParamsOrdering = "id"
+	DomainCustomRuleListParamsOrderingName             DomainCustomRuleListParamsOrdering = "name"
+	DomainCustomRuleListParamsOrderingDescription      DomainCustomRuleListParamsOrdering = "description"
+	DomainCustomRuleListParamsOrderingEnabled          DomainCustomRuleListParamsOrdering = "enabled"
+	DomainCustomRuleListParamsOrderingAction           DomainCustomRuleListParamsOrdering = "action"
+	DomainCustomRuleListParamsOrderingMinusID          DomainCustomRuleListParamsOrdering = "-id"
+	DomainCustomRuleListParamsOrderingMinusName        DomainCustomRuleListParamsOrdering = "-name"
+	DomainCustomRuleListParamsOrderingMinusDescription DomainCustomRuleListParamsOrdering = "-description"
+	DomainCustomRuleListParamsOrderingMinusEnabled     DomainCustomRuleListParamsOrdering = "-enabled"
+	DomainCustomRuleListParamsOrderingMinusAction      DomainCustomRuleListParamsOrdering = "-action"
+)
+
+type DomainCustomRuleDeleteParams struct {
+	// The domain ID
+	DomainID int64 `path:"domain_id,required" json:"-"`
+	paramObj
+}
+
+type DomainCustomRuleDeleteMultipleParams struct {
+	// The IDs of the rules to delete
+	RuleIDs []int64 `json:"rule_ids,omitzero,required"`
+	paramObj
+}
+
+func (r DomainCustomRuleDeleteMultipleParams) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleDeleteMultipleParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleDeleteMultipleParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DomainCustomRuleGetParams struct {
+	// The domain ID
+	DomainID int64 `path:"domain_id,required" json:"-"`
+	paramObj
+}
+
+type DomainCustomRuleToggleParams struct {
+	// The domain ID
+	DomainID int64 `path:"domain_id,required" json:"-"`
+	// The custom rule ID
+	RuleID int64 `path:"rule_id,required" json:"-"`
+	paramObj
+}

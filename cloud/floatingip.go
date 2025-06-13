@@ -291,7 +291,7 @@ func (r *FloatingIPDetailed) UnmarshalJSON(data []byte) error {
 type FloatingIPDetailedInstance struct {
 	// Instance ID
 	ID string `json:"id,required" format:"uuid4"`
-	// Map of network_name to list of addresses in that network
+	// Map of `network_name` to list of addresses in that network
 	Addresses map[string][]FloatingIPDetailedInstanceAddressUnion `json:"addresses,required"`
 	// Datetime when instance was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
@@ -517,10 +517,10 @@ type FloatingIPListParams struct {
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
-	// "tag_key_value={"key": "value"}" --url
+	// "`tag_key_value`={"key": "value"}" --url
 	// "https://example.com/cloud/v1/resource/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// Optional. Filter by tag keys. ?tag_key=key1&tag_key=key2
+	// Optional. Filter by tag keys. ?`tag_key`=key1&`tag_key`=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }

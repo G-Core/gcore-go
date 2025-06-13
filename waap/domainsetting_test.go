@@ -32,6 +32,7 @@ func TestDomainSettingUpdateWithOptionalParams(t *testing.T) {
 		waap.DomainSettingUpdateParams{
 			API: waap.DomainSettingUpdateParamsAPI{
 				APIURLs: []string{"api/v1/.*", "v2/.*"},
+				IsAPI:   gcore.Bool(true),
 			},
 			DDOS: waap.DomainSettingUpdateParamsDDOS{
 				BurstThreshold:  gcore.Int(30),

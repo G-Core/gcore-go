@@ -4,6 +4,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -76,7 +77,7 @@ func (r *AwsIamData) UnmarshalJSON(data []byte) error {
 // be used at the last possible moment before sending a request. Test for this with
 // AwsIamDataParam.Overrides()
 func (r AwsIamData) ToParam() AwsIamDataParam {
-	return param.Override[AwsIamDataParam](r.RawJSON())
+	return param.Override[AwsIamDataParam](json.RawMessage(r.RawJSON()))
 }
 
 // The properties AwsAccessKeyID, AwsSecretAccessKey are required.
@@ -157,7 +158,7 @@ func (r *ContainerProbe) UnmarshalJSON(data []byte) error {
 type ContainerProbeConfig struct {
 	// Whether the probe is enabled or not.
 	Enabled bool `json:"enabled,required"`
-	// Probe configuration (exec, http_get or tcp_socket)
+	// Probe configuration (exec, `http_get` or `tcp_socket`)
 	Probe ContainerProbe `json:"probe,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -178,7 +179,7 @@ func (r *ContainerProbeConfig) UnmarshalJSON(data []byte) error {
 type ContainerProbeConfigCreateParam struct {
 	// Whether the probe is enabled or not.
 	Enabled bool `json:"enabled,required"`
-	// Probe configuration (exec, http_get or tcp_socket)
+	// Probe configuration (exec, `http_get` or `tcp_socket`)
 	Probe ContainerProbeCreateParam `json:"probe,omitzero"`
 	paramObj
 }
@@ -442,9 +443,11 @@ func (r *ContainerScaleTriggerThreshold) UnmarshalJSON(data []byte) error {
 type ContainerScaleTriggers struct {
 	// CPU trigger configuration
 	CPU ContainerScaleTriggerThreshold `json:"cpu,required"`
-	// GPU memory trigger configuration. Calculated by DCGM_FI_DEV_MEM_COPY_UTIL metric
+	// GPU memory trigger configuration. Calculated by `DCGM_FI_DEV_MEM_COPY_UTIL`
+	// metric
 	GPUMemory ContainerScaleTriggerThreshold `json:"gpu_memory,required"`
-	// GPU utilization trigger configuration. Calculated by DCGM_FI_DEV_GPU_UTIL metric
+	// GPU utilization trigger configuration. Calculated by `DCGM_FI_DEV_GPU_UTIL`
+	// metric
 	GPUUtilization ContainerScaleTriggerThreshold `json:"gpu_utilization,required"`
 	// HTTP trigger configuration
 	HTTP ContainerScaleTriggerRate `json:"http,required"`

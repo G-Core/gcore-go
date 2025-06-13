@@ -244,7 +244,7 @@ type NetworkListParams struct {
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
-	// "tag_key_value={"key": "value"}" --url
+	// "`tag_key_value`={"key": "value"}" --url
 	// "https://example.com/cloud/v1/resource/1/1"
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Ordering networks list result by `name`, `created_at` fields of the network and
@@ -252,7 +252,7 @@ type NetworkListParams struct {
 	//
 	// Any of "created_at.asc", "created_at.desc", "name.asc", "name.desc".
 	OrderBy NetworkListParamsOrderBy `query:"order_by,omitzero" json:"-"`
-	// Optional. Filter by tag keys. ?tag_key=key1&tag_key=key2
+	// Optional. Filter by tag keys. ?`tag_key`=key1&`tag_key`=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }

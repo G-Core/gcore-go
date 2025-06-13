@@ -223,7 +223,7 @@ type GPUBaremetalClusterImageUploadParams struct {
 	// When True, image cannot be deleted unless all volumes, created from it, are
 	// deleted.
 	CowFormat param.Opt[bool] `json:"cow_format,omitzero"`
-	// Image architecture type: aarch64, x86_64
+	// Image architecture type: aarch64, `x86_64`
 	//
 	// Any of "aarch64", "x86_64".
 	Architecture GPUBaremetalClusterImageUploadParamsArchitecture `json:"architecture,omitzero"`
@@ -256,7 +256,7 @@ func (r *GPUBaremetalClusterImageUploadParams) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Image architecture type: aarch64, x86_64
+// Image architecture type: aarch64, `x86_64`
 type GPUBaremetalClusterImageUploadParamsArchitecture string
 
 const (

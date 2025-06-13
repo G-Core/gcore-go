@@ -287,15 +287,15 @@ type LoadBalancerListenerNewParams struct {
 	// Limit of the simultaneous connections
 	ConnectionLimit param.Opt[int64] `json:"connection_limit,omitzero"`
 	// Add headers X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto to requests.
-	// Only used with HTTP or TERMINATED_HTTPS protocols.
+	// Only used with HTTP or `TERMINATED_HTTPS` protocols.
 	InsertXForwarded param.Opt[bool] `json:"insert_x_forwarded,omitzero"`
-	// ID of the secret where PKCS12 file is stored for TERMINATED_HTTPS or PROMETHEUS
-	// listener
+	// ID of the secret where PKCS12 file is stored for `TERMINATED_HTTPS` or
+	// PROMETHEUS listener
 	SecretID param.Opt[string] `json:"secret_id,omitzero"`
 	// Network CIDRs from which service will be accessible
 	AllowedCidrs []string `json:"allowed_cidrs,omitzero" format:"ipvanynetwork"`
 	// List of secrets IDs containing PKCS12 format certificate/key bundles for
-	// TERMINATED_HTTPS or PROMETHEUS listeners
+	// `TERMINATED_HTTPS` or PROMETHEUS listeners
 	SniSecretID []string `json:"sni_secret_id,omitzero" format:"uuid4"`
 	// Load balancer listener list of username and encrypted password items
 	UserList []LoadBalancerListenerNewParamsUserList `json:"user_list,omitzero"`
@@ -332,8 +332,8 @@ type LoadBalancerListenerUpdateParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// ID of the secret where PKCS12 file is stored for TERMINATED_HTTPS or PROMETHEUS
-	// load balancer
+	// ID of the secret where PKCS12 file is stored for `TERMINATED_HTTPS` or
+	// PROMETHEUS load balancer
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
 	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
@@ -348,7 +348,7 @@ type LoadBalancerListenerUpdateParams struct {
 	// Network CIDRs from which service will be accessible
 	AllowedCidrs []string `json:"allowed_cidrs,omitzero" format:"ipvanynetwork"`
 	// List of secret's ID containing PKCS12 format certificate/key bundfles for
-	// TERMINATED_HTTPS or PROMETHEUS listeners
+	// `TERMINATED_HTTPS` or PROMETHEUS listeners
 	SniSecretID []string `json:"sni_secret_id,omitzero" format:"uuid4"`
 	// Load balancer listener users list
 	UserList []LoadBalancerListenerUpdateParamsUserList `json:"user_list,omitzero"`

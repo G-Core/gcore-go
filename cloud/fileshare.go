@@ -365,7 +365,7 @@ type FileShareNewParams struct {
 }
 
 func (u FileShareNewParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[FileShareNewParams](u.OfCreateStandardFileShareSerializer, u.OfCreateVastFileShareSerializer)
+	return param.MarshalUnion(u, u.OfCreateStandardFileShareSerializer, u.OfCreateVastFileShareSerializer)
 }
 func (r *FileShareNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)

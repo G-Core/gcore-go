@@ -402,7 +402,7 @@ type NetworkRouterNewParamsExternalGatewayInfoUnion struct {
 }
 
 func (u NetworkRouterNewParamsExternalGatewayInfoUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion[NetworkRouterNewParamsExternalGatewayInfoUnion](u.OfRouterExternalManualGwSerializer, u.OfRouterExternalDefaultGwSerializer)
+	return param.MarshalUnion(u, u.OfRouterExternalManualGwSerializer, u.OfRouterExternalDefaultGwSerializer)
 }
 func (u *NetworkRouterNewParamsExternalGatewayInfoUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
