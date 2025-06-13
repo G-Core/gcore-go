@@ -4,41 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
-	"strconv"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
-	"github.com/G-Core/gcore-go/option"
 )
-
-func main() {
-	// No need to pass the API key explicitly — it will automatically be read from the GCORE_API_KEY environment variable if omitted
-	//apiKey := os.Getenv("GCORE_API_KEY")
-	// Will use Production API URL if omitted
-	//baseURL := os.Getenv("GCORE_BASE_URL")
-
-	// TODO set cloud project ID before running
-	cloudProjectID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
-	if err != nil {
-		log.Fatalf("GCORE_CLOUD_PROJECT_ID environment variable is required and must be a valid integer")
-	}
-
-	client := gcore.NewClient(
-		//option.WithAPIKey(apiKey),
-		//option.WithBaseURL(baseURL),
-		option.WithCloudProjectID(cloudProjectID),
-	)
-
-	// Create a router and use its ID for other operations
-	routerID := createRouter(&client)
-	listAllRouters(&client)
-	listRoutersWithFilters(&client)
-	listRoutersWithAutopager(&client)
-	getRouterByID(&client, routerID)
-	updateRouter(&client, routerID)
-	deleteRouter(&client, routerID)
-}
 
 func createRouter(client *gcore.Client) string {
 	fmt.Println("\n=== CREATE ROUTER ===")
