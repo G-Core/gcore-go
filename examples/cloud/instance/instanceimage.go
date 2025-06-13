@@ -4,54 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
-	"strconv"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
-	"github.com/G-Core/gcore-go/option"
 )
-
-func main() {
-	// No need to pass the API key explicitly — it will automatically be read from the GCORE_API_KEY environment variable if omitted
-	//apiKey := os.Getenv("GCORE_API_KEY")
-	// Will use Production API URL if omitted
-	//baseURL := os.Getenv("GCORE_BASE_URL")
-
-	// TODO set cloud project ID before running
-	cloudProjectID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_PROJECT_ID"), 10, 64)
-	if err != nil {
-		log.Fatalf("GCORE_CLOUD_PROJECT_ID environment variable is required and must be a valid integer")
-	}
-
-	// TODO set cloud region ID before running
-	cloudRegionID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_REGION_ID"), 10, 64)
-	if err != nil {
-		log.Fatalf("GCORE_CLOUD_REGION_ID environment variable is required and must be a valid integer")
-	}
-
-	client := gcore.NewClient(
-		//option.WithAPIKey(apiKey),
-		//option.WithBaseURL(baseURL),
-		option.WithCloudProjectID(cloudProjectID),
-		option.WithCloudRegionID(cloudRegionID),
-	)
-
-	// TODO set bootable volume ID before running
-	volumeID := os.Getenv("GCORE_CLOUD_VOLUME_ID")
-	if volumeID == "" {
-		log.Fatalf("GCORE_CLOUD_VOLUME_ID environment variable is not set")
-	}
-
-	// Create an image from volume and use its ID for other operations
-	volumeImageID := createImageFromVolume(&client, volumeID)
-	uploadedImageID := uploadImage(&client)
-	listImages(&client)
-	getImage(&client, volumeImageID)
-	updateImage(&client, volumeImageID)
-	deleteImage(&client, uploadedImageID)
-	deleteImage(&client, volumeImageID)
-}
 
 func createImageFromVolume(client *gcore.Client, volumeID string) string {
 	fmt.Println("\n=== CREATE IMAGE FROM VOLUME ===")
@@ -90,7 +46,7 @@ func uploadImage(client *gcore.Client) string {
 		log.Fatalf("Error uploading image: %v", err)
 	}
 
-	fmt.Printf("Uploaded Image ID: %s\n", image.ID)
+	fmt.Printf("Uploaded Image: ID=%s, Name=%s, OS Type=%s, Arch=%s, Status=%s, Size=%d\n", image.ID, image.Name, image.OsType, image.Architecture, image.Status, image.Size)
 	fmt.Println("====================")
 
 	return image.ID
@@ -101,11 +57,22 @@ func listImages(client *gcore.Client) {
 
 	imageList, err := client.Cloud.Instances.Images.List(context.Background(), cloud.InstanceImageListParams{})
 	if err != nil {
-		log.Fatalf("Error listing images: %v", err)
+		fmt.Printf("Error listing images: %v\n", err)
+		return
 	}
 
-	for i, img := range imageList.Results {
+	displayCount := 3
+	if len(imageList.Results) < displayCount {
+		displayCount = len(imageList.Results)
+	}
+
+	for i := 0; i < displayCount; i++ {
+		img := imageList.Results[i]
 		fmt.Printf("  %d. Image ID: %s, Name: %s, OS Type: %s, Status: %s\n", i+1, img.ID, img.Name, img.OsType, img.Status)
+	}
+
+	if len(imageList.Results) > displayCount {
+		fmt.Printf("  ... and %d more images\n", len(imageList.Results)-displayCount)
 	}
 
 	fmt.Println("=======================")
@@ -116,7 +83,8 @@ func getImage(client *gcore.Client, imageID string) {
 
 	image, err := client.Cloud.Instances.Images.Get(context.Background(), imageID, cloud.InstanceImageGetParams{})
 	if err != nil {
-		log.Fatalf("Error getting image: %v", err)
+		fmt.Printf("Error getting image: %v\n", err)
+		return
 	}
 
 	fmt.Printf("Image ID: %s, Name: %s, OS Type: %s, Status: %s\n", image.ID, image.Name, image.OsType, image.Status)
@@ -132,7 +100,8 @@ func updateImage(client *gcore.Client, imageID string) {
 
 	updatedImage, err := client.Cloud.Instances.Images.Update(context.Background(), imageID, params)
 	if err != nil {
-		log.Fatalf("Error updating image: %v", err)
+		fmt.Printf("Error updating image: %v\n", err)
+		return
 	}
 
 	fmt.Printf("Updated Image ID: %s, Name: %s\n", updatedImage.ID, updatedImage.Name)
