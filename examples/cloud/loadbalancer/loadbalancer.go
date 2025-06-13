@@ -42,13 +42,18 @@ func main() {
 	loadBalancer := createLoadBalancer(&client)
 	listLoadBalancers(&client)
 	listLoadBalancersWithAutoPager(&client)
-	listLoadBalancerStatuses(&client)
-	getLoadBalancerByID(&client, loadBalancer.ID)
-	getLoadBalancerStatus(&client, loadBalancer.ID)
-	getLoadBalancerMetrics(&client, loadBalancer.ID)
 	updateLoadBalancer(&client, loadBalancer.ID)
 	resizeLoadBalancer(&client, loadBalancer.ID)
 	failoverLoadBalancer(&client, loadBalancer.ID)
+
+	// Statuses
+	listLoadBalancerStatuses(&client)
+	getLoadBalancerByID(&client, loadBalancer.ID)
+	getLoadBalancerStatus(&client, loadBalancer.ID)
+
+	// Metrics
+	getLoadBalancerMetrics(&client, loadBalancer.ID)
+
 	deleteLoadBalancer(&client, loadBalancer.ID)
 }
 
@@ -117,27 +122,6 @@ func listLoadBalancersWithAutoPager(client *gcore.Client) {
 	fmt.Println("==============================================")
 }
 
-func listLoadBalancerStatuses(client *gcore.Client) {
-	fmt.Println("\n=== LIST LOAD BALANCER STATUSES ===")
-
-	params := cloud.LoadBalancerStatusListParams{}
-	statuses, err := client.Cloud.LoadBalancers.Statuses.List(context.Background(), params)
-	if err != nil {
-		log.Fatalf("Error getting load balancer statuses: %v", err)
-	}
-
-	for i, status := range statuses.Results {
-		fmt.Printf("  %d. Load Balancer Status: ID=%s, OperatingStatus=%s, ProvisioningStatus=%s\n",
-			i+1, status.ID, status.OperatingStatus, status.ProvisioningStatus)
-	}
-
-	if len(statuses.Results) == 0 {
-		fmt.Println("  No load balancer statuses found.")
-	}
-
-	fmt.Println("====================================")
-}
-
 func getLoadBalancerByID(client *gcore.Client, loadBalancerID string) {
 	fmt.Println("\n=== GET LOAD BALANCER BY ID ===")
 
@@ -149,46 +133,6 @@ func getLoadBalancerByID(client *gcore.Client, loadBalancerID string) {
 	fmt.Printf("Load Balancer: ID=%s, Name=%s, Status=%s, Flavor=%s\n",
 		loadBalancer.ID, loadBalancer.Name, loadBalancer.ProvisioningStatus, loadBalancer.Flavor.FlavorName)
 	fmt.Println("================================")
-}
-
-func getLoadBalancerStatus(client *gcore.Client, loadBalancerID string) {
-	fmt.Println("\n=== GET LOAD BALANCER STATUS ===")
-
-	params := cloud.LoadBalancerStatusGetParams{}
-	status, err := client.Cloud.LoadBalancers.Statuses.Get(context.Background(), loadBalancerID, params)
-	if err != nil {
-		log.Fatalf("Error getting load balancer status: %v", err)
-	}
-
-	fmt.Printf("Load Balancer Status: ID=%s, OperatingStatus=%s, ProvisioningStatus=%s\n",
-		status.ID, status.OperatingStatus, status.ProvisioningStatus)
-	fmt.Println("=================================")
-}
-
-func getLoadBalancerMetrics(client *gcore.Client, loadBalancerID string) {
-	fmt.Println("\n=== GET LOAD BALANCER METRICS ===")
-
-	params := cloud.LoadBalancerMetricListParams{
-		TimeInterval: 1,
-		TimeUnit:     cloud.InstanceMetricsTimeUnitHour,
-	}
-
-	metrics, err := client.Cloud.LoadBalancers.Metrics.List(context.Background(), loadBalancerID, params)
-	if err != nil {
-		log.Fatalf("Error getting load balancer metrics: %v", err)
-	}
-
-	fmt.Printf("Load Balancer Metrics for ID %s:\n", loadBalancerID)
-	for i, metric := range metrics.Results {
-		fmt.Printf("  %d. Metric: CPUUtil=%.2f%%, MemoryUtil=%.2f%%, Time=%s\n",
-			i+1, metric.CPUUtil, metric.MemoryUtil, metric.Time)
-	}
-
-	if len(metrics.Results) == 0 {
-		fmt.Println("  No metrics found.")
-	}
-
-	fmt.Println("==================================")
 }
 
 func updateLoadBalancer(client *gcore.Client, loadBalancerID string) {
