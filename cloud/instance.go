@@ -497,7 +497,7 @@ type InstanceNewParams struct {
 	// List of volumes that will be attached to the instance.
 	Volumes []InstanceNewParamsVolumeUnion `json:"volumes,omitzero,required"`
 	// Specifies the name of the SSH keypair, created via the
-	// [/v1/`ssh_keys` endpoint](/api-reference/ssh-keys/add-or-generate-ssh-key).
+	// [/v1/`ssh_keys` endpoint](/docs/api-reference/ssh-keys/add-or-generate-ssh-key).
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
 	// Set to `true` if creating the instance from an `apptemplate`. This allows
 	// application ports in the security group for instances created from a marketplace

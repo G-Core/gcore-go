@@ -1066,7 +1066,7 @@ type GPUBaremetalClusterNewParams struct {
 	// instance
 	Password param.Opt[string] `json:"password,omitzero"`
 	// Specifies the name of the SSH keypair, created via the
-	// [/v1/`ssh_keys` endpoint](/api-reference/ssh-keys/add-or-generate-ssh-key).
+	// [/v1/`ssh_keys` endpoint](/docs/api-reference/ssh-keys/add-or-generate-ssh-key).
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
 	// String in base64 format. Must not be passed together with 'username' or
 	// 'password'. Examples of the `user_data`:
