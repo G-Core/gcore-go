@@ -1,5 +1,52 @@
 # Changelog
 
+## 0.3.0 (2025-06-17)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/G-Core/gcore-go/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* **api:** aggregated API specs update ([c6e1502](https://github.com/G-Core/gcore-go/commit/c6e1502b417c5903d9e8c3e919267501eab56a8a))
+* **api:** aggregated API specs update ([bc5dd64](https://github.com/G-Core/gcore-go/commit/bc5dd6460a07248d5661fc41aa8b5e7cb6161aaa))
+* **api:** manual upload of aggregated API specs ([2ee8aeb](https://github.com/G-Core/gcore-go/commit/2ee8aebe900d1481d0a0feba573e803a532b8355))
+* **api:** manual upload of aggregated API specs ([5ba0d9c](https://github.com/G-Core/gcore-go/commit/5ba0d9c30393d03c3b7e5ff4ae5861a77b257064))
+* **client:** add debug log helper ([a0fb055](https://github.com/G-Core/gcore-go/commit/a0fb05502ff9ee51a2afb19d1f09622de361cb33))
+* **client:** allow overriding unions ([3f5ba85](https://github.com/G-Core/gcore-go/commit/3f5ba8548708290885441fe4cd211055692ba340))
+* **cloud,ssh_keys:** pass envs for SSH key examples ([#69](https://github.com/G-Core/gcore-go/issues/69)) ([04f9c92](https://github.com/G-Core/gcore-go/commit/04f9c921bac748ddd0955c88c7e22a57715c47ba))
+* **cloud:** add file share access rules examples ([2c6c7c1](https://github.com/G-Core/gcore-go/commit/2c6c7c1aa66583a28f380a1a4c124c940a8f0d42))
+* **cloud:** add file shares examples ([#60](https://github.com/G-Core/gcore-go/issues/60)) ([7c0534b](https://github.com/G-Core/gcore-go/commit/7c0534b2843926fcf5661d01c04cc40871aef780))
+* **cloud:** add floating IPs example ([#67](https://github.com/G-Core/gcore-go/issues/67)) ([dda87a6](https://github.com/G-Core/gcore-go/commit/dda87a6dce05ed91dd882473ca8084a671efb76c))
+* **cloud:** add images examples ([#61](https://github.com/G-Core/gcore-go/issues/61)) ([adc3dce](https://github.com/G-Core/gcore-go/commit/adc3dcef99d59c575246bde2ad3cf94a34c71174))
+* **cloud:** add instances examples ([99a2e89](https://github.com/G-Core/gcore-go/commit/99a2e89c6eaa2b81d6b5a42dfc24432d89cc24cd))
+* **cloud:** add loadbalancers examples ([9e55398](https://github.com/G-Core/gcore-go/commit/9e553989c28f3a137b4b13bff717926535b19edf))
+* **cloud:** add networks and subnets examples ([7db4151](https://github.com/G-Core/gcore-go/commit/7db4151c459231048e09e9fcb08e26a4e914921e))
+* **cloud:** add quotas examples ([#57](https://github.com/G-Core/gcore-go/issues/57)) ([d038e72](https://github.com/G-Core/gcore-go/commit/d038e72a2642d58c73322ef0fce7ffef27d606a4))
+* **cloud:** add volumes examples ([#51](https://github.com/G-Core/gcore-go/issues/51)) ([fa4f0b0](https://github.com/G-Core/gcore-go/commit/fa4f0b04d3313c89f9a0a754ef9883123d24a8e1))
+* **cloud:** implement routers examples ([#56](https://github.com/G-Core/gcore-go/issues/56)) ([74bec88](https://github.com/G-Core/gcore-go/commit/74bec8827e7af08bdbaa0de3669f13aa10263203))
+* **cloud:** move all network examples into 1 dir ([af8160b](https://github.com/G-Core/gcore-go/commit/af8160bddab7fa7b3ff36aa66e0058e4957cfabb))
+* **cloud:** rename network examples dir ([52940c6](https://github.com/G-Core/gcore-go/commit/52940c665ea0ef1d4663d4357ed70b9980663e12))
+* **cloud:** rename tag in floating ips example ([#73](https://github.com/G-Core/gcore-go/issues/73)) ([c448846](https://github.com/G-Core/gcore-go/commit/c448846691fa4037e61a0bba9d6b2df0974e1e40))
+* **cloud:** unify naming in examples ([#75](https://github.com/G-Core/gcore-go/issues/75)) ([0b7eb27](https://github.com/G-Core/gcore-go/commit/0b7eb271c2f5338352c59ddc25397a3342e1a391))
+* **cloud:** use *AndPoll methods in images examples ([#74](https://github.com/G-Core/gcore-go/issues/74)) ([5a863ce](https://github.com/G-Core/gcore-go/commit/5a863ce75d42b38b006e5099562252828b920e61))
+* **reserved_ips:** adapt examples for reserved fixed IPs ([#66](https://github.com/G-Core/gcore-go/issues/66)) ([239e47c](https://github.com/G-Core/gcore-go/commit/239e47cb4cdf5e9c172bd874f3da29fbca84edee))
+* **security_groups:** implement security groups example ([#68](https://github.com/G-Core/gcore-go/issues/68)) ([245fad4](https://github.com/G-Core/gcore-go/commit/245fad46bdfb7aa9ecd92d12acb81e780b45f464))
+* **waap:** add domain analytics, api_paths, insights and insight_silences; and ip_info ([2d8985f](https://github.com/G-Core/gcore-go/commit/2d8985fe47e02e8a6384f4064b78ea79d04b425a))
+* **waap:** add domain custom, firewall and advanced rules; custom page sets, advanced rules and tags ([94727ea](https://github.com/G-Core/gcore-go/commit/94727ea439330ba09de47b4c226e15a692dc3113))
+
+
+### Bug Fixes
+
+* **client:** cast to raw message when converting to params ([e4b7ca1](https://github.com/G-Core/gcore-go/commit/e4b7ca1dc57ca9f24b8628a773e9588120897a6a))
+* **cloud:** fix GCORE_BASE_URL env name in examples ([7ffed44](https://github.com/G-Core/gcore-go/commit/7ffed440d1afb7aaf50975e4b6616292f3046504))
+
+
+### Chores
+
+* **change-detection:** filter newly generated files ([f5afaca](https://github.com/G-Core/gcore-go/commit/f5afaca1ad7c39001c5f45e9bf2c7a86f7c13f5e))
+* **ci:** enable for pull requests ([6b54e43](https://github.com/G-Core/gcore-go/commit/6b54e43c57e2660dbc6c42193f09f7f38ef62985))
+* **cloud:** rename example files ([a4bd5bc](https://github.com/G-Core/gcore-go/commit/a4bd5bc009560b05d76a8e9fbe59a17f7ffed668))
+* **cloud:** split examples into multiple files ([824c5ba](https://github.com/G-Core/gcore-go/commit/824c5ba10b20e2ee9fc5b9d179c9f9ce73036b86))
+
 ## 0.2.0 (2025-05-31)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/G-Core/gcore-go/compare/v0.1.0...v0.2.0)
