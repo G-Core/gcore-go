@@ -43,8 +43,8 @@ func TestGPUBaremetalClusterNewWithOptionalParams(t *testing.T) {
 		InstancesCount: gcore.Int(1),
 		Password:       gcore.String("password"),
 		SSHKeyName:     gcore.String("my-ssh-key"),
-		Tags: cloud.TagUpdateMap{
-			"foo": "my-tag-value",
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
 		},
 		UserData: gcore.String("user_data"),
 		Username: gcore.String("username"),

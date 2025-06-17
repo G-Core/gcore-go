@@ -88,6 +88,9 @@ func TestSecurityGroupUpdateWithOptionalParams(t *testing.T) {
 				SecurityGroupRuleID: gcore.String("00000000-0000-4000-8000-000000000000"),
 			}},
 			Name: gcore.String("some_name"),
+			Tags: cloud.TagUpdateMap{
+				"foo": "my-tag-value",
+			},
 		},
 	)
 	if err != nil {

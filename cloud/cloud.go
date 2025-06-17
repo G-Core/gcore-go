@@ -318,9 +318,9 @@ type DDOSProfile struct {
 	// DDoS profile template description
 	ProfileTemplateDescription string `json:"profile_template_description,nullable"`
 	// List of protocols
-	Protocols []any             `json:"protocols,nullable"`
-	Site      string            `json:"site,nullable"`
-	Status    DDOSProfileStatus `json:"status,nullable"`
+	Protocols []DDOSProfileProtocol `json:"protocols,nullable"`
+	Site      string                `json:"site,nullable"`
+	Status    DDOSProfileStatus     `json:"status,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                         respjson.Field
@@ -339,6 +339,24 @@ type DDOSProfile struct {
 // Returns the unmodified JSON received from the API
 func (r DDOSProfile) RawJSON() string { return r.JSON.raw }
 func (r *DDOSProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DDOSProfileProtocol struct {
+	Port      string   `json:"port,required"`
+	Protocols []string `json:"protocols,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Port        respjson.Field
+		Protocols   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DDOSProfileProtocol) RawJSON() string { return r.JSON.raw }
+func (r *DDOSProfileProtocol) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -505,7 +505,7 @@ type BaremetalServerNewParams struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateMap `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -1139,10 +1139,8 @@ func (r *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting) Unm
 //
 // The property ProfileTemplate is required.
 type BaremetalServerNewParamsDDOSProfile struct {
-	// DDoS profile template ID
+	// Advanced DDoS template ID
 	ProfileTemplate int64 `json:"profile_template,required"`
-	// DDoS profile template name
-	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// DDoS profile parameters
 	Fields []BaremetalServerNewParamsDDOSProfileField `json:"fields,omitzero"`
 	paramObj
@@ -1162,6 +1160,8 @@ type BaremetalServerNewParamsDDOSProfileField struct {
 	// Name of DDoS profile field
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
 	// Basic type value. Only one of 'value' or '`field_value`' must be specified.
+	//
+	// Deprecated: deprecated
 	Value param.Opt[string] `json:"value,omitzero"`
 	// Complex value. Only one of 'value' or '`field_value`' must be specified.
 	FieldValue BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion `json:"field_value,omitzero"`

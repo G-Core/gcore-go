@@ -58,7 +58,7 @@ func (r *NetworkSubnetService) New(ctx context.Context, params NetworkSubnetNewP
 	return
 }
 
-// Change subnet properties
+// Update subnet
 func (r *NetworkSubnetService) Update(ctx context.Context, subnetID string, params NetworkSubnetUpdateParams, opts ...option.RequestOption) (res *Subnet, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -212,7 +212,7 @@ type NetworkSubnetNewParams struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateMap `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -260,6 +260,23 @@ type NetworkSubnetUpdateParams struct {
 	DNSNameservers []string `json:"dns_nameservers,omitzero" format:"ipvanyaddress"`
 	// List of custom static routes to advertise via DHCP.
 	HostRoutes []NetworkSubnetUpdateParamsHostRoute `json:"host_routes,omitzero"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', '`cost_center`': 'engineering', '`deprecated_tag`': null}}`
+	//     adds/updates 'environment' and '`cost_center`' while removing
+	//     '`deprecated_tag`', preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
 
