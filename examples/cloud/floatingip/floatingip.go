@@ -31,6 +31,12 @@ func main() {
 		log.Fatalf("GCORE_CLOUD_REGION_ID environment variable is required and must be a valid integer")
 	}
 
+	// TODO set cloud port ID before running
+	portID := os.Getenv("GCORE_CLOUD_PORT_ID")
+	if portID == "" {
+		log.Fatalf("GCORE_CLOUD_PORT_ID environment variable is required")
+	}
+
 	client := gcore.NewClient(
 		//option.WithAPIKey(apiKey),
 		//option.WithBaseURL(baseURL),
@@ -42,7 +48,7 @@ func main() {
 	floatingIP := createFloatingIP(&client)
 	listAllFloatingIPs(&client)
 	getFloatingIPByID(&client, floatingIP.ID)
-	assignFloatingIP(&client, floatingIP.ID, "f827a969-faa9-49c4-9d06-268ccfd1f256")
+	assignFloatingIP(&client, floatingIP.ID, portID)
 	unassignFloatingIP(&client, floatingIP.ID)
 	deleteFloatingIP(&client, floatingIP.ID)
 }
