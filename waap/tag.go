@@ -7,13 +7,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
-	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // TagService contains methods and other services that help with interacting with
@@ -37,7 +35,7 @@ func NewTagService(opts ...option.RequestOption) (r TagService) {
 
 // Tags are shortcuts for the rules used in WAAP policies for the creation of more
 // complex WAAP rules
-func (r *TagService) List(ctx context.Context, query TagListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Tag], err error) {
+func (r *TagService) List(ctx context.Context, query TagListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapTag], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -56,33 +54,8 @@ func (r *TagService) List(ctx context.Context, query TagListParams, opts ...opti
 
 // Tags are shortcuts for the rules used in WAAP policies for the creation of more
 // complex WAAP rules
-func (r *TagService) ListAutoPaging(ctx context.Context, query TagListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Tag] {
+func (r *TagService) ListAutoPaging(ctx context.Context, query TagListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapTag] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
-}
-
-// Tags provide shortcuts for the rules used in WAAP policies for the creation of
-// more complex WAAP rules.
-type Tag struct {
-	// A tag's human readable description
-	Description string `json:"description,required"`
-	// The name of a tag that should be used in a WAAP rule condition
-	Name string `json:"name,required"`
-	// The display name of the tag
-	ReadableName string `json:"readable_name,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Description  respjson.Field
-		Name         respjson.Field
-		ReadableName respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Tag) RawJSON() string { return r.JSON.raw }
-func (r *Tag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type TagListParams struct {

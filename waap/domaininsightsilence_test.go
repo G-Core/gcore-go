@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/internal/testutil"
@@ -14,7 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/waap"
 )
 
-func TestDomainUpdateWithOptionalParams(t *testing.T) {
+func TestDomainInsightSilenceNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,11 +27,17 @@ func TestDomainUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.Update(
+	_, err := client.Waap.Domains.InsightSilences.New(
 		context.TODO(),
 		0,
-		waap.DomainUpdateParams{
-			Status: waap.DomainUpdateParamsStatusActive,
+		waap.DomainInsightSilenceNewParams{
+			Author:      "author",
+			Comment:     "comment",
+			InsightType: "insight_type",
+			Labels: map[string]string{
+				"foo": "string",
+			},
+			ExpireAt: gcore.Time(time.Now()),
 		},
 	)
 	if err != nil {
@@ -42,7 +49,7 @@ func TestDomainUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestDomainListWithOptionalParams(t *testing.T) {
+func TestDomainInsightSilenceUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -54,14 +61,19 @@ func TestDomainListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.List(context.TODO(), waap.DomainListParams{
-		IDs:      []int64{0},
-		Limit:    gcore.Int(0),
-		Name:     gcore.String("name"),
-		Offset:   gcore.Int(0),
-		Ordering: waap.DomainListParamsOrderingID,
-		Status:   waap.WaapDomainStatusActive,
-	})
+	_, err := client.Waap.Domains.InsightSilences.Update(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		waap.DomainInsightSilenceUpdateParams{
+			DomainID: 0,
+			Author:   "author",
+			Comment:  "comment",
+			ExpireAt: gcore.Time(time.Now()),
+			Labels: map[string]string{
+				"foo": "string",
+			},
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -71,7 +83,7 @@ func TestDomainListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestDomainDelete(t *testing.T) {
+func TestDomainInsightSilenceListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -83,7 +95,19 @@ func TestDomainDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.Delete(context.TODO(), 0)
+	_, err := client.Waap.Domains.InsightSilences.List(
+		context.TODO(),
+		0,
+		waap.DomainInsightSilenceListParams{
+			ID:          []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+			Author:      gcore.String("author"),
+			Comment:     gcore.String("comment"),
+			InsightType: []string{"string", "string"},
+			Limit:       gcore.Int(0),
+			Offset:      gcore.Int(0),
+			Ordering:    waap.WaapInsightSilenceSortByID,
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -93,7 +117,7 @@ func TestDomainDelete(t *testing.T) {
 	}
 }
 
-func TestDomainGet(t *testing.T) {
+func TestDomainInsightSilenceDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -105,7 +129,13 @@ func TestDomainGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.Get(context.TODO(), 0)
+	err := client.Waap.Domains.InsightSilences.Delete(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		waap.DomainInsightSilenceDeleteParams{
+			DomainID: 0,
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -115,7 +145,7 @@ func TestDomainGet(t *testing.T) {
 	}
 }
 
-func TestDomainListRuleSets(t *testing.T) {
+func TestDomainInsightSilenceGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -127,7 +157,13 @@ func TestDomainListRuleSets(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.ListRuleSets(context.TODO(), 0)
+	_, err := client.Waap.Domains.InsightSilences.Get(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		waap.DomainInsightSilenceGetParams{
+			DomainID: 0,
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

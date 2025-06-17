@@ -287,7 +287,7 @@ func TestDomainCustomRuleListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		waap.DomainCustomRuleListParams{
-			Action:      waap.RuleActionTypeAllow,
+			Action:      waap.WaapRuleActionTypeAllow,
 			Description: gcore.String("description"),
 			Enabled:     gcore.Bool(true),
 			Limit:       gcore.Int(0),
@@ -403,7 +403,7 @@ func TestDomainCustomRuleToggle(t *testing.T) {
 	)
 	err := client.Waap.Domains.CustomRules.Toggle(
 		context.TODO(),
-		waap.CustomerRuleStateEnable,
+		waap.WaapCustomerRuleStateEnable,
 		waap.DomainCustomRuleToggleParams{
 			DomainID: 0,
 			RuleID:   0,

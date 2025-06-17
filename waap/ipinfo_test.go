@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/waap"
 )
 
-func TestDomainFirewallRuleNewWithOptionalParams(t *testing.T) {
+func TestIPInfoGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,33 +26,9 @@ func TestDomainFirewallRuleNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.FirewallRules.New(
-		context.TODO(),
-		0,
-		waap.DomainFirewallRuleNewParams{
-			Action: waap.DomainFirewallRuleNewParamsAction{
-				Allow: map[string]interface{}{},
-				Block: waap.DomainFirewallRuleNewParamsActionBlock{
-					ActionDuration: gcore.String("12h"),
-					StatusCode:     403,
-				},
-			},
-			Conditions: []waap.DomainFirewallRuleNewParamsCondition{{
-				IP: waap.DomainFirewallRuleNewParamsConditionIP{
-					IPAddress: "192.168.1.1",
-					Negation:  gcore.Bool(true),
-				},
-				IPRange: waap.DomainFirewallRuleNewParamsConditionIPRange{
-					LowerBound: "192.168.1.1",
-					UpperBound: "192.168.1.1",
-					Negation:   gcore.Bool(true),
-				},
-			}},
-			Enabled:     true,
-			Name:        "name",
-			Description: gcore.String("description"),
-		},
-	)
+	_, err := client.Waap.IPInfo.Get(context.TODO(), waap.IPInfoGetParams{
+		IP: "192.168.1.1",
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -62,7 +38,7 @@ func TestDomainFirewallRuleNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestDomainFirewallRuleUpdateWithOptionalParams(t *testing.T) {
+func TestIPInfoGetAttackTimeSeries(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,34 +50,9 @@ func TestDomainFirewallRuleUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.FirewallRules.Update(
-		context.TODO(),
-		0,
-		waap.DomainFirewallRuleUpdateParams{
-			DomainID: 0,
-			Action: waap.DomainFirewallRuleUpdateParamsAction{
-				Allow: map[string]interface{}{},
-				Block: waap.DomainFirewallRuleUpdateParamsActionBlock{
-					ActionDuration: gcore.String("12h"),
-					StatusCode:     403,
-				},
-			},
-			Conditions: []waap.DomainFirewallRuleUpdateParamsCondition{{
-				IP: waap.DomainFirewallRuleUpdateParamsConditionIP{
-					IPAddress: "192.168.1.1",
-					Negation:  gcore.Bool(true),
-				},
-				IPRange: waap.DomainFirewallRuleUpdateParamsConditionIPRange{
-					LowerBound: "192.168.1.1",
-					UpperBound: "192.168.1.1",
-					Negation:   gcore.Bool(true),
-				},
-			}},
-			Description: gcore.String("description"),
-			Enabled:     gcore.Bool(true),
-			Name:        gcore.String("name"),
-		},
-	)
+	_, err := client.Waap.IPInfo.GetAttackTimeSeries(context.TODO(), waap.IPInfoGetAttackTimeSeriesParams{
+		IP: "192.168.1.1",
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -111,7 +62,7 @@ func TestDomainFirewallRuleUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestDomainFirewallRuleListWithOptionalParams(t *testing.T) {
+func TestIPInfoGetBlockedRequests(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -123,19 +74,10 @@ func TestDomainFirewallRuleListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.FirewallRules.List(
-		context.TODO(),
-		0,
-		waap.DomainFirewallRuleListParams{
-			Action:      waap.DomainFirewallRuleListParamsActionAllow,
-			Description: gcore.String("description"),
-			Enabled:     gcore.Bool(true),
-			Limit:       gcore.Int(0),
-			Name:        gcore.String("name"),
-			Offset:      gcore.Int(0),
-			Ordering:    waap.DomainFirewallRuleListParamsOrderingMinusID,
-		},
-	)
+	_, err := client.Waap.IPInfo.GetBlockedRequests(context.TODO(), waap.IPInfoGetBlockedRequestsParams{
+		DomainID: 0,
+		IP:       "192.168.1.1",
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -145,7 +87,7 @@ func TestDomainFirewallRuleListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestDomainFirewallRuleDelete(t *testing.T) {
+func TestIPInfoGetCountsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -157,13 +99,10 @@ func TestDomainFirewallRuleDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.FirewallRules.Delete(
-		context.TODO(),
-		0,
-		waap.DomainFirewallRuleDeleteParams{
-			DomainID: 0,
-		},
-	)
+	_, err := client.Waap.IPInfo.GetCounts(context.TODO(), waap.IPInfoGetCountsParams{
+		IP:       "192.168.1.1",
+		DomainID: gcore.Int(1),
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -173,7 +112,7 @@ func TestDomainFirewallRuleDelete(t *testing.T) {
 	}
 }
 
-func TestDomainFirewallRuleDeleteMultiple(t *testing.T) {
+func TestIPInfoGetDDOSAttackSeries(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -185,13 +124,9 @@ func TestDomainFirewallRuleDeleteMultiple(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.FirewallRules.DeleteMultiple(
-		context.TODO(),
-		0,
-		waap.DomainFirewallRuleDeleteMultipleParams{
-			RuleIDs: []int64{0},
-		},
-	)
+	_, err := client.Waap.IPInfo.GetDDOSAttackSeries(context.TODO(), waap.IPInfoGetDDOSAttackSeriesParams{
+		IP: "192.168.1.1",
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -201,7 +136,7 @@ func TestDomainFirewallRuleDeleteMultiple(t *testing.T) {
 	}
 }
 
-func TestDomainFirewallRuleGet(t *testing.T) {
+func TestIPInfoGetTopSessions(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -213,13 +148,10 @@ func TestDomainFirewallRuleGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.FirewallRules.Get(
-		context.TODO(),
-		0,
-		waap.DomainFirewallRuleGetParams{
-			DomainID: 0,
-		},
-	)
+	_, err := client.Waap.IPInfo.GetTopSessions(context.TODO(), waap.IPInfoGetTopSessionsParams{
+		DomainID: 0,
+		IP:       "192.168.1.1",
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -229,7 +161,7 @@ func TestDomainFirewallRuleGet(t *testing.T) {
 	}
 }
 
-func TestDomainFirewallRuleToggle(t *testing.T) {
+func TestIPInfoGetTopURLs(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -241,14 +173,59 @@ func TestDomainFirewallRuleToggle(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.FirewallRules.Toggle(
-		context.TODO(),
-		waap.WaapCustomerRuleStateEnable,
-		waap.DomainFirewallRuleToggleParams{
-			DomainID: 0,
-			RuleID:   0,
-		},
+	_, err := client.Waap.IPInfo.GetTopURLs(context.TODO(), waap.IPInfoGetTopURLsParams{
+		DomainID: 0,
+		IP:       "192.168.1.1",
+	})
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestIPInfoGetTopUserAgents(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
 	)
+	_, err := client.Waap.IPInfo.GetTopUserAgents(context.TODO(), waap.IPInfoGetTopUserAgentsParams{
+		DomainID: 0,
+		IP:       "192.168.1.1",
+	})
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestIPInfoListAttackedCountries(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Waap.IPInfo.ListAttackedCountries(context.TODO(), waap.IPInfoListAttackedCountriesParams{
+		IP: "192.168.1.1",
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
