@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/waap"
 )
 
-func TestDomainUpdateWithOptionalParams(t *testing.T) {
+func TestDomainAPIDiscoveryGetSettings(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,11 +26,59 @@ func TestDomainUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.Update(
+	_, err := client.Waap.Domains.APIDiscovery.GetSettings(context.TODO(), 0)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestDomainAPIDiscoveryScanOpenAPI(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Waap.Domains.APIDiscovery.ScanOpenAPI(context.TODO(), 0)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestDomainAPIDiscoveryUpdateSettingsWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Waap.Domains.APIDiscovery.UpdateSettings(
 		context.TODO(),
 		0,
-		waap.DomainUpdateParams{
-			Status: waap.DomainUpdateParamsStatusActive,
+		waap.DomainAPIDiscoveryUpdateSettingsParams{
+			DescriptionFileLocation:          gcore.String("descriptionFileLocation"),
+			DescriptionFileScanEnabled:       gcore.Bool(true),
+			DescriptionFileScanIntervalHours: gcore.Int(1),
+			TrafficScanEnabled:               gcore.Bool(true),
+			TrafficScanIntervalHours:         gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -42,7 +90,7 @@ func TestDomainUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestDomainListWithOptionalParams(t *testing.T) {
+func TestDomainAPIDiscoveryUploadOpenAPI(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -54,80 +102,14 @@ func TestDomainListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.List(context.TODO(), waap.DomainListParams{
-		IDs:      []int64{0},
-		Limit:    gcore.Int(0),
-		Name:     gcore.String("name"),
-		Offset:   gcore.Int(0),
-		Ordering: waap.DomainListParamsOrderingID,
-		Status:   waap.WaapDomainStatusActive,
-	})
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestDomainDelete(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+	_, err := client.Waap.Domains.APIDiscovery.UploadOpenAPI(
+		context.TODO(),
+		0,
+		waap.DomainAPIDiscoveryUploadOpenAPIParams{
+			FileData: "file_data",
+			FileName: "file_name",
+		},
 	)
-	err := client.Waap.Domains.Delete(context.TODO(), 0)
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestDomainGet(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Waap.Domains.Get(context.TODO(), 0)
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestDomainListRuleSets(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Waap.Domains.ListRuleSets(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

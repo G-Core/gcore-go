@@ -42,7 +42,7 @@ func (r *DomainSettingService) Update(ctx context.Context, domainID int64, body 
 }
 
 // Retrieve settings for a specific domain
-func (r *DomainSettingService) Get(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *WaapDomainSettings, err error) {
+func (r *DomainSettingService) Get(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *WaapDomainSettingsModel, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/settings", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)

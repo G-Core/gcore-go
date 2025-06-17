@@ -8,11 +8,9 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
-	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // StatisticService contains methods and other services that help with interacting
@@ -41,54 +39,11 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 // `1d`, the `from` and `to` parameters will be rounded down and up to the nearest
 // day, respectively. The response will include explicit 0 values for any missing
 // data points.
-func (r *StatisticService) GetUsageSeries(ctx context.Context, query StatisticGetUsageSeriesParams, opts ...option.RequestOption) (res *StatisticsSeries, err error) {
+func (r *StatisticService) GetUsageSeries(ctx context.Context, query StatisticGetUsageSeriesParams, opts ...option.RequestOption) (res *WaapStatisticsSeries, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "waap/v1/statistics/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
-}
-
-// Response model for the statistics item
-type StatisticItem struct {
-	// The date and time for the statistic in ISO 8601 format
-	DateTime time.Time `json:"date_time,required" format:"date-time"`
-	// The value for the statistic. If there is no data for the given time, the value
-	// will be 0.
-	Value int64 `json:"value,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		DateTime    respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StatisticItem) RawJSON() string { return r.JSON.raw }
-func (r *StatisticItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Response model for the statistics series
-type StatisticsSeries struct {
-	// Will be returned if `total_bytes` is requested in the metrics parameter
-	TotalBytes []StatisticItem `json:"total_bytes,nullable"`
-	// Will be included if `total_requests` is requested in the metrics parameter
-	TotalRequests []StatisticItem `json:"total_requests,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		TotalBytes    respjson.Field
-		TotalRequests respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StatisticsSeries) RawJSON() string { return r.JSON.raw }
-func (r *StatisticsSeries) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type StatisticGetUsageSeriesParams struct {

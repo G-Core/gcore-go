@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/waap"
 )
 
-func TestDomainUpdateWithOptionalParams(t *testing.T) {
+func TestDomainAPIPathNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,11 +26,16 @@ func TestDomainUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.Update(
+	_, err := client.Waap.Domains.APIPaths.New(
 		context.TODO(),
 		0,
-		waap.DomainUpdateParams{
-			Status: waap.DomainUpdateParamsStatusActive,
+		waap.DomainAPIPathNewParams{
+			HTTPScheme: waap.DomainAPIPathNewParamsHTTPSchemeHTTP,
+			Method:     waap.DomainAPIPathNewParamsMethodGet,
+			Path:       "/api/v1/paths/{path_id}",
+			APIGroups:  []string{"accounts", "internal"},
+			APIVersion: gcore.String("v1"),
+			Tags:       []string{"sensitivedataurl", "highriskurl"},
 		},
 	)
 	if err != nil {
@@ -42,7 +47,7 @@ func TestDomainUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestDomainListWithOptionalParams(t *testing.T) {
+func TestDomainAPIPathUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -54,14 +59,17 @@ func TestDomainListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.List(context.TODO(), waap.DomainListParams{
-		IDs:      []int64{0},
-		Limit:    gcore.Int(0),
-		Name:     gcore.String("name"),
-		Offset:   gcore.Int(0),
-		Ordering: waap.DomainListParamsOrderingID,
-		Status:   waap.WaapDomainStatusActive,
-	})
+	err := client.Waap.Domains.APIPaths.Update(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		waap.DomainAPIPathUpdateParams{
+			DomainID:  0,
+			APIGroups: []string{"accounts", "internal"},
+			Path:      gcore.String("/api/v1/paths/{path_id}"),
+			Status:    waap.DomainAPIPathUpdateParamsStatusConfirmedAPI,
+			Tags:      []string{"sensitivedataurl", "highriskurl"},
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -71,7 +79,7 @@ func TestDomainListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestDomainDelete(t *testing.T) {
+func TestDomainAPIPathListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -83,7 +91,23 @@ func TestDomainDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.Delete(context.TODO(), 0)
+	_, err := client.Waap.Domains.APIPaths.List(
+		context.TODO(),
+		0,
+		waap.DomainAPIPathListParams{
+			APIGroup:   gcore.String("api_group"),
+			APIVersion: gcore.String("api_version"),
+			HTTPScheme: waap.DomainAPIPathListParamsHTTPSchemeHTTP,
+			IDs:        []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+			Limit:      gcore.Int(0),
+			Method:     waap.DomainAPIPathListParamsMethodGet,
+			Offset:     gcore.Int(0),
+			Ordering:   waap.DomainAPIPathListParamsOrderingID,
+			Path:       gcore.String("path"),
+			Source:     waap.DomainAPIPathListParamsSourceAPIDescriptionFile,
+			Status:     []string{"CONFIRMED_API", "POTENTIAL_API"},
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -93,7 +117,7 @@ func TestDomainDelete(t *testing.T) {
 	}
 }
 
-func TestDomainGet(t *testing.T) {
+func TestDomainAPIPathDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -105,7 +129,13 @@ func TestDomainGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.Get(context.TODO(), 0)
+	err := client.Waap.Domains.APIPaths.Delete(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		waap.DomainAPIPathDeleteParams{
+			DomainID: 0,
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -115,7 +145,7 @@ func TestDomainGet(t *testing.T) {
 	}
 }
 
-func TestDomainListRuleSets(t *testing.T) {
+func TestDomainAPIPathGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -127,7 +157,13 @@ func TestDomainListRuleSets(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.ListRuleSets(context.TODO(), 0)
+	_, err := client.Waap.Domains.APIPaths.Get(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		waap.DomainAPIPathGetParams{
+			DomainID: 0,
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

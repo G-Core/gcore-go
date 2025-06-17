@@ -66,9 +66,19 @@ TEST_PATHS=(
 	cloud/instanceimage_test.go
 	cloud/instancemetric_test.go
 	waap/waap_test.go
+	waap/client_test.go
 	waap/statistic_test.go
 	waap/domain_test.go
 	waap/domainsetting_test.go
+	waap/domainapipath_test.go
+	waap/domainapipathgroup_test.go
+	waap/domainapidiscovery_test.go
+	waap/domainapidiscoveryscanresult_test.go
+	waap/domaininsight_test.go
+	waap/domaininsightsilence_test.go
+	waap/domainpolicy_test.go
+	waap/domainanalytics_test.go
+	waap/domainanalyticsrequest_test.go
 	waap/domaincustomrule_test.go
 	waap/domainfirewallrule_test.go
 	waap/domainadvancedrule_test.go
@@ -76,6 +86,7 @@ TEST_PATHS=(
 	waap/advancedrule_test.go
 	waap/tag_test.go
 	waap/organization_test.go
+	waap/ipinfo_test.go
 	usage_test.go
 	paginationauto_test.go
 	paginationmanual_test.go
