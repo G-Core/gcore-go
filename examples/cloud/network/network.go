@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/G-Core/gcore-go/packages/param"
 	"log"
 	"os"
 	"strconv"
@@ -107,7 +108,7 @@ func updateNetwork(client *gcore.Client, networkID string) {
 	fmt.Println("\n=== UPDATE NETWORK ===")
 	newName := "gcore-go-example-updated"
 	params := cloud.NetworkUpdateParams{
-		Name: newName,
+		Name: param.NewOpt(newName),
 	}
 
 	network, err := client.Cloud.Networks.Update(context.Background(), networkID, params)
