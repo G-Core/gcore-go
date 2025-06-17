@@ -23,7 +23,6 @@ import (
 // the [NewWaapService] method instead.
 type WaapService struct {
 	Options        []option.RequestOption
-	Clients        ClientService
 	Statistics     StatisticService
 	Domains        DomainService
 	CustomPageSets CustomPageSetService
@@ -39,7 +38,6 @@ type WaapService struct {
 func NewWaapService(opts ...option.RequestOption) (r WaapService) {
 	r = WaapService{}
 	r.Options = opts
-	r.Clients = NewClientService(opts...)
 	r.Statistics = NewStatisticService(opts...)
 	r.Domains = NewDomainService(opts...)
 	r.CustomPageSets = NewCustomPageSetService(opts...)

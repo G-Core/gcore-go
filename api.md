@@ -897,16 +897,6 @@ Methods:
 
 - <code title="get /waap/v1/clients/me">client.Waap.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapService.GetAccountOverview">GetAccountOverview</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapGetAccountOverviewResponse">WaapGetAccountOverviewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
-## Clients
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#ClientMeResponse">ClientMeResponse</a>
-
-Methods:
-
-- <code title="get /waap/v1/clients/me">client.Waap.Clients.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#ClientService.Me">Me</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#ClientMeResponse">ClientMeResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
 ## Statistics
 
 Methods:
