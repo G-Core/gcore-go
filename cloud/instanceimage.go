@@ -426,7 +426,7 @@ type InstanceImageNewFromVolumeParams struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateMap `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -543,7 +543,7 @@ type InstanceImageUploadParams struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateMap `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
 

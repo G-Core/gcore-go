@@ -75,8 +75,10 @@ func (r *LoadBalancerService) New(ctx context.Context, params LoadBalancerNewPar
 	return
 }
 
-// Rename load balancer, activate/deactivate logs or update preferred connectivity
-// for load balancer
+// Rename load balancer, activate/deactivate logging, update preferred connectivity
+// type and/or modify load balancer tags. The request will only process the fields
+// that are provided in the request body. Any fields that are not included will
+// remain unchanged.
 func (r *LoadBalancerService) Update(ctx context.Context, loadbalancerID string, params LoadBalancerUpdateParams, opts ...option.RequestOption) (res *LoadBalancer, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -1635,7 +1637,7 @@ type LoadBalancerNewParams struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateMap `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	// IP family for load balancer subnet auto-selection if `vip_network_id` is
 	// specified
 	//
@@ -1984,6 +1986,23 @@ type LoadBalancerUpdateParams struct {
 	//
 	// Any of "L2", "L3".
 	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity,omitzero"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', '`cost_center`': 'engineering', '`deprecated_tag`': null}}`
+	//     adds/updates 'environment' and '`cost_center`' while removing
+	//     '`deprecated_tag`', preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
 

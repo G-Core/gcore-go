@@ -135,8 +135,8 @@ func TestInstanceImageNewFromVolumeWithOptionalParams(t *testing.T) {
 		OsType:         cloud.InstanceImageNewFromVolumeParamsOsTypeLinux,
 		Source:         cloud.InstanceImageNewFromVolumeParamsSourceVolume,
 		SSHKey:         cloud.InstanceImageNewFromVolumeParamsSSHKeyAllow,
-		Tags: cloud.TagUpdateMap{
-			"foo": "my-tag-value",
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
 		},
 	})
 	if err != nil {
@@ -204,8 +204,8 @@ func TestInstanceImageUploadWithOptionalParams(t *testing.T) {
 		OsType:         cloud.InstanceImageUploadParamsOsTypeLinux,
 		OsVersion:      gcore.String("22.04"),
 		SSHKey:         cloud.InstanceImageUploadParamsSSHKeyAllow,
-		Tags: cloud.TagUpdateMap{
-			"foo": "my-tag-value",
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
 		},
 	})
 	if err != nil {

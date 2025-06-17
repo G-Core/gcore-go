@@ -31,8 +31,8 @@ func TestNetworkNewWithOptionalParams(t *testing.T) {
 		RegionID:     gcore.Int(1),
 		Name:         "my network",
 		CreateRouter: gcore.Bool(true),
-		Tags: cloud.TagUpdateMap{
-			"foo": "my-tag-value",
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
 		},
 		Type: cloud.NetworkNewParamsTypeVxlan,
 	})
@@ -45,7 +45,7 @@ func TestNetworkNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestNetworkUpdate(t *testing.T) {
+func TestNetworkUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -63,7 +63,10 @@ func TestNetworkUpdate(t *testing.T) {
 		cloud.NetworkUpdateParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
-			Name:      "some_name",
+			Name:      gcore.String("some_name"),
+			Tags: cloud.TagUpdateMap{
+				"foo": "my-tag-value",
+			},
 		},
 	)
 	if err != nil {
@@ -91,6 +94,7 @@ func TestNetworkListWithOptionalParams(t *testing.T) {
 		ProjectID:   gcore.Int(1),
 		RegionID:    gcore.Int(1),
 		Limit:       gcore.Int(1000),
+		Name:        gcore.String("my-network"),
 		Offset:      gcore.Int(0),
 		OrderBy:     cloud.NetworkListParamsOrderByCreatedAtDesc,
 		TagKey:      []string{"key1", "key2"},

@@ -41,7 +41,7 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 		AppConfig:     map[string]interface{}{},
 		ApptemplateID: gcore.String("apptemplate_id"),
 		DDOSProfile: cloud.BaremetalServerNewParamsDDOSProfile{
-			ProfileTemplate: 1,
+			ProfileTemplate: 123,
 			Fields: []cloud.BaremetalServerNewParamsDDOSProfileField{{
 				BaseField: gcore.Int(10),
 				FieldName: gcore.String("field_name"),
@@ -50,15 +50,14 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 				},
 				Value: gcore.String("value"),
 			}},
-			ProfileTemplateName: gcore.String("profile_template_name"),
 		},
 		ImageID:      gcore.String("image_id"),
 		Name:         gcore.String("my-bare-metal"),
 		NameTemplate: gcore.String("name_template"),
 		Password:     gcore.String("password"),
 		SSHKeyName:   gcore.String("my-ssh-key"),
-		Tags: cloud.TagUpdateMap{
-			"foo": "my-tag-value",
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
 		},
 		UserData: gcore.String("user_data"),
 		Username: gcore.String("username"),
