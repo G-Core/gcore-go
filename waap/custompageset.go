@@ -4,7 +4,6 @@ package waap
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -15,7 +14,6 @@ import (
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
-	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // CustomPageSetService contains methods and other services that help with
@@ -39,7 +37,7 @@ func NewCustomPageSetService(opts ...option.RequestOption) (r CustomPageSetServi
 
 // Create a custom page set based on the provided data. For any custom page type
 // (block, `block_csrf`, etc) that is not provided the default page will be used.
-func (r *CustomPageSetService) New(ctx context.Context, body CustomPageSetNewParams, opts ...option.RequestOption) (res *CustomPageSet, err error) {
+func (r *CustomPageSetService) New(ctx context.Context, body CustomPageSetNewParams, opts ...option.RequestOption) (res *WaapCustomPageSet, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "waap/v1/custom-page-sets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -60,7 +58,7 @@ func (r *CustomPageSetService) Update(ctx context.Context, setID int64, body Cus
 }
 
 // Retrieve a list of custom page sets available for use
-func (r *CustomPageSetService) List(ctx context.Context, query CustomPageSetListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[CustomPageSet], err error) {
+func (r *CustomPageSetService) List(ctx context.Context, query CustomPageSetListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapCustomPageSet], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -78,7 +76,7 @@ func (r *CustomPageSetService) List(ctx context.Context, query CustomPageSetList
 }
 
 // Retrieve a list of custom page sets available for use
-func (r *CustomPageSetService) ListAutoPaging(ctx context.Context, query CustomPageSetListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[CustomPageSet] {
+func (r *CustomPageSetService) ListAutoPaging(ctx context.Context, query CustomPageSetListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapCustomPageSet] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -92,7 +90,7 @@ func (r *CustomPageSetService) Delete(ctx context.Context, setID int64, opts ...
 }
 
 // Retrieve a custom page set based on the provided ID
-func (r *CustomPageSetService) Get(ctx context.Context, setID int64, opts ...option.RequestOption) (res *CustomPageSet, err error) {
+func (r *CustomPageSetService) Get(ctx context.Context, setID int64, opts ...option.RequestOption) (res *WaapCustomPageSet, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("waap/v1/custom-page-sets/%v", setID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -101,439 +99,24 @@ func (r *CustomPageSetService) Get(ctx context.Context, setID int64, opts ...opt
 
 // Allows to preview a custom page without creating it based on the provided type
 // and data
-func (r *CustomPageSetService) Preview(ctx context.Context, params CustomPageSetPreviewParams, opts ...option.RequestOption) (res *PreviewCustomPage, err error) {
+func (r *CustomPageSetService) Preview(ctx context.Context, params CustomPageSetPreviewParams, opts ...option.RequestOption) (res *WaapCustomPagePreview, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "waap/v1/preview-custom-page"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
-type BlockCsrfPageData struct {
-	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
-	// The text to display in the header of the custom page
-	Header string `json:"header"`
-	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
-	// height 130px. This should be a base 64 encoding of the full HTML img tag
-	// compatible image, with the header included.
-	Logo string `json:"logo"`
-	// The text to display in the body of the custom page
-	Text string `json:"text"`
-	// The text to display in the title of the custom page
-	Title string `json:"title"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Header      respjson.Field
-		Logo        respjson.Field
-		Text        respjson.Field
-		Title       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BlockCsrfPageData) RawJSON() string { return r.JSON.raw }
-func (r *BlockCsrfPageData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this BlockCsrfPageData to a BlockCsrfPageDataParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// BlockCsrfPageDataParam.Overrides()
-func (r BlockCsrfPageData) ToParam() BlockCsrfPageDataParam {
-	return param.Override[BlockCsrfPageDataParam](json.RawMessage(r.RawJSON()))
-}
-
-// The property Enabled is required.
-type BlockCsrfPageDataParam struct {
-	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
-	// The text to display in the header of the custom page
-	Header param.Opt[string] `json:"header,omitzero"`
-	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
-	// height 130px. This should be a base 64 encoding of the full HTML img tag
-	// compatible image, with the header included.
-	Logo param.Opt[string] `json:"logo,omitzero"`
-	// The text to display in the body of the custom page
-	Text param.Opt[string] `json:"text,omitzero"`
-	// The text to display in the title of the custom page
-	Title param.Opt[string] `json:"title,omitzero"`
-	paramObj
-}
-
-func (r BlockCsrfPageDataParam) MarshalJSON() (data []byte, err error) {
-	type shadow BlockCsrfPageDataParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BlockCsrfPageDataParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BlockPageData struct {
-	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
-	// The text to display in the header of the custom page
-	Header string `json:"header"`
-	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
-	// height 130px. This should be a base 64 encoding of the full HTML img tag
-	// compatible image, with the header included.
-	Logo string `json:"logo"`
-	// The text to display in the body of the custom page
-	Text string `json:"text"`
-	// The text to display in the title of the custom page
-	Title string `json:"title"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Header      respjson.Field
-		Logo        respjson.Field
-		Text        respjson.Field
-		Title       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BlockPageData) RawJSON() string { return r.JSON.raw }
-func (r *BlockPageData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this BlockPageData to a BlockPageDataParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// BlockPageDataParam.Overrides()
-func (r BlockPageData) ToParam() BlockPageDataParam {
-	return param.Override[BlockPageDataParam](json.RawMessage(r.RawJSON()))
-}
-
-// The property Enabled is required.
-type BlockPageDataParam struct {
-	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
-	// The text to display in the header of the custom page
-	Header param.Opt[string] `json:"header,omitzero"`
-	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
-	// height 130px. This should be a base 64 encoding of the full HTML img tag
-	// compatible image, with the header included.
-	Logo param.Opt[string] `json:"logo,omitzero"`
-	// The text to display in the body of the custom page
-	Text param.Opt[string] `json:"text,omitzero"`
-	// The text to display in the title of the custom page
-	Title param.Opt[string] `json:"title,omitzero"`
-	paramObj
-}
-
-func (r BlockPageDataParam) MarshalJSON() (data []byte, err error) {
-	type shadow BlockPageDataParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BlockPageDataParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CaptchaPageData struct {
-	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
-	// Error message
-	Error string `json:"error"`
-	// The text to display in the header of the custom page
-	Header string `json:"header"`
-	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
-	// height 130px. This should be a base 64 encoding of the full HTML img tag
-	// compatible image, with the header included.
-	Logo string `json:"logo"`
-	// The text to display in the body of the custom page
-	Text string `json:"text"`
-	// The text to display in the title of the custom page
-	Title string `json:"title"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Error       respjson.Field
-		Header      respjson.Field
-		Logo        respjson.Field
-		Text        respjson.Field
-		Title       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CaptchaPageData) RawJSON() string { return r.JSON.raw }
-func (r *CaptchaPageData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this CaptchaPageData to a CaptchaPageDataParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// CaptchaPageDataParam.Overrides()
-func (r CaptchaPageData) ToParam() CaptchaPageDataParam {
-	return param.Override[CaptchaPageDataParam](json.RawMessage(r.RawJSON()))
-}
-
-// The property Enabled is required.
-type CaptchaPageDataParam struct {
-	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
-	// Error message
-	Error param.Opt[string] `json:"error,omitzero"`
-	// The text to display in the header of the custom page
-	Header param.Opt[string] `json:"header,omitzero"`
-	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
-	// height 130px. This should be a base 64 encoding of the full HTML img tag
-	// compatible image, with the header included.
-	Logo param.Opt[string] `json:"logo,omitzero"`
-	// The text to display in the body of the custom page
-	Text param.Opt[string] `json:"text,omitzero"`
-	// The text to display in the title of the custom page
-	Title param.Opt[string] `json:"title,omitzero"`
-	paramObj
-}
-
-func (r CaptchaPageDataParam) MarshalJSON() (data []byte, err error) {
-	type shadow CaptchaPageDataParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CaptchaPageDataParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CookieDisabledPageData struct {
-	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
-	// The text to display in the header of the custom page
-	Header string `json:"header"`
-	// The text to display in the body of the custom page
-	Text string `json:"text"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Header      respjson.Field
-		Text        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CookieDisabledPageData) RawJSON() string { return r.JSON.raw }
-func (r *CookieDisabledPageData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this CookieDisabledPageData to a CookieDisabledPageDataParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// CookieDisabledPageDataParam.Overrides()
-func (r CookieDisabledPageData) ToParam() CookieDisabledPageDataParam {
-	return param.Override[CookieDisabledPageDataParam](json.RawMessage(r.RawJSON()))
-}
-
-// The property Enabled is required.
-type CookieDisabledPageDataParam struct {
-	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
-	// The text to display in the header of the custom page
-	Header param.Opt[string] `json:"header,omitzero"`
-	// The text to display in the body of the custom page
-	Text param.Opt[string] `json:"text,omitzero"`
-	paramObj
-}
-
-func (r CookieDisabledPageDataParam) MarshalJSON() (data []byte, err error) {
-	type shadow CookieDisabledPageDataParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CookieDisabledPageDataParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CustomPageSet struct {
-	// The ID of the custom page set
-	ID int64 `json:"id,required"`
-	// Name of the custom page set
-	Name           string                 `json:"name,required"`
-	Block          BlockPageData          `json:"block,nullable"`
-	BlockCsrf      BlockCsrfPageData      `json:"block_csrf,nullable"`
-	Captcha        CaptchaPageData        `json:"captcha,nullable"`
-	CookieDisabled CookieDisabledPageData `json:"cookie_disabled,nullable"`
-	// List of domain IDs that are associated with this page set
-	Domains            []int64                    `json:"domains,nullable"`
-	Handshake          HandshakePageData          `json:"handshake,nullable"`
-	JavascriptDisabled JavascriptDisabledPageData `json:"javascript_disabled,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                 respjson.Field
-		Name               respjson.Field
-		Block              respjson.Field
-		BlockCsrf          respjson.Field
-		Captcha            respjson.Field
-		CookieDisabled     respjson.Field
-		Domains            respjson.Field
-		Handshake          respjson.Field
-		JavascriptDisabled respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomPageSet) RawJSON() string { return r.JSON.raw }
-func (r *CustomPageSet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type HandshakePageData struct {
-	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
-	// The text to display in the header of the custom page
-	Header string `json:"header"`
-	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
-	// height 130px. This should be a base 64 encoding of the full HTML img tag
-	// compatible image, with the header included.
-	Logo string `json:"logo"`
-	// The text to display in the title of the custom page
-	Title string `json:"title"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Header      respjson.Field
-		Logo        respjson.Field
-		Title       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r HandshakePageData) RawJSON() string { return r.JSON.raw }
-func (r *HandshakePageData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this HandshakePageData to a HandshakePageDataParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// HandshakePageDataParam.Overrides()
-func (r HandshakePageData) ToParam() HandshakePageDataParam {
-	return param.Override[HandshakePageDataParam](json.RawMessage(r.RawJSON()))
-}
-
-// The property Enabled is required.
-type HandshakePageDataParam struct {
-	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
-	// The text to display in the header of the custom page
-	Header param.Opt[string] `json:"header,omitzero"`
-	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
-	// height 130px. This should be a base 64 encoding of the full HTML img tag
-	// compatible image, with the header included.
-	Logo param.Opt[string] `json:"logo,omitzero"`
-	// The text to display in the title of the custom page
-	Title param.Opt[string] `json:"title,omitzero"`
-	paramObj
-}
-
-func (r HandshakePageDataParam) MarshalJSON() (data []byte, err error) {
-	type shadow HandshakePageDataParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *HandshakePageDataParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type JavascriptDisabledPageData struct {
-	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
-	// The text to display in the header of the custom page
-	Header string `json:"header"`
-	// The text to display in the body of the custom page
-	Text string `json:"text"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Header      respjson.Field
-		Text        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r JavascriptDisabledPageData) RawJSON() string { return r.JSON.raw }
-func (r *JavascriptDisabledPageData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this JavascriptDisabledPageData to a
-// JavascriptDisabledPageDataParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// JavascriptDisabledPageDataParam.Overrides()
-func (r JavascriptDisabledPageData) ToParam() JavascriptDisabledPageDataParam {
-	return param.Override[JavascriptDisabledPageDataParam](json.RawMessage(r.RawJSON()))
-}
-
-// The property Enabled is required.
-type JavascriptDisabledPageDataParam struct {
-	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
-	// The text to display in the header of the custom page
-	Header param.Opt[string] `json:"header,omitzero"`
-	// The text to display in the body of the custom page
-	Text param.Opt[string] `json:"text,omitzero"`
-	paramObj
-}
-
-func (r JavascriptDisabledPageDataParam) MarshalJSON() (data []byte, err error) {
-	type shadow JavascriptDisabledPageDataParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *JavascriptDisabledPageDataParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PreviewCustomPage struct {
-	// HTML content of the custom page
-	HTML string `json:"html,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HTML        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PreviewCustomPage) RawJSON() string { return r.JSON.raw }
-func (r *PreviewCustomPage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type CustomPageSetNewParams struct {
 	// Name of the custom page set
 	Name string `json:"name,required"`
 	// List of domain IDs that are associated with this page set
-	Domains            []int64                         `json:"domains,omitzero"`
-	Block              BlockPageDataParam              `json:"block,omitzero"`
-	BlockCsrf          BlockCsrfPageDataParam          `json:"block_csrf,omitzero"`
-	Captcha            CaptchaPageDataParam            `json:"captcha,omitzero"`
-	CookieDisabled     CookieDisabledPageDataParam     `json:"cookie_disabled,omitzero"`
-	Handshake          HandshakePageDataParam          `json:"handshake,omitzero"`
-	JavascriptDisabled JavascriptDisabledPageDataParam `json:"javascript_disabled,omitzero"`
+	Domains            []int64                             `json:"domains,omitzero"`
+	Block              WaapBlockPageDataParam              `json:"block,omitzero"`
+	BlockCsrf          WaapBlockCsrfPageDataParam          `json:"block_csrf,omitzero"`
+	Captcha            WaapCaptchaPageDataParam            `json:"captcha,omitzero"`
+	CookieDisabled     WaapCookieDisabledPageDataParam     `json:"cookie_disabled,omitzero"`
+	Handshake          WaapHandshakePageDataParam          `json:"handshake,omitzero"`
+	JavascriptDisabled WaapJavascriptDisabledPageDataParam `json:"javascript_disabled,omitzero"`
 	paramObj
 }
 
@@ -549,13 +132,13 @@ type CustomPageSetUpdateParams struct {
 	// Name of the custom page set
 	Name param.Opt[string] `json:"name,omitzero"`
 	// List of domain IDs that are associated with this page set
-	Domains            []int64                         `json:"domains,omitzero"`
-	Block              BlockPageDataParam              `json:"block,omitzero"`
-	BlockCsrf          BlockCsrfPageDataParam          `json:"block_csrf,omitzero"`
-	Captcha            CaptchaPageDataParam            `json:"captcha,omitzero"`
-	CookieDisabled     CookieDisabledPageDataParam     `json:"cookie_disabled,omitzero"`
-	Handshake          HandshakePageDataParam          `json:"handshake,omitzero"`
-	JavascriptDisabled JavascriptDisabledPageDataParam `json:"javascript_disabled,omitzero"`
+	Domains            []int64                             `json:"domains,omitzero"`
+	Block              WaapBlockPageDataParam              `json:"block,omitzero"`
+	BlockCsrf          WaapBlockCsrfPageDataParam          `json:"block_csrf,omitzero"`
+	Captcha            WaapCaptchaPageDataParam            `json:"captcha,omitzero"`
+	CookieDisabled     WaapCookieDisabledPageDataParam     `json:"cookie_disabled,omitzero"`
+	Handshake          WaapHandshakePageDataParam          `json:"handshake,omitzero"`
+	JavascriptDisabled WaapJavascriptDisabledPageDataParam `json:"javascript_disabled,omitzero"`
 	paramObj
 }
 
@@ -607,7 +190,7 @@ type CustomPageSetPreviewParams struct {
 	//
 	// Any of "block.html", "block_csrf.html", "captcha.html", "cookieDisabled.html",
 	// "handshake.html", "javascriptDisabled.html".
-	PageType CustomPageSetPreviewParamsPageType `query:"page_type,omitzero,required" json:"-"`
+	PageType WaapPageType `query:"page_type,omitzero,required" json:"-"`
 	// Error message
 	Error param.Opt[string] `json:"error,omitzero"`
 	// The text to display in the header of the custom page
@@ -639,15 +222,3 @@ func (r CustomPageSetPreviewParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
-
-// The type of the custom page
-type CustomPageSetPreviewParamsPageType string
-
-const (
-	CustomPageSetPreviewParamsPageTypeBlockHTML              CustomPageSetPreviewParamsPageType = "block.html"
-	CustomPageSetPreviewParamsPageTypeBlockCsrfHTML          CustomPageSetPreviewParamsPageType = "block_csrf.html"
-	CustomPageSetPreviewParamsPageTypeCaptchaHTML            CustomPageSetPreviewParamsPageType = "captcha.html"
-	CustomPageSetPreviewParamsPageTypeCookieDisabledHTML     CustomPageSetPreviewParamsPageType = "cookieDisabled.html"
-	CustomPageSetPreviewParamsPageTypeHandshakeHTML          CustomPageSetPreviewParamsPageType = "handshake.html"
-	CustomPageSetPreviewParamsPageTypeJavascriptDisabledHTML CustomPageSetPreviewParamsPageType = "javascriptDisabled.html"
-)

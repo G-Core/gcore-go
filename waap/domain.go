@@ -23,11 +23,18 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewDomainService] method instead.
 type DomainService struct {
-	Options       []option.RequestOption
-	Settings      DomainSettingService
-	CustomRules   DomainCustomRuleService
-	FirewallRules DomainFirewallRuleService
-	AdvancedRules DomainAdvancedRuleService
+	Options         []option.RequestOption
+	Settings        DomainSettingService
+	APIPaths        DomainAPIPathService
+	APIPathGroups   DomainAPIPathGroupService
+	APIDiscovery    DomainAPIDiscoveryService
+	Insights        DomainInsightService
+	InsightSilences DomainInsightSilenceService
+	Policies        DomainPolicyService
+	Analytics       DomainAnalyticsService
+	CustomRules     DomainCustomRuleService
+	FirewallRules   DomainFirewallRuleService
+	AdvancedRules   DomainAdvancedRuleService
 }
 
 // NewDomainService generates a new service that applies the given options to each
@@ -37,6 +44,13 @@ func NewDomainService(opts ...option.RequestOption) (r DomainService) {
 	r = DomainService{}
 	r.Options = opts
 	r.Settings = NewDomainSettingService(opts...)
+	r.APIPaths = NewDomainAPIPathService(opts...)
+	r.APIPathGroups = NewDomainAPIPathGroupService(opts...)
+	r.APIDiscovery = NewDomainAPIDiscoveryService(opts...)
+	r.Insights = NewDomainInsightService(opts...)
+	r.InsightSilences = NewDomainInsightSilenceService(opts...)
+	r.Policies = NewDomainPolicyService(opts...)
+	r.Analytics = NewDomainAnalyticsService(opts...)
 	r.CustomRules = NewDomainCustomRuleService(opts...)
 	r.FirewallRules = NewDomainFirewallRuleService(opts...)
 	r.AdvancedRules = NewDomainAdvancedRuleService(opts...)
@@ -89,6 +103,14 @@ func (r *DomainService) Delete(ctx context.Context, domainID int64, opts ...opti
 func (r *DomainService) Get(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *WaapDetailedDomain, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v", domainID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
+// Retrieve all rule sets linked to a particular domain
+func (r *DomainService) ListRuleSets(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *[]WaapRuleSet, err error) {
+	opts = append(r.Options[:], opts...)
+	path := fmt.Sprintf("waap/v1/domains/%v/rule-sets", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }

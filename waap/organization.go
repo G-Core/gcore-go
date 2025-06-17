@@ -7,13 +7,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
-	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // OrganizationService contains methods and other services that help with
@@ -38,7 +36,7 @@ func NewOrganizationService(opts ...option.RequestOption) (r OrganizationService
 // This endpoint retrieves a list of network organizations that own IP ranges as
 // identified by the Whois service.It supports pagination, filtering based on
 // various parameters, and ordering of results.
-func (r *OrganizationService) List(ctx context.Context, query OrganizationListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Organization], err error) {
+func (r *OrganizationService) List(ctx context.Context, query OrganizationListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapOrganization], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -58,29 +56,8 @@ func (r *OrganizationService) List(ctx context.Context, query OrganizationListPa
 // This endpoint retrieves a list of network organizations that own IP ranges as
 // identified by the Whois service.It supports pagination, filtering based on
 // various parameters, and ordering of results.
-func (r *OrganizationService) ListAutoPaging(ctx context.Context, query OrganizationListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Organization] {
+func (r *OrganizationService) ListAutoPaging(ctx context.Context, query OrganizationListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapOrganization] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
-}
-
-// Represents an IP range owner organization
-type Organization struct {
-	// The ID of an organization
-	ID int64 `json:"id,required"`
-	// The name of an organization
-	Name string `json:"name,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Organization) RawJSON() string { return r.JSON.raw }
-func (r *Organization) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type OrganizationListParams struct {

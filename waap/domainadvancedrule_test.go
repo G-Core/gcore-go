@@ -121,7 +121,7 @@ func TestDomainAdvancedRuleListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		waap.DomainAdvancedRuleListParams{
-			Action:      waap.RuleActionTypeAllow,
+			Action:      waap.WaapRuleActionTypeAllow,
 			Description: gcore.String("description"),
 			Enabled:     gcore.Bool(true),
 			Limit:       gcore.Int(0),
@@ -210,7 +210,7 @@ func TestDomainAdvancedRuleToggle(t *testing.T) {
 	)
 	err := client.Waap.Domains.AdvancedRules.Toggle(
 		context.TODO(),
-		waap.CustomerRuleStateEnable,
+		waap.WaapCustomerRuleStateEnable,
 		waap.DomainAdvancedRuleToggleParams{
 			DomainID: 0,
 			RuleID:   0,

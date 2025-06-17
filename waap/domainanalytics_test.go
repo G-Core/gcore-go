@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/internal/testutil"
@@ -14,7 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/waap"
 )
 
-func TestDomainUpdateWithOptionalParams(t *testing.T) {
+func TestDomainAnalyticsGetEventStatisticsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,11 +27,16 @@ func TestDomainUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.Update(
+	_, err := client.Waap.Domains.Analytics.GetEventStatistics(
 		context.TODO(),
 		0,
-		waap.DomainUpdateParams{
-			Status: waap.DomainUpdateParamsStatusActive,
+		waap.DomainAnalyticsGetEventStatisticsParams{
+			Start:       time.Now(),
+			Action:      []string{"block", "captcha"},
+			End:         gcore.Time(time.Now()),
+			IP:          []string{"string", "string"},
+			ReferenceID: []string{"string", "string"},
+			Result:      []string{"passed", "blocked"},
 		},
 	)
 	if err != nil {
@@ -42,7 +48,7 @@ func TestDomainUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestDomainListWithOptionalParams(t *testing.T) {
+func TestDomainAnalyticsListDDOSAttacksWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -54,14 +60,17 @@ func TestDomainListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.List(context.TODO(), waap.DomainListParams{
-		IDs:      []int64{0},
-		Limit:    gcore.Int(0),
-		Name:     gcore.String("name"),
-		Offset:   gcore.Int(0),
-		Ordering: waap.DomainListParamsOrderingID,
-		Status:   waap.WaapDomainStatusActive,
-	})
+	_, err := client.Waap.Domains.Analytics.ListDDOSAttacks(
+		context.TODO(),
+		0,
+		waap.DomainAnalyticsListDDOSAttacksParams{
+			EndTime:   gcore.Time(time.Now()),
+			Limit:     gcore.Int(0),
+			Offset:    gcore.Int(0),
+			Ordering:  waap.DomainAnalyticsListDDOSAttacksParamsOrderingStartTime,
+			StartTime: gcore.Time(time.Now()),
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -71,7 +80,7 @@ func TestDomainListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestDomainDelete(t *testing.T) {
+func TestDomainAnalyticsListDDOSInfoWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -83,7 +92,17 @@ func TestDomainDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.Delete(context.TODO(), 0)
+	_, err := client.Waap.Domains.Analytics.ListDDOSInfo(
+		context.TODO(),
+		0,
+		waap.DomainAnalyticsListDDOSInfoParams{
+			GroupBy: waap.DomainAnalyticsListDDOSInfoParamsGroupByURL,
+			Start:   time.Now(),
+			End:     gcore.Time(time.Now()),
+			Limit:   gcore.Int(0),
+			Offset:  gcore.Int(0),
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -93,7 +112,7 @@ func TestDomainDelete(t *testing.T) {
 	}
 }
 
-func TestDomainGet(t *testing.T) {
+func TestDomainAnalyticsListEventTrafficWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -105,29 +124,15 @@ func TestDomainGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.Get(context.TODO(), 0)
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestDomainListRuleSets(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+	_, err := client.Waap.Domains.Analytics.ListEventTraffic(
+		context.TODO(),
+		0,
+		waap.DomainAnalyticsListEventTrafficParams{
+			Resolution: waap.WaapResolutionDaily,
+			Start:      time.Now(),
+			End:        gcore.Time(time.Now()),
+		},
 	)
-	_, err := client.Waap.Domains.ListRuleSets(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
