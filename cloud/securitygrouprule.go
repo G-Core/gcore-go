@@ -33,7 +33,7 @@ func NewSecurityGroupRuleService(opts ...option.RequestOption) (r SecurityGroupR
 	return
 }
 
-// Add new rule to security group
+// Add a new rule to an existing security group.
 func (r *SecurityGroupRuleService) New(ctx context.Context, groupID string, params SecurityGroupRuleNewParams, opts ...option.RequestOption) (res *SecurityGroupRule, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -59,7 +59,7 @@ func (r *SecurityGroupRuleService) New(ctx context.Context, groupID string, para
 	return
 }
 
-// Delete security group rule
+// Delete a specific rule from a security group.
 func (r *SecurityGroupRuleService) Delete(ctx context.Context, ruleID string, body SecurityGroupRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -86,7 +86,7 @@ func (r *SecurityGroupRuleService) Delete(ctx context.Context, ruleID string, bo
 	return
 }
 
-// Edit the security group rule: delete old and create new rule
+// Update the configuration of an existing security group rule.
 func (r *SecurityGroupRuleService) Replace(ctx context.Context, ruleID string, params SecurityGroupRuleReplaceParams, opts ...option.RequestOption) (res *SecurityGroupRule, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

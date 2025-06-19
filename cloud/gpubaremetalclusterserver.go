@@ -35,7 +35,8 @@ func NewGPUBaremetalClusterServerService(opts ...option.RequestOption) (r GPUBar
 	return
 }
 
-// Delete bare metal GPU server from cluster
+// Delete a specific node from a GPU cluster. The node must be in a state that
+// allows deletion.
 func (r *GPUBaremetalClusterServerService) Delete(ctx context.Context, instanceID string, params GPUBaremetalClusterServerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

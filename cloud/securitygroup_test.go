@@ -172,7 +172,7 @@ func TestSecurityGroupCopy(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cloud.SecurityGroups.Copy(
+	_, err := client.Cloud.SecurityGroups.Copy(
 		context.TODO(),
 		"group_id",
 		cloud.SecurityGroupCopyParams{

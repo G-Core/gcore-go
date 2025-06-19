@@ -35,9 +35,10 @@ func NewBaremetalFlavorService(opts ...option.RequestOption) (r BaremetalFlavorS
 	return
 }
 
-// Retrieve a list of flavors. When the `include_prices` query parameter is
-// specified, the list shows prices. A client in trial mode gets all price values
-// as 0. If you get Pricing Error contact the support
+// List all available bare metal flavors in the specified project and region. When
+// `include_prices` is specified, the list includes pricing information. A client
+// in trial mode gets all price values as 0. If you get Pricing Error contact the
+// support.
 func (r *BaremetalFlavorService) List(ctx context.Context, params BaremetalFlavorListParams, opts ...option.RequestOption) (res *BaremetalFlavorList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -59,7 +60,8 @@ func (r *BaremetalFlavorService) List(ctx context.Context, params BaremetalFlavo
 	return
 }
 
-// List suitalbe flavors for bare metal server creation
+// List all flavors that are suitable for creating a bare metal server with the
+// specified image.
 func (r *BaremetalFlavorService) ListSuitable(ctx context.Context, params BaremetalFlavorListSuitableParams, opts ...option.RequestOption) (res *BaremetalFlavorList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

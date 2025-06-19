@@ -34,7 +34,7 @@ func NewReservedFixedIPVipService(opts ...option.RequestOption) (r ReservedFixed
 	return
 }
 
-// List instance ports that are available for connecting to VIP
+// List all instance ports that are available for connecting to a VIP.
 func (r *ReservedFixedIPVipService) ListCandidatePorts(ctx context.Context, portID string, query ReservedFixedIPVipListCandidatePortsParams, opts ...option.RequestOption) (res *CandidatePortList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -60,7 +60,7 @@ func (r *ReservedFixedIPVipService) ListCandidatePorts(ctx context.Context, port
 	return
 }
 
-// List instance ports that share VIP
+// List all instance ports that share a VIP.
 func (r *ReservedFixedIPVipService) ListConnectedPorts(ctx context.Context, portID string, query ReservedFixedIPVipListConnectedPortsParams, opts ...option.RequestOption) (res *ConnectedPortList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -86,7 +86,7 @@ func (r *ReservedFixedIPVipService) ListConnectedPorts(ctx context.Context, port
 	return
 }
 
-// Replace ports that share VIP
+// Replace the list of instance ports that share a VIP.
 func (r *ReservedFixedIPVipService) ReplaceConnectedPorts(ctx context.Context, portID string, params ReservedFixedIPVipReplaceConnectedPortsParams, opts ...option.RequestOption) (res *ConnectedPortList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -112,7 +112,7 @@ func (r *ReservedFixedIPVipService) ReplaceConnectedPorts(ctx context.Context, p
 	return
 }
 
-// Switch VIP status of reserved fixed IP
+// Update the VIP status of a reserved fixed IP.
 func (r *ReservedFixedIPVipService) Toggle(ctx context.Context, portID string, params ReservedFixedIPVipToggleParams, opts ...option.RequestOption) (res *ReservedFixedIP, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -138,7 +138,7 @@ func (r *ReservedFixedIPVipService) Toggle(ctx context.Context, portID string, p
 	return
 }
 
-// Add ports that share VIP
+// Add instance ports to share a VIP.
 func (r *ReservedFixedIPVipService) UpdateConnectedPorts(ctx context.Context, portID string, params ReservedFixedIPVipUpdateConnectedPortsParams, opts ...option.RequestOption) (res *ConnectedPortList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

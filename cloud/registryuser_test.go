@@ -185,7 +185,7 @@ func TestRegistryUserRefreshSecret(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cloud.Registries.Users.RefreshSecret(
+	_, err := client.Cloud.Registries.Users.RefreshSecret(
 		context.TODO(),
 		0,
 		cloud.RegistryUserRefreshSecretParams{

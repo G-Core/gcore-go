@@ -36,9 +36,9 @@ func NewInstanceFlavorService(opts ...option.RequestOption) (r InstanceFlavorSer
 	return
 }
 
-// Retrieve a list of flavors. When the `include_prices` query parameter is
-// specified, the list shows prices. A client in trial mode gets all price values
-// as 0. If you get Pricing Error contact the support
+// Retrieve a list of available instance flavors in the project and region. When
+// `include_prices` is specified, the list includes pricing information. Trial mode
+// clients see all prices as 0. Contact support for pricing errors.
 func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) (res *InstanceFlavorList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -86,7 +86,8 @@ func (r *InstanceFlavorService) ListForResize(ctx context.Context, instanceID st
 	return
 }
 
-// List suitable flavors for instance creation
+// List all flavors that are suitable for instance creation based on volume
+// requirements.
 func (r *InstanceFlavorService) ListSuitable(ctx context.Context, params InstanceFlavorListSuitableParams, opts ...option.RequestOption) (res *InstanceFlavorList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

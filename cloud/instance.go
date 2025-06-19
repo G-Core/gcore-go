@@ -47,7 +47,7 @@ func NewInstanceService(opts ...option.RequestOption) (r InstanceService) {
 	return
 }
 
-// For Linux,
+// Create an instance with specified configuration. How to get access: For Linux,
 //
 //   - Use the `user_data` field to provide a
 //     [cloud-init script](https://cloudinit.readthedocs.io/en/latest/reference/examples.html)
@@ -109,7 +109,8 @@ func (r *InstanceService) Update(ctx context.Context, instanceID string, params 
 	return
 }
 
-// List instances
+// List all instances in the specified project and region. Results can be filtered
+// by various parameters like name, status, and IP address.
 func (r *InstanceService) List(ctx context.Context, params InstanceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Instance], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -141,7 +142,8 @@ func (r *InstanceService) List(ctx context.Context, params InstanceListParams, o
 	return res, nil
 }
 
-// List instances
+// List all instances in the specified project and region. Results can be filtered
+// by various parameters like name, status, and IP address.
 func (r *InstanceService) ListAutoPaging(ctx context.Context, params InstanceListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Instance] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
@@ -199,7 +201,8 @@ func (r *InstanceService) Action(ctx context.Context, instanceID string, params 
 	return
 }
 
-// Put instance into the server group
+// Add an instance to a server group. The instance must not already be in a server
+// group. Bare metal servers do not support server groups.
 func (r *InstanceService) AddToPlacementGroup(ctx context.Context, instanceID string, params InstanceAddToPlacementGroupParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -305,7 +308,9 @@ func (r *InstanceService) EnablePortSecurity(ctx context.Context, portID string,
 	return
 }
 
-// **Cookie Parameters**:
+// Retrieve detailed information about a specific instance. The response content
+// language for `ddos_profile` can be controlled via the 'language' cookie
+// parameter. **Cookie Parameters**:
 //
 //   - `language` (str, optional): Language for the response content. Affects the
 //     `ddos_profile` field. Supported values:
@@ -363,7 +368,8 @@ func (r *InstanceService) GetConsole(ctx context.Context, instanceID string, par
 	return
 }
 
-// Remove instance from the server group
+// Remove an instance from its current server group. The instance must be in a
+// server group to be removed. Bare metal servers do not support server groups.
 func (r *InstanceService) RemoveFromPlacementGroup(ctx context.Context, instanceID string, body InstanceRemoveFromPlacementGroupParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -1780,9 +1786,7 @@ type InstanceListParams struct {
 	// Filter result by ddos protection profile name. Effective only with `with_ddos`
 	// set to true.
 	ProfileName param.Opt[string] `query:"profile_name,omitzero" json:"-"`
-	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
-	// "`tag_key_value`={"key": "value"}" --url
-	// "https://example.com/cloud/v1/resource/1/1"
+	// Optional. Filter by tag key-value pairs.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Filter the server list result by the UUID of the server. Allowed UUID part
 	Uuid param.Opt[string] `query:"uuid,omitzero" json:"-"`

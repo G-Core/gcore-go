@@ -35,7 +35,7 @@ func NewRegistryRepositoryService(opts ...option.RequestOption) (r RegistryRepos
 	return
 }
 
-// List repositories
+// List all repositories in the container registry.
 func (r *RegistryRepositoryService) List(ctx context.Context, registryID int64, query RegistryRepositoryListParams, opts ...option.RequestOption) (res *RegistryRepositoryList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -57,7 +57,7 @@ func (r *RegistryRepositoryService) List(ctx context.Context, registryID int64, 
 	return
 }
 
-// Delete a repository
+// Delete a specific repository from the container registry.
 func (r *RegistryRepositoryService) Delete(ctx context.Context, repositoryName string, body RegistryRepositoryDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)

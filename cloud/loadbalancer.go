@@ -165,7 +165,7 @@ func (r *LoadBalancerService) Delete(ctx context.Context, loadbalancerID string,
 	return
 }
 
-// Failover loadbalancer
+// Failover load balancer
 func (r *LoadBalancerService) Failover(ctx context.Context, loadbalancerID string, params LoadBalancerFailoverParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -217,7 +217,7 @@ func (r *LoadBalancerService) Get(ctx context.Context, loadbalancerID string, pa
 	return
 }
 
-// Resize loadbalancer
+// Resize load balancer
 func (r *LoadBalancerService) Resize(ctx context.Context, loadbalancerID string, params LoadBalancerResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -1869,12 +1869,15 @@ type LoadBalancerUpdateParams struct {
 	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity,omitzero"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
-	// Unspecified tags remain unchanged. **Examples:**
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified. **Examples:**
 	//
 	//   - **Add/update tags:**
 	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
 	//     updates existing ones.
 	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
 	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
 	//     specified tags.
 	//   - **Mixed operations:**
@@ -1936,9 +1939,7 @@ type LoadBalancerListParams struct {
 	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
 	// Show statistics
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
-	// Filter by tag key-value pairs. Must be a valid JSON string. curl -G
-	// --data-urlencode "`tag_key_value`={"key": "value"}" --url
-	// "http://localhost:1111/v1/loadbalancers/1/1"
+	// Filter by tag key-value pairs. Must be a valid JSON string.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Show Advanced DDoS protection profile, if exists
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`

@@ -36,7 +36,7 @@ func NewQuotaService(opts ...option.RequestOption) (r QuotaService) {
 	return
 }
 
-// Get combined client quotas, regional and global.
+// Get combined client quotas, including both regional and global quotas.
 func (r *QuotaService) GetAll(ctx context.Context, opts ...option.RequestOption) (res *QuotaGetAllResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "cloud/v2/client_quotas"
@@ -44,7 +44,7 @@ func (r *QuotaService) GetAll(ctx context.Context, opts ...option.RequestOption)
 	return
 }
 
-// Get a quota by region
+// Get quotas for a specific region and client.
 func (r *QuotaService) GetByRegion(ctx context.Context, query QuotaGetByRegionParams, opts ...option.RequestOption) (res *QuotaGetByRegionResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -61,7 +61,7 @@ func (r *QuotaService) GetByRegion(ctx context.Context, query QuotaGetByRegionPa
 	return
 }
 
-// Get global quota
+// Get global quotas for a specific client.
 func (r *QuotaService) GetGlobal(ctx context.Context, clientID int64, opts ...option.RequestOption) (res *QuotaGetGlobalResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("cloud/v2/global_quotas/%v", clientID)

@@ -226,12 +226,15 @@ type NetworkUpdateParams struct {
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
-	// Unspecified tags remain unchanged. **Examples:**
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified. **Examples:**
 	//
 	//   - **Add/update tags:**
 	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
 	//     updates existing ones.
 	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
 	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
 	//     specified tags.
 	//   - **Mixed operations:**
@@ -264,9 +267,7 @@ type NetworkListParams struct {
 	// Optional. Offset value is used to exclude the first set of records from the
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
-	// "`tag_key_value`={"key": "value"}" --url
-	// "https://example.com/cloud/v1/resource/1/1"
+	// Optional. Filter by tag key-value pairs.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Ordering networks list result by `name`, `created_at` fields of the network and
 	// directions (`created_at.desc`).

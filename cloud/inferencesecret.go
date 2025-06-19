@@ -37,7 +37,7 @@ func NewInferenceSecretService(opts ...option.RequestOption) (r InferenceSecretS
 	return
 }
 
-// Create Inference Secret
+// Create inference secret
 func (r *InferenceSecretService) New(ctx context.Context, params InferenceSecretNewParams, opts ...option.RequestOption) (res *InferenceSecret, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -54,7 +54,7 @@ func (r *InferenceSecretService) New(ctx context.Context, params InferenceSecret
 	return
 }
 
-// List Secrets for Inference
+// List inference secrets
 func (r *InferenceSecretService) List(ctx context.Context, params InferenceSecretListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InferenceSecret], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -81,7 +81,7 @@ func (r *InferenceSecretService) List(ctx context.Context, params InferenceSecre
 	return res, nil
 }
 
-// List Secrets for Inference
+// List inference secrets
 func (r *InferenceSecretService) ListAutoPaging(ctx context.Context, params InferenceSecretListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[InferenceSecret] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
@@ -108,7 +108,7 @@ func (r *InferenceSecretService) Delete(ctx context.Context, secretName string, 
 	return
 }
 
-// Get Inference Secret
+// Get inference secret
 func (r *InferenceSecretService) Get(ctx context.Context, secretName string, query InferenceSecretGetParams, opts ...option.RequestOption) (res *InferenceSecret, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -129,7 +129,7 @@ func (r *InferenceSecretService) Get(ctx context.Context, secretName string, que
 	return
 }
 
-// Update Inference Secret
+// Replace inference secret
 func (r *InferenceSecretService) Replace(ctx context.Context, secretName string, params InferenceSecretReplaceParams, opts ...option.RequestOption) (res *InferenceSecret, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

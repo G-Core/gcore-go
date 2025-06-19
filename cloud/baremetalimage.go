@@ -34,8 +34,9 @@ func NewBaremetalImageService(opts ...option.RequestOption) (r BaremetalImageSer
 	return
 }
 
-// Retrieve the available images list for bare metal servers. Returned entities may
-// or may not be owned by the project
+// Retrieve a list of available images for bare metal servers. The list can be
+// filtered by visibility, tags, and other parameters. Returned entities may or may
+// not be owned by the project.
 func (r *BaremetalImageService) List(ctx context.Context, params BaremetalImageListParams, opts ...option.RequestOption) (res *ImageList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -64,9 +65,7 @@ type BaremetalImageListParams struct {
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	// Any value to show private images
 	Private param.Opt[string] `query:"private,omitzero" json:"-"`
-	// Filter by tag key-value pairs. Must be a valid JSON string. 'curl -G
-	// --data-urlencode '`tag_key_value`={"key": "value"}' --url
-	// 'http://localhost:1111/v1/images/1/1'"
+	// Filter by tag key-value pairs. Must be a valid JSON string.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Filter by tag keys.
 	TagKey []string `query:"tag_key,omitzero" json:"-"`

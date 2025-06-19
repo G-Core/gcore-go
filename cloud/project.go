@@ -38,7 +38,8 @@ func NewProjectService(opts ...option.RequestOption) (r ProjectService) {
 	return
 }
 
-// Create project
+// Create a new project for a client. Project management must be enabled to perform
+// this operation.
 func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "cloud/v1/projects"
@@ -46,7 +47,8 @@ func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ..
 	return
 }
 
-// List projects
+// Retrieve a list of projects for a client. Results can be filtered by name and
+// ordered by various fields.
 func (r *ProjectService) List(ctx context.Context, query ProjectListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Project], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -64,13 +66,15 @@ func (r *ProjectService) List(ctx context.Context, query ProjectListParams, opts
 	return res, nil
 }
 
-// List projects
+// Retrieve a list of projects for a client. Results can be filtered by name and
+// ordered by various fields.
 func (r *ProjectService) ListAutoPaging(ctx context.Context, query ProjectListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Project] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
-// All cloud resources in all regions that belong to the project will be deleted
-// and will not be recoverable
+// Delete a project and all its associated cloud resources across all regions. This
+// operation is irreversible and cannot be undone. Default projects cannot be
+// deleted.
 func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -87,7 +91,7 @@ func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, o
 	return
 }
 
-// Get Project
+// Retrieve detailed information about a specific project.
 func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -104,7 +108,8 @@ func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts .
 	return
 }
 
-// Update Project
+// Update project name and description. Project management must be enabled to
+// perform this operation.
 func (r *ProjectService) Replace(ctx context.Context, params ProjectReplaceParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

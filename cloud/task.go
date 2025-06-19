@@ -61,7 +61,7 @@ func (r *TaskService) ListAutoPaging(ctx context.Context, query TaskListParams, 
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
-// Acknowledge all client tasks in project or region
+// Acknowledge all tasks
 func (r *TaskService) AcknowledgeAll(ctx context.Context, body TaskAcknowledgeAllParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -70,7 +70,7 @@ func (r *TaskService) AcknowledgeAll(ctx context.Context, body TaskAcknowledgeAl
 	return
 }
 
-// Acknowledge one task on project scope
+// Acknowledge one task
 func (r *TaskService) AcknowledgeOne(ctx context.Context, taskID string, opts ...option.RequestOption) (res *Task, err error) {
 	opts = append(r.Options[:], opts...)
 	if taskID == "" {

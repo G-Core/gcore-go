@@ -55,7 +55,7 @@ func (r *GPUBaremetalClusterImageService) List(ctx context.Context, query GPUBar
 	return
 }
 
-// Delete bare metal GPU image by ID
+// Delete bare metal GPU image
 func (r *GPUBaremetalClusterImageService) Delete(ctx context.Context, imageID string, body GPUBaremetalClusterImageDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -81,7 +81,7 @@ func (r *GPUBaremetalClusterImageService) Delete(ctx context.Context, imageID st
 	return
 }
 
-// Get bare metal GPU image by ID
+// Get bare metal GPU image
 func (r *GPUBaremetalClusterImageService) Get(ctx context.Context, imageID string, query GPUBaremetalClusterImageGetParams, opts ...option.RequestOption) (res *GPUImage, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
