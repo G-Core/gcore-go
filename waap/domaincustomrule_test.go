@@ -45,7 +45,7 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 			},
 			Conditions: []waap.DomainCustomRuleNewParamsCondition{{
 				ContentType: waap.DomainCustomRuleNewParamsConditionContentType{
-					ContentType: []string{"string"},
+					ContentType: []string{"application/xml"},
 					Negation:    gcore.Bool(true),
 				},
 				Country: waap.DomainCustomRuleNewParamsConditionCountry{
@@ -53,17 +53,17 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 					Negation:    gcore.Bool(true),
 				},
 				FileExtension: waap.DomainCustomRuleNewParamsConditionFileExtension{
-					FileExtension: []string{"string"},
+					FileExtension: []string{"pdf"},
 					Negation:      gcore.Bool(true),
 				},
 				Header: waap.DomainCustomRuleNewParamsConditionHeader{
-					Header:    "header",
+					Header:    "Origin",
 					Value:     "value",
 					MatchType: "Exact",
 					Negation:  gcore.Bool(true),
 				},
 				HeaderExists: waap.DomainCustomRuleNewParamsConditionHeaderExists{
-					Header:   "header",
+					Header:   "Origin",
 					Negation: gcore.Bool(true),
 				},
 				HTTPMethod: waap.DomainCustomRuleNewParamsConditionHTTPMethod{
@@ -80,7 +80,7 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 					Negation:   gcore.Bool(true),
 				},
 				Organization: waap.DomainCustomRuleNewParamsConditionOrganization{
-					Organization: "organization",
+					Organization: "UptimeRobot s.r.o",
 					Negation:     gcore.Bool(true),
 				},
 				OwnerTypes: waap.DomainCustomRuleNewParamsConditionOwnerTypes{
@@ -114,17 +114,17 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 					Negation: gcore.Bool(true),
 				},
 				URL: waap.DomainCustomRuleNewParamsConditionURL{
-					URL:       "x",
+					URL:       "/wp-admin/",
 					MatchType: "Exact",
 					Negation:  gcore.Bool(true),
 				},
 				UserAgent: waap.DomainCustomRuleNewParamsConditionUserAgent{
-					UserAgent: "user_agent",
+					UserAgent: "curl/",
 					MatchType: "Exact",
 					Negation:  gcore.Bool(true),
 				},
 				UserDefinedTags: waap.DomainCustomRuleNewParamsConditionUserDefinedTags{
-					Tags:     []string{"string"},
+					Tags:     []string{"SQfNklznVLBBpr"},
 					Negation: gcore.Bool(true),
 				},
 			}},
@@ -174,7 +174,7 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 			},
 			Conditions: []waap.DomainCustomRuleUpdateParamsCondition{{
 				ContentType: waap.DomainCustomRuleUpdateParamsConditionContentType{
-					ContentType: []string{"string"},
+					ContentType: []string{"application/xml"},
 					Negation:    gcore.Bool(true),
 				},
 				Country: waap.DomainCustomRuleUpdateParamsConditionCountry{
@@ -182,17 +182,17 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 					Negation:    gcore.Bool(true),
 				},
 				FileExtension: waap.DomainCustomRuleUpdateParamsConditionFileExtension{
-					FileExtension: []string{"string"},
+					FileExtension: []string{"pdf"},
 					Negation:      gcore.Bool(true),
 				},
 				Header: waap.DomainCustomRuleUpdateParamsConditionHeader{
-					Header:    "header",
+					Header:    "Origin",
 					Value:     "value",
 					MatchType: "Exact",
 					Negation:  gcore.Bool(true),
 				},
 				HeaderExists: waap.DomainCustomRuleUpdateParamsConditionHeaderExists{
-					Header:   "header",
+					Header:   "Origin",
 					Negation: gcore.Bool(true),
 				},
 				HTTPMethod: waap.DomainCustomRuleUpdateParamsConditionHTTPMethod{
@@ -209,7 +209,7 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 					Negation:   gcore.Bool(true),
 				},
 				Organization: waap.DomainCustomRuleUpdateParamsConditionOrganization{
-					Organization: "organization",
+					Organization: "UptimeRobot s.r.o",
 					Negation:     gcore.Bool(true),
 				},
 				OwnerTypes: waap.DomainCustomRuleUpdateParamsConditionOwnerTypes{
@@ -243,17 +243,17 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 					Negation: gcore.Bool(true),
 				},
 				URL: waap.DomainCustomRuleUpdateParamsConditionURL{
-					URL:       "x",
+					URL:       "/wp-admin/",
 					MatchType: "Exact",
 					Negation:  gcore.Bool(true),
 				},
 				UserAgent: waap.DomainCustomRuleUpdateParamsConditionUserAgent{
-					UserAgent: "user_agent",
+					UserAgent: "curl/",
 					MatchType: "Exact",
 					Negation:  gcore.Bool(true),
 				},
 				UserDefinedTags: waap.DomainCustomRuleUpdateParamsConditionUserDefinedTags{
-					Tags:     []string{"string"},
+					Tags:     []string{"SQfNklznVLBBpr"},
 					Negation: gcore.Bool(true),
 				},
 			}},

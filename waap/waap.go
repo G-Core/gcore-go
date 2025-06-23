@@ -1526,9 +1526,13 @@ func (r *WaapCustomRuleConditionTags) UnmarshalJSON(data []byte) error {
 
 // Match the incoming request URL
 type WaapCustomRuleConditionURL struct {
-	// The pattern to match against the request URL. If `match_type` is `Regex` the
-	// value must be a valid regular expression that does not use lookahead or
-	// lookbehind constructs
+	// The pattern to match against the request URL. Constraints depend on
+	// `match_type`:
+	//
+	//   - **Exact/Contains**: plain text matching (e.g., `/admin`).
+	//   - **Regex**: a valid regular expression (must comply with
+	//     `^[\w!\$~:#\[\]@\(\)\\*\+,=\/\-\.\%]+$`). Lookahead/lookbehind constructs are
+	//     forbidden.
 	URL string `json:"url,required"`
 	// The type of matching condition.
 	//
