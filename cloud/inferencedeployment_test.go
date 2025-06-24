@@ -204,7 +204,7 @@ func TestInferenceDeploymentUpdateWithOptionalParams(t *testing.T) {
 					PollingInterval: gcore.Int(30),
 					Triggers: cloud.InferenceDeploymentUpdateParamsContainerScaleTriggers{
 						CPU: cloud.InferenceDeploymentUpdateParamsContainerScaleTriggersCPU{
-							Threshold: 80,
+							Threshold: 75,
 						},
 						GPUMemory: cloud.InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory{
 							Threshold: 80,
@@ -217,7 +217,7 @@ func TestInferenceDeploymentUpdateWithOptionalParams(t *testing.T) {
 							Window: 60,
 						},
 						Memory: cloud.InferenceDeploymentUpdateParamsContainerScaleTriggersMemory{
-							Threshold: 70,
+							Threshold: 80,
 						},
 						Sqs: cloud.InferenceDeploymentUpdateParamsContainerScaleTriggersSqs{
 							ActivationQueueLength: 1,
