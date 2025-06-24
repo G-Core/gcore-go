@@ -37,7 +37,7 @@ func NewInstanceImageService(opts ...option.RequestOption) (r InstanceImageServi
 	return
 }
 
-// Update image fields
+// Update image properties and tags.
 func (r *InstanceImageService) Update(ctx context.Context, imageID string, params InstanceImageUpdateParams, opts ...option.RequestOption) (res *Image, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -63,8 +63,9 @@ func (r *InstanceImageService) Update(ctx context.Context, imageID string, param
 	return
 }
 
-// Retrieve an available images list. Returned entities owned by the project and
-// public OR shared with the client
+// Retrieve a list of available images in the project and region. The list can be
+// filtered by visibility, tags, and other parameters. Returned entities are owned
+// by the project or are public/shared with the client.
 func (r *InstanceImageService) List(ctx context.Context, params InstanceImageListParams, opts ...option.RequestOption) (res *ImageList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -86,7 +87,8 @@ func (r *InstanceImageService) List(ctx context.Context, params InstanceImageLis
 	return
 }
 
-// Delete the image
+// Delete a specific image. The image cannot be deleted if it is used by protected
+// snapshots.
 func (r *InstanceImageService) Delete(ctx context.Context, imageID string, body InstanceImageDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -130,7 +132,8 @@ func (r *InstanceImageService) DeleteAndPoll(ctx context.Context, imageID string
 	return err
 }
 
-// Create image from volume
+// Create a new image from a bootable volume. The volume must be bootable to create
+// an image from it.
 func (r *InstanceImageService) NewFromVolume(ctx context.Context, params InstanceImageNewFromVolumeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -187,7 +190,7 @@ func (r *InstanceImageService) NewFromVolumeAndPoll(ctx context.Context, params 
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
-// Get image
+// Retrieve detailed information about a specific image.
 func (r *InstanceImageService) Get(ctx context.Context, imageID string, params InstanceImageGetParams, opts ...option.RequestOption) (res *Image, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -213,7 +216,8 @@ func (r *InstanceImageService) Get(ctx context.Context, imageID string, params I
 	return
 }
 
-// Upload image
+// Upload an image from a URL. The image can be configured with various properties
+// like OS type, architecture, and tags.
 func (r *InstanceImageService) Upload(ctx context.Context, params InstanceImageUploadParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -351,9 +355,7 @@ type InstanceImageListParams struct {
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	// Any value to show private images
 	Private param.Opt[string] `query:"private,omitzero" json:"-"`
-	// Filter by tag key-value pairs. Must be a valid JSON string. 'curl -G
-	// --data-urlencode '`tag_key_value`={"key": "value"}' --url
-	// 'http://localhost:1111/v1/images/1/1'"
+	// Filter by tag key-value pairs. Must be a valid JSON string.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Filter by tag keys.
 	TagKey []string `query:"tag_key,omitzero" json:"-"`

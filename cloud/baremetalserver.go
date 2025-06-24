@@ -42,7 +42,8 @@ func NewBaremetalServerService(opts ...option.RequestOption) (r BaremetalServerS
 	return
 }
 
-// For Linux,
+// Create a new bare metal server with the specified configuration. How to get
+// access: For Linux,
 //
 //   - Use the `user_data` field to provide a
 //     [cloud-init script](https://cloudinit.readthedocs.io/en/latest/reference/examples.html)
@@ -78,7 +79,8 @@ func (r *BaremetalServerService) New(ctx context.Context, params BaremetalServer
 	return
 }
 
-// List bare metal servers
+// List all bare metal servers in the specified project and region. Results can be
+// filtered by various parameters like name, status, and IP address.
 func (r *BaremetalServerService) List(ctx context.Context, params BaremetalServerListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[BaremetalServer], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -110,12 +112,13 @@ func (r *BaremetalServerService) List(ctx context.Context, params BaremetalServe
 	return res, nil
 }
 
-// List bare metal servers
+// List all bare metal servers in the specified project and region. Results can be
+// filtered by various parameters like name, status, and IP address.
 func (r *BaremetalServerService) ListAutoPaging(ctx context.Context, params BaremetalServerListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[BaremetalServer] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Rebuild bare metal server
+// Rebuild a bare metal server with a new image while preserving its configuration.
 func (r *BaremetalServerService) Rebuild(ctx context.Context, serverID string, params BaremetalServerRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -1242,9 +1245,7 @@ type BaremetalServerListParams struct {
 	// Filter result by ddos protection profile name. Effective only with `with_ddos`
 	// set to true.
 	ProfileName param.Opt[string] `query:"profile_name,omitzero" json:"-"`
-	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
-	// "`tag_key_value`={"key": "value"}" --url
-	// "https://example.com/cloud/v1/resource/1/1"
+	// Optional. Filter by tag key-value pairs.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Filter the server list result by the UUID of the server. Allowed UUID part
 	Uuid param.Opt[string] `query:"uuid,omitzero" json:"-"`

@@ -60,7 +60,7 @@ func (r *BillingReservationService) ListAutoPaging(ctx context.Context, query Bi
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
-// Get specific reservation
+// Get reservation
 func (r *BillingReservationService) Get(ctx context.Context, reservationID int64, opts ...option.RequestOption) (res *BillingReservation, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("cloud/v1/reservations/%v", reservationID)

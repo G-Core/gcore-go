@@ -33,7 +33,7 @@ func NewLoadBalancerPoolHealthMonitorService(opts ...option.RequestOption) (r Lo
 	return
 }
 
-// Create Load Balancer Pool Health Monitor
+// Create load balancer pool health monitor
 func (r *LoadBalancerPoolHealthMonitorService) New(ctx context.Context, poolID string, params LoadBalancerPoolHealthMonitorNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

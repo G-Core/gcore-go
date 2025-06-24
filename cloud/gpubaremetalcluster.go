@@ -50,7 +50,8 @@ func NewGPUBaremetalClusterService(opts ...option.RequestOption) (r GPUBaremetal
 	return
 }
 
-// Create bare metal GPU cluster
+// Create a new GPU cluster with specified configuration. The cluster can be
+// created with one or more nodes.
 func (r *GPUBaremetalClusterService) New(ctx context.Context, params GPUBaremetalClusterNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -213,7 +214,8 @@ func (r *GPUBaremetalClusterService) RebootAllServers(ctx context.Context, clust
 	return
 }
 
-// All cluster nodes must be specified to update the cluster image.
+// Rebuild one or more nodes in a GPU cluster. All cluster nodes must be specified
+// to update the cluster image.
 func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID string, params GPUBaremetalClusterRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -239,7 +241,8 @@ func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID stri
 	return
 }
 
-// Resize bare metal GPU cluster
+// Change the number of nodes in a GPU cluster. The cluster can be scaled up or
+// down.
 func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID string, params GPUBaremetalClusterResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

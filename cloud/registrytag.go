@@ -32,7 +32,7 @@ func NewRegistryTagService(opts ...option.RequestOption) (r RegistryTagService) 
 	return
 }
 
-// Delete a tag
+// Delete a specific tag from an artifact.
 func (r *RegistryTagService) Delete(ctx context.Context, tagName string, body RegistryTagDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)

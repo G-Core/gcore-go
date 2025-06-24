@@ -40,7 +40,7 @@ func NewSecurityGroupService(opts ...option.RequestOption) (r SecurityGroupServi
 	return
 }
 
-// Create security group
+// Create a new security group with the specified configuration.
 func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -62,7 +62,7 @@ func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewP
 	return
 }
 
-// Update security group
+// Update the configuration of an existing security group.
 func (r *SecurityGroupService) Update(ctx context.Context, groupID string, params SecurityGroupUpdateParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -88,7 +88,7 @@ func (r *SecurityGroupService) Update(ctx context.Context, groupID string, param
 	return
 }
 
-// Get security groups
+// List all security groups in the specified project and region.
 func (r *SecurityGroupService) List(ctx context.Context, params SecurityGroupListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[SecurityGroup], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -120,12 +120,12 @@ func (r *SecurityGroupService) List(ctx context.Context, params SecurityGroupLis
 	return res, nil
 }
 
-// Get security groups
+// List all security groups in the specified project and region.
 func (r *SecurityGroupService) ListAutoPaging(ctx context.Context, params SecurityGroupListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[SecurityGroup] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Delete security group
+// Delete a specific security group and all its associated rules.
 func (r *SecurityGroupService) Delete(ctx context.Context, groupID string, body SecurityGroupDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -152,10 +152,9 @@ func (r *SecurityGroupService) Delete(ctx context.Context, groupID string, body 
 	return
 }
 
-// Create a deep copy of security group
-func (r *SecurityGroupService) Copy(ctx context.Context, groupID string, params SecurityGroupCopyParams, opts ...option.RequestOption) (err error) {
+// Create a deep copy of an existing security group.
+func (r *SecurityGroupService) Copy(ctx context.Context, groupID string, params SecurityGroupCopyParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -175,11 +174,11 @@ func (r *SecurityGroupService) Copy(ctx context.Context, groupID string, params 
 		return
 	}
 	path := fmt.Sprintf("cloud/v1/securitygroups/%v/%v/%s/copy", params.ProjectID.Value, params.RegionID.Value, groupID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
-// Get security group
+// Get detailed information about a specific security group.
 func (r *SecurityGroupService) Get(ctx context.Context, groupID string, query SecurityGroupGetParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -205,7 +204,7 @@ func (r *SecurityGroupService) Get(ctx context.Context, groupID string, query Se
 	return
 }
 
-// Revert security group
+// Revert a security group to its previous state.
 func (r *SecurityGroupService) RevertToDefault(ctx context.Context, groupID string, body SecurityGroupRevertToDefaultParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -491,12 +490,15 @@ type SecurityGroupUpdateParams struct {
 	ChangedRules []SecurityGroupUpdateParamsChangedRule `json:"changed_rules,omitzero"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
-	// Unspecified tags remain unchanged. **Examples:**
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified. **Examples:**
 	//
 	//   - **Add/update tags:**
 	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
 	//     updates existing ones.
 	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
 	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
 	//     specified tags.
 	//   - **Mixed operations:**
@@ -580,13 +582,11 @@ func init() {
 type SecurityGroupListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Limit the number of returned limit request entities.
+	// Limit the number of returned security groups
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result.
+	// Offset value is used to exclude the first set of records from the result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Filter by tag key-value pairs. Must be a valid JSON string. curl -G
-	// --data-urlencode "`tag_key_value`={"key": "value"}" --url
-	// "http://localhost:1111/v1/securitygroups/1/1"
+	// Filter by tag key-value pairs. Must be a valid JSON string.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Filter by tag keys.
 	TagKey []string `query:"tag_key,omitzero" json:"-"`

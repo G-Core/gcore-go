@@ -39,7 +39,7 @@ func NewNetworkRouterService(opts ...option.RequestOption) (r NetworkRouterServi
 	return
 }
 
-// Create router
+// Create a new router with the specified configuration.
 func (r *NetworkRouterService) New(ctx context.Context, params NetworkRouterNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -61,7 +61,7 @@ func (r *NetworkRouterService) New(ctx context.Context, params NetworkRouterNewP
 	return
 }
 
-// Update router
+// Update the configuration of an existing router.
 func (r *NetworkRouterService) Update(ctx context.Context, routerID string, params NetworkRouterUpdateParams, opts ...option.RequestOption) (res *Router, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -87,7 +87,7 @@ func (r *NetworkRouterService) Update(ctx context.Context, routerID string, para
 	return
 }
 
-// List routers
+// List all routers in the specified project and region.
 func (r *NetworkRouterService) List(ctx context.Context, params NetworkRouterListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Router], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -119,12 +119,12 @@ func (r *NetworkRouterService) List(ctx context.Context, params NetworkRouterLis
 	return res, nil
 }
 
-// List routers
+// List all routers in the specified project and region.
 func (r *NetworkRouterService) ListAutoPaging(ctx context.Context, params NetworkRouterListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Router] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Delete router
+// Delete a specific router and all its associated resources.
 func (r *NetworkRouterService) Delete(ctx context.Context, routerID string, body NetworkRouterDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -150,7 +150,7 @@ func (r *NetworkRouterService) Delete(ctx context.Context, routerID string, body
 	return
 }
 
-// Attach subnet to router
+// Attach a subnet to an existing router.
 func (r *NetworkRouterService) AttachSubnet(ctx context.Context, routerID string, params NetworkRouterAttachSubnetParams, opts ...option.RequestOption) (res *Router, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -176,7 +176,7 @@ func (r *NetworkRouterService) AttachSubnet(ctx context.Context, routerID string
 	return
 }
 
-// Detach subnet from router
+// Detach a subnet from an existing router.
 func (r *NetworkRouterService) DetachSubnet(ctx context.Context, routerID string, params NetworkRouterDetachSubnetParams, opts ...option.RequestOption) (res *Router, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -202,7 +202,7 @@ func (r *NetworkRouterService) DetachSubnet(ctx context.Context, routerID string
 	return
 }
 
-// Get specific router
+// Get detailed information about a specific router.
 func (r *NetworkRouterService) Get(ctx context.Context, routerID string, query NetworkRouterGetParams, opts ...option.RequestOption) (res *Router, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -609,9 +609,9 @@ func (r *NetworkRouterUpdateParamsRoute) UnmarshalJSON(data []byte) error {
 type NetworkRouterListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Limit the number of returned limit request entities.
+	// Limit the number of returned routers
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result.
+	// Offset value is used to exclude the first set of records from the result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
