@@ -51,7 +51,7 @@ func TestVolumeNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVolumeUpdate(t *testing.T) {
+func TestVolumeUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -69,7 +69,10 @@ func TestVolumeUpdate(t *testing.T) {
 		cloud.VolumeUpdateParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
-			Name:      "my-resource",
+			Name:      gcore.String("some_name"),
+			Tags: cloud.TagUpdateMap{
+				"foo": "my-tag-value",
+			},
 		},
 	)
 	if err != nil {
