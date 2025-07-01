@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
@@ -60,29 +59,6 @@ func (r *BaremetalFlavorService) List(ctx context.Context, params BaremetalFlavo
 	return
 }
 
-// List all flavors that are suitable for creating a bare metal server with the
-// specified image.
-func (r *BaremetalFlavorService) ListSuitable(ctx context.Context, params BaremetalFlavorListSuitableParams, opts ...option.RequestOption) (res *BaremetalFlavorList, err error) {
-	opts = append(r.Options[:], opts...)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v1/bminstances/%v/%v/available_flavors", params.ProjectID.Value, params.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
-}
-
 type BaremetalFlavorListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -105,35 +81,6 @@ type BaremetalFlavorListParams struct {
 // URLQuery serializes [BaremetalFlavorListParams]'s query parameters as
 // `url.Values`.
 func (r BaremetalFlavorListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
-	})
-}
-
-type BaremetalFlavorListSuitableParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Set to true if flavor listing should include flavor prices
-	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
-	// Apptemplate ID
-	ApptemplateID param.Opt[string] `json:"apptemplate_id,omitzero"`
-	// Image ID
-	ImageID param.Opt[string] `json:"image_id,omitzero"`
-	paramObj
-}
-
-func (r BaremetalFlavorListSuitableParams) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalFlavorListSuitableParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalFlavorListSuitableParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// URLQuery serializes [BaremetalFlavorListSuitableParams]'s query parameters as
-// `url.Values`.
-func (r BaremetalFlavorListSuitableParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,

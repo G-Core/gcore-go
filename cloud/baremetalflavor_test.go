@@ -44,31 +44,3 @@ func TestBaremetalFlavorListWithOptionalParams(t *testing.T) {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }
-
-func TestBaremetalFlavorListSuitableWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Cloud.Baremetal.Flavors.ListSuitable(context.TODO(), cloud.BaremetalFlavorListSuitableParams{
-		ProjectID:     gcore.Int(0),
-		RegionID:      gcore.Int(0),
-		IncludePrices: gcore.Bool(true),
-		ApptemplateID: gcore.String("apptemplate_id"),
-		ImageID:       gcore.String("b5b4d65d-945f-4b98-ab6f-332319c724ef"),
-	})
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
