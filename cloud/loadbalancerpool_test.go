@@ -49,7 +49,7 @@ func TestLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
 		Members: []cloud.LoadBalancerPoolNewParamsMember{{
 			Address:        "192.168.1.101",
 			ProtocolPort:   8000,
-			AdminStateUp:   gcore.Bool(false),
+			AdminStateUp:   gcore.Bool(true),
 			InstanceID:     gcore.String("a7e7e8d6-0bf7-4ac9-8170-831b47ee2ba9"),
 			MonitorAddress: gcore.String("monitor_address"),
 			MonitorPort:    gcore.Int(0),
@@ -58,7 +58,7 @@ func TestLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
 		}, {
 			Address:        "192.168.1.102",
 			ProtocolPort:   8000,
-			AdminStateUp:   gcore.Bool(false),
+			AdminStateUp:   gcore.Bool(true),
 			InstanceID:     gcore.String("169942e0-9b53-42df-95ef-1a8b6525c2bd"),
 			MonitorAddress: gcore.String("monitor_address"),
 			MonitorPort:    gcore.Int(0),
@@ -119,7 +119,7 @@ func TestLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
 			Members: []cloud.LoadBalancerPoolUpdateParamsMember{{
 				Address:        "192.168.40.33",
 				ProtocolPort:   80,
-				AdminStateUp:   gcore.Bool(false),
+				AdminStateUp:   gcore.Bool(true),
 				InstanceID:     gcore.String("a7e7e8d6-0bf7-4ac9-8170-831b47ee2ba9"),
 				MonitorAddress: gcore.String("monitor_address"),
 				MonitorPort:    gcore.Int(0),
