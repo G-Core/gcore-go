@@ -365,7 +365,9 @@ func (r *LoadBalancerService) ResizeAndPoll(ctx context.Context, loadbalancerID 
 type HealthMonitor struct {
 	// Health monitor ID
 	ID string `json:"id,required" format:"uuid4"`
-	// true if enabled. Defaults to true
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. When null is passed, the value is skipped and defaults to true.
 	AdminStateUp bool `json:"admin_state_up,required"`
 	// The time, in seconds, between sending probes to members
 	Delay int64 `json:"delay,required"`
@@ -1454,7 +1456,9 @@ type Member struct {
 	ID string `json:"id,required" format:"uuid4"`
 	// Member IP address
 	Address string `json:"address,required" format:"ipvanyaddress"`
-	// true if enabled. Defaults to true
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. When null is passed, the value is skipped and defaults to true.
 	AdminStateUp bool `json:"admin_state_up,required"`
 	// Member operating status of the entity
 	//
@@ -1886,7 +1890,9 @@ type LoadBalancerNewParamsListenerPoolMember struct {
 	Address string `json:"address,required" format:"ipvanyaddress"`
 	// Member IP port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// true if enabled. Defaults to true
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. When null is passed, the value is skipped and defaults to true.
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
