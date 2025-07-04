@@ -38,7 +38,7 @@ func NewInferenceRegistryCredentialService(opts ...option.RequestOption) (r Infe
 }
 
 // Create inference registry credential
-func (r *InferenceRegistryCredentialService) New(ctx context.Context, params InferenceRegistryCredentialNewParams, opts ...option.RequestOption) (res *InferenceRegistryCredentialFull, err error) {
+func (r *InferenceRegistryCredentialService) New(ctx context.Context, params InferenceRegistryCredentialNewParams, opts ...option.RequestOption) (res *InferenceRegistryCredentialsCreate, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -55,7 +55,7 @@ func (r *InferenceRegistryCredentialService) New(ctx context.Context, params Inf
 }
 
 // List inference registry credentials
-func (r *InferenceRegistryCredentialService) List(ctx context.Context, params InferenceRegistryCredentialListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InferenceRegistryCredential], err error) {
+func (r *InferenceRegistryCredentialService) List(ctx context.Context, params InferenceRegistryCredentialListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InferenceRegistryCredentials], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -82,7 +82,7 @@ func (r *InferenceRegistryCredentialService) List(ctx context.Context, params In
 }
 
 // List inference registry credentials
-func (r *InferenceRegistryCredentialService) ListAutoPaging(ctx context.Context, params InferenceRegistryCredentialListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[InferenceRegistryCredential] {
+func (r *InferenceRegistryCredentialService) ListAutoPaging(ctx context.Context, params InferenceRegistryCredentialListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[InferenceRegistryCredentials] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
@@ -109,7 +109,7 @@ func (r *InferenceRegistryCredentialService) Delete(ctx context.Context, credent
 }
 
 // Get inference registry credential
-func (r *InferenceRegistryCredentialService) Get(ctx context.Context, credentialName string, query InferenceRegistryCredentialGetParams, opts ...option.RequestOption) (res *InferenceRegistryCredential, err error) {
+func (r *InferenceRegistryCredentialService) Get(ctx context.Context, credentialName string, query InferenceRegistryCredentialGetParams, opts ...option.RequestOption) (res *InferenceRegistryCredentials, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -151,7 +151,7 @@ func (r *InferenceRegistryCredentialService) Replace(ctx context.Context, creden
 	return
 }
 
-type InferenceRegistryCredential struct {
+type InferenceRegistryCredentials struct {
 	// Registry credential name.
 	Name string `json:"name,required"`
 	// Project ID to which the inference registry credentials belongs.
@@ -172,12 +172,12 @@ type InferenceRegistryCredential struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InferenceRegistryCredential) RawJSON() string { return r.JSON.raw }
-func (r *InferenceRegistryCredential) UnmarshalJSON(data []byte) error {
+func (r InferenceRegistryCredentials) RawJSON() string { return r.JSON.raw }
+func (r *InferenceRegistryCredentials) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type InferenceRegistryCredentialFull struct {
+type InferenceRegistryCredentialsCreate struct {
 	// Registry credential name.
 	Name string `json:"name,required"`
 	// Registry password.
@@ -201,8 +201,8 @@ type InferenceRegistryCredentialFull struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InferenceRegistryCredentialFull) RawJSON() string { return r.JSON.raw }
-func (r *InferenceRegistryCredentialFull) UnmarshalJSON(data []byte) error {
+func (r InferenceRegistryCredentialsCreate) RawJSON() string { return r.JSON.raw }
+func (r *InferenceRegistryCredentialsCreate) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

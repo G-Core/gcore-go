@@ -8,12 +8,15 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // InferenceDeploymentLogService contains methods and other services that help with
@@ -36,7 +39,7 @@ func NewInferenceDeploymentLogService(opts ...option.RequestOption) (r Inference
 }
 
 // Get inference deployment logs
-func (r *InferenceDeploymentLogService) List(ctx context.Context, deploymentName string, params InferenceDeploymentLogListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InferenceLog], err error) {
+func (r *InferenceDeploymentLogService) List(ctx context.Context, deploymentName string, params InferenceDeploymentLogListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InferenceDeploymentLog], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -67,8 +70,34 @@ func (r *InferenceDeploymentLogService) List(ctx context.Context, deploymentName
 }
 
 // Get inference deployment logs
-func (r *InferenceDeploymentLogService) ListAutoPaging(ctx context.Context, deploymentName string, params InferenceDeploymentLogListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[InferenceLog] {
+func (r *InferenceDeploymentLogService) ListAutoPaging(ctx context.Context, deploymentName string, params InferenceDeploymentLogListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[InferenceDeploymentLog] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, deploymentName, params, opts...))
+}
+
+type InferenceDeploymentLog struct {
+	// Log message.
+	Message string `json:"message,required"`
+	// Pod name.
+	Pod string `json:"pod,required"`
+	// Region ID where the container is deployed.
+	RegionID int64 `json:"region_id,required"`
+	// Log message timestamp in ISO 8601 format.
+	Time time.Time `json:"time,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Message     respjson.Field
+		Pod         respjson.Field
+		RegionID    respjson.Field
+		Time        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceDeploymentLog) RawJSON() string { return r.JSON.raw }
+func (r *InferenceDeploymentLog) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type InferenceDeploymentLogListParams struct {
