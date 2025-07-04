@@ -29,7 +29,7 @@ func TestInferenceModelListWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.Inference.Models.List(context.TODO(), cloud.InferenceModelListParams{
 		Limit:   gcore.Int(1000),
 		Offset:  gcore.Int(0),
-		OrderBy: cloud.MlcatalogOrderByChoicesNameAsc,
+		OrderBy: cloud.InferenceModelListParamsOrderByNameDesc,
 	})
 	if err != nil {
 		var apierr *gcore.Error

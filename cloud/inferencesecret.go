@@ -152,7 +152,7 @@ func (r *InferenceSecretService) Replace(ctx context.Context, secretName string,
 
 type InferenceSecret struct {
 	// Secret data.
-	Data AwsIamData `json:"data,required"`
+	Data InferenceSecretData `json:"data,required"`
 	// Secret name.
 	Name string `json:"name,required"`
 	// Secret type.
@@ -173,11 +173,32 @@ func (r *InferenceSecret) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Secret data.
+type InferenceSecretData struct {
+	// AWS IAM key ID.
+	AwsAccessKeyID string `json:"aws_access_key_id,required"`
+	// AWS IAM secret key.
+	AwsSecretAccessKey string `json:"aws_secret_access_key,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AwsAccessKeyID     respjson.Field
+		AwsSecretAccessKey respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceSecretData) RawJSON() string { return r.JSON.raw }
+func (r *InferenceSecretData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type InferenceSecretNewParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Secret data.
-	Data AwsIamDataParam `json:"data,omitzero,required"`
+	Data InferenceSecretNewParamsData `json:"data,omitzero,required"`
 	// Secret name.
 	Name string `json:"name,required"`
 	// Secret type. Currently only `aws-iam` is supported.
@@ -190,6 +211,25 @@ func (r InferenceSecretNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *InferenceSecretNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Secret data.
+//
+// The properties AwsAccessKeyID, AwsSecretAccessKey are required.
+type InferenceSecretNewParamsData struct {
+	// AWS IAM key ID.
+	AwsAccessKeyID string `json:"aws_access_key_id,required"`
+	// AWS IAM secret key.
+	AwsSecretAccessKey string `json:"aws_secret_access_key,required"`
+	paramObj
+}
+
+func (r InferenceSecretNewParamsData) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceSecretNewParamsData
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceSecretNewParamsData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -229,7 +269,7 @@ type InferenceSecretReplaceParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Secret data.
-	Data AwsIamDataParam `json:"data,omitzero,required"`
+	Data InferenceSecretReplaceParamsData `json:"data,omitzero,required"`
 	// Secret type.
 	Type string `json:"type,required"`
 	paramObj
@@ -240,5 +280,24 @@ func (r InferenceSecretReplaceParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *InferenceSecretReplaceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Secret data.
+//
+// The properties AwsAccessKeyID, AwsSecretAccessKey are required.
+type InferenceSecretReplaceParamsData struct {
+	// AWS IAM key ID.
+	AwsAccessKeyID string `json:"aws_access_key_id,required"`
+	// AWS IAM secret key.
+	AwsSecretAccessKey string `json:"aws_secret_access_key,required"`
+	paramObj
+}
+
+func (r InferenceSecretReplaceParamsData) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceSecretReplaceParamsData
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceSecretReplaceParamsData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

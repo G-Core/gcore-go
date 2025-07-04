@@ -28,7 +28,7 @@ func TestInferenceSecretNew(t *testing.T) {
 	)
 	_, err := client.Cloud.Inference.Secrets.New(context.TODO(), cloud.InferenceSecretNewParams{
 		ProjectID: gcore.Int(1),
-		Data: cloud.AwsIamDataParam{
+		Data: cloud.InferenceSecretNewParamsData{
 			AwsAccessKeyID:     "fake-key-id",
 			AwsSecretAccessKey: "fake-secret",
 		},
@@ -143,7 +143,7 @@ func TestInferenceSecretReplace(t *testing.T) {
 		"aws-dev",
 		cloud.InferenceSecretReplaceParams{
 			ProjectID: gcore.Int(1),
-			Data: cloud.AwsIamDataParam{
+			Data: cloud.InferenceSecretReplaceParamsData{
 				AwsAccessKeyID:     "fake-key-id",
 				AwsSecretAccessKey: "fake-secret",
 			},
