@@ -38,7 +38,7 @@ func NewQuotaRequestService(opts ...option.RequestOption) (r QuotaRequestService
 	return
 }
 
-// Create request to change quotas
+// Create a request to change current quotas.
 func (r *QuotaRequestService) New(ctx context.Context, body QuotaRequestNewParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -47,7 +47,7 @@ func (r *QuotaRequestService) New(ctx context.Context, body QuotaRequestNewParam
 	return
 }
 
-// Returns a list of sent requests to change current quotas and their statuses
+// Get a list of sent requests to change current quotas and their statuses.
 func (r *QuotaRequestService) List(ctx context.Context, query QuotaRequestListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[QuotaRequestListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -65,12 +65,12 @@ func (r *QuotaRequestService) List(ctx context.Context, query QuotaRequestListPa
 	return res, nil
 }
 
-// Returns a list of sent requests to change current quotas and their statuses
+// Get a list of sent requests to change current quotas and their statuses.
 func (r *QuotaRequestService) ListAutoPaging(ctx context.Context, query QuotaRequestListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[QuotaRequestListResponse] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete request to change quotas
+// Delete a specific quota limit request.
 func (r *QuotaRequestService) Delete(ctx context.Context, requestID string, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -83,7 +83,7 @@ func (r *QuotaRequestService) Delete(ctx context.Context, requestID string, opts
 	return
 }
 
-// Get request to change quota limits.
+// Get detailed information about a specific quota limit request.
 func (r *QuotaRequestService) Get(ctx context.Context, requestID string, opts ...option.RequestOption) (res *QuotaRequestGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if requestID == "" {

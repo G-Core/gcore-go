@@ -35,7 +35,7 @@ func NewInstanceInterfaceService(opts ...option.RequestOption) (r InstanceInterf
 	return
 }
 
-// List network interfaces attached to the instance
+// List all network interfaces attached to the specified instance.
 func (r *InstanceInterfaceService) List(ctx context.Context, instanceID string, query InstanceInterfaceListParams, opts ...option.RequestOption) (res *NetworkInterfaceList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

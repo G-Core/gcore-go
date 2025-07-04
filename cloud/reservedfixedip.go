@@ -43,7 +43,7 @@ func NewReservedFixedIPService(opts ...option.RequestOption) (r ReservedFixedIPS
 	return
 }
 
-// Create reserved fixed IP
+// Create a new reserved fixed IP with the specified configuration.
 func (r *ReservedFixedIPService) New(ctx context.Context, params ReservedFixedIPNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -100,7 +100,7 @@ func (r *ReservedFixedIPService) NewAndPoll(ctx context.Context, params Reserved
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
-// List reserved fixed IPs
+// List all reserved fixed IPs in the specified project and region.
 func (r *ReservedFixedIPService) List(ctx context.Context, params ReservedFixedIPListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[ReservedFixedIP], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -132,12 +132,12 @@ func (r *ReservedFixedIPService) List(ctx context.Context, params ReservedFixedI
 	return res, nil
 }
 
-// List reserved fixed IPs
+// List all reserved fixed IPs in the specified project and region.
 func (r *ReservedFixedIPService) ListAutoPaging(ctx context.Context, params ReservedFixedIPListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[ReservedFixedIP] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Delete reserved fixed ip
+// Delete a specific reserved fixed IP and all its associated resources.
 func (r *ReservedFixedIPService) Delete(ctx context.Context, portID string, body ReservedFixedIPDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -163,7 +163,7 @@ func (r *ReservedFixedIPService) Delete(ctx context.Context, portID string, body
 	return
 }
 
-// Get reserved fixed IP
+// Get detailed information about a specific reserved fixed IP.
 func (r *ReservedFixedIPService) Get(ctx context.Context, portID string, query ReservedFixedIPGetParams, opts ...option.RequestOption) (res *ReservedFixedIP, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -476,8 +476,8 @@ type ReservedFixedIPListParams struct {
 	// Offset value is used to exclude the first set of records from the result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Ordering reserved fixed IP list result by name, status, `updated_at`,
-	// `created_at` or `fixed_ip_address` fields of the reserved fixed IP and
-	// directions (status.asc), default is "`fixed_ip_address`.asc"
+	// `created_at` or `fixed_ip_address` fields and directions (status.asc), default
+	// is "`fixed_ip_address`.asc"
 	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
 	// Set to true if the response should only list VIPs
 	VipOnly param.Opt[bool] `query:"vip_only,omitzero" json:"-"`

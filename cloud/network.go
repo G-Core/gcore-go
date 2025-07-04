@@ -62,7 +62,9 @@ func (r *NetworkService) New(ctx context.Context, params NetworkNewParams, opts 
 	return
 }
 
-// Change network name
+// Rename network and/or update network tags. The request will only process the
+// fields that are provided in the request body. Any fields that are not included
+// will remain unchanged.
 func (r *NetworkService) Update(ctx context.Context, networkID string, params NetworkUpdateParams, opts ...option.RequestOption) (res *Network, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -191,7 +193,7 @@ type NetworkNewParams struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateMap `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	// vlan or vxlan network type is allowed. Default value is vxlan
 	//
 	// Any of "vlan", "vxlan".
@@ -221,7 +223,27 @@ type NetworkUpdateParams struct {
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Name.
-	Name string `json:"name,required"`
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified. **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', '`cost_center`': 'engineering', '`deprecated_tag`': null}}`
+	//     adds/updates 'environment' and '`cost_center`' while removing
+	//     '`deprecated_tag`', preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -240,12 +262,12 @@ type NetworkListParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter networks by name
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
-	// "`tag_key_value`={"key": "value"}" --url
-	// "https://example.com/cloud/v1/resource/1/1"
+	// Optional. Filter by tag key-value pairs.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Ordering networks list result by `name`, `created_at` fields of the network and
 	// directions (`created_at.desc`).

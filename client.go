@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/G-Core/gcore-go/cloud"
+	"github.com/G-Core/gcore-go/iam"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/waap"
@@ -21,6 +22,7 @@ type Client struct {
 	Options []option.RequestOption
 	Cloud   cloud.CloudService
 	Waap    waap.WaapService
+	Iam     iam.IamService
 }
 
 // DefaultClientOptions read from the environment (GCORE_API_KEY,
@@ -64,6 +66,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r.Cloud = cloud.NewCloudService(opts...)
 	r.Waap = waap.NewWaapService(opts...)
+	r.Iam = iam.NewIamService(opts...)
 
 	return
 }

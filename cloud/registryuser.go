@@ -35,8 +35,8 @@ func NewRegistryUserService(opts ...option.RequestOption) (r RegistryUserService
 	return
 }
 
-// Create a user
-func (r *RegistryUserService) New(ctx context.Context, registryID int64, params RegistryUserNewParams, opts ...option.RequestOption) (res *RegistryUser, err error) {
+// Create a new user for accessing the container registry.
+func (r *RegistryUserService) New(ctx context.Context, registryID int64, params RegistryUserNewParams, opts ...option.RequestOption) (res *RegistryUserCreated, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -57,7 +57,7 @@ func (r *RegistryUserService) New(ctx context.Context, registryID int64, params 
 	return
 }
 
-// Update a user
+// Update the configuration of a specific registry user.
 func (r *RegistryUserService) Update(ctx context.Context, userID int64, params RegistryUserUpdateParams, opts ...option.RequestOption) (res *RegistryUser, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -79,7 +79,7 @@ func (r *RegistryUserService) Update(ctx context.Context, userID int64, params R
 	return
 }
 
-// Get user list
+// List all users with access to the container registry.
 func (r *RegistryUserService) List(ctx context.Context, registryID int64, query RegistryUserListParams, opts ...option.RequestOption) (res *RegistryUserList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -101,7 +101,7 @@ func (r *RegistryUserService) List(ctx context.Context, registryID int64, query 
 	return
 }
 
-// Delete a user
+// Delete a specific user from the container registry.
 func (r *RegistryUserService) Delete(ctx context.Context, userID int64, body RegistryUserDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -124,7 +124,7 @@ func (r *RegistryUserService) Delete(ctx context.Context, userID int64, body Reg
 	return
 }
 
-// Batch create users
+// Create multiple users for accessing the container registry in a single request.
 func (r *RegistryUserService) NewMultiple(ctx context.Context, registryID int64, params RegistryUserNewMultipleParams, opts ...option.RequestOption) (res *RegistryUserCreated, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -146,10 +146,9 @@ func (r *RegistryUserService) NewMultiple(ctx context.Context, registryID int64,
 	return
 }
 
-// Refresh a secret
-func (r *RegistryUserService) RefreshSecret(ctx context.Context, userID int64, body RegistryUserRefreshSecretParams, opts ...option.RequestOption) (err error) {
+// Generate a new secret for a specific registry user.
+func (r *RegistryUserService) RefreshSecret(ctx context.Context, userID int64, body RegistryUserRefreshSecretParams, opts ...option.RequestOption) (res *RegistryUserRefreshSecretResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -165,7 +164,7 @@ func (r *RegistryUserService) RefreshSecret(ctx context.Context, userID int64, b
 		return
 	}
 	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/users/%v/refresh_secret", body.ProjectID.Value, body.RegionID.Value, body.RegistryID, userID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
@@ -253,6 +252,41 @@ type RegistryUserList struct {
 // Returns the unmodified JSON received from the API
 func (r RegistryUserList) RawJSON() string { return r.JSON.raw }
 func (r *RegistryUserList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RegistryUserRefreshSecretResponse struct {
+	// User ID
+	ID int64 `json:"id,required"`
+	// User creation date-time
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// User account operating time, days
+	Duration int64 `json:"duration,required"`
+	// User operation end date-time
+	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
+	// User name
+	Name string `json:"name,required"`
+	// Read-only user
+	ReadOnly bool `json:"read_only"`
+	// User secret
+	Secret string `json:"secret"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Duration    respjson.Field
+		ExpiresAt   respjson.Field
+		Name        respjson.Field
+		ReadOnly    respjson.Field
+		Secret      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RegistryUserRefreshSecretResponse) RawJSON() string { return r.JSON.raw }
+func (r *RegistryUserRefreshSecretResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

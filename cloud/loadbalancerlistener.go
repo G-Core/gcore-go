@@ -60,7 +60,7 @@ func (r *LoadBalancerListenerService) New(ctx context.Context, params LoadBalanc
 	return
 }
 
-// Update listener
+// Update load balancer listener
 func (r *LoadBalancerListenerService) Update(ctx context.Context, listenerID string, params LoadBalancerListenerUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -134,7 +134,7 @@ func (r *LoadBalancerListenerService) Delete(ctx context.Context, listenerID str
 	return
 }
 
-// Get listener
+// Get load balancer listener
 func (r *LoadBalancerListenerService) Get(ctx context.Context, listenerID string, params LoadBalancerListenerGetParams, opts ...option.RequestOption) (res *LoadBalancerListenerDetail, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

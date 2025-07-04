@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/G-Core/gcore-go/packages/param"
 	"log"
 	"os"
 	"strconv"
@@ -113,7 +114,7 @@ func updateVolume(client *gcore.Client, volumeID string) {
 	fmt.Println("\n=== UPDATE VOLUME ===")
 
 	params := cloud.VolumeUpdateParams{
-		Name: "gcore-go-example-updated",
+		Name: param.NewOpt("gcore-go-example-updated"),
 	}
 
 	volume, err := client.Cloud.Volumes.Update(context.Background(), volumeID, params)

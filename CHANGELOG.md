@@ -1,5 +1,49 @@
 # Changelog
 
+## 0.4.0 (2025-07-04)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/G-Core/gcore-go/compare/v0.3.0...v0.4.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** remove list suitable from bm flavors
+* remove list suitable and list for resize from instance flavors
+
+### Features
+
+* **api:** aggregated API specs update ([1e48d08](https://github.com/G-Core/gcore-go/commit/1e48d0817df211333522b45adba4a7db08ef5a14))
+* **api:** aggregated API specs update ([6d3c18b](https://github.com/G-Core/gcore-go/commit/6d3c18b6b6d3d8bac27d9d2820233ef5bcfdad4c))
+* **api:** aggregated API specs update ([f3a4e7b](https://github.com/G-Core/gcore-go/commit/f3a4e7bf1229e5924a6f4b0d31c8e8a7f7685a12))
+* **api:** aggregated API specs update ([f91a4ef](https://github.com/G-Core/gcore-go/commit/f91a4ef15c3ff5143c5e1d8bc251f8491c826bb8))
+* **api:** aggregated API specs update ([2546f6a](https://github.com/G-Core/gcore-go/commit/2546f6a5c3526783421aa65ddf5755411413f700))
+* **api:** aggregated API specs update ([4b00db0](https://github.com/G-Core/gcore-go/commit/4b00db038beb3b1458912dcb8fb1c71054b3a80e))
+* **client:** add escape hatch for null slice & maps ([a7eddc2](https://github.com/G-Core/gcore-go/commit/a7eddc28b2a70062147e288cd401e1a898856aab))
+* **iam:** add IAM ([6257c1a](https://github.com/G-Core/gcore-go/commit/6257c1aa14437102e1662767c2ff2ce11a7a9475))
+
+
+### Bug Fixes
+
+* **cloud:** fix type in volume example ([c1a6818](https://github.com/G-Core/gcore-go/commit/c1a6818d94672ec1fa782131735f32da2862ed16))
+* **cloud:** name is optional in update network ([a421627](https://github.com/G-Core/gcore-go/commit/a421627ad863d4abb176a8789dd6e83cb15db7d0))
+* don't try to deserialize as json when ResponseBodyInto is []byte ([4183a08](https://github.com/G-Core/gcore-go/commit/4183a0838d99fbac53ad045a84c67dad832c9d5b))
+* **pagination:** check if page data is empty in GetNextPage ([832e6f7](https://github.com/G-Core/gcore-go/commit/832e6f7c6173737adf43bc14877fcc3d014bc169))
+* **waap:** remove duplicate method for acct overview ([ed1a8fe](https://github.com/G-Core/gcore-go/commit/ed1a8fe6fca7fdb2bf8225f0ca94ea896fbc0a1c))
+
+
+### Chores
+
+* **ci:** only run for pushes and fork pull requests ([4780623](https://github.com/G-Core/gcore-go/commit/478062347a5b54288f75082d31d065fea17f0673))
+* **cloud:** use port id env in floating ip example ([#82](https://github.com/G-Core/gcore-go/issues/82)) ([2a3b963](https://github.com/G-Core/gcore-go/commit/2a3b96346d65905d4762ac61fb61c01aab524cf6))
+* fix documentation of null map ([2911457](https://github.com/G-Core/gcore-go/commit/2911457a6b6b42cacc74b7dc096f0f8aa36fa784))
+* **internal:** updates ([ba988ac](https://github.com/G-Core/gcore-go/commit/ba988ac5c0e5b7b4621c0e6a18926664a98ee52e))
+
+
+### Refactors
+
+* **cloud:** remove list suitable from bm flavors ([3869a14](https://github.com/G-Core/gcore-go/commit/3869a143a6ffd36745832116dbf22a7db3e5955a))
+* remove list suitable and list for resize from instance flavors ([ab849fa](https://github.com/G-Core/gcore-go/commit/ab849fa81e81af3d2ee844cfbfd08a28ccd50a15))
+* remove list suitable flavors from examples ([c6e0213](https://github.com/G-Core/gcore-go/commit/c6e021361a919d163480688efb63961994b2d789))
+
 ## 0.3.0 (2025-06-17)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/G-Core/gcore-go/compare/v0.2.0...v0.3.0)

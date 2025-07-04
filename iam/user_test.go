@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package cloud_test
+package iam_test
 
 import (
 	"context"
@@ -9,12 +9,12 @@ import (
 	"testing"
 
 	"github.com/G-Core/gcore-go"
-	"github.com/G-Core/gcore-go/cloud"
+	"github.com/G-Core/gcore-go/iam"
 	"github.com/G-Core/gcore-go/internal/testutil"
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestGPUBaremetalClusterImageList(t *testing.T) {
+func TestUserUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,9 +26,46 @@ func TestGPUBaremetalClusterImageList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Images.List(context.TODO(), cloud.GPUBaremetalClusterImageListParams{
-		ProjectID: gcore.Int(1),
-		RegionID:  gcore.Int(7),
+	_, err := client.Iam.Users.Update(
+		context.TODO(),
+		0,
+		iam.UserUpdateParams{
+			AuthTypes: []string{"password"},
+			Company:   gcore.String("company"),
+			Email:     gcore.String("dev@stainless.com"),
+			Groups: []iam.UserUpdateParamsGroup{{
+				ID:   gcore.Int(1),
+				Name: "Administrators",
+			}},
+			Lang:  iam.UserUpdateParamsLangDe,
+			Name:  gcore.String("name"),
+			Phone: gcore.String("phone"),
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestUserListWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Iam.Users.List(context.TODO(), iam.UserListParams{
+		Limit:  gcore.Int(0),
+		Offset: gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -39,7 +76,7 @@ func TestGPUBaremetalClusterImageList(t *testing.T) {
 	}
 }
 
-func TestGPUBaremetalClusterImageDelete(t *testing.T) {
+func TestUserDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -51,12 +88,11 @@ func TestGPUBaremetalClusterImageDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Images.Delete(
+	err := client.Iam.Users.Delete(
 		context.TODO(),
-		"8cab6f28-09ca-4201-b3f7-23c7893f4bd6",
-		cloud.GPUBaremetalClusterImageDeleteParams{
-			ProjectID: gcore.Int(1),
-			RegionID:  gcore.Int(7),
+		0,
+		iam.UserDeleteParams{
+			ClientID: 0,
 		},
 	)
 	if err != nil {
@@ -68,7 +104,7 @@ func TestGPUBaremetalClusterImageDelete(t *testing.T) {
 	}
 }
 
-func TestGPUBaremetalClusterImageGet(t *testing.T) {
+func TestUserGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -80,14 +116,7 @@ func TestGPUBaremetalClusterImageGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Images.Get(
-		context.TODO(),
-		"8cab6f28-09ca-4201-b3f7-23c7893f4bd6",
-		cloud.GPUBaremetalClusterImageGetParams{
-			ProjectID: gcore.Int(1),
-			RegionID:  gcore.Int(7),
-		},
-	)
+	_, err := client.Iam.Users.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -97,7 +126,7 @@ func TestGPUBaremetalClusterImageGet(t *testing.T) {
 	}
 }
 
-func TestGPUBaremetalClusterImageUploadWithOptionalParams(t *testing.T) {
+func TestUserInviteWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -109,21 +138,15 @@ func TestGPUBaremetalClusterImageUploadWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Images.Upload(context.TODO(), cloud.GPUBaremetalClusterImageUploadParams{
-		ProjectID:      gcore.Int(1),
-		RegionID:       gcore.Int(7),
-		Name:           "ubuntu-23.10-x64",
-		URL:            "http://mirror.noris.net/cirros/0.4.0/cirros-0.4.0-x86_64-disk.img",
-		Architecture:   cloud.GPUBaremetalClusterImageUploadParamsArchitectureX86_64,
-		CowFormat:      gcore.Bool(true),
-		HwFirmwareType: cloud.GPUBaremetalClusterImageUploadParamsHwFirmwareTypeBios,
-		OsDistro:       gcore.String("os_distro"),
-		OsType:         cloud.GPUBaremetalClusterImageUploadParamsOsTypeLinux,
-		OsVersion:      gcore.String("19.04"),
-		SSHKey:         cloud.GPUBaremetalClusterImageUploadParamsSSHKeyAllow,
-		Tags: map[string]string{
-			"my-tag": "my-tag-value",
+	_, err := client.Iam.Users.Invite(context.TODO(), iam.UserInviteParams{
+		ClientID: 0,
+		Email:    "dev@stainless.com",
+		UserRole: iam.UserInviteParamsUserRole{
+			ID:   gcore.Int(1),
+			Name: "Administrators",
 		},
+		Lang: iam.UserInviteParamsLangDe,
+		Name: gcore.String("name"),
 	})
 	if err != nil {
 		var apierr *gcore.Error

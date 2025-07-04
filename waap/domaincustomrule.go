@@ -604,9 +604,13 @@ func (r *DomainCustomRuleNewParamsConditionTags) UnmarshalJSON(data []byte) erro
 //
 // The property URL is required.
 type DomainCustomRuleNewParamsConditionURL struct {
-	// The pattern to match against the request URL. If `match_type` is `Regex` the
-	// value must be a valid regular expression that does not use lookahead or
-	// lookbehind constructs
+	// The pattern to match against the request URL. Constraints depend on
+	// `match_type`:
+	//
+	//   - **Exact/Contains**: plain text matching (e.g., `/admin`).
+	//   - **Regex**: a valid regular expression (must comply with
+	//     `^[\w!\$~:#\[\]@\(\)\\*\+,=\/\-\.\%]+$`). Lookahead/lookbehind constructs are
+	//     forbidden.
 	URL string `json:"url,required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
@@ -1173,9 +1177,13 @@ func (r *DomainCustomRuleUpdateParamsConditionTags) UnmarshalJSON(data []byte) e
 //
 // The property URL is required.
 type DomainCustomRuleUpdateParamsConditionURL struct {
-	// The pattern to match against the request URL. If `match_type` is `Regex` the
-	// value must be a valid regular expression that does not use lookahead or
-	// lookbehind constructs
+	// The pattern to match against the request URL. Constraints depend on
+	// `match_type`:
+	//
+	//   - **Exact/Contains**: plain text matching (e.g., `/admin`).
+	//   - **Regex**: a valid regular expression (must comply with
+	//     `^[\w!\$~:#\[\]@\(\)\\*\+,=\/\-\.\%]+$`). Lookahead/lookbehind constructs are
+	//     forbidden.
 	URL string `json:"url,required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`

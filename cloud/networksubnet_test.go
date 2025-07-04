@@ -42,8 +42,8 @@ func TestNetworkSubnetNewWithOptionalParams(t *testing.T) {
 		}},
 		IPVersion:         4,
 		RouterIDToConnect: gcore.String("00000000-0000-4000-8000-000000000000"),
-		Tags: cloud.TagUpdateMap{
-			"foo": "my-tag-value",
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
 		},
 	})
 	if err != nil {
@@ -81,6 +81,9 @@ func TestNetworkSubnetUpdateWithOptionalParams(t *testing.T) {
 				Nexthop:     "10.0.0.13",
 			}},
 			Name: gcore.String("some_name"),
+			Tags: cloud.TagUpdateMap{
+				"foo": "my-tag-value",
+			},
 		},
 	)
 	if err != nil {

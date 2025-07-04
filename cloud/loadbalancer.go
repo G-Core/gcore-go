@@ -75,8 +75,10 @@ func (r *LoadBalancerService) New(ctx context.Context, params LoadBalancerNewPar
 	return
 }
 
-// Rename load balancer, activate/deactivate logs or update preferred connectivity
-// for load balancer
+// Rename load balancer, activate/deactivate logging, update preferred connectivity
+// type and/or modify load balancer tags. The request will only process the fields
+// that are provided in the request body. Any fields that are not included will
+// remain unchanged.
 func (r *LoadBalancerService) Update(ctx context.Context, loadbalancerID string, params LoadBalancerUpdateParams, opts ...option.RequestOption) (res *LoadBalancer, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -165,7 +167,7 @@ func (r *LoadBalancerService) Delete(ctx context.Context, loadbalancerID string,
 	return
 }
 
-// Failover loadbalancer
+// Failover load balancer
 func (r *LoadBalancerService) Failover(ctx context.Context, loadbalancerID string, params LoadBalancerFailoverParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -217,7 +219,7 @@ func (r *LoadBalancerService) Get(ctx context.Context, loadbalancerID string, pa
 	return
 }
 
-// Resize loadbalancer
+// Resize load balancer
 func (r *LoadBalancerService) Resize(ctx context.Context, loadbalancerID string, params LoadBalancerResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -363,7 +365,9 @@ func (r *LoadBalancerService) ResizeAndPoll(ctx context.Context, loadbalancerID 
 type HealthMonitor struct {
 	// Health monitor ID
 	ID string `json:"id,required" format:"uuid4"`
-	// true if enabled. Defaults to true
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. When null is passed, the value is skipped and defaults to true.
 	AdminStateUp bool `json:"admin_state_up,required"`
 	// The time, in seconds, between sending probes to members
 	Delay int64 `json:"delay,required"`
@@ -1452,7 +1456,9 @@ type Member struct {
 	ID string `json:"id,required" format:"uuid4"`
 	// Member IP address
 	Address string `json:"address,required" format:"ipvanyaddress"`
-	// true if enabled. Defaults to true
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. When null is passed, the value is skipped and defaults to true.
 	AdminStateUp bool `json:"admin_state_up,required"`
 	// Member operating status of the entity
 	//
@@ -1635,7 +1641,7 @@ type LoadBalancerNewParams struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateMap `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	// IP family for load balancer subnet auto-selection if `vip_network_id` is
 	// specified
 	//
@@ -1884,7 +1890,9 @@ type LoadBalancerNewParamsListenerPoolMember struct {
 	Address string `json:"address,required" format:"ipvanyaddress"`
 	// Member IP port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// true if enabled. Defaults to true
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. When null is passed, the value is skipped and defaults to true.
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
@@ -1984,6 +1992,26 @@ type LoadBalancerUpdateParams struct {
 	//
 	// Any of "L2", "L3".
 	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity,omitzero"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified. **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', '`cost_center`': 'engineering', '`deprecated_tag`': null}}`
+	//     adds/updates 'environment' and '`cost_center`' while removing
+	//     '`deprecated_tag`', preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -2036,9 +2064,7 @@ type LoadBalancerListParams struct {
 	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
 	// Show statistics
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
-	// Filter by tag key-value pairs. Must be a valid JSON string. curl -G
-	// --data-urlencode "`tag_key_value`={"key": "value"}" --url
-	// "http://localhost:1111/v1/loadbalancers/1/1"
+	// Filter by tag key-value pairs. Must be a valid JSON string.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Show Advanced DDoS protection profile, if exists
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`

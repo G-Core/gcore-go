@@ -129,7 +129,7 @@ func (r *InferenceRegistryCredentialService) Get(ctx context.Context, credential
 	return
 }
 
-// Update inference registry credential
+// Replace inference registry credential
 func (r *InferenceRegistryCredentialService) Replace(ctx context.Context, credentialName string, params InferenceRegistryCredentialReplaceParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)

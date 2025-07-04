@@ -55,7 +55,6 @@ func main() {
 
 	// Flavors
 	listFlavors(&client)
-	listSuitableFlavors(&client, uploadedImageID)
 
 	// Images
 	listImages(&client)

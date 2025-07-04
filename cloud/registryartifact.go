@@ -35,7 +35,7 @@ func NewRegistryArtifactService(opts ...option.RequestOption) (r RegistryArtifac
 	return
 }
 
-// List artifacts
+// List all artifacts in a specific repository.
 func (r *RegistryArtifactService) List(ctx context.Context, repositoryName string, query RegistryArtifactListParams, opts ...option.RequestOption) (res *RegistryArtifactList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -61,7 +61,7 @@ func (r *RegistryArtifactService) List(ctx context.Context, repositoryName strin
 	return
 }
 
-// Delete an artifact
+// Delete a specific artifact from a repository.
 func (r *RegistryArtifactService) Delete(ctx context.Context, digest string, body RegistryArtifactDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package waap_test
+package iam_test
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestClientMe(t *testing.T) {
+func TestIamGetAccountOverview(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,7 +25,7 @@ func TestClientMe(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Clients.Me(context.TODO())
+	_, err := client.Iam.GetAccountOverview(context.TODO())
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

@@ -37,7 +37,7 @@ func NewUserRoleAssignmentService(opts ...option.RequestOption) (r UserRoleAssig
 	return
 }
 
-// Assign role to existing user
+// Assign a role to an existing user in the specified scope.
 func (r *UserRoleAssignmentService) New(ctx context.Context, body UserRoleAssignmentNewParams, opts ...option.RequestOption) (res *RoleAssignment, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "cloud/v1/users/assignments"
@@ -45,7 +45,7 @@ func (r *UserRoleAssignmentService) New(ctx context.Context, body UserRoleAssign
 	return
 }
 
-// Modify role assignment to existing user
+// Modify an existing role assignment for a user.
 func (r *UserRoleAssignmentService) Update(ctx context.Context, assignmentID int64, body UserRoleAssignmentUpdateParams, opts ...option.RequestOption) (res *RoleAssignmentUpdateDelete, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("cloud/v1/users/assignments/%v", assignmentID)
@@ -53,7 +53,7 @@ func (r *UserRoleAssignmentService) Update(ctx context.Context, assignmentID int
 	return
 }
 
-// List assignments
+// List all role assignments in the specified scope.
 func (r *UserRoleAssignmentService) List(ctx context.Context, query UserRoleAssignmentListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[RoleAssignment], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -71,12 +71,12 @@ func (r *UserRoleAssignmentService) List(ctx context.Context, query UserRoleAssi
 	return res, nil
 }
 
-// List assignments
+// List all role assignments in the specified scope.
 func (r *UserRoleAssignmentService) ListAutoPaging(ctx context.Context, query UserRoleAssignmentListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[RoleAssignment] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete role assignment
+// Delete an existing role assignment.
 func (r *UserRoleAssignmentService) Delete(ctx context.Context, assignmentID int64, opts ...option.RequestOption) (res *RoleAssignmentUpdateDelete, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("cloud/v1/users/assignments/%v", assignmentID)

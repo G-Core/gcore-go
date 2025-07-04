@@ -63,7 +63,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 				Members: []cloud.LoadBalancerNewParamsListenerPoolMember{{
 					Address:        "192.168.1.101",
 					ProtocolPort:   8000,
-					AdminStateUp:   gcore.Bool(false),
+					AdminStateUp:   gcore.Bool(true),
 					InstanceID:     gcore.String("a7e7e8d6-0bf7-4ac9-8170-831b47ee2ba9"),
 					MonitorAddress: gcore.String("monitor_address"),
 					MonitorPort:    gcore.Int(0),
@@ -72,7 +72,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 				}, {
 					Address:        "192.168.1.102",
 					ProtocolPort:   8000,
-					AdminStateUp:   gcore.Bool(false),
+					AdminStateUp:   gcore.Bool(true),
 					InstanceID:     gcore.String("169942e0-9b53-42df-95ef-1a8b6525c2bd"),
 					MonitorAddress: gcore.String("monitor_address"),
 					MonitorPort:    gcore.Int(0),
@@ -111,8 +111,8 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 		Name:                  gcore.String("new_load_balancer"),
 		NameTemplate:          gcore.String("lb_name_template"),
 		PreferredConnectivity: cloud.LoadBalancerMemberConnectivityL2,
-		Tags: cloud.TagUpdateMap{
-			"foo": "my-tag-value",
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
 		},
 		VipIPFamily:  cloud.InterfaceIPFamilyDual,
 		VipNetworkID: gcore.String("ac307687-31a4-4a11-a949-6bea1b2878f5"),
@@ -156,6 +156,9 @@ func TestLoadBalancerUpdateWithOptionalParams(t *testing.T) {
 			},
 			Name:                  gcore.String("some_name"),
 			PreferredConnectivity: cloud.LoadBalancerMemberConnectivityL2,
+			Tags: cloud.TagUpdateMap{
+				"foo": "my-tag-value",
+			},
 		},
 	)
 	if err != nil {

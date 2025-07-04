@@ -58,7 +58,7 @@ func (r *NetworkSubnetService) New(ctx context.Context, params NetworkSubnetNewP
 	return
 }
 
-// Change subnet properties
+// Update subnet
 func (r *NetworkSubnetService) Update(ctx context.Context, subnetID string, params NetworkSubnetUpdateParams, opts ...option.RequestOption) (res *Subnet, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -212,7 +212,7 @@ type NetworkSubnetNewParams struct {
 	// better organization and management. Some tags are read-only and cannot be
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
-	Tags TagUpdateMap `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -260,6 +260,26 @@ type NetworkSubnetUpdateParams struct {
 	DNSNameservers []string `json:"dns_nameservers,omitzero" format:"ipvanyaddress"`
 	// List of custom static routes to advertise via DHCP.
 	HostRoutes []NetworkSubnetUpdateParamsHostRoute `json:"host_routes,omitzero"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified. **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', '`cost_center`': 'engineering', '`deprecated_tag`': null}}`
+	//     adds/updates 'environment' and '`cost_center`' while removing
+	//     '`deprecated_tag`', preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -301,9 +321,7 @@ type NetworkSubnetListParams struct {
 	// Optional. Offset value is used to exclude the first set of records from the
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Optional. Filter by tag key-value pairs. curl -G --data-urlencode
-	// "`tag_key_value`={"key": "value"}" --url
-	// "https://example.com/cloud/v1/resource/1/1"
+	// Optional. Filter by tag key-value pairs.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Ordering subnets list result by `name`, `created_at`, `updated_at`,
 	// `available_ips`, `total_ips`, and `cidr` (default) fields of the subnet and

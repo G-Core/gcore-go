@@ -340,7 +340,9 @@ type LoadBalancerPoolNewParamsMember struct {
 	Address string `json:"address,required" format:"ipvanyaddress"`
 	// Member IP port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// true if enabled. Defaults to true
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. When null is passed, the value is skipped and defaults to true.
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
@@ -479,7 +481,9 @@ type LoadBalancerPoolUpdateParamsMember struct {
 	Address string `json:"address,required" format:"ipvanyaddress"`
 	// Member IP port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// true if enabled. Defaults to true
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. When null is passed, the value is skipped and defaults to true.
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
