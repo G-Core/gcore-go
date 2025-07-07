@@ -69,6 +69,7 @@ func TestInferenceDeploymentNewWithOptionalParams(t *testing.T) {
 		Image:           "nginx:latest",
 		ListeningPort:   80,
 		Name:            "my-instance",
+		APIKeys:         []string{"key1", "key2"},
 		AuthEnabled:     gcore.Bool(false),
 		Command:         []string{"nginx", "-g", "daemon off;"},
 		CredentialsName: gcore.String("dockerhub"),
@@ -193,6 +194,7 @@ func TestInferenceDeploymentUpdateWithOptionalParams(t *testing.T) {
 		"my-instance",
 		cloud.InferenceDeploymentUpdateParams{
 			ProjectID:   gcore.Int(1),
+			APIKeys:     []string{"key1", "key2"},
 			AuthEnabled: gcore.Bool(false),
 			Command:     []string{"nginx", "-g", "daemon off;"},
 			Containers: []cloud.InferenceDeploymentUpdateParamsContainer{{
