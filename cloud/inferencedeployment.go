@@ -238,6 +238,8 @@ type InferenceDeployment struct {
 	// `true` if instance uses API key authentication.
 	// `"Authorization": "Bearer ****\*"` or `"X-Api-Key": "****\*"` header is required
 	// for the requests to the instance if enabled.
+	//
+	// Deprecated: deprecated
 	AuthEnabled bool `json:"auth_enabled,required"`
 	// Command to be executed when running a container from an image.
 	Command string `json:"command,required"`
@@ -292,6 +294,8 @@ type InferenceDeployment struct {
 	// `scale.min`. If set, this helps in optimizing resource usage by reducing the
 	// number of container instances during periods of inactivity.
 	Timeout int64 `json:"timeout,required"`
+	// List of API keys for the inference instance
+	APIKeys []string `json:"api_keys,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Address         respjson.Field
@@ -312,6 +316,7 @@ type InferenceDeployment struct {
 		ProjectID       respjson.Field
 		Status          respjson.Field
 		Timeout         respjson.Field
+		APIKeys         respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -821,7 +826,9 @@ type InferenceDeploymentNewParams struct {
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
 	// Set to `true` to enable API key authentication for the inference instance.
 	// `"Authorization": "Bearer ****\*"` or `"X-Api-Key": "****\*"` header is required
-	// for the requests to the instance if enabled
+	// for the requests to the instance if enabled. This field is deprecated and will
+	// be removed in the future. Use `api_keys` field instead.If `auth_enabled` and
+	// `api_keys` are both specified, a ValidationError will be raised.
 	AuthEnabled param.Opt[bool] `json:"auth_enabled,omitzero"`
 	// Command to be executed when running a container from an image.
 	Command []string `json:"command,omitzero"`
@@ -833,6 +840,10 @@ type InferenceDeploymentNewParams struct {
 	// not provided, and the `image_name` is from a the Model Catalog registry, the
 	// default probes will be used.
 	Probes InferenceDeploymentNewParamsProbes `json:"probes,omitzero"`
+	// List of API keys for the inference instance. Multiple keys can be attached to
+	// one deployment.If `auth_enabled` and `api_keys` are both specified, a
+	// ValidationError will be raised.
+	APIKeys []string `json:"api_keys,omitzero"`
 	// Environment variables for the inference instance.
 	Envs map[string]string `json:"envs,omitzero"`
 	paramObj
@@ -1440,10 +1451,17 @@ type InferenceDeploymentUpdateParams struct {
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
 	// Set to `true` to enable API key authentication for the inference instance.
 	// `"Authorization": "Bearer ****\*"` or `"X-Api-Key": "****\*"` header is required
-	// for the requests to the instance if enabled
+	// for the requests to the instance if enabled. This field is deprecated and will
+	// be removed in the future. Use `api_keys` field instead.If `auth_enabled` and
+	// `api_keys` are both specified, a ValidationError will be raised.
 	AuthEnabled param.Opt[bool] `json:"auth_enabled,omitzero"`
 	// Flavor name for the inference instance.
 	FlavorName param.Opt[string] `json:"flavor_name,omitzero"`
+	// List of API keys for the inference instance. Multiple keys can be attached to
+	// one deployment.If `auth_enabled` and `api_keys` are both specified, a
+	// ValidationError will be raised.If `[]` is provided, the API keys will be removed
+	// and auth will be disabled on the deployment.
+	APIKeys []string `json:"api_keys,omitzero"`
 	// Command to be executed when running a container from an image.
 	Command []string `json:"command,omitzero"`
 	// List of containers for the inference instance.
