@@ -89,6 +89,14 @@ TEST_PATHS=(
 	iam/iam_test.go
 	iam/apitoken_test.go
 	iam/user_test.go
+	fastedge/fastedge_test.go
+	fastedge/template_test.go
+	fastedge/secret_test.go
+	fastedge/binary_test.go
+	fastedge/statistic_test.go
+	fastedge/app_test.go
+	fastedge/applog_test.go
+	fastedge/kvstore_test.go
 	usage_test.go
 	paginationauto_test.go
 	paginationmanual_test.go
