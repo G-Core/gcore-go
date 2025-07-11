@@ -151,6 +151,41 @@ func (r *SecretService) UploadTlsCertificate(ctx context.Context, params SecretU
 	return
 }
 
+// Create secret and poll for the result
+func (r *SecretService) UploadTlsCertificateAndPoll(ctx context.Context, params SecretUploadTlsCertificateParams, opts ...option.RequestOption) (v *Secret, err error) {
+	resource, err := r.UploadTlsCertificate(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams SecretGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.task.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Secrets) != 1 {
+		return nil, errors.New("expected exactly one secret to be created in a task")
+	}
+	resourceID := task.CreatedResources.Secrets[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
 type Secret struct {
 	// Secret uuid
 	ID string `json:"id,required"`
