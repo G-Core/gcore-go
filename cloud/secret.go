@@ -14,6 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -37,11 +38,11 @@ func NewSecretService(opts ...option.RequestOption) (r SecretService) {
 	return
 }
 
-// Create secret
-//
-// Deprecated: deprecated
-func (r *SecretService) New(ctx context.Context, params SecretNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+// List secrets
+func (r *SecretService) List(ctx context.Context, params SecretListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Secret], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -57,30 +58,21 @@ func (r *SecretService) New(ctx context.Context, params SecretNewParams, opts ..
 		return
 	}
 	path := fmt.Sprintf("cloud/v1/secrets/%v/%v", params.ProjectID.Value, params.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
 }
 
 // List secrets
-func (r *SecretService) List(ctx context.Context, params SecretListParams, opts ...option.RequestOption) (res *SecretListResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v1/secrets/%v/%v", params.ProjectID.Value, params.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+func (r *SecretService) ListAutoPaging(ctx context.Context, params SecretListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Secret] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete secret
@@ -230,102 +222,6 @@ const (
 	SecretSecretTypePrivate     SecretSecretType = "private"
 	SecretSecretTypePublic      SecretSecretType = "public"
 	SecretSecretTypeSymmetric   SecretSecretType = "symmetric"
-)
-
-type SecretListResponse struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []Secret `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SecretListResponse) RawJSON() string { return r.JSON.raw }
-func (r *SecretListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SecretNewParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Secret name
-	Name string `json:"name,required"`
-	// Secret payload. For HTTPS-terminated load balancing, provide base64 encoded
-	// conents of a PKCS12 file. The PKCS12 file is the combined TLS certificate, key,
-	// and intermediate certificate chain obtained from an external certificate
-	// authority. The file can be created via openssl, e.g.'openssl pkcs12 -export
-	// -inkey server.key -in server.crt -certfile ca-chain.crt -passout pass: -out
-	// server.p12'The key and certificate should be PEM-encoded, and the intermediate
-	// certificate chain should be multiple PEM-encoded certs concatenated together
-	Payload string `json:"payload,required" format:"password"`
-	// The encoding used for the payload to be able to include it in the JSON request.
-	// Currently only base64 is supported
-	//
-	// Any of "base64".
-	PayloadContentEncoding SecretNewParamsPayloadContentEncoding `json:"payload_content_encoding,omitzero,required"`
-	// The media type for the content of the payload
-	PayloadContentType string `json:"payload_content_type,required"`
-	// Secret type. symmetric - Used for storing byte arrays such as keys suitable for
-	// symmetric encryption; public - Used for storing the public key of an asymmetric
-	// keypair; private - Used for storing the private key of an asymmetric keypair;
-	// passphrase - Used for storing plain text passphrases; certificate - Used for
-	// storing cryptographic certificates such as X.509 certificates; opaque - Used for
-	// backwards compatibility with previous versions of the API
-	//
-	// Any of "certificate", "opaque", "passphrase", "private", "public", "symmetric".
-	SecretType SecretNewParamsSecretType `json:"secret_type,omitzero,required"`
-	// Metadata provided by a user or system for informational purposes.
-	Algorithm param.Opt[string] `json:"algorithm,omitzero"`
-	// Metadata provided by a user or system for informational purposes. Value must be
-	// greater than zero.
-	BitLength param.Opt[int64] `json:"bit_length,omitzero"`
-	// Datetime when the secret will expire.
-	Expiration param.Opt[string] `json:"expiration,omitzero"`
-	// Metadata provided by a user or system for informational purposes.
-	Mode param.Opt[string] `json:"mode,omitzero"`
-	paramObj
-}
-
-func (r SecretNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow SecretNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *SecretNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The encoding used for the payload to be able to include it in the JSON request.
-// Currently only base64 is supported
-type SecretNewParamsPayloadContentEncoding string
-
-const (
-	SecretNewParamsPayloadContentEncodingBase64 SecretNewParamsPayloadContentEncoding = "base64"
-)
-
-// Secret type. symmetric - Used for storing byte arrays such as keys suitable for
-// symmetric encryption; public - Used for storing the public key of an asymmetric
-// keypair; private - Used for storing the private key of an asymmetric keypair;
-// passphrase - Used for storing plain text passphrases; certificate - Used for
-// storing cryptographic certificates such as X.509 certificates; opaque - Used for
-// backwards compatibility with previous versions of the API
-type SecretNewParamsSecretType string
-
-const (
-	SecretNewParamsSecretTypeCertificate SecretNewParamsSecretType = "certificate"
-	SecretNewParamsSecretTypeOpaque      SecretNewParamsSecretType = "opaque"
-	SecretNewParamsSecretTypePassphrase  SecretNewParamsSecretType = "passphrase"
-	SecretNewParamsSecretTypePrivate     SecretNewParamsSecretType = "private"
-	SecretNewParamsSecretTypePublic      SecretNewParamsSecretType = "public"
-	SecretNewParamsSecretTypeSymmetric   SecretNewParamsSecretType = "symmetric"
 )
 
 type SecretListParams struct {
