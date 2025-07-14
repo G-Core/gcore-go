@@ -38,7 +38,7 @@ func NewInferenceModelService(opts ...option.RequestOption) (r InferenceModelSer
 }
 
 // List models from catalog
-func (r *InferenceModelService) List(ctx context.Context, query InferenceModelListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[MlcatalogModelCard], err error) {
+func (r *InferenceModelService) List(ctx context.Context, query InferenceModelListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InferenceModel], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -56,12 +56,12 @@ func (r *InferenceModelService) List(ctx context.Context, query InferenceModelLi
 }
 
 // List models from catalog
-func (r *InferenceModelService) ListAutoPaging(ctx context.Context, query InferenceModelListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[MlcatalogModelCard] {
+func (r *InferenceModelService) ListAutoPaging(ctx context.Context, query InferenceModelListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[InferenceModel] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Get model from catalog
-func (r *InferenceModelService) Get(ctx context.Context, modelID string, opts ...option.RequestOption) (res *MlcatalogModelCard, err error) {
+func (r *InferenceModelService) Get(ctx context.Context, modelID string, opts ...option.RequestOption) (res *InferenceModel, err error) {
 	opts = append(r.Options[:], opts...)
 	if modelID == "" {
 		err = errors.New("missing required model_id parameter")
@@ -72,7 +72,7 @@ func (r *InferenceModelService) Get(ctx context.Context, modelID string, opts ..
 	return
 }
 
-type MlcatalogModelCard struct {
+type InferenceModel struct {
 	// Model ID.
 	ID string `json:"id,required" format:"uuid"`
 	// Category of the model.
@@ -135,17 +135,10 @@ type MlcatalogModelCard struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MlcatalogModelCard) RawJSON() string { return r.JSON.raw }
-func (r *MlcatalogModelCard) UnmarshalJSON(data []byte) error {
+func (r InferenceModel) RawJSON() string { return r.JSON.raw }
+func (r *InferenceModel) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type MlcatalogOrderByChoices string
-
-const (
-	MlcatalogOrderByChoicesNameAsc  MlcatalogOrderByChoices = "name.asc"
-	MlcatalogOrderByChoicesNameDesc MlcatalogOrderByChoices = "name.desc"
-)
 
 type InferenceModelListParams struct {
 	// Optional. Limit the number of returned items
@@ -156,7 +149,7 @@ type InferenceModelListParams struct {
 	// Order instances by transmitted fields and directions
 	//
 	// Any of "name.asc", "name.desc".
-	OrderBy MlcatalogOrderByChoices `query:"order_by,omitzero" json:"-"`
+	OrderBy InferenceModelListParamsOrderBy `query:"order_by,omitzero" json:"-"`
 	paramObj
 }
 
@@ -168,3 +161,11 @@ func (r InferenceModelListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Order instances by transmitted fields and directions
+type InferenceModelListParamsOrderBy string
+
+const (
+	InferenceModelListParamsOrderByNameAsc  InferenceModelListParamsOrderBy = "name.asc"
+	InferenceModelListParamsOrderByNameDesc InferenceModelListParamsOrderBy = "name.desc"
+)

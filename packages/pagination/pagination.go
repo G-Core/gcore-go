@@ -236,3 +236,330 @@ func (r *OffsetPageIamAutoPager[T]) Err() error {
 func (r *OffsetPageIamAutoPager[T]) Index() int {
 	return r.run
 }
+
+type OffsetPageFastedgeApps[T any] struct {
+	Apps  []T   `json:"apps"`
+	Count int64 `json:"count"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Apps        respjson.Field
+		Count       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
+}
+
+// Returns the unmodified JSON received from the API
+func (r OffsetPageFastedgeApps[T]) RawJSON() string { return r.JSON.raw }
+func (r *OffsetPageFastedgeApps[T]) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GetNextPage returns the next page as defined by this pagination style. When
+// there is no next page, this function will return a 'nil' for the page value, but
+// will not return an error
+func (r *OffsetPageFastedgeApps[T]) GetNextPage() (res *OffsetPageFastedgeApps[T], err error) {
+	if len(r.Apps) == 0 {
+		return nil, nil
+	}
+	cfg := r.cfg.Clone(r.cfg.Context)
+
+	q := cfg.Request.URL.Query()
+	offset, err := strconv.ParseInt(q.Get("offset"), 10, 64)
+	if err != nil {
+		offset = 0
+	}
+	length := int64(len(r.Apps))
+	next := offset + length
+
+	if next < r.Count && next != 0 {
+		err = cfg.Apply(option.WithQuery("offset", strconv.FormatInt(next, 10)))
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, nil
+	}
+	var raw *http.Response
+	cfg.ResponseInto = &raw
+	cfg.ResponseBodyInto = &res
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+func (r *OffsetPageFastedgeApps[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+	if r == nil {
+		r = &OffsetPageFastedgeApps[T]{}
+	}
+	r.cfg = cfg
+	r.res = res
+}
+
+type OffsetPageFastedgeAppsAutoPager[T any] struct {
+	page *OffsetPageFastedgeApps[T]
+	cur  T
+	idx  int
+	run  int
+	err  error
+	paramObj
+}
+
+func NewOffsetPageFastedgeAppsAutoPager[T any](page *OffsetPageFastedgeApps[T], err error) *OffsetPageFastedgeAppsAutoPager[T] {
+	return &OffsetPageFastedgeAppsAutoPager[T]{
+		page: page,
+		err:  err,
+	}
+}
+
+func (r *OffsetPageFastedgeAppsAutoPager[T]) Next() bool {
+	if r.page == nil || len(r.page.Apps) == 0 {
+		return false
+	}
+	if r.idx >= len(r.page.Apps) {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil || len(r.page.Apps) == 0 {
+			return false
+		}
+	}
+	r.cur = r.page.Apps[r.idx]
+	r.run += 1
+	r.idx += 1
+	return true
+}
+
+func (r *OffsetPageFastedgeAppsAutoPager[T]) Current() T {
+	return r.cur
+}
+
+func (r *OffsetPageFastedgeAppsAutoPager[T]) Err() error {
+	return r.err
+}
+
+func (r *OffsetPageFastedgeAppsAutoPager[T]) Index() int {
+	return r.run
+}
+
+type OffsetPageFastedgeTemplates[T any] struct {
+	Templates []T   `json:"templates"`
+	Count     int64 `json:"count"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Templates   respjson.Field
+		Count       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
+}
+
+// Returns the unmodified JSON received from the API
+func (r OffsetPageFastedgeTemplates[T]) RawJSON() string { return r.JSON.raw }
+func (r *OffsetPageFastedgeTemplates[T]) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GetNextPage returns the next page as defined by this pagination style. When
+// there is no next page, this function will return a 'nil' for the page value, but
+// will not return an error
+func (r *OffsetPageFastedgeTemplates[T]) GetNextPage() (res *OffsetPageFastedgeTemplates[T], err error) {
+	if len(r.Templates) == 0 {
+		return nil, nil
+	}
+	cfg := r.cfg.Clone(r.cfg.Context)
+
+	q := cfg.Request.URL.Query()
+	offset, err := strconv.ParseInt(q.Get("offset"), 10, 64)
+	if err != nil {
+		offset = 0
+	}
+	length := int64(len(r.Templates))
+	next := offset + length
+
+	if next < r.Count && next != 0 {
+		err = cfg.Apply(option.WithQuery("offset", strconv.FormatInt(next, 10)))
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, nil
+	}
+	var raw *http.Response
+	cfg.ResponseInto = &raw
+	cfg.ResponseBodyInto = &res
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+func (r *OffsetPageFastedgeTemplates[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+	if r == nil {
+		r = &OffsetPageFastedgeTemplates[T]{}
+	}
+	r.cfg = cfg
+	r.res = res
+}
+
+type OffsetPageFastedgeTemplatesAutoPager[T any] struct {
+	page *OffsetPageFastedgeTemplates[T]
+	cur  T
+	idx  int
+	run  int
+	err  error
+	paramObj
+}
+
+func NewOffsetPageFastedgeTemplatesAutoPager[T any](page *OffsetPageFastedgeTemplates[T], err error) *OffsetPageFastedgeTemplatesAutoPager[T] {
+	return &OffsetPageFastedgeTemplatesAutoPager[T]{
+		page: page,
+		err:  err,
+	}
+}
+
+func (r *OffsetPageFastedgeTemplatesAutoPager[T]) Next() bool {
+	if r.page == nil || len(r.page.Templates) == 0 {
+		return false
+	}
+	if r.idx >= len(r.page.Templates) {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil || len(r.page.Templates) == 0 {
+			return false
+		}
+	}
+	r.cur = r.page.Templates[r.idx]
+	r.run += 1
+	r.idx += 1
+	return true
+}
+
+func (r *OffsetPageFastedgeTemplatesAutoPager[T]) Current() T {
+	return r.cur
+}
+
+func (r *OffsetPageFastedgeTemplatesAutoPager[T]) Err() error {
+	return r.err
+}
+
+func (r *OffsetPageFastedgeTemplatesAutoPager[T]) Index() int {
+	return r.run
+}
+
+type OffsetPageFastedgeAppLogs[T any] struct {
+	Logs       []T   `json:"logs"`
+	TotalCount int64 `json:"total_count"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Logs        respjson.Field
+		TotalCount  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
+}
+
+// Returns the unmodified JSON received from the API
+func (r OffsetPageFastedgeAppLogs[T]) RawJSON() string { return r.JSON.raw }
+func (r *OffsetPageFastedgeAppLogs[T]) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GetNextPage returns the next page as defined by this pagination style. When
+// there is no next page, this function will return a 'nil' for the page value, but
+// will not return an error
+func (r *OffsetPageFastedgeAppLogs[T]) GetNextPage() (res *OffsetPageFastedgeAppLogs[T], err error) {
+	if len(r.Logs) == 0 {
+		return nil, nil
+	}
+	cfg := r.cfg.Clone(r.cfg.Context)
+
+	q := cfg.Request.URL.Query()
+	offset, err := strconv.ParseInt(q.Get("offset"), 10, 64)
+	if err != nil {
+		offset = 0
+	}
+	length := int64(len(r.Logs))
+	next := offset + length
+
+	if next < r.TotalCount && next != 0 {
+		err = cfg.Apply(option.WithQuery("offset", strconv.FormatInt(next, 10)))
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, nil
+	}
+	var raw *http.Response
+	cfg.ResponseInto = &raw
+	cfg.ResponseBodyInto = &res
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+func (r *OffsetPageFastedgeAppLogs[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+	if r == nil {
+		r = &OffsetPageFastedgeAppLogs[T]{}
+	}
+	r.cfg = cfg
+	r.res = res
+}
+
+type OffsetPageFastedgeAppLogsAutoPager[T any] struct {
+	page *OffsetPageFastedgeAppLogs[T]
+	cur  T
+	idx  int
+	run  int
+	err  error
+	paramObj
+}
+
+func NewOffsetPageFastedgeAppLogsAutoPager[T any](page *OffsetPageFastedgeAppLogs[T], err error) *OffsetPageFastedgeAppLogsAutoPager[T] {
+	return &OffsetPageFastedgeAppLogsAutoPager[T]{
+		page: page,
+		err:  err,
+	}
+}
+
+func (r *OffsetPageFastedgeAppLogsAutoPager[T]) Next() bool {
+	if r.page == nil || len(r.page.Logs) == 0 {
+		return false
+	}
+	if r.idx >= len(r.page.Logs) {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil || len(r.page.Logs) == 0 {
+			return false
+		}
+	}
+	r.cur = r.page.Logs[r.idx]
+	r.run += 1
+	r.idx += 1
+	return true
+}
+
+func (r *OffsetPageFastedgeAppLogsAutoPager[T]) Current() T {
+	return r.cur
+}
+
+func (r *OffsetPageFastedgeAppLogsAutoPager[T]) Err() error {
+	return r.err
+}
+
+func (r *OffsetPageFastedgeAppLogsAutoPager[T]) Index() int {
+	return r.run
+}

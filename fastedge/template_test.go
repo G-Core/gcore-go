@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package cloud_test
+package fastedge_test
 
 import (
 	"context"
@@ -9,12 +9,12 @@ import (
 	"testing"
 
 	"github.com/G-Core/gcore-go"
-	"github.com/G-Core/gcore-go/cloud"
+	"github.com/G-Core/gcore-go/fastedge"
 	"github.com/G-Core/gcore-go/internal/testutil"
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestInferenceSecretNew(t *testing.T) {
+func TestTemplateNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,14 +26,20 @@ func TestInferenceSecretNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Inference.Secrets.New(context.TODO(), cloud.InferenceSecretNewParams{
-		ProjectID: gcore.Int(1),
-		Data: cloud.InferenceSecretNewParamsData{
-			AwsAccessKeyID:     "fake-key-id",
-			AwsSecretAccessKey: "fake-secret",
+	_, err := client.Fastedge.Templates.New(context.TODO(), fastedge.TemplateNewParams{
+		Template: fastedge.TemplateParam{
+			BinaryID: 0,
+			Name:     "name",
+			Owned:    true,
+			Params: []fastedge.TemplateParameter{{
+				DataType:  fastedge.TemplateParameterDataTypeString,
+				Mandatory: true,
+				Name:      "name",
+				Descr:     gcore.String("descr"),
+			}},
+			LongDescr:  gcore.String("long_descr"),
+			ShortDescr: gcore.String("short_descr"),
 		},
-		Name: "aws-dev",
-		Type: "aws-iam",
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -44,7 +50,7 @@ func TestInferenceSecretNew(t *testing.T) {
 	}
 }
 
-func TestInferenceSecretListWithOptionalParams(t *testing.T) {
+func TestTemplateListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -56,10 +62,11 @@ func TestInferenceSecretListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Inference.Secrets.List(context.TODO(), cloud.InferenceSecretListParams{
-		ProjectID: gcore.Int(1),
-		Limit:     gcore.Int(1000),
-		Offset:    gcore.Int(0),
+	_, err := client.Fastedge.Templates.List(context.TODO(), fastedge.TemplateListParams{
+		APIType:  fastedge.TemplateListParamsAPITypeWasiHTTP,
+		Limit:    gcore.Int(0),
+		Offset:   gcore.Int(0),
+		OnlyMine: gcore.Bool(true),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -70,7 +77,7 @@ func TestInferenceSecretListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestInferenceSecretDelete(t *testing.T) {
+func TestTemplateDeleteWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -82,11 +89,11 @@ func TestInferenceSecretDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cloud.Inference.Secrets.Delete(
+	err := client.Fastedge.Templates.Delete(
 		context.TODO(),
-		"aws-dev",
-		cloud.InferenceSecretDeleteParams{
-			ProjectID: gcore.Int(1),
+		0,
+		fastedge.TemplateDeleteParams{
+			Force: gcore.Bool(true),
 		},
 	)
 	if err != nil {
@@ -98,7 +105,7 @@ func TestInferenceSecretDelete(t *testing.T) {
 	}
 }
 
-func TestInferenceSecretGet(t *testing.T) {
+func TestTemplateGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -110,13 +117,7 @@ func TestInferenceSecretGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Inference.Secrets.Get(
-		context.TODO(),
-		"aws-dev",
-		cloud.InferenceSecretGetParams{
-			ProjectID: gcore.Int(1),
-		},
-	)
+	_, err := client.Fastedge.Templates.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -126,7 +127,7 @@ func TestInferenceSecretGet(t *testing.T) {
 	}
 }
 
-func TestInferenceSecretReplace(t *testing.T) {
+func TestTemplateReplaceWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -138,16 +139,23 @@ func TestInferenceSecretReplace(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Inference.Secrets.Replace(
+	_, err := client.Fastedge.Templates.Replace(
 		context.TODO(),
-		"aws-dev",
-		cloud.InferenceSecretReplaceParams{
-			ProjectID: gcore.Int(1),
-			Data: cloud.InferenceSecretReplaceParamsData{
-				AwsAccessKeyID:     "fake-key-id",
-				AwsSecretAccessKey: "fake-secret",
+		0,
+		fastedge.TemplateReplaceParams{
+			Template: fastedge.TemplateParam{
+				BinaryID: 0,
+				Name:     "name",
+				Owned:    true,
+				Params: []fastedge.TemplateParameter{{
+					DataType:  fastedge.TemplateParameterDataTypeString,
+					Mandatory: true,
+					Name:      "name",
+					Descr:     gcore.String("descr"),
+				}},
+				LongDescr:  gcore.String("long_descr"),
+				ShortDescr: gcore.String("short_descr"),
 			},
-			Type: "aws-iam",
 		},
 	)
 	if err != nil {

@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.5.0 (2025-07-14)
+
+Full Changelog: [v0.4.0...v0.5.0](https://github.com/G-Core/gcore-go/compare/v0.4.0...v0.5.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** remove deprecated secrets NewAndPoll method
+* **cloud:** refactor cloud inference models
+
+### Features
+
+* **api:** aggregated API specs update ([8e885ea](https://github.com/G-Core/gcore-go/commit/8e885ea585de4a91f4d5057d34d9e7852db233c4))
+* **api:** aggregated API specs update ([93b112d](https://github.com/G-Core/gcore-go/commit/93b112d32a6b39130d3b091e12c4874ee72a1767))
+* **api:** manual updates ([4ca75cc](https://github.com/G-Core/gcore-go/commit/4ca75cc27e04576fc4e9e369895c66a3122e64dd))
+* **api:** manual upload of aggregated API specs ([7193379](https://github.com/G-Core/gcore-go/commit/7193379c170faf959cd54afc8528f6b1befad16c))
+* **cloud:** add inference examples ([cdb2685](https://github.com/G-Core/gcore-go/commit/cdb268583ddfab449742b1adaf5cd56faa2ae721))
+* **cloud:** add UploadTlsCertificateAndPoll method for secrets ([4c768f7](https://github.com/G-Core/gcore-go/commit/4c768f78f93ec6fce51031d91869a79bb457fa13))
+* **fastedge:** add api ([b5c6ad4](https://github.com/G-Core/gcore-go/commit/b5c6ad4fd0a3499c2df99f2500e523290ee8ba78))
+
+
+### Bug Fixes
+
+* **cloud:** remove deprecated secrets NewAndPoll method ([e01efb7](https://github.com/G-Core/gcore-go/commit/e01efb726742a2bd99bd988d351de4b9f5860613))
+
+
+### Chores
+
+* **internal:** fix lint script for tests ([558c5da](https://github.com/G-Core/gcore-go/commit/558c5da71b5a1491814fc96a4999bc11d77a8d2a))
+* lint tests ([a496baf](https://github.com/G-Core/gcore-go/commit/a496baf9678f5075048f319aa6736bbfeff0ee00))
+* lint tests in subpackages ([1f71f43](https://github.com/G-Core/gcore-go/commit/1f71f434a3e048e47204d7548d745ddfe6363c45))
+
+
+### Refactors
+
+* **cloud:** refactor cloud inference models ([ab17e97](https://github.com/G-Core/gcore-go/commit/ab17e97c7e6fc3d72f487ddc83bcd52cf3c8a3d4))
+
 ## 0.4.0 (2025-07-04)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/G-Core/gcore-go/compare/v0.3.0...v0.4.0)

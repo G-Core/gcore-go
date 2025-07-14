@@ -69,6 +69,7 @@ func TestInferenceDeploymentNewWithOptionalParams(t *testing.T) {
 		Image:           "nginx:latest",
 		ListeningPort:   80,
 		Name:            "my-instance",
+		APIKeys:         []string{"key1", "key2"},
 		AuthEnabled:     gcore.Bool(false),
 		Command:         []string{"nginx", "-g", "daemon off;"},
 		CredentialsName: gcore.String("dockerhub"),
@@ -77,7 +78,7 @@ func TestInferenceDeploymentNewWithOptionalParams(t *testing.T) {
 			"DEBUG_MODE": "False",
 			"KEY":        "12345",
 		},
-		IngressOpts: cloud.IngressOptsParam{
+		IngressOpts: cloud.InferenceDeploymentNewParamsIngressOpts{
 			DisableResponseBuffering: gcore.Bool(true),
 		},
 		Logging: cloud.InferenceDeploymentNewParamsLogging{
@@ -89,14 +90,14 @@ func TestInferenceDeploymentNewWithOptionalParams(t *testing.T) {
 			TopicName: gcore.String("my-log-name"),
 		},
 		Probes: cloud.InferenceDeploymentNewParamsProbes{
-			LivenessProbe: cloud.ContainerProbeConfigCreateParam{
+			LivenessProbe: cloud.InferenceDeploymentNewParamsProbesLivenessProbe{
 				Enabled: true,
-				Probe: cloud.ContainerProbeCreateParam{
-					Exec: cloud.ContainerProbeExecCreateParam{
+				Probe: cloud.InferenceDeploymentNewParamsProbesLivenessProbeProbe{
+					Exec: cloud.InferenceDeploymentNewParamsProbesLivenessProbeProbeExec{
 						Command: []string{"ls", "-l"},
 					},
 					FailureThreshold: gcore.Int(3),
-					HTTPGet: cloud.ContainerProbeHTTPGetCreateParam{
+					HTTPGet: cloud.InferenceDeploymentNewParamsProbesLivenessProbeProbeHTTPGet{
 						Port: 80,
 						Headers: map[string]string{
 							"Authorization": "Bearer token 123",
@@ -108,20 +109,20 @@ func TestInferenceDeploymentNewWithOptionalParams(t *testing.T) {
 					InitialDelaySeconds: gcore.Int(0),
 					PeriodSeconds:       gcore.Int(5),
 					SuccessThreshold:    gcore.Int(1),
-					TcpSocket: cloud.ContainerProbeTcpSocketCreateParam{
+					TcpSocket: cloud.InferenceDeploymentNewParamsProbesLivenessProbeProbeTcpSocket{
 						Port: 80,
 					},
 					TimeoutSeconds: gcore.Int(1),
 				},
 			},
-			ReadinessProbe: cloud.ContainerProbeConfigCreateParam{
+			ReadinessProbe: cloud.InferenceDeploymentNewParamsProbesReadinessProbe{
 				Enabled: true,
-				Probe: cloud.ContainerProbeCreateParam{
-					Exec: cloud.ContainerProbeExecCreateParam{
+				Probe: cloud.InferenceDeploymentNewParamsProbesReadinessProbeProbe{
+					Exec: cloud.InferenceDeploymentNewParamsProbesReadinessProbeProbeExec{
 						Command: []string{"ls", "-l"},
 					},
 					FailureThreshold: gcore.Int(3),
-					HTTPGet: cloud.ContainerProbeHTTPGetCreateParam{
+					HTTPGet: cloud.InferenceDeploymentNewParamsProbesReadinessProbeProbeHTTPGet{
 						Port: 80,
 						Headers: map[string]string{
 							"Authorization": "Bearer token 123",
@@ -133,20 +134,20 @@ func TestInferenceDeploymentNewWithOptionalParams(t *testing.T) {
 					InitialDelaySeconds: gcore.Int(0),
 					PeriodSeconds:       gcore.Int(5),
 					SuccessThreshold:    gcore.Int(1),
-					TcpSocket: cloud.ContainerProbeTcpSocketCreateParam{
+					TcpSocket: cloud.InferenceDeploymentNewParamsProbesReadinessProbeProbeTcpSocket{
 						Port: 80,
 					},
 					TimeoutSeconds: gcore.Int(1),
 				},
 			},
-			StartupProbe: cloud.ContainerProbeConfigCreateParam{
+			StartupProbe: cloud.InferenceDeploymentNewParamsProbesStartupProbe{
 				Enabled: true,
-				Probe: cloud.ContainerProbeCreateParam{
-					Exec: cloud.ContainerProbeExecCreateParam{
+				Probe: cloud.InferenceDeploymentNewParamsProbesStartupProbeProbe{
+					Exec: cloud.InferenceDeploymentNewParamsProbesStartupProbeProbeExec{
 						Command: []string{"ls", "-l"},
 					},
 					FailureThreshold: gcore.Int(3),
-					HTTPGet: cloud.ContainerProbeHTTPGetCreateParam{
+					HTTPGet: cloud.InferenceDeploymentNewParamsProbesStartupProbeProbeHTTPGet{
 						Port: 80,
 						Headers: map[string]string{
 							"Authorization": "Bearer token 123",
@@ -158,7 +159,7 @@ func TestInferenceDeploymentNewWithOptionalParams(t *testing.T) {
 					InitialDelaySeconds: gcore.Int(0),
 					PeriodSeconds:       gcore.Int(5),
 					SuccessThreshold:    gcore.Int(1),
-					TcpSocket: cloud.ContainerProbeTcpSocketCreateParam{
+					TcpSocket: cloud.InferenceDeploymentNewParamsProbesStartupProbeProbeTcpSocket{
 						Port: 80,
 					},
 					TimeoutSeconds: gcore.Int(1),
@@ -193,6 +194,7 @@ func TestInferenceDeploymentUpdateWithOptionalParams(t *testing.T) {
 		"my-instance",
 		cloud.InferenceDeploymentUpdateParams{
 			ProjectID:   gcore.Int(1),
+			APIKeys:     []string{"key1", "key2"},
 			AuthEnabled: gcore.Bool(false),
 			Command:     []string{"nginx", "-g", "daemon off;"},
 			Containers: []cloud.InferenceDeploymentUpdateParamsContainer{{
@@ -240,7 +242,7 @@ func TestInferenceDeploymentUpdateWithOptionalParams(t *testing.T) {
 			},
 			FlavorName: gcore.String("inference-16vcpu-232gib-1xh100-80gb"),
 			Image:      gcore.String("nginx:latest"),
-			IngressOpts: cloud.IngressOptsParam{
+			IngressOpts: cloud.InferenceDeploymentUpdateParamsIngressOpts{
 				DisableResponseBuffering: gcore.Bool(true),
 			},
 			ListeningPort: gcore.Int(80),

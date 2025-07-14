@@ -15,40 +15,6 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestSecretNewWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Cloud.Secrets.New(context.TODO(), cloud.SecretNewParams{
-		ProjectID:              gcore.Int(1),
-		RegionID:               gcore.Int(1),
-		Name:                   "AES key",
-		Payload:                "aGVsbG8sIHRlc3Qgc3RyaW5nCg==",
-		PayloadContentEncoding: cloud.SecretNewParamsPayloadContentEncodingBase64,
-		PayloadContentType:     "application/octet-stream",
-		SecretType:             cloud.SecretNewParamsSecretTypeCertificate,
-		Algorithm:              gcore.String("aes"),
-		BitLength:              gcore.Int(256),
-		Expiration:             gcore.String("2025-12-28T19:14:44.180394"),
-		Mode:                   gcore.String("cbc"),
-	})
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
 func TestSecretListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
