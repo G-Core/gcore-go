@@ -268,6 +268,8 @@ type InferenceDeployment struct {
 	Logging Logging `json:"logging,required"`
 	// Inference instance name.
 	Name string `json:"name,required"`
+	// Indicates to which parent object this inference belongs to.
+	ObjectReferences []InferenceDeploymentObjectReference `json:"object_references,required"`
 	// Probes configured for all containers of the inference instance.
 	Probes InferenceDeploymentProbes `json:"probes,required"`
 	// Project ID. If not provided, your default project ID will be used.
@@ -298,27 +300,28 @@ type InferenceDeployment struct {
 	APIKeys []string `json:"api_keys,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Address         respjson.Field
-		AuthEnabled     respjson.Field
-		Command         respjson.Field
-		Containers      respjson.Field
-		CreatedAt       respjson.Field
-		CredentialsName respjson.Field
-		Description     respjson.Field
-		Envs            respjson.Field
-		FlavorName      respjson.Field
-		Image           respjson.Field
-		IngressOpts     respjson.Field
-		ListeningPort   respjson.Field
-		Logging         respjson.Field
-		Name            respjson.Field
-		Probes          respjson.Field
-		ProjectID       respjson.Field
-		Status          respjson.Field
-		Timeout         respjson.Field
-		APIKeys         respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
+		Address          respjson.Field
+		AuthEnabled      respjson.Field
+		Command          respjson.Field
+		Containers       respjson.Field
+		CreatedAt        respjson.Field
+		CredentialsName  respjson.Field
+		Description      respjson.Field
+		Envs             respjson.Field
+		FlavorName       respjson.Field
+		Image            respjson.Field
+		IngressOpts      respjson.Field
+		ListeningPort    respjson.Field
+		Logging          respjson.Field
+		Name             respjson.Field
+		ObjectReferences respjson.Field
+		Probes           respjson.Field
+		ProjectID        respjson.Field
+		Status           respjson.Field
+		Timeout          respjson.Field
+		APIKeys          respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
 	} `json:"-"`
 }
 
@@ -596,6 +599,28 @@ type InferenceDeploymentIngressOpts struct {
 // Returns the unmodified JSON received from the API
 func (r InferenceDeploymentIngressOpts) RawJSON() string { return r.JSON.raw }
 func (r *InferenceDeploymentIngressOpts) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceDeploymentObjectReference struct {
+	// Kind of the inference object to be referenced
+	//
+	// Any of "AppDeployment".
+	Kind string `json:"kind,required"`
+	// Name of the inference object to be referenced
+	Name string `json:"name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceDeploymentObjectReference) RawJSON() string { return r.JSON.raw }
+func (r *InferenceDeploymentObjectReference) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
