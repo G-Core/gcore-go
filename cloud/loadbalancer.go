@@ -1209,30 +1209,33 @@ type LoadBalancerPoolListResultMemberUnion struct {
 	// This field is from variant [Member].
 	AdminStateUp bool `json:"admin_state_up"`
 	// This field is from variant [Member].
+	Backup bool `json:"backup"`
+	// This field is from variant [Member].
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status"`
 	// This field is from variant [Member].
 	ProtocolPort int64 `json:"protocol_port"`
 	// This field is from variant [Member].
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status"`
 	// This field is from variant [Member].
+	SubnetID string `json:"subnet_id"`
+	// This field is from variant [Member].
 	Weight int64 `json:"weight"`
 	// This field is from variant [Member].
 	MonitorAddress string `json:"monitor_address"`
 	// This field is from variant [Member].
 	MonitorPort int64 `json:"monitor_port"`
-	// This field is from variant [Member].
-	SubnetID string `json:"subnet_id"`
-	JSON     struct {
+	JSON        struct {
 		ID                 respjson.Field
 		Address            respjson.Field
 		AdminStateUp       respjson.Field
+		Backup             respjson.Field
 		OperatingStatus    respjson.Field
 		ProtocolPort       respjson.Field
 		ProvisioningStatus respjson.Field
+		SubnetID           respjson.Field
 		Weight             respjson.Field
 		MonitorAddress     respjson.Field
 		MonitorPort        respjson.Field
-		SubnetID           respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -1341,6 +1344,11 @@ type Member struct {
 	// and operational. When set to false, the resource is disabled and will not
 	// process traffic. When null is passed, the value is skipped and defaults to true.
 	AdminStateUp bool `json:"admin_state_up,required"`
+	// Set to true if the member is a backup member, to which traffic will be sent
+	// exclusively when all non-backup members will be unreachable. It allows to
+	// realize ACTIVE-BACKUP load balancing without thinking about VRRP and VIP
+	// configuration. Default is false
+	Backup bool `json:"backup,required"`
 	// Member operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
@@ -1352,7 +1360,9 @@ type Member struct {
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// Member weight. Valid values: 0 to 256, defaults to 1
+	// `subnet_id` in which `address` is present.
+	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	// Member weight. Valid values are 0 < `weight` <= 256.
 	Weight int64 `json:"weight,required"`
 	// An alternate IP address used for health monitoring of a backend member. Default
 	// is null which monitors the member address.
@@ -1360,20 +1370,19 @@ type Member struct {
 	// An alternate protocol port used for health monitoring of a backend member.
 	// Default is null which monitors the member `protocol_port`.
 	MonitorPort int64 `json:"monitor_port,nullable"`
-	// Either `subnet_id` or `instance_id` should be provided
-	SubnetID string `json:"subnet_id,nullable" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
 		Address            respjson.Field
 		AdminStateUp       respjson.Field
+		Backup             respjson.Field
 		OperatingStatus    respjson.Field
 		ProtocolPort       respjson.Field
 		ProvisioningStatus respjson.Field
+		SubnetID           respjson.Field
 		Weight             respjson.Field
 		MonitorAddress     respjson.Field
 		MonitorPort        respjson.Field
-		SubnetID           respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -1771,10 +1780,6 @@ type LoadBalancerNewParamsListenerPoolMember struct {
 	Address string `json:"address,required" format:"ipvanyaddress"`
 	// Member IP port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// Administrative state of the resource. When set to true, the resource is enabled
-	// and operational. When set to false, the resource is disabled and will not
-	// process traffic. When null is passed, the value is skipped and defaults to true.
-	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
 	// An alternate IP address used for health monitoring of a backend member. Default
@@ -1783,10 +1788,20 @@ type LoadBalancerNewParamsListenerPoolMember struct {
 	// An alternate protocol port used for health monitoring of a backend member.
 	// Default is null which monitors the member `protocol_port`.
 	MonitorPort param.Opt[int64] `json:"monitor_port,omitzero"`
-	// Either `subnet_id` or `instance_id` should be provided
+	// `subnet_id` in which `address` is present. Either `subnet_id` or `instance_id`
+	// should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
-	// Member weight. Valid values: 0 to 256, defaults to 1
+	// Member weight. Valid values are 0 < `weight` <= 256, defaults to 1.
 	Weight param.Opt[int64] `json:"weight,omitzero"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. When null is passed, the value is skipped and defaults to true.
+	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
+	// Set to true if the member is a backup member, to which traffic will be sent
+	// exclusively when all non-backup members will be unreachable. It allows to
+	// realize ACTIVE-BACKUP load balancing without thinking about VRRP and VIP
+	// configuration. Default is false.
+	Backup param.Opt[bool] `json:"backup,omitzero"`
 	paramObj
 }
 

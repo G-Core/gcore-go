@@ -255,10 +255,6 @@ type LoadBalancerPoolNewParamsMember struct {
 	Address string `json:"address,required" format:"ipvanyaddress"`
 	// Member IP port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// Administrative state of the resource. When set to true, the resource is enabled
-	// and operational. When set to false, the resource is disabled and will not
-	// process traffic. When null is passed, the value is skipped and defaults to true.
-	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
 	// An alternate IP address used for health monitoring of a backend member. Default
@@ -267,10 +263,20 @@ type LoadBalancerPoolNewParamsMember struct {
 	// An alternate protocol port used for health monitoring of a backend member.
 	// Default is null which monitors the member `protocol_port`.
 	MonitorPort param.Opt[int64] `json:"monitor_port,omitzero"`
-	// Either `subnet_id` or `instance_id` should be provided
+	// `subnet_id` in which `address` is present. Either `subnet_id` or `instance_id`
+	// should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
-	// Member weight. Valid values: 0 to 256, defaults to 1
+	// Member weight. Valid values are 0 < `weight` <= 256, defaults to 1.
 	Weight param.Opt[int64] `json:"weight,omitzero"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. When null is passed, the value is skipped and defaults to true.
+	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
+	// Set to true if the member is a backup member, to which traffic will be sent
+	// exclusively when all non-backup members will be unreachable. It allows to
+	// realize ACTIVE-BACKUP load balancing without thinking about VRRP and VIP
+	// configuration. Default is false.
+	Backup param.Opt[bool] `json:"backup,omitzero"`
 	paramObj
 }
 
@@ -396,10 +402,6 @@ type LoadBalancerPoolUpdateParamsMember struct {
 	Address string `json:"address,required" format:"ipvanyaddress"`
 	// Member IP port
 	ProtocolPort int64 `json:"protocol_port,required"`
-	// Administrative state of the resource. When set to true, the resource is enabled
-	// and operational. When set to false, the resource is disabled and will not
-	// process traffic. When null is passed, the value is skipped and defaults to true.
-	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
 	// An alternate IP address used for health monitoring of a backend member. Default
@@ -408,10 +410,20 @@ type LoadBalancerPoolUpdateParamsMember struct {
 	// An alternate protocol port used for health monitoring of a backend member.
 	// Default is null which monitors the member `protocol_port`.
 	MonitorPort param.Opt[int64] `json:"monitor_port,omitzero"`
-	// Either `subnet_id` or `instance_id` should be provided
+	// `subnet_id` in which `address` is present. Either `subnet_id` or `instance_id`
+	// should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
-	// Member weight. Valid values: 0 to 256, defaults to 1
+	// Member weight. Valid values are 0 < `weight` <= 256, defaults to 1.
 	Weight param.Opt[int64] `json:"weight,omitzero"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. When null is passed, the value is skipped and defaults to true.
+	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
+	// Set to true if the member is a backup member, to which traffic will be sent
+	// exclusively when all non-backup members will be unreachable. It allows to
+	// realize ACTIVE-BACKUP load balancing without thinking about VRRP and VIP
+	// configuration. Default is false.
+	Backup param.Opt[bool] `json:"backup,omitzero"`
 	paramObj
 }
 
