@@ -35,6 +35,7 @@ func TestLoadBalancerPoolMemberAddWithOptionalParams(t *testing.T) {
 			Address:        "192.168.40.33",
 			ProtocolPort:   80,
 			AdminStateUp:   gcore.Bool(true),
+			Backup:         gcore.Bool(true),
 			InstanceID:     gcore.String("a7e7e8d6-0bf7-4ac9-8170-831b47ee2ba9"),
 			MonitorAddress: gcore.String("monitor_address"),
 			MonitorPort:    gcore.Int(0),

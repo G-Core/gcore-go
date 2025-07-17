@@ -55,7 +55,7 @@ func TestFileShareNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestFileShareUpdate(t *testing.T) {
+func TestFileShareUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -73,7 +73,10 @@ func TestFileShareUpdate(t *testing.T) {
 		cloud.FileShareUpdateParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
-			Name:      "my-resource",
+			Name:      gcore.String("some_name"),
+			Tags: cloud.TagUpdateMap{
+				"foo": "my-tag-value",
+			},
 		},
 	)
 	if err != nil {
