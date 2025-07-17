@@ -787,6 +787,16 @@ Methods:
 
 - <code title="post /cloud/v1/instances/{project_id}/{region_id}/{instance_id}/metrics">client.Cloud.Instances.Metrics.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceMetricService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, instanceID <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceMetricListParams">InstanceMetricListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#MetricsList">MetricsList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## AuditLogs
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#AuditLogEntry">AuditLogEntry</a>
+
+Methods:
+
+- <code title="get /cloud/v1/user_actions">client.Cloud.AuditLogs.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#AuditLogService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#AuditLogListParams">AuditLogListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#AuditLogEntry">AuditLogEntry</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Waap
 
 Params Types:
