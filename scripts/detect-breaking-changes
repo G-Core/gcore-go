@@ -65,6 +65,7 @@ TEST_PATHS=(
 	cloud/instanceinterface_test.go
 	cloud/instanceimage_test.go
 	cloud/instancemetric_test.go
+	cloud/auditlog_test.go
 	waap/waap_test.go
 	waap/statistic_test.go
 	waap/domain_test.go
