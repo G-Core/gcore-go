@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/G-Core/gcore-go/packages/param"
 	"log"
 	"os"
 	"strconv"
@@ -153,7 +154,7 @@ func updateFileShare(client *gcore.Client, fileShareID, newName string) {
 	fmt.Println("\n=== UPDATE FILE SHARE ===")
 
 	params := cloud.FileShareUpdateParams{
-		Name: newName,
+		Name: param.NewOpt(newName),
 	}
 
 	fileShare, err := client.Cloud.FileShares.Update(context.Background(), fileShareID, params)
