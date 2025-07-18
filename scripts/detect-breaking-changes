@@ -43,6 +43,7 @@ TEST_PATHS=(
 	cloud/inferencedeploymentlog_test.go
 	cloud/inferenceregistrycredential_test.go
 	cloud/inferencesecret_test.go
+	cloud/inferenceapikey_test.go
 	cloud/placementgroup_test.go
 	cloud/baremetalimage_test.go
 	cloud/baremetalflavor_test.go
