@@ -25,6 +25,7 @@ type InferenceService struct {
 	Deployments         InferenceDeploymentService
 	RegistryCredentials InferenceRegistryCredentialService
 	Secrets             InferenceSecretService
+	APIKeys             InferenceAPIKeyService
 }
 
 // NewInferenceService generates a new service that applies the given options to
@@ -38,6 +39,7 @@ func NewInferenceService(opts ...option.RequestOption) (r InferenceService) {
 	r.Deployments = NewInferenceDeploymentService(opts...)
 	r.RegistryCredentials = NewInferenceRegistryCredentialService(opts...)
 	r.Secrets = NewInferenceSecretService(opts...)
+	r.APIKeys = NewInferenceAPIKeyService(opts...)
 	return
 }
 
