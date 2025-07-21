@@ -4,6 +4,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -229,6 +230,8 @@ type FileShare struct {
 	// Share network name. May be null if the file share was created with volume type
 	// VAST
 	ShareNetworkName string `json:"share_network_name,required"`
+	// Share settings specific to the file share type
+	ShareSettings FileShareShareSettingsUnion `json:"share_settings,required"`
 	// File share size, GiB
 	Size int64 `json:"size,required"`
 	// File share status
@@ -277,6 +280,7 @@ type FileShare struct {
 		Region           respjson.Field
 		RegionID         respjson.Field
 		ShareNetworkName respjson.Field
+		ShareSettings    respjson.Field
 		Size             respjson.Field
 		Status           respjson.Field
 		SubnetID         respjson.Field
@@ -293,6 +297,111 @@ type FileShare struct {
 // Returns the unmodified JSON received from the API
 func (r FileShare) RawJSON() string { return r.JSON.raw }
 func (r *FileShare) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// FileShareShareSettingsUnion contains all possible properties and values from
+// [FileShareShareSettingsStandard], [FileShareShareSettingsVast].
+//
+// Use the [FileShareShareSettingsUnion.AsAny] method to switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type FileShareShareSettingsUnion struct {
+	// Any of "standard", "vast".
+	TypeName string `json:"type_name"`
+	// This field is from variant [FileShareShareSettingsVast].
+	RootSquash bool `json:"root_squash"`
+	JSON       struct {
+		TypeName   respjson.Field
+		RootSquash respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+// anyFileShareShareSettings is implemented by each variant of
+// [FileShareShareSettingsUnion] to add type safety for the return type of
+// [FileShareShareSettingsUnion.AsAny]
+type anyFileShareShareSettings interface {
+	implFileShareShareSettingsUnion()
+}
+
+func (FileShareShareSettingsStandard) implFileShareShareSettingsUnion() {}
+func (FileShareShareSettingsVast) implFileShareShareSettingsUnion()     {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := FileShareShareSettingsUnion.AsAny().(type) {
+//	case cloud.FileShareShareSettingsStandard:
+//	case cloud.FileShareShareSettingsVast:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u FileShareShareSettingsUnion) AsAny() anyFileShareShareSettings {
+	switch u.TypeName {
+	case "standard":
+		return u.AsStandard()
+	case "vast":
+		return u.AsVast()
+	}
+	return nil
+}
+
+func (u FileShareShareSettingsUnion) AsStandard() (v FileShareShareSettingsStandard) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FileShareShareSettingsUnion) AsVast() (v FileShareShareSettingsVast) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u FileShareShareSettingsUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *FileShareShareSettingsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileShareShareSettingsStandard struct {
+	// Standard file share type
+	TypeName constant.Standard `json:"type_name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TypeName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileShareShareSettingsStandard) RawJSON() string { return r.JSON.raw }
+func (r *FileShareShareSettingsStandard) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileShareShareSettingsVast struct {
+	// Enables or disables root squash for NFS clients.
+	//
+	//   - If `true`, root squash is enabled: the root user is mapped to nobody for all
+	//     file and folder management operations on the export.
+	//   - If `false`, root squash is disabled: the NFS client `root` user retains root
+	//     privileges.
+	RootSquash bool `json:"root_squash,required"`
+	// Vast file share type
+	TypeName constant.Vast `json:"type_name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RootSquash  respjson.Field
+		TypeName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileShareShareSettingsVast) RawJSON() string { return r.JSON.raw }
+func (r *FileShareShareSettingsVast) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -462,6 +571,8 @@ type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
 	Name string `json:"name,required"`
 	// File share size
 	Size int64 `json:"size,required"`
+	// Configuration settings for the share
+	ShareSettings FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings `json:"share_settings,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Some tags are read-only and cannot be
@@ -484,6 +595,27 @@ func (r FileShareNewParamsBodyCreateVastFileShareSerializer) MarshalJSON() (data
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *FileShareNewParamsBodyCreateVastFileShareSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration settings for the share
+type FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings struct {
+	// Enables or disables root squash for NFS clients.
+	//
+	//   - If `true` (default), root squash is enabled: the root user is mapped to nobody
+	//     for all file and folder management operations on the export.
+	//   - If `false`, root squash is disabled: the NFS client `root` user retains root
+	//     privileges. Use this option if you trust the root user not to perform
+	//     operations that will corrupt data.
+	RootSquash param.Opt[bool] `json:"root_squash,omitzero"`
+	paramObj
+}
+
+func (r FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
