@@ -73,7 +73,10 @@ func (r *GPUBaremetalClusterService) New(ctx context.Context, params GPUBaremeta
 	return
 }
 
-// List bare metal GPU clusters
+// Please use the `/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters`
+// instead.
+//
+// Deprecated: deprecated
 func (r *GPUBaremetalClusterService) List(ctx context.Context, params GPUBaremetalClusterListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[GPUBaremetalCluster], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
@@ -105,7 +108,10 @@ func (r *GPUBaremetalClusterService) List(ctx context.Context, params GPUBaremet
 	return res, nil
 }
 
-// List bare metal GPU clusters
+// Please use the `/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters`
+// instead.
+//
+// Deprecated: deprecated
 func (r *GPUBaremetalClusterService) ListAutoPaging(ctx context.Context, params GPUBaremetalClusterListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[GPUBaremetalCluster] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
@@ -136,7 +142,11 @@ func (r *GPUBaremetalClusterService) Delete(ctx context.Context, clusterID strin
 	return
 }
 
-// Get bare metal GPU cluster
+// Please use the
+// `/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters/{`cluster_id`}`
+// instead.
+//
+// Deprecated: deprecated
 func (r *GPUBaremetalClusterService) Get(ctx context.Context, clusterID string, query GPUBaremetalClusterGetParams, opts ...option.RequestOption) (res *GPUBaremetalCluster, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -377,6 +387,8 @@ type GPUBaremetalCluster struct {
 	// Datetime when the cluster was created
 	CreatedAt string `json:"created_at,required"`
 	// Task that created this entity
+	//
+	// Deprecated: deprecated
 	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
 	// Flavor ID is the same as the name
 	Flavor string `json:"flavor,required"`
