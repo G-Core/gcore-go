@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.0 (2025-07-21)
+
+Full Changelog: [v0.5.0...v0.6.0](https://github.com/G-Core/gcore-go/compare/v0.5.0...v0.6.0)
+
+### Features
+
+* **api:** aggregated API specs update ([ec9c7b9](https://github.com/G-Core/gcore-go/commit/ec9c7b948b6fb3936525be03bf895274a5ed24fc))
+* **api:** aggregated API specs update ([56dd867](https://github.com/G-Core/gcore-go/commit/56dd867a75bb81a68715556bb7bb1dfc5c703b9f))
+* **cloud:** add audit logs ([31eb179](https://github.com/G-Core/gcore-go/commit/31eb17931efa44e0920a8eed7cac78a304438d03))
+* **cloud:** add baremetal examples ([e876469](https://github.com/G-Core/gcore-go/commit/e876469cdfe033042ca684d694d4adaf72f08ea2))
+* **cloud:** add inference api_keys subresource ([d025d80](https://github.com/G-Core/gcore-go/commit/d025d8027028069e55d91a552719bc17f9caa0f6))
+
+
+### Bug Fixes
+
+* **cloud:** make name optional in file share update example ([c8f03a8](https://github.com/G-Core/gcore-go/commit/c8f03a8552f417d6dda76f2ade6cb22b22887bad))
+
 ## 0.5.0 (2025-07-14)
 
 Full Changelog: [v0.4.0...v0.5.0](https://github.com/G-Core/gcore-go/compare/v0.4.0...v0.5.0)
