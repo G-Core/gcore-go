@@ -28,7 +28,7 @@ func TestDomainFirewallRuleNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.FirewallRules.New(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainFirewallRuleNewParams{
 			Action: waap.DomainFirewallRuleNewParamsAction{
 				Allow: map[string]interface{}{},
@@ -78,7 +78,7 @@ func TestDomainFirewallRuleUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		waap.DomainFirewallRuleUpdateParams{
-			DomainID: 0,
+			DomainID: 1,
 			Action: waap.DomainFirewallRuleUpdateParamsAction{
 				Allow: map[string]interface{}{},
 				Block: waap.DomainFirewallRuleUpdateParamsActionBlock{
@@ -125,7 +125,7 @@ func TestDomainFirewallRuleListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.FirewallRules.List(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainFirewallRuleListParams{
 			Action:      waap.DomainFirewallRuleListParamsActionAllow,
 			Description: gcore.String("description"),
@@ -161,7 +161,7 @@ func TestDomainFirewallRuleDelete(t *testing.T) {
 		context.TODO(),
 		0,
 		waap.DomainFirewallRuleDeleteParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {
@@ -187,7 +187,7 @@ func TestDomainFirewallRuleDeleteMultiple(t *testing.T) {
 	)
 	err := client.Waap.Domains.FirewallRules.DeleteMultiple(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainFirewallRuleDeleteMultipleParams{
 			RuleIDs: []int64{0},
 		},
@@ -217,7 +217,7 @@ func TestDomainFirewallRuleGet(t *testing.T) {
 		context.TODO(),
 		0,
 		waap.DomainFirewallRuleGetParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {
@@ -245,7 +245,7 @@ func TestDomainFirewallRuleToggle(t *testing.T) {
 		context.TODO(),
 		waap.WaapCustomerRuleStateEnable,
 		waap.DomainFirewallRuleToggleParams{
-			DomainID: 0,
+			DomainID: 1,
 			RuleID:   0,
 		},
 	)

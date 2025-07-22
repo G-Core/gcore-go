@@ -150,7 +150,9 @@ func (r IPInfoGetAttackTimeSeriesParams) URLQuery() (v url.Values, err error) {
 }
 
 type IPInfoGetBlockedRequestsParams struct {
-	// The domain ID
+	// The identifier for a domain. When specified, the response will exclusively
+	// contain data pertinent to the indicated domain, filtering out information from
+	// other domains.
 	DomainID int64 `query:"domain_id,required" json:"-"`
 	// The IP address to check
 	IP string `query:"ip,required" format:"ipv4" json:"-"`
@@ -200,7 +202,9 @@ func (r IPInfoGetDDOSAttackSeriesParams) URLQuery() (v url.Values, err error) {
 }
 
 type IPInfoGetTopSessionsParams struct {
-	// The domain ID
+	// The identifier for a domain. When specified, the response will exclusively
+	// contain data pertinent to the indicated domain, filtering out information from
+	// other domains.
 	DomainID int64 `query:"domain_id,required" json:"-"`
 	// The IP address to check
 	IP string `query:"ip,required" format:"ipv4" json:"-"`
@@ -217,7 +221,9 @@ func (r IPInfoGetTopSessionsParams) URLQuery() (v url.Values, err error) {
 }
 
 type IPInfoGetTopURLsParams struct {
-	// The domain ID
+	// The identifier for a domain. When specified, the response will exclusively
+	// contain data pertinent to the indicated domain, filtering out information from
+	// other domains.
 	DomainID int64 `query:"domain_id,required" json:"-"`
 	// The IP address to check
 	IP string `query:"ip,required" format:"ipv4" json:"-"`
@@ -233,7 +239,9 @@ func (r IPInfoGetTopURLsParams) URLQuery() (v url.Values, err error) {
 }
 
 type IPInfoGetTopUserAgentsParams struct {
-	// The domain ID
+	// The identifier for a domain. When specified, the response will exclusively
+	// contain data pertinent to the indicated domain, filtering out information from
+	// other domains.
 	DomainID int64 `query:"domain_id,required" json:"-"`
 	// The IP address to check
 	IP string `query:"ip,required" format:"ipv4" json:"-"`

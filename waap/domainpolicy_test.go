@@ -30,7 +30,7 @@ func TestDomainPolicyToggle(t *testing.T) {
 		context.TODO(),
 		"policy_id",
 		waap.DomainPolicyToggleParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {

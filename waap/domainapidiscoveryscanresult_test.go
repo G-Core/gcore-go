@@ -28,7 +28,7 @@ func TestDomainAPIDiscoveryScanResultListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.APIDiscovery.ScanResults.List(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainAPIDiscoveryScanResultListParams{
 			Limit:    gcore.Int(0),
 			Message:  gcore.String("message"),
@@ -63,7 +63,7 @@ func TestDomainAPIDiscoveryScanResultGet(t *testing.T) {
 		context.TODO(),
 		"scan_id",
 		waap.DomainAPIDiscoveryScanResultGetParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {

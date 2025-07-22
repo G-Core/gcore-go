@@ -28,7 +28,7 @@ func TestDomainAdvancedRuleNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.AdvancedRules.New(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainAdvancedRuleNewParams{
 			Action: waap.DomainAdvancedRuleNewParamsAction{
 				Allow: map[string]interface{}{},
@@ -75,7 +75,7 @@ func TestDomainAdvancedRuleUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		waap.DomainAdvancedRuleUpdateParams{
-			DomainID: 0,
+			DomainID: 1,
 			Action: waap.DomainAdvancedRuleUpdateParamsAction{
 				Allow: map[string]interface{}{},
 				Block: waap.DomainAdvancedRuleUpdateParamsActionBlock{
@@ -119,13 +119,13 @@ func TestDomainAdvancedRuleListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.AdvancedRules.List(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainAdvancedRuleListParams{
 			Action:      waap.WaapRuleActionTypeAllow,
-			Description: gcore.String("description"),
-			Enabled:     gcore.Bool(true),
+			Description: gcore.String("This rule blocks all the requests coming form a specific IP address"),
+			Enabled:     gcore.Bool(false),
 			Limit:       gcore.Int(0),
-			Name:        gcore.String("name"),
+			Name:        gcore.String("Block by specific IP rule"),
 			Offset:      gcore.Int(0),
 			Ordering:    waap.DomainAdvancedRuleListParamsOrderingID,
 			Phase:       waap.DomainAdvancedRuleListParamsPhaseAccess,
@@ -156,7 +156,7 @@ func TestDomainAdvancedRuleDelete(t *testing.T) {
 		context.TODO(),
 		0,
 		waap.DomainAdvancedRuleDeleteParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {
@@ -184,7 +184,7 @@ func TestDomainAdvancedRuleGet(t *testing.T) {
 		context.TODO(),
 		0,
 		waap.DomainAdvancedRuleGetParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {
@@ -212,7 +212,7 @@ func TestDomainAdvancedRuleToggle(t *testing.T) {
 		context.TODO(),
 		waap.WaapCustomerRuleStateEnable,
 		waap.DomainAdvancedRuleToggleParams{
-			DomainID: 0,
+			DomainID: 1,
 			RuleID:   0,
 		},
 	)

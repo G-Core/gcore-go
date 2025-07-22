@@ -29,7 +29,7 @@ func TestDomainAnalyticsRequestListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.Analytics.Requests.List(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainAnalyticsRequestListParams{
 			Start:            time.Now(),
 			Actions:          []string{"allow"},
@@ -70,7 +70,7 @@ func TestDomainAnalyticsRequestGet(t *testing.T) {
 		context.TODO(),
 		"request_id",
 		waap.DomainAnalyticsRequestGetParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {
