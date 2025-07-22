@@ -75,7 +75,7 @@ func TestIPInfoGetBlockedRequests(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Waap.IPInfo.GetBlockedRequests(context.TODO(), waap.IPInfoGetBlockedRequestsParams{
-		DomainID: 0,
+		DomainID: 1,
 		IP:       "192.168.1.1",
 	})
 	if err != nil {
@@ -149,7 +149,7 @@ func TestIPInfoGetTopSessions(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Waap.IPInfo.GetTopSessions(context.TODO(), waap.IPInfoGetTopSessionsParams{
-		DomainID: 0,
+		DomainID: 1,
 		IP:       "192.168.1.1",
 	})
 	if err != nil {
@@ -174,7 +174,7 @@ func TestIPInfoGetTopURLs(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Waap.IPInfo.GetTopURLs(context.TODO(), waap.IPInfoGetTopURLsParams{
-		DomainID: 0,
+		DomainID: 1,
 		IP:       "192.168.1.1",
 	})
 	if err != nil {
@@ -199,7 +199,7 @@ func TestIPInfoGetTopUserAgents(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Waap.IPInfo.GetTopUserAgents(context.TODO(), waap.IPInfoGetTopUserAgentsParams{
-		DomainID: 0,
+		DomainID: 1,
 		IP:       "192.168.1.1",
 	})
 	if err != nil {

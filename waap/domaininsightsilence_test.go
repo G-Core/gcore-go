@@ -29,7 +29,7 @@ func TestDomainInsightSilenceNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.InsightSilences.New(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainInsightSilenceNewParams{
 			Author:      "author",
 			Comment:     "comment",
@@ -65,7 +65,7 @@ func TestDomainInsightSilenceUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		waap.DomainInsightSilenceUpdateParams{
-			DomainID: 0,
+			DomainID: 1,
 			Author:   "author",
 			Comment:  "comment",
 			ExpireAt: gcore.Time(time.Now()),
@@ -97,7 +97,7 @@ func TestDomainInsightSilenceListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.InsightSilences.List(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainInsightSilenceListParams{
 			ID:          []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 			Author:      gcore.String("author"),
@@ -133,7 +133,7 @@ func TestDomainInsightSilenceDelete(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		waap.DomainInsightSilenceDeleteParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {
@@ -161,7 +161,7 @@ func TestDomainInsightSilenceGet(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		waap.DomainInsightSilenceGetParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {

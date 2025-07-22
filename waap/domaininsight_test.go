@@ -28,7 +28,7 @@ func TestDomainInsightListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.Insights.List(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainInsightListParams{
 			ID:          []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 			Description: gcore.String("description"),
@@ -64,7 +64,7 @@ func TestDomainInsightGet(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		waap.DomainInsightGetParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {
@@ -92,7 +92,7 @@ func TestDomainInsightReplace(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		waap.DomainInsightReplaceParams{
-			DomainID: 0,
+			DomainID: 1,
 			Status:   waap.WaapInsightStatusOpen,
 		},
 	)

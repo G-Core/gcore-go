@@ -28,7 +28,7 @@ func TestDomainSettingUpdateWithOptionalParams(t *testing.T) {
 	)
 	err := client.Waap.Domains.Settings.Update(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainSettingUpdateParams{
 			API: waap.DomainSettingUpdateParamsAPI{
 				APIURLs: []string{"api/v1/.*", "v2/.*"},
@@ -61,7 +61,7 @@ func TestDomainSettingGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.Settings.Get(context.TODO(), 0)
+	_, err := client.Waap.Domains.Settings.Get(context.TODO(), 1)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

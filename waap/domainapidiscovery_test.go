@@ -26,7 +26,7 @@ func TestDomainAPIDiscoveryGetSettings(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.APIDiscovery.GetSettings(context.TODO(), 0)
+	_, err := client.Waap.Domains.APIDiscovery.GetSettings(context.TODO(), 1)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -48,7 +48,7 @@ func TestDomainAPIDiscoveryScanOpenAPI(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.APIDiscovery.ScanOpenAPI(context.TODO(), 0)
+	_, err := client.Waap.Domains.APIDiscovery.ScanOpenAPI(context.TODO(), 1)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -72,7 +72,7 @@ func TestDomainAPIDiscoveryUpdateSettingsWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.APIDiscovery.UpdateSettings(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainAPIDiscoveryUpdateSettingsParams{
 			DescriptionFileLocation:          gcore.String("descriptionFileLocation"),
 			DescriptionFileScanEnabled:       gcore.Bool(true),
@@ -104,7 +104,7 @@ func TestDomainAPIDiscoveryUploadOpenAPI(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.APIDiscovery.UploadOpenAPI(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainAPIDiscoveryUploadOpenAPIParams{
 			FileData: "file_data",
 			FileName: "file_name",
