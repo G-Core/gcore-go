@@ -28,7 +28,7 @@ func TestDomainAPIPathNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.APIPaths.New(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainAPIPathNewParams{
 			HTTPScheme: waap.DomainAPIPathNewParamsHTTPSchemeHTTP,
 			Method:     waap.DomainAPIPathNewParamsMethodGet,
@@ -63,7 +63,7 @@ func TestDomainAPIPathUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		waap.DomainAPIPathUpdateParams{
-			DomainID:  0,
+			DomainID:  1,
 			APIGroups: []string{"accounts", "internal"},
 			Path:      gcore.String("/api/v1/paths/{path_id}"),
 			Status:    waap.DomainAPIPathUpdateParamsStatusConfirmedAPI,
@@ -93,7 +93,7 @@ func TestDomainAPIPathListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.APIPaths.List(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainAPIPathListParams{
 			APIGroup:   gcore.String("api_group"),
 			APIVersion: gcore.String("api_version"),
@@ -133,7 +133,7 @@ func TestDomainAPIPathDelete(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		waap.DomainAPIPathDeleteParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {
@@ -161,7 +161,7 @@ func TestDomainAPIPathGet(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		waap.DomainAPIPathGetParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {

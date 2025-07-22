@@ -29,7 +29,7 @@ func TestDomainAnalyticsGetEventStatisticsWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.Analytics.GetEventStatistics(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainAnalyticsGetEventStatisticsParams{
 			Start:       time.Now(),
 			Action:      []string{"block", "captcha"},
@@ -62,7 +62,7 @@ func TestDomainAnalyticsListDDOSAttacksWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.Analytics.ListDDOSAttacks(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainAnalyticsListDDOSAttacksParams{
 			EndTime:   gcore.Time(time.Now()),
 			Limit:     gcore.Int(0),
@@ -94,7 +94,7 @@ func TestDomainAnalyticsListDDOSInfoWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.Analytics.ListDDOSInfo(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainAnalyticsListDDOSInfoParams{
 			GroupBy: waap.DomainAnalyticsListDDOSInfoParamsGroupByURL,
 			Start:   time.Now(),
@@ -126,7 +126,7 @@ func TestDomainAnalyticsListEventTrafficWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.Analytics.ListEventTraffic(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainAnalyticsListEventTrafficParams{
 			Resolution: waap.WaapResolutionDaily,
 			Start:      time.Now(),

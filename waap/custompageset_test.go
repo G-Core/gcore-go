@@ -55,7 +55,7 @@ func TestCustomPageSetNewWithOptionalParams(t *testing.T) {
 			Header:  gcore.String("xxx"),
 			Text:    gcore.String("xxxxxxxxxxxxxxxxxxxx"),
 		},
-		Domains: []int64{0},
+		Domains: []int64{1},
 		Handshake: waap.WaapHandshakePageDataParam{
 			Enabled: true,
 			Header:  gcore.String("xxx"),
@@ -120,7 +120,7 @@ func TestCustomPageSetUpdateWithOptionalParams(t *testing.T) {
 				Header:  gcore.String("xxx"),
 				Text:    gcore.String("xxxxxxxxxxxxxxxxxxxx"),
 			},
-			Domains: []int64{0},
+			Domains: []int64{1},
 			Handshake: waap.WaapHandshakePageDataParam{
 				Enabled: true,
 				Header:  gcore.String("xxx"),

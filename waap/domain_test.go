@@ -28,7 +28,7 @@ func TestDomainUpdateWithOptionalParams(t *testing.T) {
 	)
 	err := client.Waap.Domains.Update(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainUpdateParams{
 			Status: waap.DomainUpdateParamsStatusActive,
 		},
@@ -55,7 +55,7 @@ func TestDomainListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Waap.Domains.List(context.TODO(), waap.DomainListParams{
-		IDs:      []int64{0},
+		IDs:      []int64{1},
 		Limit:    gcore.Int(0),
 		Name:     gcore.String("name"),
 		Offset:   gcore.Int(0),
@@ -83,7 +83,7 @@ func TestDomainDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.Delete(context.TODO(), 0)
+	err := client.Waap.Domains.Delete(context.TODO(), 1)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -105,7 +105,7 @@ func TestDomainGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.Get(context.TODO(), 0)
+	_, err := client.Waap.Domains.Get(context.TODO(), 1)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -127,7 +127,7 @@ func TestDomainListRuleSets(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.ListRuleSets(context.TODO(), 0)
+	_, err := client.Waap.Domains.ListRuleSets(context.TODO(), 1)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

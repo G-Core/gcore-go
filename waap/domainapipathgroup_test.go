@@ -25,7 +25,7 @@ func TestDomainAPIPathGroupList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.APIPathGroups.List(context.TODO(), 0)
+	_, err := client.Waap.Domains.APIPathGroups.List(context.TODO(), 1)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

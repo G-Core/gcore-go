@@ -1529,10 +1529,10 @@ type WaapCustomRuleConditionURL struct {
 	// The pattern to match against the request URL. Constraints depend on
 	// `match_type`:
 	//
-	//   - **Exact/Contains**: plain text matching (e.g., `/admin`).
-	//   - **Regex**: a valid regular expression (must comply with
-	//     `^[\w!\$~:#\[\]@\(\)\\*\+,=\/\-\.\%]+$`). Lookahead/lookbehind constructs are
-	//     forbidden.
+	//   - **Exact/Contains**: plain text matching (e.g., `/admin`, must comply with
+	//     `^[\w!\$~:#\[\]@\(\)\\*\+,=\/\-\.\%]+$`).
+	//   - **Regex**: a valid regular expression (e.g., `^/upload(/\d+)?/\w+`).
+	//     Lookahead/lookbehind constructs are forbidden.
 	URL string `json:"url,required"`
 	// The type of matching condition.
 	//

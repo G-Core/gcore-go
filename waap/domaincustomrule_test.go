@@ -28,7 +28,7 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.CustomRules.New(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainCustomRuleNewParams{
 			Action: waap.DomainCustomRuleNewParamsAction{
 				Allow: map[string]interface{}{},
@@ -158,7 +158,7 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		waap.DomainCustomRuleUpdateParams{
-			DomainID: 0,
+			DomainID: 1,
 			Action: waap.DomainCustomRuleUpdateParamsAction{
 				Allow: map[string]interface{}{},
 				Block: waap.DomainCustomRuleUpdateParamsActionBlock{
@@ -285,13 +285,13 @@ func TestDomainCustomRuleListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Domains.CustomRules.List(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainCustomRuleListParams{
 			Action:      waap.WaapRuleActionTypeAllow,
-			Description: gcore.String("description"),
-			Enabled:     gcore.Bool(true),
+			Description: gcore.String("This rule blocks all the requests coming form a specific IP address."),
+			Enabled:     gcore.Bool(false),
 			Limit:       gcore.Int(0),
-			Name:        gcore.String("name"),
+			Name:        gcore.String("Block by specific IP rule."),
 			Offset:      gcore.Int(0),
 			Ordering:    waap.DomainCustomRuleListParamsOrderingMinusID,
 		},
@@ -321,7 +321,7 @@ func TestDomainCustomRuleDelete(t *testing.T) {
 		context.TODO(),
 		0,
 		waap.DomainCustomRuleDeleteParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {
@@ -347,7 +347,7 @@ func TestDomainCustomRuleDeleteMultiple(t *testing.T) {
 	)
 	err := client.Waap.Domains.CustomRules.DeleteMultiple(
 		context.TODO(),
-		0,
+		1,
 		waap.DomainCustomRuleDeleteMultipleParams{
 			RuleIDs: []int64{0},
 		},
@@ -377,7 +377,7 @@ func TestDomainCustomRuleGet(t *testing.T) {
 		context.TODO(),
 		0,
 		waap.DomainCustomRuleGetParams{
-			DomainID: 0,
+			DomainID: 1,
 		},
 	)
 	if err != nil {
@@ -405,7 +405,7 @@ func TestDomainCustomRuleToggle(t *testing.T) {
 		context.TODO(),
 		waap.WaapCustomerRuleStateEnable,
 		waap.DomainCustomRuleToggleParams{
-			DomainID: 0,
+			DomainID: 1,
 			RuleID:   0,
 		},
 	)
