@@ -136,7 +136,7 @@ func TestInferenceRegistryCredentialReplace(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cloud.Inference.RegistryCredentials.Replace(
+	_, err := client.Cloud.Inference.RegistryCredentials.Replace(
 		context.TODO(),
 		"docker-io",
 		cloud.InferenceRegistryCredentialReplaceParams{
