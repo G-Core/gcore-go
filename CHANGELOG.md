@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.7.0 (2025-07-24)
+
+Full Changelog: [v0.6.0...v0.7.0](https://github.com/G-Core/gcore-go/compare/v0.6.0...v0.7.0)
+
+### Features
+
+* **api:** aggregated API specs update ([d09df2a](https://github.com/G-Core/gcore-go/commit/d09df2a7a3d988a489f9131e416c16cbaa65231e))
+* **api:** aggregated API specs update ([623ce0a](https://github.com/G-Core/gcore-go/commit/623ce0aff79f0cb17857cac57d3f587ebdfdb7dd))
+* **cloud:** add cost and usage reports ([49f7536](https://github.com/G-Core/gcore-go/commit/49f75366c2af49d806a08262bc4198abc124960f))
+* **streaming:** add streaming api ([eec84c8](https://github.com/G-Core/gcore-go/commit/eec84c865d4c958f61c776ce380348906cf79abd))
+
+
+### Bug Fixes
+
+* **client:** process custom base url ahead of time ([26874df](https://github.com/G-Core/gcore-go/commit/26874df5ef23f2f1d045ac2fbd5c344b5fb3481a))
+* **cloud:** update example of replacing inference registry credential ([943b201](https://github.com/G-Core/gcore-go/commit/943b2016aa713d315696b1663c47876d018040fa))
+
 ## 0.6.0 (2025-07-21)
 
 Full Changelog: [v0.5.0...v0.6.0](https://github.com/G-Core/gcore-go/compare/v0.5.0...v0.6.0)
