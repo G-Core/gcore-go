@@ -70,13 +70,13 @@ func replaceRegistryCredential(client *gcore.Client, credentialName string) {
 		RegistryURL: "https://updated-registry.example.com",
 	}
 
-	err := client.Cloud.Inference.RegistryCredentials.Replace(context.Background(), credentialName, params)
+	credential, err := client.Cloud.Inference.RegistryCredentials.Replace(context.Background(), credentialName, params)
 	if err != nil {
 		fmt.Printf("Error replacing registry credential: %v\n", err)
 		return
 	}
 
-	fmt.Printf("Replaced registry credential: %s\n", credentialName)
+	fmt.Printf("Replaced registry credential: %s\n", credential.Name)
 	fmt.Println("========================")
 }
 
