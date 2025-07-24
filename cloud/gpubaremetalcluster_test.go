@@ -42,7 +42,10 @@ func TestGPUBaremetalClusterNewWithOptionalParams(t *testing.T) {
 		Name:           "my-gpu-cluster",
 		InstancesCount: gcore.Int(1),
 		Password:       gcore.String("password"),
-		SSHKeyName:     gcore.String("my-ssh-key"),
+		SecurityGroups: []cloud.GPUBaremetalClusterNewParamsSecurityGroup{{
+			ID: "ae74714c-c380-48b4-87f8-758d656cdad6",
+		}},
+		SSHKeyName: gcore.String("my-ssh-key"),
 		Tags: map[string]string{
 			"my-tag": "my-tag-value",
 		},

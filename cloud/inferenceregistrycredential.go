@@ -130,9 +130,8 @@ func (r *InferenceRegistryCredentialService) Get(ctx context.Context, credential
 }
 
 // Replace inference registry credential
-func (r *InferenceRegistryCredentialService) Replace(ctx context.Context, credentialName string, params InferenceRegistryCredentialReplaceParams, opts ...option.RequestOption) (err error) {
+func (r *InferenceRegistryCredentialService) Replace(ctx context.Context, credentialName string, params InferenceRegistryCredentialReplaceParams, opts ...option.RequestOption) (res *InferenceRegistryCredentialsCreate, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -147,7 +146,7 @@ func (r *InferenceRegistryCredentialService) Replace(ctx context.Context, creden
 		return
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/registry_credentials/%s", params.ProjectID.Value, credentialName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 

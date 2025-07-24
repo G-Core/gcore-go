@@ -1189,6 +1189,8 @@ type GPUBaremetalClusterNewParams struct {
 	// A name of a new user in the Linux instance. It may be passed with a 'password'
 	// parameter
 	Username param.Opt[string] `json:"username,omitzero"`
+	// Security group UUIDs
+	SecurityGroups []GPUBaremetalClusterNewParamsSecurityGroup `json:"security_groups,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Some tags are read-only and cannot be
@@ -1466,6 +1468,21 @@ func (r GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP) MarshalJSON() 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GPUBaremetalClusterNewParamsInterfaceAnySubnetFloatingIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property ID is required.
+type GPUBaremetalClusterNewParamsSecurityGroup struct {
+	// Resource ID
+	ID string `json:"id,required" format:"uuid4"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterNewParamsSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsSecurityGroup
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterNewParamsSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
