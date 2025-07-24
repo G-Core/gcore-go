@@ -99,6 +99,18 @@ TEST_PATHS=(
 	fastedge/app_test.go
 	fastedge/applog_test.go
 	fastedge/kvstore_test.go
+	streaming/aitask_test.go
+	streaming/broadcast_test.go
+	streaming/directory_test.go
+	streaming/player_test.go
+	streaming/qualityset_test.go
+	streaming/playlist_test.go
+	streaming/video_test.go
+	streaming/videosubtitle_test.go
+	streaming/stream_test.go
+	streaming/streamoverlay_test.go
+	streaming/restream_test.go
+	streaming/statistic_test.go
 	usage_test.go
 	paginationauto_test.go
 	paginationmanual_test.go
