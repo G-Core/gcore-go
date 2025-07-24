@@ -192,10 +192,17 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
 	// Baremetal A100 GPU card count limit
 	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
-	// AI GPU bare metal servers count limit
+	// Total number of AI GPU bare metal servers. This field is deprecated and is now
+	// always calculated automatically as the sum of `baremetal_gpu_a100_count_limit`,
+	// `baremetal_gpu_h100_count_limit`, `baremetal_gpu_h200_count_limit`, and
+	// `baremetal_gpu_l40s_count_limit`.
+	//
+	// Deprecated: deprecated
 	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
 	// Baremetal H100 GPU card count limit
 	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
+	// Baremetal H200 GPU card count limit
+	BaremetalGPUH200CountLimit int64 `json:"baremetal_gpu_h200_count_limit"`
 	// Baremetal L40S GPU card count limit
 	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
 	// High-frequency bare metal servers count limit
@@ -240,6 +247,8 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	GPUVirtualA100CountLimit int64 `json:"gpu_virtual_a100_count_limit"`
 	// Virtual H100 GPU card count limit
 	GPUVirtualH100CountLimit int64 `json:"gpu_virtual_h100_count_limit"`
+	// Virtual H200 GPU card count limit
+	GPUVirtualH200CountLimit int64 `json:"gpu_virtual_h200_count_limit"`
 	// Virtual L40S GPU card count limit
 	GPUVirtualL40sCountLimit int64 `json:"gpu_virtual_l40s_count_limit"`
 	// Images Count limit
@@ -294,6 +303,7 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 		BaremetalGPUA100CountLimit        respjson.Field
 		BaremetalGPUCountLimit            respjson.Field
 		BaremetalGPUH100CountLimit        respjson.Field
+		BaremetalGPUH200CountLimit        respjson.Field
 		BaremetalGPUL40sCountLimit        respjson.Field
 		BaremetalHfCountLimit             respjson.Field
 		BaremetalInfrastructureCountLimit respjson.Field
@@ -316,6 +326,7 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 		GPUCountLimit                     respjson.Field
 		GPUVirtualA100CountLimit          respjson.Field
 		GPUVirtualH100CountLimit          respjson.Field
+		GPUVirtualH200CountLimit          respjson.Field
 		GPUVirtualL40sCountLimit          respjson.Field
 		ImageCountLimit                   respjson.Field
 		ImageSizeLimit                    respjson.Field
@@ -448,10 +459,17 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
 	// Baremetal A100 GPU card count limit
 	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
-	// AI GPU bare metal servers count limit
+	// Total number of AI GPU bare metal servers. This field is deprecated and is now
+	// always calculated automatically as the sum of `baremetal_gpu_a100_count_limit`,
+	// `baremetal_gpu_h100_count_limit`, `baremetal_gpu_h200_count_limit`, and
+	// `baremetal_gpu_l40s_count_limit`.
+	//
+	// Deprecated: deprecated
 	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
 	// Baremetal H100 GPU card count limit
 	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
+	// Baremetal H200 GPU card count limit
+	BaremetalGPUH200CountLimit int64 `json:"baremetal_gpu_h200_count_limit"`
 	// Baremetal L40S GPU card count limit
 	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
 	// High-frequency bare metal servers count limit
@@ -496,6 +514,8 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	GPUVirtualA100CountLimit int64 `json:"gpu_virtual_a100_count_limit"`
 	// Virtual H100 GPU card count limit
 	GPUVirtualH100CountLimit int64 `json:"gpu_virtual_h100_count_limit"`
+	// Virtual H200 GPU card count limit
+	GPUVirtualH200CountLimit int64 `json:"gpu_virtual_h200_count_limit"`
 	// Virtual L40S GPU card count limit
 	GPUVirtualL40sCountLimit int64 `json:"gpu_virtual_l40s_count_limit"`
 	// Images Count limit
@@ -550,6 +570,7 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 		BaremetalGPUA100CountLimit        respjson.Field
 		BaremetalGPUCountLimit            respjson.Field
 		BaremetalGPUH100CountLimit        respjson.Field
+		BaremetalGPUH200CountLimit        respjson.Field
 		BaremetalGPUL40sCountLimit        respjson.Field
 		BaremetalHfCountLimit             respjson.Field
 		BaremetalInfrastructureCountLimit respjson.Field
@@ -572,6 +593,7 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 		GPUCountLimit                     respjson.Field
 		GPUVirtualA100CountLimit          respjson.Field
 		GPUVirtualH100CountLimit          respjson.Field
+		GPUVirtualH200CountLimit          respjson.Field
 		GPUVirtualL40sCountLimit          respjson.Field
 		ImageCountLimit                   respjson.Field
 		ImageSizeLimit                    respjson.Field
@@ -674,10 +696,17 @@ type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
 	BaremetalBasicCountLimit param.Opt[int64] `json:"baremetal_basic_count_limit,omitzero"`
 	// Baremetal A100 GPU card count limit
 	BaremetalGPUA100CountLimit param.Opt[int64] `json:"baremetal_gpu_a100_count_limit,omitzero"`
-	// AI GPU bare metal servers count limit
+	// Total number of AI GPU bare metal servers. This field is deprecated and is now
+	// always calculated automatically as the sum of `baremetal_gpu_a100_count_limit`,
+	// `baremetal_gpu_h100_count_limit`, `baremetal_gpu_h200_count_limit`, and
+	// `baremetal_gpu_l40s_count_limit`.
+	//
+	// Deprecated: deprecated
 	BaremetalGPUCountLimit param.Opt[int64] `json:"baremetal_gpu_count_limit,omitzero"`
 	// Baremetal H100 GPU card count limit
 	BaremetalGPUH100CountLimit param.Opt[int64] `json:"baremetal_gpu_h100_count_limit,omitzero"`
+	// Baremetal H200 GPU card count limit
+	BaremetalGPUH200CountLimit param.Opt[int64] `json:"baremetal_gpu_h200_count_limit,omitzero"`
 	// Baremetal L40S GPU card count limit
 	BaremetalGPUL40sCountLimit param.Opt[int64] `json:"baremetal_gpu_l40s_count_limit,omitzero"`
 	// High-frequency bare metal servers count limit
@@ -722,6 +751,8 @@ type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
 	GPUVirtualA100CountLimit param.Opt[int64] `json:"gpu_virtual_a100_count_limit,omitzero"`
 	// Virtual H100 GPU card count limit
 	GPUVirtualH100CountLimit param.Opt[int64] `json:"gpu_virtual_h100_count_limit,omitzero"`
+	// Virtual H200 GPU card count limit
+	GPUVirtualH200CountLimit param.Opt[int64] `json:"gpu_virtual_h200_count_limit,omitzero"`
 	// Virtual L40S GPU card count limit
 	GPUVirtualL40sCountLimit param.Opt[int64] `json:"gpu_virtual_l40s_count_limit,omitzero"`
 	// Images Count limit
