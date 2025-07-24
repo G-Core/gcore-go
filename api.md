@@ -812,6 +812,30 @@ Methods:
 
 - <code title="get /cloud/v1/user_actions">client.Cloud.AuditLogs.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#AuditLogService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#AuditLogListParams">AuditLogListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#AuditLogEntry">AuditLogEntry</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## CostReports
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#CostReportAggregated">CostReportAggregated</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#CostReportAggregatedMonthly">CostReportAggregatedMonthly</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#CostReportDetailed">CostReportDetailed</a>
+
+Methods:
+
+- <code title="post /cloud/v1/cost_report/totals">client.Cloud.CostReports.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#CostReportService.GetAggregated">GetAggregated</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#CostReportGetAggregatedParams">CostReportGetAggregatedParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#CostReportAggregated">CostReportAggregated</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /cloud/v1/reservation_cost_report/totals">client.Cloud.CostReports.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#CostReportService.GetAggregatedMonthly">GetAggregatedMonthly</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#CostReportGetAggregatedMonthlyParams">CostReportGetAggregatedMonthlyParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#CostReportAggregatedMonthly">CostReportAggregatedMonthly</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /cloud/v1/cost_report/resources">client.Cloud.CostReports.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#CostReportService.GetDetailed">GetDetailed</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#CostReportGetDetailedParams">CostReportGetDetailedParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#CostReportDetailed">CostReportDetailed</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## UsageReports
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#UsageReport">UsageReport</a>
+
+Methods:
+
+- <code title="post /cloud/v1/usage_report">client.Cloud.UsageReports.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#UsageReportService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#UsageReportGetParams">UsageReportGetParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#UsageReport">UsageReport</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Waap
 
 Params Types:

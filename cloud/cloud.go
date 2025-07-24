@@ -44,6 +44,8 @@ type CloudService struct {
 	GPUBaremetalClusters GPUBaremetalClusterService
 	Instances            InstanceService
 	AuditLogs            AuditLogService
+	CostReports          CostReportService
+	UsageReports         UsageReportService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -75,6 +77,8 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.GPUBaremetalClusters = NewGPUBaremetalClusterService(opts...)
 	r.Instances = NewInstanceService(opts...)
 	r.AuditLogs = NewAuditLogService(opts...)
+	r.CostReports = NewCostReportService(opts...)
+	r.UsageReports = NewUsageReportService(opts...)
 	return
 }
 
