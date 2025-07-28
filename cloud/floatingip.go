@@ -209,14 +209,6 @@ type FloatingIPDetailed struct {
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
-	// This field is deprecated and can be ignored
-	//
-	// Deprecated: deprecated
-	DNSDomain string `json:"dns_domain,required"`
-	// This field is deprecated and can be ignored
-	//
-	// Deprecated: deprecated
-	DNSName string `json:"dns_name,required"`
 	// IP address of the port the floating IP is attached to
 	FixedIPAddress string `json:"fixed_ip_address,required" format:"ipvanyaddress"`
 	// IP Address of the floating IP
@@ -239,10 +231,6 @@ type FloatingIPDetailed struct {
 	//
 	// Any of "ACTIVE", "DOWN", "ERROR".
 	Status FloatingIPStatus `json:"status,required"`
-	// This field is deprecated and can be ignored
-	//
-	// Deprecated: deprecated
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
@@ -260,8 +248,6 @@ type FloatingIPDetailed struct {
 		ID                respjson.Field
 		CreatedAt         respjson.Field
 		CreatorTaskID     respjson.Field
-		DNSDomain         respjson.Field
-		DNSName           respjson.Field
 		FixedIPAddress    respjson.Field
 		FloatingIPAddress respjson.Field
 		Instance          respjson.Field
@@ -272,7 +258,6 @@ type FloatingIPDetailed struct {
 		RegionID          respjson.Field
 		RouterID          respjson.Field
 		Status            respjson.Field
-		SubnetID          respjson.Field
 		Tags              respjson.Field
 		TaskID            respjson.Field
 		UpdatedAt         respjson.Field
