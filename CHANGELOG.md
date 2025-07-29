@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.8.0 (2025-07-29)
+
+Full Changelog: [v0.7.0...v0.8.0](https://github.com/G-Core/gcore-go/compare/v0.7.0...v0.8.0)
+
+### Features
+
+* **api:** aggregated API specs update ([4f640ce](https://github.com/G-Core/gcore-go/commit/4f640ce257ee8738bfbaf3a9c92da307842b4d28))
+* **api:** aggregated API specs update ([0255eb0](https://github.com/G-Core/gcore-go/commit/0255eb0a2bf68d657f98a914e46898c813198bb6))
+
+
+### Bug Fixes
+
+* **iam:** remove obsolete pagination scheme ([8a20964](https://github.com/G-Core/gcore-go/commit/8a209643372a49fa77cba95b823ea407ae9e9faf))
+* **iam:** user model path ([e11de38](https://github.com/G-Core/gcore-go/commit/e11de38530c01f43186b6313ec2f567aae8505e0))
+
 ## 0.7.0 (2025-07-24)
 
 Full Changelog: [v0.6.0...v0.7.0](https://github.com/G-Core/gcore-go/compare/v0.6.0...v0.7.0)
