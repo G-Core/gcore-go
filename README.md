@@ -1,4 +1,6 @@
 # Gcore Go API Library
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FG-Core%2Fgcore-go.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FG-Core%2Fgcore-go?ref=badge_shield)
+
 
 <a href="https://pkg.go.dev/github.com/G-Core/gcore-go"><img src="https://pkg.go.dev/badge/github.com/G-Core/gcore-go.svg" alt="Go Reference"></a>
 
@@ -523,3 +525,7 @@ We are keen for your feedback; please open an [issue](https://www.github.com/G-C
 ## Contributing
 
 See [the contributing documentation](./CONTRIBUTING.md).
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FG-Core%2Fgcore-go.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FG-Core%2Fgcore-go?ref=badge_large)
