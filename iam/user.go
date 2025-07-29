@@ -47,7 +47,7 @@ func (r *UserService) Update(ctx context.Context, userID int64, body UserUpdateP
 // Get a list of users. Pass a value for the `limit` parameter in your request if
 // you want retrieve a paginated result. Otherwise API returns a list with all
 // users without pagination.
-func (r *UserService) List(ctx context.Context, query UserListParams, opts ...option.RequestOption) (res *pagination.OffsetPageIam[User], err error) {
+func (r *UserService) List(ctx context.Context, query UserListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[UserListResponse], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -67,8 +67,8 @@ func (r *UserService) List(ctx context.Context, query UserListParams, opts ...op
 // Get a list of users. Pass a value for the `limit` parameter in your request if
 // you want retrieve a paginated result. Otherwise API returns a list with all
 // users without pagination.
-func (r *UserService) ListAutoPaging(ctx context.Context, query UserListParams, opts ...option.RequestOption) *pagination.OffsetPageIamAutoPager[User] {
-	return pagination.NewOffsetPageIamAutoPager(r.List(ctx, query, opts...))
+func (r *UserService) ListAutoPaging(ctx context.Context, query UserListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[UserListResponse] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Revokes user's access to the specified account. If the specified user doesn't
@@ -98,127 +98,6 @@ func (r *UserService) Invite(ctx context.Context, body UserInviteParams, opts ..
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
-
-type User struct {
-	// User's ID.
-	ID int64 `json:"id"`
-	// Email confirmation:
-	//
-	// - `true` – user confirmed the email;
-	// - `false` – user did not confirm the email.
-	Activated bool `json:"activated"`
-	// System field. List of auth types available for the account.
-	//
-	// Any of "password", "sso", "github", "google-oauth2".
-	AuthTypes []string `json:"auth_types"`
-	// User's account ID.
-	Client float64 `json:"client"`
-	// User's company.
-	Company string `json:"company"`
-	// Deletion flag. If `true` then user was deleted.
-	Deleted bool `json:"deleted"`
-	// User's email address.
-	Email string `json:"email" format:"email"`
-	// User's group in the current account. IAM supports 5 groups:
-	//
-	// - Users
-	// - Administrators
-	// - Engineers
-	// - Purge and Prefetch only (API)
-	// - Purge and Prefetch only (API+Web)
-	Groups []UserGroup `json:"groups"`
-	// User's language. Defines language of the control panel and email messages.
-	//
-	// Any of "de", "en", "ru", "zh", "az".
-	Lang UserLang `json:"lang"`
-	// User's name.
-	Name string `json:"name,nullable"`
-	// User's phone.
-	Phone string `json:"phone,nullable"`
-	// Services provider ID.
-	Reseller int64 `json:"reseller"`
-	// SSO authentication flag. If `true` then user can login via SAML SSO.
-	SSOAuth bool `json:"sso_auth"`
-	// Two-step verification:
-	//
-	// - `true` – user enabled two-step verification;
-	// - `false` – user disabled two-step verification.
-	TwoFa bool `json:"two_fa"`
-	// User's type.
-	//
-	// Any of "common".
-	UserType UserUserType `json:"user_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Activated   respjson.Field
-		AuthTypes   respjson.Field
-		Client      respjson.Field
-		Company     respjson.Field
-		Deleted     respjson.Field
-		Email       respjson.Field
-		Groups      respjson.Field
-		Lang        respjson.Field
-		Name        respjson.Field
-		Phone       respjson.Field
-		Reseller    respjson.Field
-		SSOAuth     respjson.Field
-		TwoFa       respjson.Field
-		UserType    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r User) RawJSON() string { return r.JSON.raw }
-func (r *User) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UserGroup struct {
-	// Group's ID: Possible values are:
-	//
-	//   - 1 - Administrators* 2 - Users* 5 - Engineers* 3009 - Purge and Prefetch only
-	//     (API+Web)* 3022 - Purge and Prefetch only (API)
-	ID int64 `json:"id"`
-	// Group's name.
-	//
-	// Any of "Users", "Administrators", "Engineers", "Purge and Prefetch only (API)",
-	// "Purge and Prefetch only (API+Web)".
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UserGroup) RawJSON() string { return r.JSON.raw }
-func (r *UserGroup) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// User's language. Defines language of the control panel and email messages.
-type UserLang string
-
-const (
-	UserLangDe UserLang = "de"
-	UserLangEn UserLang = "en"
-	UserLangRu UserLang = "ru"
-	UserLangZh UserLang = "zh"
-	UserLangAz UserLang = "az"
-)
-
-// User's type.
-type UserUserType string
-
-const (
-	UserUserTypeCommon UserUserType = "common"
-)
 
 type UserDetailed struct {
 	// User's ID.
@@ -544,6 +423,127 @@ const (
 	UserUpdateUserTypeCommon   UserUpdateUserType = "common"
 	UserUpdateUserTypeReseller UserUpdateUserType = "reseller"
 	UserUpdateUserTypeSeller   UserUpdateUserType = "seller"
+)
+
+type UserListResponse struct {
+	// User's ID.
+	ID int64 `json:"id"`
+	// Email confirmation:
+	//
+	// - `true` – user confirmed the email;
+	// - `false` – user did not confirm the email.
+	Activated bool `json:"activated"`
+	// System field. List of auth types available for the account.
+	//
+	// Any of "password", "sso", "github", "google-oauth2".
+	AuthTypes []string `json:"auth_types"`
+	// User's account ID.
+	Client float64 `json:"client"`
+	// User's company.
+	Company string `json:"company"`
+	// Deletion flag. If `true` then user was deleted.
+	Deleted bool `json:"deleted"`
+	// User's email address.
+	Email string `json:"email" format:"email"`
+	// User's group in the current account. IAM supports 5 groups:
+	//
+	// - Users
+	// - Administrators
+	// - Engineers
+	// - Purge and Prefetch only (API)
+	// - Purge and Prefetch only (API+Web)
+	Groups []UserListResponseGroup `json:"groups"`
+	// User's language. Defines language of the control panel and email messages.
+	//
+	// Any of "de", "en", "ru", "zh", "az".
+	Lang UserListResponseLang `json:"lang"`
+	// User's name.
+	Name string `json:"name,nullable"`
+	// User's phone.
+	Phone string `json:"phone,nullable"`
+	// Services provider ID.
+	Reseller int64 `json:"reseller"`
+	// SSO authentication flag. If `true` then user can login via SAML SSO.
+	SSOAuth bool `json:"sso_auth"`
+	// Two-step verification:
+	//
+	// - `true` – user enabled two-step verification;
+	// - `false` – user disabled two-step verification.
+	TwoFa bool `json:"two_fa"`
+	// User's type.
+	//
+	// Any of "common".
+	UserType UserListResponseUserType `json:"user_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Activated   respjson.Field
+		AuthTypes   respjson.Field
+		Client      respjson.Field
+		Company     respjson.Field
+		Deleted     respjson.Field
+		Email       respjson.Field
+		Groups      respjson.Field
+		Lang        respjson.Field
+		Name        respjson.Field
+		Phone       respjson.Field
+		Reseller    respjson.Field
+		SSOAuth     respjson.Field
+		TwoFa       respjson.Field
+		UserType    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserListResponse) RawJSON() string { return r.JSON.raw }
+func (r *UserListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UserListResponseGroup struct {
+	// Group's ID: Possible values are:
+	//
+	//   - 1 - Administrators* 2 - Users* 5 - Engineers* 3009 - Purge and Prefetch only
+	//     (API+Web)* 3022 - Purge and Prefetch only (API)
+	ID int64 `json:"id"`
+	// Group's name.
+	//
+	// Any of "Users", "Administrators", "Engineers", "Purge and Prefetch only (API)",
+	// "Purge and Prefetch only (API+Web)".
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserListResponseGroup) RawJSON() string { return r.JSON.raw }
+func (r *UserListResponseGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// User's language. Defines language of the control panel and email messages.
+type UserListResponseLang string
+
+const (
+	UserListResponseLangDe UserListResponseLang = "de"
+	UserListResponseLangEn UserListResponseLang = "en"
+	UserListResponseLangRu UserListResponseLang = "ru"
+	UserListResponseLangZh UserListResponseLang = "zh"
+	UserListResponseLangAz UserListResponseLang = "az"
+)
+
+// User's type.
+type UserListResponseUserType string
+
+const (
+	UserListResponseUserTypeCommon UserListResponseUserType = "common"
 )
 
 type UserUpdateParams struct {
