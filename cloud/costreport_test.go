@@ -34,6 +34,7 @@ func TestCostReportGetAggregatedWithOptionalParams(t *testing.T) {
 		Projects:       []int64{16, 17, 18, 19, 20},
 		Regions:        []int64{1, 2, 3},
 		ResponseFormat: cloud.CostReportGetAggregatedParamsResponseFormatCsvTotals,
+		Rounding:       gcore.Bool(true),
 		SchemaFilter: cloud.CostReportGetAggregatedParamsSchemaFilterUnion{
 			OfInstance: &cloud.CostReportGetAggregatedParamsSchemaFilterInstance{
 				Field:  "flavor",
@@ -80,6 +81,7 @@ func TestCostReportGetAggregatedMonthlyWithOptionalParams(t *testing.T) {
 		TimeTo:         time.Now(),
 		Regions:        []int64{1, 2, 3},
 		ResponseFormat: cloud.CostReportGetAggregatedMonthlyParamsResponseFormatCsvTotals,
+		Rounding:       gcore.Bool(true),
 		SchemaFilter: cloud.CostReportGetAggregatedMonthlyParamsSchemaFilterUnion{
 			OfInstance: &cloud.CostReportGetAggregatedMonthlyParamsSchemaFilterInstance{
 				Field:  "flavor",
@@ -130,6 +132,7 @@ func TestCostReportGetDetailedWithOptionalParams(t *testing.T) {
 		Projects:       []int64{16, 17, 18, 19, 20},
 		Regions:        []int64{1, 2, 3},
 		ResponseFormat: cloud.CostReportGetDetailedParamsResponseFormatCsvRecords,
+		Rounding:       gcore.Bool(true),
 		SchemaFilter: cloud.CostReportGetDetailedParamsSchemaFilterUnion{
 			OfInstance: &cloud.CostReportGetDetailedParamsSchemaFilterInstance{
 				Field:  "flavor",

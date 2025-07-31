@@ -4,7 +4,6 @@ package cloud
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -71,26 +70,18 @@ func (r *QuotaRequestService) ListAutoPaging(ctx context.Context, query QuotaReq
 }
 
 // Delete a specific quota limit request.
-func (r *QuotaRequestService) Delete(ctx context.Context, requestID string, opts ...option.RequestOption) (err error) {
+func (r *QuotaRequestService) Delete(ctx context.Context, requestID int64, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	if requestID == "" {
-		err = errors.New("missing required request_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v2/limits_request/%s", requestID)
+	path := fmt.Sprintf("cloud/v2/limits_request/%v", requestID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
 // Get detailed information about a specific quota limit request.
-func (r *QuotaRequestService) Get(ctx context.Context, requestID string, opts ...option.RequestOption) (res *QuotaRequestGetResponse, err error) {
+func (r *QuotaRequestService) Get(ctx context.Context, requestID int64, opts ...option.RequestOption) (res *QuotaRequestGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if requestID == "" {
-		err = errors.New("missing required request_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v2/limits_request/%s", requestID)
+	path := fmt.Sprintf("cloud/v2/limits_request/%v", requestID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }

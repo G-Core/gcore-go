@@ -4953,6 +4953,8 @@ type CostReportGetAggregatedParams struct {
 	// Expenses for the last specified day are taken into account. As the default,
 	// False.
 	EnableLastDay param.Opt[bool] `json:"enable_last_day,omitzero"`
+	// Round cost values to 5 decimal places. When false, returns full precision.
+	Rounding param.Opt[bool] `json:"rounding,omitzero"`
 	// List of project IDs
 	Projects []int64 `json:"projects,omitzero"`
 	// List of region IDs.
@@ -6048,6 +6050,8 @@ type CostReportGetAggregatedMonthlyParams struct {
 	TimeFrom time.Time `json:"time_from,required" format:"date-time"`
 	// End of the period: YYYY-mm
 	TimeTo time.Time `json:"time_to,required" format:"date-time"`
+	// Round cost values to 5 decimal places. When false, returns full precision.
+	Rounding param.Opt[bool] `json:"rounding,omitzero"`
 	// List of region IDs.
 	Regions []int64 `json:"regions,omitzero"`
 	// Format of the response (`csv_totals` or json).
@@ -7150,6 +7154,8 @@ type CostReportGetDetailedParams struct {
 	Limit param.Opt[int64] `json:"limit,omitzero"`
 	// The response resources offset.
 	Offset param.Opt[int64] `json:"offset,omitzero"`
+	// Round cost values to 5 decimal places. When false, returns full precision.
+	Rounding param.Opt[bool] `json:"rounding,omitzero"`
 	// List of project IDs
 	Projects []int64 `json:"projects,omitzero"`
 	// List of region IDs.
