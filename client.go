@@ -13,6 +13,7 @@ import (
 	"github.com/G-Core/gcore-go/iam"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/security"
 	"github.com/G-Core/gcore-go/streaming"
 	"github.com/G-Core/gcore-go/waap"
 )
@@ -27,6 +28,7 @@ type Client struct {
 	Iam       iam.IamService
 	Fastedge  fastedge.FastedgeService
 	Streaming streaming.StreamingService
+	Security  security.SecurityService
 }
 
 // DefaultClientOptions read from the environment (GCORE_API_KEY,
@@ -73,6 +75,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Iam = iam.NewIamService(opts...)
 	r.Fastedge = fastedge.NewFastedgeService(opts...)
 	r.Streaming = streaming.NewStreamingService(opts...)
+	r.Security = security.NewSecurityService(opts...)
 
 	return
 }

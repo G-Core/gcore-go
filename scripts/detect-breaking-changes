@@ -113,6 +113,10 @@ TEST_PATHS=(
 	streaming/streamoverlay_test.go
 	streaming/restream_test.go
 	streaming/statistic_test.go
+	security/event_test.go
+	security/bgpannounce_test.go
+	security/profiletemplate_test.go
+	security/profile_test.go
 	usage_test.go
 	paginationauto_test.go
 	paginationmanual_test.go
