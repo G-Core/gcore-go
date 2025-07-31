@@ -142,7 +142,7 @@ func TestQuotaRequestDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cloud.Quotas.Requests.Delete(context.TODO(), "3")
+	err := client.Cloud.Quotas.Requests.Delete(context.TODO(), 3)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -164,7 +164,7 @@ func TestQuotaRequestGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Quotas.Requests.Get(context.TODO(), "3")
+	_, err := client.Cloud.Quotas.Requests.Get(context.TODO(), 3)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
