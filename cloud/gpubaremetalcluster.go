@@ -750,6 +750,10 @@ type GPUBaremetalFlavorUnion struct {
 	// [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties]
 	HardwareProperties GPUBaremetalFlavorUnionHardwareProperties `json:"hardware_properties"`
 	Name               string                                    `json:"name"`
+	// This field is a union of
+	// [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceSupportedFeatures],
+	// [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceSupportedFeatures]
+	SupportedFeatures GPUBaremetalFlavorUnionSupportedFeatures `json:"supported_features"`
 	// This field is from variant
 	// [GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice].
 	Price GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice `json:"price"`
@@ -760,6 +764,7 @@ type GPUBaremetalFlavorUnion struct {
 		HardwareDescription respjson.Field
 		HardwareProperties  respjson.Field
 		Name                respjson.Field
+		SupportedFeatures   respjson.Field
 		Price               respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -830,6 +835,24 @@ func (r *GPUBaremetalFlavorUnionHardwareProperties) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// GPUBaremetalFlavorUnionSupportedFeatures is an implicit subunion of
+// [GPUBaremetalFlavorUnion]. GPUBaremetalFlavorUnionSupportedFeatures provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [GPUBaremetalFlavorUnion].
+type GPUBaremetalFlavorUnionSupportedFeatures struct {
+	SecurityGroups bool `json:"security_groups"`
+	JSON           struct {
+		SecurityGroups respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+func (r *GPUBaremetalFlavorUnionSupportedFeatures) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice struct {
 	// Flavor architecture type
 	Architecture string `json:"architecture,required"`
@@ -843,6 +866,8 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice struct {
 	HardwareProperties GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties `json:"hardware_properties,required"`
 	// Flavor name
 	Name string `json:"name,required"`
+	// Set of enabled features based on the flavor's type and configuration
+	SupportedFeatures GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceSupportedFeatures `json:"supported_features,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -851,6 +876,7 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPrice struct {
 		HardwareDescription respjson.Field
 		HardwareProperties  respjson.Field
 		Name                respjson.Field
+		SupportedFeatures   respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -920,6 +946,25 @@ func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwarePropertie
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Set of enabled features based on the flavor's type and configuration
+type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceSupportedFeatures struct {
+	SecurityGroups bool `json:"security_groups,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SecurityGroups respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceSupportedFeatures) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceSupportedFeatures) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice struct {
 	// Flavor architecture type
 	Architecture string `json:"architecture,required"`
@@ -935,6 +980,8 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice struct {
 	Name string `json:"name,required"`
 	// Flavor price
 	Price GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice `json:"price,required"`
+	// Set of enabled features based on the flavor's type and configuration
+	SupportedFeatures GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceSupportedFeatures `json:"supported_features,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -944,6 +991,7 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPrice struct {
 		HardwareProperties  respjson.Field
 		Name                respjson.Field
 		Price               respjson.Field
+		SupportedFeatures   respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -1039,6 +1087,25 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice struct {
 // Returns the unmodified JSON received from the API
 func (r GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice) RawJSON() string { return r.JSON.raw }
 func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPricePrice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Set of enabled features based on the flavor's type and configuration
+type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceSupportedFeatures struct {
+	SecurityGroups bool `json:"security_groups,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SecurityGroups respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceSupportedFeatures) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceSupportedFeatures) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
