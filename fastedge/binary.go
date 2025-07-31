@@ -5,6 +5,7 @@ package fastedge
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -29,6 +30,15 @@ type BinaryService struct {
 func NewBinaryService(opts ...option.RequestOption) (r BinaryService) {
 	r = BinaryService{}
 	r.Options = opts
+	return
+}
+
+// Store compiled WASM binary
+func (r *BinaryService) New(ctx context.Context, body io.Reader, opts ...option.RequestOption) (res *BinaryShort, err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
+	path := "fastedge/v1/binaries/raw"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
