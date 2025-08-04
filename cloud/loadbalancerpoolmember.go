@@ -109,8 +109,6 @@ type LoadBalancerPoolMemberAddParams struct {
 	// `subnet_id` in which `address` is present. Either `subnet_id` or `instance_id`
 	// should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
-	// Member weight. Valid values are 0 < `weight` <= 256, defaults to 1.
-	Weight param.Opt[int64] `json:"weight,omitzero"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
 	// process traffic. When null is passed, the value is skipped and defaults to true.
@@ -120,6 +118,8 @@ type LoadBalancerPoolMemberAddParams struct {
 	// realize ACTIVE-BACKUP load balancing without thinking about VRRP and VIP
 	// configuration. Default is false.
 	Backup param.Opt[bool] `json:"backup,omitzero"`
+	// Member weight. Valid values are 0 < `weight` <= 256, defaults to 1.
+	Weight param.Opt[int64] `json:"weight,omitzero"`
 	paramObj
 }
 
