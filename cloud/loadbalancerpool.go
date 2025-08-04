@@ -225,13 +225,15 @@ type LoadBalancerPoolNewParamsHealthmonitor struct {
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type LbHealthMonitorType `json:"type,omitzero,required"`
-	// Can only be used together with `HTTP` or `HTTPS` health monitor type.
+	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
+	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
+	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
-	// Number of failures before the member is switched to ERROR state.
-	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
 	// URL Path. Defaults to '/'. Can only be used together with `HTTP` or `HTTPS`
 	// health monitor type.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
+	// Number of failures before the member is switched to ERROR state.
+	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
 	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
 	// type.
 	//
@@ -266,8 +268,6 @@ type LoadBalancerPoolNewParamsMember struct {
 	// `subnet_id` in which `address` is present. Either `subnet_id` or `instance_id`
 	// should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
-	// Member weight. Valid values are 0 < `weight` <= 256, defaults to 1.
-	Weight param.Opt[int64] `json:"weight,omitzero"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
 	// process traffic. When null is passed, the value is skipped and defaults to true.
@@ -277,6 +277,8 @@ type LoadBalancerPoolNewParamsMember struct {
 	// realize ACTIVE-BACKUP load balancing without thinking about VRRP and VIP
 	// configuration. Default is false.
 	Backup param.Opt[bool] `json:"backup,omitzero"`
+	// Member weight. Valid values are 0 < `weight` <= 256, defaults to 1.
+	Weight param.Opt[int64] `json:"weight,omitzero"`
 	paramObj
 }
 
@@ -368,13 +370,15 @@ type LoadBalancerPoolUpdateParamsHealthmonitor struct {
 	MaxRetries int64 `json:"max_retries,required"`
 	// The maximum time to connect. Must be less than the delay value
 	Timeout int64 `json:"timeout,required"`
-	// Can only be used together with `HTTP` or `HTTPS` health monitor type.
+	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
+	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
+	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
-	// Number of failures before the member is switched to ERROR state.
-	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
 	// URL Path. Defaults to '/'. Can only be used together with `HTTP` or `HTTPS`
 	// health monitor type.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
+	// Number of failures before the member is switched to ERROR state.
+	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
 	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
 	// type.
 	//
@@ -413,8 +417,6 @@ type LoadBalancerPoolUpdateParamsMember struct {
 	// `subnet_id` in which `address` is present. Either `subnet_id` or `instance_id`
 	// should be provided
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
-	// Member weight. Valid values are 0 < `weight` <= 256, defaults to 1.
-	Weight param.Opt[int64] `json:"weight,omitzero"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
 	// process traffic. When null is passed, the value is skipped and defaults to true.
@@ -424,6 +426,8 @@ type LoadBalancerPoolUpdateParamsMember struct {
 	// realize ACTIVE-BACKUP load balancing without thinking about VRRP and VIP
 	// configuration. Default is false.
 	Backup param.Opt[bool] `json:"backup,omitzero"`
+	// Member weight. Valid values are 0 < `weight` <= 256, defaults to 1.
+	Weight param.Opt[int64] `json:"weight,omitzero"`
 	paramObj
 }
 
