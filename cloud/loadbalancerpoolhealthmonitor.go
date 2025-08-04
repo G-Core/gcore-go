@@ -101,13 +101,15 @@ type LoadBalancerPoolHealthMonitorNewParams struct {
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type LbHealthMonitorType `json:"type,omitzero,required"`
-	// Can only be used together with `HTTP` or `HTTPS` health monitor type.
+	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
+	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
+	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
-	// Number of failures before the member is switched to ERROR state.
-	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
 	// URL Path. Defaults to '/'. Can only be used together with `HTTP` or `HTTPS`
 	// health monitor type.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
+	// Number of failures before the member is switched to ERROR state.
+	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
 	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
 	// type.
 	//
