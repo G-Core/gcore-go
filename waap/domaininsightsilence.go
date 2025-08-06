@@ -16,6 +16,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // DomainInsightSilenceService contains methods and other services that help with
@@ -106,6 +107,38 @@ func (r *DomainInsightSilenceService) Get(ctx context.Context, silenceID string,
 	return
 }
 
+type WaapInsightSilence struct {
+	// A generated unique identifier for the silence
+	ID string `json:"id,required" format:"uuid"`
+	// The author of the silence
+	Author string `json:"author,required"`
+	// A comment explaining the reason for the silence
+	Comment string `json:"comment,required"`
+	// The date and time the silence expires in ISO 8601 format
+	ExpireAt time.Time `json:"expire_at,required" format:"date-time"`
+	// The slug of the insight type
+	InsightType string `json:"insight_type,required"`
+	// A hash table of label names and values that apply to the insight silence
+	Labels map[string]string `json:"labels,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Author      respjson.Field
+		Comment     respjson.Field
+		ExpireAt    respjson.Field
+		InsightType respjson.Field
+		Labels      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapInsightSilence) RawJSON() string { return r.JSON.raw }
+func (r *WaapInsightSilence) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DomainInsightSilenceNewParams struct {
 	// The author of the silence
 	Author string `json:"author,required"`
@@ -167,7 +200,7 @@ type DomainInsightSilenceListParams struct {
 	//
 	// Any of "id", "-id", "insight_type", "-insight_type", "comment", "-comment",
 	// "author", "-author", "expire_at", "-expire_at".
-	Ordering WaapInsightSilenceSortBy `query:"ordering,omitzero" json:"-"`
+	Ordering DomainInsightSilenceListParamsOrdering `query:"ordering,omitzero" json:"-"`
 	paramObj
 }
 
@@ -179,6 +212,22 @@ func (r DomainInsightSilenceListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Sort the response by given field.
+type DomainInsightSilenceListParamsOrdering string
+
+const (
+	DomainInsightSilenceListParamsOrderingID               DomainInsightSilenceListParamsOrdering = "id"
+	DomainInsightSilenceListParamsOrderingMinusID          DomainInsightSilenceListParamsOrdering = "-id"
+	DomainInsightSilenceListParamsOrderingInsightType      DomainInsightSilenceListParamsOrdering = "insight_type"
+	DomainInsightSilenceListParamsOrderingMinusInsightType DomainInsightSilenceListParamsOrdering = "-insight_type"
+	DomainInsightSilenceListParamsOrderingComment          DomainInsightSilenceListParamsOrdering = "comment"
+	DomainInsightSilenceListParamsOrderingMinusComment     DomainInsightSilenceListParamsOrdering = "-comment"
+	DomainInsightSilenceListParamsOrderingAuthor           DomainInsightSilenceListParamsOrdering = "author"
+	DomainInsightSilenceListParamsOrderingMinusAuthor      DomainInsightSilenceListParamsOrdering = "-author"
+	DomainInsightSilenceListParamsOrderingExpireAt         DomainInsightSilenceListParamsOrdering = "expire_at"
+	DomainInsightSilenceListParamsOrderingMinusExpireAt    DomainInsightSilenceListParamsOrdering = "-expire_at"
+)
 
 type DomainInsightSilenceDeleteParams struct {
 	// The domain ID

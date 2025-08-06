@@ -28,21 +28,21 @@ func TestCustomPageSetNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.CustomPageSets.New(context.TODO(), waap.CustomPageSetNewParams{
 		Name: "x",
-		Block: waap.WaapBlockPageDataParam{
+		Block: waap.CustomPageSetNewParamsBlock{
 			Enabled: true,
 			Header:  gcore.String("xxx"),
 			Logo:    gcore.String("logo"),
 			Text:    gcore.String("xxxxxxxxxxxxxxxxxxxx"),
 			Title:   gcore.String("xxx"),
 		},
-		BlockCsrf: waap.WaapBlockCsrfPageDataParam{
+		BlockCsrf: waap.CustomPageSetNewParamsBlockCsrf{
 			Enabled: true,
 			Header:  gcore.String("xxx"),
 			Logo:    gcore.String("logo"),
 			Text:    gcore.String("xxxxxxxxxxxxxxxxxxxx"),
 			Title:   gcore.String("xxx"),
 		},
-		Captcha: waap.WaapCaptchaPageDataParam{
+		Captcha: waap.CustomPageSetNewParamsCaptcha{
 			Enabled: true,
 			Error:   gcore.String("xxxxxxxxxx"),
 			Header:  gcore.String("xxx"),
@@ -50,19 +50,19 @@ func TestCustomPageSetNewWithOptionalParams(t *testing.T) {
 			Text:    gcore.String("xxxxxxxxxxxxxxxxxxxx"),
 			Title:   gcore.String("xxx"),
 		},
-		CookieDisabled: waap.WaapCookieDisabledPageDataParam{
+		CookieDisabled: waap.CustomPageSetNewParamsCookieDisabled{
 			Enabled: true,
 			Header:  gcore.String("xxx"),
 			Text:    gcore.String("xxxxxxxxxxxxxxxxxxxx"),
 		},
 		Domains: []int64{1},
-		Handshake: waap.WaapHandshakePageDataParam{
+		Handshake: waap.CustomPageSetNewParamsHandshake{
 			Enabled: true,
 			Header:  gcore.String("xxx"),
 			Logo:    gcore.String("logo"),
 			Title:   gcore.String("xxx"),
 		},
-		JavascriptDisabled: waap.WaapJavascriptDisabledPageDataParam{
+		JavascriptDisabled: waap.CustomPageSetNewParamsJavascriptDisabled{
 			Enabled: true,
 			Header:  gcore.String("xxx"),
 			Text:    gcore.String("xxxxxxxxxxxxxxxxxxxx"),
@@ -93,21 +93,21 @@ func TestCustomPageSetUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		waap.CustomPageSetUpdateParams{
-			Block: waap.WaapBlockPageDataParam{
+			Block: waap.CustomPageSetUpdateParamsBlock{
 				Enabled: true,
 				Header:  gcore.String("xxx"),
 				Logo:    gcore.String("logo"),
 				Text:    gcore.String("xxxxxxxxxxxxxxxxxxxx"),
 				Title:   gcore.String("xxx"),
 			},
-			BlockCsrf: waap.WaapBlockCsrfPageDataParam{
+			BlockCsrf: waap.CustomPageSetUpdateParamsBlockCsrf{
 				Enabled: true,
 				Header:  gcore.String("xxx"),
 				Logo:    gcore.String("logo"),
 				Text:    gcore.String("xxxxxxxxxxxxxxxxxxxx"),
 				Title:   gcore.String("xxx"),
 			},
-			Captcha: waap.WaapCaptchaPageDataParam{
+			Captcha: waap.CustomPageSetUpdateParamsCaptcha{
 				Enabled: true,
 				Error:   gcore.String("xxxxxxxxxx"),
 				Header:  gcore.String("xxx"),
@@ -115,19 +115,19 @@ func TestCustomPageSetUpdateWithOptionalParams(t *testing.T) {
 				Text:    gcore.String("xxxxxxxxxxxxxxxxxxxx"),
 				Title:   gcore.String("xxx"),
 			},
-			CookieDisabled: waap.WaapCookieDisabledPageDataParam{
+			CookieDisabled: waap.CustomPageSetUpdateParamsCookieDisabled{
 				Enabled: true,
 				Header:  gcore.String("xxx"),
 				Text:    gcore.String("xxxxxxxxxxxxxxxxxxxx"),
 			},
 			Domains: []int64{1},
-			Handshake: waap.WaapHandshakePageDataParam{
+			Handshake: waap.CustomPageSetUpdateParamsHandshake{
 				Enabled: true,
 				Header:  gcore.String("xxx"),
 				Logo:    gcore.String("logo"),
 				Title:   gcore.String("xxx"),
 			},
-			JavascriptDisabled: waap.WaapJavascriptDisabledPageDataParam{
+			JavascriptDisabled: waap.CustomPageSetUpdateParamsJavascriptDisabled{
 				Enabled: true,
 				Header:  gcore.String("xxx"),
 				Text:    gcore.String("xxxxxxxxxxxxxxxxxxxx"),
@@ -229,7 +229,7 @@ func TestCustomPageSetPreviewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Waap.CustomPageSets.Preview(context.TODO(), waap.CustomPageSetPreviewParams{
-		PageType: waap.WaapPageTypeBlockHTML,
+		PageType: waap.CustomPageSetPreviewParamsPageTypeBlockHTML,
 		Error:    gcore.String("xxxxxxxxxx"),
 		Header:   gcore.String("xxx"),
 		Logo:     gcore.String("logo"),

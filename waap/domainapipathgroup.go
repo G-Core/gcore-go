@@ -33,7 +33,7 @@ func NewDomainAPIPathGroupService(opts ...option.RequestOption) (r DomainAPIPath
 }
 
 // Retrieve a list of API path groups for a specific domain
-func (r *DomainAPIPathGroupService) List(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *DomainAPIPathGroupListResponse, err error) {
+func (r *DomainAPIPathGroupService) List(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *APIPathGroupList, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-path-groups", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -41,7 +41,7 @@ func (r *DomainAPIPathGroupService) List(ctx context.Context, domainID int64, op
 }
 
 // Response model for the API path groups
-type DomainAPIPathGroupListResponse struct {
+type APIPathGroupList struct {
 	// An array of api groups associated with the API path
 	APIPathGroups []string `json:"api_path_groups,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -53,7 +53,7 @@ type DomainAPIPathGroupListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DomainAPIPathGroupListResponse) RawJSON() string { return r.JSON.raw }
-func (r *DomainAPIPathGroupListResponse) UnmarshalJSON(data []byte) error {
+func (r APIPathGroupList) RawJSON() string { return r.JSON.raw }
+func (r *APIPathGroupList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

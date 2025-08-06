@@ -4,9 +4,11 @@ package waap
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -14,6 +16,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // DomainService contains methods and other services that help with interacting
@@ -30,8 +33,7 @@ type DomainService struct {
 	APIDiscovery    DomainAPIDiscoveryService
 	Insights        DomainInsightService
 	InsightSilences DomainInsightSilenceService
-	Policies        DomainPolicyService
-	Analytics       DomainAnalyticsService
+	Statistics      DomainStatisticService
 	CustomRules     DomainCustomRuleService
 	FirewallRules   DomainFirewallRuleService
 	AdvancedRules   DomainAdvancedRuleService
@@ -49,8 +51,7 @@ func NewDomainService(opts ...option.RequestOption) (r DomainService) {
 	r.APIDiscovery = NewDomainAPIDiscoveryService(opts...)
 	r.Insights = NewDomainInsightService(opts...)
 	r.InsightSilences = NewDomainInsightSilenceService(opts...)
-	r.Policies = NewDomainPolicyService(opts...)
-	r.Analytics = NewDomainAnalyticsService(opts...)
+	r.Statistics = NewDomainStatisticService(opts...)
 	r.CustomRules = NewDomainCustomRuleService(opts...)
 	r.FirewallRules = NewDomainFirewallRuleService(opts...)
 	r.AdvancedRules = NewDomainAdvancedRuleService(opts...)
@@ -115,6 +116,319 @@ func (r *DomainService) ListRuleSets(ctx context.Context, domainID int64, opts .
 	return
 }
 
+// Modify the activation state of a policy associated with a domain
+func (r *DomainService) TogglePolicy(ctx context.Context, policyID string, body DomainTogglePolicyParams, opts ...option.RequestOption) (res *WaapPolicyMode, err error) {
+	opts = append(r.Options[:], opts...)
+	if policyID == "" {
+		err = errors.New("missing required policy_id parameter")
+		return
+	}
+	path := fmt.Sprintf("waap/v1/domains/%v/policies/%s/toggle", body.DomainID, policyID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
+	return
+}
+
+// Represents a WAAP domain, serving as a singular unit within the WAAP service.
+// Each domain functions autonomously, possessing its own set of rules and
+// configurations to manage web application firewall settings and behaviors.
+type WaapDetailedDomain struct {
+	// The domain ID
+	ID int64 `json:"id,required"`
+	// The date and time the domain was created in ISO 8601 format
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// The ID of the custom page set
+	CustomPageSet int64 `json:"custom_page_set,required"`
+	// The domain name
+	Name string `json:"name,required"`
+	// The different statuses a domain can have
+	//
+	// Any of "active", "bypass", "monitor", "locked".
+	Status WaapDetailedDomainStatus `json:"status,required"`
+	// Domain level quotas
+	Quotas map[string]WaapDetailedDomainQuota `json:"quotas,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		CustomPageSet respjson.Field
+		Name          respjson.Field
+		Status        respjson.Field
+		Quotas        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDetailedDomain) RawJSON() string { return r.JSON.raw }
+func (r *WaapDetailedDomain) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The different statuses a domain can have
+type WaapDetailedDomainStatus string
+
+const (
+	WaapDetailedDomainStatusActive  WaapDetailedDomainStatus = "active"
+	WaapDetailedDomainStatusBypass  WaapDetailedDomainStatus = "bypass"
+	WaapDetailedDomainStatusMonitor WaapDetailedDomainStatus = "monitor"
+	WaapDetailedDomainStatusLocked  WaapDetailedDomainStatus = "locked"
+)
+
+type WaapDetailedDomainQuota struct {
+	// The maximum allowed number of this resource
+	Allowed int64 `json:"allowed,required"`
+	// The current number of this resource
+	Current int64 `json:"current,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Allowed     respjson.Field
+		Current     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDetailedDomainQuota) RawJSON() string { return r.JSON.raw }
+func (r *WaapDetailedDomainQuota) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// API settings of a domain
+type WaapDomainAPISettings struct {
+	// The API URLs for a domain. If your domain has a common base URL for all API
+	// paths, it can be set here
+	APIURLs []string `json:"api_urls"`
+	// Indicates if the domain is an API domain. All requests to an API domain are
+	// treated as API requests. If this is set to true then the `api_urls` field is
+	// ignored.
+	IsAPI bool `json:"is_api"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIURLs     respjson.Field
+		IsAPI       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDomainAPISettings) RawJSON() string { return r.JSON.raw }
+func (r *WaapDomainAPISettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DDoS settings for a domain.
+type WaapDomainDDOSSettings struct {
+	// The burst threshold detects sudden rises in traffic. If it is met and the number
+	// of requests is at least five times the last 2-second interval, DDoS protection
+	// will activate. Default is 1000.
+	BurstThreshold int64 `json:"burst_threshold"`
+	// The global threshold is responsible for identifying DDoS attacks with a slow
+	// rise in traffic. If the threshold is met and the current number of requests is
+	// at least double that of the previous 10-second window, DDoS protection will
+	// activate. Default is 5000.
+	GlobalThreshold int64 `json:"global_threshold"`
+	// The sub-second threshold protects WAAP servers against attacks from traffic
+	// bursts. When this threshold is reached, the DDoS mode will activate on the
+	// affected WAAP server, not the whole WAAP cluster. Default is 50.
+	SubSecondThreshold int64 `json:"sub_second_threshold"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BurstThreshold     respjson.Field
+		GlobalThreshold    respjson.Field
+		SubSecondThreshold respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDomainDDOSSettings) RawJSON() string { return r.JSON.raw }
+func (r *WaapDomainDDOSSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Settings for a domain.
+type WaapDomainSettingsModel struct {
+	// API settings of a domain
+	API WaapDomainAPISettings `json:"api,required"`
+	// DDoS settings for a domain.
+	DDOS WaapDomainDDOSSettings `json:"ddos,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		API         respjson.Field
+		DDOS        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDomainSettingsModel) RawJSON() string { return r.JSON.raw }
+func (r *WaapDomainSettingsModel) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Represents the mode of a security rule.
+type WaapPolicyMode struct {
+	// Indicates if the security rule is active
+	Mode bool `json:"mode,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Mode        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapPolicyMode) RawJSON() string { return r.JSON.raw }
+func (r *WaapPolicyMode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Represents a custom rule set.
+type WaapRuleSet struct {
+	// Identifier of the rule set.
+	ID int64 `json:"id,required"`
+	// Detailed description of the rule set.
+	Description string `json:"description,required"`
+	// Indicates if the rule set is currently active.
+	IsActive bool `json:"is_active,required"`
+	// Name of the rule set.
+	Name string `json:"name,required"`
+	// Collection of tags associated with the rule set.
+	Tags []WaapRuleSetTag `json:"tags,required"`
+	// The resource slug associated with the rule set.
+	ResourceSlug string            `json:"resource_slug,nullable"`
+	Rules        []WaapRuleSetRule `json:"rules"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Description  respjson.Field
+		IsActive     respjson.Field
+		Name         respjson.Field
+		Tags         respjson.Field
+		ResourceSlug respjson.Field
+		Rules        respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapRuleSet) RawJSON() string { return r.JSON.raw }
+func (r *WaapRuleSet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single tag associated with a rule set.
+type WaapRuleSetTag struct {
+	// Identifier of the tag.
+	ID int64 `json:"id,required"`
+	// Detailed description of the tag.
+	Description string `json:"description,required"`
+	// Name of the tag.
+	Name string `json:"name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Description respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapRuleSetTag) RawJSON() string { return r.JSON.raw }
+func (r *WaapRuleSetTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Represents a configurable WAAP security rule, also known as a policy.
+type WaapRuleSetRule struct {
+	// Unique identifier for the security rule
+	ID string `json:"id,required"`
+	// The action taken by the WAAP upon rule activation.
+	//
+	// Any of "Allow", "Block", "Captcha", "Gateway", "Handshake", "Monitor",
+	// "Composite".
+	Action string `json:"action,required"`
+	// Detailed description of the security rule
+	Description string `json:"description,required"`
+	// The rule set group name to which the rule belongs
+	Group string `json:"group,required"`
+	// Indicates if the security rule is active
+	Mode bool `json:"mode,required"`
+	// Name of the security rule
+	Name string `json:"name,required"`
+	// Identifier of the rule set to which the rule belongs
+	RuleSetID int64 `json:"rule_set_id,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Action      respjson.Field
+		Description respjson.Field
+		Group       respjson.Field
+		Mode        respjson.Field
+		Name        respjson.Field
+		RuleSetID   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapRuleSetRule) RawJSON() string { return r.JSON.raw }
+func (r *WaapRuleSetRule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Represents a WAAP domain when getting a list of domains.
+type WaapSummaryDomain struct {
+	// The domain ID
+	ID int64 `json:"id,required"`
+	// The date and time the domain was created in ISO 8601 format
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// The ID of the custom page set
+	CustomPageSet int64 `json:"custom_page_set,required"`
+	// The domain name
+	Name string `json:"name,required"`
+	// The different statuses a domain can have
+	//
+	// Any of "active", "bypass", "monitor", "locked".
+	Status WaapSummaryDomainStatus `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		CustomPageSet respjson.Field
+		Name          respjson.Field
+		Status        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapSummaryDomain) RawJSON() string { return r.JSON.raw }
+func (r *WaapSummaryDomain) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The different statuses a domain can have
+type WaapSummaryDomainStatus string
+
+const (
+	WaapSummaryDomainStatusActive  WaapSummaryDomainStatus = "active"
+	WaapSummaryDomainStatusBypass  WaapSummaryDomainStatus = "bypass"
+	WaapSummaryDomainStatusMonitor WaapSummaryDomainStatus = "monitor"
+	WaapSummaryDomainStatusLocked  WaapSummaryDomainStatus = "locked"
+)
+
 type DomainUpdateParams struct {
 	// Domain statuses that can be used when updating a domain
 	//
@@ -156,7 +470,7 @@ type DomainListParams struct {
 	// The different statuses a domain can have
 	//
 	// Any of "active", "bypass", "monitor", "locked".
-	Status WaapDomainStatus `query:"status,omitzero" json:"-"`
+	Status DomainListParamsStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
@@ -181,3 +495,19 @@ const (
 	DomainListParamsOrderingMinusStatus    DomainListParamsOrdering = "-status"
 	DomainListParamsOrderingMinusCreatedAt DomainListParamsOrdering = "-created_at"
 )
+
+// The different statuses a domain can have
+type DomainListParamsStatus string
+
+const (
+	DomainListParamsStatusActive  DomainListParamsStatus = "active"
+	DomainListParamsStatusBypass  DomainListParamsStatus = "bypass"
+	DomainListParamsStatusMonitor DomainListParamsStatus = "monitor"
+	DomainListParamsStatusLocked  DomainListParamsStatus = "locked"
+)
+
+type DomainTogglePolicyParams struct {
+	// The domain ID
+	DomainID int64 `path:"domain_id,required" json:"-"`
+	paramObj
+}

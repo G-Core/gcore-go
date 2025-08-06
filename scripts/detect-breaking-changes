@@ -76,12 +76,9 @@ TEST_PATHS=(
 	waap/domainapipath_test.go
 	waap/domainapipathgroup_test.go
 	waap/domainapidiscovery_test.go
-	waap/domainapidiscoveryscanresult_test.go
 	waap/domaininsight_test.go
 	waap/domaininsightsilence_test.go
-	waap/domainpolicy_test.go
-	waap/domainanalytics_test.go
-	waap/domainanalyticsrequest_test.go
+	waap/domainstatistic_test.go
 	waap/domaincustomrule_test.go
 	waap/domainfirewallrule_test.go
 	waap/domainadvancedrule_test.go
@@ -89,7 +86,9 @@ TEST_PATHS=(
 	waap/advancedrule_test.go
 	waap/tag_test.go
 	waap/organization_test.go
+	waap/insight_test.go
 	waap/ipinfo_test.go
+	waap/ipinfometric_test.go
 	iam/iam_test.go
 	iam/apitoken_test.go
 	iam/user_test.go

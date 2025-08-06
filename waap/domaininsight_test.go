@@ -35,8 +35,8 @@ func TestDomainInsightListWithOptionalParams(t *testing.T) {
 			InsightType: []string{"string", "string"},
 			Limit:       gcore.Int(0),
 			Offset:      gcore.Int(0),
-			Ordering:    waap.WaapInsightSortByID,
-			Status:      []waap.WaapInsightStatus{waap.WaapInsightStatusOpen, waap.WaapInsightStatusAcked},
+			Ordering:    waap.DomainInsightListParamsOrderingID,
+			Status:      []string{"OPEN", "ACKED"},
 		},
 	)
 	if err != nil {
@@ -93,7 +93,7 @@ func TestDomainInsightReplace(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		waap.DomainInsightReplaceParams{
 			DomainID: 1,
-			Status:   waap.WaapInsightStatusOpen,
+			Status:   waap.DomainInsightReplaceParamsStatusOpen,
 		},
 	)
 	if err != nil {

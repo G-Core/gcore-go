@@ -14,6 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // DomainAdvancedRuleService contains methods and other services that help with
@@ -95,13 +96,151 @@ func (r *DomainAdvancedRuleService) Get(ctx context.Context, ruleID int64, query
 }
 
 // Toggle an advanced rule
-func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action WaapCustomerRuleState, body DomainAdvancedRuleToggleParams, opts ...option.RequestOption) (err error) {
+func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdvancedRuleToggleParamsAction, body DomainAdvancedRuleToggleParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules/%v/%v", body.DomainID, body.RuleID, action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, nil, opts...)
 	return
 }
+
+// An advanced WAAP rule applied to a domain
+type WaapAdvancedRule struct {
+	// The unique identifier for the rule
+	ID int64 `json:"id,required"`
+	// The action that a WAAP rule takes when triggered
+	Action WaapAdvancedRuleAction `json:"action,required"`
+	// Whether or not the rule is enabled
+	Enabled bool `json:"enabled,required"`
+	// The name assigned to the rule
+	Name string `json:"name,required"`
+	// A CEL syntax expression that contains the rule's conditions. Allowed objects
+	// are: request, whois, session, response, tags, `user_defined_tags`, `user_agent`,
+	// `client_data`. More info can be found here:
+	// https://gcore.com/docs/waap/waap-rules/advanced-rules
+	Source string `json:"source,required"`
+	// The description assigned to the rule
+	Description string `json:"description,nullable"`
+	// The WAAP request/response phase for applying the rule. Default is "access". The
+	// "access" phase is responsible for modifying the request before it is sent to the
+	// origin server. The "`header_filter`" phase is responsible for modifying the HTTP
+	// headers of a response before they are sent back to the client. The
+	// "`body_filter`" phase is responsible for modifying the body of a response before
+	// it is sent back to the client.
+	//
+	// Any of "access", "header_filter", "body_filter".
+	Phase WaapAdvancedRulePhase `json:"phase,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Action      respjson.Field
+		Enabled     respjson.Field
+		Name        respjson.Field
+		Source      respjson.Field
+		Description respjson.Field
+		Phase       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapAdvancedRule) RawJSON() string { return r.JSON.raw }
+func (r *WaapAdvancedRule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The action that a WAAP rule takes when triggered
+type WaapAdvancedRuleAction struct {
+	// The WAAP allowed the request
+	Allow any `json:"allow,nullable"`
+	// WAAP block action behavior could be configured with response status code and
+	// action duration.
+	Block WaapAdvancedRuleActionBlock `json:"block,nullable"`
+	// The WAAP presented the user with a captcha
+	Captcha any `json:"captcha,nullable"`
+	// The WAAP performed automatic browser validation
+	Handshake any `json:"handshake,nullable"`
+	// The WAAP monitored the request but took no action
+	Monitor any `json:"monitor,nullable"`
+	// WAAP tag action gets a list of tags to tag the request scope with
+	Tag WaapAdvancedRuleActionTag `json:"tag,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Allow       respjson.Field
+		Block       respjson.Field
+		Captcha     respjson.Field
+		Handshake   respjson.Field
+		Monitor     respjson.Field
+		Tag         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapAdvancedRuleAction) RawJSON() string { return r.JSON.raw }
+func (r *WaapAdvancedRuleAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WAAP block action behavior could be configured with response status code and
+// action duration.
+type WaapAdvancedRuleActionBlock struct {
+	// How long a rule's block action will apply to subsequent requests. Can be
+	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
+	// represent time format (seconds, minutes, hours, or days)
+	ActionDuration string `json:"action_duration,nullable"`
+	// Designates the HTTP status code to deliver when a request is blocked.
+	//
+	// Any of 403, 405, 418, 429.
+	StatusCode int64 `json:"status_code,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ActionDuration respjson.Field
+		StatusCode     respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapAdvancedRuleActionBlock) RawJSON() string { return r.JSON.raw }
+func (r *WaapAdvancedRuleActionBlock) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WAAP tag action gets a list of tags to tag the request scope with
+type WaapAdvancedRuleActionTag struct {
+	// The list of user defined tags to tag the request with
+	Tags []string `json:"tags,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Tags        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapAdvancedRuleActionTag) RawJSON() string { return r.JSON.raw }
+func (r *WaapAdvancedRuleActionTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The WAAP request/response phase for applying the rule. Default is "access". The
+// "access" phase is responsible for modifying the request before it is sent to the
+// origin server. The "`header_filter`" phase is responsible for modifying the HTTP
+// headers of a response before they are sent back to the client. The
+// "`body_filter`" phase is responsible for modifying the body of a response before
+// it is sent back to the client.
+type WaapAdvancedRulePhase string
+
+const (
+	WaapAdvancedRulePhaseAccess       WaapAdvancedRulePhase = "access"
+	WaapAdvancedRulePhaseHeaderFilter WaapAdvancedRulePhase = "header_filter"
+	WaapAdvancedRulePhaseBodyFilter   WaapAdvancedRulePhase = "body_filter"
+)
 
 type DomainAdvancedRuleNewParams struct {
 	// The action that a WAAP rule takes when triggered
@@ -362,7 +501,7 @@ type DomainAdvancedRuleListParams struct {
 	// Filter to refine results by specific actions
 	//
 	// Any of "allow", "block", "captcha", "handshake", "monitor", "tag".
-	Action WaapRuleActionType `query:"action,omitzero" json:"-"`
+	Action DomainAdvancedRuleListParamsAction `query:"action,omitzero" json:"-"`
 	// Filter rules based on the WAAP request/response phase for applying the rule. The
 	// "access" phase is responsible for modifying the request before it is sent to the
 	// origin server. The "`header_filter`" phase is responsible for modifying the HTTP
@@ -383,6 +522,18 @@ func (r DomainAdvancedRuleListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Filter to refine results by specific actions
+type DomainAdvancedRuleListParamsAction string
+
+const (
+	DomainAdvancedRuleListParamsActionAllow     DomainAdvancedRuleListParamsAction = "allow"
+	DomainAdvancedRuleListParamsActionBlock     DomainAdvancedRuleListParamsAction = "block"
+	DomainAdvancedRuleListParamsActionCaptcha   DomainAdvancedRuleListParamsAction = "captcha"
+	DomainAdvancedRuleListParamsActionHandshake DomainAdvancedRuleListParamsAction = "handshake"
+	DomainAdvancedRuleListParamsActionMonitor   DomainAdvancedRuleListParamsAction = "monitor"
+	DomainAdvancedRuleListParamsActionTag       DomainAdvancedRuleListParamsAction = "tag"
+)
 
 // Determine the field to order results by
 type DomainAdvancedRuleListParamsOrdering string
@@ -435,3 +586,11 @@ type DomainAdvancedRuleToggleParams struct {
 	RuleID int64 `path:"rule_id,required" json:"-"`
 	paramObj
 }
+
+// Enable or disable an advanced rule
+type DomainAdvancedRuleToggleParamsAction string
+
+const (
+	DomainAdvancedRuleToggleParamsActionEnable  DomainAdvancedRuleToggleParamsAction = "enable"
+	DomainAdvancedRuleToggleParamsActionDisable DomainAdvancedRuleToggleParamsAction = "disable"
+)

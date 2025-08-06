@@ -39,7 +39,7 @@ func NewDomainAPIPathService(opts ...option.RequestOption) (r DomainAPIPathServi
 }
 
 // Create an API path for a domain
-func (r *DomainAPIPathService) New(ctx context.Context, domainID int64, body DomainAPIPathNewParams, opts ...option.RequestOption) (res *DomainAPIPathNewResponse, err error) {
+func (r *DomainAPIPathService) New(ctx context.Context, domainID int64, body DomainAPIPathNewParams, opts ...option.RequestOption) (res *WaapAPIPath, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-paths", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -60,7 +60,7 @@ func (r *DomainAPIPathService) Update(ctx context.Context, pathID string, params
 }
 
 // Retrieve a list of API paths for a specific domain
-func (r *DomainAPIPathService) List(ctx context.Context, domainID int64, query DomainAPIPathListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[DomainAPIPathListResponse], err error) {
+func (r *DomainAPIPathService) List(ctx context.Context, domainID int64, query DomainAPIPathListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapAPIPath], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -78,7 +78,7 @@ func (r *DomainAPIPathService) List(ctx context.Context, domainID int64, query D
 }
 
 // Retrieve a list of API paths for a specific domain
-func (r *DomainAPIPathService) ListAutoPaging(ctx context.Context, domainID int64, query DomainAPIPathListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[DomainAPIPathListResponse] {
+func (r *DomainAPIPathService) ListAutoPaging(ctx context.Context, domainID int64, query DomainAPIPathListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapAPIPath] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, domainID, query, opts...))
 }
 
@@ -96,7 +96,7 @@ func (r *DomainAPIPathService) Delete(ctx context.Context, pathID string, body D
 }
 
 // Retrieve a specific API path for a domain
-func (r *DomainAPIPathService) Get(ctx context.Context, pathID string, query DomainAPIPathGetParams, opts ...option.RequestOption) (res *DomainAPIPathGetResponse, err error) {
+func (r *DomainAPIPathService) Get(ctx context.Context, pathID string, query DomainAPIPathGetParams, opts ...option.RequestOption) (res *WaapAPIPath, err error) {
 	opts = append(r.Options[:], opts...)
 	if pathID == "" {
 		err = errors.New("missing required path_id parameter")
@@ -108,7 +108,7 @@ func (r *DomainAPIPathService) Get(ctx context.Context, pathID string, query Dom
 }
 
 // Response model for the API path
-type DomainAPIPathNewResponse struct {
+type WaapAPIPath struct {
 	// The path ID
 	ID string `json:"id,required" format:"uuid"`
 	// An array of api groups associated with the API path
@@ -120,13 +120,13 @@ type DomainAPIPathNewResponse struct {
 	// The different HTTP schemes an API path can have
 	//
 	// Any of "HTTP", "HTTPS".
-	HTTPScheme DomainAPIPathNewResponseHTTPScheme `json:"http_scheme,required"`
+	HTTPScheme WaapAPIPathHTTPScheme `json:"http_scheme,required"`
 	// The date and time in ISO 8601 format the API path was last detected.
 	LastDetected time.Time `json:"last_detected,required" format:"date-time"`
 	// The different methods an API path can have
 	//
 	// Any of "GET", "POST", "PUT", "PATCH", "DELETE", "TRACE", "HEAD", "OPTIONS".
-	Method DomainAPIPathNewResponseMethod `json:"method,required"`
+	Method WaapAPIPathMethod `json:"method,required"`
 	// The API path, locations that are saved for resource IDs will be put in curly
 	// brackets
 	Path string `json:"path,required"`
@@ -135,11 +135,11 @@ type DomainAPIPathNewResponse struct {
 	// The different sources an API path can have
 	//
 	// Any of "API_DESCRIPTION_FILE", "TRAFFIC_SCAN", "USER_DEFINED".
-	Source DomainAPIPathNewResponseSource `json:"source,required"`
+	Source WaapAPIPathSource `json:"source,required"`
 	// The different statuses an API path can have
 	//
 	// Any of "CONFIRMED_API", "POTENTIAL_API", "NOT_API", "DELISTED_API".
-	Status DomainAPIPathNewResponseStatus `json:"status,required"`
+	Status WaapAPIPathStatus `json:"status,required"`
 	// An array of tags associated with the API path
 	Tags []string `json:"tags,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -162,252 +162,50 @@ type DomainAPIPathNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DomainAPIPathNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *DomainAPIPathNewResponse) UnmarshalJSON(data []byte) error {
+func (r WaapAPIPath) RawJSON() string { return r.JSON.raw }
+func (r *WaapAPIPath) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The different HTTP schemes an API path can have
-type DomainAPIPathNewResponseHTTPScheme string
+type WaapAPIPathHTTPScheme string
 
 const (
-	DomainAPIPathNewResponseHTTPSchemeHTTP  DomainAPIPathNewResponseHTTPScheme = "HTTP"
-	DomainAPIPathNewResponseHTTPSchemeHTTPS DomainAPIPathNewResponseHTTPScheme = "HTTPS"
+	WaapAPIPathHTTPSchemeHTTP  WaapAPIPathHTTPScheme = "HTTP"
+	WaapAPIPathHTTPSchemeHTTPS WaapAPIPathHTTPScheme = "HTTPS"
 )
 
 // The different methods an API path can have
-type DomainAPIPathNewResponseMethod string
+type WaapAPIPathMethod string
 
 const (
-	DomainAPIPathNewResponseMethodGet     DomainAPIPathNewResponseMethod = "GET"
-	DomainAPIPathNewResponseMethodPost    DomainAPIPathNewResponseMethod = "POST"
-	DomainAPIPathNewResponseMethodPut     DomainAPIPathNewResponseMethod = "PUT"
-	DomainAPIPathNewResponseMethodPatch   DomainAPIPathNewResponseMethod = "PATCH"
-	DomainAPIPathNewResponseMethodDelete  DomainAPIPathNewResponseMethod = "DELETE"
-	DomainAPIPathNewResponseMethodTrace   DomainAPIPathNewResponseMethod = "TRACE"
-	DomainAPIPathNewResponseMethodHead    DomainAPIPathNewResponseMethod = "HEAD"
-	DomainAPIPathNewResponseMethodOptions DomainAPIPathNewResponseMethod = "OPTIONS"
+	WaapAPIPathMethodGet     WaapAPIPathMethod = "GET"
+	WaapAPIPathMethodPost    WaapAPIPathMethod = "POST"
+	WaapAPIPathMethodPut     WaapAPIPathMethod = "PUT"
+	WaapAPIPathMethodPatch   WaapAPIPathMethod = "PATCH"
+	WaapAPIPathMethodDelete  WaapAPIPathMethod = "DELETE"
+	WaapAPIPathMethodTrace   WaapAPIPathMethod = "TRACE"
+	WaapAPIPathMethodHead    WaapAPIPathMethod = "HEAD"
+	WaapAPIPathMethodOptions WaapAPIPathMethod = "OPTIONS"
 )
 
 // The different sources an API path can have
-type DomainAPIPathNewResponseSource string
+type WaapAPIPathSource string
 
 const (
-	DomainAPIPathNewResponseSourceAPIDescriptionFile DomainAPIPathNewResponseSource = "API_DESCRIPTION_FILE"
-	DomainAPIPathNewResponseSourceTrafficScan        DomainAPIPathNewResponseSource = "TRAFFIC_SCAN"
-	DomainAPIPathNewResponseSourceUserDefined        DomainAPIPathNewResponseSource = "USER_DEFINED"
+	WaapAPIPathSourceAPIDescriptionFile WaapAPIPathSource = "API_DESCRIPTION_FILE"
+	WaapAPIPathSourceTrafficScan        WaapAPIPathSource = "TRAFFIC_SCAN"
+	WaapAPIPathSourceUserDefined        WaapAPIPathSource = "USER_DEFINED"
 )
 
 // The different statuses an API path can have
-type DomainAPIPathNewResponseStatus string
+type WaapAPIPathStatus string
 
 const (
-	DomainAPIPathNewResponseStatusConfirmedAPI DomainAPIPathNewResponseStatus = "CONFIRMED_API"
-	DomainAPIPathNewResponseStatusPotentialAPI DomainAPIPathNewResponseStatus = "POTENTIAL_API"
-	DomainAPIPathNewResponseStatusNotAPI       DomainAPIPathNewResponseStatus = "NOT_API"
-	DomainAPIPathNewResponseStatusDelistedAPI  DomainAPIPathNewResponseStatus = "DELISTED_API"
-)
-
-// Response model for the API path
-type DomainAPIPathListResponse struct {
-	// The path ID
-	ID string `json:"id,required" format:"uuid"`
-	// An array of api groups associated with the API path
-	APIGroups []string `json:"api_groups,required"`
-	// The API version
-	APIVersion string `json:"api_version,required"`
-	// The date and time in ISO 8601 format the API path was first detected.
-	FirstDetected time.Time `json:"first_detected,required" format:"date-time"`
-	// The different HTTP schemes an API path can have
-	//
-	// Any of "HTTP", "HTTPS".
-	HTTPScheme DomainAPIPathListResponseHTTPScheme `json:"http_scheme,required"`
-	// The date and time in ISO 8601 format the API path was last detected.
-	LastDetected time.Time `json:"last_detected,required" format:"date-time"`
-	// The different methods an API path can have
-	//
-	// Any of "GET", "POST", "PUT", "PATCH", "DELETE", "TRACE", "HEAD", "OPTIONS".
-	Method DomainAPIPathListResponseMethod `json:"method,required"`
-	// The API path, locations that are saved for resource IDs will be put in curly
-	// brackets
-	Path string `json:"path,required"`
-	// The number of requests for this path in the last 24 hours
-	RequestCount int64 `json:"request_count,required"`
-	// The different sources an API path can have
-	//
-	// Any of "API_DESCRIPTION_FILE", "TRAFFIC_SCAN", "USER_DEFINED".
-	Source DomainAPIPathListResponseSource `json:"source,required"`
-	// The different statuses an API path can have
-	//
-	// Any of "CONFIRMED_API", "POTENTIAL_API", "NOT_API", "DELISTED_API".
-	Status DomainAPIPathListResponseStatus `json:"status,required"`
-	// An array of tags associated with the API path
-	Tags []string `json:"tags,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		APIGroups     respjson.Field
-		APIVersion    respjson.Field
-		FirstDetected respjson.Field
-		HTTPScheme    respjson.Field
-		LastDetected  respjson.Field
-		Method        respjson.Field
-		Path          respjson.Field
-		RequestCount  respjson.Field
-		Source        respjson.Field
-		Status        respjson.Field
-		Tags          respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DomainAPIPathListResponse) RawJSON() string { return r.JSON.raw }
-func (r *DomainAPIPathListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The different HTTP schemes an API path can have
-type DomainAPIPathListResponseHTTPScheme string
-
-const (
-	DomainAPIPathListResponseHTTPSchemeHTTP  DomainAPIPathListResponseHTTPScheme = "HTTP"
-	DomainAPIPathListResponseHTTPSchemeHTTPS DomainAPIPathListResponseHTTPScheme = "HTTPS"
-)
-
-// The different methods an API path can have
-type DomainAPIPathListResponseMethod string
-
-const (
-	DomainAPIPathListResponseMethodGet     DomainAPIPathListResponseMethod = "GET"
-	DomainAPIPathListResponseMethodPost    DomainAPIPathListResponseMethod = "POST"
-	DomainAPIPathListResponseMethodPut     DomainAPIPathListResponseMethod = "PUT"
-	DomainAPIPathListResponseMethodPatch   DomainAPIPathListResponseMethod = "PATCH"
-	DomainAPIPathListResponseMethodDelete  DomainAPIPathListResponseMethod = "DELETE"
-	DomainAPIPathListResponseMethodTrace   DomainAPIPathListResponseMethod = "TRACE"
-	DomainAPIPathListResponseMethodHead    DomainAPIPathListResponseMethod = "HEAD"
-	DomainAPIPathListResponseMethodOptions DomainAPIPathListResponseMethod = "OPTIONS"
-)
-
-// The different sources an API path can have
-type DomainAPIPathListResponseSource string
-
-const (
-	DomainAPIPathListResponseSourceAPIDescriptionFile DomainAPIPathListResponseSource = "API_DESCRIPTION_FILE"
-	DomainAPIPathListResponseSourceTrafficScan        DomainAPIPathListResponseSource = "TRAFFIC_SCAN"
-	DomainAPIPathListResponseSourceUserDefined        DomainAPIPathListResponseSource = "USER_DEFINED"
-)
-
-// The different statuses an API path can have
-type DomainAPIPathListResponseStatus string
-
-const (
-	DomainAPIPathListResponseStatusConfirmedAPI DomainAPIPathListResponseStatus = "CONFIRMED_API"
-	DomainAPIPathListResponseStatusPotentialAPI DomainAPIPathListResponseStatus = "POTENTIAL_API"
-	DomainAPIPathListResponseStatusNotAPI       DomainAPIPathListResponseStatus = "NOT_API"
-	DomainAPIPathListResponseStatusDelistedAPI  DomainAPIPathListResponseStatus = "DELISTED_API"
-)
-
-// Response model for the API path
-type DomainAPIPathGetResponse struct {
-	// The path ID
-	ID string `json:"id,required" format:"uuid"`
-	// An array of api groups associated with the API path
-	APIGroups []string `json:"api_groups,required"`
-	// The API version
-	APIVersion string `json:"api_version,required"`
-	// The date and time in ISO 8601 format the API path was first detected.
-	FirstDetected time.Time `json:"first_detected,required" format:"date-time"`
-	// The different HTTP schemes an API path can have
-	//
-	// Any of "HTTP", "HTTPS".
-	HTTPScheme DomainAPIPathGetResponseHTTPScheme `json:"http_scheme,required"`
-	// The date and time in ISO 8601 format the API path was last detected.
-	LastDetected time.Time `json:"last_detected,required" format:"date-time"`
-	// The different methods an API path can have
-	//
-	// Any of "GET", "POST", "PUT", "PATCH", "DELETE", "TRACE", "HEAD", "OPTIONS".
-	Method DomainAPIPathGetResponseMethod `json:"method,required"`
-	// The API path, locations that are saved for resource IDs will be put in curly
-	// brackets
-	Path string `json:"path,required"`
-	// The number of requests for this path in the last 24 hours
-	RequestCount int64 `json:"request_count,required"`
-	// The different sources an API path can have
-	//
-	// Any of "API_DESCRIPTION_FILE", "TRAFFIC_SCAN", "USER_DEFINED".
-	Source DomainAPIPathGetResponseSource `json:"source,required"`
-	// The different statuses an API path can have
-	//
-	// Any of "CONFIRMED_API", "POTENTIAL_API", "NOT_API", "DELISTED_API".
-	Status DomainAPIPathGetResponseStatus `json:"status,required"`
-	// An array of tags associated with the API path
-	Tags []string `json:"tags,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		APIGroups     respjson.Field
-		APIVersion    respjson.Field
-		FirstDetected respjson.Field
-		HTTPScheme    respjson.Field
-		LastDetected  respjson.Field
-		Method        respjson.Field
-		Path          respjson.Field
-		RequestCount  respjson.Field
-		Source        respjson.Field
-		Status        respjson.Field
-		Tags          respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DomainAPIPathGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *DomainAPIPathGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The different HTTP schemes an API path can have
-type DomainAPIPathGetResponseHTTPScheme string
-
-const (
-	DomainAPIPathGetResponseHTTPSchemeHTTP  DomainAPIPathGetResponseHTTPScheme = "HTTP"
-	DomainAPIPathGetResponseHTTPSchemeHTTPS DomainAPIPathGetResponseHTTPScheme = "HTTPS"
-)
-
-// The different methods an API path can have
-type DomainAPIPathGetResponseMethod string
-
-const (
-	DomainAPIPathGetResponseMethodGet     DomainAPIPathGetResponseMethod = "GET"
-	DomainAPIPathGetResponseMethodPost    DomainAPIPathGetResponseMethod = "POST"
-	DomainAPIPathGetResponseMethodPut     DomainAPIPathGetResponseMethod = "PUT"
-	DomainAPIPathGetResponseMethodPatch   DomainAPIPathGetResponseMethod = "PATCH"
-	DomainAPIPathGetResponseMethodDelete  DomainAPIPathGetResponseMethod = "DELETE"
-	DomainAPIPathGetResponseMethodTrace   DomainAPIPathGetResponseMethod = "TRACE"
-	DomainAPIPathGetResponseMethodHead    DomainAPIPathGetResponseMethod = "HEAD"
-	DomainAPIPathGetResponseMethodOptions DomainAPIPathGetResponseMethod = "OPTIONS"
-)
-
-// The different sources an API path can have
-type DomainAPIPathGetResponseSource string
-
-const (
-	DomainAPIPathGetResponseSourceAPIDescriptionFile DomainAPIPathGetResponseSource = "API_DESCRIPTION_FILE"
-	DomainAPIPathGetResponseSourceTrafficScan        DomainAPIPathGetResponseSource = "TRAFFIC_SCAN"
-	DomainAPIPathGetResponseSourceUserDefined        DomainAPIPathGetResponseSource = "USER_DEFINED"
-)
-
-// The different statuses an API path can have
-type DomainAPIPathGetResponseStatus string
-
-const (
-	DomainAPIPathGetResponseStatusConfirmedAPI DomainAPIPathGetResponseStatus = "CONFIRMED_API"
-	DomainAPIPathGetResponseStatusPotentialAPI DomainAPIPathGetResponseStatus = "POTENTIAL_API"
-	DomainAPIPathGetResponseStatusNotAPI       DomainAPIPathGetResponseStatus = "NOT_API"
-	DomainAPIPathGetResponseStatusDelistedAPI  DomainAPIPathGetResponseStatus = "DELISTED_API"
+	WaapAPIPathStatusConfirmedAPI WaapAPIPathStatus = "CONFIRMED_API"
+	WaapAPIPathStatusPotentialAPI WaapAPIPathStatus = "POTENTIAL_API"
+	WaapAPIPathStatusNotAPI       WaapAPIPathStatus = "NOT_API"
+	WaapAPIPathStatusDelistedAPI  WaapAPIPathStatus = "DELISTED_API"
 )
 
 type DomainAPIPathNewParams struct {
