@@ -287,7 +287,7 @@ func TestDomainCustomRuleListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		1,
 		waap.DomainCustomRuleListParams{
-			Action:      waap.WaapRuleActionTypeAllow,
+			Action:      waap.DomainCustomRuleListParamsActionBlock,
 			Description: gcore.String("This rule blocks all the requests coming form a specific IP address."),
 			Enabled:     gcore.Bool(false),
 			Limit:       gcore.Int(0),
@@ -403,7 +403,7 @@ func TestDomainCustomRuleToggle(t *testing.T) {
 	)
 	err := client.Waap.Domains.CustomRules.Toggle(
 		context.TODO(),
-		waap.WaapCustomerRuleStateEnable,
+		waap.DomainCustomRuleToggleParamsActionEnable,
 		waap.DomainCustomRuleToggleParams{
 			DomainID: 1,
 			RuleID:   0,

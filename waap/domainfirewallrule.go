@@ -14,6 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // DomainFirewallRuleService contains methods and other services that help with
@@ -104,12 +105,159 @@ func (r *DomainFirewallRuleService) Get(ctx context.Context, ruleID int64, query
 }
 
 // Toggle a firewall rule
-func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action WaapCustomerRuleState, body DomainFirewallRuleToggleParams, opts ...option.RequestOption) (err error) {
+func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action DomainFirewallRuleToggleParamsAction, body DomainFirewallRuleToggleParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/%v/%v", body.DomainID, body.RuleID, action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, nil, opts...)
 	return
+}
+
+type WaapFirewallRule struct {
+	// The unique identifier of the rule
+	ID int64 `json:"id,required"`
+	// The action that a firewall rule takes when triggered
+	Action WaapFirewallRuleAction `json:"action,required"`
+	// The condition required for the WAAP engine to trigger the rule.
+	Conditions []WaapFirewallRuleCondition `json:"conditions,required"`
+	// Whether or not the rule is enabled
+	Enabled bool `json:"enabled,required"`
+	// The name assigned to the rule
+	Name string `json:"name,required"`
+	// The description assigned to the rule
+	Description string `json:"description,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Action      respjson.Field
+		Conditions  respjson.Field
+		Enabled     respjson.Field
+		Name        respjson.Field
+		Description respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapFirewallRule) RawJSON() string { return r.JSON.raw }
+func (r *WaapFirewallRule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The action that a firewall rule takes when triggered
+type WaapFirewallRuleAction struct {
+	// The WAAP allowed the request
+	Allow any `json:"allow,nullable"`
+	// WAAP block action behavior could be configured with response status code and
+	// action duration.
+	Block WaapFirewallRuleActionBlock `json:"block,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Allow       respjson.Field
+		Block       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapFirewallRuleAction) RawJSON() string { return r.JSON.raw }
+func (r *WaapFirewallRuleAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WAAP block action behavior could be configured with response status code and
+// action duration.
+type WaapFirewallRuleActionBlock struct {
+	// How long a rule's block action will apply to subsequent requests. Can be
+	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
+	// represent time format (seconds, minutes, hours, or days)
+	ActionDuration string `json:"action_duration,nullable"`
+	// Designates the HTTP status code to deliver when a request is blocked.
+	//
+	// Any of 403, 405, 418, 429.
+	StatusCode int64 `json:"status_code,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ActionDuration respjson.Field
+		StatusCode     respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapFirewallRuleActionBlock) RawJSON() string { return r.JSON.raw }
+func (r *WaapFirewallRuleActionBlock) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The criteria of an incoming web request and the models of the various values
+// those criteria can take
+type WaapFirewallRuleCondition struct {
+	// Match the incoming request against a single IP address
+	IP WaapFirewallRuleConditionIP `json:"ip,nullable"`
+	// Match the incoming request against an IP range
+	IPRange WaapFirewallRuleConditionIPRange `json:"ip_range,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IP          respjson.Field
+		IPRange     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapFirewallRuleCondition) RawJSON() string { return r.JSON.raw }
+func (r *WaapFirewallRuleCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming request against a single IP address
+type WaapFirewallRuleConditionIP struct {
+	// A single IPv4 or IPv6 address
+	IPAddress string `json:"ip_address,required" format:"ipv4"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IPAddress   respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapFirewallRuleConditionIP) RawJSON() string { return r.JSON.raw }
+func (r *WaapFirewallRuleConditionIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming request against an IP range
+type WaapFirewallRuleConditionIPRange struct {
+	// The lower bound IPv4 or IPv6 address to match against
+	LowerBound string `json:"lower_bound,required" format:"ipv4"`
+	// The upper bound IPv4 or IPv6 address to match against
+	UpperBound string `json:"upper_bound,required" format:"ipv4"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		LowerBound  respjson.Field
+		UpperBound  respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapFirewallRuleConditionIPRange) RawJSON() string { return r.JSON.raw }
+func (r *WaapFirewallRuleConditionIPRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type DomainFirewallRuleNewParams struct {
@@ -455,3 +603,11 @@ type DomainFirewallRuleToggleParams struct {
 	RuleID int64 `path:"rule_id,required" json:"-"`
 	paramObj
 }
+
+// Enable or disable a firewall rule
+type DomainFirewallRuleToggleParamsAction string
+
+const (
+	DomainFirewallRuleToggleParamsActionEnable  DomainFirewallRuleToggleParamsAction = "enable"
+	DomainFirewallRuleToggleParamsActionDisable DomainFirewallRuleToggleParamsAction = "disable"
+)

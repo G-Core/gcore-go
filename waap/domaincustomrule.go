@@ -14,6 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // DomainCustomRuleService contains methods and other services that help with
@@ -104,12 +105,640 @@ func (r *DomainCustomRuleService) Get(ctx context.Context, ruleID int64, query D
 }
 
 // Toggle a custom rule
-func (r *DomainCustomRuleService) Toggle(ctx context.Context, action WaapCustomerRuleState, body DomainCustomRuleToggleParams, opts ...option.RequestOption) (err error) {
+func (r *DomainCustomRuleService) Toggle(ctx context.Context, action DomainCustomRuleToggleParamsAction, body DomainCustomRuleToggleParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/%v/%v", body.DomainID, body.RuleID, action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, nil, opts...)
 	return
+}
+
+// An WAAP rule applied to a domain
+type WaapCustomRule struct {
+	// The unique identifier for the rule
+	ID int64 `json:"id,required"`
+	// The action that a WAAP rule takes when triggered
+	Action WaapCustomRuleAction `json:"action,required"`
+	// The conditions required for the WAAP engine to trigger the rule. Rules may have
+	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
+	Conditions []WaapCustomRuleCondition `json:"conditions,required"`
+	// Whether or not the rule is enabled
+	Enabled bool `json:"enabled,required"`
+	// The name assigned to the rule
+	Name string `json:"name,required"`
+	// The description assigned to the rule
+	Description string `json:"description,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Action      respjson.Field
+		Conditions  respjson.Field
+		Enabled     respjson.Field
+		Name        respjson.Field
+		Description respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRule) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The action that a WAAP rule takes when triggered
+type WaapCustomRuleAction struct {
+	// The WAAP allowed the request
+	Allow any `json:"allow,nullable"`
+	// WAAP block action behavior could be configured with response status code and
+	// action duration.
+	Block WaapCustomRuleActionBlock `json:"block,nullable"`
+	// The WAAP presented the user with a captcha
+	Captcha any `json:"captcha,nullable"`
+	// The WAAP performed automatic browser validation
+	Handshake any `json:"handshake,nullable"`
+	// The WAAP monitored the request but took no action
+	Monitor any `json:"monitor,nullable"`
+	// WAAP tag action gets a list of tags to tag the request scope with
+	Tag WaapCustomRuleActionTag `json:"tag,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Allow       respjson.Field
+		Block       respjson.Field
+		Captcha     respjson.Field
+		Handshake   respjson.Field
+		Monitor     respjson.Field
+		Tag         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleAction) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WAAP block action behavior could be configured with response status code and
+// action duration.
+type WaapCustomRuleActionBlock struct {
+	// How long a rule's block action will apply to subsequent requests. Can be
+	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
+	// represent time format (seconds, minutes, hours, or days)
+	ActionDuration string `json:"action_duration,nullable"`
+	// Designates the HTTP status code to deliver when a request is blocked.
+	//
+	// Any of 403, 405, 418, 429.
+	StatusCode int64 `json:"status_code,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ActionDuration respjson.Field
+		StatusCode     respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleActionBlock) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleActionBlock) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WAAP tag action gets a list of tags to tag the request scope with
+type WaapCustomRuleActionTag struct {
+	// The list of user defined tags to tag the request with
+	Tags []string `json:"tags,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Tags        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleActionTag) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleActionTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The criteria of an incoming web request and the models of the various values
+// those criteria can take
+type WaapCustomRuleCondition struct {
+	// Match the requested Content-Type
+	ContentType WaapCustomRuleConditionContentType `json:"content_type,nullable"`
+	// Match the country that the request originated from
+	Country WaapCustomRuleConditionCountry `json:"country,nullable"`
+	// Match the incoming file extension
+	FileExtension WaapCustomRuleConditionFileExtension `json:"file_extension,nullable"`
+	// Match an incoming request header
+	Header WaapCustomRuleConditionHeader `json:"header,nullable"`
+	// Match when an incoming request header is present
+	HeaderExists WaapCustomRuleConditionHeaderExists `json:"header_exists,nullable"`
+	// Match the incoming HTTP method
+	HTTPMethod WaapCustomRuleConditionHTTPMethod `json:"http_method,nullable"`
+	// Match the incoming request against a single IP address
+	IP WaapCustomRuleConditionIP `json:"ip,nullable"`
+	// Match the incoming request against an IP range
+	IPRange WaapCustomRuleConditionIPRange `json:"ip_range,nullable"`
+	// Match the organization the request originated from, as determined by a WHOIS
+	// lookup of the requesting IP
+	Organization WaapCustomRuleConditionOrganization `json:"organization,nullable"`
+	// Match the type of organization that owns the IP address making an incoming
+	// request
+	OwnerTypes WaapCustomRuleConditionOwnerTypes `json:"owner_types,nullable"`
+	// Match the rate at which requests come in that match certain conditions
+	RequestRate WaapCustomRuleConditionRequestRate `json:"request_rate,nullable"`
+	// Match a response header
+	ResponseHeader WaapCustomRuleConditionResponseHeader `json:"response_header,nullable"`
+	// Match when a response header is present
+	ResponseHeaderExists WaapCustomRuleConditionResponseHeaderExists `json:"response_header_exists,nullable"`
+	// Match the number of dynamic page requests made in a WAAP session
+	SessionRequestCount WaapCustomRuleConditionSessionRequestCount `json:"session_request_count,nullable"`
+	// Matches requests based on specified tags
+	Tags WaapCustomRuleConditionTags `json:"tags,nullable"`
+	// Match the incoming request URL
+	URL WaapCustomRuleConditionURL `json:"url,nullable"`
+	// Match the user agent making the request
+	UserAgent WaapCustomRuleConditionUserAgent `json:"user_agent,nullable"`
+	// Matches requests based on user-defined tags
+	UserDefinedTags WaapCustomRuleConditionUserDefinedTags `json:"user_defined_tags,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContentType          respjson.Field
+		Country              respjson.Field
+		FileExtension        respjson.Field
+		Header               respjson.Field
+		HeaderExists         respjson.Field
+		HTTPMethod           respjson.Field
+		IP                   respjson.Field
+		IPRange              respjson.Field
+		Organization         respjson.Field
+		OwnerTypes           respjson.Field
+		RequestRate          respjson.Field
+		ResponseHeader       respjson.Field
+		ResponseHeaderExists respjson.Field
+		SessionRequestCount  respjson.Field
+		Tags                 respjson.Field
+		URL                  respjson.Field
+		UserAgent            respjson.Field
+		UserDefinedTags      respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleCondition) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the requested Content-Type
+type WaapCustomRuleConditionContentType struct {
+	// The list of content types to match against
+	ContentType []string `json:"content_type,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContentType respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionContentType) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionContentType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the country that the request originated from
+type WaapCustomRuleConditionCountry struct {
+	// A list of ISO 3166-1 alpha-2 formatted strings representing the countries to
+	// match against
+	CountryCode []string `json:"country_code,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CountryCode respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionCountry) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionCountry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming file extension
+type WaapCustomRuleConditionFileExtension struct {
+	// The list of file extensions to match against
+	FileExtension []string `json:"file_extension,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FileExtension respjson.Field
+		Negation      respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionFileExtension) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionFileExtension) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match an incoming request header
+type WaapCustomRuleConditionHeader struct {
+	// The request header name
+	Header string `json:"header,required"`
+	// The request header value
+	Value string `json:"value,required"`
+	// The type of matching condition for header and value.
+	//
+	// Any of "Exact", "Contains".
+	MatchType string `json:"match_type"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Header      respjson.Field
+		Value       respjson.Field
+		MatchType   respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionHeader) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match when an incoming request header is present
+type WaapCustomRuleConditionHeaderExists struct {
+	// The request header name
+	Header string `json:"header,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Header      respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionHeaderExists) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionHeaderExists) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming HTTP method
+type WaapCustomRuleConditionHTTPMethod struct {
+	// HTTP methods and descriptions Methods from the following RFCs are all observed:
+	//
+	// - RFC 7231: Hypertext Transfer Protocol (HTTP/1.1), obsoletes 2616
+	// - RFC 5789: PATCH Method for HTTP
+	//
+	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
+	// "TRACE".
+	HTTPMethod string `json:"http_method,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HTTPMethod  respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionHTTPMethod) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionHTTPMethod) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming request against a single IP address
+type WaapCustomRuleConditionIP struct {
+	// A single IPv4 or IPv6 address
+	IPAddress string `json:"ip_address,required" format:"ipv4"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IPAddress   respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionIP) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming request against an IP range
+type WaapCustomRuleConditionIPRange struct {
+	// The lower bound IPv4 or IPv6 address to match against
+	LowerBound string `json:"lower_bound,required" format:"ipv4"`
+	// The upper bound IPv4 or IPv6 address to match against
+	UpperBound string `json:"upper_bound,required" format:"ipv4"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		LowerBound  respjson.Field
+		UpperBound  respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionIPRange) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionIPRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the organization the request originated from, as determined by a WHOIS
+// lookup of the requesting IP
+type WaapCustomRuleConditionOrganization struct {
+	// The organization to match against
+	Organization string `json:"organization,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Organization respjson.Field
+		Negation     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionOrganization) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionOrganization) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the type of organization that owns the IP address making an incoming
+// request
+type WaapCustomRuleConditionOwnerTypes struct {
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// Match the type of organization that owns the IP address making an incoming
+	// request
+	//
+	// Any of "COMMERCIAL", "EDUCATIONAL", "GOVERNMENT", "HOSTING_SERVICES", "ISP",
+	// "MOBILE_NETWORK", "NETWORK", "RESERVED".
+	OwnerTypes []string `json:"owner_types"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Negation    respjson.Field
+		OwnerTypes  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionOwnerTypes) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionOwnerTypes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the rate at which requests come in that match certain conditions
+type WaapCustomRuleConditionRequestRate struct {
+	// A regular expression matching the URL path of the incoming request
+	PathPattern string `json:"path_pattern,required"`
+	// The number of incoming requests over the given time that can trigger a request
+	// rate condition
+	Requests int64 `json:"requests,required"`
+	// The number of seconds that the WAAP measures incoming requests over before
+	// triggering a request rate condition
+	Time int64 `json:"time,required"`
+	// Possible HTTP request methods that can trigger a request rate condition
+	//
+	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
+	// "TRACE".
+	HTTPMethods []string `json:"http_methods,nullable"`
+	// A list of source IPs that can trigger a request rate condition
+	IPs []string `json:"ips,nullable" format:"ipv4"`
+	// A user-defined tag that can be included in incoming requests and used to trigger
+	// a request rate condition
+	UserDefinedTag string `json:"user_defined_tag,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PathPattern    respjson.Field
+		Requests       respjson.Field
+		Time           respjson.Field
+		HTTPMethods    respjson.Field
+		IPs            respjson.Field
+		UserDefinedTag respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionRequestRate) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionRequestRate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match a response header
+type WaapCustomRuleConditionResponseHeader struct {
+	// The response header name
+	Header string `json:"header,required"`
+	// The response header value
+	Value string `json:"value,required"`
+	// The type of matching condition for header and value.
+	//
+	// Any of "Exact", "Contains".
+	MatchType string `json:"match_type"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Header      respjson.Field
+		Value       respjson.Field
+		MatchType   respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionResponseHeader) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionResponseHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match when a response header is present
+type WaapCustomRuleConditionResponseHeaderExists struct {
+	// The response header name
+	Header string `json:"header,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Header      respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionResponseHeaderExists) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionResponseHeaderExists) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the number of dynamic page requests made in a WAAP session
+type WaapCustomRuleConditionSessionRequestCount struct {
+	// The number of dynamic requests in the session
+	RequestCount int64 `json:"request_count,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RequestCount respjson.Field
+		Negation     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionSessionRequestCount) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionSessionRequestCount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Matches requests based on specified tags
+type WaapCustomRuleConditionTags struct {
+	// A list of tags to match against the request tags
+	Tags []string `json:"tags,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Tags        respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionTags) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionTags) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the incoming request URL
+type WaapCustomRuleConditionURL struct {
+	// The pattern to match against the request URL. Constraints depend on
+	// `match_type`:
+	//
+	//   - **Exact/Contains**: plain text matching (e.g., `/admin`, must comply with
+	//     `^[\w!\$~:#\[\]@\(\)\\*\+,=\/\-\.\%]+$`).
+	//   - **Regex**: a valid regular expression (e.g., `^/upload(/\d+)?/\w+`).
+	//     Lookahead/lookbehind constructs are forbidden.
+	URL string `json:"url,required"`
+	// The type of matching condition.
+	//
+	// Any of "Exact", "Contains", "Regex".
+	MatchType string `json:"match_type"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		MatchType   respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionURL) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the user agent making the request
+type WaapCustomRuleConditionUserAgent struct {
+	// The user agent value to match
+	UserAgent string `json:"user_agent,required"`
+	// The type of matching condition.
+	//
+	// Any of "Exact", "Contains".
+	MatchType string `json:"match_type"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		UserAgent   respjson.Field
+		MatchType   respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionUserAgent) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionUserAgent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Matches requests based on user-defined tags
+type WaapCustomRuleConditionUserDefinedTags struct {
+	// A list of user-defined tags to match against the request tags
+	Tags []string `json:"tags,required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Tags        respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionUserDefinedTags) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionUserDefinedTags) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type DomainCustomRuleNewParams struct {
@@ -1275,7 +1904,7 @@ type DomainCustomRuleListParams struct {
 	// Filter to refine results by specific actions
 	//
 	// Any of "allow", "block", "captcha", "handshake", "monitor", "tag".
-	Action WaapRuleActionType `query:"action,omitzero" json:"-"`
+	Action DomainCustomRuleListParamsAction `query:"action,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1287,6 +1916,18 @@ func (r DomainCustomRuleListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Filter to refine results by specific actions
+type DomainCustomRuleListParamsAction string
+
+const (
+	DomainCustomRuleListParamsActionAllow     DomainCustomRuleListParamsAction = "allow"
+	DomainCustomRuleListParamsActionBlock     DomainCustomRuleListParamsAction = "block"
+	DomainCustomRuleListParamsActionCaptcha   DomainCustomRuleListParamsAction = "captcha"
+	DomainCustomRuleListParamsActionHandshake DomainCustomRuleListParamsAction = "handshake"
+	DomainCustomRuleListParamsActionMonitor   DomainCustomRuleListParamsAction = "monitor"
+	DomainCustomRuleListParamsActionTag       DomainCustomRuleListParamsAction = "tag"
+)
 
 // Determine the field to order results by
 type DomainCustomRuleListParamsOrdering string
@@ -1337,3 +1978,11 @@ type DomainCustomRuleToggleParams struct {
 	RuleID int64 `path:"rule_id,required" json:"-"`
 	paramObj
 }
+
+// Enable or disable a custom rule
+type DomainCustomRuleToggleParamsAction string
+
+const (
+	DomainCustomRuleToggleParamsActionEnable  DomainCustomRuleToggleParamsAction = "enable"
+	DomainCustomRuleToggleParamsActionDisable DomainCustomRuleToggleParamsAction = "disable"
+)

@@ -105,7 +105,7 @@ func TestDomainInsightSilenceListWithOptionalParams(t *testing.T) {
 			InsightType: []string{"string", "string"},
 			Limit:       gcore.Int(0),
 			Offset:      gcore.Int(0),
-			Ordering:    waap.WaapInsightSilenceSortByID,
+			Ordering:    waap.DomainInsightSilenceListParamsOrderingID,
 		},
 	)
 	if err != nil {

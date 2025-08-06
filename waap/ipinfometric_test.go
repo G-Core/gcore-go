@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/waap"
 )
 
-func TestDomainPolicyToggle(t *testing.T) {
+func TestIPInfoMetricListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,13 +26,10 @@ func TestDomainPolicyToggle(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.Policies.Toggle(
-		context.TODO(),
-		"policy_id",
-		waap.DomainPolicyToggleParams{
-			DomainID: 1,
-		},
-	)
+	_, err := client.Waap.IPInfo.Metrics.List(context.TODO(), waap.IPInfoMetricListParams{
+		IP:       "192.168.1.1",
+		DomainID: gcore.Int(1),
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
