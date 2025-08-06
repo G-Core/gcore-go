@@ -121,7 +121,7 @@ func TestDomainAdvancedRuleListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		1,
 		waap.DomainAdvancedRuleListParams{
-			Action:      waap.WaapRuleActionTypeAllow,
+			Action:      waap.DomainAdvancedRuleListParamsActionBlock,
 			Description: gcore.String("This rule blocks all the requests coming form a specific IP address"),
 			Enabled:     gcore.Bool(false),
 			Limit:       gcore.Int(0),
@@ -210,7 +210,7 @@ func TestDomainAdvancedRuleToggle(t *testing.T) {
 	)
 	err := client.Waap.Domains.AdvancedRules.Toggle(
 		context.TODO(),
-		waap.WaapCustomerRuleStateEnable,
+		waap.DomainAdvancedRuleToggleParamsActionEnable,
 		waap.DomainAdvancedRuleToggleParams{
 			DomainID: 1,
 			RuleID:   0,

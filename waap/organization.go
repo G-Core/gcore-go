@@ -7,11 +7,13 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // OrganizationService contains methods and other services that help with
@@ -58,6 +60,27 @@ func (r *OrganizationService) List(ctx context.Context, query OrganizationListPa
 // various parameters, and ordering of results.
 func (r *OrganizationService) ListAutoPaging(ctx context.Context, query OrganizationListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapOrganization] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
+}
+
+// Represents an IP range owner organization
+type WaapOrganization struct {
+	// The ID of an organization
+	ID int64 `json:"id,required"`
+	// The name of an organization
+	Name string `json:"name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapOrganization) RawJSON() string { return r.JSON.raw }
+func (r *WaapOrganization) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type OrganizationListParams struct {

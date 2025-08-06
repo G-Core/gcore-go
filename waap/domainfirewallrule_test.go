@@ -243,7 +243,7 @@ func TestDomainFirewallRuleToggle(t *testing.T) {
 	)
 	err := client.Waap.Domains.FirewallRules.Toggle(
 		context.TODO(),
-		waap.WaapCustomerRuleStateEnable,
+		waap.DomainFirewallRuleToggleParamsActionEnable,
 		waap.DomainFirewallRuleToggleParams{
 			DomainID: 1,
 			RuleID:   0,

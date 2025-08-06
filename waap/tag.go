@@ -7,11 +7,13 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // TagService contains methods and other services that help with interacting with
@@ -56,6 +58,31 @@ func (r *TagService) List(ctx context.Context, query TagListParams, opts ...opti
 // complex WAAP rules
 func (r *TagService) ListAutoPaging(ctx context.Context, query TagListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapTag] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
+}
+
+// Tags provide shortcuts for the rules used in WAAP policies for the creation of
+// more complex WAAP rules.
+type WaapTag struct {
+	// A tag's human readable description
+	Description string `json:"description,required"`
+	// The name of a tag that should be used in a WAAP rule condition
+	Name string `json:"name,required"`
+	// The display name of the tag
+	ReadableName string `json:"readable_name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Description  respjson.Field
+		Name         respjson.Field
+		ReadableName respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapTag) RawJSON() string { return r.JSON.raw }
+func (r *WaapTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type TagListParams struct {

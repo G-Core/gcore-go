@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -15,6 +16,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // DomainInsightService contains methods and other services that help with
@@ -83,6 +85,58 @@ func (r *DomainInsightService) Replace(ctx context.Context, insightID string, pa
 	return
 }
 
+type WaapInsight struct {
+	// A generated unique identifier for the insight
+	ID string `json:"id,required" format:"uuid"`
+	// The description of the insight
+	Description string `json:"description,required"`
+	// The date and time the insight was first seen in ISO 8601 format
+	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	// The type of the insight represented as a slug
+	InsightType string `json:"insight_type,required"`
+	// A hash table of label names and values that apply to the insight
+	Labels map[string]string `json:"labels,required"`
+	// The date and time the insight was last seen in ISO 8601 format
+	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	// The date and time the insight was last seen in ISO 8601 format
+	LastStatusChange time.Time `json:"last_status_change,required" format:"date-time"`
+	// The recommended action to perform to resolve the insight
+	Recommendation string `json:"recommendation,required"`
+	// The different statuses an insight can have
+	//
+	// Any of "OPEN", "ACKED", "CLOSED".
+	Status WaapInsightStatus `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		Description      respjson.Field
+		FirstSeen        respjson.Field
+		InsightType      respjson.Field
+		Labels           respjson.Field
+		LastSeen         respjson.Field
+		LastStatusChange respjson.Field
+		Recommendation   respjson.Field
+		Status           respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapInsight) RawJSON() string { return r.JSON.raw }
+func (r *WaapInsight) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The different statuses an insight can have
+type WaapInsightStatus string
+
+const (
+	WaapInsightStatusOpen   WaapInsightStatus = "OPEN"
+	WaapInsightStatusAcked  WaapInsightStatus = "ACKED"
+	WaapInsightStatusClosed WaapInsightStatus = "CLOSED"
+)
+
 type DomainInsightListParams struct {
 	// The description of the insight. Supports '\*' as a wildcard.
 	Description param.Opt[string] `query:"description,omitzero" json:"-"`
@@ -95,13 +149,15 @@ type DomainInsightListParams struct {
 	// The type of the insight
 	InsightType []string `query:"insight_type,omitzero" json:"-"`
 	// The status of the insight
-	Status []WaapInsightStatus `query:"status,omitzero" json:"-"`
+	//
+	// Any of "OPEN", "ACKED", "CLOSED".
+	Status []string `query:"status,omitzero" json:"-"`
 	// Sort the response by given field.
 	//
 	// Any of "id", "-id", "insight_type", "-insight_type", "first_seen",
 	// "-first_seen", "last_seen", "-last_seen", "last_status_change",
 	// "-last_status_change", "status", "-status".
-	Ordering WaapInsightSortBy `query:"ordering,omitzero" json:"-"`
+	Ordering DomainInsightListParamsOrdering `query:"ordering,omitzero" json:"-"`
 	paramObj
 }
 
@@ -113,6 +169,24 @@ func (r DomainInsightListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Sort the response by given field.
+type DomainInsightListParamsOrdering string
+
+const (
+	DomainInsightListParamsOrderingID                    DomainInsightListParamsOrdering = "id"
+	DomainInsightListParamsOrderingMinusID               DomainInsightListParamsOrdering = "-id"
+	DomainInsightListParamsOrderingInsightType           DomainInsightListParamsOrdering = "insight_type"
+	DomainInsightListParamsOrderingMinusInsightType      DomainInsightListParamsOrdering = "-insight_type"
+	DomainInsightListParamsOrderingFirstSeen             DomainInsightListParamsOrdering = "first_seen"
+	DomainInsightListParamsOrderingMinusFirstSeen        DomainInsightListParamsOrdering = "-first_seen"
+	DomainInsightListParamsOrderingLastSeen              DomainInsightListParamsOrdering = "last_seen"
+	DomainInsightListParamsOrderingMinusLastSeen         DomainInsightListParamsOrdering = "-last_seen"
+	DomainInsightListParamsOrderingLastStatusChange      DomainInsightListParamsOrdering = "last_status_change"
+	DomainInsightListParamsOrderingMinusLastStatusChange DomainInsightListParamsOrdering = "-last_status_change"
+	DomainInsightListParamsOrderingStatus                DomainInsightListParamsOrdering = "status"
+	DomainInsightListParamsOrderingMinusStatus           DomainInsightListParamsOrdering = "-status"
+)
 
 type DomainInsightGetParams struct {
 	// The domain ID
@@ -126,7 +200,7 @@ type DomainInsightReplaceParams struct {
 	// The different statuses an insight can have
 	//
 	// Any of "OPEN", "ACKED", "CLOSED".
-	Status WaapInsightStatus `json:"status,omitzero,required"`
+	Status DomainInsightReplaceParamsStatus `json:"status,omitzero,required"`
 	paramObj
 }
 
@@ -137,3 +211,12 @@ func (r DomainInsightReplaceParams) MarshalJSON() (data []byte, err error) {
 func (r *DomainInsightReplaceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// The different statuses an insight can have
+type DomainInsightReplaceParamsStatus string
+
+const (
+	DomainInsightReplaceParamsStatusOpen   DomainInsightReplaceParamsStatus = "OPEN"
+	DomainInsightReplaceParamsStatusAcked  DomainInsightReplaceParamsStatus = "ACKED"
+	DomainInsightReplaceParamsStatusClosed DomainInsightReplaceParamsStatus = "CLOSED"
+)
