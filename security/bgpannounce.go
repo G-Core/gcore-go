@@ -47,7 +47,7 @@ func (r *BgpAnnounceService) List(ctx context.Context, query BgpAnnounceListPara
 // Change BGP announces (it can be enabled or disabled, but not created or
 // updated). Can be applied to already existing announces in active profiles,
 // meaning that the client must have at least one active profile.
-func (r *BgpAnnounceService) Change(ctx context.Context, params BgpAnnounceChangeParams, opts ...option.RequestOption) (res *BgpAnnounceChangeResponse, err error) {
+func (r *BgpAnnounceService) Toggle(ctx context.Context, params BgpAnnounceToggleParams, opts ...option.RequestOption) (res *BgpAnnounceToggleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "security/sifter/v2/protected_addresses/announces"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
@@ -74,7 +74,7 @@ func (r *ClientAnnounce) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BgpAnnounceChangeResponse = any
+type BgpAnnounceToggleResponse = any
 
 type BgpAnnounceListParams struct {
 	Announced param.Opt[bool]   `query:"announced,omitzero" json:"-"`
@@ -100,24 +100,24 @@ const (
 	BgpAnnounceListParamsOriginDynamic BgpAnnounceListParamsOrigin = "DYNAMIC"
 )
 
-type BgpAnnounceChangeParams struct {
+type BgpAnnounceToggleParams struct {
 	Announce string           `json:"announce,required" format:"ipv4network"`
 	Enabled  bool             `json:"enabled,required"`
 	ClientID param.Opt[int64] `query:"client_id,omitzero" json:"-"`
 	paramObj
 }
 
-func (r BgpAnnounceChangeParams) MarshalJSON() (data []byte, err error) {
-	type shadow BgpAnnounceChangeParams
+func (r BgpAnnounceToggleParams) MarshalJSON() (data []byte, err error) {
+	type shadow BgpAnnounceToggleParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *BgpAnnounceChangeParams) UnmarshalJSON(data []byte) error {
+func (r *BgpAnnounceToggleParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// URLQuery serializes [BgpAnnounceChangeParams]'s query parameters as
+// URLQuery serializes [BgpAnnounceToggleParams]'s query parameters as
 // `url.Values`.
-func (r BgpAnnounceChangeParams) URLQuery() (v url.Values, err error) {
+func (r BgpAnnounceToggleParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,

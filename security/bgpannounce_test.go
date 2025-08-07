@@ -41,7 +41,7 @@ func TestBgpAnnounceListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBgpAnnounceChangeWithOptionalParams(t *testing.T) {
+func TestBgpAnnounceToggleWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -53,7 +53,7 @@ func TestBgpAnnounceChangeWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Security.BgpAnnounces.Change(context.TODO(), security.BgpAnnounceChangeParams{
+	_, err := client.Security.BgpAnnounces.Toggle(context.TODO(), security.BgpAnnounceToggleParams{
 		Announce: "192.9.9.1/32",
 		Enabled:  true,
 		ClientID: gcore.Int(0),
