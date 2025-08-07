@@ -11,6 +11,7 @@ import (
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
+	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
@@ -622,7 +623,7 @@ type PlaylistNewParams struct {
 }
 
 func (r PlaylistNewParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Playlist)
+	return shimjson.Marshal(r.Playlist)
 }
 func (r *PlaylistNewParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.Playlist)
@@ -634,7 +635,7 @@ type PlaylistUpdateParams struct {
 }
 
 func (r PlaylistUpdateParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Playlist)
+	return shimjson.Marshal(r.Playlist)
 }
 func (r *PlaylistUpdateParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.Playlist)

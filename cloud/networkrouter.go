@@ -13,6 +13,7 @@ import (
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
+	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
@@ -660,7 +661,7 @@ type NetworkRouterDetachSubnetParams struct {
 }
 
 func (r NetworkRouterDetachSubnetParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.SubnetID)
+	return shimjson.Marshal(r.SubnetID)
 }
 func (r *NetworkRouterDetachSubnetParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.SubnetID)

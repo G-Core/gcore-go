@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -186,7 +187,7 @@ type StreamOverlayNewParams struct {
 }
 
 func (r StreamOverlayNewParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Body)
+	return shimjson.Marshal(r.Body)
 }
 func (r *StreamOverlayNewParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.Body)
@@ -260,7 +261,7 @@ type StreamOverlayUpdateMultipleParams struct {
 }
 
 func (r StreamOverlayUpdateMultipleParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Body)
+	return shimjson.Marshal(r.Body)
 }
 func (r *StreamOverlayUpdateMultipleParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.Body)
