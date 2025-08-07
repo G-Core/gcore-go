@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.10.0 (2025-08-07)
+
+Full Changelog: [v0.9.0...v0.10.0](https://github.com/G-Core/gcore-go/compare/v0.9.0...v0.10.0)
+
+### ⚠ BREAKING CHANGES
+
+* **security:** rename bgp_announces change() to toggle()
+* **waap:** refactor WAAP models
+
+### Features
+
+* add example snippet to invite user and assign cloud role ([9edcaf7](https://github.com/G-Core/gcore-go/commit/9edcaf786326f751b73a63dee517a0b9e3d467c8))
+* **api:** aggregated API specs update ([1c847a5](https://github.com/G-Core/gcore-go/commit/1c847a5c4ea9b9b2748e7e466e0a2f5db96dc6ad))
+* **api:** aggregated API specs update ([659c741](https://github.com/G-Core/gcore-go/commit/659c741a78d9c94714e87142edbacedc814280cb))
+* **client:** support optional json html escaping ([7917576](https://github.com/G-Core/gcore-go/commit/7917576809148638a6d82eaae5c7ecf1f0d087a5))
+
+
+### Bug Fixes
+
+* **security:** rename bgp_announces change() to toggle() ([561648c](https://github.com/G-Core/gcore-go/commit/561648c57050f4136d19dee618e13f5c8fa2f14c))
+
+
+### Refactors
+
+* **waap:** refactor WAAP models ([b07cb4f](https://github.com/G-Core/gcore-go/commit/b07cb4f0daa4e01306fa09d0df34ef97a8bca798))
+
 ## 0.9.0 (2025-07-31)
 
 Full Changelog: [v0.8.0...v0.9.0](https://github.com/G-Core/gcore-go/compare/v0.8.0...v0.9.0)
