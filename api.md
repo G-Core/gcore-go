@@ -1563,12 +1563,12 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#ClientAnnounce">ClientAnnounce</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#BgpAnnounceChangeResponse">BgpAnnounceChangeResponse</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#BgpAnnounceToggleResponse">BgpAnnounceToggleResponse</a>
 
 Methods:
 
 - <code title="get /security/sifter/v2/protected_addresses/announces">client.Security.BgpAnnounces.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#BgpAnnounceService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#BgpAnnounceListParams">BgpAnnounceListParams</a>) ([]<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#ClientAnnounce">ClientAnnounce</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="post /security/sifter/v2/protected_addresses/announces">client.Security.BgpAnnounces.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#BgpAnnounceService.Change">Change</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#BgpAnnounceChangeParams">BgpAnnounceChangeParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#BgpAnnounceChangeResponse">BgpAnnounceChangeResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /security/sifter/v2/protected_addresses/announces">client.Security.BgpAnnounces.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#BgpAnnounceService.Toggle">Toggle</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#BgpAnnounceToggleParams">BgpAnnounceToggleParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#BgpAnnounceToggleResponse">BgpAnnounceToggleResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## ProfileTemplates
 
