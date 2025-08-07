@@ -11,6 +11,7 @@ import (
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
+	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -248,7 +249,7 @@ type SecretNewParams struct {
 }
 
 func (r SecretNewParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Secret)
+	return shimjson.Marshal(r.Secret)
 }
 func (r *SecretNewParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.Secret)
@@ -260,7 +261,7 @@ type SecretUpdateParams struct {
 }
 
 func (r SecretUpdateParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Secret)
+	return shimjson.Marshal(r.Secret)
 }
 func (r *SecretUpdateParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.Secret)
@@ -302,7 +303,7 @@ type SecretReplaceParams struct {
 }
 
 func (r SecretReplaceParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Secret)
+	return shimjson.Marshal(r.Secret)
 }
 func (r *SecretReplaceParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.Secret)

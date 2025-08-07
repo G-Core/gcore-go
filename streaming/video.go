@@ -11,6 +11,7 @@ import (
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
+	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
@@ -371,7 +372,7 @@ type VideoUpdateParams struct {
 }
 
 func (r VideoUpdateParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.CreateVideo)
+	return shimjson.Marshal(r.CreateVideo)
 }
 func (r *VideoUpdateParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.CreateVideo)

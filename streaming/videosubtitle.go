@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
+	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -137,7 +138,7 @@ type VideoSubtitleNewParams struct {
 }
 
 func (r VideoSubtitleNewParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Body)
+	return shimjson.Marshal(r.Body)
 }
 func (r *VideoSubtitleNewParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.Body)
@@ -159,7 +160,7 @@ type VideoSubtitleUpdateParams struct {
 }
 
 func (r VideoSubtitleUpdateParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.SubtitleBase)
+	return shimjson.Marshal(r.SubtitleBase)
 }
 func (r *VideoSubtitleUpdateParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.SubtitleBase)
