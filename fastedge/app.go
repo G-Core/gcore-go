@@ -12,6 +12,7 @@ import (
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
+	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
@@ -369,7 +370,7 @@ type AppNewParams struct {
 }
 
 func (r AppNewParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.App)
+	return shimjson.Marshal(r.App)
 }
 func (r *AppNewParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.App)
@@ -381,7 +382,7 @@ type AppUpdateParams struct {
 }
 
 func (r AppUpdateParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.App)
+	return shimjson.Marshal(r.App)
 }
 func (r *AppUpdateParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.App)
@@ -464,7 +465,7 @@ type AppReplaceParams struct {
 }
 
 func (r AppReplaceParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Body)
+	return shimjson.Marshal(r.Body)
 }
 func (r *AppReplaceParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.Body)
