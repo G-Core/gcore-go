@@ -61,9 +61,21 @@ func (r *LoadBalancerPoolService) New(ctx context.Context, params LoadBalancerPo
 	return
 }
 
-// Changes provided here will overwrite existing load balancer pool settings.
-// Undefined fields will be kept as is. Complex objects need to be specified fully,
-// they will be overwritten.
+// Updates the specified load balancer pool with the provided changes.
+// **Behavior:**
+//
+//   - Simple fields (strings, numbers, booleans) will be updated if provided
+//   - Complex objects (nested structures like members, health monitors, etc.) must
+//     be specified completely - partial updates are not supported for these objects
+//   - Undefined fields will remain unchanged
+//   - If no change is detected for a specific field compared to the current pool
+//     state, that field will be skipped
+//   - If no changes are detected at all across all fields, no task will be created
+//     and an empty task list will be returned **Examples of complex objects that
+//     require full specification:**
+//   - Pool members: All member properties must be provided when updating members
+//   - Health monitors: Complete health monitor configuration must be specified
+//   - Session persistence: Full session persistence settings must be included
 func (r *LoadBalancerPoolService) Update(ctx context.Context, poolID string, params LoadBalancerPoolUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -84,7 +96,7 @@ func (r *LoadBalancerPoolService) Update(ctx context.Context, poolID string, par
 		err = errors.New("missing required pool_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/lbpools/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, poolID)
+	path := fmt.Sprintf("cloud/v2/lbpools/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, poolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
 }
