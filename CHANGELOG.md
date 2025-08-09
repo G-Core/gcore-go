@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.10.1 (2025-08-09)
+
+Full Changelog: [v0.10.0...v0.10.1](https://github.com/G-Core/gcore-go/compare/v0.10.0...v0.10.1)
+
+### Features
+
+* **cloud:** use PATCH /v2/lbpools ([42739ed](https://github.com/G-Core/gcore-go/commit/42739ed1bc50c33692888f27514ab8b491a50f6c))
+
+
+### Chores
+
+* **internal:** detect breaking changes when removing endpoints ([d5b8f81](https://github.com/G-Core/gcore-go/commit/d5b8f81cbdb28b157134003a3484f551243cf071))
+* **internal:** update comment in script ([e135dbd](https://github.com/G-Core/gcore-go/commit/e135dbd0b84a487462ad8625d6b3dedcbdd99d29))
+* update @stainless-api/prism-cli to v5.15.0 ([aa6486f](https://github.com/G-Core/gcore-go/commit/aa6486f208adf0946a129a7776a4bc7a4749cf14))
+
 ## 0.10.0 (2025-08-07)
 
 Full Changelog: [v0.9.0...v0.10.0](https://github.com/G-Core/gcore-go/compare/v0.9.0...v0.10.0)
