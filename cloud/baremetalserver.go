@@ -1142,9 +1142,10 @@ func (r *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting) Unm
 //
 // The property ProfileTemplate is required.
 type BaremetalServerNewParamsDDOSProfile struct {
-	// Advanced DDoS template ID
+	// Unique identifier of the DDoS protection template to use for this profile
 	ProfileTemplate int64 `json:"profile_template,required"`
-	// DDoS profile parameters
+	// List of field configurations that customize the protection parameters for this
+	// profile
 	Fields []BaremetalServerNewParamsDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
@@ -1158,9 +1159,9 @@ func (r *BaremetalServerNewParamsDDOSProfile) UnmarshalJSON(data []byte) error {
 }
 
 type BaremetalServerNewParamsDDOSProfileField struct {
-	// ID of DDoS profile field
+	// Unique identifier of the DDoS protection field being configured
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// Name of DDoS profile field
+	// Human-readable name of the DDoS protection field being configured
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
 	// Basic type value. Only one of 'value' or '`field_value`' must be specified.
 	//

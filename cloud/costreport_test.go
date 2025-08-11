@@ -77,8 +77,6 @@ func TestCostReportGetAggregatedMonthlyWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.CostReports.GetAggregatedMonthly(context.TODO(), cloud.CostReportGetAggregatedMonthlyParams{
-		TimeFrom:       time.Now(),
-		TimeTo:         time.Now(),
 		Regions:        []int64{1, 2, 3},
 		ResponseFormat: cloud.CostReportGetAggregatedMonthlyParamsResponseFormatCsvTotals,
 		Rounding:       gcore.Bool(true),
@@ -100,7 +98,10 @@ func TestCostReportGetAggregatedMonthlyWithOptionalParams(t *testing.T) {
 			}},
 			ConditionType: "OR",
 		},
-		Types: []string{"egress_traffic", "instance"},
+		TimeFrom:  gcore.Time(time.Now()),
+		TimeTo:    gcore.Time(time.Now()),
+		Types:     []string{"egress_traffic", "instance"},
+		YearMonth: gcore.String("2024-08"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
