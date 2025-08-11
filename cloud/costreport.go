@@ -6046,12 +6046,14 @@ func (r *CostReportGetAggregatedParamsTagsCondition) UnmarshalJSON(data []byte) 
 }
 
 type CostReportGetAggregatedMonthlyParams struct {
-	// Beginning of the period: YYYY-mm
-	TimeFrom time.Time `json:"time_from,required" format:"date-time"`
-	// End of the period: YYYY-mm
-	TimeTo time.Time `json:"time_to,required" format:"date-time"`
 	// Round cost values to 5 decimal places. When false, returns full precision.
 	Rounding param.Opt[bool] `json:"rounding,omitzero"`
+	// Deprecated. Use `year_month` instead. Beginning of the period: YYYY-mm
+	TimeFrom param.Opt[time.Time] `json:"time_from,omitzero" format:"date-time"`
+	// Deprecated. Use `year_month` instead. End of the period: YYYY-mm
+	TimeTo param.Opt[time.Time] `json:"time_to,omitzero" format:"date-time"`
+	// Year and month in the format YYYY-MM
+	YearMonth param.Opt[string] `json:"year_month,omitzero"`
 	// List of region IDs.
 	Regions []int64 `json:"regions,omitzero"`
 	// Format of the response (`csv_totals` or json).

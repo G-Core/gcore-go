@@ -43,6 +43,7 @@ func TestFileShareNewWithOptionalParams(t *testing.T) {
 			Tags: map[string]string{
 				"my-tag": "my-tag-value",
 			},
+			TypeName:   "standard",
 			VolumeType: "default_share_type",
 		},
 	})
