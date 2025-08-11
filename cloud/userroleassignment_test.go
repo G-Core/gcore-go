@@ -27,7 +27,7 @@ func TestUserRoleAssignmentNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Users.RoleAssignments.New(context.TODO(), cloud.UserRoleAssignmentNewParams{
-		Role:      "ClientAdministrator",
+		Role:      cloud.UserRoleAssignmentNewParamsRoleClientAdministrator,
 		UserID:    777,
 		ClientID:  gcore.Int(8),
 		ProjectID: gcore.Int(0),
@@ -57,7 +57,7 @@ func TestUserRoleAssignmentUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		123,
 		cloud.UserRoleAssignmentUpdateParams{
-			Role:      "ClientAdministrator",
+			Role:      cloud.UserRoleAssignmentUpdateParamsRoleClientAdministrator,
 			UserID:    777,
 			ClientID:  gcore.Int(8),
 			ProjectID: gcore.Int(0),

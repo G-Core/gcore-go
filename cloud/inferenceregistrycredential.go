@@ -38,7 +38,7 @@ func NewInferenceRegistryCredentialService(opts ...option.RequestOption) (r Infe
 }
 
 // Create inference registry credential
-func (r *InferenceRegistryCredentialService) New(ctx context.Context, params InferenceRegistryCredentialNewParams, opts ...option.RequestOption) (res *InferenceRegistryCredentialsCreate, err error) {
+func (r *InferenceRegistryCredentialService) New(ctx context.Context, params InferenceRegistryCredentialNewParams, opts ...option.RequestOption) (res *InferenceRegistryCredentials, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -130,7 +130,7 @@ func (r *InferenceRegistryCredentialService) Get(ctx context.Context, credential
 }
 
 // Replace inference registry credential
-func (r *InferenceRegistryCredentialService) Replace(ctx context.Context, credentialName string, params InferenceRegistryCredentialReplaceParams, opts ...option.RequestOption) (res *InferenceRegistryCredentialsCreate, err error) {
+func (r *InferenceRegistryCredentialService) Replace(ctx context.Context, credentialName string, params InferenceRegistryCredentialReplaceParams, opts ...option.RequestOption) (res *InferenceRegistryCredentials, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -173,35 +173,6 @@ type InferenceRegistryCredentials struct {
 // Returns the unmodified JSON received from the API
 func (r InferenceRegistryCredentials) RawJSON() string { return r.JSON.raw }
 func (r *InferenceRegistryCredentials) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InferenceRegistryCredentialsCreate struct {
-	// Registry credential name.
-	Name string `json:"name,required"`
-	// Registry password.
-	Password string `json:"password,required"`
-	// Project ID to which the inference registry credentials belongs.
-	ProjectID int64 `json:"project_id,required"`
-	// Registry URL.
-	RegistryURL string `json:"registry_url,required"`
-	// Registry username.
-	Username string `json:"username,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		Password    respjson.Field
-		ProjectID   respjson.Field
-		RegistryURL respjson.Field
-		Username    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceRegistryCredentialsCreate) RawJSON() string { return r.JSON.raw }
-func (r *InferenceRegistryCredentialsCreate) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

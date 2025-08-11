@@ -315,24 +315,28 @@ func (r *ConsoleRemoteConsole) UnmarshalJSON(data []byte) error {
 }
 
 type DDOSProfile struct {
-	// DDoS protection profile ID
+	// Unique identifier for the DDoS protection profile
 	ID int64 `json:"id,required"`
-	// Template data
-	ProfileTemplate DDOSProfileTemplate   `json:"profile_template,required"`
-	Fields          []DDOSProfileField    `json:"fields"`
-	Options         DDOSProfileOptionList `json:"options,nullable"`
-	// DDoS profile template description
-	ProfileTemplateDescription string `json:"profile_template_description,nullable"`
-	// List of protocols
-	Protocols []DDOSProfileProtocol `json:"protocols,nullable"`
-	Site      string                `json:"site,nullable"`
-	Status    DDOSProfileStatus     `json:"status,nullable"`
+	// List of configured field values for the protection profile
+	Fields []DDOSProfileField `json:"fields,required"`
+	// Configuration options controlling profile activation and BGP routing
+	Options DDOSProfileOptionList `json:"options,required"`
+	// Complete template configuration data used for this profile
+	ProfileTemplate DDOSProfileTemplate `json:"profile_template,required"`
+	// Detailed description of the protection template used for this profile
+	ProfileTemplateDescription string `json:"profile_template_description,required"`
+	// List of network protocols and ports configured for protection
+	Protocols []DDOSProfileProtocol `json:"protocols,required"`
+	// Geographic site identifier where the protection is deployed
+	Site string `json:"site,required"`
+	// Current operational status and any error information for the profile
+	Status DDOSProfileStatus `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                         respjson.Field
-		ProfileTemplate            respjson.Field
 		Fields                     respjson.Field
 		Options                    respjson.Field
+		ProfileTemplate            respjson.Field
 		ProfileTemplateDescription respjson.Field
 		Protocols                  respjson.Field
 		Site                       respjson.Field
@@ -349,7 +353,9 @@ func (r *DDOSProfile) UnmarshalJSON(data []byte) error {
 }
 
 type DDOSProfileProtocol struct {
-	Port      string   `json:"port,required"`
+	// Network port number for which protocols are configured
+	Port string `json:"port,required"`
+	// List of network protocols enabled on the specified port
 	Protocols []string `json:"protocols,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -367,27 +373,38 @@ func (r *DDOSProfileProtocol) UnmarshalJSON(data []byte) error {
 }
 
 type DDOSProfileField struct {
-	ID               int64  `json:"id,required"`
-	Default          any    `json:"default,required"`
-	Description      string `json:"description,required"`
-	FieldValue       any    `json:"field_value,required"`
-	Name             string `json:"name,required"`
-	BaseField        int64  `json:"base_field,nullable"`
-	FieldName        string `json:"field_name,nullable"`
-	FieldType        string `json:"field_type,nullable"`
-	Required         bool   `json:"required,nullable"`
-	ValidationSchema any    `json:"validation_schema"`
-	Value            string `json:"value,nullable"`
+	// Unique identifier for the DDoS protection field
+	ID int64 `json:"id,required"`
+	// ID of DDoS profile field
+	BaseField int64 `json:"base_field,required"`
+	// Predefined default value for the field if not specified
+	Default string `json:"default,required"`
+	// Detailed description explaining the field's purpose and usage guidelines
+	Description string `json:"description,required"`
+	// Name of DDoS profile field
+	FieldName string `json:"field_name,required"`
+	// Data type classification of the field (e.g., string, integer, array)
+	FieldType string `json:"field_type,required"`
+	// Complex value. Only one of 'value' or '`field_value`' must be specified.
+	FieldValue any `json:"field_value,required"`
+	// Human-readable name of the protection field
+	Name string `json:"name,required"`
+	// Indicates whether this field must be provided when creating a protection profile
+	Required bool `json:"required,required"`
+	// JSON schema defining validation rules and constraints for the field value
+	ValidationSchema any `json:"validation_schema,required"`
+	// Basic type value. Only one of 'value' or '`field_value`' must be specified.
+	Value string `json:"value,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
+		BaseField        respjson.Field
 		Default          respjson.Field
 		Description      respjson.Field
-		FieldValue       respjson.Field
-		Name             respjson.Field
-		BaseField        respjson.Field
 		FieldName        respjson.Field
 		FieldType        respjson.Field
+		FieldValue       respjson.Field
+		Name             respjson.Field
 		Required         respjson.Field
 		ValidationSchema respjson.Field
 		Value            respjson.Field
@@ -403,10 +420,11 @@ func (r *DDOSProfileField) UnmarshalJSON(data []byte) error {
 }
 
 type DDOSProfileOptionList struct {
-	// Activate profile.
-	Active bool `json:"active,nullable"`
-	// Activate BGP protocol.
-	Bgp bool `json:"bgp,nullable"`
+	// Controls whether the DDoS protection profile is enabled and actively protecting
+	// the resource
+	Active bool `json:"active,required"`
+	// Enables Border Gateway Protocol (BGP) routing for DDoS protection traffic
+	Bgp bool `json:"bgp,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Active      respjson.Field
@@ -423,9 +441,9 @@ func (r *DDOSProfileOptionList) UnmarshalJSON(data []byte) error {
 }
 
 type DDOSProfileStatus struct {
-	// Description of the error, if it exists
+	// Detailed error message describing any issues with the profile operation
 	ErrorDescription string `json:"error_description,required"`
-	// Profile status
+	// Current operational status of the DDoS protection profile
 	Status string `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -443,16 +461,20 @@ func (r *DDOSProfileStatus) UnmarshalJSON(data []byte) error {
 }
 
 type DDOSProfileTemplate struct {
-	ID          int64                      `json:"id,required"`
-	Name        string                     `json:"name,required"`
-	Description string                     `json:"description,nullable"`
-	Fields      []DDOSProfileTemplateField `json:"fields"`
+	// Unique identifier for the DDoS protection template
+	ID int64 `json:"id,required"`
+	// Detailed description explaining the template's purpose and use cases
+	Description string `json:"description,required"`
+	// List of configurable fields that define the template's protection parameters
+	Fields []DDOSProfileTemplateField `json:"fields,required"`
+	// Human-readable name of the protection template
+	Name string `json:"name,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		Name        respjson.Field
 		Description respjson.Field
 		Fields      respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -465,20 +487,27 @@ func (r *DDOSProfileTemplate) UnmarshalJSON(data []byte) error {
 }
 
 type DDOSProfileTemplateField struct {
-	ID               int64  `json:"id,required"`
-	Name             string `json:"name,required"`
-	Default          string `json:"default,nullable"`
-	Description      string `json:"description,nullable"`
-	FieldType        string `json:"field_type,nullable"`
-	Required         bool   `json:"required,nullable"`
-	ValidationSchema any    `json:"validation_schema"`
+	// Unique identifier for the DDoS protection field
+	ID int64 `json:"id,required"`
+	// Predefined default value for the field if not specified
+	Default string `json:"default,required"`
+	// Detailed description explaining the field's purpose and usage guidelines
+	Description string `json:"description,required"`
+	// Data type classification of the field (e.g., string, integer, array)
+	FieldType string `json:"field_type,required"`
+	// Human-readable name of the protection field
+	Name string `json:"name,required"`
+	// Indicates whether this field must be provided when creating a protection profile
+	Required bool `json:"required,required"`
+	// JSON schema defining validation rules and constraints for the field value
+	ValidationSchema any `json:"validation_schema,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
-		Name             respjson.Field
 		Default          respjson.Field
 		Description      respjson.Field
 		FieldType        respjson.Field
+		Name             respjson.Field
 		Required         respjson.Field
 		ValidationSchema respjson.Field
 		ExtraFields      map[string]respjson.Field

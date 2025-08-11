@@ -262,9 +262,11 @@ type FileShare struct {
 	//
 	// Any of "standard", "vast".
 	TypeName FileShareTypeName `json:"type_name,required"`
-	// File share disk type
+	// Deprecated. Use `type_name` instead. File share disk type
 	//
 	// Any of "default_share_type", "vast_share_type".
+	//
+	// Deprecated: deprecated
 	VolumeType FileShareVolumeType `json:"volume_type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -447,7 +449,7 @@ const (
 	FileShareTypeNameVast     FileShareTypeName = "vast"
 )
 
-// File share disk type
+// Deprecated. Use `type_name` instead. File share disk type
 type FileShareVolumeType string
 
 const (
@@ -496,9 +498,15 @@ type FileShareNewParamsBodyCreateStandardFileShareSerializer struct {
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
 	Tags map[string]string `json:"tags,omitzero"`
-	// File share volume type
+	// Standard file share type
+	//
+	// Any of "standard".
+	TypeName string `json:"type_name,omitzero"`
+	// Deprecated. Use `type_name` instead.
 	//
 	// Any of "default_share_type".
+	//
+	// Deprecated: deprecated
 	VolumeType string `json:"volume_type,omitzero"`
 	// File share protocol
 	//
@@ -516,6 +524,9 @@ func (r *FileShareNewParamsBodyCreateStandardFileShareSerializer) UnmarshalJSON(
 }
 
 func init() {
+	apijson.RegisterFieldValidator[FileShareNewParamsBodyCreateStandardFileShareSerializer](
+		"type_name", "standard",
+	)
 	apijson.RegisterFieldValidator[FileShareNewParamsBodyCreateStandardFileShareSerializer](
 		"volume_type", "default_share_type",
 	)
@@ -565,7 +576,7 @@ func init() {
 	)
 }
 
-// The properties Name, Protocol, Size, VolumeType are required.
+// The properties Name, Protocol, Size are required.
 type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
 	// File share name
 	Name string `json:"name,required"`
@@ -579,14 +590,20 @@ type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
 	// modified by the user. Tags are also integrated with cost reports, allowing cost
 	// data to be filtered based on tag keys or values.
 	Tags map[string]string `json:"tags,omitzero"`
+	// Vast file share type
+	//
+	// Any of "vast".
+	TypeName string `json:"type_name,omitzero"`
+	// Deprecated. Use `type_name` instead.
+	//
+	// Any of "vast_share_type".
+	//
+	// Deprecated: deprecated
+	VolumeType string `json:"volume_type,omitzero"`
 	// File share protocol
 	//
 	// This field can be elided, and will marshal its zero value as "NFS".
 	Protocol constant.Nfs `json:"protocol,required"`
-	// File share volume type
-	//
-	// This field can be elided, and will marshal its zero value as "vast_share_type".
-	VolumeType constant.VastShareType `json:"volume_type,required"`
 	paramObj
 }
 
@@ -596,6 +613,15 @@ func (r FileShareNewParamsBodyCreateVastFileShareSerializer) MarshalJSON() (data
 }
 func (r *FileShareNewParamsBodyCreateVastFileShareSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[FileShareNewParamsBodyCreateVastFileShareSerializer](
+		"type_name", "vast",
+	)
+	apijson.RegisterFieldValidator[FileShareNewParamsBodyCreateVastFileShareSerializer](
+		"volume_type", "vast_share_type",
+	)
 }
 
 // Configuration settings for the share

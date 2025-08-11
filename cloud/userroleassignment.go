@@ -95,7 +95,10 @@ type RoleAssignment struct {
 	// Project ID
 	ProjectID int64 `json:"project_id,required"`
 	// User role
-	Role string `json:"role,required"`
+	//
+	// Any of "ClientAdministrator", "InternalNetworkOnlyUser", "Observer",
+	// "ProjectAdministrator", "User".
+	Role RoleAssignmentRole `json:"role,required"`
 	// Updated timestamp
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// User ID
@@ -121,6 +124,17 @@ func (r *RoleAssignment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// User role
+type RoleAssignmentRole string
+
+const (
+	RoleAssignmentRoleClientAdministrator     RoleAssignmentRole = "ClientAdministrator"
+	RoleAssignmentRoleInternalNetworkOnlyUser RoleAssignmentRole = "InternalNetworkOnlyUser"
+	RoleAssignmentRoleObserver                RoleAssignmentRole = "Observer"
+	RoleAssignmentRoleProjectAdministrator    RoleAssignmentRole = "ProjectAdministrator"
+	RoleAssignmentRoleUser                    RoleAssignmentRole = "User"
+)
+
 type RoleAssignmentUpdateDelete struct {
 	// Assignment ID
 	AssignmentID int64 `json:"assignment_id,required"`
@@ -140,7 +154,10 @@ func (r *RoleAssignmentUpdateDelete) UnmarshalJSON(data []byte) error {
 
 type UserRoleAssignmentNewParams struct {
 	// User role
-	Role string `json:"role,required"`
+	//
+	// Any of "ClientAdministrator", "InternalNetworkOnlyUser", "Observer",
+	// "ProjectAdministrator", "User".
+	Role UserRoleAssignmentNewParamsRole `json:"role,omitzero,required"`
 	// User ID
 	UserID int64 `json:"user_id,required"`
 	// Client ID. Required if `project_id` is specified
@@ -158,9 +175,23 @@ func (r *UserRoleAssignmentNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// User role
+type UserRoleAssignmentNewParamsRole string
+
+const (
+	UserRoleAssignmentNewParamsRoleClientAdministrator     UserRoleAssignmentNewParamsRole = "ClientAdministrator"
+	UserRoleAssignmentNewParamsRoleInternalNetworkOnlyUser UserRoleAssignmentNewParamsRole = "InternalNetworkOnlyUser"
+	UserRoleAssignmentNewParamsRoleObserver                UserRoleAssignmentNewParamsRole = "Observer"
+	UserRoleAssignmentNewParamsRoleProjectAdministrator    UserRoleAssignmentNewParamsRole = "ProjectAdministrator"
+	UserRoleAssignmentNewParamsRoleUser                    UserRoleAssignmentNewParamsRole = "User"
+)
+
 type UserRoleAssignmentUpdateParams struct {
 	// User role
-	Role string `json:"role,required"`
+	//
+	// Any of "ClientAdministrator", "InternalNetworkOnlyUser", "Observer",
+	// "ProjectAdministrator", "User".
+	Role UserRoleAssignmentUpdateParamsRole `json:"role,omitzero,required"`
 	// User ID
 	UserID int64 `json:"user_id,required"`
 	// Client ID. Required if `project_id` is specified
@@ -177,6 +208,17 @@ func (r UserRoleAssignmentUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *UserRoleAssignmentUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// User role
+type UserRoleAssignmentUpdateParamsRole string
+
+const (
+	UserRoleAssignmentUpdateParamsRoleClientAdministrator     UserRoleAssignmentUpdateParamsRole = "ClientAdministrator"
+	UserRoleAssignmentUpdateParamsRoleInternalNetworkOnlyUser UserRoleAssignmentUpdateParamsRole = "InternalNetworkOnlyUser"
+	UserRoleAssignmentUpdateParamsRoleObserver                UserRoleAssignmentUpdateParamsRole = "Observer"
+	UserRoleAssignmentUpdateParamsRoleProjectAdministrator    UserRoleAssignmentUpdateParamsRole = "ProjectAdministrator"
+	UserRoleAssignmentUpdateParamsRoleUser                    UserRoleAssignmentUpdateParamsRole = "User"
+)
 
 type UserRoleAssignmentListParams struct {
 	// Limit the number of returned items. Falls back to default of 1000 if not
