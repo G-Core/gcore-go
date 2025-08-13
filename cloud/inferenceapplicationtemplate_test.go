@@ -9,12 +9,11 @@ import (
 	"testing"
 
 	"github.com/G-Core/gcore-go"
-	"github.com/G-Core/gcore-go/cloud"
 	"github.com/G-Core/gcore-go/internal/testutil"
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestInferenceModelListWithOptionalParams(t *testing.T) {
+func TestInferenceApplicationTemplateList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,11 +25,7 @@ func TestInferenceModelListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Inference.Models.List(context.TODO(), cloud.InferenceModelListParams{
-		Limit:   gcore.Int(1000),
-		Offset:  gcore.Int(0),
-		OrderBy: cloud.InferenceModelListParamsOrderByNameDesc,
-	})
+	_, err := client.Cloud.Inference.Applications.Templates.List(context.TODO())
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -40,7 +35,7 @@ func TestInferenceModelListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestInferenceModelGet(t *testing.T) {
+func TestInferenceApplicationTemplateGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -52,7 +47,7 @@ func TestInferenceModelGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Inference.Models.Get(context.TODO(), "model_id")
+	_, err := client.Cloud.Inference.Applications.Templates.Get(context.TODO(), "26f1kl-.n.71")
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
