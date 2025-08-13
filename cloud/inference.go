@@ -21,11 +21,11 @@ import (
 type InferenceService struct {
 	Options             []option.RequestOption
 	Flavors             InferenceFlavorService
-	Models              InferenceModelService
 	Deployments         InferenceDeploymentService
 	RegistryCredentials InferenceRegistryCredentialService
 	Secrets             InferenceSecretService
 	APIKeys             InferenceAPIKeyService
+	Applications        InferenceApplicationService
 }
 
 // NewInferenceService generates a new service that applies the given options to
@@ -35,11 +35,11 @@ func NewInferenceService(opts ...option.RequestOption) (r InferenceService) {
 	r = InferenceService{}
 	r.Options = opts
 	r.Flavors = NewInferenceFlavorService(opts...)
-	r.Models = NewInferenceModelService(opts...)
 	r.Deployments = NewInferenceDeploymentService(opts...)
 	r.RegistryCredentials = NewInferenceRegistryCredentialService(opts...)
 	r.Secrets = NewInferenceSecretService(opts...)
 	r.APIKeys = NewInferenceAPIKeyService(opts...)
+	r.Applications = NewInferenceApplicationService(opts...)
 	return
 }
 
