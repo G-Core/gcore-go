@@ -38,12 +38,13 @@ TEST_PATHS=(
 	cloud/userroleassignment_test.go
 	cloud/inference_test.go
 	cloud/inferenceflavor_test.go
-	cloud/inferencemodel_test.go
 	cloud/inferencedeployment_test.go
 	cloud/inferencedeploymentlog_test.go
 	cloud/inferenceregistrycredential_test.go
 	cloud/inferencesecret_test.go
 	cloud/inferenceapikey_test.go
+	cloud/inferenceapplicationdeployment_test.go
+	cloud/inferenceapplicationtemplate_test.go
 	cloud/placementgroup_test.go
 	cloud/baremetalimage_test.go
 	cloud/baremetalflavor_test.go
