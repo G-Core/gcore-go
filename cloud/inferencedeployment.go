@@ -152,6 +152,8 @@ func (r *InferenceDeploymentService) Get(ctx context.Context, deploymentName str
 }
 
 // Get inference deployment API key
+//
+// Deprecated: deprecated
 func (r *InferenceDeploymentService) GetAPIKey(ctx context.Context, deploymentName string, query InferenceDeploymentGetAPIKeyParams, opts ...option.RequestOption) (res *InferenceDeploymentAPIKey, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
