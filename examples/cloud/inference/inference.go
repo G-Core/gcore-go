@@ -55,10 +55,6 @@ func main() {
 	listFlavors(&client)
 	getFlavor(&client, cloudInferenceFlavorName)
 
-	// Models
-	listModels(&client)
-	getModel(&client, cloudInferenceModelID)
-
 	// Registry Credentials
 	credentialName := createRegistryCredential(&client)
 	listRegistryCredentials(&client)
