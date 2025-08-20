@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/G-Core/gcore-go/cloud"
+	"github.com/G-Core/gcore-go/dns"
 	"github.com/G-Core/gcore-go/fastedge"
 	"github.com/G-Core/gcore-go/iam"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -29,6 +30,7 @@ type Client struct {
 	Fastedge  fastedge.FastedgeService
 	Streaming streaming.StreamingService
 	Security  security.SecurityService
+	DNS       dns.DNSService
 }
 
 // DefaultClientOptions read from the environment (GCORE_API_KEY,
@@ -76,6 +78,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Fastedge = fastedge.NewFastedgeService(opts...)
 	r.Streaming = streaming.NewStreamingService(opts...)
 	r.Security = security.NewSecurityService(opts...)
+	r.DNS = dns.NewDNSService(opts...)
 
 	return
 }
