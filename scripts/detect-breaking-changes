@@ -117,6 +117,14 @@ TEST_PATHS=(
 	security/bgpannounce_test.go
 	security/profiletemplate_test.go
 	security/profile_test.go
+	dns/dns_test.go
+	dns/location_test.go
+	dns/metric_test.go
+	dns/picker_test.go
+	dns/pickerpreset_test.go
+	dns/zone_test.go
+	dns/zonednssec_test.go
+	dns/zonerrset_test.go
 	usage_test.go
 	paginationauto_test.go
 	paginationmanual_test.go
