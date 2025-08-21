@@ -78,7 +78,7 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 //     point several languages to translate to, then a separate subtitle will be
 //     generated for each specified language.
 //   - How to
-//     ["add AI-generated subtitles to an exist video"](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/subtitles/add-subtitle).
+//     ["add AI-generated subtitles to an exist video"](https://api.gcore.com/docs/streaming#tag/Subtitles/operation/post_api_videos_video_id_subtitles).
 //     The created AI-task(s) will be automatically executed, and result will also be
 //     automatically attached to this video as subtitle(s). Please note that
 //     transcription is done automatically for all videos uploaded to our video

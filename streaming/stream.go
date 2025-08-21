@@ -153,7 +153,7 @@ func (r *StreamService) ClearDvr(ctx context.Context, streamID int64, opts ...op
 //   - HLS .m3u8,
 //   - MP4,
 //   - VOD in video hosting with a permanent link to watch video.
-//     ![HTML Overlays](https://demo-files.gvideo.io/apidocs/`clip_recording_mp4_hls`.gif)
+//     ![HTML Overlays](https://demo-files.gvideo.io/apidocs/clip_recording_mp4_hls.gif)
 //
 // **Clip lifetime:** Instant clips are a copy of the stream, created from a live
 // stream. They are stored in memory for a limited time, after which the clip
@@ -213,13 +213,13 @@ func (r *StreamService) Get(ctx context.Context, streamID int64, opts ...option.
 // renditions list in order to get exact bitrate/quality from the set. Example:
 //
 //   - HLS 720p:
-//     “ https://CID.domain.com/rec/`111_1000`/`rec_d7bsli54p8n4_qsid42_master`.m3u8 “
+//     `https://CID.domain.com/rec/111_1000/rec_d7bsli54p8n4_qsid42_master.m3u8`
 //   - HLS 720p:
-//     “ https://CID.domain.com/rec/`111_1000`/`rec_d7bsli54p8n4_qsid42_media_1_360`.m3u8 “
+//     `https://CID.domain.com/rec/111_1000/rec_d7bsli54p8n4_qsid42_media_1_360.m3u8`
 //   - MP4 360p:
-//     “ https://CID.domain.com/rec/`111_1000`/`rec_d7bsli54p8n4_qsid42_master`.mp4 “
+//     `https://CID.domain.com/rec/111_1000/rec_d7bsli54p8n4_qsid42_master.mp4`
 //   - MP4 360p:
-//     “ https://CID.domain.com/rec/`111_1000`/`rec_d7bsli54p8n4_qsid42_media_1_360`.mp4 “
+//     `https://CID.domain.com/rec/111_1000/rec_d7bsli54p8n4_qsid42_media_1_360.mp4`
 func (r *StreamService) ListClips(ctx context.Context, streamID int64, opts ...option.RequestOption) (res *[]Clip, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("streaming/streams/%v/clip_recording", streamID)
@@ -499,7 +499,7 @@ type Stream struct {
 	//     requests and compare it with file size (so to use it in your analytics). Such
 	//     modifier attributes are applied manually and added to the link obtained from
 	//     this field. I.e. “ ?`get_duration_sec`=true “ Example:
-	//     `https://demo.gvideo.io/mpegts/`2675_19146`/`master_mpegts`.m3u8?`get_duration_sec`=true`
+	//     `https://demo.gvideo.io/mpegts/2675_19146/master_mpegts.m3u8?get_duration_sec=true`
 	//
 	// ```
 	// #EXTM3U
@@ -528,7 +528,7 @@ type Stream struct {
 	// That's why you may need to use this HTML web player. Please, look Knowledge Base
 	// for details. Example of usage on a web page:
 	//
-	// <iframe width="560" height="315" src="https://player.gvideo.co/streams/`2675_201693`" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+	// <iframe width="560" height="315" src="https://player.gvideo.co/streams/2675_201693" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 	IframeURL string `json:"iframe_url"`
 	// State of receiving and transcoding master stream from source by main server
 	Live bool `json:"live"`

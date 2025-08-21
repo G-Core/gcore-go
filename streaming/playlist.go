@@ -389,9 +389,9 @@ type PlaylistVideo struct {
 	// More details:
 	//
 	//   - List of AI tasks – API
-	//     [GET /streaming/ai/tasks](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/ai/get-ai-task-result)
+	//     [GET /streaming/ai/tasks](https://api.gcore.com/docs/streaming#tag/AI/operation/get_ai_results)
 	//   - Add subtitles to an exist video – API
-	//     [POST /streaming/videos/{`video_id`}/subtitles](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/subtitles/add-subtitle).
+	//     [POST /streaming/videos/{`video_id`}/subtitles](https://api.gcore.com/docs/streaming#tag/Subtitles/operation/post_api_videos_video_id_subtitles).
 	//
 	// Any of "disable", "auto", "<language_code>".
 	AutoTranscribeAudioLanguage PlaylistVideoAutoTranscribeAudioLanguage `json:"auto_transcribe_audio_language"`
@@ -579,9 +579,9 @@ func (r *PlaylistVideo) UnmarshalJSON(data []byte) error {
 // More details:
 //
 //   - List of AI tasks – API
-//     [GET /streaming/ai/tasks](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/ai/get-ai-task-result)
+//     [GET /streaming/ai/tasks](https://api.gcore.com/docs/streaming#tag/AI/operation/get_ai_results)
 //   - Add subtitles to an exist video – API
-//     [POST /streaming/videos/{`video_id`}/subtitles](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/subtitles/add-subtitle).
+//     [POST /streaming/videos/{`video_id`}/subtitles](https://api.gcore.com/docs/streaming#tag/Subtitles/operation/post_api_videos_video_id_subtitles).
 type PlaylistVideoAutoTranscribeAudioLanguage string
 
 const (
