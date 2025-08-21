@@ -974,7 +974,6 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapBlockedStatistics">WaapBlockedStatistics</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapCountStatistics">WaapCountStatistics</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDDOSAttack">WaapDDOSAttack</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDDOSInfo">WaapDDOSInfo</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapEventStatistics">WaapEventStatistics</a>
