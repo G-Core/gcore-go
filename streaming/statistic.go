@@ -51,7 +51,7 @@ func (r *StatisticService) GetFfprobes(ctx context.Context, query StatisticGetFf
 // allows you to break down data with the specified granularity: minutes, hours,
 // days. Based on this method, a graph of unique views in the Customer Portal is
 // built.
-// ![Unique viewers via CDN in Customer Portal](https://demo-files.gvideo.io/apidocs/`cdn_unique_viewers`.png)
+// ![Unique viewers via CDN in Customer Portal](https://demo-files.gvideo.io/apidocs/cdn_unique_viewers.png)
 func (r *StatisticService) GetLiveUniqueViewers(ctx context.Context, query StatisticGetLiveUniqueViewersParams, opts ...option.RequestOption) (res *[]StatisticGetLiveUniqueViewersResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "streaming/statistics/stream/viewers"
@@ -313,7 +313,7 @@ func (r *StatisticService) GetVodTranscodingDuration(ctx context.Context, query 
 // made with. Works similar to the method `/statistics/cdn/uniqs`. But this allows
 // you to break down data with the specified granularity: minutes, hours, days.
 // Based on this method, a graph of unique views in the Customer Portal is built.
-// ![Unique viewers via CDN in Customer Portal](https://demo-files.gvideo.io/apidocs/`cdn_unique_viewers`.png)
+// ![Unique viewers via CDN in Customer Portal](https://demo-files.gvideo.io/apidocs/cdn_unique_viewers.png)
 func (r *StatisticService) GetVodUniqueViewersCdn(ctx context.Context, query StatisticGetVodUniqueViewersCdnParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "streaming/statistics/vod/viewers"
