@@ -181,9 +181,9 @@ type CreateVideoParam struct {
 	// More details:
 	//
 	//   - List of AI tasks – API
-	//     [GET /streaming/ai/tasks](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/ai/get-ai-task-result)
+	//     [GET /streaming/ai/tasks](https://api.gcore.com/docs/streaming#tag/AI/operation/get_ai_results)
 	//   - Add subtitles to an exist video – API
-	//     [POST /streaming/videos/{`video_id`}/subtitles](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/subtitles/add-subtitle).
+	//     [POST /streaming/videos/{`video_id`}/subtitles](https://api.gcore.com/docs/streaming#tag/Subtitles/operation/post_api_videos_video_id_subtitles).
 	//
 	// Any of "disable", "auto", "<language_code>".
 	AutoTranscribeAudioLanguage CreateVideoAutoTranscribeAudioLanguage `json:"auto_transcribe_audio_language,omitzero"`
@@ -240,9 +240,9 @@ func (r *CreateVideoParam) UnmarshalJSON(data []byte) error {
 // More details:
 //
 //   - List of AI tasks – API
-//     [GET /streaming/ai/tasks](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/ai/get-ai-task-result)
+//     [GET /streaming/ai/tasks](https://api.gcore.com/docs/streaming#tag/AI/operation/get_ai_results)
 //   - Add subtitles to an exist video – API
-//     [POST /streaming/videos/{`video_id`}/subtitles](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/subtitles/add-subtitle).
+//     [POST /streaming/videos/{`video_id`}/subtitles](https://api.gcore.com/docs/streaming#tag/Subtitles/operation/post_api_videos_video_id_subtitles).
 type CreateVideoAutoTranscribeAudioLanguage string
 
 const (
@@ -389,7 +389,7 @@ type Video struct {
 	// video player can be integrated into your web pages using the Iframe tag. Example
 	// of usage on a web page:
 	//
-	// <iframe width="100%" height="100%" src="https://player.gvideo.co/videos/`2675_FnlHXwA16ZMxmUr`" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+	// <iframe width="100%" height="100%" src="https://player.gvideo.co/videos/2675_FnlHXwA16ZMxmUr" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 	//
 	// There are some link modificators you can specify and add manually:
 	// - ?`no_low_latency` – player is forced to use non-low-latency streams HLS MPEG TS, instead of MPEG-DASH CMAF or HLS/LL-HLS CMAF.
@@ -642,11 +642,11 @@ type VideoConvertedVideo struct {
 	// **Examples**
 	//
 	//   - Audio-only:
-	//     “ https://demo-public.gvideo.io/videos/`2675_JNnccG5l97XPxsov`/`qid3585v1_aac_128_audio`.mp4 “
+	//     `https://demo-public.gvideo.io/videos/2675_JNnccG5l97XPxsov/qid3585v1_aac_128_audio.mp4`
 	//   - Video:
-	//     “ https://demo-public.gvideo.io/videos/`2675_3MlggU4xDb1Ssa5Y`/`qid3567v1_h264_4050_1080`.mp4/download “
+	//     `https://demo-public.gvideo.io/videos/2675_3MlggU4xDb1Ssa5Y/qid3567v1_h264_4050_1080.mp4/download`
 	//   - Video with custom download filename:
-	//     “ https://demo-public.gvideo.io/videos/`2675_XtMKxzJM6Xt7SBUV`/1080.mp4/download=`highlights_v1`.`1_2025`-05-30 “
+	//     `https://demo-public.gvideo.io/videos/2675_XtMKxzJM6Xt7SBUV/1080.mp4/download=highlights_v1.1_2025-05-30`
 	MP4URL string `json:"mp4_url"`
 	// Specific quality name
 	Name string `json:"name"`
