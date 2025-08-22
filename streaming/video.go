@@ -110,9 +110,9 @@ func (r *VideoService) New(ctx context.Context, body VideoNewParams, opts ...opt
 // "duration", "`hls_url`", etc. Examples of changing:
 //
 //   - Name: `{ "name": "new name of the video" }`
-//   - Move the video to a new directory: “ { "`directory_id`": 200 }“ Please note
-//     that some parameters are used on initial step (before transcoding) only, so
-//     after transcoding there is no use in changing their values. For example,
+//   - Move the video to a new directory: ` { "directory_id": 200 }` Please note that
+//     some parameters are used on initial step (before transcoding) only, so after
+//     transcoding there is no use in changing their values. For example,
 //     "`origin_url`" parameter is used for downloading an original file from a
 //     source and never used after transcoding; or "priority" parameter is used to
 //     set priority of processing and never used after transcoding.
@@ -225,8 +225,8 @@ func (r *VideoService) Get(ctx context.Context, videoID int64, opts ...option.Re
 // metadata: {
 // filename: data.video.name,
 // token: data.token,
-// `video_id`: data.video.id,
-// `client_id`: data.video.`client_id`
+// video_id: data.video.id,
+// client_id: data.video.client_id
 // },
 // onSuccess: function() {
 // ...
