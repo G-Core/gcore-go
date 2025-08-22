@@ -82,8 +82,8 @@ type CreateVideoParam struct {
 	// POST https://api.gcore.com/streaming/videos
 	// "video": {
 	// "name": "IBC 2024 intro.mp4",
-	// "`origin_url`": "https://www.googleapis.com/drive/v3/files/...?alt=media",
-	// "`origin_http_headers`": "Authorization: Bearer ABC"
+	// "origin_url": "https://www.googleapis.com/drive/v3/files/...?alt=media",
+	// "origin_http_headers": "Authorization: Bearer ABC"
 	// }
 	// ```
 	OriginHTTPHeaders param.Opt[string] `json:"origin_http_headers,omitzero"`
@@ -174,8 +174,8 @@ type CreateVideoParam struct {
 	//     attribute of API POST /streaming/ai/transcribe . Example:
 	//
 	// ```
-	// `auto_transcribe_audio_language`: "auto"
-	// `auto_transcribe_audio_language`: "ger"
+	// auto_transcribe_audio_language: "auto"
+	// auto_transcribe_audio_language: "ger"
 	// ```
 	//
 	// More details:
@@ -200,8 +200,8 @@ type CreateVideoParam struct {
 	//     subtitle will be generated for each language. Example:
 	//
 	// ```
-	// `auto_translate_subtitles_language`: default
-	// `auto_translate_subtitles_language`: eng,fre,ger
+	// auto_translate_subtitles_language: default
+	// auto_translate_subtitles_language: eng,fre,ger
 	// ```
 	//
 	// Please note that subtitle translation is done separately and after
@@ -233,8 +233,8 @@ func (r *CreateVideoParam) UnmarshalJSON(data []byte) error {
 //     attribute of API POST /streaming/ai/transcribe . Example:
 //
 // ```
-// `auto_transcribe_audio_language`: "auto"
-// `auto_transcribe_audio_language`: "ger"
+// auto_transcribe_audio_language: "auto"
+// auto_transcribe_audio_language: "ger"
 // ```
 //
 // More details:
@@ -264,8 +264,8 @@ const (
 //     subtitle will be generated for each language. Example:
 //
 // ```
-// `auto_translate_subtitles_language`: default
-// `auto_translate_subtitles_language`: eng,fre,ger
+// auto_translate_subtitles_language: default
+// auto_translate_subtitles_language: eng,fre,ger
 // ```
 //
 // Please note that subtitle translation is done separately and after
@@ -305,8 +305,8 @@ type Video struct {
 	//
 	// This URL is a link to the main manifest. But you can also manually specify
 	// suffix-options that will allow you to change the manifest to your request:
-	// “ /videos/{`client_id`}_{slug}/master[-min-N][-max-N][-(h264|hevc|av1)].mpd “
-	// List of suffix-options:
+	// `/videos/{client_id}_{slug}/master[-min-N][-max-N][-(h264|hevc|av1)].mpd` List
+	// of suffix-options:
 	//
 	//   - [-min-N] – ABR soft limitation of qualities from below.
 	//   - [-max-N] – ABR soft limitation of qualities from above.
@@ -353,7 +353,7 @@ type Video struct {
 	//
 	// You can also manually specify suffix-options that will allow you to change the
 	// manifest to your request:
-	// “ /videos/{`client_id`}_{`video_slug`}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8 “
+	// `/videos/{client_id}_{video_slug}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8`
 	// List of suffix-options:
 	//
 	//   - [-cmaf] – getting HLS CMAF version of the manifest. Look at the `hls_cmaf_url`
@@ -426,7 +426,7 @@ type Video struct {
 	//     like viewing an MP4 rendition. The MP4 file becomes available for downloading
 	//     when the video entity "status" changes from "new" to "pending". The file is
 	//     stored for 7 days, after which it will be automatically deleted. Format of URL
-	//     is “ /videos/_/`origin__`.mp4 “ Where:
+	//     is `/videos/_/origin__.mp4` Where:
 	//
 	//   - ```– Encoding bitrate in Kbps.
 	//
@@ -614,7 +614,7 @@ type VideoConvertedVideo struct {
 	//
 	//   - ````– Video height, or word "audio" if it is an audio-only file.
 	//     Note that this link format has been applied since 14.08.2024. If the video entity was uploaded earlier, links may have old simplified format.
-	//     Example: ``` /videos/{`client_id`}_{slug}/`qid3567v1_h264_4050_1080`.mp4 ```
+	//     Example: ``` /videos/{client_id}_{slug}/qid3567v1_h264_4050_1080.mp4 ```
 	//
 	//     ````
 	//
