@@ -54,7 +54,7 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //     How to use:
 //   - Create an AI task, specify algoritm to use
 //   - Get `task_id`
-//   - Check a result using “ .../ai/tasks/{`task_id`} “ method For more detailed
+//   - Check a result using `.../ai/tasks/{task_id}` method For more detailed
 //     information, see the description of each method separately.
 //
 // **AI Automatic Speech Recognition (ASR)** AI is instrumental in automatic video
@@ -79,15 +79,15 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 // "result": {
 // "subtitles": [
 // {
-// "`start_time`": "00:00:00.031",
-// "`end_time`": "00:00:03.831",
+// "start_time": "00:00:00.031",
+// "end_time": "00:00:03.831",
 // "text": "Come on team, ..."
 // }, ...
 // ]
 // "vttContent": "WEBVTT\n\n1\n00:00:00.031 --> 00:00:03.831\nCome on team, ...",
-// "`concatenated_text`": "Come on team, ...",
+// "concatenated_text": "Come on team, ...",
 // "languages": [ "eng" ],
-// "`speech_detected`": true
+// "speech_detected": true
 // }
 // }, ...
 // }
@@ -128,13 +128,13 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 // {
 // "status": "SUCCESS",
 // "result": {
-// "`nsfw_detected`": true,
-// "`detection_results`": [ "nsfw" ],
+// "nsfw_detected": true,
+// "detection_results": [ "nsfw" ],
 // "frames": [
 // {
 // "label": "nsfw",
 // "confidence": 1.0,
-// "`frame_number`": 24
+// "frame_number": 24
 // },...
 // ]
 // }

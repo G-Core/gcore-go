@@ -91,7 +91,7 @@ func NewPlaylistService(opts ...option.RequestOption) (r PlaylistService) {
 // active: true
 // loop: false
 // name: "Playlist: Webinar 'Onboarding for new employees on working with the corporate portal'"
-// `start_time`: "2024-07-01T11:00:00Z"
+// start_time: "2024-07-01T11:00:00Z"
 // ```
 func (r *PlaylistService) New(ctx context.Context, body PlaylistNewParams, opts ...option.RequestOption) (res *PlaylistCreate, err error) {
 	opts = append(r.Options[:], opts...)
@@ -187,7 +187,7 @@ type Playlist struct {
 	//
 	// This URL is a link to the main manifest. But you can also manually specify
 	// suffix-options that will allow you to change the manifest to your request:
-	// “ /playlists/{`client_id`}_{`playlist_id`}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8 “
+	// `/playlists/{client_id}_{playlist_id}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8`
 	// Please see the details in `hls_url` attribute of /videos/{id} method.
 	//
 	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
@@ -301,7 +301,7 @@ type PlaylistParam struct {
 	//
 	// This URL is a link to the main manifest. But you can also manually specify
 	// suffix-options that will allow you to change the manifest to your request:
-	// “ /playlists/{`client_id`}_{`playlist_id`}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8 “
+	// `/playlists/{client_id}_{playlist_id}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8`
 	// Please see the details in `hls_url` attribute of /videos/{id} method.
 	//
 	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
@@ -382,8 +382,8 @@ type PlaylistVideo struct {
 	//     attribute of API POST /streaming/ai/transcribe . Example:
 	//
 	// ```
-	// `auto_transcribe_audio_language`: "auto"
-	// `auto_transcribe_audio_language`: "ger"
+	// auto_transcribe_audio_language: "auto"
+	// auto_transcribe_audio_language: "ger"
 	// ```
 	//
 	// More details:
@@ -408,8 +408,8 @@ type PlaylistVideo struct {
 	//     subtitle will be generated for each language. Example:
 	//
 	// ```
-	// `auto_translate_subtitles_language`: default
-	// `auto_translate_subtitles_language`: eng,fre,ger
+	// auto_translate_subtitles_language: default
+	// auto_translate_subtitles_language: eng,fre,ger
 	// ```
 	//
 	// Please note that subtitle translation is done separately and after
@@ -447,8 +447,8 @@ type PlaylistVideo struct {
 	// POST https://api.gcore.com/streaming/videos
 	// "video": {
 	// "name": "IBC 2024 intro.mp4",
-	// "`origin_url`": "https://www.googleapis.com/drive/v3/files/...?alt=media",
-	// "`origin_http_headers`": "Authorization: Bearer ABC"
+	// "origin_url": "https://www.googleapis.com/drive/v3/files/...?alt=media",
+	// "origin_http_headers": "Authorization: Bearer ABC"
 	// }
 	// ```
 	OriginHTTPHeaders string `json:"origin_http_headers"`
@@ -572,8 +572,8 @@ func (r *PlaylistVideo) UnmarshalJSON(data []byte) error {
 //     attribute of API POST /streaming/ai/transcribe . Example:
 //
 // ```
-// `auto_transcribe_audio_language`: "auto"
-// `auto_transcribe_audio_language`: "ger"
+// auto_transcribe_audio_language: "auto"
+// auto_transcribe_audio_language: "ger"
 // ```
 //
 // More details:
@@ -603,8 +603,8 @@ const (
 //     subtitle will be generated for each language. Example:
 //
 // ```
-// `auto_translate_subtitles_language`: default
-// `auto_translate_subtitles_language`: eng,fre,ger
+// auto_translate_subtitles_language: default
+// auto_translate_subtitles_language: eng,fre,ger
 // ```
 //
 // Please note that subtitle translation is done separately and after
