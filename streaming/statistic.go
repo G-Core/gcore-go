@@ -387,11 +387,11 @@ func (r *FfprobesData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MaxStreamSeries []max_stream_sery
+type MaxStreamSeries []MaxStreamSeriesItem
 
-type max_stream_sery struct {
-	Client  int64                  `json:"client,required"`
-	Metrics max_stream_seryMetrics `json:"metrics,required"`
+type MaxStreamSeriesItem struct {
+	Client  int64                      `json:"client,required"`
+	Metrics MaxStreamSeriesItemMetrics `json:"metrics,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Client      respjson.Field
@@ -402,12 +402,12 @@ type max_stream_sery struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r max_stream_sery) RawJSON() string { return r.JSON.raw }
-func (r *max_stream_sery) UnmarshalJSON(data []byte) error {
+func (r MaxStreamSeriesItem) RawJSON() string { return r.JSON.raw }
+func (r *MaxStreamSeriesItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type max_stream_seryMetrics struct {
+type MaxStreamSeriesItemMetrics struct {
 	Streams []int64 `json:"streams,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -418,16 +418,16 @@ type max_stream_seryMetrics struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r max_stream_seryMetrics) RawJSON() string { return r.JSON.raw }
-func (r *max_stream_seryMetrics) UnmarshalJSON(data []byte) error {
+func (r MaxStreamSeriesItemMetrics) RawJSON() string { return r.JSON.raw }
+func (r *MaxStreamSeriesItemMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MeetSeries []meet_sery
+type MeetSeries []MeetSeriesItem
 
-type meet_sery struct {
-	Client  int64            `json:"client,required"`
-	Metrics meet_seryMetrics `json:"metrics,required"`
+type MeetSeriesItem struct {
+	Client  int64                 `json:"client,required"`
+	Metrics MeetSeriesItemMetrics `json:"metrics,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Client      respjson.Field
@@ -438,12 +438,12 @@ type meet_sery struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r meet_sery) RawJSON() string { return r.JSON.raw }
-func (r *meet_sery) UnmarshalJSON(data []byte) error {
+func (r MeetSeriesItem) RawJSON() string { return r.JSON.raw }
+func (r *MeetSeriesItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type meet_seryMetrics struct {
+type MeetSeriesItemMetrics struct {
 	MaxMeetUsage []int64   `json:"max_meet_usage"`
 	Meet         [][]int64 `json:"meet"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -456,8 +456,8 @@ type meet_seryMetrics struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r meet_seryMetrics) RawJSON() string { return r.JSON.raw }
-func (r *meet_seryMetrics) UnmarshalJSON(data []byte) error {
+func (r MeetSeriesItemMetrics) RawJSON() string { return r.JSON.raw }
+func (r *MeetSeriesItemMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -495,11 +495,11 @@ func (r *PopularVideosData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type StorageSeries []storage_sery
+type StorageSeries []StorageSeriesItem
 
-type storage_sery struct {
-	Client  int64               `json:"client,required"`
-	Metrics storage_seryMetrics `json:"metrics,required"`
+type StorageSeriesItem struct {
+	Client  int64                    `json:"client,required"`
+	Metrics StorageSeriesItemMetrics `json:"metrics,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Client      respjson.Field
@@ -510,12 +510,12 @@ type storage_sery struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r storage_sery) RawJSON() string { return r.JSON.raw }
-func (r *storage_sery) UnmarshalJSON(data []byte) error {
+func (r StorageSeriesItem) RawJSON() string { return r.JSON.raw }
+func (r *StorageSeriesItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type storage_seryMetrics struct {
+type StorageSeriesItemMetrics struct {
 	MaxVolumeUsage []int64   `json:"max_volume_usage,required"`
 	Storage        [][]int64 `json:"storage,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -528,16 +528,16 @@ type storage_seryMetrics struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r storage_seryMetrics) RawJSON() string { return r.JSON.raw }
-func (r *storage_seryMetrics) UnmarshalJSON(data []byte) error {
+func (r StorageSeriesItemMetrics) RawJSON() string { return r.JSON.raw }
+func (r *StorageSeriesItemMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type StreamSeries []stream_sery
+type StreamSeries []StreamSeriesItem
 
-type stream_sery struct {
-	Client  int64              `json:"client,required"`
-	Metrics stream_seryMetrics `json:"metrics,required"`
+type StreamSeriesItem struct {
+	Client  int64                   `json:"client,required"`
+	Metrics StreamSeriesItemMetrics `json:"metrics,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Client      respjson.Field
@@ -548,12 +548,12 @@ type stream_sery struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r stream_sery) RawJSON() string { return r.JSON.raw }
-func (r *stream_sery) UnmarshalJSON(data []byte) error {
+func (r StreamSeriesItem) RawJSON() string { return r.JSON.raw }
+func (r *StreamSeriesItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type stream_seryMetrics struct {
+type StreamSeriesItemMetrics struct {
 	Streams []int64 `json:"streams,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -564,8 +564,8 @@ type stream_seryMetrics struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r stream_seryMetrics) RawJSON() string { return r.JSON.raw }
-func (r *stream_seryMetrics) UnmarshalJSON(data []byte) error {
+func (r StreamSeriesItemMetrics) RawJSON() string { return r.JSON.raw }
+func (r *StreamSeriesItemMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -951,11 +951,11 @@ func (r *ViewsHeatmapData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VodStatisticsSeries []vod_statistics_sery
+type VodStatisticsSeries []VodStatisticsSeriesItem
 
-type vod_statistics_sery struct {
-	Client  int64                      `json:"client,required"`
-	Metrics vod_statistics_seryMetrics `json:"metrics,required"`
+type VodStatisticsSeriesItem struct {
+	Client  int64                          `json:"client,required"`
+	Metrics VodStatisticsSeriesItemMetrics `json:"metrics,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Client      respjson.Field
@@ -966,12 +966,12 @@ type vod_statistics_sery struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r vod_statistics_sery) RawJSON() string { return r.JSON.raw }
-func (r *vod_statistics_sery) UnmarshalJSON(data []byte) error {
+func (r VodStatisticsSeriesItem) RawJSON() string { return r.JSON.raw }
+func (r *VodStatisticsSeriesItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type vod_statistics_seryMetrics struct {
+type VodStatisticsSeriesItemMetrics struct {
 	Vod []int64 `json:"vod,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -982,14 +982,14 @@ type vod_statistics_seryMetrics struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r vod_statistics_seryMetrics) RawJSON() string { return r.JSON.raw }
-func (r *vod_statistics_seryMetrics) UnmarshalJSON(data []byte) error {
+func (r VodStatisticsSeriesItemMetrics) RawJSON() string { return r.JSON.raw }
+func (r *VodStatisticsSeriesItemMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VodTotalStreamDurationSeries []vod_total_stream_duration_sery
+type VodTotalStreamDurationSeries []VodTotalStreamDurationSeriesItem
 
-type vod_total_stream_duration_sery struct {
+type VodTotalStreamDurationSeriesItem struct {
 	Client int64 `json:"client,required"`
 	// count of minutes
 	Duration     int64  `json:"duration,required"`
@@ -1007,8 +1007,8 @@ type vod_total_stream_duration_sery struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r vod_total_stream_duration_sery) RawJSON() string { return r.JSON.raw }
-func (r *vod_total_stream_duration_sery) UnmarshalJSON(data []byte) error {
+func (r VodTotalStreamDurationSeriesItem) RawJSON() string { return r.JSON.raw }
+func (r *VodTotalStreamDurationSeriesItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
