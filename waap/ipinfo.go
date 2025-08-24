@@ -138,7 +138,7 @@ type WaapIPDDOSInfoModel struct {
 	// Indicates if the IP is tagged as a botnet client
 	BotnetClient bool `json:"botnet_client,required"`
 	// The time series data for the DDoS attacks from the IP address
-	TimeSeries []WaapIPDDOSInfoModelTimeSery `json:"time_series,required"`
+	TimeSeries []WaapIPDDOSInfoModelTimeSeries `json:"time_series,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BotnetClient respjson.Field
@@ -154,7 +154,7 @@ func (r *WaapIPDDOSInfoModel) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WaapIPDDOSInfoModelTimeSery struct {
+type WaapIPDDOSInfoModelTimeSeries struct {
 	// The number of attacks
 	Count int64 `json:"count,required"`
 	// The timestamp of the time series item as a POSIX timestamp
@@ -169,8 +169,8 @@ type WaapIPDDOSInfoModelTimeSery struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WaapIPDDOSInfoModelTimeSery) RawJSON() string { return r.JSON.raw }
-func (r *WaapIPDDOSInfoModelTimeSery) UnmarshalJSON(data []byte) error {
+func (r WaapIPDDOSInfoModelTimeSeries) RawJSON() string { return r.JSON.raw }
+func (r *WaapIPDDOSInfoModelTimeSeries) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
