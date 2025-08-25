@@ -74,23 +74,25 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //     global audiences. Example response with positive result:
 //
 // ```
-// {
-// "status": "SUCCESS",
-// "result": {
-// "subtitles": [
-// {
-// "start_time": "00:00:00.031",
-// "end_time": "00:00:03.831",
-// "text": "Come on team, ..."
-// }, ...
-// ]
-// "vttContent": "WEBVTT\n\n1\n00:00:00.031 --> 00:00:03.831\nCome on team, ...",
-// "concatenated_text": "Come on team, ...",
-// "languages": [ "eng" ],
-// "speech_detected": true
-// }
-// }, ...
-// }
+//
+//	{
+//	  "status": "SUCCESS",
+//	  "result": {
+//	    "subtitles": [
+//	      {
+//	          "start_time": "00:00:00.031",
+//	          "end_time": "00:00:03.831",
+//	          "text": "Come on team, ..."
+//	      }, ...
+//	    ]
+//	    "vttContent": "WEBVTT\n\n1\n00:00:00.031 --> 00:00:03.831\nCome on team, ...",
+//	    "concatenated_text": "Come on team, ...",
+//	    "languages": [ "eng" ],
+//	    "speech_detected": true
+//	    }
+//	  }, ...
+//	}
+//
 // ```
 //
 // **AI Content Moderation (CM)** The AI Content Moderation API offers a powerful
@@ -125,20 +127,22 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //     support team to enable this method. Example response with positive result:
 //
 // ```
-// {
-// "status": "SUCCESS",
-// "result": {
-// "nsfw_detected": true,
-// "detection_results": [ "nsfw" ],
-// "frames": [
-// {
-// "label": "nsfw",
-// "confidence": 1.0,
-// "frame_number": 24
-// },...
-// ]
-// }
-// }
+//
+//	{
+//	  "status": "SUCCESS",
+//	  "result": {
+//	      "nsfw_detected": true,
+//	      "detection_results": [ "nsfw" ],
+//	      "frames": [
+//	          {
+//	              "label": "nsfw",
+//	              "confidence": 1.0,
+//	              "frame_number": 24
+//	          },...
+//	      ]
+//	  }
+//	}
+//
 // ```
 //
 // **Additional information** Billing takes into account the duration of the
@@ -265,6 +269,7 @@ func (r *AITaskService) Get(ctx context.Context, taskID string, opts ...option.R
 //
 // ```
 // curl -L 'https://api.gcore.com/streaming/ai/info?type=language_support&audio_language=eng&subtitles_language=fre'
+//
 // { "supported": true }
 // ```
 //
