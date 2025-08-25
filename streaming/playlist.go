@@ -70,9 +70,11 @@ func NewPlaylistService(opts ...option.RequestOption) (r PlaylistService) {
 //     once it finishes to maintain a continuous stream. Example:
 //
 // ```
-// active: true
-// loop: true
-// name: "Playlist: TV channel 'The world around us' (Programmed broadcast for 24 hours)"
+//
+//	active: true
+//	loop: true
+//	name: "Playlist: TV channel 'The world around us' (Programmed broadcast for 24 hours)"
+//
 // ```
 //
 // **Scheduled playback** It can be used to simulate live events such as virtual
@@ -88,10 +90,12 @@ func NewPlaylistService(opts ...option.RequestOption) (r PlaylistService) {
 //     traditional live broadcasts.
 //
 // ```
-// active: true
-// loop: false
-// name: "Playlist: Webinar 'Onboarding for new employees on working with the corporate portal'"
-// start_time: "2024-07-01T11:00:00Z"
+//
+//	active: true
+//	loop: false
+//	name: "Playlist: Webinar 'Onboarding for new employees on working with the corporate portal'"
+//	start_time: "2024-07-01T11:00:00Z"
+//
 // ```
 func (r *PlaylistService) New(ctx context.Context, body PlaylistNewParams, opts ...option.RequestOption) (res *PlaylistCreate, err error) {
 	opts = append(r.Options[:], opts...)
@@ -436,7 +440,8 @@ type PlaylistVideo struct {
 	DirectoryID int64 `json:"directory_id"`
 	// Authorization HTTP request header. Will be used as credentials to authenticate a
 	// request to download a file (specified in "`origin_url`" parameter) on an
-	// external server. Syntax: `Authorization: ` Examples:
+	// external server. Syntax:
+	// `Authorization: <auth-scheme> <authorization-parameters>` Examples:
 	//
 	//   - "`origin_http_headers`": "Authorization: Basic ..."
 	//   - "`origin_http_headers`": "Authorization: Bearer ..."
@@ -445,11 +450,13 @@ type PlaylistVideo struct {
 	//
 	// ```
 	// POST https://api.gcore.com/streaming/videos
-	// "video": {
-	// "name": "IBC 2024 intro.mp4",
-	// "origin_url": "https://www.googleapis.com/drive/v3/files/...?alt=media",
-	// "origin_http_headers": "Authorization: Bearer ABC"
-	// }
+	//
+	//	"video": {
+	//	  "name": "IBC 2024 intro.mp4",
+	//	  "origin_url": "https://www.googleapis.com/drive/v3/files/...?alt=media",
+	//	  "origin_http_headers": "Authorization: Bearer ABC"
+	//	}
+	//
 	// ```
 	OriginHTTPHeaders string `json:"origin_http_headers"`
 	// URL to an original file which you want to copy from external storage. If
@@ -463,8 +470,8 @@ type PlaylistVideo struct {
 	// image. Also use attribute "`screenshot_id`" to select poster as a default
 	// screnshot. Attribute accepts single image as base64-encoded string
 	// [(RFC 2397 – The "data" URL scheme)](https://www.rfc-editor.org/rfc/rfc2397). In
-	// format: `data:[];base64,` MIME-types are image/jpeg, image/webp, and image/png
-	// and file sizes up to 1Mb. Examples:
+	// format: `data:[<mediatype>];base64,<data>` MIME-types are image/jpeg,
+	// image/webp, and image/png and file sizes up to 1Mb. Examples:
 	//
 	// - `data:image/jpeg;base64,/9j/4AA...qf/2Q==`
 	// - `data:image/png;base64,iVBORw0KGg...ggg==`

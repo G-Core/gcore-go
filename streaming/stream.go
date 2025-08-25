@@ -310,7 +310,8 @@ type Clip struct {
 	// deleted from memory and is no longer available via the link. You need to create
 	// a new segment, or use `vod_required: true` attribute. If value is omitted, then
 	// expiration is counted as +3600 seconds (1 hour) to the end of the clip (i.e.
-	// `unix timestamp = + + 3600`). Allowed range: 1m <= expiration <= 4h. Example:
+	// `unix timestamp = <start> + <duration> + 3600`). Allowed range: 1m <= expiration
+	// <= 4h. Example:
 	// `24.05.2024 14:00:00 (GMT) + 60 seconds of duration + 3600 seconds of expiration = 24.05.2024 15:01:00 (GMT) is Unix timestamp = 1716562860`
 	Expiration int64 `json:"expiration"`
 	// Link to HLS .m3u8 with immediate clip. The link retains same adaptive bitrate as
@@ -498,7 +499,7 @@ type Stream struct {
 	//     determine duration in seconds at the level of analyzing the logs of CDN
 	//     requests and compare it with file size (so to use it in your analytics). Such
 	//     modifier attributes are applied manually and added to the link obtained from
-	//     this field. I.e. `?get_duration_sec=true` Example:
+	//     this field. I.e. `<hls_url>?get_duration_sec=true` Example:
 	//     `https://demo.gvideo.io/mpegts/2675_19146/master_mpegts.m3u8?get_duration_sec=true`
 	//
 	// ```
@@ -1233,7 +1234,8 @@ type StreamNewClipParams struct {
 	// deleted from memory and is no longer available via the link. You need to create
 	// a new segment, or use `vod_required: true` attribute. If value is omitted, then
 	// expiration is counted as +3600 seconds (1 hour) to the end of the clip (i.e.
-	// `unix timestamp = + + 3600`). Allowed range: 1m <= expiration <= 4h. Example:
+	// `unix timestamp = <start> + <duration> + 3600`). Allowed range: 1m <= expiration
+	// <= 4h. Example:
 	// `24.05.2024 14:00:00 (GMT) + 60 seconds of duration + 3600 seconds of expiration = 24.05.2024 15:01:00 (GMT) is Unix timestamp = 1716562860`
 	Expiration param.Opt[int64] `json:"expiration,omitzero"`
 	// Starting point of the segment to cut. Unix timestamp in seconds, absolute value.
