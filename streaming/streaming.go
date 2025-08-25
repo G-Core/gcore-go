@@ -71,7 +71,8 @@ type CreateVideoParam struct {
 	DirectoryID param.Opt[int64] `json:"directory_id,omitzero"`
 	// Authorization HTTP request header. Will be used as credentials to authenticate a
 	// request to download a file (specified in "`origin_url`" parameter) on an
-	// external server. Syntax: `Authorization: ` Examples:
+	// external server. Syntax:
+	// `Authorization: <auth-scheme> <authorization-parameters>` Examples:
 	//
 	//   - "`origin_http_headers`": "Authorization: Basic ..."
 	//   - "`origin_http_headers`": "Authorization: Bearer ..."
@@ -80,11 +81,13 @@ type CreateVideoParam struct {
 	//
 	// ```
 	// POST https://api.gcore.com/streaming/videos
-	// "video": {
-	// "name": "IBC 2024 intro.mp4",
-	// "origin_url": "https://www.googleapis.com/drive/v3/files/...?alt=media",
-	// "origin_http_headers": "Authorization: Bearer ABC"
-	// }
+	//
+	//	"video": {
+	//	  "name": "IBC 2024 intro.mp4",
+	//	  "origin_url": "https://www.googleapis.com/drive/v3/files/...?alt=media",
+	//	  "origin_http_headers": "Authorization: Bearer ABC"
+	//	}
+	//
 	// ```
 	OriginHTTPHeaders param.Opt[string] `json:"origin_http_headers,omitzero"`
 	// URL to an original file which you want to copy from external storage. If
@@ -98,8 +101,8 @@ type CreateVideoParam struct {
 	// image. Also use attribute "`screenshot_id`" to select poster as a default
 	// screnshot. Attribute accepts single image as base64-encoded string
 	// [(RFC 2397 – The "data" URL scheme)](https://www.rfc-editor.org/rfc/rfc2397). In
-	// format: `data:[];base64,` MIME-types are image/jpeg, image/webp, and image/png
-	// and file sizes up to 1Mb. Examples:
+	// format: `data:[<mediatype>];base64,<data>` MIME-types are image/jpeg,
+	// image/webp, and image/png and file sizes up to 1Mb. Examples:
 	//
 	// - `data:image/jpeg;base64,/9j/4AA...qf/2Q==`
 	// - `data:image/png;base64,iVBORw0KGg...ggg==`
@@ -411,9 +414,7 @@ type Video struct {
 	// May contain a link for scenarios:
 	//
 	//   - If the video was downloaded from another origin
-	//
 	//   - If the video is a recording of a live stream
-	//
 	//   - Otherwise it is "null" **Copy from another server** URL to an original file
 	//     that was downloaded. Look at method "Copy from another server" in POST
 	//     /videos. **Recording of an original live stream** URL to the original
@@ -426,14 +427,10 @@ type Video struct {
 	//     like viewing an MP4 rendition. The MP4 file becomes available for downloading
 	//     when the video entity "status" changes from "new" to "pending". The file is
 	//     stored for 7 days, after which it will be automatically deleted. Format of URL
-	//     is `/videos/_/origin__.mp4` Where:
-	//
-	//   - ```– Encoding bitrate in Kbps.
-	//
-	//     ```
-	//   - ```– Video height.
-	//     This is a premium feature, available only upon request through your manager or support team.
-	//     ```
+	//     is `/videos/<cid>_<slug>/origin_<bitrate>_<height>.mp4` Where:
+	//   - `<bitrate>` – Encoding bitrate in Kbps.
+	//   - `<height>` – Video height. This is a premium feature, available only upon
+	//     request through your manager or support team.
 	OriginURL string `json:"origin_url"`
 	// Original video duration in milliseconds
 	OriginVideoDuration int64 `json:"origin_video_duration"`
@@ -584,7 +581,9 @@ type VideoConvertedVideo struct {
 	//     in the browser.
 	//
 	// ```
-	// Content-Disposition: attachment
+	//
+	//	Content-Disposition: attachment
+	//
 	// ```
 	//
 	// The third option allows you to set a custom name for the file being downloaded.
@@ -598,25 +597,18 @@ type VideoConvertedVideo struct {
 	//     `_backup.final`, `clip-v1.2`
 	//
 	// **Default MP4 file name structure** Link to the file {filename} contains
-	// information about the encoding method using format: `___.mp4`
+	// information about the encoding method using format:
+	// `<quality_version>_<codec>_<bitrate>_<height>.mp4`
 	//
-	// - ```– Internal quality identifier and file version. Please do not use it, can be changed at any time without any notice.
-	//
-	//	```
-	//
-	// - ```– Codec name that was used to encode the video, or audio codec if it is an audio-only file.
-	//
-	//	```
-	//
-	// - ```– Encoding bitrate in Kbps.
-	//
-	//	```
-	//
-	//   - ````– Video height, or word "audio" if it is an audio-only file.
-	//     Note that this link format has been applied since 14.08.2024. If the video entity was uploaded earlier, links may have old simplified format.
-	//     Example: ``` /videos/{client_id}_{slug}/qid3567v1_h264_4050_1080.mp4 ```
-	//
-	//     ````
+	//   - `<quality_version>` – Internal quality identifier and file version. Please do
+	//     not use it, can be changed at any time without any notice.
+	//   - `<codec>` – Codec name that was used to encode the video, or audio codec if it
+	//     is an audio-only file.
+	//   - `<bitrate>` – Encoding bitrate in Kbps.
+	//   - `<height>` – Video height, or word "audio" if it is an audio-only file. Note
+	//     that this link format has been applied since 14.08.2024. If the video entity
+	//     was uploaded earlier, links may have old simplified format. Example:
+	//     `/videos/{client_id}_{slug}/qid3567v1_h264_4050_1080.mp4`
 	//
 	// **Dynamic speed limiting** This mode sets different limits for different users
 	// or for different types of content. The speed is adjusted based on requests with
