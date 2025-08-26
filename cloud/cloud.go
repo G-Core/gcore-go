@@ -2310,7 +2310,12 @@ func (r *Tag) UnmarshalJSON(data []byte) error {
 type TagUpdateMap map[string]string
 
 type TaskIDList struct {
-	// List of task IDs
+	// List of task IDs representing asynchronous operations. Use these IDs to monitor
+	// operation progress:
+	//
+	//   - `GET /v1/tasks/{`task_id`}` - Check individual task status and details Poll
+	//     task status until completion (`FINISHED`/`ERROR`) before proceeding with
+	//     dependent operations.
 	Tasks []string `json:"tasks,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

@@ -33,7 +33,10 @@ func NewLoadBalancerPoolHealthMonitorService(opts ...option.RequestOption) (r Lo
 	return
 }
 
-// Create load balancer pool health monitor
+// Creates a health monitor for a load balancer pool to automatically check the
+// health status of pool members. The health monitor performs periodic checks on
+// pool members and removes unhealthy members from rotation, ensuring only healthy
+// servers receive traffic.
 func (r *LoadBalancerPoolHealthMonitorService) New(ctx context.Context, poolID string, params LoadBalancerPoolHealthMonitorNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -59,7 +62,9 @@ func (r *LoadBalancerPoolHealthMonitorService) New(ctx context.Context, poolID s
 	return
 }
 
-// Delete load balancer pool health monitor
+// Removes the health monitor from a load balancer pool. After deletion, the pool
+// will no longer perform automatic health checks on its members, and all members
+// will remain in rotation regardless of their actual health status.
 func (r *LoadBalancerPoolHealthMonitorService) Delete(ctx context.Context, poolID string, body LoadBalancerPoolHealthMonitorDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
