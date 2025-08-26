@@ -28,7 +28,7 @@ func TestOrganizationListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Organizations.List(context.TODO(), waap.OrganizationListParams{
 		Limit:    gcore.Int(0),
-		Name:     gcore.String("name"),
+		Name:     gcore.String("Comcast"),
 		Offset:   gcore.Int(0),
 		Ordering: waap.OrganizationListParamsOrderingName,
 	})

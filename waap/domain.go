@@ -352,7 +352,7 @@ func (r *WaapRuleSetTag) UnmarshalJSON(data []byte) error {
 type WaapRuleSetRule struct {
 	// Unique identifier for the security rule
 	ID string `json:"id,required"`
-	// The action taken by the WAAP upon rule activation.
+	// Specifies the action taken by the WAAP upon rule activation
 	//
 	// Any of "Allow", "Block", "Captcha", "Gateway", "Handshake", "Monitor",
 	// "Composite".
@@ -430,7 +430,7 @@ const (
 )
 
 type DomainUpdateParams struct {
-	// Domain statuses that can be used when updating a domain
+	// The current status of the domain
 	//
 	// Any of "active", "monitor".
 	Status DomainUpdateParamsStatus `json:"status,omitzero"`
@@ -445,7 +445,7 @@ func (r *DomainUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Domain statuses that can be used when updating a domain
+// The current status of the domain
 type DomainUpdateParamsStatus string
 
 const (
@@ -467,7 +467,7 @@ type DomainListParams struct {
 	// Any of "id", "name", "status", "created_at", "-id", "-name", "-status",
 	// "-created_at".
 	Ordering DomainListParamsOrdering `query:"ordering,omitzero" json:"-"`
-	// The different statuses a domain can have
+	// Filter domains based on the domain status
 	//
 	// Any of "active", "bypass", "monitor", "locked".
 	Status DomainListParamsStatus `query:"status,omitzero" json:"-"`
@@ -496,7 +496,7 @@ const (
 	DomainListParamsOrderingMinusCreatedAt DomainListParamsOrdering = "-created_at"
 )
 
-// The different statuses a domain can have
+// Filter domains based on the domain status
 type DomainListParamsStatus string
 
 const (

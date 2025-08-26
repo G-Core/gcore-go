@@ -594,7 +594,7 @@ type WaapRequestDetails struct {
 	// Reference ID to identify user sanction
 	ReferenceID string `json:"reference_id,required"`
 	// HTTP request headers
-	RequestHeaders any `json:"request_headers,required"`
+	RequestHeaders map[string]any `json:"request_headers,required"`
 	// The time of the request
 	RequestTime string `json:"request_time,required"`
 	// The type of the request that generated an event
@@ -617,7 +617,7 @@ type WaapRequestDetails struct {
 	SessionRequestCount string `json:"session_request_count,required"`
 	// List of traffic types
 	TrafficTypes []string `json:"traffic_types,required"`
-	// User agent details
+	// User agent
 	UserAgent WaapRequestDetailsUserAgent `json:"user_agent,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -778,7 +778,7 @@ const (
 	WaapRequestDetailsResultEmpty      WaapRequestDetailsResult = ""
 )
 
-// User agent details
+// User agent
 type WaapRequestDetailsUserAgent struct {
 	// User agent browser
 	BaseBrowser string `json:"base_browser,required"`
@@ -1013,11 +1013,11 @@ type DomainStatisticGetDDOSInfoParams struct {
 	//
 	// Any of "URL", "User-Agent", "IP".
 	GroupBy DomainStatisticGetDDOSInfoParamsGroupBy `query:"group_by,omitzero,required" json:"-"`
-	// Filter traffic starting from a specified date in ISO 8601 format
-	Start time.Time `query:"start,required" format:"date-time" json:"-"`
-	// Filter traffic up to a specified end date in ISO 8601 format. If not provided,
-	// defaults to the current date and time.
-	End param.Opt[time.Time] `query:"end,omitzero" format:"date-time" json:"-"`
+	// Filter data items starting from a specified date in ISO 8601 format
+	Start string `query:"start,required" json:"-"`
+	// Filter data items up to a specified end date in ISO 8601 format. If not
+	// provided, defaults to the current date and time.
+	End param.Opt[string] `query:"end,omitzero" json:"-"`
 	// Number of items to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Number of items to skip
@@ -1044,11 +1044,11 @@ const (
 )
 
 type DomainStatisticGetEventsAggregatedParams struct {
-	// Filter traffic starting from a specified date in ISO 8601 format
-	Start time.Time `query:"start,required" format:"date-time" json:"-"`
-	// Filter traffic up to a specified end date in ISO 8601 format. If not provided,
-	// defaults to the current date and time.
-	End param.Opt[time.Time] `query:"end,omitzero" format:"date-time" json:"-"`
+	// Filter data items starting from a specified date in ISO 8601 format
+	Start string `query:"start,required" json:"-"`
+	// Filter data items up to a specified end date in ISO 8601 format. If not
+	// provided, defaults to the current date and time.
+	End param.Opt[string] `query:"end,omitzero" json:"-"`
 	// A list of action names to filter on.
 	//
 	// Any of "block", "captcha", "handshake", "monitor".
@@ -1080,11 +1080,11 @@ type DomainStatisticGetRequestDetailsParams struct {
 }
 
 type DomainStatisticGetRequestsSeriesParams struct {
-	// Filter traffic starting from a specified date in ISO 8601 format
-	Start time.Time `query:"start,required" format:"date-time" json:"-"`
-	// Filter traffic up to a specified end date in ISO 8601 format. If not provided,
-	// defaults to the current date and time.
-	End param.Opt[time.Time] `query:"end,omitzero" format:"date-time" json:"-"`
+	// Filter data items starting from a specified date in ISO 8601 format
+	Start string `query:"start,required" json:"-"`
+	// Filter data items up to a specified end date in ISO 8601 format. If not
+	// provided, defaults to the current date and time.
+	End param.Opt[string] `query:"end,omitzero" json:"-"`
 	// Filter the response by IP.
 	IP param.Opt[string] `query:"ip,omitzero" json:"-"`
 	// Number of items to return
@@ -1129,11 +1129,11 @@ type DomainStatisticGetTrafficSeriesParams struct {
 	//
 	// Any of "daily", "hourly", "minutely".
 	Resolution DomainStatisticGetTrafficSeriesParamsResolution `query:"resolution,omitzero,required" json:"-"`
-	// Filter traffic starting from a specified date in ISO 8601 format
-	Start time.Time `query:"start,required" format:"date-time" json:"-"`
-	// Filter traffic up to a specified end date in ISO 8601 format. If not provided,
-	// defaults to the current date and time.
-	End param.Opt[time.Time] `query:"end,omitzero" format:"date-time" json:"-"`
+	// Filter data items starting from a specified date in ISO 8601 format
+	Start string `query:"start,required" json:"-"`
+	// Filter data items up to a specified end date in ISO 8601 format. If not
+	// provided, defaults to the current date and time.
+	End param.Opt[string] `query:"end,omitzero" json:"-"`
 	paramObj
 }
 

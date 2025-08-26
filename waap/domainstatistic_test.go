@@ -64,8 +64,8 @@ func TestDomainStatisticGetDDOSInfoWithOptionalParams(t *testing.T) {
 		1,
 		waap.DomainStatisticGetDDOSInfoParams{
 			GroupBy: waap.DomainStatisticGetDDOSInfoParamsGroupByURL,
-			Start:   time.Now(),
-			End:     gcore.Time(time.Now()),
+			Start:   "2024-04-13T00:00:00+01:00",
+			End:     gcore.String("2024-04-14T12:00:00Z"),
 			Limit:   gcore.Int(0),
 			Offset:  gcore.Int(0),
 		},
@@ -95,9 +95,9 @@ func TestDomainStatisticGetEventsAggregatedWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		1,
 		waap.DomainStatisticGetEventsAggregatedParams{
-			Start:       time.Now(),
+			Start:       "2024-04-13T00:00:00+01:00",
 			Action:      []string{"block", "captcha"},
-			End:         gcore.Time(time.Now()),
+			End:         gcore.String("2024-04-14T12:00:00Z"),
 			IP:          []string{"string", "string"},
 			ReferenceID: []string{"string", "string"},
 			Result:      []string{"passed", "blocked"},
@@ -156,15 +156,15 @@ func TestDomainStatisticGetRequestsSeriesWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		1,
 		waap.DomainStatisticGetRequestsSeriesParams{
-			Start:            time.Now(),
+			Start:            "2024-04-13T00:00:00+01:00",
 			Actions:          []string{"allow"},
 			Countries:        []string{"Mv"},
-			End:              gcore.Time(time.Now()),
+			End:              gcore.String("2024-04-14T12:00:00Z"),
 			IP:               gcore.String(".:"),
 			Limit:            gcore.Int(0),
 			Offset:           gcore.Int(0),
 			Ordering:         gcore.String("ordering"),
-			ReferenceID:      gcore.String("2c02efDd09B3BA1AEaDd3dCAa7aC7A37"),
+			ReferenceID:      gcore.String("ad07c06f19054e484974fa22e9fb6bb1"),
 			SecurityRuleName: gcore.String("security_rule_name"),
 			StatusCode:       gcore.Int(100),
 			TrafficTypes:     []string{"policy_allowed"},
@@ -196,8 +196,8 @@ func TestDomainStatisticGetTrafficSeriesWithOptionalParams(t *testing.T) {
 		1,
 		waap.DomainStatisticGetTrafficSeriesParams{
 			Resolution: waap.DomainStatisticGetTrafficSeriesParamsResolutionDaily,
-			Start:      time.Now(),
-			End:        gcore.Time(time.Now()),
+			Start:      "2024-04-13T00:00:00+01:00",
+			End:        gcore.String("2024-04-14T12:00:00Z"),
 		},
 	)
 	if err != nil {

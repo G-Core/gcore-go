@@ -57,7 +57,7 @@ func TestDomainListWithOptionalParams(t *testing.T) {
 	_, err := client.Waap.Domains.List(context.TODO(), waap.DomainListParams{
 		IDs:      []int64{1},
 		Limit:    gcore.Int(0),
-		Name:     gcore.String("name"),
+		Name:     gcore.String("*example.com"),
 		Offset:   gcore.Int(0),
 		Ordering: waap.DomainListParamsOrderingID,
 		Status:   waap.DomainListParamsStatusActive,
