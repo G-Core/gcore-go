@@ -102,7 +102,7 @@ type WaapInsight struct {
 	LastStatusChange time.Time `json:"last_status_change,required" format:"date-time"`
 	// The recommended action to perform to resolve the insight
 	Recommendation string `json:"recommendation,required"`
-	// The different statuses an insight can have
+	// The status of the insight
 	//
 	// Any of "OPEN", "ACKED", "CLOSED".
 	Status WaapInsightStatus `json:"status,required"`
@@ -128,7 +128,7 @@ func (r *WaapInsight) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The different statuses an insight can have
+// The status of the insight
 type WaapInsightStatus string
 
 const (
@@ -197,7 +197,7 @@ type DomainInsightGetParams struct {
 type DomainInsightReplaceParams struct {
 	// The domain ID
 	DomainID int64 `path:"domain_id,required" json:"-"`
-	// The different statuses an insight can have
+	// The status of the insight
 	//
 	// Any of "OPEN", "ACKED", "CLOSED".
 	Status DomainInsightReplaceParamsStatus `json:"status,omitzero,required"`
@@ -212,7 +212,7 @@ func (r *DomainInsightReplaceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The different statuses an insight can have
+// The status of the insight
 type DomainInsightReplaceParamsStatus string
 
 const (

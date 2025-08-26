@@ -116,7 +116,7 @@ func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action DomainFir
 type WaapFirewallRule struct {
 	// The unique identifier of the rule
 	ID int64 `json:"id,required"`
-	// The action that a firewall rule takes when triggered
+	// The action that the rule takes when triggered
 	Action WaapFirewallRuleAction `json:"action,required"`
 	// The condition required for the WAAP engine to trigger the rule.
 	Conditions []WaapFirewallRuleCondition `json:"conditions,required"`
@@ -145,7 +145,7 @@ func (r *WaapFirewallRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that a firewall rule takes when triggered
+// The action that the rule takes when triggered
 type WaapFirewallRuleAction struct {
 	// The WAAP allowed the request
 	Allow any `json:"allow,nullable"`
@@ -172,7 +172,8 @@ func (r *WaapFirewallRuleAction) UnmarshalJSON(data []byte) error {
 type WaapFirewallRuleActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
-	// represent time format (seconds, minutes, hours, or days)
+	// represent time format (seconds, minutes, hours, or days). Empty time intervals
+	// are not allowed.
 	ActionDuration string `json:"action_duration,nullable"`
 	// Designates the HTTP status code to deliver when a request is blocked.
 	//
@@ -261,7 +262,7 @@ func (r *WaapFirewallRuleConditionIPRange) UnmarshalJSON(data []byte) error {
 }
 
 type DomainFirewallRuleNewParams struct {
-	// The action that a firewall rule takes when triggered
+	// The action that the rule takes when triggered
 	Action DomainFirewallRuleNewParamsAction `json:"action,omitzero,required"`
 	// The condition required for the WAAP engine to trigger the rule.
 	Conditions []DomainFirewallRuleNewParamsCondition `json:"conditions,omitzero,required"`
@@ -282,7 +283,7 @@ func (r *DomainFirewallRuleNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that a firewall rule takes when triggered
+// The action that the rule takes when triggered
 type DomainFirewallRuleNewParamsAction struct {
 	// The WAAP allowed the request
 	Allow any `json:"allow,omitzero"`
@@ -305,7 +306,8 @@ func (r *DomainFirewallRuleNewParamsAction) UnmarshalJSON(data []byte) error {
 type DomainFirewallRuleNewParamsActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
-	// represent time format (seconds, minutes, hours, or days)
+	// represent time format (seconds, minutes, hours, or days). Empty time intervals
+	// are not allowed.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
 	// Designates the HTTP status code to deliver when a request is blocked.
 	//
@@ -433,7 +435,8 @@ func (r *DomainFirewallRuleUpdateParamsAction) UnmarshalJSON(data []byte) error 
 type DomainFirewallRuleUpdateParamsActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
-	// represent time format (seconds, minutes, hours, or days)
+	// represent time format (seconds, minutes, hours, or days). Empty time intervals
+	// are not allowed.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
 	// Designates the HTTP status code to deliver when a request is blocked.
 	//

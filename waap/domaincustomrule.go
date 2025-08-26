@@ -117,7 +117,7 @@ func (r *DomainCustomRuleService) Toggle(ctx context.Context, action DomainCusto
 type WaapCustomRule struct {
 	// The unique identifier for the rule
 	ID int64 `json:"id,required"`
-	// The action that a WAAP rule takes when triggered
+	// The action that the rule takes when triggered
 	Action WaapCustomRuleAction `json:"action,required"`
 	// The conditions required for the WAAP engine to trigger the rule. Rules may have
 	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
@@ -147,7 +147,7 @@ func (r *WaapCustomRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that a WAAP rule takes when triggered
+// The action that the rule takes when triggered
 type WaapCustomRuleAction struct {
 	// The WAAP allowed the request
 	Allow any `json:"allow,nullable"`
@@ -186,7 +186,8 @@ func (r *WaapCustomRuleAction) UnmarshalJSON(data []byte) error {
 type WaapCustomRuleActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
-	// represent time format (seconds, minutes, hours, or days)
+	// represent time format (seconds, minutes, hours, or days). Empty time intervals
+	// are not allowed.
 	ActionDuration string `json:"action_duration,nullable"`
 	// Designates the HTTP status code to deliver when a request is blocked.
 	//
@@ -413,10 +414,7 @@ func (r *WaapCustomRuleConditionHeaderExists) UnmarshalJSON(data []byte) error {
 
 // Match the incoming HTTP method
 type WaapCustomRuleConditionHTTPMethod struct {
-	// HTTP methods and descriptions Methods from the following RFCs are all observed:
-	//
-	// - RFC 7231: Hypertext Transfer Protocol (HTTP/1.1), obsoletes 2616
-	// - RFC 5789: PATCH Method for HTTP
+	// HTTP methods of a request
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".
@@ -742,7 +740,7 @@ func (r *WaapCustomRuleConditionUserDefinedTags) UnmarshalJSON(data []byte) erro
 }
 
 type DomainCustomRuleNewParams struct {
-	// The action that a WAAP rule takes when triggered
+	// The action that the rule takes when triggered
 	Action DomainCustomRuleNewParamsAction `json:"action,omitzero,required"`
 	// The conditions required for the WAAP engine to trigger the rule. Rules may have
 	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
@@ -764,7 +762,7 @@ func (r *DomainCustomRuleNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that a WAAP rule takes when triggered
+// The action that the rule takes when triggered
 type DomainCustomRuleNewParamsAction struct {
 	// The WAAP allowed the request
 	Allow any `json:"allow,omitzero"`
@@ -795,7 +793,8 @@ func (r *DomainCustomRuleNewParamsAction) UnmarshalJSON(data []byte) error {
 type DomainCustomRuleNewParamsActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
-	// represent time format (seconds, minutes, hours, or days)
+	// represent time format (seconds, minutes, hours, or days). Empty time intervals
+	// are not allowed.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
 	// Designates the HTTP status code to deliver when a request is blocked.
 	//
@@ -999,10 +998,7 @@ func (r *DomainCustomRuleNewParamsConditionHeaderExists) UnmarshalJSON(data []by
 //
 // The property HTTPMethod is required.
 type DomainCustomRuleNewParamsConditionHTTPMethod struct {
-	// HTTP methods and descriptions Methods from the following RFCs are all observed:
-	//
-	// - RFC 7231: Hypertext Transfer Protocol (HTTP/1.1), obsoletes 2616
-	// - RFC 5789: PATCH Method for HTTP
+	// HTTP methods of a request
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".
@@ -1368,7 +1364,8 @@ func (r *DomainCustomRuleUpdateParamsAction) UnmarshalJSON(data []byte) error {
 type DomainCustomRuleUpdateParamsActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
-	// represent time format (seconds, minutes, hours, or days)
+	// represent time format (seconds, minutes, hours, or days). Empty time intervals
+	// are not allowed.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
 	// Designates the HTTP status code to deliver when a request is blocked.
 	//
@@ -1572,10 +1569,7 @@ func (r *DomainCustomRuleUpdateParamsConditionHeaderExists) UnmarshalJSON(data [
 //
 // The property HTTPMethod is required.
 type DomainCustomRuleUpdateParamsConditionHTTPMethod struct {
-	// HTTP methods and descriptions Methods from the following RFCs are all observed:
-	//
-	// - RFC 7231: Hypertext Transfer Protocol (HTTP/1.1), obsoletes 2616
-	// - RFC 5789: PATCH Method for HTTP
+	// HTTP methods of a request
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".

@@ -49,7 +49,7 @@ func TestDomainFirewallRuleNewWithOptionalParams(t *testing.T) {
 				},
 			}},
 			Enabled:     true,
-			Name:        "name",
+			Name:        "Block foobar bot",
 			Description: gcore.String("description"),
 		},
 	)
@@ -99,7 +99,7 @@ func TestDomainFirewallRuleUpdateWithOptionalParams(t *testing.T) {
 			}},
 			Description: gcore.String("description"),
 			Enabled:     gcore.Bool(true),
-			Name:        gcore.String("name"),
+			Name:        gcore.String("Block foobar bot"),
 		},
 	)
 	if err != nil {
@@ -128,10 +128,10 @@ func TestDomainFirewallRuleListWithOptionalParams(t *testing.T) {
 		1,
 		waap.DomainFirewallRuleListParams{
 			Action:      waap.DomainFirewallRuleListParamsActionAllow,
-			Description: gcore.String("description"),
-			Enabled:     gcore.Bool(true),
+			Description: gcore.String("This rule blocks all the requests coming form a specific IP address."),
+			Enabled:     gcore.Bool(false),
 			Limit:       gcore.Int(0),
-			Name:        gcore.String("name"),
+			Name:        gcore.String("Block by specific IP rule."),
 			Offset:      gcore.Int(0),
 			Ordering:    waap.DomainFirewallRuleListParamsOrderingMinusID,
 		},

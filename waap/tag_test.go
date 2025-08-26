@@ -28,10 +28,10 @@ func TestTagListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Tags.List(context.TODO(), waap.TagListParams{
 		Limit:        gcore.Int(0),
-		Name:         gcore.String("name"),
+		Name:         gcore.String("xss"),
 		Offset:       gcore.Int(0),
 		Ordering:     waap.TagListParamsOrderingName,
-		ReadableName: gcore.String("readable_name"),
+		ReadableName: gcore.String("Cross-Site Scripting"),
 		Reserved:     gcore.Bool(true),
 	})
 	if err != nil {
