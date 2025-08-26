@@ -159,7 +159,7 @@ func TestCustomPageSetListWithOptionalParams(t *testing.T) {
 	_, err := client.Waap.CustomPageSets.List(context.TODO(), waap.CustomPageSetListParams{
 		IDs:      []int64{0},
 		Limit:    gcore.Int(0),
-		Name:     gcore.String("name"),
+		Name:     gcore.String("*example"),
 		Offset:   gcore.Int(0),
 		Ordering: waap.CustomPageSetListParamsOrderingName,
 	})

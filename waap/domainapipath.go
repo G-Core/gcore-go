@@ -117,13 +117,13 @@ type WaapAPIPath struct {
 	APIVersion string `json:"api_version,required"`
 	// The date and time in ISO 8601 format the API path was first detected.
 	FirstDetected time.Time `json:"first_detected,required" format:"date-time"`
-	// The different HTTP schemes an API path can have
+	// The HTTP version of the API path
 	//
 	// Any of "HTTP", "HTTPS".
 	HTTPScheme WaapAPIPathHTTPScheme `json:"http_scheme,required"`
 	// The date and time in ISO 8601 format the API path was last detected.
 	LastDetected time.Time `json:"last_detected,required" format:"date-time"`
-	// The different methods an API path can have
+	// The API RESTful method
 	//
 	// Any of "GET", "POST", "PUT", "PATCH", "DELETE", "TRACE", "HEAD", "OPTIONS".
 	Method WaapAPIPathMethod `json:"method,required"`
@@ -132,11 +132,11 @@ type WaapAPIPath struct {
 	Path string `json:"path,required"`
 	// The number of requests for this path in the last 24 hours
 	RequestCount int64 `json:"request_count,required"`
-	// The different sources an API path can have
+	// The source of the discovered API
 	//
 	// Any of "API_DESCRIPTION_FILE", "TRAFFIC_SCAN", "USER_DEFINED".
 	Source WaapAPIPathSource `json:"source,required"`
-	// The different statuses an API path can have
+	// The status of the discovered API path
 	//
 	// Any of "CONFIRMED_API", "POTENTIAL_API", "NOT_API", "DELISTED_API".
 	Status WaapAPIPathStatus `json:"status,required"`
@@ -167,7 +167,7 @@ func (r *WaapAPIPath) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The different HTTP schemes an API path can have
+// The HTTP version of the API path
 type WaapAPIPathHTTPScheme string
 
 const (
@@ -175,7 +175,7 @@ const (
 	WaapAPIPathHTTPSchemeHTTPS WaapAPIPathHTTPScheme = "HTTPS"
 )
 
-// The different methods an API path can have
+// The API RESTful method
 type WaapAPIPathMethod string
 
 const (
@@ -189,7 +189,7 @@ const (
 	WaapAPIPathMethodOptions WaapAPIPathMethod = "OPTIONS"
 )
 
-// The different sources an API path can have
+// The source of the discovered API
 type WaapAPIPathSource string
 
 const (
@@ -198,7 +198,7 @@ const (
 	WaapAPIPathSourceUserDefined        WaapAPIPathSource = "USER_DEFINED"
 )
 
-// The different statuses an API path can have
+// The status of the discovered API path
 type WaapAPIPathStatus string
 
 const (
@@ -267,7 +267,7 @@ type DomainAPIPathUpdateParams struct {
 	Path param.Opt[string] `json:"path,omitzero"`
 	// An array of api groups associated with the API path
 	APIGroups []string `json:"api_groups,omitzero"`
-	// The different statuses an API path can have
+	// The status of the discovered API path
 	//
 	// Any of "CONFIRMED_API", "POTENTIAL_API", "NOT_API", "DELISTED_API".
 	Status DomainAPIPathUpdateParamsStatus `json:"status,omitzero"`
@@ -284,7 +284,7 @@ func (r *DomainAPIPathUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The different statuses an API path can have
+// The status of the discovered API path
 type DomainAPIPathUpdateParamsStatus string
 
 const (

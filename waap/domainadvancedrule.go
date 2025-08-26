@@ -108,7 +108,7 @@ func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdv
 type WaapAdvancedRule struct {
 	// The unique identifier for the rule
 	ID int64 `json:"id,required"`
-	// The action that a WAAP rule takes when triggered
+	// The action that the rule takes when triggered
 	Action WaapAdvancedRuleAction `json:"action,required"`
 	// Whether or not the rule is enabled
 	Enabled bool `json:"enabled,required"`
@@ -150,7 +150,7 @@ func (r *WaapAdvancedRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that a WAAP rule takes when triggered
+// The action that the rule takes when triggered
 type WaapAdvancedRuleAction struct {
 	// The WAAP allowed the request
 	Allow any `json:"allow,nullable"`
@@ -189,7 +189,8 @@ func (r *WaapAdvancedRuleAction) UnmarshalJSON(data []byte) error {
 type WaapAdvancedRuleActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
-	// represent time format (seconds, minutes, hours, or days)
+	// represent time format (seconds, minutes, hours, or days). Empty time intervals
+	// are not allowed.
 	ActionDuration string `json:"action_duration,nullable"`
 	// Designates the HTTP status code to deliver when a request is blocked.
 	//
@@ -243,7 +244,7 @@ const (
 )
 
 type DomainAdvancedRuleNewParams struct {
-	// The action that a WAAP rule takes when triggered
+	// The action that the rule takes when triggered
 	Action DomainAdvancedRuleNewParamsAction `json:"action,omitzero,required"`
 	// Whether or not the rule is enabled
 	Enabled bool `json:"enabled,required"`
@@ -276,7 +277,7 @@ func (r *DomainAdvancedRuleNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that a WAAP rule takes when triggered
+// The action that the rule takes when triggered
 type DomainAdvancedRuleNewParamsAction struct {
 	// The WAAP allowed the request
 	Allow any `json:"allow,omitzero"`
@@ -307,7 +308,8 @@ func (r *DomainAdvancedRuleNewParamsAction) UnmarshalJSON(data []byte) error {
 type DomainAdvancedRuleNewParamsActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
-	// represent time format (seconds, minutes, hours, or days)
+	// represent time format (seconds, minutes, hours, or days). Empty time intervals
+	// are not allowed.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
 	// Designates the HTTP status code to deliver when a request is blocked.
 	//
@@ -428,7 +430,8 @@ func (r *DomainAdvancedRuleUpdateParamsAction) UnmarshalJSON(data []byte) error 
 type DomainAdvancedRuleUpdateParamsActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
-	// represent time format (seconds, minutes, hours, or days)
+	// represent time format (seconds, minutes, hours, or days). Empty time intervals
+	// are not allowed.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
 	// Designates the HTTP status code to deliver when a request is blocked.
 	//

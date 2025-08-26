@@ -129,7 +129,7 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 				},
 			}},
 			Enabled:     true,
-			Name:        "name",
+			Name:        "Block foobar bot",
 			Description: gcore.String("description"),
 		},
 	)
@@ -259,7 +259,7 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 			}},
 			Description: gcore.String("description"),
 			Enabled:     gcore.Bool(true),
-			Name:        gcore.String("name"),
+			Name:        gcore.String("Block foobar bot"),
 		},
 	)
 	if err != nil {

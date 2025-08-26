@@ -153,11 +153,11 @@ type WaapAPIScanResult struct {
 	Message string `json:"message,required"`
 	// The date and time the scan started
 	StartTime time.Time `json:"start_time,required" format:"date-time"`
-	// The different statuses a task result can have
+	// The status of the scan
 	//
 	// Any of "SUCCESS", "FAILURE", "IN_PROGRESS".
 	Status WaapAPIScanResultStatus `json:"status,required"`
-	// The different types of scans that can be performed
+	// The type of scan
 	//
 	// Any of "TRAFFIC_SCAN", "API_DESCRIPTION_FILE_SCAN".
 	Type WaapAPIScanResultType `json:"type,required"`
@@ -180,7 +180,7 @@ func (r *WaapAPIScanResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The different statuses a task result can have
+// The status of the scan
 type WaapAPIScanResultStatus string
 
 const (
@@ -189,7 +189,7 @@ const (
 	WaapAPIScanResultStatusInProgress WaapAPIScanResultStatus = "IN_PROGRESS"
 )
 
-// The different types of scans that can be performed
+// The type of scan
 type WaapAPIScanResultType string
 
 const (
