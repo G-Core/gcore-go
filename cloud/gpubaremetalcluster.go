@@ -51,7 +51,10 @@ func NewGPUBaremetalClusterService(opts ...option.RequestOption) (r GPUBaremetal
 }
 
 // Create a new GPU cluster with specified configuration. The cluster can be
-// created with one or more nodes.
+// created with one or more nodes. Please use the
+// `/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters` endpoint instead.
+//
+// Deprecated: deprecated
 func (r *GPUBaremetalClusterService) New(ctx context.Context, params GPUBaremetalClusterNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -116,7 +119,11 @@ func (r *GPUBaremetalClusterService) ListAutoPaging(ctx context.Context, params 
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Delete bare metal GPU cluster
+// Deletes given bare metal GPU cluster. Please use the
+// `/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters/{`cluster_id`}`
+// instead.
+//
+// Deprecated: deprecated
 func (r *GPUBaremetalClusterService) Delete(ctx context.Context, clusterID string, params GPUBaremetalClusterDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
