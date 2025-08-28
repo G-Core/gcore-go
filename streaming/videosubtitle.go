@@ -50,7 +50,7 @@ func NewVideoSubtitleService(opts ...option.RequestOption) (r VideoSubtitleServi
 //     language code according to ISO-639-2 (bibliographic code). Specify language
 //     you need, or just look at our list in the attribute "`audio_language`" of
 //     section
-//     ["AI Transcribe"](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/ai/create-ai-asr-task).
+//     ["AI Speech Recognition"](/docs/api-reference/streaming/ai/create-ai-asr-task).
 //     You can add multiple subtitles in the same language, language uniqueness is
 //     not required. Size must be up to 5Mb.
 //
@@ -61,7 +61,7 @@ func NewVideoSubtitleService(opts ...option.RequestOption) (r VideoSubtitleServi
 // subtitles based on AI. Read more:
 //
 //   - What is
-//     ["AI Transcribe"](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/ai/create-ai-asr-task).
+//     ["AI Speech Recognition"](/docs/api-reference/streaming/ai/create-ai-asr-task).
 //   - If the option is enabled via
 //     `auto_transcribe_audio_language: auto|<language_code>`, then immediately after
 //     successful transcoding, an AI task will be automatically created for

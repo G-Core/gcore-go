@@ -68,7 +68,7 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 // subtitles based on AI. Read more:
 //
 //   - What is
-//     ["AI Transcribe"](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/ai/create-ai-asr-task).
+//     ["AI Speech Recognition"](/docs/api-reference/streaming/ai/create-ai-asr-task).
 //   - If the option is enabled via
 //     `auto_transcribe_audio_language: auto|<language_code>`, then immediately after
 //     successful transcoding, an AI task will be automatically created for
@@ -79,7 +79,7 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 //     that. Also you can point several languages to translate to, then a separate
 //     subtitle will be generated for each specified language.
 //   - How to
-//     ["add AI-generated subtitles to an exist video"](https://api.gcore.com/docs/streaming#tag/Subtitles/operation/post_api_videos_video_id_subtitles).
+//     ["add AI-generated subtitles to an exist video"](/docs/api-reference/streaming/subtitles/add-subtitle).
 //     The created AI-task(s) will be automatically executed, and result will also be
 //     automatically attached to this video as subtitle(s). Please note that
 //     transcription is done automatically for all videos uploaded to our video
