@@ -58,15 +58,11 @@ func (r *DNSService) Lookup(ctx context.Context, query DNSLookupParams, opts ...
 	return
 }
 
-// InfoResponse
 type DNSGetAccountOverviewResponse struct {
-	// Client
-	Client   DNSGetAccountOverviewResponseClient   `json:"Client"`
-	Settings DNSGetAccountOverviewResponseSettings `json:"settings"`
+	Info DNSGetAccountOverviewResponseInfo `json:"Info"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Client      respjson.Field
-		Settings    respjson.Field
+		Info        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -78,35 +74,7 @@ func (r *DNSGetAccountOverviewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Client
-type DNSGetAccountOverviewResponseClient struct {
-	ClientID int64  `json:"client_id"`
-	Enabled  bool   `json:"enabled"`
-	Reseller int64  `json:"reseller"`
-	Status   string `json:"status"`
-	TariffID int64  `json:"tariff_id"`
-	// TariffName
-	TariffName string `json:"tariff_name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ClientID    respjson.Field
-		Enabled     respjson.Field
-		Reseller    respjson.Field
-		Status      respjson.Field
-		TariffID    respjson.Field
-		TariffName  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DNSGetAccountOverviewResponseClient) RawJSON() string { return r.JSON.raw }
-func (r *DNSGetAccountOverviewResponseClient) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DNSGetAccountOverviewResponseSettings struct {
+type DNSGetAccountOverviewResponseInfo struct {
 	Contact     string `json:"contact"`
 	NameServer1 string `json:"name_server_1"`
 	NameServer2 string `json:"name_server_2"`
@@ -121,8 +89,8 @@ type DNSGetAccountOverviewResponseSettings struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DNSGetAccountOverviewResponseSettings) RawJSON() string { return r.JSON.raw }
-func (r *DNSGetAccountOverviewResponseSettings) UnmarshalJSON(data []byte) error {
+func (r DNSGetAccountOverviewResponseInfo) RawJSON() string { return r.JSON.raw }
+func (r *DNSGetAccountOverviewResponseInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
