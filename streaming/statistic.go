@@ -92,15 +92,6 @@ func (r *StatisticService) GetMaxStreamsSeries(ctx context.Context, query Statis
 	return
 }
 
-// Calculates time series of the transcoding minutes of all streams. The data is
-// updated near realtime.
-func (r *StatisticService) GetMeetSeries(ctx context.Context, query StatisticGetMeetSeriesParams, opts ...option.RequestOption) (res *MeetSeries, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "streaming/statistics/meet"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
-}
-
 // Aggregates the number of views for all client videos, grouping them by id and
 // sort from most popular to less in the built-in player. Note. This method
 // operates only on data collected by the built-in HTML player. It will not show
@@ -420,44 +411,6 @@ type MaxStreamSeriesItemMetrics struct {
 // Returns the unmodified JSON received from the API
 func (r MaxStreamSeriesItemMetrics) RawJSON() string { return r.JSON.raw }
 func (r *MaxStreamSeriesItemMetrics) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MeetSeries []MeetSeriesItem
-
-type MeetSeriesItem struct {
-	Client  int64                 `json:"client,required"`
-	Metrics MeetSeriesItemMetrics `json:"metrics,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Client      respjson.Field
-		Metrics     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MeetSeriesItem) RawJSON() string { return r.JSON.raw }
-func (r *MeetSeriesItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MeetSeriesItemMetrics struct {
-	MaxMeetUsage []int64   `json:"max_meet_usage"`
-	Meet         [][]int64 `json:"meet"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MaxMeetUsage respjson.Field
-		Meet         respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MeetSeriesItemMetrics) RawJSON() string { return r.JSON.raw }
-func (r *MeetSeriesItemMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1230,38 +1183,6 @@ const (
 	StatisticGetMaxStreamsSeriesParamsGranularity15m StatisticGetMaxStreamsSeriesParamsGranularity = "15m"
 	StatisticGetMaxStreamsSeriesParamsGranularity1h  StatisticGetMaxStreamsSeriesParamsGranularity = "1h"
 	StatisticGetMaxStreamsSeriesParamsGranularity1d  StatisticGetMaxStreamsSeriesParamsGranularity = "1d"
-)
-
-type StatisticGetMeetSeriesParams struct {
-	// Start of time frame. Datetime in ISO 8601 format.
-	From string `query:"from,required" json:"-"`
-	// End of time frame. Datetime in ISO 8601 format.
-	To string `query:"to,required" json:"-"`
-	// specifies the time interval for grouping data
-	//
-	// Any of "1m", "5m", "15m", "1h", "1d".
-	Granularity StatisticGetMeetSeriesParamsGranularity `query:"granularity,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [StatisticGetMeetSeriesParams]'s query parameters as
-// `url.Values`.
-func (r StatisticGetMeetSeriesParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
-	})
-}
-
-// specifies the time interval for grouping data
-type StatisticGetMeetSeriesParamsGranularity string
-
-const (
-	StatisticGetMeetSeriesParamsGranularity1m  StatisticGetMeetSeriesParamsGranularity = "1m"
-	StatisticGetMeetSeriesParamsGranularity5m  StatisticGetMeetSeriesParamsGranularity = "5m"
-	StatisticGetMeetSeriesParamsGranularity15m StatisticGetMeetSeriesParamsGranularity = "15m"
-	StatisticGetMeetSeriesParamsGranularity1h  StatisticGetMeetSeriesParamsGranularity = "1h"
-	StatisticGetMeetSeriesParamsGranularity1d  StatisticGetMeetSeriesParamsGranularity = "1d"
 )
 
 type StatisticGetPopularVideosParams struct {

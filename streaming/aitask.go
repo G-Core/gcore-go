@@ -44,11 +44,9 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //   - ASR: Transcribe video
 //   - ASR: Translate subtitles
 //   - CM: Sports detection
-//   - CM: Weapon detection
 //   - CM: Not Safe For Work (NSFW) content detection
 //   - CM: Soft nudity detection
 //   - CM: Hard nudity detection
-//   - CM: Child Sexual Abuse Material (CSAM) detection
 //   - CM: Objects recognition (soon)
 //     ![Auto generated subtitles example](https://demo-files.gvideo.io/apidocs/captions.gif)
 //     How to use:
@@ -109,14 +107,11 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //   - `soft_nudity`: Detailed video analysis that reveals both explicit and partial
 //     nudity, including the presence of male and female faces and other uncovered
 //     body parts.
-//   - `child_pornography`: Detects child sexual abuse materials (CASM).
-//   - `sport`: Recognizes various sporting activities.
-//   - `weapon`: Identifies the presence of weapons in the video content. The AI
-//     Content Moderation API is an invaluable tool for managing and controlling the
-//     type of content being shared or streamed on your platform. By implementing
-//     this API, you can ensure compliance with community guidelines and legal
-//     requirements, as well as provide a safer environment for your users. Important
-//     notes:
+//   - `sport`: Recognizes various sporting activities. The AI Content Moderation API
+//     is an invaluable tool for managing and controlling the type of content being
+//     shared or streamed on your platform. By implementing this API, you can ensure
+//     compliance with community guidelines and legal requirements, as well as
+//     provide a safer environment for your users. Important notes:
 //   - It's allowed to analyse still images too (where applicable). Format of image:
 //     JPEG, PNG. In that case one image is the same as video of 1 second duration.
 //   - Not all frames in the video are used for analysis, but only key frames
@@ -211,11 +206,9 @@ func (r *AITaskService) Cancel(ctx context.Context, taskID string, opts ...optio
 // - ASR: Transcribe video
 // - ASR: Translate subtitles
 // - CM: Sports detection
-// - CM: Weapon detection
 // - CM: Not Safe For Work (NSFW) content detection
 // - CM: Soft nudity detection
 // - CM: Hard nudity detection
-// - CM: Child Sexual Abuse Material (CSAM) detection
 // - CM: Objects recognition (soon)
 // - etc... (see other methods from /ai/ domain)
 //
@@ -287,71 +280,10 @@ func (r *AITaskService) GetAISettings(ctx context.Context, query AITaskGetAISett
 	return
 }
 
-type AIContentmoderationCasm struct {
-	// AI content moderation with child pornography detection algorithm
-	//
-	// Any of "child_pornography", "sport", "weapon", "nsfw", "hard_nudity",
-	// "soft_nudity".
-	Category AIContentmoderationCasmCategory `json:"category,required"`
-	// Name of the task to be performed
-	//
-	// Any of "content-moderation".
-	TaskName AIContentmoderationCasmTaskName `json:"task_name,required"`
-	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
-	URL string `json:"url,required"`
-	// Meta parameter, designed to store your own extra information about a video
-	// entity: video source, video id, etc. It is not used in any way in video
-	// processing. For example, if an AI-task was created automatically when you
-	// uploaded a video with the AI auto-processing option (nudity detection, etc),
-	// then the ID of the associated video for which the task was performed will be
-	// explicitly indicated here.
-	ClientEntityData string `json:"client_entity_data"`
-	// Meta parameter, designed to store your own identifier. Can be used by you to tag
-	// requests from different end-users. It is not used in any way in video
-	// processing.
-	ClientUserID string `json:"client_user_id"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Category         respjson.Field
-		TaskName         respjson.Field
-		URL              respjson.Field
-		ClientEntityData respjson.Field
-		ClientUserID     respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIContentmoderationCasm) RawJSON() string { return r.JSON.raw }
-func (r *AIContentmoderationCasm) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// AI content moderation with child pornography detection algorithm
-type AIContentmoderationCasmCategory string
-
-const (
-	AIContentmoderationCasmCategoryChildPornography AIContentmoderationCasmCategory = "child_pornography"
-	AIContentmoderationCasmCategorySport            AIContentmoderationCasmCategory = "sport"
-	AIContentmoderationCasmCategoryWeapon           AIContentmoderationCasmCategory = "weapon"
-	AIContentmoderationCasmCategoryNsfw             AIContentmoderationCasmCategory = "nsfw"
-	AIContentmoderationCasmCategoryHardNudity       AIContentmoderationCasmCategory = "hard_nudity"
-	AIContentmoderationCasmCategorySoftNudity       AIContentmoderationCasmCategory = "soft_nudity"
-)
-
-// Name of the task to be performed
-type AIContentmoderationCasmTaskName string
-
-const (
-	AIContentmoderationCasmTaskNameContentModeration AIContentmoderationCasmTaskName = "content-moderation"
-)
-
 type AIContentmoderationHardnudity struct {
 	// AI content moderation with "`hard_nudity`" algorithm
 	//
-	// Any of "hard_nudity", "sport", "weapon", "nsfw", "soft_nudity",
-	// "child_pornography".
+	// Any of "hard_nudity", "sport", "nsfw", "soft_nudity".
 	Category AIContentmoderationHardnudityCategory `json:"category,required"`
 	// Name of the task to be performed
 	//
@@ -399,12 +331,10 @@ func (r *AIContentmoderationHardnudity) UnmarshalJSON(data []byte) error {
 type AIContentmoderationHardnudityCategory string
 
 const (
-	AIContentmoderationHardnudityCategoryHardNudity       AIContentmoderationHardnudityCategory = "hard_nudity"
-	AIContentmoderationHardnudityCategorySport            AIContentmoderationHardnudityCategory = "sport"
-	AIContentmoderationHardnudityCategoryWeapon           AIContentmoderationHardnudityCategory = "weapon"
-	AIContentmoderationHardnudityCategoryNsfw             AIContentmoderationHardnudityCategory = "nsfw"
-	AIContentmoderationHardnudityCategorySoftNudity       AIContentmoderationHardnudityCategory = "soft_nudity"
-	AIContentmoderationHardnudityCategoryChildPornography AIContentmoderationHardnudityCategory = "child_pornography"
+	AIContentmoderationHardnudityCategoryHardNudity AIContentmoderationHardnudityCategory = "hard_nudity"
+	AIContentmoderationHardnudityCategorySport      AIContentmoderationHardnudityCategory = "sport"
+	AIContentmoderationHardnudityCategoryNsfw       AIContentmoderationHardnudityCategory = "nsfw"
+	AIContentmoderationHardnudityCategorySoftNudity AIContentmoderationHardnudityCategory = "soft_nudity"
 )
 
 // Name of the task to be performed
@@ -430,8 +360,7 @@ const (
 type AIContentmoderationNsfw struct {
 	// AI content moderation with NSFW detection algorithm
 	//
-	// Any of "nsfw", "sport", "weapon", "hard_nudity", "soft_nudity",
-	// "child_pornography".
+	// Any of "nsfw", "sport", "hard_nudity", "soft_nudity".
 	Category AIContentmoderationNsfwCategory `json:"category,required"`
 	// Name of the task to be performed
 	//
@@ -472,12 +401,10 @@ func (r *AIContentmoderationNsfw) UnmarshalJSON(data []byte) error {
 type AIContentmoderationNsfwCategory string
 
 const (
-	AIContentmoderationNsfwCategoryNsfw             AIContentmoderationNsfwCategory = "nsfw"
-	AIContentmoderationNsfwCategorySport            AIContentmoderationNsfwCategory = "sport"
-	AIContentmoderationNsfwCategoryWeapon           AIContentmoderationNsfwCategory = "weapon"
-	AIContentmoderationNsfwCategoryHardNudity       AIContentmoderationNsfwCategory = "hard_nudity"
-	AIContentmoderationNsfwCategorySoftNudity       AIContentmoderationNsfwCategory = "soft_nudity"
-	AIContentmoderationNsfwCategoryChildPornography AIContentmoderationNsfwCategory = "child_pornography"
+	AIContentmoderationNsfwCategoryNsfw       AIContentmoderationNsfwCategory = "nsfw"
+	AIContentmoderationNsfwCategorySport      AIContentmoderationNsfwCategory = "sport"
+	AIContentmoderationNsfwCategoryHardNudity AIContentmoderationNsfwCategory = "hard_nudity"
+	AIContentmoderationNsfwCategorySoftNudity AIContentmoderationNsfwCategory = "soft_nudity"
 )
 
 // Name of the task to be performed
@@ -490,8 +417,7 @@ const (
 type AIContentmoderationSoftnudity struct {
 	// AI content moderation with "`soft_nudity`" algorithm
 	//
-	// Any of "soft_nudity", "sport", "weapon", "nsfw", "hard_nudity",
-	// "child_pornography".
+	// Any of "soft_nudity", "sport", "nsfw", "hard_nudity".
 	Category AIContentmoderationSoftnudityCategory `json:"category,required"`
 	// Name of the task to be performed
 	//
@@ -542,12 +468,10 @@ func (r *AIContentmoderationSoftnudity) UnmarshalJSON(data []byte) error {
 type AIContentmoderationSoftnudityCategory string
 
 const (
-	AIContentmoderationSoftnudityCategorySoftNudity       AIContentmoderationSoftnudityCategory = "soft_nudity"
-	AIContentmoderationSoftnudityCategorySport            AIContentmoderationSoftnudityCategory = "sport"
-	AIContentmoderationSoftnudityCategoryWeapon           AIContentmoderationSoftnudityCategory = "weapon"
-	AIContentmoderationSoftnudityCategoryNsfw             AIContentmoderationSoftnudityCategory = "nsfw"
-	AIContentmoderationSoftnudityCategoryHardNudity       AIContentmoderationSoftnudityCategory = "hard_nudity"
-	AIContentmoderationSoftnudityCategoryChildPornography AIContentmoderationSoftnudityCategory = "child_pornography"
+	AIContentmoderationSoftnudityCategorySoftNudity AIContentmoderationSoftnudityCategory = "soft_nudity"
+	AIContentmoderationSoftnudityCategorySport      AIContentmoderationSoftnudityCategory = "sport"
+	AIContentmoderationSoftnudityCategoryNsfw       AIContentmoderationSoftnudityCategory = "nsfw"
+	AIContentmoderationSoftnudityCategoryHardNudity AIContentmoderationSoftnudityCategory = "hard_nudity"
 )
 
 // Name of the task to be performed
@@ -585,8 +509,7 @@ const (
 type AIContentmoderationSport struct {
 	// AI content moderation with types of sports activity detection
 	//
-	// Any of "sport", "weapon", "nsfw", "hard_nudity", "soft_nudity",
-	// "child_pornography".
+	// Any of "sport", "nsfw", "hard_nudity", "soft_nudity".
 	Category AIContentmoderationSportCategory `json:"category,required"`
 	// Name of the task to be performed
 	//
@@ -627,12 +550,10 @@ func (r *AIContentmoderationSport) UnmarshalJSON(data []byte) error {
 type AIContentmoderationSportCategory string
 
 const (
-	AIContentmoderationSportCategorySport            AIContentmoderationSportCategory = "sport"
-	AIContentmoderationSportCategoryWeapon           AIContentmoderationSportCategory = "weapon"
-	AIContentmoderationSportCategoryNsfw             AIContentmoderationSportCategory = "nsfw"
-	AIContentmoderationSportCategoryHardNudity       AIContentmoderationSportCategory = "hard_nudity"
-	AIContentmoderationSportCategorySoftNudity       AIContentmoderationSportCategory = "soft_nudity"
-	AIContentmoderationSportCategoryChildPornography AIContentmoderationSportCategory = "child_pornography"
+	AIContentmoderationSportCategorySport      AIContentmoderationSportCategory = "sport"
+	AIContentmoderationSportCategoryNsfw       AIContentmoderationSportCategory = "nsfw"
+	AIContentmoderationSportCategoryHardNudity AIContentmoderationSportCategory = "hard_nudity"
+	AIContentmoderationSportCategorySoftNudity AIContentmoderationSportCategory = "soft_nudity"
 )
 
 // Name of the task to be performed
@@ -640,66 +561,6 @@ type AIContentmoderationSportTaskName string
 
 const (
 	AIContentmoderationSportTaskNameContentModeration AIContentmoderationSportTaskName = "content-moderation"
-)
-
-type AIContentmoderationWeapon struct {
-	// AI content moderation with weapon detection algorithm
-	//
-	// Any of "weapon", "sport", "nsfw", "hard_nudity", "soft_nudity",
-	// "child_pornography".
-	Category AIContentmoderationWeaponCategory `json:"category,required"`
-	// Name of the task to be performed
-	//
-	// Any of "content-moderation".
-	TaskName AIContentmoderationWeaponTaskName `json:"task_name,required"`
-	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
-	URL string `json:"url,required"`
-	// Meta parameter, designed to store your own extra information about a video
-	// entity: video source, video id, etc. It is not used in any way in video
-	// processing. For example, if an AI-task was created automatically when you
-	// uploaded a video with the AI auto-processing option (nudity detection, etc),
-	// then the ID of the associated video for which the task was performed will be
-	// explicitly indicated here.
-	ClientEntityData string `json:"client_entity_data"`
-	// Meta parameter, designed to store your own identifier. Can be used by you to tag
-	// requests from different end-users. It is not used in any way in video
-	// processing.
-	ClientUserID string `json:"client_user_id"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Category         respjson.Field
-		TaskName         respjson.Field
-		URL              respjson.Field
-		ClientEntityData respjson.Field
-		ClientUserID     respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIContentmoderationWeapon) RawJSON() string { return r.JSON.raw }
-func (r *AIContentmoderationWeapon) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// AI content moderation with weapon detection algorithm
-type AIContentmoderationWeaponCategory string
-
-const (
-	AIContentmoderationWeaponCategoryWeapon           AIContentmoderationWeaponCategory = "weapon"
-	AIContentmoderationWeaponCategorySport            AIContentmoderationWeaponCategory = "sport"
-	AIContentmoderationWeaponCategoryNsfw             AIContentmoderationWeaponCategory = "nsfw"
-	AIContentmoderationWeaponCategoryHardNudity       AIContentmoderationWeaponCategory = "hard_nudity"
-	AIContentmoderationWeaponCategorySoftNudity       AIContentmoderationWeaponCategory = "soft_nudity"
-	AIContentmoderationWeaponCategoryChildPornography AIContentmoderationWeaponCategory = "child_pornography"
-)
-
-// Name of the task to be performed
-type AIContentmoderationWeaponTaskName string
-
-const (
-	AIContentmoderationWeaponTaskNameContentModeration AIContentmoderationWeaponTaskName = "content-moderation"
 )
 
 type AITask struct {
@@ -753,8 +614,7 @@ const (
 // AITaskTaskDataUnion contains all possible properties and values from
 // [AITaskTaskDataAITranscribe], [AIContentmoderationNsfw],
 // [AIContentmoderationHardnudity], [AIContentmoderationSoftnudity],
-// [AIContentmoderationCasm], [AIContentmoderationSport],
-// [AIContentmoderationWeapon].
+// [AIContentmoderationSport].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AITaskTaskDataUnion struct {
@@ -801,17 +661,7 @@ func (u AITaskTaskDataUnion) AsAIContentmoderationSoftnudity() (v AIContentmoder
 	return
 }
 
-func (u AITaskTaskDataUnion) AsAIContentmoderationCasm() (v AIContentmoderationCasm) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
 func (u AITaskTaskDataUnion) AsAIContentmoderationSport() (v AIContentmoderationSport) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u AITaskTaskDataUnion) AsAIContentmoderationWeapon() (v AIContentmoderationWeapon) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -957,7 +807,7 @@ type AITaskTaskDataAITranscribe struct {
 	//   - transcription into the original language is a free procedure,
 	//   - and translation from the original language into any other languages is a
 	//     "translation" procedure and is paid. More details in
-	//     [POST /ai/tasks#transcribe](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/ai/create-ai-asr-task).
+	//     [POST /streaming/ai/tasks#transcribe](/docs/api-reference/streaming/ai/create-ai-asr-task).
 	//     Language is set by 3-letter language code according to ISO-639-2
 	//     (bibliographic code).
 	SubtitlesLanguage string `json:"subtitles_language"`
@@ -1067,11 +917,9 @@ func (r *AITaskGetResponseProcessingTime) UnmarshalJSON(data []byte) error {
 // AITaskGetResponseResultUnion contains all possible properties and values from
 // [AITaskGetResponseResultAIResultsTranscribe],
 // [AITaskGetResponseResultAIResultsContentmoderationSport],
-// [AITaskGetResponseResultAIResultsContentmoderationWeapon],
 // [AITaskGetResponseResultAIResultsContentmoderationNsfw],
 // [AITaskGetResponseResultAIResultsContentmoderationHardnudity],
 // [AITaskGetResponseResultAIResultsContentmoderationSoftnudity],
-// [AITaskGetResponseResultAIResultsContentmoderationCasm],
 // [AITaskGetResponseResultAIResultsFailure].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
@@ -1089,42 +937,32 @@ type AITaskGetResponseResultUnion struct {
 	DetectionResults []string `json:"detection_results"`
 	// This field is a union of
 	// [[]AITaskGetResponseResultAIResultsContentmoderationSportFrame],
-	// [[]AITaskGetResponseResultAIResultsContentmoderationWeaponFrame],
 	// [[]AITaskGetResponseResultAIResultsContentmoderationNsfwFrame],
 	// [[]AITaskGetResponseResultAIResultsContentmoderationHardnudityFrame],
-	// [[]AITaskGetResponseResultAIResultsContentmoderationSoftnudityFrame],
-	// [[]AITaskGetResponseResultAIResultsContentmoderationCasmFrame]
+	// [[]AITaskGetResponseResultAIResultsContentmoderationSoftnudityFrame]
 	Frames AITaskGetResponseResultUnionFrames `json:"frames"`
 	// This field is from variant
 	// [AITaskGetResponseResultAIResultsContentmoderationSport].
 	SportDetected bool `json:"sport_detected"`
 	// This field is from variant
-	// [AITaskGetResponseResultAIResultsContentmoderationWeapon].
-	WeaponDetected bool `json:"weapon_detected"`
-	// This field is from variant
 	// [AITaskGetResponseResultAIResultsContentmoderationNsfw].
 	NsfwDetected bool `json:"nsfw_detected"`
 	PornDetected bool `json:"porn_detected"`
-	// This field is from variant
-	// [AITaskGetResponseResultAIResultsContentmoderationCasm].
-	ChildPornographyDetected bool `json:"child_pornography_detected"`
 	// This field is from variant [AITaskGetResponseResultAIResultsFailure].
 	Error string `json:"error"`
 	JSON  struct {
-		ConcatenatedText         respjson.Field
-		Languages                respjson.Field
-		SpeechDetected           respjson.Field
-		Subtitles                respjson.Field
-		VttContent               respjson.Field
-		DetectionResults         respjson.Field
-		Frames                   respjson.Field
-		SportDetected            respjson.Field
-		WeaponDetected           respjson.Field
-		NsfwDetected             respjson.Field
-		PornDetected             respjson.Field
-		ChildPornographyDetected respjson.Field
-		Error                    respjson.Field
-		raw                      string
+		ConcatenatedText respjson.Field
+		Languages        respjson.Field
+		SpeechDetected   respjson.Field
+		Subtitles        respjson.Field
+		VttContent       respjson.Field
+		DetectionResults respjson.Field
+		Frames           respjson.Field
+		SportDetected    respjson.Field
+		NsfwDetected     respjson.Field
+		PornDetected     respjson.Field
+		Error            respjson.Field
+		raw              string
 	} `json:"-"`
 }
 
@@ -1134,11 +972,6 @@ func (u AITaskGetResponseResultUnion) AsAITaskGetResponseResultAIResultsTranscri
 }
 
 func (u AITaskGetResponseResultUnion) AsAITaskGetResponseResultAIResultsContentmoderationSport() (v AITaskGetResponseResultAIResultsContentmoderationSport) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u AITaskGetResponseResultUnion) AsAITaskGetResponseResultAIResultsContentmoderationWeapon() (v AITaskGetResponseResultAIResultsContentmoderationWeapon) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1154,11 +987,6 @@ func (u AITaskGetResponseResultUnion) AsAITaskGetResponseResultAIResultsContentm
 }
 
 func (u AITaskGetResponseResultUnion) AsAITaskGetResponseResultAIResultsContentmoderationSoftnudity() (v AITaskGetResponseResultAIResultsContentmoderationSoftnudity) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u AITaskGetResponseResultUnion) AsAITaskGetResponseResultAIResultsContentmoderationCasm() (v AITaskGetResponseResultAIResultsContentmoderationCasm) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1184,20 +1012,14 @@ func (r *AITaskGetResponseResultUnion) UnmarshalJSON(data []byte) error {
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfAITaskGetResponseResultAIResultsContentmoderationSportFrames
-// OfAITaskGetResponseResultAIResultsContentmoderationWeaponFrames
 // OfAITaskGetResponseResultAIResultsContentmoderationNsfwFrames
 // OfAITaskGetResponseResultAIResultsContentmoderationHardnudityFrames
-// OfAITaskGetResponseResultAIResultsContentmoderationSoftnudityFrames
-// OfAITaskGetResponseResultAIResultsContentmoderationCasmFrames]
+// OfAITaskGetResponseResultAIResultsContentmoderationSoftnudityFrames]
 type AITaskGetResponseResultUnionFrames struct {
 	// This field will be present if the value is a
 	// [[]AITaskGetResponseResultAIResultsContentmoderationSportFrame] instead of an
 	// object.
 	OfAITaskGetResponseResultAIResultsContentmoderationSportFrames []AITaskGetResponseResultAIResultsContentmoderationSportFrame `json:",inline"`
-	// This field will be present if the value is a
-	// [[]AITaskGetResponseResultAIResultsContentmoderationWeaponFrame] instead of an
-	// object.
-	OfAITaskGetResponseResultAIResultsContentmoderationWeaponFrames []AITaskGetResponseResultAIResultsContentmoderationWeaponFrame `json:",inline"`
 	// This field will be present if the value is a
 	// [[]AITaskGetResponseResultAIResultsContentmoderationNsfwFrame] instead of an
 	// object.
@@ -1210,17 +1032,11 @@ type AITaskGetResponseResultUnionFrames struct {
 	// [[]AITaskGetResponseResultAIResultsContentmoderationSoftnudityFrame] instead of
 	// an object.
 	OfAITaskGetResponseResultAIResultsContentmoderationSoftnudityFrames []AITaskGetResponseResultAIResultsContentmoderationSoftnudityFrame `json:",inline"`
-	// This field will be present if the value is a
-	// [[]AITaskGetResponseResultAIResultsContentmoderationCasmFrame] instead of an
-	// object.
-	OfAITaskGetResponseResultAIResultsContentmoderationCasmFrames []AITaskGetResponseResultAIResultsContentmoderationCasmFrame `json:",inline"`
-	JSON                                                          struct {
+	JSON                                                                struct {
 		OfAITaskGetResponseResultAIResultsContentmoderationSportFrames      respjson.Field
-		OfAITaskGetResponseResultAIResultsContentmoderationWeaponFrames     respjson.Field
 		OfAITaskGetResponseResultAIResultsContentmoderationNsfwFrames       respjson.Field
 		OfAITaskGetResponseResultAIResultsContentmoderationHardnudityFrames respjson.Field
 		OfAITaskGetResponseResultAIResultsContentmoderationSoftnudityFrames respjson.Field
-		OfAITaskGetResponseResultAIResultsContentmoderationCasmFrames       respjson.Field
 		raw                                                                 string
 	} `json:"-"`
 }
@@ -1344,53 +1160,6 @@ func (r AITaskGetResponseResultAIResultsContentmoderationSportFrame) RawJSON() s
 	return r.JSON.raw
 }
 func (r *AITaskGetResponseResultAIResultsContentmoderationSportFrame) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AITaskGetResponseResultAIResultsContentmoderationWeapon struct {
-	// Any of "gun", "heavy weapon", "knife".
-	DetectionResults []string                                                       `json:"detection_results"`
-	Frames           []AITaskGetResponseResultAIResultsContentmoderationWeaponFrame `json:"frames"`
-	// A boolean value whether any weapon was detected
-	WeaponDetected bool `json:"weapon_detected"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		DetectionResults respjson.Field
-		Frames           respjson.Field
-		WeaponDetected   respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AITaskGetResponseResultAIResultsContentmoderationWeapon) RawJSON() string { return r.JSON.raw }
-func (r *AITaskGetResponseResultAIResultsContentmoderationWeapon) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AITaskGetResponseResultAIResultsContentmoderationWeaponFrame struct {
-	// Percentage of probability of identifying the object
-	Confidence float64 `json:"confidence"`
-	// Video frame number where object was found
-	FrameNumber int64 `json:"frame-number"`
-	// Type of detected object
-	Label string `json:"label"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Confidence  respjson.Field
-		FrameNumber respjson.Field
-		Label       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AITaskGetResponseResultAIResultsContentmoderationWeaponFrame) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *AITaskGetResponseResultAIResultsContentmoderationWeaponFrame) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1541,53 +1310,6 @@ func (r AITaskGetResponseResultAIResultsContentmoderationSoftnudityFrame) RawJSO
 	return r.JSON.raw
 }
 func (r *AITaskGetResponseResultAIResultsContentmoderationSoftnudityFrame) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AITaskGetResponseResultAIResultsContentmoderationCasm struct {
-	// A boolean value whether child pornography was detected
-	ChildPornographyDetected bool `json:"child_pornography_detected"`
-	// Any of "0-2", "3-9", "10-19".
-	DetectionResults []string                                                     `json:"detection_results"`
-	Frames           []AITaskGetResponseResultAIResultsContentmoderationCasmFrame `json:"frames"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ChildPornographyDetected respjson.Field
-		DetectionResults         respjson.Field
-		Frames                   respjson.Field
-		ExtraFields              map[string]respjson.Field
-		raw                      string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AITaskGetResponseResultAIResultsContentmoderationCasm) RawJSON() string { return r.JSON.raw }
-func (r *AITaskGetResponseResultAIResultsContentmoderationCasm) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AITaskGetResponseResultAIResultsContentmoderationCasmFrame struct {
-	// Percentage of probability of identifying the object
-	Confidence float64 `json:"confidence"`
-	// Video frame number where object was found
-	FrameNumber int64 `json:"frame-number"`
-	// Type of detected object
-	Label string `json:"label"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Confidence  respjson.Field
-		FrameNumber respjson.Field
-		Label       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AITaskGetResponseResultAIResultsContentmoderationCasmFrame) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *AITaskGetResponseResultAIResultsContentmoderationCasmFrame) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1758,15 +1480,14 @@ type AITaskNewParams struct {
 	//   - transcription into the original language is a free procedure,
 	//   - and translation from the original language into any other languages is a
 	//     "translation" procedure and is paid. More details in
-	//     [POST /ai/tasks#transcribe](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/ai/create-ai-asr-task).
+	//     [POST /streaming/ai/tasks#transcribe](/docs/api-reference/streaming/ai/create-ai-asr-task).
 	//     Language is set by 3-letter language code according to ISO-639-2
 	//     (bibliographic code).
 	SubtitlesLanguage param.Opt[string] `json:"subtitles_language,omitzero"`
 	// Model for analysis (content-moderation only). Determines what exactly needs to
 	// be found in the video.
 	//
-	// Any of "sport", "weapon", "nsfw", "hard_nudity", "soft_nudity",
-	// "child_pornography".
+	// Any of "sport", "nsfw", "hard_nudity", "soft_nudity".
 	Category AITaskNewParamsCategory `json:"category,omitzero"`
 	paramObj
 }
@@ -1792,12 +1513,10 @@ const (
 type AITaskNewParamsCategory string
 
 const (
-	AITaskNewParamsCategorySport            AITaskNewParamsCategory = "sport"
-	AITaskNewParamsCategoryWeapon           AITaskNewParamsCategory = "weapon"
-	AITaskNewParamsCategoryNsfw             AITaskNewParamsCategory = "nsfw"
-	AITaskNewParamsCategoryHardNudity       AITaskNewParamsCategory = "hard_nudity"
-	AITaskNewParamsCategorySoftNudity       AITaskNewParamsCategory = "soft_nudity"
-	AITaskNewParamsCategoryChildPornography AITaskNewParamsCategory = "child_pornography"
+	AITaskNewParamsCategorySport      AITaskNewParamsCategory = "sport"
+	AITaskNewParamsCategoryNsfw       AITaskNewParamsCategory = "nsfw"
+	AITaskNewParamsCategoryHardNudity AITaskNewParamsCategory = "hard_nudity"
+	AITaskNewParamsCategorySoftNudity AITaskNewParamsCategory = "soft_nudity"
 )
 
 type AITaskListParams struct {
