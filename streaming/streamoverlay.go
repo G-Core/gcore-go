@@ -95,7 +95,7 @@ func (r *StreamOverlayService) New(ctx context.Context, streamID int64, body Str
 	return
 }
 
-// Updates overlay's settings
+// Updates overlay settings
 func (r *StreamOverlayService) Update(ctx context.Context, overlayID int64, params StreamOverlayUpdateParams, opts ...option.RequestOption) (res *Overlay, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("streaming/streams/%v/overlays/%v", params.StreamID, overlayID)
@@ -120,7 +120,7 @@ func (r *StreamOverlayService) Delete(ctx context.Context, overlayID int64, body
 	return
 }
 
-// Returns overlay details
+// Get overlay details
 func (r *StreamOverlayService) Get(ctx context.Context, overlayID int64, query StreamOverlayGetParams, opts ...option.RequestOption) (res *Overlay, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("streaming/streams/%v/overlays/%v", query.StreamID, overlayID)
