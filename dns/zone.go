@@ -233,11 +233,12 @@ func (r *ZoneListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// swagger: model
+// OutputZone
 type ZoneListResponseZone struct {
 	// ID of zone. This field usually is omitted in response and available only in case
 	// of getting deleted zones by admin.
-	ID int64 `json:"id"`
+	ID       int64 `json:"id"`
+	ClientID int64 `json:"client_id"`
 	// email address of the administrator responsible for this zone
 	Contact string `json:"contact"`
 	// describe dnssec status true means dnssec is enabled for the zone false means
@@ -271,6 +272,7 @@ type ZoneListResponseZone struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
+		ClientID      respjson.Field
 		Contact       respjson.Field
 		DnssecEnabled respjson.Field
 		Expiry        respjson.Field
@@ -410,7 +412,7 @@ func (r *ZoneExportResponse) UnmarshalJSON(data []byte) error {
 
 // Complete zone info with all records included
 type ZoneGetResponse struct {
-	// swagger: model
+	// OutputZone
 	Zone ZoneGetResponseZone `json:"Zone"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -426,11 +428,12 @@ func (r *ZoneGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// swagger: model
+// OutputZone
 type ZoneGetResponseZone struct {
 	// ID of zone. This field usually is omitted in response and available only in case
 	// of getting deleted zones by admin.
-	ID int64 `json:"id"`
+	ID       int64 `json:"id"`
+	ClientID int64 `json:"client_id"`
 	// email address of the administrator responsible for this zone
 	Contact string `json:"contact"`
 	// describe dnssec status true means dnssec is enabled for the zone false means
@@ -464,6 +467,7 @@ type ZoneGetResponseZone struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
+		ClientID      respjson.Field
 		Contact       respjson.Field
 		DnssecEnabled respjson.Field
 		Expiry        respjson.Field
