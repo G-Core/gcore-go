@@ -27,30 +27,32 @@ func TestGPUBaremetalClusterNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.GPUBaremetalClusters.New(context.TODO(), cloud.GPUBaremetalClusterNewParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
-		Flavor:    "bm3-ai-1xlarge-h100-80-8",
-		ImageID:   "f01fd9a0-9548-48ba-82dc-a8c8b2d6f2f1",
-		Interfaces: []cloud.GPUBaremetalClusterNewParamsInterfaceUnion{{
-			OfSubnet: &cloud.GPUBaremetalClusterNewParamsInterfaceSubnet{
-				NetworkID:     "024a29e9-b4b7-4c91-9a46-505be123d9f8",
-				SubnetID:      "91200a6c-07e0-42aa-98da-32d1f6545ae7",
-				FloatingIP:    cloud.NewGPUBaremetalClusterNewParamsInterfaceSubnetFloatingIP(),
-				InterfaceName: gcore.String("interface_name"),
+		ProjectID:    gcore.Int(1),
+		RegionID:     gcore.Int(7),
+		Flavor:       "g3-ai-32-192-1500-l40s-48-1",
+		ImageID:      "3793c250-0b3b-4678-bab3-e11afbc29657",
+		Name:         "gpu-cluster-1",
+		ServersCount: 3,
+		ServersSettings: cloud.GPUBaremetalClusterNewParamsServersSettings{
+			Interfaces: []cloud.GPUBaremetalClusterNewParamsServersSettingsInterfaceUnion{{
+				OfExternal: &cloud.GPUBaremetalClusterNewParamsServersSettingsInterfaceExternal{
+					IPFamily: "ipv4",
+					Name:     gcore.String("eth0"),
+				},
+			}},
+			Credentials: cloud.GPUBaremetalClusterNewParamsServersSettingsCredentials{
+				Password:   gcore.String("securepassword"),
+				SSHKeyName: gcore.String("my-ssh-key"),
+				Username:   gcore.String("admin"),
 			},
-		}},
-		Name:           "my-gpu-cluster",
-		InstancesCount: gcore.Int(1),
-		Password:       gcore.String("password"),
-		SecurityGroups: []cloud.GPUBaremetalClusterNewParamsSecurityGroup{{
-			ID: "ae74714c-c380-48b4-87f8-758d656cdad6",
-		}},
-		SSHKeyName: gcore.String("my-ssh-key"),
+			SecurityGroups: []cloud.GPUBaremetalClusterNewParamsServersSettingsSecurityGroup{{
+				ID: "b4849ffa-89f2-45a1-951f-0ae5b7809d98",
+			}},
+			UserData: gcore.String("eyJ0ZXN0IjogImRhdGEifQ=="),
+		},
 		Tags: map[string]string{
 			"my-tag": "my-tag-value",
 		},
-		UserData: gcore.String("user_data"),
-		Username: gcore.String("username"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -74,9 +76,10 @@ func TestGPUBaremetalClusterListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.GPUBaremetalClusters.List(context.TODO(), cloud.GPUBaremetalClusterListParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
-		Limit:     gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(7),
+		Limit:     gcore.Int(10),
+		ManagedBy: []string{"k8s"},
 		Offset:    gcore.Int(0),
 	})
 	if err != nil {
@@ -102,13 +105,13 @@ func TestGPUBaremetalClusterDeleteWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetalClusters.Delete(
 		context.TODO(),
-		"cluster_id",
+		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUBaremetalClusterDeleteParams{
-			ProjectID:        gcore.Int(0),
-			RegionID:         gcore.Int(0),
-			DeleteFloatings:  gcore.Bool(true),
-			Floatings:        gcore.String("floatings"),
-			ReservedFixedIPs: gcore.String("reserved_fixed_ips"),
+			ProjectID:          gcore.Int(1),
+			RegionID:           gcore.Int(7),
+			AllFloatingIPs:     gcore.Bool(true),
+			FloatingIPIDs:      []string{"e4a01208-d6ac-4304-bf86-3028154b070a"},
+			ReservedFixedIPIDs: []string{"a29b8e1e-08d3-4cec-91fb-06e81e5f46d5"},
 		},
 	)
 	if err != nil {
@@ -134,10 +137,10 @@ func TestGPUBaremetalClusterGet(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetalClusters.Get(
 		context.TODO(),
-		"cluster_id",
+		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUBaremetalClusterGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 		},
 	)
 	if err != nil {
