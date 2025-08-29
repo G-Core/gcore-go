@@ -46,6 +46,7 @@ func NewRegistryService(opts ...option.RequestOption) (r RegistryService) {
 // Create a new container registry with the specified configuration.
 func (r *RegistryService) New(ctx context.Context, params RegistryNewParams, opts ...option.RequestOption) (res *Registry, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -68,6 +69,7 @@ func (r *RegistryService) New(ctx context.Context, params RegistryNewParams, opt
 // List all container registries in the specified project and region.
 func (r *RegistryService) List(ctx context.Context, query RegistryListParams, opts ...option.RequestOption) (res *RegistryList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -91,6 +93,7 @@ func (r *RegistryService) List(ctx context.Context, query RegistryListParams, op
 func (r *RegistryService) Delete(ctx context.Context, registryID int64, body RegistryDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -113,6 +116,7 @@ func (r *RegistryService) Delete(ctx context.Context, registryID int64, body Reg
 // Get detailed information about a specific container registry.
 func (r *RegistryService) Get(ctx context.Context, registryID int64, query RegistryGetParams, opts ...option.RequestOption) (res *Registry, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -135,6 +139,7 @@ func (r *RegistryService) Get(ctx context.Context, registryID int64, query Regis
 // Update the size of a container registry.
 func (r *RegistryService) Resize(ctx context.Context, registryID int64, params RegistryResizeParams, opts ...option.RequestOption) (res *Registry, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

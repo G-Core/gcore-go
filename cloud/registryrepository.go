@@ -38,6 +38,7 @@ func NewRegistryRepositoryService(opts ...option.RequestOption) (r RegistryRepos
 // List all repositories in the container registry.
 func (r *RegistryRepositoryService) List(ctx context.Context, registryID int64, query RegistryRepositoryListParams, opts ...option.RequestOption) (res *RegistryRepositoryList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -61,6 +62,7 @@ func (r *RegistryRepositoryService) List(ctx context.Context, registryID int64, 
 func (r *RegistryRepositoryService) Delete(ctx context.Context, repositoryName string, body RegistryRepositoryDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

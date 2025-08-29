@@ -40,6 +40,7 @@ func NewCustomPageSetService(opts ...option.RequestOption) (r CustomPageSetServi
 // (block, `block_csrf`, etc) that is not provided the default page will be used.
 func (r *CustomPageSetService) New(ctx context.Context, body CustomPageSetNewParams, opts ...option.RequestOption) (res *WaapCustomPageSet, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/custom-page-sets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -53,6 +54,7 @@ func (r *CustomPageSetService) New(ctx context.Context, body CustomPageSetNewPar
 func (r *CustomPageSetService) Update(ctx context.Context, setID int64, body CustomPageSetUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/custom-page-sets/%v", setID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
 	return
@@ -63,6 +65,7 @@ func (r *CustomPageSetService) List(ctx context.Context, query CustomPageSetList
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/custom-page-sets"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -85,6 +88,7 @@ func (r *CustomPageSetService) ListAutoPaging(ctx context.Context, query CustomP
 func (r *CustomPageSetService) Delete(ctx context.Context, setID int64, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/custom-page-sets/%v", setID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -93,6 +97,7 @@ func (r *CustomPageSetService) Delete(ctx context.Context, setID int64, opts ...
 // Retrieve a custom page set based on the provided ID
 func (r *CustomPageSetService) Get(ctx context.Context, setID int64, opts ...option.RequestOption) (res *WaapCustomPageSet, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/custom-page-sets/%v", setID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -102,6 +107,7 @@ func (r *CustomPageSetService) Get(ctx context.Context, setID int64, opts ...opt
 // and data
 func (r *CustomPageSetService) Preview(ctx context.Context, params CustomPageSetPreviewParams, opts ...option.RequestOption) (res *WaapCustomPagePreview, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/preview-custom-page"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return

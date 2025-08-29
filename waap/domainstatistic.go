@@ -44,6 +44,7 @@ func (r *DomainStatisticService) GetDDOSAttacks(ctx context.Context, domainID in
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/ddos-attacks", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -67,6 +68,7 @@ func (r *DomainStatisticService) GetDDOSInfo(ctx context.Context, domainID int64
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/ddos-info", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -88,6 +90,7 @@ func (r *DomainStatisticService) GetDDOSInfoAutoPaging(ctx context.Context, doma
 // Retrieve an domain's event statistics
 func (r *DomainStatisticService) GetEventsAggregated(ctx context.Context, domainID int64, query DomainStatisticGetEventsAggregatedParams, opts ...option.RequestOption) (res *WaapEventStatistics, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/stats", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -97,6 +100,7 @@ func (r *DomainStatisticService) GetEventsAggregated(ctx context.Context, domain
 // request id
 func (r *DomainStatisticService) GetRequestDetails(ctx context.Context, requestID string, query DomainStatisticGetRequestDetailsParams, opts ...option.RequestOption) (res *WaapRequestDetails, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if requestID == "" {
 		err = errors.New("missing required request_id parameter")
 		return
@@ -111,6 +115,7 @@ func (r *DomainStatisticService) GetRequestsSeries(ctx context.Context, domainID
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/requests", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -134,6 +139,7 @@ func (r *DomainStatisticService) GetRequestsSeriesAutoPaging(ctx context.Context
 // error counts, and many more traffic-related metrics.
 func (r *DomainStatisticService) GetTrafficSeries(ctx context.Context, domainID int64, query DomainStatisticGetTrafficSeriesParams, opts ...option.RequestOption) (res *[]WaapTrafficMetrics, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/traffic", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
