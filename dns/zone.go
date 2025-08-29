@@ -52,19 +52,6 @@ func (r *ZoneService) New(ctx context.Context, body ZoneNewParams, opts ...optio
 	return
 }
 
-// Update DNS zone and SOA record.
-func (r *ZoneService) Update(ctx context.Context, name string, body ZoneUpdateParams, opts ...option.RequestOption) (res *ZoneUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
-	if name == "" {
-		err = errors.New("missing required name parameter")
-		return
-	}
-	path := fmt.Sprintf("dns/v2/zones/%s", name)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
-}
-
 // Show created zones with pagination managed by limit and offset params. All query
 // params are optional.
 func (r *ZoneService) List(ctx context.Context, query ZoneListParams, opts ...option.RequestOption) (res *ZoneListResponse, err error) {
@@ -185,6 +172,19 @@ func (r *ZoneService) Import(ctx context.Context, zoneName string, body ZoneImpo
 	return
 }
 
+// Update DNS zone and SOA record.
+func (r *ZoneService) Replace(ctx context.Context, name string, body ZoneReplaceParams, opts ...option.RequestOption) (res *ZoneReplaceResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
+	if name == "" {
+		err = errors.New("missing required name parameter")
+		return
+	}
+	path := fmt.Sprintf("dns/v2/zones/%s", name)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	return
+}
+
 // NameServer
 type DNSNameServer struct {
 	Ipv4Addresses []string `json:"ipv4Addresses"`
@@ -223,8 +223,6 @@ func (r ZoneNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *ZoneNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type ZoneUpdateResponse = any
 
 type ZoneListResponse struct {
 	TotalAmount int64                  `json:"total_amount"`
@@ -637,6 +635,8 @@ func (r *ZoneImportResponseImported) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ZoneReplaceResponse = any
+
 type ZoneNewParams struct {
 	// name of DNS zone
 	Name string `json:"name,required"`
@@ -675,47 +675,6 @@ func (r ZoneNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ZoneNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ZoneUpdateParams struct {
-	// name of DNS zone
-	Name string `json:"name,required"`
-	// email address of the administrator responsible for this zone
-	Contact param.Opt[string] `json:"contact,omitzero"`
-	// If a zone is disabled, then its records will not be resolved on dns servers
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// number of seconds after which secondary name servers should stop answering
-	// request for this zone
-	Expiry param.Opt[int64] `json:"expiry,omitzero"`
-	// Time To Live of cache
-	NxTtl param.Opt[int64] `json:"nx_ttl,omitzero"`
-	// primary master name server for zone
-	PrimaryServer param.Opt[string] `json:"primary_server,omitzero"`
-	// number of seconds after which secondary name servers should query the master for
-	// the SOA record, to detect zone changes.
-	Refresh param.Opt[int64] `json:"refresh,omitzero"`
-	// number of seconds after which secondary name servers should retry to request the
-	// serial number
-	Retry param.Opt[int64] `json:"retry,omitzero"`
-	// Serial number for this zone or Timestamp of zone modification moment. If a
-	// secondary name server slaved to this one observes an increase in this number,
-	// the slave will assume that the zone has been updated and initiate a zone
-	// transfer.
-	Serial param.Opt[int64] `json:"serial,omitzero"`
-	// arbitrarily data of zone in json format you can specify `webhook` url and
-	// `webhook_method` here webhook will get a map with three arrays: for created,
-	// updated and deleted rrsets `webhook_method` can be omitted, POST will be used by
-	// default
-	Meta map[string]any `json:"meta,omitzero"`
-	paramObj
-}
-
-func (r ZoneUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow ZoneUpdateParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ZoneUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -829,4 +788,45 @@ func (r ZoneImportParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *ZoneImportParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.Body)
+}
+
+type ZoneReplaceParams struct {
+	// name of DNS zone
+	Name string `json:"name,required"`
+	// email address of the administrator responsible for this zone
+	Contact param.Opt[string] `json:"contact,omitzero"`
+	// If a zone is disabled, then its records will not be resolved on dns servers
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// number of seconds after which secondary name servers should stop answering
+	// request for this zone
+	Expiry param.Opt[int64] `json:"expiry,omitzero"`
+	// Time To Live of cache
+	NxTtl param.Opt[int64] `json:"nx_ttl,omitzero"`
+	// primary master name server for zone
+	PrimaryServer param.Opt[string] `json:"primary_server,omitzero"`
+	// number of seconds after which secondary name servers should query the master for
+	// the SOA record, to detect zone changes.
+	Refresh param.Opt[int64] `json:"refresh,omitzero"`
+	// number of seconds after which secondary name servers should retry to request the
+	// serial number
+	Retry param.Opt[int64] `json:"retry,omitzero"`
+	// Serial number for this zone or Timestamp of zone modification moment. If a
+	// secondary name server slaved to this one observes an increase in this number,
+	// the slave will assume that the zone has been updated and initiate a zone
+	// transfer.
+	Serial param.Opt[int64] `json:"serial,omitzero"`
+	// arbitrarily data of zone in json format you can specify `webhook` url and
+	// `webhook_method` here webhook will get a map with three arrays: for created,
+	// updated and deleted rrsets `webhook_method` can be omitted, POST will be used by
+	// default
+	Meta map[string]any `json:"meta,omitzero"`
+	paramObj
+}
+
+func (r ZoneReplaceParams) MarshalJSON() (data []byte, err error) {
+	type shadow ZoneReplaceParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ZoneReplaceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

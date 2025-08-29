@@ -50,45 +50,6 @@ func TestZoneNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestZoneUpdateWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.DNS.Zones.Update(
-		context.TODO(),
-		"name",
-		dns.ZoneUpdateParams{
-			Name:    "example.com",
-			Contact: gcore.String("contact"),
-			Enabled: gcore.Bool(true),
-			Expiry:  gcore.Int(0),
-			Meta: map[string]any{
-				"foo": map[string]interface{}{},
-			},
-			NxTtl:         gcore.Int(0),
-			PrimaryServer: gcore.String("primary_server"),
-			Refresh:       gcore.Int(0),
-			Retry:         gcore.Int(0),
-			Serial:        gcore.Int(0),
-		},
-	)
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
 func TestZoneListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -309,6 +270,45 @@ func TestZoneImportWithOptionalParams(t *testing.T) {
 		"zoneName",
 		dns.ZoneImportParams{
 			Body: map[string]interface{}{},
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestZoneReplaceWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.DNS.Zones.Replace(
+		context.TODO(),
+		"name",
+		dns.ZoneReplaceParams{
+			Name:    "example.com",
+			Contact: gcore.String("contact"),
+			Enabled: gcore.Bool(true),
+			Expiry:  gcore.Int(0),
+			Meta: map[string]any{
+				"foo": map[string]interface{}{},
+			},
+			NxTtl:         gcore.Int(0),
+			PrimaryServer: gcore.String("primary_server"),
+			Refresh:       gcore.Int(0),
+			Retry:         gcore.Int(0),
+			Serial:        gcore.Int(0),
 		},
 	)
 	if err != nil {
