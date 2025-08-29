@@ -39,6 +39,7 @@ func NewBaremetalImageService(opts ...option.RequestOption) (r BaremetalImageSer
 // not be owned by the project.
 func (r *BaremetalImageService) List(ctx context.Context, params BaremetalImageListParams, opts ...option.RequestOption) (res *ImageList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

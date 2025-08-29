@@ -43,6 +43,7 @@ func NewNetworkRouterService(opts ...option.RequestOption) (r NetworkRouterServi
 // Create a new router with the specified configuration.
 func (r *NetworkRouterService) New(ctx context.Context, params NetworkRouterNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -65,6 +66,7 @@ func (r *NetworkRouterService) New(ctx context.Context, params NetworkRouterNewP
 // Update the configuration of an existing router.
 func (r *NetworkRouterService) Update(ctx context.Context, routerID string, params NetworkRouterUpdateParams, opts ...option.RequestOption) (res *Router, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -93,6 +95,7 @@ func (r *NetworkRouterService) List(ctx context.Context, params NetworkRouterLis
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -128,6 +131,7 @@ func (r *NetworkRouterService) ListAutoPaging(ctx context.Context, params Networ
 // Delete a specific router and all its associated resources.
 func (r *NetworkRouterService) Delete(ctx context.Context, routerID string, body NetworkRouterDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -154,6 +158,7 @@ func (r *NetworkRouterService) Delete(ctx context.Context, routerID string, body
 // Attach a subnet to an existing router.
 func (r *NetworkRouterService) AttachSubnet(ctx context.Context, routerID string, params NetworkRouterAttachSubnetParams, opts ...option.RequestOption) (res *Router, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -180,6 +185,7 @@ func (r *NetworkRouterService) AttachSubnet(ctx context.Context, routerID string
 // Detach a subnet from an existing router.
 func (r *NetworkRouterService) DetachSubnet(ctx context.Context, routerID string, params NetworkRouterDetachSubnetParams, opts ...option.RequestOption) (res *Router, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -206,6 +212,7 @@ func (r *NetworkRouterService) DetachSubnet(ctx context.Context, routerID string
 // Get detailed information about a specific router.
 func (r *NetworkRouterService) Get(ctx context.Context, routerID string, query NetworkRouterGetParams, opts ...option.RequestOption) (res *Router, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
