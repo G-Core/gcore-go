@@ -57,49 +57,6 @@ func TestZoneRrsetNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestZoneRrsetUpdateWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.DNS.Zones.Rrsets.Update(
-		context.TODO(),
-		"rrsetType",
-		dns.ZoneRrsetUpdateParams{
-			ZoneName:  "zoneName",
-			RrsetName: "rrsetName",
-			ResourceRecords: []dns.ZoneRrsetUpdateParamsResourceRecord{{
-				Content: []any{map[string]interface{}{}},
-				Enabled: gcore.Bool(true),
-				Meta: map[string]any{
-					"foo": map[string]interface{}{},
-				},
-			}},
-			Meta: map[string]any{},
-			Pickers: []dns.ZoneRrsetUpdateParamsPicker{{
-				Type:   "geodns",
-				Limit:  gcore.Int(0),
-				Strict: gcore.Bool(true),
-			}},
-			Ttl: gcore.Int(0),
-		},
-	)
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
 func TestZoneRrsetListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -209,6 +166,49 @@ func TestZoneRrsetGetFailoverLogsWithOptionalParams(t *testing.T) {
 			RrsetName: "rrsetName",
 			Limit:     gcore.Int(0),
 			Offset:    gcore.Int(0),
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestZoneRrsetReplaceWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.DNS.Zones.Rrsets.Replace(
+		context.TODO(),
+		"rrsetType",
+		dns.ZoneRrsetReplaceParams{
+			ZoneName:  "zoneName",
+			RrsetName: "rrsetName",
+			ResourceRecords: []dns.ZoneRrsetReplaceParamsResourceRecord{{
+				Content: []any{map[string]interface{}{}},
+				Enabled: gcore.Bool(true),
+				Meta: map[string]any{
+					"foo": map[string]interface{}{},
+				},
+			}},
+			Meta: map[string]any{},
+			Pickers: []dns.ZoneRrsetReplaceParamsPicker{{
+				Type:   "geodns",
+				Limit:  gcore.Int(0),
+				Strict: gcore.Bool(true),
+			}},
+			Ttl: gcore.Int(0),
 		},
 	)
 	if err != nil {

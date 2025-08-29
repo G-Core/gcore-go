@@ -170,27 +170,6 @@ func (r *ZoneRrsetService) New(ctx context.Context, rrsetType string, params Zon
 	return
 }
 
-// Create/update RRset.
-func (r *ZoneRrsetService) Update(ctx context.Context, rrsetType string, params ZoneRrsetUpdateParams, opts ...option.RequestOption) (res *DNSOutputRrset, err error) {
-	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
-	if params.ZoneName == "" {
-		err = errors.New("missing required zoneName parameter")
-		return
-	}
-	if params.RrsetName == "" {
-		err = errors.New("missing required rrsetName parameter")
-		return
-	}
-	if rrsetType == "" {
-		err = errors.New("missing required rrsetType parameter")
-		return
-	}
-	path := fmt.Sprintf("dns/v2/zones/%s/%s/%s", params.ZoneName, params.RrsetName, rrsetType)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
-}
-
 // List of RRset.
 func (r *ZoneRrsetService) List(ctx context.Context, zoneName string, query ZoneRrsetListParams, opts ...option.RequestOption) (res *ZoneRrsetListResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -264,6 +243,27 @@ func (r *ZoneRrsetService) GetFailoverLogs(ctx context.Context, rrsetType string
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/%s/%s/failover/log", params.ZoneName, params.RrsetName, rrsetType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
+	return
+}
+
+// Create/update RRset.
+func (r *ZoneRrsetService) Replace(ctx context.Context, rrsetType string, params ZoneRrsetReplaceParams, opts ...option.RequestOption) (res *DNSOutputRrset, err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
+	if params.ZoneName == "" {
+		err = errors.New("missing required zoneName parameter")
+		return
+	}
+	if params.RrsetName == "" {
+		err = errors.New("missing required rrsetName parameter")
+		return
+	}
+	if rrsetType == "" {
+		err = errors.New("missing required rrsetType parameter")
+		return
+	}
+	path := fmt.Sprintf("dns/v2/zones/%s/%s/%s", params.ZoneName, params.RrsetName, rrsetType)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -576,88 +576,6 @@ func init() {
 	)
 }
 
-type ZoneRrsetUpdateParams struct {
-	ZoneName  string `path:"zoneName,required" json:"-"`
-	RrsetName string `path:"rrsetName,required" json:"-"`
-	// List of resource record from rrset
-	ResourceRecords []ZoneRrsetUpdateParamsResourceRecord `json:"resource_records,omitzero,required"`
-	Ttl             param.Opt[int64]                      `json:"ttl,omitzero"`
-	// Meta information for rrset
-	Meta map[string]any `json:"meta,omitzero"`
-	// Set of pickers
-	Pickers []ZoneRrsetUpdateParamsPicker `json:"pickers,omitzero"`
-	paramObj
-}
-
-func (r ZoneRrsetUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow ZoneRrsetUpdateParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ZoneRrsetUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// nolint: lll
-//
-// The property Content is required.
-type ZoneRrsetUpdateParamsResourceRecord struct {
-	// Content of resource record The exact length of the array depends on the type of
-	// rrset, each individual record parameter must be a separate element of the array.
-	// For example
-	//
-	//   - SRV-record: `[100, 1, 5061, "example.com"]`
-	//   - CNAME-record: `[ "the.target.domain" ]`
-	//   - A-record: `[ "1.2.3.4", "5.6.7.8" ]`
-	//   - AAAA-record: `[ "2001:db8::1", "2001:db8::2" ]`
-	//   - MX-record: `[ "mail1.example.com", "mail2.example.com" ]`
-	//   - SVCB/HTTPS-record:
-	//     `[ 1, ".", ["alpn", "h3", "h2"], [ "port", 1443 ], [ "ipv4hint", "10.0.0.1" ], [ "ech", "AEn+DQBFKwAgACABWIHUGj4u+PIggYXcR5JF0gYk3dCRioBW8uJq9H4mKAAIAAEAAQABAANAEnB1YmxpYy50bHMtZWNoLmRldgAA" ] ]`
-	Content []any           `json:"content,omitzero,required"`
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// This meta will be used to decide which resource record should pass through
-	// filters from the filter set
-	Meta map[string]any `json:"meta,omitzero"`
-	paramObj
-}
-
-func (r ZoneRrsetUpdateParamsResourceRecord) MarshalJSON() (data []byte, err error) {
-	type shadow ZoneRrsetUpdateParamsResourceRecord
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ZoneRrsetUpdateParamsResourceRecord) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Type is required.
-type ZoneRrsetUpdateParamsPicker struct {
-	// Filter type
-	//
-	// Any of "geodns", "asn", "country", "continent", "region", "ip", "geodistance",
-	// "weighted_shuffle", "default", "first_n".
-	Type string `json:"type,omitzero,required"`
-	// Limits the number of records returned by the filter Can be a positive value for
-	// a specific limit. Use zero or leave it blank to indicate no limits.
-	Limit param.Opt[int64] `json:"limit,omitzero"`
-	// if strict=false, then the filter will return all records if no records match the
-	// filter
-	Strict param.Opt[bool] `json:"strict,omitzero"`
-	paramObj
-}
-
-func (r ZoneRrsetUpdateParamsPicker) MarshalJSON() (data []byte, err error) {
-	type shadow ZoneRrsetUpdateParamsPicker
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ZoneRrsetUpdateParamsPicker) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ZoneRrsetUpdateParamsPicker](
-		"type", "geodns", "asn", "country", "continent", "region", "ip", "geodistance", "weighted_shuffle", "default", "first_n",
-	)
-}
-
 type ZoneRrsetListParams struct {
 	// Max number of records in response
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
@@ -717,4 +635,86 @@ func (r ZoneRrsetGetFailoverLogsParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
+}
+
+type ZoneRrsetReplaceParams struct {
+	ZoneName  string `path:"zoneName,required" json:"-"`
+	RrsetName string `path:"rrsetName,required" json:"-"`
+	// List of resource record from rrset
+	ResourceRecords []ZoneRrsetReplaceParamsResourceRecord `json:"resource_records,omitzero,required"`
+	Ttl             param.Opt[int64]                       `json:"ttl,omitzero"`
+	// Meta information for rrset
+	Meta map[string]any `json:"meta,omitzero"`
+	// Set of pickers
+	Pickers []ZoneRrsetReplaceParamsPicker `json:"pickers,omitzero"`
+	paramObj
+}
+
+func (r ZoneRrsetReplaceParams) MarshalJSON() (data []byte, err error) {
+	type shadow ZoneRrsetReplaceParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ZoneRrsetReplaceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// nolint: lll
+//
+// The property Content is required.
+type ZoneRrsetReplaceParamsResourceRecord struct {
+	// Content of resource record The exact length of the array depends on the type of
+	// rrset, each individual record parameter must be a separate element of the array.
+	// For example
+	//
+	//   - SRV-record: `[100, 1, 5061, "example.com"]`
+	//   - CNAME-record: `[ "the.target.domain" ]`
+	//   - A-record: `[ "1.2.3.4", "5.6.7.8" ]`
+	//   - AAAA-record: `[ "2001:db8::1", "2001:db8::2" ]`
+	//   - MX-record: `[ "mail1.example.com", "mail2.example.com" ]`
+	//   - SVCB/HTTPS-record:
+	//     `[ 1, ".", ["alpn", "h3", "h2"], [ "port", 1443 ], [ "ipv4hint", "10.0.0.1" ], [ "ech", "AEn+DQBFKwAgACABWIHUGj4u+PIggYXcR5JF0gYk3dCRioBW8uJq9H4mKAAIAAEAAQABAANAEnB1YmxpYy50bHMtZWNoLmRldgAA" ] ]`
+	Content []any           `json:"content,omitzero,required"`
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// This meta will be used to decide which resource record should pass through
+	// filters from the filter set
+	Meta map[string]any `json:"meta,omitzero"`
+	paramObj
+}
+
+func (r ZoneRrsetReplaceParamsResourceRecord) MarshalJSON() (data []byte, err error) {
+	type shadow ZoneRrsetReplaceParamsResourceRecord
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ZoneRrsetReplaceParamsResourceRecord) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Type is required.
+type ZoneRrsetReplaceParamsPicker struct {
+	// Filter type
+	//
+	// Any of "geodns", "asn", "country", "continent", "region", "ip", "geodistance",
+	// "weighted_shuffle", "default", "first_n".
+	Type string `json:"type,omitzero,required"`
+	// Limits the number of records returned by the filter Can be a positive value for
+	// a specific limit. Use zero or leave it blank to indicate no limits.
+	Limit param.Opt[int64] `json:"limit,omitzero"`
+	// if strict=false, then the filter will return all records if no records match the
+	// filter
+	Strict param.Opt[bool] `json:"strict,omitzero"`
+	paramObj
+}
+
+func (r ZoneRrsetReplaceParamsPicker) MarshalJSON() (data []byte, err error) {
+	type shadow ZoneRrsetReplaceParamsPicker
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ZoneRrsetReplaceParamsPicker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[ZoneRrsetReplaceParamsPicker](
+		"type", "geodns", "asn", "country", "continent", "region", "ip", "geodistance", "weighted_shuffle", "default", "first_n",
+	)
 }
