@@ -131,10 +131,10 @@ func TestBaremetalServerRebuildWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Baremetal.Servers.Rebuild(
 		context.TODO(),
-		"server_id",
+		"024a29e-b4b7-4c91-9a46-505be123d9f8",
 		cloud.BaremetalServerRebuildParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			ImageID:   gcore.String("b5b4d65d-945f-4b98-ab6f-332319c724ef"),
 			UserData:  gcore.String("aGVsbG9fd29ybGQ="),
 		},
