@@ -321,6 +321,182 @@ func (r *WaapBlockedStatisticsRuleNameUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A collection of total numbers of events per criteria
+type WaapCountStatistics struct {
+	// A collection of event counts per action. The first item is the action's
+	// abbreviation/full action name, and the second item is the number of events
+	Action [][]WaapCountStatisticsActionUnion `json:"action,required"`
+	// A collection of event counts per country of origin. The first item is the
+	// country's ISO 3166-1 alpha-2, and the second item is the number of events
+	Country [][]WaapCountStatisticsCountryUnion `json:"country,required"`
+	// A collection of event counts per organization that owns the event's client IP.
+	// The first item is the organization's name, and the second item is the number of
+	// events
+	Org [][]WaapCountStatisticsOrgUnion `json:"org,required"`
+	// A collection of event counts per rule that triggered the event. The first item
+	// is the rule's name, and the second item is the number of events
+	RuleName [][]WaapCountStatisticsRuleNameUnion `json:"rule_name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action      respjson.Field
+		Country     respjson.Field
+		Org         respjson.Field
+		RuleName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCountStatistics) RawJSON() string { return r.JSON.raw }
+func (r *WaapCountStatistics) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WaapCountStatisticsActionUnion contains all possible properties and values from
+// [string], [int64].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfInt]
+type WaapCountStatisticsActionUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [int64] instead of an object.
+	OfInt int64 `json:",inline"`
+	JSON  struct {
+		OfString respjson.Field
+		OfInt    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u WaapCountStatisticsActionUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u WaapCountStatisticsActionUnion) AsInt() (v int64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u WaapCountStatisticsActionUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *WaapCountStatisticsActionUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WaapCountStatisticsCountryUnion contains all possible properties and values from
+// [string], [int64].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfInt]
+type WaapCountStatisticsCountryUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [int64] instead of an object.
+	OfInt int64 `json:",inline"`
+	JSON  struct {
+		OfString respjson.Field
+		OfInt    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u WaapCountStatisticsCountryUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u WaapCountStatisticsCountryUnion) AsInt() (v int64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u WaapCountStatisticsCountryUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *WaapCountStatisticsCountryUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WaapCountStatisticsOrgUnion contains all possible properties and values from
+// [string], [int64].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfInt]
+type WaapCountStatisticsOrgUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [int64] instead of an object.
+	OfInt int64 `json:",inline"`
+	JSON  struct {
+		OfString respjson.Field
+		OfInt    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u WaapCountStatisticsOrgUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u WaapCountStatisticsOrgUnion) AsInt() (v int64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u WaapCountStatisticsOrgUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *WaapCountStatisticsOrgUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// WaapCountStatisticsRuleNameUnion contains all possible properties and values
+// from [string], [int64].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfInt]
+type WaapCountStatisticsRuleNameUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [int64] instead of an object.
+	OfInt int64 `json:",inline"`
+	JSON  struct {
+		OfString respjson.Field
+		OfInt    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u WaapCountStatisticsRuleNameUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u WaapCountStatisticsRuleNameUnion) AsInt() (v int64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u WaapCountStatisticsRuleNameUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *WaapCountStatisticsRuleNameUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WaapDDOSAttack struct {
 	// End time of DDoS attack
 	EndTime time.Time `json:"end_time,nullable" format:"date-time"`
@@ -377,7 +553,7 @@ type WaapEventStatistics struct {
 	// A collection of total numbers of events with blocked results per criteria
 	Blocked WaapBlockedStatistics `json:"blocked,required"`
 	// A collection of total numbers of events per criteria
-	Count WaapEventStatisticsCount `json:"count,required"`
+	Count WaapCountStatistics `json:"count,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Blocked     respjson.Field
@@ -390,182 +566,6 @@ type WaapEventStatistics struct {
 // Returns the unmodified JSON received from the API
 func (r WaapEventStatistics) RawJSON() string { return r.JSON.raw }
 func (r *WaapEventStatistics) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A collection of total numbers of events per criteria
-type WaapEventStatisticsCount struct {
-	// A collection of event counts per action. The first item is the action's
-	// abbreviation/full action name, and the second item is the number of events
-	Action [][]WaapEventStatisticsCountActionUnion `json:"action,required"`
-	// A collection of event counts per country of origin. The first item is the
-	// country's ISO 3166-1 alpha-2, and the second item is the number of events
-	Country [][]WaapEventStatisticsCountCountryUnion `json:"country,required"`
-	// A collection of event counts per organization that owns the event's client IP.
-	// The first item is the organization's name, and the second item is the number of
-	// events
-	Org [][]WaapEventStatisticsCountOrgUnion `json:"org,required"`
-	// A collection of event counts per rule that triggered the event. The first item
-	// is the rule's name, and the second item is the number of events
-	RuleName [][]WaapEventStatisticsCountRuleNameUnion `json:"rule_name,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Action      respjson.Field
-		Country     respjson.Field
-		Org         respjson.Field
-		RuleName    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WaapEventStatisticsCount) RawJSON() string { return r.JSON.raw }
-func (r *WaapEventStatisticsCount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// WaapEventStatisticsCountActionUnion contains all possible properties and values
-// from [string], [int64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfInt]
-type WaapEventStatisticsCountActionUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [int64] instead of an object.
-	OfInt int64 `json:",inline"`
-	JSON  struct {
-		OfString respjson.Field
-		OfInt    respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u WaapEventStatisticsCountActionUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u WaapEventStatisticsCountActionUnion) AsInt() (v int64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u WaapEventStatisticsCountActionUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *WaapEventStatisticsCountActionUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// WaapEventStatisticsCountCountryUnion contains all possible properties and values
-// from [string], [int64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfInt]
-type WaapEventStatisticsCountCountryUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [int64] instead of an object.
-	OfInt int64 `json:",inline"`
-	JSON  struct {
-		OfString respjson.Field
-		OfInt    respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u WaapEventStatisticsCountCountryUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u WaapEventStatisticsCountCountryUnion) AsInt() (v int64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u WaapEventStatisticsCountCountryUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *WaapEventStatisticsCountCountryUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// WaapEventStatisticsCountOrgUnion contains all possible properties and values
-// from [string], [int64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfInt]
-type WaapEventStatisticsCountOrgUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [int64] instead of an object.
-	OfInt int64 `json:",inline"`
-	JSON  struct {
-		OfString respjson.Field
-		OfInt    respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u WaapEventStatisticsCountOrgUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u WaapEventStatisticsCountOrgUnion) AsInt() (v int64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u WaapEventStatisticsCountOrgUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *WaapEventStatisticsCountOrgUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// WaapEventStatisticsCountRuleNameUnion contains all possible properties and
-// values from [string], [int64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfInt]
-type WaapEventStatisticsCountRuleNameUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [int64] instead of an object.
-	OfInt int64 `json:",inline"`
-	JSON  struct {
-		OfString respjson.Field
-		OfInt    respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u WaapEventStatisticsCountRuleNameUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u WaapEventStatisticsCountRuleNameUnion) AsInt() (v int64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u WaapEventStatisticsCountRuleNameUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *WaapEventStatisticsCountRuleNameUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
