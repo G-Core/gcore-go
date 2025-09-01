@@ -18,12 +18,6 @@ func main() {
 	// Will use Production API URL if omitted
 	//baseURL := os.Getenv("GCORE_BASE_URL")
 
-	// TODO set cloud project ID before running
-	clientID, err := strconv.ParseInt(os.Getenv("GCORE_CLIENT_ID"), 10, 64)
-	if err != nil {
-		log.Fatalf("GCORE_CLIENT_ID environment variable is required and must be a valid integer")
-	}
-
 	// TODO set cloud region ID before running
 	regionID, err := strconv.ParseInt(os.Getenv("GCORE_CLOUD_REGION_ID"), 10, 64)
 	if err != nil {
@@ -34,6 +28,12 @@ func main() {
 	//option.WithAPIKey(apiKey),
 	//option.WithBaseURL(baseURL),
 	)
+
+	accountOverview, err := client.Iam.GetAccountOverview(context.Background())
+	if err != nil {
+		log.Fatalf("Error fetching account overview: %v", err)
+	}
+	clientID := accountOverview.ID
 
 	// Get combined quotas (global and regional)
 	getCombinedQuotas(&client)
