@@ -1,6 +1,10 @@
 # Gcore Go API Library
 
+<!-- x-release-please-start-version -->
+
 <a href="https://pkg.go.dev/github.com/G-Core/gcore-go"><img src="https://pkg.go.dev/badge/github.com/G-Core/gcore-go.svg" alt="Go Reference"></a>
+
+<!-- x-release-please-end -->
 
 The Gcore Go library provides convenient access to the [Gcore REST API](https://api.gcore.com/docs)
 from applications written in Go.
