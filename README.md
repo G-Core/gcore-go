@@ -2,7 +2,11 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FG-Core%2Fgcore-go.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FG-Core%2Fgcore-go?ref=badge_shield)
 
 
+<!-- x-release-please-start-version -->
+
 <a href="https://pkg.go.dev/github.com/G-Core/gcore-go"><img src="https://pkg.go.dev/badge/github.com/G-Core/gcore-go.svg" alt="Go Reference"></a>
+
+<!-- x-release-please-end -->
 
 The Gcore Go library provides convenient access to the [Gcore REST API](https://api.gcore.com/docs)
 from applications written in Go.
