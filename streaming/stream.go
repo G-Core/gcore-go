@@ -544,19 +544,6 @@ type Stream struct {
 	IframeURL string `json:"iframe_url"`
 	// State of receiving and transcoding master stream from source by main server
 	Live bool `json:"live"`
-	// Deprecated, always returns "true". The only exception is that the attribute can
-	// only be used by clients that have previously used the old stream format. This
-	// method is outdated since we've made it easier to manage streams. For your
-	// convenience, you no longer need to set this parameter at the stage of creating a
-	// stream. Now all streams are prepared in 2 formats simultaniously: Low Latency
-	// and Legacy. You can get the desired output format in the attributes
-	// "`dash_url`", "`hls_cmaf_url`", "`hls_mpegts_url`". Or use them all at once.
-	//
-	// ---
-	//
-	// Note: Links /streams/{id}/playlist.m3u8 are depricated too. Use value of the
-	// "`hls_mpegts_url`" attribute instead.
-	LowLatencyEnabled bool `json:"low_latency_enabled"`
 	// Visualization mode for 360° streams, how the stream is rendered in our web
 	// player ONLY. If you would like to show video 360° in an external video player,
 	// then use parameters of that video player. Modes:
@@ -572,9 +559,10 @@ type Stream struct {
 	// values:
 	//
 	//   - true – stream is received by PULL method. Use this when need to get stream
-	//     from external server by srt, rtmp\s, hls, dash, etc protocols.
+	//     from external server.
 	//   - false – stream is received by PUSH method. Use this when need to send stream
-	//     from end-device to our Streaming Platform, i.e. from mobile app or OBS Studio.
+	//     from end-device to our Streaming Platform, i.e. from your encoder, mobile app
+	//     or OBS Studio.
 	Pull bool `json:"pull"`
 	// URL to PUSH master stream to our main server using RTMP and RTMPS protocols. To
 	// use RTMPS just manually change the protocol name from "rtmp://" to "rtmps://".
@@ -588,13 +576,23 @@ type Stream struct {
 	//     port 443 in the URL. Here’s an example:
 	//     rtmps://vp-push.domain.com:443/in/stream?key.
 	//   - If you're still having trouble, then your encoder may not support RTMPS.
-	//     Double-check the documentation for your encoder. For advanced customers only:
-	//     For your complexly distributed broadcast systems, it is also possible to
-	//     additionally output an array of multi-regional ingestion points for manual
-	//     selection from them. To activate this mode, contact your manager or the
-	//     Support Team to activate the "`multi_region_push_urls`" attibute. But if you
-	//     clearly don’t understand why you need this, then it’s best to use the default
-	//     single URL in the "`push_url`" attribute.
+	//     Double-check the documentation for your encoder.
+	//
+	// Please note that 1 connection and 1 protocol can be used at a single moment in
+	// time per unique stream key input. Trying to send 2+ connection requests into
+	// `push_url` to once, or 2+ protocols at once will not lead to a result. For
+	// example, transcoding process will fail if:
+	//
+	//   - you are pushing primary and backup RTMP to the same single `push_url`
+	//     simultaneously
+	//   - you are pushing RTMP to `push_url` and SRT to `push_url_srt` simultaneously
+	//
+	// For advanced customers only: For your complexly distributed broadcast systems,
+	// it is also possible to additionally output an array of multi-regional ingestion
+	// points for manual selection from them. To activate this mode, contact your
+	// manager or the Support Team to activate the "`multi_region_push_urls`" attibute.
+	// But if you clearly don’t understand why you need this, then it’s best to use the
+	// default single URL in the "`push_url`" attribute.
 	PushURL string `json:"push_url"`
 	// URL to PUSH master stream to our main server using SRT protocol. Use only 1
 	// protocol of sending a master stream: eitheronly RTMP/S (`push_url`), or only SRT
@@ -616,6 +614,15 @@ type Stream struct {
 	// sender side. The default values do not take into account your specific scenarios
 	// and do not work well. If necessary, ask us and we will help you.
 	//
+	// Please note that 1 connection and 1 protocol can be used at a single moment in
+	// time per unique stream key input. Trying to send 2+ connection requests into
+	// `push_url_srt` to once, or 2+ protocols at once will not lead to a result. For
+	// example, transcoding process will fail if:
+	//
+	//   - you are pushing primary and backup SRT to the same single `push_url_srt`
+	//     simultaneously
+	//   - you are pushing RTMP to `push_url` and SRT to `push_url_srt` simultaneously
+	//
 	// See more information and best practices about SRT protocol in the Product
 	// Documentation.
 	PushURLSrt string `json:"push_url_srt"`
@@ -628,9 +635,9 @@ type Stream struct {
 	// receives video data. Signaling is a term to describe communication between
 	// WebRTC endpoints, needed to initiate and maintain a session. WHIP is an open
 	// specification for a simple signaling protocol for starting WebRTC sessions in an
-	// outgoing direction, (i.e., streaming from your device). **WebRTC stream encoding
-	// parameters** At least one video and audio track both must be present in the
-	// stream:
+	// outgoing direction, (i.e., streaming from your device). There is the primary
+	// link only for WHIP, so no backup link. **WebRTC stream encoding parameters** At
+	// least one video and audio track both must be present in the stream:
 	//
 	//   - Video must be encoded with H.264.
 	//   - Audio must be encoded with OPUS. Note. Specifically for WebRTC mode a method
@@ -646,8 +653,18 @@ type Stream struct {
 	//     https://stackblitz.com/edit/stackblitz-starters-j2r9ar?file=index.html Also
 	//     try to use the feature in UI of the Customer Portal. In the Streaming section
 	//     inside the settings of a specific live stream, a new section "Quick start in
-	//     browser" has been added. More information in the Product Documentation on the
-	//     website.
+	//     browser" has been added.
+	//
+	// Please note that 1 connection and 1 protocol can be used at a single moment in
+	// time per unique stream key input. Trying to send 2+ connection requests into
+	// `push_url_whip` to once, or 2+ protocols at once will not lead to a result. For
+	// example, transcoding process will fail if:
+	//
+	//   - you are pushing primary and backup WHIP to the same single `push_url_whip`
+	//     simultaneously
+	//   - you are pushing WHIP to `push_url_whip` and RTMP to `push_url` simultaneously
+	//
+	// More information in the Product Documentation on the website.
 	PushURLWhip string `json:"push_url_whip"`
 	// Custom quality set ID for transcoding, if transcoding is required according to
 	// your conditions. Look at GET /`quality_sets` method
@@ -691,10 +708,11 @@ type Stream struct {
 	// round robin scheduling. If the first address does not respond, then the next one
 	// in the list will be automatically requested, returning to the first and so on in
 	// a circle. Also, if the sucessfully working stream stops sending data, then the
-	// next one will be selected according to the same scheme. After 24 hours of
-	// inactivity of your streams we will stop PULL-ing, and will switch "active" field
-	// to "false". Please, note that this field is for PULL only, so is not suitable
-	// for PUSH. Look at fields "`push_url`" and "`push_url_srt`" from GET method.
+	// next one will be selected according to the same scheme. After 2 hours of
+	// inactivity of your original stream, the system stops PULL requests and the
+	// stream is deactivated (the "active" field switches to "false"). Please, note
+	// that this field is for PULL only, so is not suitable for PUSH. Look at fields
+	// "`push_url`" and "`push_url_srt`" from GET method.
 	Uri string `json:"uri"`
 	// Current height of frame of the original stream, if stream is transcoding
 	VideoHeight float64 `json:"video_height"`
@@ -726,7 +744,6 @@ type Stream struct {
 		HTMLOverlays        respjson.Field
 		IframeURL           respjson.Field
 		Live                respjson.Field
-		LowLatencyEnabled   respjson.Field
 		Projection          respjson.Field
 		Pull                respjson.Field
 		PushURL             respjson.Field
@@ -988,26 +1005,14 @@ type StreamNewParams struct {
 	// Switch on mode to insert and display real-time HTML overlay widgets on top of
 	// live streams
 	HTMLOverlay param.Opt[bool] `json:"html_overlay,omitzero"`
-	// Deprecated, always returns "true". The only exception is that the attribute can
-	// only be used by clients that have previously used the old stream format. This
-	// method is outdated since we've made it easier to manage streams. For your
-	// convenience, you no longer need to set this parameter at the stage of creating a
-	// stream. Now all streams are prepared in 2 formats simultaniously: Low Latency
-	// and Legacy. You can get the desired output format in the attributes
-	// "`dash_url`", "`hls_cmaf_url`", "`hls_mpegts_url`". Or use them all at once.
-	//
-	// ---
-	//
-	// Note: Links /streams/{id}/playlist.m3u8 are depricated too. Use value of the
-	// "`hls_mpegts_url`" attribute instead.
-	LowLatencyEnabled param.Opt[bool] `json:"low_latency_enabled,omitzero"`
 	// Indicates if stream is pulled from external server or not. Has two possible
 	// values:
 	//
 	//   - true – stream is received by PULL method. Use this when need to get stream
-	//     from external server by srt, rtmp\s, hls, dash, etc protocols.
+	//     from external server.
 	//   - false – stream is received by PUSH method. Use this when need to send stream
-	//     from end-device to our Streaming Platform, i.e. from mobile app or OBS Studio.
+	//     from end-device to our Streaming Platform, i.e. from your encoder, mobile app
+	//     or OBS Studio.
 	Pull param.Opt[bool] `json:"pull,omitzero"`
 	// Custom quality set ID for transcoding, if transcoding is required according to
 	// your conditions. Look at GET /`quality_sets` method
@@ -1018,10 +1023,11 @@ type StreamNewParams struct {
 	// round robin scheduling. If the first address does not respond, then the next one
 	// in the list will be automatically requested, returning to the first and so on in
 	// a circle. Also, if the sucessfully working stream stops sending data, then the
-	// next one will be selected according to the same scheme. After 24 hours of
-	// inactivity of your streams we will stop PULL-ing, and will switch "active" field
-	// to "false". Please, note that this field is for PULL only, so is not suitable
-	// for PUSH. Look at fields "`push_url`" and "`push_url_srt`" from GET method.
+	// next one will be selected according to the same scheme. After 2 hours of
+	// inactivity of your original stream, the system stops PULL requests and the
+	// stream is deactivated (the "active" field switches to "false"). Please, note
+	// that this field is for PULL only, so is not suitable for PUSH. Look at fields
+	// "`push_url`" and "`push_url_srt`" from GET method.
 	Uri param.Opt[string] `json:"uri,omitzero"`
 	// IDs of broadcasts which will include this stream
 	BroadcastIDs []int64 `json:"broadcast_ids,omitzero"`
@@ -1153,26 +1159,14 @@ type StreamUpdateParamsStream struct {
 	// Switch on mode to insert and display real-time HTML overlay widgets on top of
 	// live streams
 	HTMLOverlay param.Opt[bool] `json:"html_overlay,omitzero"`
-	// Deprecated, always returns "true". The only exception is that the attribute can
-	// only be used by clients that have previously used the old stream format. This
-	// method is outdated since we've made it easier to manage streams. For your
-	// convenience, you no longer need to set this parameter at the stage of creating a
-	// stream. Now all streams are prepared in 2 formats simultaniously: Low Latency
-	// and Legacy. You can get the desired output format in the attributes
-	// "`dash_url`", "`hls_cmaf_url`", "`hls_mpegts_url`". Or use them all at once.
-	//
-	// ---
-	//
-	// Note: Links /streams/{id}/playlist.m3u8 are depricated too. Use value of the
-	// "`hls_mpegts_url`" attribute instead.
-	LowLatencyEnabled param.Opt[bool] `json:"low_latency_enabled,omitzero"`
 	// Indicates if stream is pulled from external server or not. Has two possible
 	// values:
 	//
 	//   - true – stream is received by PULL method. Use this when need to get stream
-	//     from external server by srt, rtmp\s, hls, dash, etc protocols.
+	//     from external server.
 	//   - false – stream is received by PUSH method. Use this when need to send stream
-	//     from end-device to our Streaming Platform, i.e. from mobile app or OBS Studio.
+	//     from end-device to our Streaming Platform, i.e. from your encoder, mobile app
+	//     or OBS Studio.
 	Pull param.Opt[bool] `json:"pull,omitzero"`
 	// Custom quality set ID for transcoding, if transcoding is required according to
 	// your conditions. Look at GET /`quality_sets` method
@@ -1183,10 +1177,11 @@ type StreamUpdateParamsStream struct {
 	// round robin scheduling. If the first address does not respond, then the next one
 	// in the list will be automatically requested, returning to the first and so on in
 	// a circle. Also, if the sucessfully working stream stops sending data, then the
-	// next one will be selected according to the same scheme. After 24 hours of
-	// inactivity of your streams we will stop PULL-ing, and will switch "active" field
-	// to "false". Please, note that this field is for PULL only, so is not suitable
-	// for PUSH. Look at fields "`push_url`" and "`push_url_srt`" from GET method.
+	// next one will be selected according to the same scheme. After 2 hours of
+	// inactivity of your original stream, the system stops PULL requests and the
+	// stream is deactivated (the "active" field switches to "false"). Please, note
+	// that this field is for PULL only, so is not suitable for PUSH. Look at fields
+	// "`push_url`" and "`push_url_srt`" from GET method.
 	Uri param.Opt[string] `json:"uri,omitzero"`
 	// IDs of broadcasts which will include this stream
 	BroadcastIDs []int64 `json:"broadcast_ids,omitzero"`
