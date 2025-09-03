@@ -602,7 +602,7 @@ type WaapRequestDetails struct {
 	// HTTP request headers
 	RequestHeaders map[string]any `json:"request_headers,required"`
 	// The time of the request
-	RequestTime string `json:"request_time,required"`
+	RequestTime time.Time `json:"request_time,required" format:"date-time"`
 	// The type of the request that generated an event
 	RequestType string `json:"request_type,required"`
 	// The real domain name
