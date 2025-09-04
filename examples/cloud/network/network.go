@@ -73,24 +73,13 @@ func createNetwork(client *gcore.Client) string {
 		Tags:         map[string]string{"name": "gcore-go-example"},
 	}
 
-	taskIDList, err := client.Cloud.Networks.New(context.Background(), params)
+	network, err := client.Cloud.Networks.NewAndPoll(context.Background(), params)
 	if err != nil {
 		log.Fatalf("Error creating network: %v", err)
 	}
-
-	task, err := client.Cloud.Tasks.Poll(context.Background(), taskIDList.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling task for network creation: %v", err)
-	}
-
-	if len(task.CreatedResources.Networks) == 0 {
-		log.Fatalf("No network created")
-	}
-
-	networkID := task.CreatedResources.Networks[0]
-	fmt.Printf("Created Network ID: %s\n", networkID)
+	fmt.Printf("Created Network ID: %s\n", network.ID)
 	fmt.Println("====================")
-	return networkID
+	return network.ID
 }
 
 func getNetwork(client *gcore.Client, networkID string) {
@@ -140,16 +129,9 @@ func listNetworks(client *gcore.Client) {
 func deleteNetwork(client *gcore.Client, networkID string) {
 	fmt.Println("\n=== DELETE NETWORK ===")
 	params := cloud.NetworkDeleteParams{}
-	taskIDList, err := client.Cloud.Networks.Delete(context.Background(), networkID, params)
+	err := client.Cloud.Networks.DeleteAndPoll(context.Background(), networkID, params)
 	if err != nil {
 		log.Fatalf("Error deleting network: %v", err)
-	}
-
-	if len(taskIDList.Tasks) > 0 {
-		_, err = client.Cloud.Tasks.Poll(context.Background(), taskIDList.Tasks[0])
-		if err != nil {
-			log.Fatalf("Error polling task for network deletion: %v", err)
-		}
 	}
 
 	fmt.Printf("Network with ID %s successfully deleted\n", networkID)
