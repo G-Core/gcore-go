@@ -27,6 +27,7 @@ type NetworkService struct {
 	Options []option.RequestOption
 	Subnets NetworkSubnetService
 	Routers NetworkRouterService
+	tasks   TaskService
 }
 
 // NewNetworkService generates a new service that applies the given options to each
@@ -37,6 +38,7 @@ func NewNetworkService(opts ...option.RequestOption) (r NetworkService) {
 	r.Options = opts
 	r.Subnets = NewNetworkSubnetService(opts...)
 	r.Routers = NewNetworkRouterService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -61,6 +63,40 @@ func (r *NetworkService) New(ctx context.Context, params NetworkNewParams, opts 
 	path := fmt.Sprintf("cloud/v1/networks/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+func (r *NetworkService) NewAndPoll(ctx context.Context, params NetworkNewParams, opts ...option.RequestOption) (res *Network, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams NetworkGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Networks) != 1 {
+		return nil, errors.New("expected exactly one network to be created in a task")
+	}
+	resourceID := task.CreatedResources.Networks[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
 // Rename network and/or update network tags. The request will only process the
@@ -155,6 +191,22 @@ func (r *NetworkService) Delete(ctx context.Context, networkID string, body Netw
 	path := fmt.Sprintf("cloud/v1/networks/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, networkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
+}
+
+// DeleteAndPoll deletes a network and polls for completion of the first task. Use the
+// [TaskService.Poll] method if you need to poll for all tasks.
+func (r *NetworkService) DeleteAndPoll(ctx context.Context, networkID string, body NetworkDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, networkID, body, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }
 
 // Get network
