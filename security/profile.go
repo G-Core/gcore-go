@@ -134,7 +134,7 @@ type ClientProfileField struct {
 	Name             string         `json:"name,required"`
 	Required         bool           `json:"required,required"`
 	ValidationSchema map[string]any `json:"validation_schema,required"`
-	FieldValue       map[string]any `json:"field_value,nullable"`
+	FieldValue       any            `json:"field_value,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -204,7 +204,7 @@ type ProfileNewParamsField struct {
 	Name             string         `json:"name,required"`
 	Required         bool           `json:"required,required"`
 	ValidationSchema map[string]any `json:"validation_schema,omitzero,required"`
-	FieldValue       map[string]any `json:"field_value,omitzero"`
+	FieldValue       any            `json:"field_value,omitzero"`
 	paramObj
 }
 
@@ -259,7 +259,7 @@ type ProfileRecreateParamsField struct {
 	Name             string         `json:"name,required"`
 	Required         bool           `json:"required,required"`
 	ValidationSchema map[string]any `json:"validation_schema,omitzero,required"`
-	FieldValue       map[string]any `json:"field_value,omitzero"`
+	FieldValue       any            `json:"field_value,omitzero"`
 	paramObj
 }
 
@@ -298,7 +298,7 @@ type ProfileReplaceParamsField struct {
 	Name             string         `json:"name,required"`
 	Required         bool           `json:"required,required"`
 	ValidationSchema map[string]any `json:"validation_schema,omitzero,required"`
-	FieldValue       map[string]any `json:"field_value,omitzero"`
+	FieldValue       any            `json:"field_value,omitzero"`
 	paramObj
 }
 
