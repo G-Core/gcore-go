@@ -47,7 +47,6 @@ func NewCostReportService(opts ...option.RequestOption) (r CostReportService) {
 // hours until the servers are back online and the missing data is filled in.
 func (r *CostReportService) GetAggregated(ctx context.Context, body CostReportGetAggregatedParams, opts ...option.RequestOption) (res *CostReportAggregated, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v1/cost_report/totals"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -64,7 +63,6 @@ func (r *CostReportService) GetAggregated(ctx context.Context, body CostReportGe
 // hours until the servers are back online and the missing data is filled in.
 func (r *CostReportService) GetAggregatedMonthly(ctx context.Context, body CostReportGetAggregatedMonthlyParams, opts ...option.RequestOption) (res *CostReportAggregatedMonthly, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v1/reservation_cost_report/totals"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -83,7 +81,6 @@ func (r *CostReportService) GetAggregatedMonthly(ctx context.Context, body CostR
 // in.
 func (r *CostReportService) GetDetailed(ctx context.Context, body CostReportGetDetailedParams, opts ...option.RequestOption) (res *CostReportDetailed, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v1/cost_report/resources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

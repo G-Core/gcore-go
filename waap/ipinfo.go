@@ -39,7 +39,6 @@ func NewIPInfoService(opts ...option.RequestOption) (r IPInfoService) {
 // Retrieve a time-series of attacks originating from a specified IP address.
 func (r *IPInfoService) GetAttackTimeSeries(ctx context.Context, query IPInfoGetAttackTimeSeriesParams, opts ...option.RequestOption) (res *[]WaapTimeSeriesAttack, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/ip-info/attack-time-series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -51,7 +50,6 @@ func (r *IPInfoService) GetAttackTimeSeries(ctx context.Context, query IPInfoGet
 // corresponding action that was executed.
 func (r *IPInfoService) GetBlockedRequests(ctx context.Context, query IPInfoGetBlockedRequestsParams, opts ...option.RequestOption) (res *[]WaapRuleBlockedRequests, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/ip-info/blocked-requests"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -64,7 +62,6 @@ func (r *IPInfoService) GetBlockedRequests(ctx context.Context, query IPInfoGetB
 // attack patterns.
 func (r *IPInfoService) GetDDOSAttackSeries(ctx context.Context, query IPInfoGetDDOSAttackSeriesParams, opts ...option.RequestOption) (res *WaapIPDDOSInfoModel, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/ip-info/ddos"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -74,7 +71,6 @@ func (r *IPInfoService) GetDDOSAttackSeries(ctx context.Context, query IPInfoGet
 // and additional tags.
 func (r *IPInfoService) GetIPInfo(ctx context.Context, query IPInfoGetIPInfoParams, opts ...option.RequestOption) (res *IPInfoGetIPInfoResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/ip-info/ip-info"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -86,7 +82,6 @@ func (r *IPInfoService) GetIPInfo(ctx context.Context, query IPInfoGetIPInfoPara
 // security monitoring based on URL popularity.
 func (r *IPInfoService) GetTopURLs(ctx context.Context, query IPInfoGetTopURLsParams, opts ...option.RequestOption) (res *[]IPInfoGetTopURLsResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/ip-info/top-urls"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -96,7 +91,6 @@ func (r *IPInfoService) GetTopURLs(ctx context.Context, query IPInfoGetTopURLsPa
 // IP.
 func (r *IPInfoService) GetTopUserAgents(ctx context.Context, query IPInfoGetTopUserAgentsParams, opts ...option.RequestOption) (res *[]WaapTopUserAgent, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/ip-info/top-user-agents"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -106,7 +100,6 @@ func (r *IPInfoService) GetTopUserAgents(ctx context.Context, query IPInfoGetTop
 // by IP.
 func (r *IPInfoService) GetTopUserSessions(ctx context.Context, query IPInfoGetTopUserSessionsParams, opts ...option.RequestOption) (res *[]WaapTopSession, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/ip-info/top-sessions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -115,7 +108,6 @@ func (r *IPInfoService) GetTopUserSessions(ctx context.Context, query IPInfoGetT
 // Retrieve a list of countries attacked by the specified IP address
 func (r *IPInfoService) ListAttackedCountries(ctx context.Context, query IPInfoListAttackedCountriesParams, opts ...option.RequestOption) (res *[]WaapIPCountryAttack, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/ip-info/attack-map"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

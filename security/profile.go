@@ -39,7 +39,6 @@ func NewProfileService(opts ...option.RequestOption) (r ProfileService) {
 // created
 func (r *ProfileService) New(ctx context.Context, body ProfileNewParams, opts ...option.RequestOption) (res *ClientProfile, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "security/iaas/v2/profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +47,6 @@ func (r *ProfileService) New(ctx context.Context, body ProfileNewParams, opts ..
 // Get list of protection profiles. Client receives only profiles created by him
 func (r *ProfileService) List(ctx context.Context, query ProfileListParams, opts ...option.RequestOption) (res *[]ClientProfile, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "security/iaas/v2/profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -59,7 +57,6 @@ func (r *ProfileService) List(ctx context.Context, query ProfileListParams, opts
 func (r *ProfileService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -68,7 +65,6 @@ func (r *ProfileService) Delete(ctx context.Context, id int64, opts ...option.Re
 // Get profile by id
 func (r *ProfileService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *ClientProfile, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -77,7 +73,6 @@ func (r *ProfileService) Get(ctx context.Context, id int64, opts ...option.Reque
 // Recreate profile with another profile template (for other cases use detail API)
 func (r *ProfileService) Recreate(ctx context.Context, id int64, body ProfileRecreateParams, opts ...option.RequestOption) (res *ClientProfile, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v/recreate", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
@@ -87,7 +82,6 @@ func (r *ProfileService) Recreate(ctx context.Context, id int64, body ProfileRec
 // updated
 func (r *ProfileService) Replace(ctx context.Context, id int64, body ProfileReplaceParams, opts ...option.RequestOption) (res *ClientProfile, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
@@ -126,15 +120,15 @@ func (r *ClientProfile) UnmarshalJSON(data []byte) error {
 }
 
 type ClientProfileField struct {
-	ID               int64                             `json:"id,required"`
-	BaseField        int64                             `json:"base_field,required"`
-	Default          string                            `json:"default,required"`
-	Description      string                            `json:"description,required"`
-	FieldType        string                            `json:"field_type,required"`
-	Name             string                            `json:"name,required"`
-	Required         bool                              `json:"required,required"`
-	ValidationSchema map[string]any                    `json:"validation_schema,required"`
-	FieldValue       ClientProfileFieldFieldValueUnion `json:"field_value,nullable"`
+	ID               int64          `json:"id,required"`
+	BaseField        int64          `json:"base_field,required"`
+	Default          string         `json:"default,required"`
+	Description      string         `json:"description,required"`
+	FieldType        string         `json:"field_type,required"`
+	Name             string         `json:"name,required"`
+	Required         bool           `json:"required,required"`
+	ValidationSchema map[string]any `json:"validation_schema,required"`
+	FieldValue       map[string]any `json:"field_value,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -196,15 +190,15 @@ func (r *ProfileNewParams) UnmarshalJSON(data []byte) error {
 // The properties ID, BaseField, Default, Description, FieldType, Name, Required,
 // ValidationSchema are required.
 type ProfileNewParamsField struct {
-	ID               int64                                `json:"id,required"`
-	BaseField        int64                                `json:"base_field,required"`
-	Default          string                               `json:"default,required"`
-	Description      string                               `json:"description,required"`
-	FieldType        string                               `json:"field_type,required"`
-	Name             string                               `json:"name,required"`
-	Required         bool                                 `json:"required,required"`
-	ValidationSchema map[string]any                       `json:"validation_schema,omitzero,required"`
-	FieldValue       ProfileNewParamsFieldFieldValueUnion `json:"field_value,omitzero"`
+	ID               int64          `json:"id,required"`
+	BaseField        int64          `json:"base_field,required"`
+	Default          string         `json:"default,required"`
+	Description      string         `json:"description,required"`
+	FieldType        string         `json:"field_type,required"`
+	Name             string         `json:"name,required"`
+	Required         bool           `json:"required,required"`
+	ValidationSchema map[string]any `json:"validation_schema,omitzero,required"`
+	FieldValue       map[string]any `json:"field_value,omitzero"`
 	paramObj
 }
 
@@ -214,45 +208,6 @@ func (r ProfileNewParamsField) MarshalJSON() (data []byte, err error) {
 }
 func (r *ProfileNewParamsField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type ProfileNewParamsFieldFieldValueUnion struct {
-	OfProfileNewsFieldFieldValueUnknown *any `json:",omitzero,inline"`
-	OfVariant2                          *any `json:",omitzero,inline"`
-	OfVariant3                          *any `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u ProfileNewParamsFieldFieldValueUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfProfileNewsFieldFieldValueUnknown,
-		u.OfVariant2,
-		u.OfVariant3,
-		u.OfVariant3,
-		u.OfVariant3,
-		u.OfVariant3)
-}
-func (u *ProfileNewParamsFieldFieldValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *ProfileNewParamsFieldFieldValueUnion) asAny() any {
-	if !param.IsOmitted(u.OfProfileNewsFieldFieldValueUnknown) {
-		return u.OfProfileNewsFieldFieldValueUnknown
-	} else if !param.IsOmitted(u.OfVariant2) {
-		return u.OfVariant2
-	} else if !param.IsOmitted(u.OfVariant3) {
-		return u.OfVariant3
-	} else if !param.IsOmitted(u.OfVariant3) {
-		return u.OfVariant3
-	} else if !param.IsOmitted(u.OfVariant3) {
-		return u.OfVariant3
-	} else if !param.IsOmitted(u.OfVariant3) {
-		return u.OfVariant3
-	}
-	return nil
 }
 
 type ProfileListParams struct {
@@ -290,15 +245,15 @@ func (r *ProfileRecreateParams) UnmarshalJSON(data []byte) error {
 // The properties ID, BaseField, Default, Description, FieldType, Name, Required,
 // ValidationSchema are required.
 type ProfileRecreateParamsField struct {
-	ID               int64                                     `json:"id,required"`
-	BaseField        int64                                     `json:"base_field,required"`
-	Default          string                                    `json:"default,required"`
-	Description      string                                    `json:"description,required"`
-	FieldType        string                                    `json:"field_type,required"`
-	Name             string                                    `json:"name,required"`
-	Required         bool                                      `json:"required,required"`
-	ValidationSchema map[string]any                            `json:"validation_schema,omitzero,required"`
-	FieldValue       ProfileRecreateParamsFieldFieldValueUnion `json:"field_value,omitzero"`
+	ID               int64          `json:"id,required"`
+	BaseField        int64          `json:"base_field,required"`
+	Default          string         `json:"default,required"`
+	Description      string         `json:"description,required"`
+	FieldType        string         `json:"field_type,required"`
+	Name             string         `json:"name,required"`
+	Required         bool           `json:"required,required"`
+	ValidationSchema map[string]any `json:"validation_schema,omitzero,required"`
+	FieldValue       map[string]any `json:"field_value,omitzero"`
 	paramObj
 }
 
@@ -308,45 +263,6 @@ func (r ProfileRecreateParamsField) MarshalJSON() (data []byte, err error) {
 }
 func (r *ProfileRecreateParamsField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type ProfileRecreateParamsFieldFieldValueUnion struct {
-	OfProfileRecreatesFieldFieldValueUnknown *any `json:",omitzero,inline"`
-	OfVariant2                               *any `json:",omitzero,inline"`
-	OfVariant3                               *any `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u ProfileRecreateParamsFieldFieldValueUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfProfileRecreatesFieldFieldValueUnknown,
-		u.OfVariant2,
-		u.OfVariant3,
-		u.OfVariant3,
-		u.OfVariant3,
-		u.OfVariant3)
-}
-func (u *ProfileRecreateParamsFieldFieldValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *ProfileRecreateParamsFieldFieldValueUnion) asAny() any {
-	if !param.IsOmitted(u.OfProfileRecreatesFieldFieldValueUnknown) {
-		return u.OfProfileRecreatesFieldFieldValueUnknown
-	} else if !param.IsOmitted(u.OfVariant2) {
-		return u.OfVariant2
-	} else if !param.IsOmitted(u.OfVariant3) {
-		return u.OfVariant3
-	} else if !param.IsOmitted(u.OfVariant3) {
-		return u.OfVariant3
-	} else if !param.IsOmitted(u.OfVariant3) {
-		return u.OfVariant3
-	} else if !param.IsOmitted(u.OfVariant3) {
-		return u.OfVariant3
-	}
-	return nil
 }
 
 type ProfileReplaceParams struct {
@@ -368,15 +284,15 @@ func (r *ProfileReplaceParams) UnmarshalJSON(data []byte) error {
 // The properties ID, BaseField, Default, Description, FieldType, Name, Required,
 // ValidationSchema are required.
 type ProfileReplaceParamsField struct {
-	ID               int64                                    `json:"id,required"`
-	BaseField        int64                                    `json:"base_field,required"`
-	Default          string                                   `json:"default,required"`
-	Description      string                                   `json:"description,required"`
-	FieldType        string                                   `json:"field_type,required"`
-	Name             string                                   `json:"name,required"`
-	Required         bool                                     `json:"required,required"`
-	ValidationSchema map[string]any                           `json:"validation_schema,omitzero,required"`
-	FieldValue       ProfileReplaceParamsFieldFieldValueUnion `json:"field_value,omitzero"`
+	ID               int64          `json:"id,required"`
+	BaseField        int64          `json:"base_field,required"`
+	Default          string         `json:"default,required"`
+	Description      string         `json:"description,required"`
+	FieldType        string         `json:"field_type,required"`
+	Name             string         `json:"name,required"`
+	Required         bool           `json:"required,required"`
+	ValidationSchema map[string]any `json:"validation_schema,omitzero,required"`
+	FieldValue       map[string]any `json:"field_value,omitzero"`
 	paramObj
 }
 
@@ -386,43 +302,4 @@ func (r ProfileReplaceParamsField) MarshalJSON() (data []byte, err error) {
 }
 func (r *ProfileReplaceParamsField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type ProfileReplaceParamsFieldFieldValueUnion struct {
-	OfProfileReplacesFieldFieldValueUnknown *any `json:",omitzero,inline"`
-	OfVariant2                              *any `json:",omitzero,inline"`
-	OfVariant3                              *any `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u ProfileReplaceParamsFieldFieldValueUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfProfileReplacesFieldFieldValueUnknown,
-		u.OfVariant2,
-		u.OfVariant3,
-		u.OfVariant3,
-		u.OfVariant3,
-		u.OfVariant3)
-}
-func (u *ProfileReplaceParamsFieldFieldValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *ProfileReplaceParamsFieldFieldValueUnion) asAny() any {
-	if !param.IsOmitted(u.OfProfileReplacesFieldFieldValueUnknown) {
-		return u.OfProfileReplacesFieldFieldValueUnknown
-	} else if !param.IsOmitted(u.OfVariant2) {
-		return u.OfVariant2
-	} else if !param.IsOmitted(u.OfVariant3) {
-		return u.OfVariant3
-	} else if !param.IsOmitted(u.OfVariant3) {
-		return u.OfVariant3
-	} else if !param.IsOmitted(u.OfVariant3) {
-		return u.OfVariant3
-	} else if !param.IsOmitted(u.OfVariant3) {
-		return u.OfVariant3
-	}
-	return nil
 }

@@ -131,6 +131,14 @@ TEST_PATHS=(
 	dns/zone_test.go
 	dns/zonednssec_test.go
 	dns/zonerrset_test.go
+	storage/storage_test.go
+	storage/location_test.go
+	storage/statistic_test.go
+	storage/credential_test.go
+	storage/bucket_test.go
+	storage/bucketcor_test.go
+	storage/bucketlifecycle_test.go
+	storage/bucketpolicy_test.go
 	usage_test.go
 	paginationauto_test.go
 	paginationmanual_test.go

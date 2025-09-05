@@ -37,7 +37,6 @@ func NewPlacementGroupService(opts ...option.RequestOption) (r PlacementGroupSer
 // Create an affinity or anti-affinity or soft-anti-affinity placement group
 func (r *PlacementGroupService) New(ctx context.Context, params PlacementGroupNewParams, opts ...option.RequestOption) (res *PlacementGroup, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -60,7 +59,6 @@ func (r *PlacementGroupService) New(ctx context.Context, params PlacementGroupNe
 // List placement groups
 func (r *PlacementGroupService) List(ctx context.Context, query PlacementGroupListParams, opts ...option.RequestOption) (res *PlacementGroupList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -83,7 +81,6 @@ func (r *PlacementGroupService) List(ctx context.Context, query PlacementGroupLi
 // Delete placement group
 func (r *PlacementGroupService) Delete(ctx context.Context, groupID string, body PlacementGroupDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -110,7 +107,6 @@ func (r *PlacementGroupService) Delete(ctx context.Context, groupID string, body
 // Get placement group
 func (r *PlacementGroupService) Get(ctx context.Context, groupID string, query PlacementGroupGetParams, opts ...option.RequestOption) (res *PlacementGroup, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
