@@ -40,6 +40,7 @@ func NewInferenceApplicationTemplateService(opts ...option.RequestOption) (r Inf
 // required to create a fully functional application deployment.
 func (r *InferenceApplicationTemplateService) List(ctx context.Context, opts ...option.RequestOption) (res *InferenceApplicationTemplateList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v3/inference/applications/catalog"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -52,6 +53,7 @@ func (r *InferenceApplicationTemplateService) List(ctx context.Context, opts ...
 // building and customizing an AI application.
 func (r *InferenceApplicationTemplateService) Get(ctx context.Context, applicationName string, opts ...option.RequestOption) (res *InferenceApplicationTemplate, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if applicationName == "" {
 		err = errors.New("missing required application_name parameter")
 		return

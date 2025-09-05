@@ -99,6 +99,7 @@ func NewPlaylistService(opts ...option.RequestOption) (r PlaylistService) {
 // ```
 func (r *PlaylistService) New(ctx context.Context, body PlaylistNewParams, opts ...option.RequestOption) (res *PlaylistCreate, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/playlists"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -107,6 +108,7 @@ func (r *PlaylistService) New(ctx context.Context, body PlaylistNewParams, opts 
 // Change playlist
 func (r *PlaylistService) Update(ctx context.Context, playlistID int64, body PlaylistUpdateParams, opts ...option.RequestOption) (res *Playlist, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/playlists/%v", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -117,6 +119,7 @@ func (r *PlaylistService) List(ctx context.Context, query PlaylistListParams, op
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/playlists"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -139,6 +142,7 @@ func (r *PlaylistService) ListAutoPaging(ctx context.Context, query PlaylistList
 func (r *PlaylistService) Delete(ctx context.Context, playlistID int64, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/playlists/%v", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -147,6 +151,7 @@ func (r *PlaylistService) Delete(ctx context.Context, playlistID int64, opts ...
 // Returns a playlist details
 func (r *PlaylistService) Get(ctx context.Context, playlistID int64, opts ...option.RequestOption) (res *Playlist, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/playlists/%v", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -155,6 +160,7 @@ func (r *PlaylistService) Get(ctx context.Context, playlistID int64, opts ...opt
 // Shows ordered array of playlist videos
 func (r *PlaylistService) ListVideos(ctx context.Context, playlistID int64, opts ...option.RequestOption) (res *[]PlaylistVideo, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/playlists/%v/videos", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -393,9 +399,9 @@ type PlaylistVideo struct {
 	// More details:
 	//
 	//   - List of AI tasks – API
-	//     [GET /streaming/ai/tasks](https://api.gcore.com/docs/streaming#tag/AI/operation/get_ai_results)
+	//     [GET /streaming/ai/tasks](/docs/api-reference/streaming/ai/get-list-of-ai-tasks)
 	//   - Add subtitles to an exist video – API
-	//     [POST /streaming/videos/{`video_id`}/subtitles](https://api.gcore.com/docs/streaming#tag/Subtitles/operation/post_api_videos_video_id_subtitles).
+	//     [POST /streaming/videos/{`video_id`}/subtitles](/docs/api-reference/streaming/subtitles/add-subtitle).
 	//
 	// Any of "disable", "auto", "<language_code>".
 	AutoTranscribeAudioLanguage PlaylistVideoAutoTranscribeAudioLanguage `json:"auto_transcribe_audio_language"`
@@ -586,9 +592,9 @@ func (r *PlaylistVideo) UnmarshalJSON(data []byte) error {
 // More details:
 //
 //   - List of AI tasks – API
-//     [GET /streaming/ai/tasks](https://api.gcore.com/docs/streaming#tag/AI/operation/get_ai_results)
+//     [GET /streaming/ai/tasks](/docs/api-reference/streaming/ai/get-list-of-ai-tasks)
 //   - Add subtitles to an exist video – API
-//     [POST /streaming/videos/{`video_id`}/subtitles](https://api.gcore.com/docs/streaming#tag/Subtitles/operation/post_api_videos_video_id_subtitles).
+//     [POST /streaming/videos/{`video_id`}/subtitles](/docs/api-reference/streaming/subtitles/add-subtitle).
 type PlaylistVideoAutoTranscribeAudioLanguage string
 
 const (

@@ -14,6 +14,28 @@ import (
 	"github.com/G-Core/gcore-go/storage"
 )
 
+func TestStorageNew(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Storage.New(context.TODO())
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestStorageUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -30,10 +52,43 @@ func TestStorageUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		storage.StorageUpdateParams{
-			Expires:     gcore.String("expires"),
-			ServerAlias: gcore.String("server_alias"),
+			Expires:     gcore.String("2026-12-31 23:59:59+00:00"),
+			ServerAlias: gcore.String("my-storage.company.com"),
 		},
 	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestStorageListWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Storage.List(context.TODO(), storage.StorageListParams{
+		ID:             gcore.String("id"),
+		Limit:          gcore.Int(1),
+		Location:       gcore.String("location"),
+		Name:           gcore.String("name"),
+		Offset:         gcore.Int(0),
+		OrderBy:        gcore.String("order_by"),
+		OrderDirection: storage.StorageListParamsOrderDirectionAsc,
+		ShowDeleted:    gcore.Bool(true),
+		Status:         storage.StorageListParamsStatusActive,
+		Type:           storage.StorageListParamsTypeS3,
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

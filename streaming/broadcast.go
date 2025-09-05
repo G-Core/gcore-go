@@ -48,6 +48,7 @@ func NewBroadcastService(opts ...option.RequestOption) (r BroadcastService) {
 func (r *BroadcastService) New(ctx context.Context, body BroadcastNewParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/broadcasts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -56,6 +57,7 @@ func (r *BroadcastService) New(ctx context.Context, body BroadcastNewParams, opt
 // Updates broadcast settings
 func (r *BroadcastService) Update(ctx context.Context, broadcastID int64, body BroadcastUpdateParams, opts ...option.RequestOption) (res *Broadcast, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/broadcasts/%v", broadcastID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -69,6 +71,7 @@ func (r *BroadcastService) List(ctx context.Context, query BroadcastListParams, 
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/broadcasts"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -94,6 +97,7 @@ func (r *BroadcastService) ListAutoPaging(ctx context.Context, query BroadcastLi
 func (r *BroadcastService) Delete(ctx context.Context, broadcastID int64, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/broadcasts/%v", broadcastID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -102,6 +106,7 @@ func (r *BroadcastService) Delete(ctx context.Context, broadcastID int64, opts .
 // Returns broadcast details
 func (r *BroadcastService) Get(ctx context.Context, broadcastID int64, opts ...option.RequestOption) (res *Broadcast, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/broadcasts/%v", broadcastID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -110,6 +115,7 @@ func (r *BroadcastService) Get(ctx context.Context, broadcastID int64, opts ...o
 // Returns number of simultaneous broadcast viewers at the current moment
 func (r *BroadcastService) GetSpectatorsCount(ctx context.Context, broadcastID int64, opts ...option.RequestOption) (res *BroadcastSpectatorsCount, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/broadcasts/%v/spectators", broadcastID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

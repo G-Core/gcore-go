@@ -31,7 +31,7 @@ func TestBucketCorNewWithOptionalParams(t *testing.T) {
 		"bucket_name",
 		storage.BucketCorNewParams{
 			StorageID:      0,
-			AllowedOrigins: []string{"string"},
+			AllowedOrigins: []string{"https://example.com", "https://app.example.com", "*"},
 		},
 	)
 	if err != nil {

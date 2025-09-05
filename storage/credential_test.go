@@ -30,11 +30,11 @@ func TestCredentialRecreateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		storage.CredentialRecreateParams{
-			DeleteSftpPassword:   gcore.Bool(true),
+			DeleteSftpPassword:   gcore.Bool(false),
 			GenerateS3Keys:       gcore.Bool(true),
 			GenerateSftpPassword: gcore.Bool(true),
-			ResetSftpKeys:        gcore.Bool(true),
-			SftpPassword:         gcore.String("sftp_password"),
+			ResetSftpKeys:        gcore.Bool(false),
+			SftpPassword:         gcore.String("MyNewSecurePassword123"),
 		},
 	)
 	if err != nil {

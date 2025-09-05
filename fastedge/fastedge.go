@@ -46,6 +46,7 @@ func NewFastedgeService(opts ...option.RequestOption) (r FastedgeService) {
 // Get status and limits for the client
 func (r *FastedgeService) GetAccountOverview(ctx context.Context, opts ...option.RequestOption) (res *Client, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "fastedge/v1/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

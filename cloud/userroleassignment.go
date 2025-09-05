@@ -40,6 +40,7 @@ func NewUserRoleAssignmentService(opts ...option.RequestOption) (r UserRoleAssig
 // Assign a role to an existing user in the specified scope.
 func (r *UserRoleAssignmentService) New(ctx context.Context, body UserRoleAssignmentNewParams, opts ...option.RequestOption) (res *RoleAssignment, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v1/users/assignments"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,6 +49,7 @@ func (r *UserRoleAssignmentService) New(ctx context.Context, body UserRoleAssign
 // Modify an existing role assignment for a user.
 func (r *UserRoleAssignmentService) Update(ctx context.Context, assignmentID int64, body UserRoleAssignmentUpdateParams, opts ...option.RequestOption) (res *RoleAssignmentUpdateDelete, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cloud/v1/users/assignments/%v", assignmentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -58,6 +60,7 @@ func (r *UserRoleAssignmentService) List(ctx context.Context, query UserRoleAssi
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v1/users/assignments"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -79,6 +82,7 @@ func (r *UserRoleAssignmentService) ListAutoPaging(ctx context.Context, query Us
 // Delete an existing role assignment.
 func (r *UserRoleAssignmentService) Delete(ctx context.Context, assignmentID int64, opts ...option.RequestOption) (res *RoleAssignmentUpdateDelete, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cloud/v1/users/assignments/%v", assignmentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return

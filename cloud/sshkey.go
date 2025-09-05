@@ -41,6 +41,7 @@ func NewSSHKeyService(opts ...option.RequestOption) (r SSHKeyService) {
 // To generate a key, omit the `public_key` parameter from the request body
 func (r *SSHKeyService) New(ctx context.Context, params SSHKeyNewParams, opts ...option.RequestOption) (res *SSHKeyCreated, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -58,6 +59,7 @@ func (r *SSHKeyService) New(ctx context.Context, params SSHKeyNewParams, opts ..
 // Share or unshare SSH key with users
 func (r *SSHKeyService) Update(ctx context.Context, sshKeyID string, params SSHKeyUpdateParams, opts ...option.RequestOption) (res *SSHKey, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -81,6 +83,7 @@ func (r *SSHKeyService) List(ctx context.Context, params SSHKeyListParams, opts 
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -112,6 +115,7 @@ func (r *SSHKeyService) ListAutoPaging(ctx context.Context, params SSHKeyListPar
 func (r *SSHKeyService) Delete(ctx context.Context, sshKeyID string, body SSHKeyDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -133,6 +137,7 @@ func (r *SSHKeyService) Delete(ctx context.Context, sshKeyID string, body SSHKey
 // Get SSH key
 func (r *SSHKeyService) Get(ctx context.Context, sshKeyID string, query SSHKeyGetParams, opts ...option.RequestOption) (res *SSHKey, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

@@ -40,6 +40,7 @@ func NewBucketCorService(opts ...option.RequestOption) (r BucketCorService) {
 func (r *BucketCorService) New(ctx context.Context, bucketName string, params BucketCorNewParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -54,33 +55,21 @@ func (r *BucketCorService) New(ctx context.Context, bucketName string, params Bu
 // browsers.
 func (r *BucketCorService) Get(ctx context.Context, bucketName string, query BucketCorGetParams, opts ...option.RequestOption) (res *StorageBucketCors, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s/cors", query.StorageID, bucketName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // StorageGetBucketCorsEndpointRes output
 type StorageBucketCors struct {
-	Data StorageBucketCorsData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StorageBucketCors) RawJSON() string { return r.JSON.raw }
-func (r *StorageBucketCors) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StorageBucketCorsData struct {
+	// List of allowed origins for Cross-Origin Resource Sharing (CORS) requests.
+	// Contains domains/URLs that are permitted to make cross-origin requests to this
+	// bucket.
 	AllowedOrigins []string `json:"allowedOrigins"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -91,13 +80,14 @@ type StorageBucketCorsData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageBucketCorsData) RawJSON() string { return r.JSON.raw }
-func (r *StorageBucketCorsData) UnmarshalJSON(data []byte) error {
+func (r StorageBucketCors) RawJSON() string { return r.JSON.raw }
+func (r *StorageBucketCors) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type BucketCorNewParams struct {
-	StorageID      int64    `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id,required" json:"-"`
+	// List of allowed origins for CORS requests
 	AllowedOrigins []string `json:"allowedOrigins,omitzero"`
 	paramObj
 }
