@@ -15,6 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/security"
+	"github.com/G-Core/gcore-go/storage"
 	"github.com/G-Core/gcore-go/streaming"
 	"github.com/G-Core/gcore-go/waap"
 )
@@ -31,6 +32,7 @@ type Client struct {
 	Streaming streaming.StreamingService
 	Security  security.SecurityService
 	DNS       dns.DNSService
+	Storage   storage.StorageService
 }
 
 // DefaultClientOptions read from the environment (GCORE_API_KEY,
@@ -79,6 +81,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Streaming = streaming.NewStreamingService(opts...)
 	r.Security = security.NewSecurityService(opts...)
 	r.DNS = dns.NewDNSService(opts...)
+	r.Storage = storage.NewStorageService(opts...)
 
 	return
 }
