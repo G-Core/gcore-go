@@ -68,7 +68,7 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 // subtitles based on AI. Read more:
 //
 //   - What is
-//     ["AI Speech Recognition"](/docs/api-reference/streaming/ai/create-ai-asr-task).
+//     ["AI Transcribe"](https://api.gcore.com/docs/streaming/docs/api-reference/streaming/ai/create-ai-asr-task).
 //   - If the option is enabled via
 //     `auto_transcribe_audio_language: auto|<language_code>`, then immediately after
 //     successful transcoding, an AI task will be automatically created for
@@ -79,7 +79,7 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 //     that. Also you can point several languages to translate to, then a separate
 //     subtitle will be generated for each specified language.
 //   - How to
-//     ["add AI-generated subtitles to an exist video"](/docs/api-reference/streaming/subtitles/add-subtitle).
+//     ["add AI-generated subtitles to an exist video"](https://api.gcore.com/docs/streaming#tag/Subtitles/operation/post_api_videos_video_id_subtitles).
 //     The created AI-task(s) will be automatically executed, and result will also be
 //     automatically attached to this video as subtitle(s). Please note that
 //     transcription is done automatically for all videos uploaded to our video
@@ -100,7 +100,6 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 // need.
 func (r *VideoService) New(ctx context.Context, body VideoNewParams, opts ...option.RequestOption) (res *[]Video, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/videos"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -120,7 +119,6 @@ func (r *VideoService) New(ctx context.Context, body VideoNewParams, opts ...opt
 //     set priority of processing and never used after transcoding.
 func (r *VideoService) Update(ctx context.Context, videoID int64, body VideoUpdateParams, opts ...option.RequestOption) (res *Video, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -131,7 +129,6 @@ func (r *VideoService) List(ctx context.Context, query VideoListParams, opts ...
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/videos"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -162,7 +159,6 @@ func (r *VideoService) ListAutoPaging(ctx context.Context, query VideoListParams
 func (r *VideoService) Delete(ctx context.Context, videoID int64, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -183,7 +179,6 @@ func (r *VideoService) Delete(ctx context.Context, videoID int64, opts ...option
 // - API connection timeout = 30 sec.
 func (r *VideoService) NewMultiple(ctx context.Context, params VideoNewMultipleParams, opts ...option.RequestOption) (res *[]Video, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/videos/batch"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
@@ -205,7 +200,6 @@ func (r *VideoService) NewMultiple(ctx context.Context, params VideoNewMultipleP
 //     ![Video player](https://demo-files.gvideo.io/apidocs/coffee-run-player.jpg)
 func (r *VideoService) Get(ctx context.Context, videoID int64, opts ...option.RequestOption) (res *Video, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -245,7 +239,6 @@ func (r *VideoService) Get(ctx context.Context, videoID int64, opts ...option.Re
 // ```
 func (r *VideoService) GetParametersForDirectUpload(ctx context.Context, videoID int64, opts ...option.RequestOption) (res *DirectUploadParametersResp, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v/upload", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -255,7 +248,6 @@ func (r *VideoService) GetParametersForDirectUpload(ctx context.Context, videoID
 func (r *VideoService) ListNames(ctx context.Context, query VideoListNamesParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/videos/names"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
 	return

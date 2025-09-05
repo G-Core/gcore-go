@@ -43,7 +43,6 @@ func NewSecurityGroupService(opts ...option.RequestOption) (r SecurityGroupServi
 // Create a new security group with the specified configuration.
 func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -66,7 +65,6 @@ func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewP
 // Update the configuration of an existing security group.
 func (r *SecurityGroupService) Update(ctx context.Context, groupID string, params SecurityGroupUpdateParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -95,7 +93,6 @@ func (r *SecurityGroupService) List(ctx context.Context, params SecurityGroupLis
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -132,7 +129,6 @@ func (r *SecurityGroupService) ListAutoPaging(ctx context.Context, params Securi
 func (r *SecurityGroupService) Delete(ctx context.Context, groupID string, body SecurityGroupDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -159,7 +155,6 @@ func (r *SecurityGroupService) Delete(ctx context.Context, groupID string, body 
 // Create a deep copy of an existing security group.
 func (r *SecurityGroupService) Copy(ctx context.Context, groupID string, params SecurityGroupCopyParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -186,7 +181,6 @@ func (r *SecurityGroupService) Copy(ctx context.Context, groupID string, params 
 // Get detailed information about a specific security group.
 func (r *SecurityGroupService) Get(ctx context.Context, groupID string, query SecurityGroupGetParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -213,7 +207,6 @@ func (r *SecurityGroupService) Get(ctx context.Context, groupID string, query Se
 // Revert a security group to its previous state.
 func (r *SecurityGroupService) RevertToDefault(ctx context.Context, groupID string, body SecurityGroupRevertToDefaultParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

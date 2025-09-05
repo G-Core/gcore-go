@@ -39,7 +39,6 @@ func NewDomainAdvancedRuleService(opts ...option.RequestOption) (r DomainAdvance
 // Create an advanced rule
 func (r *DomainAdvancedRuleService) New(ctx context.Context, domainID int64, body DomainAdvancedRuleNewParams, opts ...option.RequestOption) (res *WaapAdvancedRule, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +48,6 @@ func (r *DomainAdvancedRuleService) New(ctx context.Context, domainID int64, bod
 func (r *DomainAdvancedRuleService) Update(ctx context.Context, ruleID int64, params DomainAdvancedRuleUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules/%v", params.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
 	return
@@ -61,7 +59,6 @@ func (r *DomainAdvancedRuleService) List(ctx context.Context, domainID int64, qu
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -85,7 +82,6 @@ func (r *DomainAdvancedRuleService) ListAutoPaging(ctx context.Context, domainID
 func (r *DomainAdvancedRuleService) Delete(ctx context.Context, ruleID int64, body DomainAdvancedRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules/%v", body.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -94,7 +90,6 @@ func (r *DomainAdvancedRuleService) Delete(ctx context.Context, ruleID int64, bo
 // Retrieve a specific advanced rule assigned to a domain
 func (r *DomainAdvancedRuleService) Get(ctx context.Context, ruleID int64, query DomainAdvancedRuleGetParams, opts ...option.RequestOption) (res *WaapAdvancedRule, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules/%v", query.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -104,7 +99,6 @@ func (r *DomainAdvancedRuleService) Get(ctx context.Context, ruleID int64, query
 func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdvancedRuleToggleParamsAction, body DomainAdvancedRuleToggleParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules/%v/%v", body.DomainID, body.RuleID, action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, nil, opts...)
 	return

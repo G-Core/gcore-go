@@ -29,8 +29,8 @@ func TestProfileNewWithOptionalParams(t *testing.T) {
 	_, err := client.Security.Profiles.New(context.TODO(), security.ProfileNewParams{
 		Fields: []security.ProfileNewParamsField{{
 			BaseField: 1,
-			FieldValue: security.ProfileNewParamsFieldFieldValueUnion{
-				OfProfileNewsFieldFieldValueUnknown: &map[string]interface{}{},
+			FieldValue: map[string]any{
+				"key": "bar",
 			},
 		}},
 		ProfileTemplate: 1,
@@ -135,8 +135,8 @@ func TestProfileRecreateWithOptionalParams(t *testing.T) {
 		security.ProfileRecreateParams{
 			Fields: []security.ProfileRecreateParamsField{{
 				BaseField: 1,
-				FieldValue: security.ProfileRecreateParamsFieldFieldValueUnion{
-					OfProfileRecreatesFieldFieldValueUnknown: &map[string]interface{}{},
+				FieldValue: map[string]any{
+					"key": "bar",
 				},
 			}},
 			ProfileTemplate: 1,
@@ -171,8 +171,8 @@ func TestProfileReplaceWithOptionalParams(t *testing.T) {
 		security.ProfileReplaceParams{
 			Fields: []security.ProfileReplaceParamsField{{
 				BaseField: 1,
-				FieldValue: security.ProfileReplaceParamsFieldFieldValueUnion{
-					OfProfileReplacesFieldFieldValueUnknown: &map[string]interface{}{},
+				FieldValue: map[string]any{
+					"key": "bar",
 				},
 			}},
 			ProfileTemplate: 1,

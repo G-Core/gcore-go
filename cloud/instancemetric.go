@@ -37,7 +37,6 @@ func NewInstanceMetricService(opts ...option.RequestOption) (r InstanceMetricSer
 // Get instance metrics, including cpu, memory, network and disk metrics
 func (r *InstanceMetricService) List(ctx context.Context, instanceID string, params InstanceMetricListParams, opts ...option.RequestOption) (res *MetricsList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

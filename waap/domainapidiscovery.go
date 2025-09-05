@@ -41,7 +41,6 @@ func NewDomainAPIDiscoveryService(opts ...option.RequestOption) (r DomainAPIDisc
 // Get Scan Result
 func (r *DomainAPIDiscoveryService) GetScanResult(ctx context.Context, scanID string, query DomainAPIDiscoveryGetScanResultParams, opts ...option.RequestOption) (res *WaapAPIScanResult, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if scanID == "" {
 		err = errors.New("missing required scan_id parameter")
 		return
@@ -54,7 +53,6 @@ func (r *DomainAPIDiscoveryService) GetScanResult(ctx context.Context, scanID st
 // Retrieve the API discovery settings for a domain
 func (r *DomainAPIDiscoveryService) GetSettings(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *WaapAPIDiscoverySettings, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-discovery/settings", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -65,7 +63,6 @@ func (r *DomainAPIDiscoveryService) ListScanResults(ctx context.Context, domainI
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-discovery/scan-results", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -89,7 +86,6 @@ func (r *DomainAPIDiscoveryService) ListScanResultsAutoPaging(ctx context.Contex
 // description file should be specified in the API discovery settings.
 func (r *DomainAPIDiscoveryService) ScanOpenAPI(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *WaapTaskID, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-discovery/scan", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
@@ -98,7 +94,6 @@ func (r *DomainAPIDiscoveryService) ScanOpenAPI(ctx context.Context, domainID in
 // Update the API discovery settings for a domain
 func (r *DomainAPIDiscoveryService) UpdateSettings(ctx context.Context, domainID int64, body DomainAPIDiscoveryUpdateSettingsParams, opts ...option.RequestOption) (res *WaapAPIDiscoverySettings, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-discovery/settings", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -110,7 +105,6 @@ func (r *DomainAPIDiscoveryService) UpdateSettings(ctx context.Context, domainID
 // supplied as the value for the `file_data` parameter.
 func (r *DomainAPIDiscoveryService) UploadOpenAPI(ctx context.Context, domainID int64, body DomainAPIDiscoveryUploadOpenAPIParams, opts ...option.RequestOption) (res *WaapTaskID, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-discovery/upload", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

@@ -37,7 +37,6 @@ func NewReservedFixedIPVipService(opts ...option.RequestOption) (r ReservedFixed
 // List all instance ports that are available for connecting to a VIP.
 func (r *ReservedFixedIPVipService) ListCandidatePorts(ctx context.Context, portID string, query ReservedFixedIPVipListCandidatePortsParams, opts ...option.RequestOption) (res *CandidatePortList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -64,7 +63,6 @@ func (r *ReservedFixedIPVipService) ListCandidatePorts(ctx context.Context, port
 // List all instance ports that share a VIP.
 func (r *ReservedFixedIPVipService) ListConnectedPorts(ctx context.Context, portID string, query ReservedFixedIPVipListConnectedPortsParams, opts ...option.RequestOption) (res *ConnectedPortList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -91,7 +89,6 @@ func (r *ReservedFixedIPVipService) ListConnectedPorts(ctx context.Context, port
 // Replace the list of instance ports that share a VIP.
 func (r *ReservedFixedIPVipService) ReplaceConnectedPorts(ctx context.Context, portID string, params ReservedFixedIPVipReplaceConnectedPortsParams, opts ...option.RequestOption) (res *ConnectedPortList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -118,7 +115,6 @@ func (r *ReservedFixedIPVipService) ReplaceConnectedPorts(ctx context.Context, p
 // Update the VIP status of a reserved fixed IP.
 func (r *ReservedFixedIPVipService) Toggle(ctx context.Context, portID string, params ReservedFixedIPVipToggleParams, opts ...option.RequestOption) (res *ReservedFixedIP, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -145,7 +141,6 @@ func (r *ReservedFixedIPVipService) Toggle(ctx context.Context, portID string, p
 // Add instance ports to share a VIP.
 func (r *ReservedFixedIPVipService) UpdateConnectedPorts(ctx context.Context, portID string, params ReservedFixedIPVipUpdateConnectedPortsParams, opts ...option.RequestOption) (res *ConnectedPortList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

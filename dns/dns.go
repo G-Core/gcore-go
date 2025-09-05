@@ -45,7 +45,6 @@ func NewDNSService(opts ...option.RequestOption) (r DNSService) {
 // Get info about client
 func (r *DNSService) GetAccountOverview(ctx context.Context, opts ...option.RequestOption) (res *DNSGetAccountOverviewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "dns/v2/platform/info"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -54,17 +53,20 @@ func (r *DNSService) GetAccountOverview(ctx context.Context, opts ...option.Requ
 // Get the dns records from a specific domain or ip.
 func (r *DNSService) Lookup(ctx context.Context, query DNSLookupParams, opts ...option.RequestOption) (res *[]DNSLookupResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "dns/v2/lookup"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
+// InfoResponse
 type DNSGetAccountOverviewResponse struct {
-	Info DNSGetAccountOverviewResponseInfo `json:"Info"`
+	// Client
+	Client   DNSGetAccountOverviewResponseClient   `json:"Client"`
+	Settings DNSGetAccountOverviewResponseSettings `json:"settings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Info        respjson.Field
+		Client      respjson.Field
+		Settings    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -76,7 +78,35 @@ func (r *DNSGetAccountOverviewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DNSGetAccountOverviewResponseInfo struct {
+// Client
+type DNSGetAccountOverviewResponseClient struct {
+	ClientID int64  `json:"client_id"`
+	Enabled  bool   `json:"enabled"`
+	Reseller int64  `json:"reseller"`
+	Status   string `json:"status"`
+	TariffID int64  `json:"tariff_id"`
+	// TariffName
+	TariffName string `json:"tariff_name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ClientID    respjson.Field
+		Enabled     respjson.Field
+		Reseller    respjson.Field
+		Status      respjson.Field
+		TariffID    respjson.Field
+		TariffName  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DNSGetAccountOverviewResponseClient) RawJSON() string { return r.JSON.raw }
+func (r *DNSGetAccountOverviewResponseClient) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DNSGetAccountOverviewResponseSettings struct {
 	Contact     string `json:"contact"`
 	NameServer1 string `json:"name_server_1"`
 	NameServer2 string `json:"name_server_2"`
@@ -91,8 +121,8 @@ type DNSGetAccountOverviewResponseInfo struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DNSGetAccountOverviewResponseInfo) RawJSON() string { return r.JSON.raw }
-func (r *DNSGetAccountOverviewResponseInfo) UnmarshalJSON(data []byte) error {
+func (r DNSGetAccountOverviewResponseSettings) RawJSON() string { return r.JSON.raw }
+func (r *DNSGetAccountOverviewResponseSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
