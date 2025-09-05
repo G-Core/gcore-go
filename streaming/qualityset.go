@@ -45,7 +45,7 @@ func NewQualitySetService(opts ...option.RequestOption) (r QualitySetService) {
 // [documentation](https://gcore.com/docs/streaming-platform/live-streams-and-videos-protocols-and-codecs/output-parameters-after-transcoding-bitrate-frame-rate-and-codecs).
 // These values are the default for everyone. There is no need to configure
 // anything additional. Read more about qiality in our blog
-// [How we lowered the bitrate for live and VOD streaming by 32.5% without sacrificing quality](https://gcore.com/blog/how-we-lowered-the-bitrate-for-live-and-vod-streaming-by-32-5-without-sacrificing-quality/).
+// [How we lowered the bitrate for live and VOD streaming by 32.5% without sacrificing quality](https://gcore.com/blog/how-we-lowered-the-bitrate-for-live-and-vod-streaming-by-32-5-without-sacrificing-quality).
 // ![Quality ladder](https://demo-files.gvideo.io/apidocs/encoding_ladder.png) Only
 // for those cases when, in addition to the main parameters, it is necessary to use
 // your own, then it is necessary to use custom quality sets. How to use:
@@ -71,6 +71,7 @@ func NewQualitySetService(opts ...option.RequestOption) (r QualitySetService) {
 //     is a paid feature.
 func (r *QualitySetService) List(ctx context.Context, opts ...option.RequestOption) (res *QualitySets, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/quality_sets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -92,6 +93,7 @@ func (r *QualitySetService) List(ctx context.Context, opts ...option.RequestOpti
 //   - Otherwise these default values will be used by the system by default.
 func (r *QualitySetService) SetDefault(ctx context.Context, body QualitySetSetDefaultParams, opts ...option.RequestOption) (res *QualitySets, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/quality_sets/default"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

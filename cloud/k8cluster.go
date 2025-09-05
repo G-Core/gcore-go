@@ -44,6 +44,7 @@ func NewK8ClusterService(opts ...option.RequestOption) (r K8ClusterService) {
 // Create k8s cluster
 func (r *K8ClusterService) New(ctx context.Context, params K8ClusterNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -66,6 +67,7 @@ func (r *K8ClusterService) New(ctx context.Context, params K8ClusterNewParams, o
 // Update k8s cluster
 func (r *K8ClusterService) Update(ctx context.Context, clusterName string, params K8ClusterUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -92,6 +94,7 @@ func (r *K8ClusterService) Update(ctx context.Context, clusterName string, param
 // List k8s clusters
 func (r *K8ClusterService) List(ctx context.Context, query K8ClusterListParams, opts ...option.RequestOption) (res *K8sClusterList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -114,6 +117,7 @@ func (r *K8ClusterService) List(ctx context.Context, query K8ClusterListParams, 
 // Delete k8s cluster
 func (r *K8ClusterService) Delete(ctx context.Context, clusterName string, params K8ClusterDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -140,6 +144,7 @@ func (r *K8ClusterService) Delete(ctx context.Context, clusterName string, param
 // Get k8s cluster
 func (r *K8ClusterService) Get(ctx context.Context, clusterName string, query K8ClusterGetParams, opts ...option.RequestOption) (res *K8sCluster, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -166,6 +171,7 @@ func (r *K8ClusterService) Get(ctx context.Context, clusterName string, query K8
 // Get k8s cluster CA certificate
 func (r *K8ClusterService) GetCertificate(ctx context.Context, clusterName string, query K8ClusterGetCertificateParams, opts ...option.RequestOption) (res *K8sClusterCertificate, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -192,6 +198,7 @@ func (r *K8ClusterService) GetCertificate(ctx context.Context, clusterName strin
 // Get k8s cluster kubeconfig
 func (r *K8ClusterService) GetKubeconfig(ctx context.Context, clusterName string, query K8ClusterGetKubeconfigParams, opts ...option.RequestOption) (res *K8sClusterKubeconfig, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -218,6 +225,7 @@ func (r *K8ClusterService) GetKubeconfig(ctx context.Context, clusterName string
 // List available k8s cluster versions for upgrade
 func (r *K8ClusterService) ListVersionsForUpgrade(ctx context.Context, clusterName string, query K8ClusterListVersionsForUpgradeParams, opts ...option.RequestOption) (res *K8sClusterVersionList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -244,6 +252,7 @@ func (r *K8ClusterService) ListVersionsForUpgrade(ctx context.Context, clusterNa
 // Upgrade k8s cluster
 func (r *K8ClusterService) Upgrade(ctx context.Context, clusterName string, params K8ClusterUpgradeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

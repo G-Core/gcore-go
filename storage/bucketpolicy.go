@@ -8,10 +8,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
-	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // BucketPolicyService contains methods and other services that help with
@@ -33,11 +31,15 @@ func NewBucketPolicyService(opts ...option.RequestOption) (r BucketPolicyService
 	return
 }
 
-// Creates or updates access policy for an S3 bucket, controlling permissions for
-// bucket operations.
+// Applies a public read policy to the S3 bucket, allowing anonymous users to
+// download/access all objects in the bucket via HTTP GET requests. This makes the
+// bucket suitable for static website hosting, public file sharing, or CDN
+// integration. Only grants read access - users cannot upload, modify, or delete
+// objects without proper authentication.
 func (r *BucketPolicyService) New(ctx context.Context, bucketName string, body BucketPolicyNewParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -47,10 +49,14 @@ func (r *BucketPolicyService) New(ctx context.Context, bucketName string, body B
 	return
 }
 
-// Removes the access policy from an S3 bucket, reverting to default permissions.
+// Removes the public read policy from an S3 bucket, making all objects private and
+// accessible only with proper authentication credentials. After this operation,
+// anonymous users will no longer be able to access bucket contents via HTTP
+// requests.
 func (r *BucketPolicyService) Delete(ctx context.Context, bucketName string, body BucketPolicyDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -60,9 +66,11 @@ func (r *BucketPolicyService) Delete(ctx context.Context, bucketName string, bod
 	return
 }
 
-// Retrieves the current access policy configuration for an S3 bucket.
-func (r *BucketPolicyService) Get(ctx context.Context, bucketName string, query BucketPolicyGetParams, opts ...option.RequestOption) (res *StorageBucketPolicy, err error) {
+// Returns whether the S3 bucket is currently configured for public read access.
+// Shows if anonymous users can download objects from the bucket via HTTP requests.
+func (r *BucketPolicyService) Get(ctx context.Context, bucketName string, query BucketPolicyGetParams, opts ...option.RequestOption) (res *bool, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -70,23 +78,6 @@ func (r *BucketPolicyService) Get(ctx context.Context, bucketName string, query 
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s/policy", query.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
-}
-
-// StorageGetBucketPolicyEndpointRes output
-type StorageBucketPolicy struct {
-	EnabledHTTPAccess bool `json:"enabledHttpAccess"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		EnabledHTTPAccess respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StorageBucketPolicy) RawJSON() string { return r.JSON.raw }
-func (r *StorageBucketPolicy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type BucketPolicyNewParams struct {

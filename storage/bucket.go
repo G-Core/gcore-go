@@ -7,9 +7,15 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
+	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // BucketService contains methods and other services that help with interacting
@@ -42,6 +48,7 @@ func NewBucketService(opts ...option.RequestOption) (r BucketService) {
 func (r *BucketService) New(ctx context.Context, bucketName string, body BucketNewParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -51,10 +58,40 @@ func (r *BucketService) New(ctx context.Context, bucketName string, body BucketN
 	return
 }
 
-// Removes a bucket from an S3 storage. The bucket must be empty before deletion.
+// Returns the list of buckets for the storage in a wrapped response. Response
+// format: count: total number of buckets (independent of pagination) results:
+// current page of buckets according to limit/offset
+func (r *BucketService) List(ctx context.Context, storageID int64, query BucketListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[StorageBucket], err error) {
+	var raw *http.Response
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
+	path := fmt.Sprintf("storage/provisioning/v2/storage/%v/s3/buckets", storageID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns the list of buckets for the storage in a wrapped response. Response
+// format: count: total number of buckets (independent of pagination) results:
+// current page of buckets according to limit/offset
+func (r *BucketService) ListAutoPaging(ctx context.Context, storageID int64, query BucketListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[StorageBucket] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, storageID, query, opts...))
+}
+
+// Removes a bucket from an S3 storage. All objects in the bucket will be
+// automatically deleted before the bucket is removed.
 func (r *BucketService) Delete(ctx context.Context, bucketName string, body BucketDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -64,9 +101,46 @@ func (r *BucketService) Delete(ctx context.Context, bucketName string, body Buck
 	return
 }
 
+// BucketDtoV2 for response
+type StorageBucket struct {
+	// Name of the S3 bucket
+	Name string `json:"name,required"`
+	// Lifecycle policy expiration days (zero if not set)
+	Lifecycle int64 `json:"lifecycle"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Lifecycle   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r StorageBucket) RawJSON() string { return r.JSON.raw }
+func (r *StorageBucket) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type BucketNewParams struct {
 	StorageID int64 `path:"storage_id,required" json:"-"`
 	paramObj
+}
+
+type BucketListParams struct {
+	// Max number of records in response
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of records to skip before beginning to write in response.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [BucketListParams]'s query parameters as `url.Values`.
+func (r BucketListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }
 
 type BucketDeleteParams struct {

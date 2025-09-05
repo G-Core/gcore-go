@@ -33,12 +33,15 @@ func NewBucketLifecycleService(opts ...option.RequestOption) (r BucketLifecycleS
 	return
 }
 
-// Configures automatic object expiration rules for an S3 bucket. Objects older
-// than the specified number of days will be automatically deleted to manage
-// storage costs and compliance.
+// Sets up automatic object expiration for an S3 bucket. All objects in the bucket
+// will be automatically deleted after the specified number of days to help manage
+// storage costs and meet compliance requirements. This applies a global lifecycle
+// rule to the entire bucket - all existing and future objects will be subject to
+// the expiration policy.
 func (r *BucketLifecycleService) New(ctx context.Context, bucketName string, params BucketLifecycleNewParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -53,6 +56,7 @@ func (r *BucketLifecycleService) New(ctx context.Context, bucketName string, par
 func (r *BucketLifecycleService) Delete(ctx context.Context, bucketName string, body BucketLifecycleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -63,7 +67,10 @@ func (r *BucketLifecycleService) Delete(ctx context.Context, bucketName string, 
 }
 
 type BucketLifecycleNewParams struct {
-	StorageID      int64            `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id,required" json:"-"`
+	// Number of days after which objects will be automatically deleted from the
+	// bucket. Must be a positive integer. Common values: 30 for monthly cleanup, 365
+	// for yearly retention.
 	ExpirationDays param.Opt[int64] `json:"expiration_days,omitzero"`
 	paramObj
 }
