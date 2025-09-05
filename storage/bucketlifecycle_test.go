@@ -31,7 +31,7 @@ func TestBucketLifecycleNewWithOptionalParams(t *testing.T) {
 		"bucket_name",
 		storage.BucketLifecycleNewParams{
 			StorageID:      0,
-			ExpirationDays: gcore.Int(0),
+			ExpirationDays: gcore.Int(30),
 		},
 	)
 	if err != nil {

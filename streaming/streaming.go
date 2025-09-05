@@ -184,9 +184,9 @@ type CreateVideoParam struct {
 	// More details:
 	//
 	//   - List of AI tasks – API
-	//     [GET /streaming/ai/tasks](https://api.gcore.com/docs/streaming#tag/AI/operation/get_ai_results)
+	//     [GET /streaming/ai/tasks](/docs/api-reference/streaming/ai/get-list-of-ai-tasks)
 	//   - Add subtitles to an exist video – API
-	//     [POST /streaming/videos/{`video_id`}/subtitles](https://api.gcore.com/docs/streaming#tag/Subtitles/operation/post_api_videos_video_id_subtitles).
+	//     [POST /streaming/videos/{`video_id`}/subtitles](/docs/api-reference/streaming/subtitles/add-subtitle).
 	//
 	// Any of "disable", "auto", "<language_code>".
 	AutoTranscribeAudioLanguage CreateVideoAutoTranscribeAudioLanguage `json:"auto_transcribe_audio_language,omitzero"`
@@ -243,9 +243,9 @@ func (r *CreateVideoParam) UnmarshalJSON(data []byte) error {
 // More details:
 //
 //   - List of AI tasks – API
-//     [GET /streaming/ai/tasks](https://api.gcore.com/docs/streaming#tag/AI/operation/get_ai_results)
+//     [GET /streaming/ai/tasks](/docs/api-reference/streaming/ai/get-list-of-ai-tasks)
 //   - Add subtitles to an exist video – API
-//     [POST /streaming/videos/{`video_id`}/subtitles](https://api.gcore.com/docs/streaming#tag/Subtitles/operation/post_api_videos_video_id_subtitles).
+//     [POST /streaming/videos/{`video_id`}/subtitles](/docs/api-reference/streaming/subtitles/add-subtitle).
 type CreateVideoAutoTranscribeAudioLanguage string
 
 const (
@@ -395,7 +395,7 @@ type Video struct {
 	// <iframe width="100%" height="100%" src="https://player.gvideo.co/videos/2675_FnlHXwA16ZMxmUr" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 	//
 	// There are some link modificators you can specify and add manually:
-	// - ?`no_low_latency` – player is forced to use non-low-latency streams HLS MPEG TS, instead of MPEG-DASH CMAF or HLS/LL-HLS CMAF.
+	// - ?`no_low_latency` – player is forced to use non-low-latency streams HLS MPEG-TS, instead of MPEG-DASH CMAF or HLS/LL-HLS CMAF.
 	// - ?t=(integer) – time to start playback from specified point in the video. Applicable for VOD only.
 	// - ?`sub_lang`=(language) – force subtitles to specific language (2 letters ISO 639 code of a language).
 	// - Read more in the Product Documentation.
@@ -576,25 +576,56 @@ type VideoConvertedVideo struct {
 	//   - /videos/{`client_id`}\_{slug}/{filename}.mp4
 	//   - /videos/{`client_id`}\_{slug}/{filename}.mp4/download
 	//   - /videos/{`client_id`}\_{slug}/{filename}.mp4/download={`custom_filename`} The
-	//     first option returns the file as is. The following options respond with the
-	//     header that directly tells browsers to download the file instead of playing it
-	//     in the browser.
+	//     first option returns the file as is. Response will be:
 	//
 	// ```
 	//
-	//	Content-Disposition: attachment
+	//	GET .mp4
+	//	...
+	//	content-type: video/mp4
+	//
+	// ```
+	//
+	// The second option with /download will respond with HTTP response header that
+	// directly tells browsers to download the file instead of playing it in the
+	// browser:
+	//
+	// ```
+	//
+	//	GET .mp4/download
+	//	...
+	//	content-type: video/mp4
+	//	content-disposition: attachment
+	//	access-control-expose-headers: Content-Disposition
 	//
 	// ```
 	//
 	// The third option allows you to set a custom name for the file being downloaded.
 	// You can optionally specify a custom filename (just name excluding the .mp4
-	// extension) using the download= query. Filename Constraints
+	// extension) using the download= query. Filename constraints:
 	//
-	//   - Length: 1-255 characters
-	//   - Must NOT include the .mp4 extension (it is added automatically)
-	//   - Allowed characters: a-z, A-Z, 0-9, \_(underscore), -(dash), .(dot)
-	//   - First character cannot be .(dot) Example valid filenames: `holiday2025`,
-	//     `_backup.final`, `clip-v1.2`
+	// - Length: 1-255 characters
+	// - Must NOT include the .mp4 extension (it is added automatically)
+	// - Allowed characters: a-z, A-Z, 0-9, \_(underscore), -(dash), .(dot)
+	// - First character cannot be .(dot)
+	// - Example valid filenames: `holiday2025`, `_backup.final`, `clip-v1.2`
+	//
+	// ```
+	//
+	//	GET .mp4/download={custom_filename}
+	//	...
+	//	content-type: video/mp4
+	//	content-disposition: attachment; filename="{custom_filename}.mp4"
+	//	access-control-expose-headers: Content-Disposition
+	//
+	// ```
+	//
+	// Examples:
+	//
+	//   - Video:
+	//     `https://demo-public.gvideo.io/videos/2675_1OFgHZ1FWZNNvx1A/qid3567v1_h264_4050_1080.mp4/download`
+	//   - Video with custom download filename:
+	//     `https://demo-public.gvideo.io/videos/2675_1OFgHZ1FWZNNvx1A/qid3567v1_h264_4050_1080.mp4/download=highlights_v1.1_2025-05-30`
 	//
 	// **Default MP4 file name structure** Link to the file {filename} contains
 	// information about the encoding method using format:
@@ -630,15 +661,6 @@ type VideoConvertedVideo struct {
 	//   - ip: The user’s IP address Example:
 	//     `?md5=QX39c77lbQKvYgMMAvpyMQ&expires=1743167062` Read more in Product
 	//     Documentation in Streaming section "Protected temporarily link".
-	//
-	// **Examples**
-	//
-	//   - Audio-only:
-	//     `https://demo-public.gvideo.io/videos/2675_JNnccG5l97XPxsov/qid3585v1_aac_128_audio.mp4`
-	//   - Video:
-	//     `https://demo-public.gvideo.io/videos/2675_3MlggU4xDb1Ssa5Y/qid3567v1_h264_4050_1080.mp4/download`
-	//   - Video with custom download filename:
-	//     `https://demo-public.gvideo.io/videos/2675_XtMKxzJM6Xt7SBUV/1080.mp4/download=highlights_v1.1_2025-05-30`
 	MP4URL string `json:"mp4_url"`
 	// Specific quality name
 	Name string `json:"name"`

@@ -36,17 +36,27 @@ func NewCredentialService(opts ...option.RequestOption) (r CredentialService) {
 // password for SFTP storage).
 func (r *CredentialService) Recreate(ctx context.Context, storageID int64, body CredentialRecreateParams, opts ...option.RequestOption) (res *Storage, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/credentials", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 type CredentialRecreateParams struct {
-	DeleteSftpPassword   param.Opt[bool]   `json:"delete_sftp_password,omitzero"`
-	GenerateS3Keys       param.Opt[bool]   `json:"generate_s3_keys,omitzero"`
-	GenerateSftpPassword param.Opt[bool]   `json:"generate_sftp_password,omitzero"`
-	ResetSftpKeys        param.Opt[bool]   `json:"reset_sftp_keys,omitzero"`
-	SftpPassword         param.Opt[string] `json:"sftp_password,omitzero"`
+	// Remove the SFTP password, disabling password authentication. Only applicable to
+	// SFTP storage type.
+	DeleteSftpPassword param.Opt[bool] `json:"delete_sftp_password,omitzero"`
+	// Generate new S3 access and secret keys for S3 storage. Only applicable to S3
+	// storage type.
+	GenerateS3Keys param.Opt[bool] `json:"generate_s3_keys,omitzero"`
+	// Generate a new random password for SFTP access. Only applicable to SFTP storage
+	// type.
+	GenerateSftpPassword param.Opt[bool] `json:"generate_sftp_password,omitzero"`
+	// Reset/remove all SSH keys associated with the SFTP storage. Only applicable to
+	// SFTP storage type.
+	ResetSftpKeys param.Opt[bool] `json:"reset_sftp_keys,omitzero"`
+	// Set a custom password for SFTP access. Only applicable to SFTP storage type.
+	SftpPassword param.Opt[string] `json:"sftp_password,omitzero"`
 	paramObj
 }
 

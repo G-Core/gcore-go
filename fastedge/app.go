@@ -44,6 +44,7 @@ func NewAppService(opts ...option.RequestOption) (r AppService) {
 // Add a new app
 func (r *AppService) New(ctx context.Context, body AppNewParams, opts ...option.RequestOption) (res *AppShort, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "fastedge/v1/apps"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -52,6 +53,7 @@ func (r *AppService) New(ctx context.Context, body AppNewParams, opts ...option.
 // Update app
 func (r *AppService) Update(ctx context.Context, id int64, body AppUpdateParams, opts ...option.RequestOption) (res *AppShort, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -62,6 +64,7 @@ func (r *AppService) List(ctx context.Context, query AppListParams, opts ...opti
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "fastedge/v1/apps"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -84,6 +87,7 @@ func (r *AppService) ListAutoPaging(ctx context.Context, query AppListParams, op
 func (r *AppService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -92,6 +96,7 @@ func (r *AppService) Delete(ctx context.Context, id int64, opts ...option.Reques
 // Get app details
 func (r *AppService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *App, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -100,6 +105,7 @@ func (r *AppService) Get(ctx context.Context, id int64, opts ...option.RequestOp
 // Update an app
 func (r *AppService) Replace(ctx context.Context, id int64, body AppReplaceParams, opts ...option.RequestOption) (res *AppShort, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

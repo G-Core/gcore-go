@@ -33,26 +33,30 @@ func NewLocationService(opts ...option.RequestOption) (r LocationService) {
 
 // Returns available storage locations where you can create storages. Each location
 // represents a geographic region with specific data center facilities.
+//
+// Deprecated: deprecated
 func (r *LocationService) List(ctx context.Context, opts ...option.RequestOption) (res *[]StorageLocation, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "storage/provisioning/v1/location"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 type StorageLocation struct {
-	ID      int64  `json:"id"`
-	Address string `json:"address"`
+	ID int64 `json:"id,required"`
+	// Full hostname/address for accessing the storage endpoint
+	Address string `json:"address,required"`
 	// Indicates whether new storage can be created in this location: `allow` enables
 	// storage creation, `deny` prevents it
 	//
 	// Any of "deny", "allow".
-	AllowForNewStorage StorageLocationAllowForNewStorage `json:"allow_for_new_storage"`
+	AllowForNewStorage StorageLocationAllowForNewStorage `json:"allow_for_new_storage,required"`
 	// Any of "s-ed1", "s-drc2", "s-sgc1", "s-nhn2", "s-darz", "s-ws1", "ams", "sin",
 	// "fra", "mia".
-	Name StorageLocationName `json:"name"`
+	Name StorageLocationName `json:"name,required"`
 	// Any of "s3", "sftp".
-	Type StorageLocationType `json:"type"`
+	Type StorageLocationType `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
