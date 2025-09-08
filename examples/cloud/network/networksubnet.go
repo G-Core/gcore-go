@@ -22,24 +22,13 @@ func createSubnet(client *gcore.Client, networkID string) string {
 		Tags:       map[string]string{"name": "gcore-go-example"},
 	}
 
-	taskIDList, err := client.Cloud.Networks.Subnets.New(context.Background(), params)
+	subnet, err := client.Cloud.Networks.Subnets.NewAndPoll(context.Background(), params)
 	if err != nil {
 		log.Fatalf("Error creating subnet: %v", err)
 	}
-
-	task, err := client.Cloud.Tasks.Poll(context.Background(), taskIDList.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling task for subnet creation: %v", err)
-	}
-
-	if len(task.CreatedResources.Subnets) == 0 {
-		log.Fatalf("No subnet created")
-	}
-
-	subnetID := task.CreatedResources.Subnets[0]
-	fmt.Printf("Created Subnet ID: %s\n", subnetID)
+	fmt.Printf("Created Subnet ID: %s\n", subnet.ID)
 	fmt.Println("===================")
-	return subnetID
+	return subnet.ID
 }
 
 func getSubnet(client *gcore.Client, subnetID string) {
