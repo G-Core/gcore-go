@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/storage"
 )
 
-func TestStorageNew(t *testing.T) {
+func TestStorageNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,7 +26,13 @@ func TestStorageNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Storage.New(context.TODO())
+	_, err := client.Storage.New(context.TODO(), storage.StorageNewParams{
+		Location:             storage.StorageNewParamsLocationSEd1,
+		Name:                 "my-storage-prod",
+		Type:                 storage.StorageNewParamsTypeS3,
+		GenerateSftpPassword: gcore.Bool(true),
+		SftpPassword:         gcore.String("sftp_password"),
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
