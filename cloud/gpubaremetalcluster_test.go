@@ -107,11 +107,12 @@ func TestGPUBaremetalClusterDeleteWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUBaremetalClusterDeleteParams{
-			ProjectID:          gcore.Int(1),
-			RegionID:           gcore.Int(7),
-			AllFloatingIPs:     gcore.Bool(true),
-			FloatingIPIDs:      []string{"e4a01208-d6ac-4304-bf86-3028154b070a"},
-			ReservedFixedIPIDs: []string{"a29b8e1e-08d3-4cec-91fb-06e81e5f46d5"},
+			ProjectID:           gcore.Int(1),
+			RegionID:            gcore.Int(7),
+			AllFloatingIPs:      gcore.Bool(true),
+			AllReservedFixedIPs: gcore.Bool(true),
+			FloatingIPIDs:       []string{"e4a01208-d6ac-4304-bf86-3028154b070a"},
+			ReservedFixedIPIDs:  []string{"a29b8e1e-08d3-4cec-91fb-06e81e5f46d5"},
 		},
 	)
 	if err != nil {
