@@ -5,10 +5,14 @@ package storage
 import (
 	"context"
 	"net/http"
+	"net/url"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
+	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
@@ -33,36 +37,52 @@ func NewLocationService(opts ...option.RequestOption) (r LocationService) {
 
 // Returns available storage locations where you can create storages. Each location
 // represents a geographic region with specific data center facilities.
-//
-// Deprecated: deprecated
-func (r *LocationService) List(ctx context.Context, opts ...option.RequestOption) (res *[]StorageLocation, err error) {
+func (r *LocationService) List(ctx context.Context, query LocationListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Location], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
-	path := "storage/provisioning/v1/location"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	path := "storage/provisioning/v2/locations"
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
 }
 
-type StorageLocation struct {
-	ID int64 `json:"id,required"`
-	// Full hostname/address for accessing the storage endpoint
+// Returns available storage locations where you can create storages. Each location
+// represents a geographic region with specific data center facilities.
+func (r *LocationService) ListAutoPaging(ctx context.Context, query LocationListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Location] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
+}
+
+// LocationV2 represents location data for v2 API where title is a string
+type Location struct {
+	// Full hostname/address for accessing the storage endpoint in this location
 	Address string `json:"address,required"`
-	// Indicates whether new storage can be created in this location: `allow` enables
-	// storage creation, `deny` prevents it
+	// Indicates whether new storage can be created in this location
 	//
 	// Any of "deny", "allow".
-	AllowForNewStorage StorageLocationAllowForNewStorage `json:"allow_for_new_storage,required"`
-	// Any of "s-ed1", "s-drc2", "s-sgc1", "s-nhn2", "s-darz", "s-ws1", "ams", "sin",
-	// "fra", "mia".
-	Name StorageLocationName `json:"name,required"`
+	AllowForNewStorage LocationAllowForNewStorage `json:"allow_for_new_storage,required"`
+	// Location code (region identifier)
+	Name string `json:"name,required"`
+	// Human-readable title for the location
+	Title string `json:"title,required"`
+	// Storage protocol type supported in this location
+	//
 	// Any of "s3", "sftp".
-	Type StorageLocationType `json:"type,required"`
+	Type LocationType `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
 		Address            respjson.Field
 		AllowForNewStorage respjson.Field
 		Name               respjson.Field
+		Title              respjson.Field
 		Type               respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
@@ -70,38 +90,37 @@ type StorageLocation struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageLocation) RawJSON() string { return r.JSON.raw }
-func (r *StorageLocation) UnmarshalJSON(data []byte) error {
+func (r Location) RawJSON() string { return r.JSON.raw }
+func (r *Location) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Indicates whether new storage can be created in this location: `allow` enables
-// storage creation, `deny` prevents it
-type StorageLocationAllowForNewStorage string
+// Indicates whether new storage can be created in this location
+type LocationAllowForNewStorage string
 
 const (
-	StorageLocationAllowForNewStorageDeny  StorageLocationAllowForNewStorage = "deny"
-	StorageLocationAllowForNewStorageAllow StorageLocationAllowForNewStorage = "allow"
+	LocationAllowForNewStorageDeny  LocationAllowForNewStorage = "deny"
+	LocationAllowForNewStorageAllow LocationAllowForNewStorage = "allow"
 )
 
-type StorageLocationName string
+// Storage protocol type supported in this location
+type LocationType string
 
 const (
-	StorageLocationNameSEd1  StorageLocationName = "s-ed1"
-	StorageLocationNameSDrc2 StorageLocationName = "s-drc2"
-	StorageLocationNameSSgc1 StorageLocationName = "s-sgc1"
-	StorageLocationNameSNhn2 StorageLocationName = "s-nhn2"
-	StorageLocationNameSDarz StorageLocationName = "s-darz"
-	StorageLocationNameSWs1  StorageLocationName = "s-ws1"
-	StorageLocationNameAms   StorageLocationName = "ams"
-	StorageLocationNameSin   StorageLocationName = "sin"
-	StorageLocationNameFra   StorageLocationName = "fra"
-	StorageLocationNameMia   StorageLocationName = "mia"
+	LocationTypeS3   LocationType = "s3"
+	LocationTypeSftp LocationType = "sftp"
 )
 
-type StorageLocationType string
+type LocationListParams struct {
+	Limit  param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	paramObj
+}
 
-const (
-	StorageLocationTypeS3   StorageLocationType = "s3"
-	StorageLocationTypeSftp StorageLocationType = "sftp"
-)
+// URLQuery serializes [LocationListParams]'s query parameters as `url.Values`.
+func (r LocationListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}

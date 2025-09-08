@@ -1822,23 +1822,23 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StorageLocation">StorageLocation</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#Location">Location</a>
 
 Methods:
 
-- <code title="get /storage/provisioning/v1/location">client.Storage.Locations.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#LocationService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) ([]<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StorageLocation">StorageLocation</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /storage/provisioning/v2/locations">client.Storage.Locations.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#LocationService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#LocationListParams">LocationListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#Location">Location</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Statistics
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StorageUsageSeries">StorageUsageSeries</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StorageUsageTotal">StorageUsageTotal</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#UsageSeries">UsageSeries</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#UsageTotal">UsageTotal</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StatisticGetUsageSeriesResponse">StatisticGetUsageSeriesResponse</a>
 
 Methods:
 
-- <code title="post /storage/stats/v1/storage/usage/total">client.Storage.Statistics.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StatisticService.GetUsageAggregated">GetUsageAggregated</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StatisticGetUsageAggregatedParams">StatisticGetUsageAggregatedParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StorageUsageTotal">StorageUsageTotal</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /storage/stats/v1/storage/usage/total">client.Storage.Statistics.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StatisticService.GetUsageAggregated">GetUsageAggregated</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StatisticGetUsageAggregatedParams">StatisticGetUsageAggregatedParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#UsageTotal">UsageTotal</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /storage/stats/v1/storage/usage/series">client.Storage.Statistics.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StatisticService.GetUsageSeries">GetUsageSeries</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StatisticGetUsageSeriesParams">StatisticGetUsageSeriesParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StatisticGetUsageSeriesResponse">StatisticGetUsageSeriesResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Credentials
@@ -1851,24 +1851,24 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StorageBucket">StorageBucket</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#Bucket">Bucket</a>
 
 Methods:
 
 - <code title="post /storage/provisioning/v1/storage/{storage_id}/s3/bucket/{bucket_name}">client.Storage.Buckets.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, bucketName <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketNewParams">BucketNewParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
-- <code title="get /storage/provisioning/v2/storage/{storage_id}/s3/buckets">client.Storage.Buckets.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, storageID <a href="https://pkg.go.dev/builtin#int64">int64</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketListParams">BucketListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StorageBucket">StorageBucket</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /storage/provisioning/v2/storage/{storage_id}/s3/buckets">client.Storage.Buckets.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, storageID <a href="https://pkg.go.dev/builtin#int64">int64</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketListParams">BucketListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#Bucket">Bucket</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /storage/provisioning/v1/storage/{storage_id}/s3/bucket/{bucket_name}">client.Storage.Buckets.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, bucketName <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketDeleteParams">BucketDeleteParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
 ### Cors
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StorageBucketCors">StorageBucketCors</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketCors">BucketCors</a>
 
 Methods:
 
 - <code title="post /storage/provisioning/v1/storage/{storage_id}/s3/bucket/{bucket_name}/cors">client.Storage.Buckets.Cors.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketCorService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, bucketName <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketCorNewParams">BucketCorNewParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
-- <code title="get /storage/provisioning/v1/storage/{storage_id}/s3/bucket/{bucket_name}/cors">client.Storage.Buckets.Cors.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketCorService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, bucketName <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketCorGetParams">BucketCorGetParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#StorageBucketCors">StorageBucketCors</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /storage/provisioning/v1/storage/{storage_id}/s3/bucket/{bucket_name}/cors">client.Storage.Buckets.Cors.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketCorService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, bucketName <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketCorGetParams">BucketCorGetParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage">storage</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/storage#BucketCors">BucketCors</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ### Lifecycle
 

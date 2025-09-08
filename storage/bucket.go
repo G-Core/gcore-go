@@ -61,7 +61,7 @@ func (r *BucketService) New(ctx context.Context, bucketName string, body BucketN
 // Returns the list of buckets for the storage in a wrapped response. Response
 // format: count: total number of buckets (independent of pagination) results:
 // current page of buckets according to limit/offset
-func (r *BucketService) List(ctx context.Context, storageID int64, query BucketListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[StorageBucket], err error) {
+func (r *BucketService) List(ctx context.Context, storageID int64, query BucketListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Bucket], err error) {
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -82,7 +82,7 @@ func (r *BucketService) List(ctx context.Context, storageID int64, query BucketL
 // Returns the list of buckets for the storage in a wrapped response. Response
 // format: count: total number of buckets (independent of pagination) results:
 // current page of buckets according to limit/offset
-func (r *BucketService) ListAutoPaging(ctx context.Context, storageID int64, query BucketListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[StorageBucket] {
+func (r *BucketService) ListAutoPaging(ctx context.Context, storageID int64, query BucketListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Bucket] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, storageID, query, opts...))
 }
 
@@ -102,7 +102,7 @@ func (r *BucketService) Delete(ctx context.Context, bucketName string, body Buck
 }
 
 // BucketDtoV2 for response
-type StorageBucket struct {
+type Bucket struct {
 	// Name of the S3 bucket
 	Name string `json:"name,required"`
 	// Lifecycle policy expiration days (zero if not set)
@@ -117,8 +117,8 @@ type StorageBucket struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageBucket) RawJSON() string { return r.JSON.raw }
-func (r *StorageBucket) UnmarshalJSON(data []byte) error {
+func (r Bucket) RawJSON() string { return r.JSON.raw }
+func (r *Bucket) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
