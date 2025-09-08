@@ -38,7 +38,7 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 // data beyond 60 minutes until servers resume and backfill missing statistics.
 //
 // Shows storage total usage data in filtered by storages, locations and interval.
-func (r *StatisticService) GetUsageAggregated(ctx context.Context, body StatisticGetUsageAggregatedParams, opts ...option.RequestOption) (res *StorageUsageTotal, err error) {
+func (r *StatisticService) GetUsageAggregated(ctx context.Context, body StatisticGetUsageAggregatedParams, opts ...option.RequestOption) (res *UsageTotal, err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "storage/stats/v1/storage/usage/total"
@@ -61,9 +61,9 @@ func (r *StatisticService) GetUsageSeries(ctx context.Context, body StatisticGet
 	return
 }
 
-type StorageUsageSeries struct {
+type UsageSeries struct {
 	// a Clients grouped data
-	Clients map[string]StorageUsageSeriesClient `json:"clients"`
+	Clients map[string]UsageSeriesClient `json:"clients"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Clients     respjson.Field
@@ -73,18 +73,18 @@ type StorageUsageSeries struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageUsageSeries) RawJSON() string { return r.JSON.raw }
-func (r *StorageUsageSeries) UnmarshalJSON(data []byte) error {
+func (r UsageSeries) RawJSON() string { return r.JSON.raw }
+func (r *UsageSeries) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type StorageUsageSeriesClient struct {
+type UsageSeriesClient struct {
 	// an ID of client
 	ID int64 `json:"id"`
 	// a FileQuantitySumMax is max sum of files quantity for grouped period
 	FileQuantitySumMax int64 `json:"file_quantity_sum_max"`
 	// a Locations grouped data
-	Locations map[string]StorageUsageSeriesClientLocation `json:"locations"`
+	Locations map[string]UsageSeriesClientLocation `json:"locations"`
 	// a RequestsInSum is sum of incoming requests for grouped period
 	RequestsInSum int64 `json:"requests_in_sum"`
 	// a RequestsOutEdgesSum is sum of out edges requests for grouped period
@@ -129,12 +129,12 @@ type StorageUsageSeriesClient struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageUsageSeriesClient) RawJSON() string { return r.JSON.raw }
-func (r *StorageUsageSeriesClient) UnmarshalJSON(data []byte) error {
+func (r UsageSeriesClient) RawJSON() string { return r.JSON.raw }
+func (r *UsageSeriesClient) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type StorageUsageSeriesClientLocation struct {
+type UsageSeriesClientLocation struct {
 	// a FileQuantitySumMax is max sum of files quantity for grouped period
 	FileQuantitySumMax int64 `json:"file_quantity_sum_max"`
 	// a Name of location
@@ -154,7 +154,7 @@ type StorageUsageSeriesClientLocation struct {
 	// a SizeSumMean is mean sum of all files sizes for grouped period
 	SizeSumMean int64 `json:"size_sum_mean"`
 	// a Storages grouped data
-	Storages map[string]StorageUsageSeriesClientLocationStorage `json:"storages"`
+	Storages map[string]UsageSeriesClientLocationStorage `json:"storages"`
 	// a TrafficInSum is sum of incoming traffic for grouped period
 	TrafficInSum int64 `json:"traffic_in_sum"`
 	// a TrafficOutEdgesSum is sum of out edges traffic for grouped period
@@ -185,12 +185,12 @@ type StorageUsageSeriesClientLocation struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageUsageSeriesClientLocation) RawJSON() string { return r.JSON.raw }
-func (r *StorageUsageSeriesClientLocation) UnmarshalJSON(data []byte) error {
+func (r UsageSeriesClientLocation) RawJSON() string { return r.JSON.raw }
+func (r *UsageSeriesClientLocation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type StorageUsageSeriesClientLocationStorage struct {
+type UsageSeriesClientLocationStorage struct {
 	// a BucketsSeries is max bucket files count for grouped period
 	// {name:[[timestamp, count]]}
 	BucketsSeries map[string][][]any `json:"buckets_series"`
@@ -282,14 +282,14 @@ type StorageUsageSeriesClientLocationStorage struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageUsageSeriesClientLocationStorage) RawJSON() string { return r.JSON.raw }
-func (r *StorageUsageSeriesClientLocationStorage) UnmarshalJSON(data []byte) error {
+func (r UsageSeriesClientLocationStorage) RawJSON() string { return r.JSON.raw }
+func (r *UsageSeriesClientLocationStorage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type StorageUsageTotal struct {
+type UsageTotal struct {
 	// StorageUsageTotalRes for response
-	Data []StorageUsageTotalData `json:"data"`
+	Data []UsageTotalData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -299,14 +299,14 @@ type StorageUsageTotal struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageUsageTotal) RawJSON() string { return r.JSON.raw }
-func (r *StorageUsageTotal) UnmarshalJSON(data []byte) error {
+func (r UsageTotal) RawJSON() string { return r.JSON.raw }
+func (r *UsageTotal) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // StorageStatsTotalElement for response
-type StorageUsageTotalData struct {
-	Metrics StorageUsageTotalDataMetrics `json:"metrics"`
+type UsageTotalData struct {
+	Metrics UsageTotalDataMetrics `json:"metrics"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Metrics     respjson.Field
@@ -316,12 +316,12 @@ type StorageUsageTotalData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageUsageTotalData) RawJSON() string { return r.JSON.raw }
-func (r *StorageUsageTotalData) UnmarshalJSON(data []byte) error {
+func (r UsageTotalData) RawJSON() string { return r.JSON.raw }
+func (r *UsageTotalData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type StorageUsageTotalDataMetrics struct {
+type UsageTotalDataMetrics struct {
 	// a FileQuantitySumMax is max sum of files quantity for grouped period
 	FileQuantitySumMax int64 `json:"file_quantity_sum_max"`
 	// a RequestsInSum is sum of incoming requests for grouped period
@@ -366,13 +366,13 @@ type StorageUsageTotalDataMetrics struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageUsageTotalDataMetrics) RawJSON() string { return r.JSON.raw }
-func (r *StorageUsageTotalDataMetrics) UnmarshalJSON(data []byte) error {
+func (r UsageTotalDataMetrics) RawJSON() string { return r.JSON.raw }
+func (r *UsageTotalDataMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type StatisticGetUsageSeriesResponse struct {
-	Data StorageUsageSeries `json:"data"`
+	Data UsageSeries `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

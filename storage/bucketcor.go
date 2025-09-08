@@ -53,7 +53,7 @@ func (r *BucketCorService) New(ctx context.Context, bucketName string, params Bu
 // Retrieves the current Cross-Origin Resource Sharing (CORS) configuration for an
 // S3 bucket, showing which domains are allowed to access the bucket from web
 // browsers.
-func (r *BucketCorService) Get(ctx context.Context, bucketName string, query BucketCorGetParams, opts ...option.RequestOption) (res *StorageBucketCors, err error) {
+func (r *BucketCorService) Get(ctx context.Context, bucketName string, query BucketCorGetParams, opts ...option.RequestOption) (res *BucketCors, err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
@@ -66,7 +66,7 @@ func (r *BucketCorService) Get(ctx context.Context, bucketName string, query Buc
 }
 
 // StorageGetBucketCorsEndpointRes output
-type StorageBucketCors struct {
+type BucketCors struct {
 	// List of allowed origins for Cross-Origin Resource Sharing (CORS) requests.
 	// Contains domains/URLs that are permitted to make cross-origin requests to this
 	// bucket.
@@ -80,8 +80,8 @@ type StorageBucketCors struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageBucketCors) RawJSON() string { return r.JSON.raw }
-func (r *StorageBucketCors) UnmarshalJSON(data []byte) error {
+func (r BucketCors) RawJSON() string { return r.JSON.raw }
+func (r *BucketCors) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
