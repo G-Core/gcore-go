@@ -1171,9 +1171,8 @@ type BaremetalServerNewParamsDDOSProfileField struct {
 	// Basic type value. Only one of 'value' or '`field_value`' must be specified.
 	//
 	// Deprecated: deprecated
-	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value. Only one of 'value' or '`field_value`' must be specified.
-	FieldValue BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion `json:"field_value,omitzero"`
+	Value      param.Opt[string] `json:"value,omitzero"`
+	FieldValue any               `json:"field_value,omitzero"`
 	paramObj
 }
 
@@ -1183,34 +1182,6 @@ func (r BaremetalServerNewParamsDDOSProfileField) MarshalJSON() (data []byte, er
 }
 func (r *BaremetalServerNewParamsDDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion struct {
-	OfAnyArray []any             `json:",omitzero,inline"`
-	OfInt      param.Opt[int64]  `json:",omitzero,inline"`
-	OfString   param.Opt[string] `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfAnyArray, u.OfInt, u.OfString)
-}
-func (u *BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion) asAny() any {
-	if !param.IsOmitted(u.OfAnyArray) {
-		return &u.OfAnyArray
-	} else if !param.IsOmitted(u.OfInt) {
-		return &u.OfInt.Value
-	} else if !param.IsOmitted(u.OfString) {
-		return &u.OfString.Value
-	}
-	return nil
 }
 
 type BaremetalServerListParams struct {
