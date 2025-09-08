@@ -46,11 +46,11 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 
 // Creates a new storage instance (S3 or SFTP) in the specified location and
 // returns the storage details including credentials.
-func (r *StorageService) New(ctx context.Context, opts ...option.RequestOption) (res *Storage, err error) {
+func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ...option.RequestOption) (res *Storage, err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "storage/provisioning/v2/storage"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
@@ -323,6 +323,66 @@ func (r StorageCredentialsS3) RawJSON() string { return r.JSON.raw }
 func (r *StorageCredentialsS3) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type StorageNewParams struct {
+	// Geographic location where the storage will be provisioned. Each location
+	// represents a specific data center region.
+	//
+	// Any of "s-ed1", "s-drc2", "s-sgc1", "s-nhn2", "s-darz", "s-ws1", "ams", "sin",
+	// "fra", "mia".
+	Location StorageNewParamsLocation `json:"location,omitzero,required"`
+	// Unique storage name identifier. Must contain only letters, numbers, dashes, and
+	// underscores. Cannot be empty and must be less than 256 characters.
+	Name string `json:"name,required"`
+	// Storage protocol type. Choose 's3' for S3-compatible object storage with API
+	// access, or `sftp` for SFTP file transfer protocol.
+	//
+	// Any of "sftp", "s3".
+	Type StorageNewParamsType `json:"type,omitzero,required"`
+	// Automatically generate a secure password for SFTP storage access. Only
+	// applicable when type is `sftp`. When `true`, a random password will be generated
+	// and returned in the response.
+	GenerateSftpPassword param.Opt[bool] `json:"generate_sftp_password,omitzero"`
+	// Custom password for SFTP storage access. Only applicable when type is `sftp`. If
+	// not provided and `generate_sftp_password` is `false`, no password authentication
+	// will be available.
+	SftpPassword param.Opt[string] `json:"sftp_password,omitzero"`
+	paramObj
+}
+
+func (r StorageNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow StorageNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *StorageNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Geographic location where the storage will be provisioned. Each location
+// represents a specific data center region.
+type StorageNewParamsLocation string
+
+const (
+	StorageNewParamsLocationSEd1  StorageNewParamsLocation = "s-ed1"
+	StorageNewParamsLocationSDrc2 StorageNewParamsLocation = "s-drc2"
+	StorageNewParamsLocationSSgc1 StorageNewParamsLocation = "s-sgc1"
+	StorageNewParamsLocationSNhn2 StorageNewParamsLocation = "s-nhn2"
+	StorageNewParamsLocationSDarz StorageNewParamsLocation = "s-darz"
+	StorageNewParamsLocationSWs1  StorageNewParamsLocation = "s-ws1"
+	StorageNewParamsLocationAms   StorageNewParamsLocation = "ams"
+	StorageNewParamsLocationSin   StorageNewParamsLocation = "sin"
+	StorageNewParamsLocationFra   StorageNewParamsLocation = "fra"
+	StorageNewParamsLocationMia   StorageNewParamsLocation = "mia"
+)
+
+// Storage protocol type. Choose 's3' for S3-compatible object storage with API
+// access, or `sftp` for SFTP file transfer protocol.
+type StorageNewParamsType string
+
+const (
+	StorageNewParamsTypeSftp StorageNewParamsType = "sftp"
+	StorageNewParamsTypeS3   StorageNewParamsType = "s3"
+)
 
 type StorageUpdateParams struct {
 	// ISO 8601 timestamp when the storage should expire. Leave empty to remove
