@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
@@ -31,10 +32,17 @@ func TestGPUBaremetalClusterServerListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUBaremetalClusterServerListParams{
-			ProjectID: gcore.Int(1),
-			RegionID:  gcore.Int(7),
-			Limit:     gcore.Int(10),
-			Offset:    gcore.Int(0),
+			ProjectID:     gcore.Int(1),
+			RegionID:      gcore.Int(7),
+			ChangedBefore: gcore.Time(time.Now()),
+			ChangedSince:  gcore.Time(time.Now()),
+			IPAddress:     gcore.String("237.84.2.178"),
+			Limit:         gcore.Int(10),
+			Name:          gcore.String("name"),
+			Offset:        gcore.Int(0),
+			OrderBy:       cloud.GPUBaremetalClusterServerListParamsOrderByCreatedAtAsc,
+			Status:        cloud.GPUBaremetalClusterServerListParamsStatusActive,
+			Uuids:         []string{"string"},
 		},
 	)
 	if err != nil {

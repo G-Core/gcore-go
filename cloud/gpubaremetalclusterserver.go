@@ -683,10 +683,34 @@ type GPUBaremetalClusterServerListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Filters the results to include only servers whose last change timestamp is less
+	// than the specified datetime. Format: ISO 8601.
+	ChangedBefore param.Opt[time.Time] `query:"changed_before,omitzero" format:"date-time" json:"-"`
+	// Filters the results to include only servers whose last change timestamp is
+	// greater than or equal to the specified datetime. Format: ISO 8601.
+	ChangedSince param.Opt[time.Time] `query:"changed_since,omitzero" format:"date-time" json:"-"`
+	// Filter servers by ip address.
+	IPAddress param.Opt[string] `query:"ip_address,omitzero" json:"-"`
 	// Limit of items on a single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter servers by name. You can provide a full or partial name, servers with
+	// matching names will be returned. For example, entering 'test' will return all
+	// servers that contain 'test' in their name.
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Offset in results list
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Order field
+	//
+	// Any of "created_at.asc", "created_at.desc", "status.asc", "status.desc".
+	OrderBy GPUBaremetalClusterServerListParamsOrderBy `query:"order_by,omitzero" json:"-"`
+	// Filters servers by status.
+	//
+	// Any of "ACTIVE", "BUILD", "ERROR", "HARD_REBOOT", "MIGRATING", "PAUSED",
+	// "REBOOT", "REBUILD", "RESIZE", "REVERT_RESIZE", "SHELVED", "SHELVED_OFFLOADED",
+	// "SHUTOFF", "SOFT_DELETED", "SUSPENDED", "VERIFY_RESIZE".
+	Status GPUBaremetalClusterServerListParamsStatus `query:"status,omitzero" json:"-"`
+	// Filter servers by uuid.
+	Uuids []string `query:"uuids,omitzero" json:"-"`
 	paramObj
 }
 
@@ -698,6 +722,38 @@ func (r GPUBaremetalClusterServerListParams) URLQuery() (v url.Values, err error
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Order field
+type GPUBaremetalClusterServerListParamsOrderBy string
+
+const (
+	GPUBaremetalClusterServerListParamsOrderByCreatedAtAsc  GPUBaremetalClusterServerListParamsOrderBy = "created_at.asc"
+	GPUBaremetalClusterServerListParamsOrderByCreatedAtDesc GPUBaremetalClusterServerListParamsOrderBy = "created_at.desc"
+	GPUBaremetalClusterServerListParamsOrderByStatusAsc     GPUBaremetalClusterServerListParamsOrderBy = "status.asc"
+	GPUBaremetalClusterServerListParamsOrderByStatusDesc    GPUBaremetalClusterServerListParamsOrderBy = "status.desc"
+)
+
+// Filters servers by status.
+type GPUBaremetalClusterServerListParamsStatus string
+
+const (
+	GPUBaremetalClusterServerListParamsStatusActive           GPUBaremetalClusterServerListParamsStatus = "ACTIVE"
+	GPUBaremetalClusterServerListParamsStatusBuild            GPUBaremetalClusterServerListParamsStatus = "BUILD"
+	GPUBaremetalClusterServerListParamsStatusError            GPUBaremetalClusterServerListParamsStatus = "ERROR"
+	GPUBaremetalClusterServerListParamsStatusHardReboot       GPUBaremetalClusterServerListParamsStatus = "HARD_REBOOT"
+	GPUBaremetalClusterServerListParamsStatusMigrating        GPUBaremetalClusterServerListParamsStatus = "MIGRATING"
+	GPUBaremetalClusterServerListParamsStatusPaused           GPUBaremetalClusterServerListParamsStatus = "PAUSED"
+	GPUBaremetalClusterServerListParamsStatusReboot           GPUBaremetalClusterServerListParamsStatus = "REBOOT"
+	GPUBaremetalClusterServerListParamsStatusRebuild          GPUBaremetalClusterServerListParamsStatus = "REBUILD"
+	GPUBaremetalClusterServerListParamsStatusResize           GPUBaremetalClusterServerListParamsStatus = "RESIZE"
+	GPUBaremetalClusterServerListParamsStatusRevertResize     GPUBaremetalClusterServerListParamsStatus = "REVERT_RESIZE"
+	GPUBaremetalClusterServerListParamsStatusShelved          GPUBaremetalClusterServerListParamsStatus = "SHELVED"
+	GPUBaremetalClusterServerListParamsStatusShelvedOffloaded GPUBaremetalClusterServerListParamsStatus = "SHELVED_OFFLOADED"
+	GPUBaremetalClusterServerListParamsStatusShutoff          GPUBaremetalClusterServerListParamsStatus = "SHUTOFF"
+	GPUBaremetalClusterServerListParamsStatusSoftDeleted      GPUBaremetalClusterServerListParamsStatus = "SOFT_DELETED"
+	GPUBaremetalClusterServerListParamsStatusSuspended        GPUBaremetalClusterServerListParamsStatus = "SUSPENDED"
+	GPUBaremetalClusterServerListParamsStatusVerifyResize     GPUBaremetalClusterServerListParamsStatus = "VERIFY_RESIZE"
+)
 
 type GPUBaremetalClusterServerDeleteParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
