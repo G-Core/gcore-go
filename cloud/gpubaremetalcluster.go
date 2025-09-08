@@ -1011,6 +1011,9 @@ type GPUBaremetalClusterDeleteParams struct {
 	// Flag indicating whether the floating ips associated with server / cluster are
 	// deleted
 	AllFloatingIPs param.Opt[bool] `query:"all_floating_ips,omitzero" json:"-"`
+	// Flag indicating whether the reserved fixed ips associated with server / cluster
+	// are deleted
+	AllReservedFixedIPs param.Opt[bool] `query:"all_reserved_fixed_ips,omitzero" json:"-"`
 	// Optional list of floating ips to be deleted
 	FloatingIPIDs []string `query:"floating_ip_ids,omitzero" format:"uuid4" json:"-"`
 	// Optional list of reserved fixed ips to be deleted

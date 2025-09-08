@@ -138,6 +138,11 @@ type Project struct {
 	ClientID int64 `json:"client_id,required"`
 	// Datetime of creation, which is automatically generated.
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Datetime of deletion, which is automatically generated if the project is
+	// deleted.
+	DeletedAt time.Time `json:"deleted_at,required" format:"date-time"`
+	// Description of the project.
+	Description string `json:"description,required"`
 	// Indicates if the project is the default one. Each client always has one default
 	// project.
 	IsDefault bool `json:"is_default,required"`
@@ -145,25 +150,20 @@ type Project struct {
 	Name string `json:"name,required"`
 	// The state of the project.
 	State string `json:"state,required"`
-	// Datetime of deletion, which is automatically generated if the project is
-	// deleted.
-	DeletedAt time.Time `json:"deleted_at,nullable" format:"date-time"`
-	// Description of the project.
-	Description string `json:"description,nullable"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,nullable"`
+	TaskID string `json:"task_id,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ClientID    respjson.Field
 		CreatedAt   respjson.Field
+		DeletedAt   respjson.Field
+		Description respjson.Field
 		IsDefault   respjson.Field
 		Name        respjson.Field
 		State       respjson.Field
-		DeletedAt   respjson.Field
-		Description respjson.Field
 		TaskID      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
