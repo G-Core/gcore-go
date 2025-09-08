@@ -25,6 +25,7 @@ import (
 // the [NewNetworkSubnetService] method instead.
 type NetworkSubnetService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewNetworkSubnetService generates a new service that applies the given options
@@ -33,6 +34,7 @@ type NetworkSubnetService struct {
 func NewNetworkSubnetService(opts ...option.RequestOption) (r NetworkSubnetService) {
 	r = NetworkSubnetService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -57,6 +59,41 @@ func (r *NetworkSubnetService) New(ctx context.Context, params NetworkSubnetNewP
 	path := fmt.Sprintf("cloud/v1/subnets/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a subnet and then polls the task until it's completed.
+func (r *NetworkSubnetService) NewAndPoll(ctx context.Context, params NetworkSubnetNewParams, opts ...option.RequestOption) (res *Subnet, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams NetworkSubnetGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Subnets) != 1 {
+		return nil, errors.New("expected exactly one subnet to be created in a task")
+	}
+	resourceID := task.CreatedResources.Subnets[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
 // Update subnet
