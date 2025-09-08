@@ -28,10 +28,8 @@ func TestProfileNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Security.Profiles.New(context.TODO(), security.ProfileNewParams{
 		Fields: []security.ProfileNewParamsField{{
-			BaseField: 1,
-			FieldValue: security.ProfileNewParamsFieldFieldValueUnion{
-				OfProfileNewsFieldFieldValueUnknown: &map[string]interface{}{},
-			},
+			BaseField:  1,
+			FieldValue: map[string]interface{}{},
 		}},
 		ProfileTemplate: 1,
 		IPAddress:       gcore.String("123.43.2.10"),
@@ -134,10 +132,8 @@ func TestProfileRecreateWithOptionalParams(t *testing.T) {
 		0,
 		security.ProfileRecreateParams{
 			Fields: []security.ProfileRecreateParamsField{{
-				BaseField: 1,
-				FieldValue: security.ProfileRecreateParamsFieldFieldValueUnion{
-					OfProfileRecreatesFieldFieldValueUnknown: &map[string]interface{}{},
-				},
+				BaseField:  1,
+				FieldValue: map[string]interface{}{},
 			}},
 			ProfileTemplate: 1,
 			IPAddress:       gcore.String("ip_address"),
@@ -170,10 +166,8 @@ func TestProfileReplaceWithOptionalParams(t *testing.T) {
 		0,
 		security.ProfileReplaceParams{
 			Fields: []security.ProfileReplaceParamsField{{
-				BaseField: 1,
-				FieldValue: security.ProfileReplaceParamsFieldFieldValueUnion{
-					OfProfileReplacesFieldFieldValueUnknown: &map[string]interface{}{},
-				},
+				BaseField:  1,
+				FieldValue: map[string]interface{}{},
 			}},
 			ProfileTemplate: 1,
 			IPAddress:       gcore.String("ip_address"),

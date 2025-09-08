@@ -45,8 +45,9 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 			Fields: []cloud.BaremetalServerNewParamsDDOSProfileField{{
 				BaseField: gcore.Int(10),
 				FieldName: gcore.String("field_name"),
-				FieldValue: cloud.BaremetalServerNewParamsDDOSProfileFieldFieldValueUnion{
-					OfAnyArray: []any{45046, 45047},
+				FieldValue: map[string]interface{}{
+					"0": 45046,
+					"1": 45047,
 				},
 				Value: gcore.String("value"),
 			}},
