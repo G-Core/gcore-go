@@ -28,6 +28,7 @@ import (
 // the [NewFloatingIPService] method instead.
 type FloatingIPService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewFloatingIPService generates a new service that applies the given options to
@@ -36,6 +37,7 @@ type FloatingIPService struct {
 func NewFloatingIPService(opts ...option.RequestOption) (r FloatingIPService) {
 	r = FloatingIPService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -60,6 +62,41 @@ func (r *FloatingIPService) New(ctx context.Context, params FloatingIPNewParams,
 	path := fmt.Sprintf("cloud/v1/floatingips/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a floating IP and waits for the operation to complete.
+func (r *FloatingIPService) NewAndPoll(ctx context.Context, params FloatingIPNewParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams FloatingIPGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Floatingips) != 1 {
+		return nil, errors.New("expected exactly one network to be created in a task")
+	}
+	resourceID := task.CreatedResources.Floatingips[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
 // List floating IPs
@@ -125,6 +162,22 @@ func (r *FloatingIPService) Delete(ctx context.Context, floatingIPID string, bod
 	path := fmt.Sprintf("cloud/v1/floatingips/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, floatingIPID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
+}
+
+// DeleteAndPoll deletes a floating IP and polls for completion of the first task. Use the
+// [TaskService.Poll] method if you need to poll for all tasks.
+func (r *FloatingIPService) DeleteAndPoll(ctx context.Context, floatingIPID string, body FloatingIPDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, floatingIPID, body, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }
 
 // Assign floating IP to instance or loadbalancer

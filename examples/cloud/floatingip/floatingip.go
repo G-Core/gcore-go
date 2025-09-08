@@ -62,17 +62,7 @@ func createFloatingIP(client *gcore.Client) *cloud.FloatingIP {
 		Tags:           map[string]string{"name": "gcore-go-example"},
 	}
 
-	taskIDs, err := client.Cloud.FloatingIPs.New(context.Background(), params)
-	if err != nil {
-		log.Fatalf("Error creating floating IP: %v", err)
-	}
-
-	task, err := client.Cloud.Tasks.Poll(context.Background(), taskIDs.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling task for floating IP creation: %v", err)
-	}
-
-	floatingIP, err := client.Cloud.FloatingIPs.Get(context.Background(), task.CreatedResources.Floatingips[0], cloud.FloatingIPGetParams{})
+	floatingIP, err := client.Cloud.FloatingIPs.NewAndPoll(context.Background(), params)
 	if err != nil {
 		log.Fatalf("Error getting created floating IP details: %v", err)
 	}
@@ -149,14 +139,9 @@ func unassignFloatingIP(client *gcore.Client, floatingIPID string) {
 func deleteFloatingIP(client *gcore.Client, floatingIPID string) {
 	fmt.Println("\n=== DELETE FLOATING IP ===")
 
-	taskIDs, err := client.Cloud.FloatingIPs.Delete(context.Background(), floatingIPID, cloud.FloatingIPDeleteParams{})
+	err := client.Cloud.FloatingIPs.DeleteAndPoll(context.Background(), floatingIPID, cloud.FloatingIPDeleteParams{})
 	if err != nil {
 		log.Fatalf("Error deleting floating IP: %v", err)
-	}
-
-	_, err = client.Cloud.Tasks.Poll(context.Background(), taskIDs.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling task for floating IP deletion: %v", err)
 	}
 
 	fmt.Printf("Floating IP with ID %s successfully deleted\n", floatingIPID)
