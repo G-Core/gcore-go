@@ -41,7 +41,6 @@ func NewInferenceAPIKeyService(opts ...option.RequestOption) (r InferenceAPIKeyS
 // key's actual secret only once after creation.
 func (r *InferenceAPIKeyService) New(ctx context.Context, params InferenceAPIKeyNewParams, opts ...option.RequestOption) (res *InferenceAPIKeyCreate, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -59,7 +58,6 @@ func (r *InferenceAPIKeyService) New(ctx context.Context, params InferenceAPIKey
 // This endpoint updates a specific API key for everywhere inference.
 func (r *InferenceAPIKeyService) Update(ctx context.Context, apiKeyName string, params InferenceAPIKeyUpdateParams, opts ...option.RequestOption) (res *InferenceAPIKey, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -83,7 +81,6 @@ func (r *InferenceAPIKeyService) List(ctx context.Context, params InferenceAPIKe
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -117,7 +114,6 @@ func (r *InferenceAPIKeyService) ListAutoPaging(ctx context.Context, params Infe
 func (r *InferenceAPIKeyService) Delete(ctx context.Context, apiKeyName string, body InferenceAPIKeyDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -139,7 +135,6 @@ func (r *InferenceAPIKeyService) Delete(ctx context.Context, apiKeyName string, 
 // This endpoint retrieves a specific API key for everywhere inference.
 func (r *InferenceAPIKeyService) Get(ctx context.Context, apiKeyName string, query InferenceAPIKeyGetParams, opts ...option.RequestOption) (res *InferenceAPIKey, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

@@ -37,7 +37,6 @@ func NewBinaryService(opts ...option.RequestOption) (r BinaryService) {
 func (r *BinaryService) New(ctx context.Context, body io.Reader, opts ...option.RequestOption) (res *BinaryShort, err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "fastedge/v1/binaries/raw"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
@@ -46,7 +45,6 @@ func (r *BinaryService) New(ctx context.Context, body io.Reader, opts ...option.
 // List binaries
 func (r *BinaryService) List(ctx context.Context, opts ...option.RequestOption) (res *BinaryListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "fastedge/v1/binaries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -56,7 +54,6 @@ func (r *BinaryService) List(ctx context.Context, opts ...option.RequestOption) 
 func (r *BinaryService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/binaries/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -65,7 +62,6 @@ func (r *BinaryService) Delete(ctx context.Context, id int64, opts ...option.Req
 // Get binary
 func (r *BinaryService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *Binary, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/binaries/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
