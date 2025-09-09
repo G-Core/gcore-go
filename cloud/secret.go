@@ -45,7 +45,6 @@ func (r *SecretService) List(ctx context.Context, params SecretListParams, opts 
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -81,7 +80,6 @@ func (r *SecretService) ListAutoPaging(ctx context.Context, params SecretListPar
 // Delete secret
 func (r *SecretService) Delete(ctx context.Context, secretID string, body SecretDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -108,7 +106,6 @@ func (r *SecretService) Delete(ctx context.Context, secretID string, body Secret
 // Get secret
 func (r *SecretService) Get(ctx context.Context, secretID string, query SecretGetParams, opts ...option.RequestOption) (res *Secret, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -135,7 +132,6 @@ func (r *SecretService) Get(ctx context.Context, secretID string, query SecretGe
 // Create secret
 func (r *SecretService) UploadTlsCertificate(ctx context.Context, params SecretUploadTlsCertificateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

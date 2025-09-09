@@ -43,7 +43,6 @@ func (r *DomainInsightService) List(ctx context.Context, domainID int64, query D
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/insights", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -65,7 +64,6 @@ func (r *DomainInsightService) ListAutoPaging(ctx context.Context, domainID int6
 // Retrieve a specific insight for a specific domain.
 func (r *DomainInsightService) Get(ctx context.Context, insightID string, query DomainInsightGetParams, opts ...option.RequestOption) (res *WaapInsight, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
 		return
@@ -78,7 +76,6 @@ func (r *DomainInsightService) Get(ctx context.Context, insightID string, query 
 // Update the status of an insight for a specific domain.
 func (r *DomainInsightService) Replace(ctx context.Context, insightID string, params DomainInsightReplaceParams, opts ...option.RequestOption) (res *WaapInsight, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
 		return

@@ -45,7 +45,6 @@ func NewDNSService(opts ...option.RequestOption) (r DNSService) {
 // Get info about client
 func (r *DNSService) GetAccountOverview(ctx context.Context, opts ...option.RequestOption) (res *DNSGetAccountOverviewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "dns/v2/platform/info"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -54,7 +53,6 @@ func (r *DNSService) GetAccountOverview(ctx context.Context, opts ...option.Requ
 // Get the dns records from a specific domain or ip.
 func (r *DNSService) Lookup(ctx context.Context, query DNSLookupParams, opts ...option.RequestOption) (res *[]DNSLookupResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "dns/v2/lookup"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

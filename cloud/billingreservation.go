@@ -42,7 +42,6 @@ func (r *BillingReservationService) List(ctx context.Context, query BillingReser
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v1/reservations"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -64,7 +63,6 @@ func (r *BillingReservationService) ListAutoPaging(ctx context.Context, query Bi
 // Get reservation
 func (r *BillingReservationService) Get(ctx context.Context, reservationID int64, opts ...option.RequestOption) (res *BillingReservation, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cloud/v1/reservations/%v", reservationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
