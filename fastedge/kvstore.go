@@ -41,7 +41,6 @@ func NewKvStoreService(opts ...option.RequestOption) (r KvStoreService) {
 // Add a new KV store
 func (r *KvStoreService) New(ctx context.Context, body KvStoreNewParams, opts ...option.RequestOption) (res *KvStore, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "fastedge/v1/kv"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -50,7 +49,6 @@ func (r *KvStoreService) New(ctx context.Context, body KvStoreNewParams, opts ..
 // List available stores
 func (r *KvStoreService) List(ctx context.Context, query KvStoreListParams, opts ...option.RequestOption) (res *KvStoreListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "fastedge/v1/kv"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,7 +58,6 @@ func (r *KvStoreService) List(ctx context.Context, query KvStoreListParams, opts
 func (r *KvStoreService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/kv/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -69,7 +66,6 @@ func (r *KvStoreService) Delete(ctx context.Context, id int64, opts ...option.Re
 // Get store by id
 func (r *KvStoreService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *KvStoreGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/kv/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -78,7 +74,6 @@ func (r *KvStoreService) Get(ctx context.Context, id int64, opts ...option.Reque
 // Update a store
 func (r *KvStoreService) Replace(ctx context.Context, id int64, body KvStoreReplaceParams, opts ...option.RequestOption) (res *KvStore, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/kv/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

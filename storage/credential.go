@@ -36,7 +36,6 @@ func NewCredentialService(opts ...option.RequestOption) (r CredentialService) {
 // password for SFTP storage).
 func (r *CredentialService) Recreate(ctx context.Context, storageID int64, body CredentialRecreateParams, opts ...option.RequestOption) (res *Storage, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/credentials", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

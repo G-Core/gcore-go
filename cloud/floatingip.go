@@ -44,7 +44,6 @@ func NewFloatingIPService(opts ...option.RequestOption) (r FloatingIPService) {
 // Create floating IP
 func (r *FloatingIPService) New(ctx context.Context, params FloatingIPNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -104,7 +103,6 @@ func (r *FloatingIPService) List(ctx context.Context, params FloatingIPListParam
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -140,7 +138,6 @@ func (r *FloatingIPService) ListAutoPaging(ctx context.Context, params FloatingI
 // Delete floating IP
 func (r *FloatingIPService) Delete(ctx context.Context, floatingIPID string, body FloatingIPDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -183,7 +180,6 @@ func (r *FloatingIPService) DeleteAndPoll(ctx context.Context, floatingIPID stri
 // Assign floating IP to instance or loadbalancer
 func (r *FloatingIPService) Assign(ctx context.Context, floatingIPID string, params FloatingIPAssignParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -210,7 +206,6 @@ func (r *FloatingIPService) Assign(ctx context.Context, floatingIPID string, par
 // Get floating IP
 func (r *FloatingIPService) Get(ctx context.Context, floatingIPID string, query FloatingIPGetParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -237,7 +232,6 @@ func (r *FloatingIPService) Get(ctx context.Context, floatingIPID string, query 
 // Unassign floating IP
 func (r *FloatingIPService) Unassign(ctx context.Context, floatingIPID string, body FloatingIPUnassignParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

@@ -44,7 +44,6 @@ func NewInferenceDeploymentService(opts ...option.RequestOption) (r InferenceDep
 // Create inference deployment
 func (r *InferenceDeploymentService) New(ctx context.Context, params InferenceDeploymentNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -62,7 +61,6 @@ func (r *InferenceDeploymentService) New(ctx context.Context, params InferenceDe
 // Update inference deployment
 func (r *InferenceDeploymentService) Update(ctx context.Context, deploymentName string, params InferenceDeploymentUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -86,7 +84,6 @@ func (r *InferenceDeploymentService) List(ctx context.Context, params InferenceD
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -117,7 +114,6 @@ func (r *InferenceDeploymentService) ListAutoPaging(ctx context.Context, params 
 // Delete inference deployment
 func (r *InferenceDeploymentService) Delete(ctx context.Context, deploymentName string, body InferenceDeploymentDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -139,7 +135,6 @@ func (r *InferenceDeploymentService) Delete(ctx context.Context, deploymentName 
 // Get inference deployment
 func (r *InferenceDeploymentService) Get(ctx context.Context, deploymentName string, query InferenceDeploymentGetParams, opts ...option.RequestOption) (res *InferenceDeployment, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -163,7 +158,6 @@ func (r *InferenceDeploymentService) Get(ctx context.Context, deploymentName str
 // Deprecated: deprecated
 func (r *InferenceDeploymentService) GetAPIKey(ctx context.Context, deploymentName string, query InferenceDeploymentGetAPIKeyParams, opts ...option.RequestOption) (res *InferenceDeploymentAPIKey, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -193,7 +187,6 @@ func (r *InferenceDeploymentService) GetAPIKey(ctx context.Context, deploymentNa
 func (r *InferenceDeploymentService) Start(ctx context.Context, deploymentName string, body InferenceDeploymentStartParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -223,7 +216,6 @@ func (r *InferenceDeploymentService) Start(ctx context.Context, deploymentName s
 func (r *InferenceDeploymentService) Stop(ctx context.Context, deploymentName string, body InferenceDeploymentStopParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
