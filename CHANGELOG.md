@@ -1,5 +1,68 @@
 # Changelog
 
+## 0.11.0 (2025-09-09)
+
+Full Changelog: [v0.10.0...v0.11.0](https://github.com/G-Core/gcore-go/compare/v0.10.0...v0.11.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** migrate baremetal gpu cluster from v1 to v3
+* **cloud:** support inference applications
+
+### Features
+
+* **api:** aggregated API specs update ([99c1e45](https://github.com/G-Core/gcore-go/commit/99c1e459efb53a699f637ac035104f2ff5843d28))
+* **api:** aggregated API specs update ([3377fd7](https://github.com/G-Core/gcore-go/commit/3377fd76fa6207e368f193428b022c95dd3a1d58))
+* **api:** aggregated API specs update ([b66b088](https://github.com/G-Core/gcore-go/commit/b66b0887cb34a4139bff60a78c8dfe234fe94eda))
+* **api:** aggregated API specs update ([6994f5d](https://github.com/G-Core/gcore-go/commit/6994f5d1ed046b38c533c2a07f0fd860510291dd))
+* **api:** aggregated API specs update ([12fc447](https://github.com/G-Core/gcore-go/commit/12fc447a91e20325bfd98db446e3ab4b2cbe6930))
+* **api:** aggregated API specs update ([66442b4](https://github.com/G-Core/gcore-go/commit/66442b4582d4e1307502faa11f7d6537d7f8cd41))
+* **api:** aggregated API specs update ([b437753](https://github.com/G-Core/gcore-go/commit/b43775377b9afe0d7fdf511c81b885ad5c43e913))
+* **api:** aggregated API specs update ([e3e2989](https://github.com/G-Core/gcore-go/commit/e3e29891210e597e91d1affe31800e8e19c1ae18))
+* **api:** aggregated API specs update ([8f064ef](https://github.com/G-Core/gcore-go/commit/8f064ef675929a32520d62b60392752e7961bf1c))
+* **api:** aggregated API specs update ([277b318](https://github.com/G-Core/gcore-go/commit/277b318dc2012500722626754ab31b2d37ca8645))
+* **api:** aggregated API specs update ([3c33290](https://github.com/G-Core/gcore-go/commit/3c332904c5249d4af49cb7b7f8c4fc9653a541a6))
+* **api:** aggregated API specs update ([6e56534](https://github.com/G-Core/gcore-go/commit/6e56534fed327c6aae6b87263494c92cf14e90a2))
+* **api:** aggregated API specs update ([2770f2c](https://github.com/G-Core/gcore-go/commit/2770f2c2dd5546d2217810b21b3421ed7761ad75))
+* **api:** aggregated API specs update ([d87d6b1](https://github.com/G-Core/gcore-go/commit/d87d6b1866719abbb9d544906ebba515bdd3d491))
+* **api:** aggregated API specs update ([6c44f8a](https://github.com/G-Core/gcore-go/commit/6c44f8a6cdc738320f3d7d516f087f758df95f3f))
+* **api:** aggregated API specs update ([8643fe8](https://github.com/G-Core/gcore-go/commit/8643fe8df688758015a04f97b810ab2a8b9be886))
+* **api:** aggregated API specs update ([7043dc0](https://github.com/G-Core/gcore-go/commit/7043dc00f239f352b19f5d19d37502fde6bd18f7))
+* **api:** api update ([d3d64b3](https://github.com/G-Core/gcore-go/commit/d3d64b3d3215551bb123ad77010776151b8766bc))
+* **api:** manual updates ([8a55e76](https://github.com/G-Core/gcore-go/commit/8a55e766e0075c12abde3b506b1f2b9fb6f96206))
+* **api:** manual upload of aggregated API specs ([fc2cc17](https://github.com/G-Core/gcore-go/commit/fc2cc17f98a62222de4fd1dac2115103cc392609))
+* **api:** manual upload of aggregated API specs ([b0adde7](https://github.com/G-Core/gcore-go/commit/b0adde7eca2ed186c6121eb3ed2e72070c78c07b))
+* **api:** update field_value type ([591847e](https://github.com/G-Core/gcore-go/commit/591847e4582d6402bd31306858c91686d722ef46))
+* **cloud:** add managed k8s ([8a25bd4](https://github.com/G-Core/gcore-go/commit/8a25bd49ea615e2300746786cc4e676ab6e645b1))
+* **cloud:** add NewAndPoll() and DeleteAndPoll() for floating ips ([2798254](https://github.com/G-Core/gcore-go/commit/27982547cc49f1d7e2b8fd8aab35625763d52665))
+* **cloud:** add NewAndPoll() and DeleteAndPoll() for networks ([b787f73](https://github.com/G-Core/gcore-go/commit/b787f7374b9c7e28e313733fe3caddf641e99800))
+* **cloud:** add NewAndPoll() for subnets ([3a64336](https://github.com/G-Core/gcore-go/commit/3a6433661e5173bb5f2357ac67908e6b0845b246))
+* **cloud:** fetch client_id from iam in cloud quotas examples ([0aab78e](https://github.com/G-Core/gcore-go/commit/0aab78e76fb9833c7e43e3c5a7ed33105aa29045))
+* **cloud:** migrate baremetal gpu cluster from v1 to v3 ([b9f3997](https://github.com/G-Core/gcore-go/commit/b9f3997fcd8d049c713cba316fcb4cc1ddc03bed))
+* **cloud:** remove inference model examples ([58221cb](https://github.com/G-Core/gcore-go/commit/58221cbb31ae86ec49273eb3a0b9ae348eae57d4))
+* **cloud:** support inference applications ([31c00d6](https://github.com/G-Core/gcore-go/commit/31c00d643e7fcebb084b480d5dd88c57a9156b3b))
+* **cloud:** use PATCH /v2/lbpools ([4ed5b55](https://github.com/G-Core/gcore-go/commit/4ed5b552f58708bb38c308970656ba095085975f))
+* **s3:** add object storage ([b258b9a](https://github.com/G-Core/gcore-go/commit/b258b9afc8c6ef37b3e79c36ef8610cd2dca124a))
+* **storage:** make list storage locations paginated ([53f76bf](https://github.com/G-Core/gcore-go/commit/53f76bf96287ba5a153aafcc2ced681b5f0dd23f))
+
+
+### Bug Fixes
+
+* close body before retrying ([4aa95c1](https://github.com/G-Core/gcore-go/commit/4aa95c145147ef4e3c3d1373b5310be103755b52))
+* **dns:** fix dns methods ([24c71bd](https://github.com/G-Core/gcore-go/commit/24c71bd87377d6f5829654f52849ac1048037fb3))
+* **internal:** unmarshal correctly when there are multiple discriminators ([db7b996](https://github.com/G-Core/gcore-go/commit/db7b9967959dad6ad23c8755af7f3fec398881f6))
+* remove null from release please manifest ([9de166b](https://github.com/G-Core/gcore-go/commit/9de166b82fc37cf7e239047b7d3ba2704f6c0941))
+* use release please annotations on more places ([1549cda](https://github.com/G-Core/gcore-go/commit/1549cda8e66331bfbfbfdaf9c5bd8faf4feffc8a))
+* **waap:** fix component name ([41f5fca](https://github.com/G-Core/gcore-go/commit/41f5fcaf2093b92d8dd26ae836c84d80c8c02a88))
+
+
+### Chores
+
+* **internal:** codegen related update ([ed63ff2](https://github.com/G-Core/gcore-go/commit/ed63ff2ed044bbdeeaa0578694b88b2bf31d730e))
+* **internal:** detect breaking changes when removing endpoints ([1edc306](https://github.com/G-Core/gcore-go/commit/1edc306a797456fb7876952b707389fc64dea91b))
+* **internal:** update comment in script ([19e7f4a](https://github.com/G-Core/gcore-go/commit/19e7f4ae96857b9c7cd08f82386fa548533ad6f6))
+* update @stainless-api/prism-cli to v5.15.0 ([ec528d1](https://github.com/G-Core/gcore-go/commit/ec528d179d42becbf3f0f576a7f0d6f0e265fc6a))
+
 ## 0.10.0 (2025-08-07)
 
 Full Changelog: [v0.9.0...v0.10.0](https://github.com/G-Core/gcore-go/compare/v0.9.0...v0.10.0)
