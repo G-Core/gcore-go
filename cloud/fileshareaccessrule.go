@@ -61,7 +61,7 @@ func (r *FileShareAccessRuleService) New(ctx context.Context, fileShareID string
 	return
 }
 
-// Get file share access rules
+// List file share access rules
 func (r *FileShareAccessRuleService) List(ctx context.Context, fileShareID string, query FileShareAccessRuleListParams, opts ...option.RequestOption) (res *AccessRuleList, err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
