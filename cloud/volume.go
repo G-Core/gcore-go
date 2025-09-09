@@ -28,6 +28,7 @@ import (
 // the [NewVolumeService] method instead.
 type VolumeService struct {
 	Options []option.RequestOption
+	task    TaskService
 }
 
 // NewVolumeService generates a new service that applies the given options to each
@@ -36,6 +37,7 @@ type VolumeService struct {
 func NewVolumeService(opts ...option.RequestOption) (r VolumeService) {
 	r = VolumeService{}
 	r.Options = opts
+	r.task = NewTaskService(opts...)
 	return
 }
 
@@ -61,6 +63,41 @@ func (r *VolumeService) New(ctx context.Context, params VolumeNewParams, opts ..
 	path := fmt.Sprintf("cloud/v1/volumes/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a new volume and polls the corresponding task until it is completed.
+func (r *VolumeService) NewAndPoll(ctx context.Context, params VolumeNewParams, opts ...option.RequestOption) (res *Volume, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams VolumeGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.task.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Volumes) != 1 {
+		return nil, errors.New("expected exactly one network to be created in a task")
+	}
+	resourceID := task.CreatedResources.Volumes[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
 // Rename a volume or update tags
@@ -157,6 +194,22 @@ func (r *VolumeService) Delete(ctx context.Context, volumeID string, params Volu
 	return
 }
 
+// DeleteAndPoll deletes a volume and polls the corresponding task until it is completed.
+// Use the [TaskService.Poll] method if you need to poll for all tasks.
+func (r *VolumeService) DeleteAndPoll(ctx context.Context, volumeID string, params VolumeDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, volumeID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.task.Poll(ctx, taskID, opts...)
+	return err
+}
+
 // Attach the volume to instance. Note: ultra volume can only be attached to an
 // instance with shared flavor
 func (r *VolumeService) AttachToInstance(ctx context.Context, volumeID string, params VolumeAttachToInstanceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
@@ -182,6 +235,22 @@ func (r *VolumeService) AttachToInstance(ctx context.Context, volumeID string, p
 	path := fmt.Sprintf("cloud/v2/volumes/%v/%v/%s/attach", params.ProjectID.Value, params.RegionID.Value, volumeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// AttachToInstanceAndPoll attaches the volume to instance and polls the corresponding task until it is completed. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
+func (r *VolumeService) AttachToInstanceAndPoll(ctx context.Context, volumeID string, params VolumeAttachToInstanceParams, opts ...option.RequestOption) error {
+	resource, err := r.AttachToInstance(ctx, volumeID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.task.Poll(ctx, taskID, opts...)
+	return err
 }
 
 // Change the type of a volume. The volume must not have any snapshots to change
@@ -237,6 +306,22 @@ func (r *VolumeService) DetachFromInstance(ctx context.Context, volumeID string,
 	return
 }
 
+// DetachFromInstanceAndPoll detaches the volume to instance and polls the corresponding task until it is completed.
+// Use the [TaskService.Poll] method if you need to poll for all tasks.
+func (r *VolumeService) DetachFromInstanceAndPoll(ctx context.Context, volumeID string, params VolumeDetachFromInstanceParams, opts ...option.RequestOption) error {
+	resource, err := r.DetachFromInstance(ctx, volumeID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.task.Poll(ctx, taskID, opts...)
+	return err
+}
+
 // Retrieve detailed information about a specific volume.
 func (r *VolumeService) Get(ctx context.Context, volumeID string, query VolumeGetParams, opts ...option.RequestOption) (res *Volume, err error) {
 	opts = append(r.Options[:], opts...)
@@ -288,6 +373,37 @@ func (r *VolumeService) Resize(ctx context.Context, volumeID string, params Volu
 	path := fmt.Sprintf("cloud/v1/volumes/%v/%v/%s/extend", params.ProjectID.Value, params.RegionID.Value, volumeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// ResizeAndPoll increases the size of a volume and polls the corresponding task until it is completed. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
+func (r *VolumeService) ResizeAndPoll(ctx context.Context, volumeID string, params VolumeResizeParams, opts ...option.RequestOption) (res *Volume, err error) {
+	resource, err := r.Resize(ctx, volumeID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams VolumeGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.task.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	return r.Get(ctx, volumeID, getParams, opts...)
 }
 
 // Revert a volume to its last snapshot. The volume must be in an available state

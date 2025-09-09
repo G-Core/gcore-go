@@ -66,21 +66,15 @@ func createVolume(client *gcore.Client) string {
 		},
 	}
 
-	taskList, err := client.Cloud.Volumes.New(context.Background(), params)
+	volume, err := client.Cloud.Volumes.NewAndPoll(context.Background(), params)
 	if err != nil {
 		log.Fatalf("Error creating volume: %v", err)
 	}
 
-	task, err := client.Cloud.Tasks.Poll(context.Background(), taskList.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling task: %v", err)
-	}
-
-	volumeID := task.CreatedResources.Volumes[0]
-	fmt.Printf("Created Volume ID: %s\n", volumeID)
+	fmt.Printf("Created Volume ID: %s\n", volume.ID)
 	fmt.Println("=====================")
 
-	return volumeID
+	return volume.ID
 }
 
 func getVolumeByID(client *gcore.Client, volumeID string) {
@@ -133,17 +127,12 @@ func resizeVolume(client *gcore.Client, volumeID string) {
 		Size: 2,
 	}
 
-	taskList, err := client.Cloud.Volumes.Resize(context.Background(), volumeID, params)
+	volume, err := client.Cloud.Volumes.ResizeAndPoll(context.Background(), volumeID, params)
 	if err != nil {
 		log.Fatalf("Error resizing volume: %v", err)
 	}
 
-	_, err = client.Cloud.Tasks.Poll(context.Background(), taskList.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling resize task: %v", err)
-	}
-
-	fmt.Printf("Resized volume %s to %d GiB\n", volumeID, params.Size)
+	fmt.Printf("Resized volume %s to %d GiB\n", volumeID, volume.Size)
 	fmt.Println("=====================")
 }
 
@@ -170,16 +159,10 @@ func attachVolumeToInstance(client *gcore.Client, volumeID, instanceID string) {
 		InstanceID: instanceID,
 	}
 
-	taskList, err := client.Cloud.Volumes.AttachToInstance(context.Background(), volumeID, params)
+	err := client.Cloud.Volumes.AttachToInstanceAndPoll(context.Background(), volumeID, params)
 	if err != nil {
 		log.Fatalf("Error attaching volume: %v", err)
 	}
-
-	_, err = client.Cloud.Tasks.Poll(context.Background(), taskList.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling attach task: %v", err)
-	}
-
 	fmt.Printf("Attached volume %s to instance %s\n", volumeID, instanceID)
 	fmt.Println("=====================")
 }
@@ -191,16 +174,10 @@ func detachVolumeToInstance(client *gcore.Client, volumeID, instanceID string) {
 		InstanceID: instanceID,
 	}
 
-	taskList, err := client.Cloud.Volumes.DetachFromInstance(context.Background(), volumeID, params)
+	err := client.Cloud.Volumes.DetachFromInstanceAndPoll(context.Background(), volumeID, params)
 	if err != nil {
 		log.Fatalf("Error detaching volume: %v", err)
 	}
-
-	_, err = client.Cloud.Tasks.Poll(context.Background(), taskList.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling detach task: %v", err)
-	}
-
 	fmt.Printf("Detached volume %s from instance %s\n", volumeID, instanceID)
 	fmt.Println("=====================")
 }
@@ -208,14 +185,9 @@ func detachVolumeToInstance(client *gcore.Client, volumeID, instanceID string) {
 func deleteVolume(client *gcore.Client, volumeID string) {
 	fmt.Println("\n=== DELETE VOLUME ===")
 
-	taskList, err := client.Cloud.Volumes.Delete(context.Background(), volumeID, cloud.VolumeDeleteParams{})
+	err := client.Cloud.Volumes.DeleteAndPoll(context.Background(), volumeID, cloud.VolumeDeleteParams{})
 	if err != nil {
 		log.Fatalf("Error deleting volume: %v", err)
-	}
-
-	_, err = client.Cloud.Tasks.Poll(context.Background(), taskList.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling delete task: %v", err)
 	}
 
 	fmt.Printf("Volume with ID %s successfully deleted\n", volumeID)
