@@ -238,7 +238,7 @@ type FileShare struct {
 	ShareNetworkName string `json:"share_network_name,required"`
 	// Share settings specific to the file share type
 	ShareSettings FileShareShareSettingsUnion `json:"share_settings,required"`
-	// File share size, GiB
+	// File share size in GiB
 	Size int64 `json:"size,required"`
 	// File share status
 	//
@@ -494,7 +494,7 @@ type FileShareNewParamsBodyCreateStandardFileShareSerializer struct {
 	Name string `json:"name,required"`
 	// File share network configuration
 	Network FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork `json:"network,omitzero,required"`
-	// File share size
+	// File share size in GiB
 	Size int64 `json:"size,required"`
 	// Access Rules
 	Access []FileShareNewParamsBodyCreateStandardFileShareSerializerAccess `json:"access,omitzero"`
@@ -586,7 +586,7 @@ func init() {
 type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
 	// File share name
 	Name string `json:"name,required"`
-	// File share size
+	// File share size in GiB
 	Size int64 `json:"size,required"`
 	// Configuration settings for the share
 	ShareSettings FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings `json:"share_settings,omitzero"`

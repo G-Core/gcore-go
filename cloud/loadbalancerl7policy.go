@@ -135,7 +135,7 @@ func (r *LoadBalancerL7PolicyService) Get(ctx context.Context, l7policyID string
 	return
 }
 
-// Replace load balancer L7 policy properties
+// Replace load balancer L7 policy
 func (r *LoadBalancerL7PolicyService) Replace(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyReplaceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
