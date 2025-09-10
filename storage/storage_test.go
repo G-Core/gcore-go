@@ -58,7 +58,7 @@ func TestStorageUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		storage.StorageUpdateParams{
-			Expires:     gcore.String("2026-12-31 23:59:59+00:00"),
+			Expires:     gcore.String("2 years 6 months 2 weeks 3 days 5 hours 10 minutes 15 seconds"),
 			ServerAlias: gcore.String("my-storage.company.com"),
 		},
 	)
