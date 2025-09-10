@@ -53,7 +53,11 @@ func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ..
 	return
 }
 
-// Updates storage configuration such as expiration date and server alias.
+// Updates storage configuration such as expiration date and server alias. Note:
+// Prefer PATCH /provisioning/v2/storage/{`storage_id`} that uses correct HTTP
+// method for updating the storage.
+//
+// Deprecated: deprecated
 func (r *StorageService) Update(ctx context.Context, storageID int64, body StorageUpdateParams, opts ...option.RequestOption) (res *Storage, err error) {
 	opts = append(r.Options[:], opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v", storageID)
@@ -377,8 +381,8 @@ const (
 )
 
 type StorageUpdateParams struct {
-	// ISO 8601 timestamp when the storage should expire. Leave empty to remove
-	// expiration.
+	// Duration when the storage should expire in format like "2 years 6 months 2 weeks
+	// 3 days 5 hours 10 minutes 15 seconds". Leave empty to remove expiration.
 	Expires param.Opt[string] `json:"expires,omitzero"`
 	// Custom domain alias for accessing the storage. Leave empty to remove alias.
 	ServerAlias param.Opt[string] `json:"server_alias,omitzero"`
