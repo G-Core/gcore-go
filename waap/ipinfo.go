@@ -69,7 +69,7 @@ func (r *IPInfoService) GetDDOSAttackSeries(ctx context.Context, query IPInfoGet
 
 // Fetch details about a particular IP address, including WHOIS data, risk score,
 // and additional tags.
-func (r *IPInfoService) GetIPInfo(ctx context.Context, query IPInfoGetIPInfoParams, opts ...option.RequestOption) (res *IPInfoGetIPInfoResponse, err error) {
+func (r *IPInfoService) GetIPInfo(ctx context.Context, query IPInfoGetIPInfoParams, opts ...option.RequestOption) (res *WaapIPInfo, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "waap/v1/ip-info/ip-info"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -80,7 +80,7 @@ func (r *IPInfoService) GetIPInfo(ctx context.Context, query IPInfoGetIPInfoPara
 // specific domain. This data is vital to understand user navigation patterns,
 // pinpoint high-traffic pages, and facilitate more targeted enhancements or
 // security monitoring based on URL popularity.
-func (r *IPInfoService) GetTopURLs(ctx context.Context, query IPInfoGetTopURLsParams, opts ...option.RequestOption) (res *[]IPInfoGetTopURLsResponse, err error) {
+func (r *IPInfoService) GetTopURLs(ctx context.Context, query IPInfoGetTopURLsParams, opts ...option.RequestOption) (res *[]WaapTopURL, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "waap/v1/ip-info/top-urls"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -171,6 +171,94 @@ type WaapIPDDOSInfoModelTimeSeries struct {
 // Returns the unmodified JSON received from the API
 func (r WaapIPDDOSInfoModelTimeSeries) RawJSON() string { return r.JSON.raw }
 func (r *WaapIPDDOSInfoModelTimeSeries) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WaapIPInfo struct {
+	// The risk score of the IP address
+	//
+	// Any of "NO_RISK", "LOW", "MEDIUM", "HIGH", "EXTREME", "NOT_ENOUGH_DATA".
+	RiskScore WaapIPInfoRiskScore `json:"risk_score,required"`
+	// The tags associated with the IP address that affect the risk score
+	Tags []string `json:"tags,required"`
+	// The WHOIS information for the IP address
+	Whois WaapIPInfoWhois `json:"whois,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RiskScore   respjson.Field
+		Tags        respjson.Field
+		Whois       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapIPInfo) RawJSON() string { return r.JSON.raw }
+func (r *WaapIPInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The risk score of the IP address
+type WaapIPInfoRiskScore string
+
+const (
+	WaapIPInfoRiskScoreNoRisk        WaapIPInfoRiskScore = "NO_RISK"
+	WaapIPInfoRiskScoreLow           WaapIPInfoRiskScore = "LOW"
+	WaapIPInfoRiskScoreMedium        WaapIPInfoRiskScore = "MEDIUM"
+	WaapIPInfoRiskScoreHigh          WaapIPInfoRiskScore = "HIGH"
+	WaapIPInfoRiskScoreExtreme       WaapIPInfoRiskScore = "EXTREME"
+	WaapIPInfoRiskScoreNotEnoughData WaapIPInfoRiskScore = "NOT_ENOUGH_DATA"
+)
+
+// The WHOIS information for the IP address
+type WaapIPInfoWhois struct {
+	// The abuse mail
+	AbuseMail string `json:"abuse_mail,nullable"`
+	// The CIDR
+	Cidr int64 `json:"cidr,nullable"`
+	// The country
+	Country string `json:"country,nullable"`
+	// The network description
+	NetDescription string `json:"net_description,nullable"`
+	// The network name
+	NetName string `json:"net_name,nullable"`
+	// The network range
+	NetRange string `json:"net_range,nullable"`
+	// The network type
+	NetType string `json:"net_type,nullable"`
+	// The organization ID
+	OrgID string `json:"org_id,nullable"`
+	// The organization name
+	OrgName string `json:"org_name,nullable"`
+	// The owner type
+	OwnerType string `json:"owner_type,nullable"`
+	// The RIR
+	Rir string `json:"rir,nullable"`
+	// The state
+	State string `json:"state,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AbuseMail      respjson.Field
+		Cidr           respjson.Field
+		Country        respjson.Field
+		NetDescription respjson.Field
+		NetName        respjson.Field
+		NetRange       respjson.Field
+		NetType        respjson.Field
+		OrgID          respjson.Field
+		OrgName        respjson.Field
+		OwnerType      respjson.Field
+		Rir            respjson.Field
+		State          respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapIPInfoWhois) RawJSON() string { return r.JSON.raw }
+func (r *WaapIPInfoWhois) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -266,6 +354,26 @@ func (r *WaapTopSession) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type WaapTopURL struct {
+	// The number of attacks to the URL
+	Count int64 `json:"count,required"`
+	// The URL that was attacked
+	URL string `json:"url,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapTopURL) RawJSON() string { return r.JSON.raw }
+func (r *WaapTopURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WaapTopUserAgent struct {
 	// The number of requests made with the user agent
 	Count int64 `json:"count,required"`
@@ -283,114 +391,6 @@ type WaapTopUserAgent struct {
 // Returns the unmodified JSON received from the API
 func (r WaapTopUserAgent) RawJSON() string { return r.JSON.raw }
 func (r *WaapTopUserAgent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type IPInfoGetIPInfoResponse struct {
-	// The risk score of the IP address
-	//
-	// Any of "NO_RISK", "LOW", "MEDIUM", "HIGH", "EXTREME", "NOT_ENOUGH_DATA".
-	RiskScore IPInfoGetIPInfoResponseRiskScore `json:"risk_score,required"`
-	// The tags associated with the IP address that affect the risk score
-	Tags []string `json:"tags,required"`
-	// The WHOIS information for the IP address
-	Whois IPInfoGetIPInfoResponseWhois `json:"whois,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		RiskScore   respjson.Field
-		Tags        respjson.Field
-		Whois       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IPInfoGetIPInfoResponse) RawJSON() string { return r.JSON.raw }
-func (r *IPInfoGetIPInfoResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The risk score of the IP address
-type IPInfoGetIPInfoResponseRiskScore string
-
-const (
-	IPInfoGetIPInfoResponseRiskScoreNoRisk        IPInfoGetIPInfoResponseRiskScore = "NO_RISK"
-	IPInfoGetIPInfoResponseRiskScoreLow           IPInfoGetIPInfoResponseRiskScore = "LOW"
-	IPInfoGetIPInfoResponseRiskScoreMedium        IPInfoGetIPInfoResponseRiskScore = "MEDIUM"
-	IPInfoGetIPInfoResponseRiskScoreHigh          IPInfoGetIPInfoResponseRiskScore = "HIGH"
-	IPInfoGetIPInfoResponseRiskScoreExtreme       IPInfoGetIPInfoResponseRiskScore = "EXTREME"
-	IPInfoGetIPInfoResponseRiskScoreNotEnoughData IPInfoGetIPInfoResponseRiskScore = "NOT_ENOUGH_DATA"
-)
-
-// The WHOIS information for the IP address
-type IPInfoGetIPInfoResponseWhois struct {
-	// The abuse mail
-	AbuseMail string `json:"abuse_mail,nullable"`
-	// The CIDR
-	Cidr int64 `json:"cidr,nullable"`
-	// The country
-	Country string `json:"country,nullable"`
-	// The network description
-	NetDescription string `json:"net_description,nullable"`
-	// The network name
-	NetName string `json:"net_name,nullable"`
-	// The network range
-	NetRange string `json:"net_range,nullable"`
-	// The network type
-	NetType string `json:"net_type,nullable"`
-	// The organization ID
-	OrgID string `json:"org_id,nullable"`
-	// The organization name
-	OrgName string `json:"org_name,nullable"`
-	// The owner type
-	OwnerType string `json:"owner_type,nullable"`
-	// The RIR
-	Rir string `json:"rir,nullable"`
-	// The state
-	State string `json:"state,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AbuseMail      respjson.Field
-		Cidr           respjson.Field
-		Country        respjson.Field
-		NetDescription respjson.Field
-		NetName        respjson.Field
-		NetRange       respjson.Field
-		NetType        respjson.Field
-		OrgID          respjson.Field
-		OrgName        respjson.Field
-		OwnerType      respjson.Field
-		Rir            respjson.Field
-		State          respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IPInfoGetIPInfoResponseWhois) RawJSON() string { return r.JSON.raw }
-func (r *IPInfoGetIPInfoResponseWhois) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type IPInfoGetTopURLsResponse struct {
-	// The number of attacks to the URL
-	Count int64 `json:"count,required"`
-	// The URL that was attacked
-	URL string `json:"url,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IPInfoGetTopURLsResponse) RawJSON() string { return r.JSON.raw }
-func (r *IPInfoGetTopURLsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
