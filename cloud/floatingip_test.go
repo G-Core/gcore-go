@@ -87,10 +87,10 @@ func TestFloatingIPDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.FloatingIPs.Delete(
 		context.TODO(),
-		"floating_ip_id",
+		"c64e5db1-5f1f-43ec-a8d9-5090df85b82d",
 		cloud.FloatingIPDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -147,10 +147,10 @@ func TestFloatingIPGet(t *testing.T) {
 	)
 	_, err := client.Cloud.FloatingIPs.Get(
 		context.TODO(),
-		"floating_ip_id",
+		"c64e5db1-5f1f-43ec-a8d9-5090df85b82d",
 		cloud.FloatingIPGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
