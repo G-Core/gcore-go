@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.12.0 (2025-09-11)
+
+Full Changelog: [v0.11.0...v0.12.0](https://github.com/G-Core/gcore-go/compare/v0.11.0...v0.12.0)
+
+### Features
+
+* **api:** aggregated API specs update ([b7792f7](https://github.com/G-Core/gcore-go/commit/b7792f7fd405f1ef222724ea181a49cb74606ff7))
+* **cloud:** add DeleteAndPoll() for reserved fixed ip ([84c4297](https://github.com/G-Core/gcore-go/commit/84c42971e672e257dc5eda7468ac12afc1718cce))
+* **cloud:** add polling methods to volumes ([1d9acc3](https://github.com/G-Core/gcore-go/commit/1d9acc307040f44bf63b75df3c9a24d727693646))
+
+
+### Refactors
+
+* **storage:** use v2 endpoint ([9637ab9](https://github.com/G-Core/gcore-go/commit/9637ab9a494966011a0bb1b8749e5d339907a312))
+
 ## 0.11.0 (2025-09-09)
 
 Full Changelog: [v0.10.0...v0.11.0](https://github.com/G-Core/gcore-go/compare/v0.10.0...v0.11.0)
