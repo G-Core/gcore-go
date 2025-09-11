@@ -163,6 +163,22 @@ func (r *ReservedFixedIPService) Delete(ctx context.Context, portID string, body
 	return
 }
 
+// DeleteAndPoll deletes a reserved fixed IP and polls for completion of the first task. Use the
+// [TaskService.Poll] method if you need to poll for all tasks.
+func (r *ReservedFixedIPService) DeleteAndPoll(ctx context.Context, portID string, body ReservedFixedIPDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, portID, body, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.task.Poll(ctx, taskID, opts...)
+	return err
+}
+
 // Get detailed information about a specific reserved fixed IP.
 func (r *ReservedFixedIPService) Get(ctx context.Context, portID string, query ReservedFixedIPGetParams, opts ...option.RequestOption) (res *ReservedFixedIP, err error) {
 	opts = append(r.Options[:], opts...)

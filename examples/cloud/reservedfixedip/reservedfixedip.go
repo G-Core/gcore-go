@@ -174,11 +174,11 @@ func listConnectedPorts(client *gcore.Client, portID string) {
 func deleteReservedFixedIP(client *gcore.Client, portID string) {
 	fmt.Println("\n=== DELETE RESERVED FIXED IP ===")
 
-	tasks, err := client.Cloud.ReservedFixedIPs.Delete(context.Background(), portID, cloud.ReservedFixedIPDeleteParams{})
+	err := client.Cloud.ReservedFixedIPs.DeleteAndPoll(context.Background(), portID, cloud.ReservedFixedIPDeleteParams{})
 	if err != nil {
 		log.Fatalf("Error deleting reserved fixed IP: %v", err)
 	}
 
-	fmt.Printf("Reserved Fixed IP with PortID %s successfully deleted, Tasks: %v\n", portID, tasks.Tasks)
+	fmt.Printf("Reserved Fixed IP with PortID %s successfully deleted\n", portID)
 	fmt.Println("=================================")
 }
