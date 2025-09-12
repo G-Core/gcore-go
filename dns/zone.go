@@ -46,6 +46,7 @@ func NewZoneService(opts ...option.RequestOption) (r ZoneService) {
 // Add DNS zone.
 func (r *ZoneService) New(ctx context.Context, body ZoneNewParams, opts ...option.RequestOption) (res *ZoneNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "dns/v2/zones"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -55,6 +56,7 @@ func (r *ZoneService) New(ctx context.Context, body ZoneNewParams, opts ...optio
 // params are optional.
 func (r *ZoneService) List(ctx context.Context, query ZoneListParams, opts ...option.RequestOption) (res *ZoneListResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "dns/v2/zones"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -63,6 +65,7 @@ func (r *ZoneService) List(ctx context.Context, query ZoneListParams, opts ...op
 // Delete DNS zone and its records and raws.
 func (r *ZoneService) Delete(ctx context.Context, name string, opts ...option.RequestOption) (res *ZoneDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return
@@ -76,6 +79,7 @@ func (r *ZoneService) Delete(ctx context.Context, name string, opts ...option.Re
 // limit.
 func (r *ZoneService) CheckDelegationStatus(ctx context.Context, name string, opts ...option.RequestOption) (res *ZoneCheckDelegationStatusResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return
@@ -88,6 +92,7 @@ func (r *ZoneService) CheckDelegationStatus(ctx context.Context, name string, op
 // Disable DNS zone.
 func (r *ZoneService) Disable(ctx context.Context, name string, opts ...option.RequestOption) (res *ZoneDisableResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return
@@ -100,6 +105,7 @@ func (r *ZoneService) Disable(ctx context.Context, name string, opts ...option.R
 // Enable DNS zone.
 func (r *ZoneService) Enable(ctx context.Context, name string, opts ...option.RequestOption) (res *ZoneEnableResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return
@@ -112,6 +118,7 @@ func (r *ZoneService) Enable(ctx context.Context, name string, opts ...option.Re
 // Export zone to bind9 format.
 func (r *ZoneService) Export(ctx context.Context, zoneName string, opts ...option.RequestOption) (res *ZoneExportResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if zoneName == "" {
 		err = errors.New("missing required zoneName parameter")
 		return
@@ -124,6 +131,7 @@ func (r *ZoneService) Export(ctx context.Context, zoneName string, opts ...optio
 // Zone info by zone name.
 func (r *ZoneService) Get(ctx context.Context, name string, opts ...option.RequestOption) (res *ZoneGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return
@@ -141,6 +149,7 @@ func (r *ZoneService) Get(ctx context.Context, name string, opts ...option.Reque
 // 30 minutes until servers resume and backfill missing statistics.
 func (r *ZoneService) GetStatistics(ctx context.Context, name string, query ZoneGetStatisticsParams, opts ...option.RequestOption) (res *ZoneGetStatisticsResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return
@@ -153,6 +162,7 @@ func (r *ZoneService) GetStatistics(ctx context.Context, name string, query Zone
 // Import zone in bind9 format.
 func (r *ZoneService) Import(ctx context.Context, zoneName string, body ZoneImportParams, opts ...option.RequestOption) (res *ZoneImportResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if zoneName == "" {
 		err = errors.New("missing required zoneName parameter")
 		return
@@ -165,6 +175,7 @@ func (r *ZoneService) Import(ctx context.Context, zoneName string, body ZoneImpo
 // Update DNS zone and SOA record.
 func (r *ZoneService) Replace(ctx context.Context, name string, body ZoneReplaceParams, opts ...option.RequestOption) (res *ZoneReplaceResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return

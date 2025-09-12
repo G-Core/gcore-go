@@ -41,6 +41,7 @@ func NewNetworkSubnetService(opts ...option.RequestOption) (r NetworkSubnetServi
 // Create subnet
 func (r *NetworkSubnetService) New(ctx context.Context, params NetworkSubnetNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -98,6 +99,7 @@ func (r *NetworkSubnetService) NewAndPoll(ctx context.Context, params NetworkSub
 // Update subnet
 func (r *NetworkSubnetService) Update(ctx context.Context, subnetID string, params NetworkSubnetUpdateParams, opts ...option.RequestOption) (res *Subnet, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -126,6 +128,7 @@ func (r *NetworkSubnetService) List(ctx context.Context, params NetworkSubnetLis
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -162,6 +165,7 @@ func (r *NetworkSubnetService) ListAutoPaging(ctx context.Context, params Networ
 func (r *NetworkSubnetService) Delete(ctx context.Context, subnetID string, body NetworkSubnetDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -188,6 +192,7 @@ func (r *NetworkSubnetService) Delete(ctx context.Context, subnetID string, body
 // Get subnet
 func (r *NetworkSubnetService) Get(ctx context.Context, subnetID string, query NetworkSubnetGetParams, opts ...option.RequestOption) (res *Subnet, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

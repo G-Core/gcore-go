@@ -37,6 +37,7 @@ func NewDirectoryService(opts ...option.RequestOption) (r DirectoryService) {
 // Use this method to create a new directory entity.
 func (r *DirectoryService) New(ctx context.Context, body DirectoryNewParams, opts ...option.RequestOption) (res *DirectoryBase, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/directories"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -45,6 +46,7 @@ func (r *DirectoryService) New(ctx context.Context, body DirectoryNewParams, opt
 // Change a directory name or move to another "`parent_id`".
 func (r *DirectoryService) Update(ctx context.Context, directoryID int64, body DirectoryUpdateParams, opts ...option.RequestOption) (res *DirectoryBase, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/directories/%v", directoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -61,6 +63,7 @@ func (r *DirectoryService) Update(ctx context.Context, directoryID int64, body D
 func (r *DirectoryService) Delete(ctx context.Context, directoryID int64, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/directories/%v", directoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -70,6 +73,7 @@ func (r *DirectoryService) Delete(ctx context.Context, directoryID int64, opts .
 // subfolders and videos in a continuous list.
 func (r *DirectoryService) Get(ctx context.Context, directoryID int64, opts ...option.RequestOption) (res *DirectoryGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/directories/%v", directoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -79,6 +83,7 @@ func (r *DirectoryService) Get(ctx context.Context, directoryID int64, opts ...o
 // directories in video hosting.
 func (r *DirectoryService) GetTree(ctx context.Context, opts ...option.RequestOption) (res *DirectoriesTree, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/directories/tree"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
