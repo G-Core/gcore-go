@@ -40,6 +40,7 @@ func NewInferenceApplicationDeploymentService(opts ...option.RequestOption) (r I
 // the application accordingly.
 func (r *InferenceApplicationDeploymentService) New(ctx context.Context, params InferenceApplicationDeploymentNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -59,6 +60,7 @@ func (r *InferenceApplicationDeploymentService) New(ctx context.Context, params 
 // status. Useful for monitoring and managing all active AI application instances.
 func (r *InferenceApplicationDeploymentService) List(ctx context.Context, query InferenceApplicationDeploymentListParams, opts ...option.RequestOption) (res *InferenceApplicationDeploymentList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -78,6 +80,7 @@ func (r *InferenceApplicationDeploymentService) List(ctx context.Context, query 
 // inference instances** that are part of the application.
 func (r *InferenceApplicationDeploymentService) Delete(ctx context.Context, deploymentName string, body InferenceApplicationDeploymentDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -102,6 +105,7 @@ func (r *InferenceApplicationDeploymentService) Delete(ctx context.Context, depl
 // deployment.
 func (r *InferenceApplicationDeploymentService) Get(ctx context.Context, deploymentName string, query InferenceApplicationDeploymentGetParams, opts ...option.RequestOption) (res *InferenceApplicationDeployment, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -126,6 +130,7 @@ func (r *InferenceApplicationDeploymentService) Get(ctx context.Context, deploym
 // unchanged.
 func (r *InferenceApplicationDeploymentService) Patch(ctx context.Context, deploymentName string, params InferenceApplicationDeploymentPatchParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

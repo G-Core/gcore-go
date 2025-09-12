@@ -152,6 +152,7 @@ func NewZoneRrsetService(opts ...option.RequestOption) (r ZoneRrsetService) {
 // indicate no limits.
 func (r *ZoneRrsetService) New(ctx context.Context, rrsetType string, params ZoneRrsetNewParams, opts ...option.RequestOption) (res *DNSOutputRrset, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if params.ZoneName == "" {
 		err = errors.New("missing required zoneName parameter")
 		return
@@ -172,6 +173,7 @@ func (r *ZoneRrsetService) New(ctx context.Context, rrsetType string, params Zon
 // List of RRset.
 func (r *ZoneRrsetService) List(ctx context.Context, zoneName string, query ZoneRrsetListParams, opts ...option.RequestOption) (res *ZoneRrsetListResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if zoneName == "" {
 		err = errors.New("missing required zoneName parameter")
 		return
@@ -184,6 +186,7 @@ func (r *ZoneRrsetService) List(ctx context.Context, zoneName string, query Zone
 // Delete RRset.
 func (r *ZoneRrsetService) Delete(ctx context.Context, rrsetType string, body ZoneRrsetDeleteParams, opts ...option.RequestOption) (res *ZoneRrsetDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if body.ZoneName == "" {
 		err = errors.New("missing required zoneName parameter")
 		return
@@ -204,6 +207,7 @@ func (r *ZoneRrsetService) Delete(ctx context.Context, rrsetType string, body Zo
 // Particular RRset item info
 func (r *ZoneRrsetService) Get(ctx context.Context, rrsetType string, query ZoneRrsetGetParams, opts ...option.RequestOption) (res *DNSOutputRrset, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if query.ZoneName == "" {
 		err = errors.New("missing required zoneName parameter")
 		return
@@ -224,6 +228,7 @@ func (r *ZoneRrsetService) Get(ctx context.Context, rrsetType string, query Zone
 // Get failover history for the RRset
 func (r *ZoneRrsetService) GetFailoverLogs(ctx context.Context, rrsetType string, params ZoneRrsetGetFailoverLogsParams, opts ...option.RequestOption) (res *ZoneRrsetGetFailoverLogsResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if params.ZoneName == "" {
 		err = errors.New("missing required zoneName parameter")
 		return
@@ -244,6 +249,7 @@ func (r *ZoneRrsetService) GetFailoverLogs(ctx context.Context, rrsetType string
 // Create/update RRset.
 func (r *ZoneRrsetService) Replace(ctx context.Context, rrsetType string, params ZoneRrsetReplaceParams, opts ...option.RequestOption) (res *DNSOutputRrset, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if params.ZoneName == "" {
 		err = errors.New("missing required zoneName parameter")
 		return

@@ -37,6 +37,7 @@ func NewFileShareAccessRuleService(opts ...option.RequestOption) (r FileShareAcc
 // Create file share access rule
 func (r *FileShareAccessRuleService) New(ctx context.Context, fileShareID string, params FileShareAccessRuleNewParams, opts ...option.RequestOption) (res *AccessRule, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -63,6 +64,7 @@ func (r *FileShareAccessRuleService) New(ctx context.Context, fileShareID string
 // List file share access rules
 func (r *FileShareAccessRuleService) List(ctx context.Context, fileShareID string, query FileShareAccessRuleListParams, opts ...option.RequestOption) (res *AccessRuleList, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -90,6 +92,7 @@ func (r *FileShareAccessRuleService) List(ctx context.Context, fileShareID strin
 func (r *FileShareAccessRuleService) Delete(ctx context.Context, accessRuleID string, body FileShareAccessRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
