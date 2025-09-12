@@ -36,7 +36,6 @@ func NewDomainSettingService(opts ...option.RequestOption) (r DomainSettingServi
 func (r *DomainSettingService) Update(ctx context.Context, domainID int64, body DomainSettingUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/settings", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
 	return
@@ -45,7 +44,6 @@ func (r *DomainSettingService) Update(ctx context.Context, domainID int64, body 
 // Retrieve settings for a specific domain
 func (r *DomainSettingService) Get(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *WaapDomainSettingsModel, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/settings", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

@@ -39,7 +39,6 @@ func NewK8FlavorService(opts ...option.RequestOption) (r K8FlavorService) {
 // price values as 0. If you get Pricing Error contact the support
 func (r *K8FlavorService) List(ctx context.Context, params K8FlavorListParams, opts ...option.RequestOption) (res *BaremetalFlavorList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

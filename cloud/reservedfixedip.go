@@ -44,7 +44,6 @@ func NewReservedFixedIPService(opts ...option.RequestOption) (r ReservedFixedIPS
 // Create a new reserved fixed IP with the specified configuration.
 func (r *ReservedFixedIPService) New(ctx context.Context, params ReservedFixedIPNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -69,7 +68,6 @@ func (r *ReservedFixedIPService) List(ctx context.Context, params ReservedFixedI
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -105,7 +103,6 @@ func (r *ReservedFixedIPService) ListAutoPaging(ctx context.Context, params Rese
 // Delete a specific reserved fixed IP and all its associated resources.
 func (r *ReservedFixedIPService) Delete(ctx context.Context, portID string, body ReservedFixedIPDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -132,7 +129,6 @@ func (r *ReservedFixedIPService) Delete(ctx context.Context, portID string, body
 // Get detailed information about a specific reserved fixed IP.
 func (r *ReservedFixedIPService) Get(ctx context.Context, portID string, query ReservedFixedIPGetParams, opts ...option.RequestOption) (res *ReservedFixedIP, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
