@@ -41,7 +41,6 @@ func NewDomainAPIPathService(opts ...option.RequestOption) (r DomainAPIPathServi
 // Create an API path for a domain
 func (r *DomainAPIPathService) New(ctx context.Context, domainID int64, body DomainAPIPathNewParams, opts ...option.RequestOption) (res *WaapAPIPath, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-paths", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -51,7 +50,6 @@ func (r *DomainAPIPathService) New(ctx context.Context, domainID int64, body Dom
 func (r *DomainAPIPathService) Update(ctx context.Context, pathID string, params DomainAPIPathUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if pathID == "" {
 		err = errors.New("missing required path_id parameter")
 		return
@@ -66,7 +64,6 @@ func (r *DomainAPIPathService) List(ctx context.Context, domainID int64, query D
 	var raw *http.Response
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-paths", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -89,7 +86,6 @@ func (r *DomainAPIPathService) ListAutoPaging(ctx context.Context, domainID int6
 func (r *DomainAPIPathService) Delete(ctx context.Context, pathID string, body DomainAPIPathDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if pathID == "" {
 		err = errors.New("missing required path_id parameter")
 		return
@@ -102,7 +98,6 @@ func (r *DomainAPIPathService) Delete(ctx context.Context, pathID string, body D
 // Retrieve a specific API path for a domain
 func (r *DomainAPIPathService) Get(ctx context.Context, pathID string, query DomainAPIPathGetParams, opts ...option.RequestOption) (res *WaapAPIPath, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if pathID == "" {
 		err = errors.New("missing required path_id parameter")
 		return

@@ -36,7 +36,6 @@ func NewLoadBalancerMetricService(opts ...option.RequestOption) (r LoadBalancerM
 // Get load balancer metrics, including cpu, memory and network
 func (r *LoadBalancerMetricService) List(ctx context.Context, loadbalancerID string, params LoadBalancerMetricListParams, opts ...option.RequestOption) (res *LoadBalancerMetricsList, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
