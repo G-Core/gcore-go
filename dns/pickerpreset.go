@@ -32,7 +32,6 @@ func NewPickerPresetService(opts ...option.RequestOption) (r PickerPresetService
 // Returns list of picker preset
 func (r *PickerPresetService) List(ctx context.Context, opts ...option.RequestOption) (res *PickerPresetListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "dns/v2/pickers/presets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

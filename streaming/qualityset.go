@@ -71,7 +71,6 @@ func NewQualitySetService(opts ...option.RequestOption) (r QualitySetService) {
 //     is a paid feature.
 func (r *QualitySetService) List(ctx context.Context, opts ...option.RequestOption) (res *QualitySets, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/quality_sets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -93,7 +92,6 @@ func (r *QualitySetService) List(ctx context.Context, opts ...option.RequestOpti
 //   - Otherwise these default values will be used by the system by default.
 func (r *QualitySetService) SetDefault(ctx context.Context, body QualitySetSetDefaultParams, opts ...option.RequestOption) (res *QualitySets, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/quality_sets/default"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
