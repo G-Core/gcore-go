@@ -72,19 +72,6 @@ func (r *ZoneService) Delete(ctx context.Context, name string, opts ...option.Re
 	return
 }
 
-// Returns delegation status for specified domain name. This endpoint has rate
-// limit.
-func (r *ZoneService) CheckDelegationStatus(ctx context.Context, name string, opts ...option.RequestOption) (res *ZoneCheckDelegationStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if name == "" {
-		err = errors.New("missing required name parameter")
-		return
-	}
-	path := fmt.Sprintf("dns/v2/analyze/%s/delegation-status", name)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
-}
-
 // Disable DNS zone.
 func (r *ZoneService) Disable(ctx context.Context, name string, opts ...option.RequestOption) (res *ZoneDisableResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -172,27 +159,6 @@ func (r *ZoneService) Replace(ctx context.Context, name string, body ZoneReplace
 	path := fmt.Sprintf("dns/v2/zones/%s", name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
-}
-
-// NameServer
-type DNSNameServer struct {
-	Ipv4Addresses []string `json:"ipv4Addresses"`
-	Ipv6Addresses []string `json:"ipv6Addresses"`
-	Name          string   `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Ipv4Addresses respjson.Field
-		Ipv6Addresses respjson.Field
-		Name          respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DNSNameServer) RawJSON() string { return r.JSON.raw }
-func (r *DNSNameServer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type ZoneNewResponse struct {
@@ -363,30 +329,6 @@ func (r *ZoneListResponseZoneRrsetsAmountDynamic) UnmarshalJSON(data []byte) err
 }
 
 type ZoneDeleteResponse = any
-
-type ZoneCheckDelegationStatusResponse struct {
-	AuthoritativeNameServers []DNSNameServer `json:"authoritative_name_servers"`
-	GcoreAuthorizedCount     int64           `json:"gcore_authorized_count"`
-	IsWhitelabelDelegation   bool            `json:"is_whitelabel_delegation"`
-	NonGcoreAuthorizedCount  int64           `json:"non_gcore_authorized_count"`
-	ZoneExists               bool            `json:"zone_exists"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AuthoritativeNameServers respjson.Field
-		GcoreAuthorizedCount     respjson.Field
-		IsWhitelabelDelegation   respjson.Field
-		NonGcoreAuthorizedCount  respjson.Field
-		ZoneExists               respjson.Field
-		ExtraFields              map[string]respjson.Field
-		raw                      string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ZoneCheckDelegationStatusResponse) RawJSON() string { return r.JSON.raw }
-func (r *ZoneCheckDelegationStatusResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type ZoneDisableResponse = any
 
