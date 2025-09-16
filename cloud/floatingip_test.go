@@ -44,6 +44,38 @@ func TestFloatingIPNewWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestFloatingIPUpdateWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.FloatingIPs.Update(
+		context.TODO(),
+		"c64e5db1-5f1f-43ec-a8d9-5090df85b82d",
+		cloud.FloatingIPUpdateParams{
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			Tags: cloud.TagUpdateMap{
+				"foo": "my-tag-value",
+			},
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestFloatingIPListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
