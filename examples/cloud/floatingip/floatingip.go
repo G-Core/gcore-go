@@ -48,6 +48,7 @@ func main() {
 	floatingIP := createFloatingIP(&client)
 	listAllFloatingIPs(&client)
 	getFloatingIPByID(&client, floatingIP.ID)
+	updateFloatingIP(&client, floatingIP.ID)
 	assignFloatingIP(&client, floatingIP.ID, portID)
 	unassignFloatingIP(&client, floatingIP.ID)
 	deleteFloatingIP(&client, floatingIP.ID)
@@ -145,5 +146,21 @@ func deleteFloatingIP(client *gcore.Client, floatingIPID string) {
 	}
 
 	fmt.Printf("Floating IP with ID %s successfully deleted\n", floatingIPID)
+	fmt.Println("===========================")
+}
+
+func updateFloatingIP(client *gcore.Client, floatingIPID string) {
+	fmt.Println("\n=== UPDATE FLOATING IP ===")
+
+	params := cloud.FloatingIPUpdateParams{
+		Tags: map[string]string{"env": "prod"},
+	}
+	floatingIP, err := client.Cloud.FloatingIPs.Update(context.Background(), floatingIPID, params)
+	if err != nil {
+		log.Fatalf("Error updating floating IP: %v", err)
+	}
+
+	fmt.Printf("Updated Floating IP: ID=%s, Status=%s, FloatingIPAddress=%s\n",
+		floatingIP.ID, floatingIP.Status, floatingIP.FloatingIPAddress)
 	fmt.Println("===========================")
 }

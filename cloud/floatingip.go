@@ -98,6 +98,32 @@ func (r *FloatingIPService) NewAndPoll(ctx context.Context, params FloatingIPNew
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
+// Update floating IP
+func (r *FloatingIPService) Update(ctx context.Context, floatingIPID string, params FloatingIPUpdateParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	if floatingIPID == "" {
+		err = errors.New("missing required floating_ip_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/floatingips/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, floatingIPID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return
+}
+
 // List floating IPs
 func (r *FloatingIPService) List(ctx context.Context, params FloatingIPListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[FloatingIPDetailed], err error) {
 	var raw *http.Response
@@ -541,6 +567,42 @@ func (r FloatingIPNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *FloatingIPNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FloatingIPUpdateParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified. **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', '`cost_center`': 'engineering', '`deprecated_tag`': null}}`
+	//     adds/updates 'environment' and '`cost_center`' while removing
+	//     '`deprecated_tag`', preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero"`
+	paramObj
+}
+
+func (r FloatingIPUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow FloatingIPUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FloatingIPUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
