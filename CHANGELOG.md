@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.13.0 (2025-09-16)
+
+Full Changelog: [v0.12.0...v0.13.0](https://github.com/G-Core/gcore-go/compare/v0.12.0...v0.13.0)
+
+### ⚠ BREAKING CHANGES
+
+* **waap:** model references
+
+### Features
+
+* **api:** aggregated API specs update ([3a6f913](https://github.com/G-Core/gcore-go/commit/3a6f9130b631a95cc358d4dd28db56219eb59e7f))
+* **api:** aggregated API specs update ([1ef659c](https://github.com/G-Core/gcore-go/commit/1ef659c9187ddc2c0567952cbb67bf439681c073))
+* **api:** aggregated API specs update ([2fd148e](https://github.com/G-Core/gcore-go/commit/2fd148ee9349d222f6fd02701289109d656295bb))
+* **api:** aggregated API specs update ([b5b74dd](https://github.com/G-Core/gcore-go/commit/b5b74ddf140edd99ada4922bedb113ef40dfb28e))
+* **cloud:** support floating IPs update ([f6665c0](https://github.com/G-Core/gcore-go/commit/f6665c0b0ecc1c0a5c6a85cca4326f5e937e525d))
+* **dns:** replace post with get in check delegation status ([d45f9a5](https://github.com/G-Core/gcore-go/commit/d45f9a5261df3e8e399f5e48cc47e13bec9b7804))
+
+
+### Bug Fixes
+
+* **waap:** model references ([ec1e84e](https://github.com/G-Core/gcore-go/commit/ec1e84e1c862511899b7eb0b0a86da5af334d0a7))
+
 ## 0.12.0 (2025-09-11)
 
 Full Changelog: [v0.11.0...v0.12.0](https://github.com/G-Core/gcore-go/compare/v0.11.0...v0.12.0)
