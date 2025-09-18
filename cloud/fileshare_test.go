@@ -75,6 +75,11 @@ func TestFileShareUpdateWithOptionalParams(t *testing.T) {
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
 			Name:      gcore.String("some_name"),
+			ShareSettings: cloud.FileShareUpdateParamsShareSettings{
+				AllowedCharacters: "LCD",
+				PathLength:        "LCD",
+				RootSquash:        gcore.Bool(true),
+			},
 			Tags: cloud.TagUpdateMap{
 				"foo": "my-tag-value",
 			},
