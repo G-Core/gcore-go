@@ -312,11 +312,17 @@ type FileShareShareSettingsUnion struct {
 	// Any of "standard", "vast".
 	TypeName string `json:"type_name"`
 	// This field is from variant [FileShareShareSettingsVast].
+	AllowedCharacters string `json:"allowed_characters"`
+	// This field is from variant [FileShareShareSettingsVast].
+	PathLength string `json:"path_length"`
+	// This field is from variant [FileShareShareSettingsVast].
 	RootSquash bool `json:"root_squash"`
 	JSON       struct {
-		TypeName   respjson.Field
-		RootSquash respjson.Field
-		raw        string
+		TypeName          respjson.Field
+		AllowedCharacters respjson.Field
+		PathLength        respjson.Field
+		RootSquash        respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
@@ -383,6 +389,10 @@ func (r *FileShareShareSettingsStandard) UnmarshalJSON(data []byte) error {
 }
 
 type FileShareShareSettingsVast struct {
+	// Any of "LCD", "NPL".
+	AllowedCharacters string `json:"allowed_characters,required"`
+	// Any of "LCD", "NPL".
+	PathLength string `json:"path_length,required"`
 	// Enables or disables root squash for NFS clients.
 	//
 	//   - If `true`, root squash is enabled: the root user is mapped to nobody for all
@@ -394,10 +404,12 @@ type FileShareShareSettingsVast struct {
 	TypeName constant.Vast `json:"type_name,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		RootSquash  respjson.Field
-		TypeName    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		AllowedCharacters respjson.Field
+		PathLength        respjson.Field
+		RootSquash        respjson.Field
+		TypeName          respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
@@ -634,6 +646,26 @@ type FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings struct {
 	//     privileges. Use this option if you trust the root user not to perform
 	//     operations that will corrupt data.
 	RootSquash param.Opt[bool] `json:"root_squash,omitzero"`
+	// Determines which characters are allowed in file names. Choose between:
+	//
+	//   - Lowest Common Denominator (LCD), allows only characters allowed by all VAST
+	//     Cluster-supported protocols
+	//   - Native Protocol Limit (NPL), imposes no limitation beyond that of the client
+	//     protocol.
+	//
+	// Any of "LCD", "NPL".
+	AllowedCharacters string `json:"allowed_characters,omitzero"`
+	// Affects the maximum limit of file path component name length. Choose between:
+	//
+	//   - Lowest Common Denominator (LCD), imposes the lowest common denominator file
+	//     length limit of all VAST Cluster-supported protocols. With this (default)
+	//     option, the limitation on the length of a single component of the path is 255
+	//     characters
+	//   - Native Protocol Limit (NPL), imposes no limitation beyond that of the client
+	//     protocol.
+	//
+	// Any of "LCD", "NPL".
+	PathLength string `json:"path_length,omitzero"`
 	paramObj
 }
 
@@ -645,6 +677,15 @@ func (r *FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings) Unmar
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings](
+		"allowed_characters", "LCD", "NPL",
+	)
+	apijson.RegisterFieldValidator[FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings](
+		"path_length", "LCD", "NPL",
+	)
+}
+
 type FileShareUpdateParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -652,6 +693,8 @@ type FileShareUpdateParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Name
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Configuration settings for the share
+	ShareSettings FileShareUpdateParamsShareSettings `json:"share_settings,omitzero"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
@@ -681,6 +724,56 @@ func (r FileShareUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *FileShareUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration settings for the share
+type FileShareUpdateParamsShareSettings struct {
+	// Enables or disables root squash for NFS clients.
+	//
+	//   - If `true` (default), root squash is enabled: the root user is mapped to nobody
+	//     for all file and folder management operations on the export.
+	//   - If `false`, root squash is disabled: the NFS client `root` user retains root
+	//     privileges. Use this option if you trust the root user not to perform
+	//     operations that will corrupt data.
+	RootSquash param.Opt[bool] `json:"root_squash,omitzero"`
+	// Determines which characters are allowed in file names. Choose between:
+	//
+	//   - Lowest Common Denominator (LCD), allows only characters allowed by all VAST
+	//     Cluster-supported protocols
+	//   - Native Protocol Limit (NPL), imposes no limitation beyond that of the client
+	//     protocol.
+	//
+	// Any of "LCD", "NPL".
+	AllowedCharacters string `json:"allowed_characters,omitzero"`
+	// Affects the maximum limit of file path component name length. Choose between:
+	//
+	//   - Lowest Common Denominator (LCD), imposes the lowest common denominator file
+	//     length limit of all VAST Cluster-supported protocols. With this (default)
+	//     option, the limitation on the length of a single component of the path is 255
+	//     characters
+	//   - Native Protocol Limit (NPL), imposes no limitation beyond that of the client
+	//     protocol.
+	//
+	// Any of "LCD", "NPL".
+	PathLength string `json:"path_length,omitzero"`
+	paramObj
+}
+
+func (r FileShareUpdateParamsShareSettings) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareUpdateParamsShareSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareUpdateParamsShareSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[FileShareUpdateParamsShareSettings](
+		"allowed_characters", "LCD", "NPL",
+	)
+	apijson.RegisterFieldValidator[FileShareUpdateParamsShareSettings](
+		"path_length", "LCD", "NPL",
+	)
 }
 
 type FileShareListParams struct {
