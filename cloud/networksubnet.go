@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewNetworkSubnetService(opts ...option.RequestOption) (r NetworkSubnetServi
 
 // Create subnet
 func (r *NetworkSubnetService) New(ctx context.Context, params NetworkSubnetNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -60,7 +61,7 @@ func (r *NetworkSubnetService) New(ctx context.Context, params NetworkSubnetNewP
 
 // Update subnet
 func (r *NetworkSubnetService) Update(ctx context.Context, subnetID string, params NetworkSubnetUpdateParams, opts ...option.RequestOption) (res *Subnet, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -87,7 +88,7 @@ func (r *NetworkSubnetService) Update(ctx context.Context, subnetID string, para
 // List subnets
 func (r *NetworkSubnetService) List(ctx context.Context, params NetworkSubnetListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Subnet], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -123,7 +124,7 @@ func (r *NetworkSubnetService) ListAutoPaging(ctx context.Context, params Networ
 
 // Delete subnet
 func (r *NetworkSubnetService) Delete(ctx context.Context, subnetID string, body NetworkSubnetDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -150,7 +151,7 @@ func (r *NetworkSubnetService) Delete(ctx context.Context, subnetID string, body
 
 // Get subnet
 func (r *NetworkSubnetService) Get(ctx context.Context, subnetID string, query NetworkSubnetGetParams, opts ...option.RequestOption) (res *Subnet, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

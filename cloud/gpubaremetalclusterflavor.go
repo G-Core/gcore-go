@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewGPUBaremetalClusterFlavorService(opts ...option.RequestOption) (r GPUBar
 
 // List bare metal GPU flavors
 func (r *GPUBaremetalClusterFlavorService) List(ctx context.Context, params GPUBaremetalClusterFlavorListParams, opts ...option.RequestOption) (res *GPUBaremetalFlavorList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

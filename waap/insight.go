@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewInsightService(opts ...option.RequestOption) (r InsightService) {
 // occurrences of the same kind.
 func (r *InsightService) ListTypes(ctx context.Context, query InsightListTypesParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapInsightType], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "waap/v1/security-insights/types"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -43,7 +44,7 @@ func NewFileShareService(opts ...option.RequestOption) (r FileShareService) {
 
 // Create file share
 func (r *FileShareService) New(ctx context.Context, params FileShareNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -65,7 +66,7 @@ func (r *FileShareService) New(ctx context.Context, params FileShareNewParams, o
 
 // Rename file share or update tags
 func (r *FileShareService) Update(ctx context.Context, fileShareID string, params FileShareUpdateParams, opts ...option.RequestOption) (res *FileShare, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -92,7 +93,7 @@ func (r *FileShareService) Update(ctx context.Context, fileShareID string, param
 // List file shares
 func (r *FileShareService) List(ctx context.Context, params FileShareListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[FileShare], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -128,7 +129,7 @@ func (r *FileShareService) ListAutoPaging(ctx context.Context, params FileShareL
 
 // Delete file share
 func (r *FileShareService) Delete(ctx context.Context, fileShareID string, body FileShareDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -154,7 +155,7 @@ func (r *FileShareService) Delete(ctx context.Context, fileShareID string, body 
 
 // Get file share
 func (r *FileShareService) Get(ctx context.Context, fileShareID string, query FileShareGetParams, opts ...option.RequestOption) (res *FileShare, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -180,7 +181,7 @@ func (r *FileShareService) Get(ctx context.Context, fileShareID string, query Fi
 
 // Resize file share
 func (r *FileShareService) Resize(ctx context.Context, fileShareID string, params FileShareResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

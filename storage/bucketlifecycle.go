@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -39,7 +40,7 @@ func NewBucketLifecycleService(opts ...option.RequestOption) (r BucketLifecycleS
 // rule to the entire bucket - all existing and future objects will be subject to
 // the expiration policy.
 func (r *BucketLifecycleService) New(ctx context.Context, bucketName string, params BucketLifecycleNewParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
@@ -53,7 +54,7 @@ func (r *BucketLifecycleService) New(ctx context.Context, bucketName string, par
 // Removes all lifecycle rules from an S3 bucket, disabling automatic object
 // expiration. Objects will no longer be automatically deleted based on age.
 func (r *BucketLifecycleService) Delete(ctx context.Context, bucketName string, body BucketLifecycleDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")

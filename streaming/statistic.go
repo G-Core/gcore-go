@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 // You can use this method to watch when stream was alive in time, and when it was
 // off.
 func (r *StatisticService) GetFfprobes(ctx context.Context, query StatisticGetFfprobesParams, opts ...option.RequestOption) (res *Ffprobes, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/ffprobe"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -53,7 +54,7 @@ func (r *StatisticService) GetFfprobes(ctx context.Context, query StatisticGetFf
 // built.
 // ![Unique viewers via CDN in Customer Portal](https://demo-files.gvideo.io/apidocs/cdn_unique_viewers.png)
 func (r *StatisticService) GetLiveUniqueViewers(ctx context.Context, query StatisticGetLiveUniqueViewersParams, opts ...option.RequestOption) (res *[]StatisticGetLiveUniqueViewersResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/stream/viewers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -66,7 +67,7 @@ func (r *StatisticService) GetLiveUniqueViewers(ctx context.Context, query Stati
 // minutes, it is rounded to the nearest upper integer. You cannot use the sum of
 // all intervals as the total watch time value; instead, use the /total method.
 func (r *StatisticService) GetLiveWatchTimeCdn(ctx context.Context, query StatisticGetLiveWatchTimeCdnParams, opts ...option.RequestOption) (res *StreamSeries, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/stream/watching_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -77,7 +78,7 @@ func (r *StatisticService) GetLiveWatchTimeCdn(ctx context.Context, query Statis
 // taken from the data of CDN and work regardless of which player the views were
 // made with.
 func (r *StatisticService) GetLiveWatchTimeTotalCdn(ctx context.Context, query StatisticGetLiveWatchTimeTotalCdnParams, opts ...option.RequestOption) (res *VodTotalStreamDurationSeries, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/stream/watching_duration/total"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -86,7 +87,7 @@ func (r *StatisticService) GetLiveWatchTimeTotalCdn(ctx context.Context, query S
 // Calculates time series of the amount of simultaneous streams. The data is
 // updated near realtime.
 func (r *StatisticService) GetMaxStreamsSeries(ctx context.Context, query StatisticGetMaxStreamsSeriesParams, opts ...option.RequestOption) (res *MaxStreamSeries, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/max_stream"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -100,7 +101,7 @@ func (r *StatisticService) GetMaxStreamsSeries(ctx context.Context, query Statis
 // CDN (look at method /statistics/cdn/uniqs) or statistics of the players you have
 // chosen.
 func (r *StatisticService) GetPopularVideos(ctx context.Context, query StatisticGetPopularVideosParams, opts ...option.RequestOption) (res *PopularVideos, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/popular"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -110,7 +111,7 @@ func (r *StatisticService) GetPopularVideos(ctx context.Context, query Statistic
 // undeleted client videos. The data is updated every 8 hours, it does not make
 // sense to set the granulation less than 1 day.
 func (r *StatisticService) GetStorageSeries(ctx context.Context, query StatisticGetStorageSeriesParams, opts ...option.RequestOption) (res *StorageSeries, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/storage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -119,7 +120,7 @@ func (r *StatisticService) GetStorageSeries(ctx context.Context, query Statistic
 // Calculates time series of the transcoding minutes of all streams. The data is
 // updated near realtime.
 func (r *StatisticService) GetStreamSeries(ctx context.Context, query StatisticGetStreamSeriesParams, opts ...option.RequestOption) (res *StreamSeries, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/stream"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -133,7 +134,7 @@ func (r *StatisticService) GetStreamSeries(ctx context.Context, query StatisticG
 // .m3u8/.mpd/.mp4 links. For such cases, use calculations through CDN (look at
 // method /statistics/cdn/uniqs) or statistics of the players you have chosen.
 func (r *StatisticService) GetUniqueViewers(ctx context.Context, query StatisticGetUniqueViewersParams, opts ...option.RequestOption) (res *UniqueViewers, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/uniqs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -165,7 +166,7 @@ func (r *StatisticService) GetUniqueViewers(ctx context.Context, query Statistic
 //     the Play button) within the player session (i.e. how many times 1 unique
 //     viewer clicked the Play button within a unique player's session).
 func (r *StatisticService) GetUniqueViewersCdn(ctx context.Context, query StatisticGetUniqueViewersCdnParams, opts ...option.RequestOption) (res *UniqueViewersCdn, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/cdn/uniqs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -179,7 +180,7 @@ func (r *StatisticService) GetUniqueViewersCdn(ctx context.Context, query Statis
 // through CDN (look at method /statistics/cdn/uniqs) or statistics of the players
 // you have chosen.
 func (r *StatisticService) GetViews(ctx context.Context, query StatisticGetViewsParams, opts ...option.RequestOption) (res *Views, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/views"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -192,7 +193,7 @@ func (r *StatisticService) GetViews(ctx context.Context, query StatisticGetViews
 // such cases, use calculations through CDN (look at method /statistics/cdn/uniqs)
 // or statistics of the players you have chosen.
 func (r *StatisticService) GetViewsByBrowsers(ctx context.Context, query StatisticGetViewsByBrowsersParams, opts ...option.RequestOption) (res *ViewsByBrowser, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/browsers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -205,7 +206,7 @@ func (r *StatisticService) GetViewsByBrowsers(ctx context.Context, query Statist
 // calculations through CDN (look at method /statistics/cdn/uniqs) or statistics of
 // the players you have chosen.
 func (r *StatisticService) GetViewsByCountry(ctx context.Context, query StatisticGetViewsByCountryParams, opts ...option.RequestOption) (res *ViewsByCountry, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/countries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -218,7 +219,7 @@ func (r *StatisticService) GetViewsByCountry(ctx context.Context, query Statisti
 // such cases, use calculations through CDN (look at method /statistics/cdn/uniqs)
 // or statistics of the players you have chosen.
 func (r *StatisticService) GetViewsByHostname(ctx context.Context, query StatisticGetViewsByHostnameParams, opts ...option.RequestOption) (res *ViewsByHostname, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/hosts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -231,7 +232,7 @@ func (r *StatisticService) GetViewsByHostname(ctx context.Context, query Statist
 // such cases, use calculations through CDN (look at method /statistics/cdn/uniqs)
 // or statistics of the players you have chosen.
 func (r *StatisticService) GetViewsByOperatingSystem(ctx context.Context, query StatisticGetViewsByOperatingSystemParams, opts ...option.RequestOption) (res *ViewsByOperatingSystem, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/systems"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -244,7 +245,7 @@ func (r *StatisticService) GetViewsByOperatingSystem(ctx context.Context, query 
 // .m3u8/.mpd/.mp4 links. For such cases, use calculations through CDN (look at
 // method /statistics/cdn/uniqs) or statistics of the players you have chosen.
 func (r *StatisticService) GetViewsByReferer(ctx context.Context, query StatisticGetViewsByRefererParams, opts ...option.RequestOption) (res *ViewsByReferer, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/embeds"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -257,7 +258,7 @@ func (r *StatisticService) GetViewsByReferer(ctx context.Context, query Statisti
 // such cases, use calculations through CDN (look at method /statistics/cdn/uniqs)
 // or statistics of the players you have chosen.
 func (r *StatisticService) GetViewsByRegion(ctx context.Context, query StatisticGetViewsByRegionParams, opts ...option.RequestOption) (res *ViewsByRegion, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/regions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -273,7 +274,7 @@ func (r *StatisticService) GetViewsByRegion(ctx context.Context, query Statistic
 // through CDN (look at method /statistics/cdn/uniqs) or statistics of the players
 // you have chosen.
 func (r *StatisticService) GetViewsHeatmap(ctx context.Context, query StatisticGetViewsHeatmapParams, opts ...option.RequestOption) (res *ViewsHeatmap, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/heatmap"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -283,7 +284,7 @@ func (r *StatisticService) GetViewsHeatmap(ctx context.Context, query StatisticG
 // undeleted client videos. The data is updated every 8 hours, it does not make
 // sense to set the granulation less than 1 day.
 func (r *StatisticService) GetVodStorageVolume(ctx context.Context, query StatisticGetVodStorageVolumeParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/vod/storage_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -293,7 +294,7 @@ func (r *StatisticService) GetVodStorageVolume(ctx context.Context, query Statis
 // client videos. The data is updated every 8 hours, it does not make sense to set
 // the granulation less than 1 day.
 func (r *StatisticService) GetVodTranscodingDuration(ctx context.Context, query StatisticGetVodTranscodingDurationParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/vod/transcoding_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -306,7 +307,7 @@ func (r *StatisticService) GetVodTranscodingDuration(ctx context.Context, query 
 // Based on this method, a graph of unique views in the Customer Portal is built.
 // ![Unique viewers via CDN in Customer Portal](https://demo-files.gvideo.io/apidocs/cdn_unique_viewers.png)
 func (r *StatisticService) GetVodUniqueViewersCdn(ctx context.Context, query StatisticGetVodUniqueViewersCdnParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/vod/viewers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -319,7 +320,7 @@ func (r *StatisticService) GetVodUniqueViewersCdn(ctx context.Context, query Sta
 // is rounded to the nearest upper integer. You cannot use the sum of all intervals
 // as the total watch time value; instead, use the /total method.
 func (r *StatisticService) GetVodWatchTimeCdn(ctx context.Context, query StatisticGetVodWatchTimeCdnParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/vod/watching_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -330,7 +331,7 @@ func (r *StatisticService) GetVodWatchTimeCdn(ctx context.Context, query Statist
 // from the data of CDN and work regardless of which player the views were made
 // with.
 func (r *StatisticService) GetVodWatchTimeTotalCdn(ctx context.Context, query StatisticGetVodWatchTimeTotalCdnParams, opts ...option.RequestOption) (res *[]StatisticGetVodWatchTimeTotalCdnResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/vod/watching_duration/total"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

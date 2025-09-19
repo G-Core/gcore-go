@@ -5,6 +5,7 @@ package waap
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -33,7 +34,7 @@ func NewAdvancedRuleService(opts ...option.RequestOption) (r AdvancedRuleService
 
 // Retrieve an advanced rules descriptor
 func (r *AdvancedRuleService) List(ctx context.Context, opts ...option.RequestOption) (res *WaapAdvancedRuleDescriptorList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/advanced-rules/descriptor"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

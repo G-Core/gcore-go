@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -39,7 +40,7 @@ func NewInferenceApplicationTemplateService(opts ...option.RequestOption) (r Inf
 // Components define parameters, supported deployment flavors, and other attributes
 // required to create a fully functional application deployment.
 func (r *InferenceApplicationTemplateService) List(ctx context.Context, opts ...option.RequestOption) (res *InferenceApplicationTemplateList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v3/inference/applications/catalog"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -51,7 +52,7 @@ func (r *InferenceApplicationTemplateService) List(ctx context.Context, opts ...
 // options, compatible flavors, and deployment capabilities — all necessary for
 // building and customizing an AI application.
 func (r *InferenceApplicationTemplateService) Get(ctx context.Context, applicationName string, opts ...option.RequestOption) (res *InferenceApplicationTemplate, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if applicationName == "" {
 		err = errors.New("missing required application_name parameter")
 		return

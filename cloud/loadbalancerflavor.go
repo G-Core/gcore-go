@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -38,7 +39,7 @@ func NewLoadBalancerFlavorService(opts ...option.RequestOption) (r LoadBalancerF
 // parameter is specified, the list shows prices. A client in trial mode gets all
 // price values as 0. If you get Pricing Error contact the support
 func (r *LoadBalancerFlavorService) List(ctx context.Context, params LoadBalancerFlavorListParams, opts ...option.RequestOption) (res *LoadBalancerFlavorList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewTemplateService(opts ...option.RequestOption) (r TemplateService) {
 
 // Add template
 func (r *TemplateService) New(ctx context.Context, body TemplateNewParams, opts ...option.RequestOption) (res *TemplateShort, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/template"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *TemplateService) New(ctx context.Context, body TemplateNewParams, opts 
 // List app templates
 func (r *TemplateService) List(ctx context.Context, query TemplateListParams, opts ...option.RequestOption) (res *pagination.OffsetPageFastedgeTemplates[TemplateShort], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "fastedge/v1/template"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -71,7 +72,7 @@ func (r *TemplateService) ListAutoPaging(ctx context.Context, query TemplateList
 
 // Delete template
 func (r *TemplateService) Delete(ctx context.Context, id int64, body TemplateDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/template/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
@@ -80,7 +81,7 @@ func (r *TemplateService) Delete(ctx context.Context, id int64, body TemplateDel
 
 // Get template details
 func (r *TemplateService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *Template, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/template/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -88,7 +89,7 @@ func (r *TemplateService) Get(ctx context.Context, id int64, opts ...option.Requ
 
 // Update template
 func (r *TemplateService) Replace(ctx context.Context, id int64, body TemplateReplaceParams, opts ...option.RequestOption) (res *TemplateShort, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/template/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

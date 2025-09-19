@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewAppLogService(opts ...option.RequestOption) (r AppLogService) {
 // List logs for the app
 func (r *AppLogService) List(ctx context.Context, id int64, query AppLogListParams, opts ...option.RequestOption) (res *pagination.OffsetPageFastedgeAppLogs[Log], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("fastedge/v1/apps/%v/logs", id)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)

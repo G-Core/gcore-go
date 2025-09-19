@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -41,7 +42,7 @@ func NewLoadBalancerPoolService(opts ...option.RequestOption) (r LoadBalancerPoo
 
 // Create load balancer pool
 func (r *LoadBalancerPoolService) New(ctx context.Context, params LoadBalancerPoolNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -77,7 +78,7 @@ func (r *LoadBalancerPoolService) New(ctx context.Context, params LoadBalancerPo
 //   - Health monitors: Complete health monitor configuration must be specified
 //   - Session persistence: Full session persistence settings must be included
 func (r *LoadBalancerPoolService) Update(ctx context.Context, poolID string, params LoadBalancerPoolUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -103,7 +104,7 @@ func (r *LoadBalancerPoolService) Update(ctx context.Context, poolID string, par
 
 // List load balancer pools
 func (r *LoadBalancerPoolService) List(ctx context.Context, params LoadBalancerPoolListParams, opts ...option.RequestOption) (res *LoadBalancerPoolList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -125,7 +126,7 @@ func (r *LoadBalancerPoolService) List(ctx context.Context, params LoadBalancerP
 
 // Delete load balancer pool
 func (r *LoadBalancerPoolService) Delete(ctx context.Context, poolID string, body LoadBalancerPoolDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -151,7 +152,7 @@ func (r *LoadBalancerPoolService) Delete(ctx context.Context, poolID string, bod
 
 // Get load balancer pool
 func (r *LoadBalancerPoolService) Get(ctx context.Context, poolID string, query LoadBalancerPoolGetParams, opts ...option.RequestOption) (res *LoadBalancerPool, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

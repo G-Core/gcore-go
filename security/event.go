@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewEventService(opts ...option.RequestOption) (r EventService) {
 // Event Logs Clients View
 func (r *EventService) List(ctx context.Context, query EventListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[ClientView], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "security/notifier/v1/event_logs"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)

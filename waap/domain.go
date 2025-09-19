@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -60,7 +61,7 @@ func NewDomainService(opts ...option.RequestOption) (r DomainService) {
 
 // Update Domain
 func (r *DomainService) Update(ctx context.Context, domainID int64, body DomainUpdateParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
@@ -70,7 +71,7 @@ func (r *DomainService) Update(ctx context.Context, domainID int64, body DomainU
 // Retrieve a list of domains associated with the client
 func (r *DomainService) List(ctx context.Context, query DomainListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapSummaryDomain], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "waap/v1/domains"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -93,7 +94,7 @@ func (r *DomainService) ListAutoPaging(ctx context.Context, query DomainListPara
 // Delete an inactive domain by ID. Only domains with status 'bypass' can be
 // deleted.
 func (r *DomainService) Delete(ctx context.Context, domainID int64, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
@@ -102,7 +103,7 @@ func (r *DomainService) Delete(ctx context.Context, domainID int64, opts ...opti
 
 // Retrieve detailed information about a specific domain
 func (r *DomainService) Get(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *WaapDetailedDomain, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -110,7 +111,7 @@ func (r *DomainService) Get(ctx context.Context, domainID int64, opts ...option.
 
 // Retrieve all rule sets linked to a particular domain
 func (r *DomainService) ListRuleSets(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *[]WaapRuleSet, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/rule-sets", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -118,7 +119,7 @@ func (r *DomainService) ListRuleSets(ctx context.Context, domainID int64, opts .
 
 // Modify the activation state of a policy associated with a domain
 func (r *DomainService) TogglePolicy(ctx context.Context, policyID string, body DomainTogglePolicyParams, opts ...option.RequestOption) (res *WaapPolicyMode, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
 		return

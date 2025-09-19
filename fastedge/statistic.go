@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 
 // Call statistics
 func (r *StatisticService) GetCallSeries(ctx context.Context, query StatisticGetCallSeriesParams, opts ...option.RequestOption) (res *StatisticGetCallSeriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/stats/calls"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -45,7 +46,7 @@ func (r *StatisticService) GetCallSeries(ctx context.Context, query StatisticGet
 
 // Execution duration statistics
 func (r *StatisticService) GetDurationSeries(ctx context.Context, query StatisticGetDurationSeriesParams, opts ...option.RequestOption) (res *StatisticGetDurationSeriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/stats/app_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

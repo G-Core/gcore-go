@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -39,7 +40,7 @@ func NewInferenceApplicationDeploymentService(opts ...option.RequestOption) (r I
 // component. The platform will provision the necessary resources and initialize
 // the application accordingly.
 func (r *InferenceApplicationDeploymentService) New(ctx context.Context, params InferenceApplicationDeploymentNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -58,7 +59,7 @@ func (r *InferenceApplicationDeploymentService) New(ctx context.Context, params 
 // associated catalog applications, regions, component configurations, and current
 // status. Useful for monitoring and managing all active AI application instances.
 func (r *InferenceApplicationDeploymentService) List(ctx context.Context, query InferenceApplicationDeploymentListParams, opts ...option.RequestOption) (res *InferenceApplicationDeploymentList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -77,7 +78,7 @@ func (r *InferenceApplicationDeploymentService) List(ctx context.Context, query 
 // This action will permanently remove the deployment and **terminate all related
 // inference instances** that are part of the application.
 func (r *InferenceApplicationDeploymentService) Delete(ctx context.Context, deploymentName string, body InferenceApplicationDeploymentDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -101,7 +102,7 @@ func (r *InferenceApplicationDeploymentService) Delete(ctx context.Context, depl
 // active regions, configuration of each component, and the current status of the
 // deployment.
 func (r *InferenceApplicationDeploymentService) Get(ctx context.Context, deploymentName string, query InferenceApplicationDeploymentGetParams, opts ...option.RequestOption) (res *InferenceApplicationDeployment, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -125,7 +126,7 @@ func (r *InferenceApplicationDeploymentService) Get(ctx context.Context, deploym
 // its value to null. Only the provided fields will be updated; all others remain
 // unchanged.
 func (r *InferenceApplicationDeploymentService) Patch(ctx context.Context, deploymentName string, params InferenceApplicationDeploymentPatchParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

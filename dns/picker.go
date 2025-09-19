@@ -5,6 +5,7 @@ package dns
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewPickerService(opts ...option.RequestOption) (r PickerService) {
 
 // Returns list of picker
 func (r *PickerService) List(ctx context.Context, opts ...option.RequestOption) (res *[]DNSLabelName, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/pickers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

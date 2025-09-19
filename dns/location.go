@@ -5,6 +5,7 @@ package dns
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -33,7 +34,7 @@ func NewLocationService(opts ...option.RequestOption) (r LocationService) {
 
 // List of All locations continents/countries/regions.
 func (r *LocationService) List(ctx context.Context, opts ...option.RequestOption) (res *LocationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -41,7 +42,7 @@ func (r *LocationService) List(ctx context.Context, opts ...option.RequestOption
 
 // List of All locations continents.
 func (r *LocationService) ListContinents(ctx context.Context, opts ...option.RequestOption) (res *LocationListContinentsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/locations/continents"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *LocationService) ListContinents(ctx context.Context, opts ...option.Req
 
 // List of All locations countries.
 func (r *LocationService) ListCountries(ctx context.Context, opts ...option.RequestOption) (res *LocationListCountriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/locations/countries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -57,7 +58,7 @@ func (r *LocationService) ListCountries(ctx context.Context, opts ...option.Requ
 
 // List of All locations regions.
 func (r *LocationService) ListRegions(ctx context.Context, opts ...option.RequestOption) (res *LocationListRegionsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/locations/regions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

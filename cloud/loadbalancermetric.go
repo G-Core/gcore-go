@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewLoadBalancerMetricService(opts ...option.RequestOption) (r LoadBalancerM
 
 // Get load balancer metrics, including cpu, memory and network
 func (r *LoadBalancerMetricService) List(ctx context.Context, loadbalancerID string, params LoadBalancerMetricListParams, opts ...option.RequestOption) (res *LoadBalancerMetricsList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

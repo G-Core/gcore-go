@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewQuotaRequestService(opts ...option.RequestOption) (r QuotaRequestService
 
 // Create a request to change current quotas.
 func (r *QuotaRequestService) New(ctx context.Context, body QuotaRequestNewParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "cloud/v2/limits_request"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -49,7 +50,7 @@ func (r *QuotaRequestService) New(ctx context.Context, body QuotaRequestNewParam
 // Get a list of sent requests to change current quotas and their statuses.
 func (r *QuotaRequestService) List(ctx context.Context, query QuotaRequestListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[QuotaRequestListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cloud/v2/limits_request"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -71,7 +72,7 @@ func (r *QuotaRequestService) ListAutoPaging(ctx context.Context, query QuotaReq
 
 // Delete a specific quota limit request.
 func (r *QuotaRequestService) Delete(ctx context.Context, requestID int64, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("cloud/v2/limits_request/%v", requestID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
@@ -80,7 +81,7 @@ func (r *QuotaRequestService) Delete(ctx context.Context, requestID int64, opts 
 
 // Get detailed information about a specific quota limit request.
 func (r *QuotaRequestService) Get(ctx context.Context, requestID int64, opts ...option.RequestOption) (res *QuotaRequestGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cloud/v2/limits_request/%v", requestID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

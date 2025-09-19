@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewRegistryArtifactService(opts ...option.RequestOption) (r RegistryArtifac
 
 // List all artifacts in a specific repository.
 func (r *RegistryArtifactService) List(ctx context.Context, repositoryName string, query RegistryArtifactListParams, opts ...option.RequestOption) (res *RegistryArtifactList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -63,7 +64,7 @@ func (r *RegistryArtifactService) List(ctx context.Context, repositoryName strin
 
 // Delete a specific artifact from a repository.
 func (r *RegistryArtifactService) Delete(ctx context.Context, digest string, body RegistryArtifactDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {

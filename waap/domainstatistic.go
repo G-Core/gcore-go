@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewDomainStatisticService(opts ...option.RequestOption) (r DomainStatisticS
 // Retrieve a domain's DDoS attacks
 func (r *DomainStatisticService) GetDDOSAttacks(ctx context.Context, domainID int64, query DomainStatisticGetDDOSAttacksParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapDDOSAttack], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/ddos-attacks", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -65,7 +66,7 @@ func (r *DomainStatisticService) GetDDOSAttacksAutoPaging(ctx context.Context, d
 // Returns the top DDoS counts grouped by URL, User-Agent or IP
 func (r *DomainStatisticService) GetDDOSInfo(ctx context.Context, domainID int64, query DomainStatisticGetDDOSInfoParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapDDOSInfo], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/ddos-info", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -87,7 +88,7 @@ func (r *DomainStatisticService) GetDDOSInfoAutoPaging(ctx context.Context, doma
 
 // Retrieve an domain's event statistics
 func (r *DomainStatisticService) GetEventsAggregated(ctx context.Context, domainID int64, query DomainStatisticGetEventsAggregatedParams, opts ...option.RequestOption) (res *WaapEventStatistics, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/stats", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -96,7 +97,7 @@ func (r *DomainStatisticService) GetEventsAggregated(ctx context.Context, domain
 // Retrieves all the available information for a request that matches a given
 // request id
 func (r *DomainStatisticService) GetRequestDetails(ctx context.Context, requestID string, query DomainStatisticGetRequestDetailsParams, opts ...option.RequestOption) (res *WaapRequestDetails, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if requestID == "" {
 		err = errors.New("missing required request_id parameter")
 		return
@@ -109,7 +110,7 @@ func (r *DomainStatisticService) GetRequestDetails(ctx context.Context, requestI
 // Retrieve a domain's requests data.
 func (r *DomainStatisticService) GetRequestsSeries(ctx context.Context, domainID int64, query DomainStatisticGetRequestsSeriesParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapRequestSummary], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/requests", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -133,7 +134,7 @@ func (r *DomainStatisticService) GetRequestsSeriesAutoPaging(ctx context.Context
 // Clickhouse. The report includes details such as API requests, blocked events,
 // error counts, and many more traffic-related metrics.
 func (r *DomainStatisticService) GetTrafficSeries(ctx context.Context, domainID int64, query DomainStatisticGetTrafficSeriesParams, opts ...option.RequestOption) (res *[]WaapTrafficMetrics, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/traffic", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

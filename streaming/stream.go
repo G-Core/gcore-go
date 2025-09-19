@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -72,7 +73,7 @@ func NewStreamService(opts ...option.RequestOption) (r StreamService) {
 // section in the Knowledge Base.
 // ![HTML Overlays](https://demo-files.gvideo.io/apidocs/low-latency-football.gif)
 func (r *StreamService) New(ctx context.Context, body StreamNewParams, opts ...option.RequestOption) (res *Stream, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/streams"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -80,7 +81,7 @@ func (r *StreamService) New(ctx context.Context, body StreamNewParams, opts ...o
 
 // Updates stream settings
 func (r *StreamService) Update(ctx context.Context, streamID int64, body StreamUpdateParams, opts ...option.RequestOption) (res *Stream, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -89,7 +90,7 @@ func (r *StreamService) Update(ctx context.Context, streamID int64, body StreamU
 // Returns a list of streams
 func (r *StreamService) List(ctx context.Context, query StreamListParams, opts ...option.RequestOption) (res *pagination.PageStreaming[Stream], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "streaming/streams"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -127,7 +128,7 @@ func (r *StreamService) ListAutoPaging(ctx context.Context, query StreamListPara
 //
 // For details, see the Product Documentation.
 func (r *StreamService) Delete(ctx context.Context, streamID int64, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
@@ -136,7 +137,7 @@ func (r *StreamService) Delete(ctx context.Context, streamID int64, opts ...opti
 
 // Clear live stream DVR
 func (r *StreamService) ClearDvr(ctx context.Context, streamID int64, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v/dvr_cleanup", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, nil, opts...)
@@ -187,7 +188,7 @@ func (r *StreamService) ClearDvr(ctx context.Context, streamID int64, opts ...op
 // when the clip is ready, grab `video_id` value from the response and query the
 // video by regular GET /video/{id} method.
 func (r *StreamService) NewClip(ctx context.Context, streamID int64, body StreamNewClipParams, opts ...option.RequestOption) (res *Clip, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v/clip_recording", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
@@ -195,7 +196,7 @@ func (r *StreamService) NewClip(ctx context.Context, streamID int64, body Stream
 
 // Returns stream details
 func (r *StreamService) Get(ctx context.Context, streamID int64, opts ...option.RequestOption) (res *Stream, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -221,7 +222,7 @@ func (r *StreamService) Get(ctx context.Context, streamID int64, opts ...option.
 //   - MP4 360p:
 //     `https://CID.domain.com/rec/111_1000/rec_d7bsli54p8n4_qsid42_media_1_360.mp4`
 func (r *StreamService) ListClips(ctx context.Context, streamID int64, opts ...option.RequestOption) (res *[]Clip, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v/clip_recording", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -266,7 +267,7 @@ func (r *StreamService) ListClips(ctx context.Context, streamID int64, opts ...o
 //     have long broadcasts, the recording will be cut into 4-hour videos. This value
 //     is fixed, but can be changed upon request to the Support Team.
 func (r *StreamService) StartRecording(ctx context.Context, streamID int64, opts ...option.RequestOption) (res *StreamStartRecordingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v/start_recording", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return
@@ -280,7 +281,7 @@ func (r *StreamService) StartRecording(ctx context.Context, streamID int64, opts
 // the response will be empty. Please see conditions and restrictions for recording
 // a stream in the description of method /`start_recording`.
 func (r *StreamService) StopRecording(ctx context.Context, streamID int64, opts ...option.RequestOption) (res *Video, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v/stop_recording", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewRegistryUserService(opts ...option.RequestOption) (r RegistryUserService
 
 // Create a new user for accessing the container registry.
 func (r *RegistryUserService) New(ctx context.Context, registryID int64, params RegistryUserNewParams, opts ...option.RequestOption) (res *RegistryUserCreated, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -59,7 +60,7 @@ func (r *RegistryUserService) New(ctx context.Context, registryID int64, params 
 
 // Update the configuration of a specific registry user.
 func (r *RegistryUserService) Update(ctx context.Context, userID int64, params RegistryUserUpdateParams, opts ...option.RequestOption) (res *RegistryUser, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -81,7 +82,7 @@ func (r *RegistryUserService) Update(ctx context.Context, userID int64, params R
 
 // List all users with access to the container registry.
 func (r *RegistryUserService) List(ctx context.Context, registryID int64, query RegistryUserListParams, opts ...option.RequestOption) (res *RegistryUserList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -103,7 +104,7 @@ func (r *RegistryUserService) List(ctx context.Context, registryID int64, query 
 
 // Delete a specific user from the container registry.
 func (r *RegistryUserService) Delete(ctx context.Context, userID int64, body RegistryUserDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -126,7 +127,7 @@ func (r *RegistryUserService) Delete(ctx context.Context, userID int64, body Reg
 
 // Create multiple users for accessing the container registry in a single request.
 func (r *RegistryUserService) NewMultiple(ctx context.Context, registryID int64, params RegistryUserNewMultipleParams, opts ...option.RequestOption) (res *RegistryUserCreated, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -148,7 +149,7 @@ func (r *RegistryUserService) NewMultiple(ctx context.Context, registryID int64,
 
 // Generate a new secret for a specific registry user.
 func (r *RegistryUserService) RefreshSecret(ctx context.Context, userID int64, body RegistryUserRefreshSecretParams, opts ...option.RequestOption) (res *RegistryUserRefreshSecretResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

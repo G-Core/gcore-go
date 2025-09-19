@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewUserService(opts ...option.RequestOption) (r UserService) {
 
 // This method updates user's details.
 func (r *UserService) Update(ctx context.Context, userID int64, body UserUpdateParams, opts ...option.RequestOption) (res *UserUpdate, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/users/%v", userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *UserService) Update(ctx context.Context, userID int64, body UserUpdateP
 // users without pagination.
 func (r *UserService) List(ctx context.Context, query UserListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[User], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "iam/users"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -74,7 +75,7 @@ func (r *UserService) ListAutoPaging(ctx context.Context, query UserListParams, 
 // Revokes user's access to the specified account. If the specified user doesn't
 // have access to multiple accounts, the user is deleted.
 func (r *UserService) Delete(ctx context.Context, userID int64, body UserDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("iam/clients/%v/client-users/%v", body.ClientID, userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
@@ -83,7 +84,7 @@ func (r *UserService) Delete(ctx context.Context, userID int64, body UserDeleteP
 
 // Get user's details
 func (r *UserService) Get(ctx context.Context, userID int64, opts ...option.RequestOption) (res *UserDetailed, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/users/%v", userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -93,7 +94,7 @@ func (r *UserService) Get(ctx context.Context, userID int64, opts ...option.Requ
 // receive an invitation email with a link to create an account password, the
 // existing user will be notified about the invitation to the account.
 func (r *UserService) Invite(ctx context.Context, body UserInviteParams, opts ...option.RequestOption) (res *UserInvite, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "iam/clients/invite_user"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

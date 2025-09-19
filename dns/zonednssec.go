@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewZoneDnssecService(opts ...option.RequestOption) (r ZoneDnssecService) {
 
 // Enable or disable DNSSEC for a DNS zone.
 func (r *ZoneDnssecService) Update(ctx context.Context, name string, body ZoneDnssecUpdateParams, opts ...option.RequestOption) (res *ZoneDnssecUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return
@@ -48,7 +49,7 @@ func (r *ZoneDnssecService) Update(ctx context.Context, name string, body ZoneDn
 
 // Get DNSSEC DS for a DNS zone.
 func (r *ZoneDnssecService) Get(ctx context.Context, name string, opts ...option.RequestOption) (res *ZoneDnssecGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
@@ -37,7 +38,7 @@ func NewBucketPolicyService(opts ...option.RequestOption) (r BucketPolicyService
 // integration. Only grants read access - users cannot upload, modify, or delete
 // objects without proper authentication.
 func (r *BucketPolicyService) New(ctx context.Context, bucketName string, body BucketPolicyNewParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
@@ -53,7 +54,7 @@ func (r *BucketPolicyService) New(ctx context.Context, bucketName string, body B
 // anonymous users will no longer be able to access bucket contents via HTTP
 // requests.
 func (r *BucketPolicyService) Delete(ctx context.Context, bucketName string, body BucketPolicyDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
@@ -67,7 +68,7 @@ func (r *BucketPolicyService) Delete(ctx context.Context, bucketName string, bod
 // Returns whether the S3 bucket is currently configured for public read access.
 // Shows if anonymous users can download objects from the bucket via HTTP requests.
 func (r *BucketPolicyService) Get(ctx context.Context, bucketName string, query BucketPolicyGetParams, opts ...option.RequestOption) (res *bool, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return

@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -41,7 +42,7 @@ func NewMetricService(opts ...option.RequestOption) (r MetricService) {
 // healthcheck_state{client_id="2",monitor_id="7123",monitor_locations="ua-1,ua-2",monitor_name="test-monitor-3",monitor_type="icmp",rrset_name="rrset-name3",rrset_type="rrset-type3",zone_name="zone-name3"} 0
 // ```
 func (r *MetricService) List(ctx context.Context, query MetricListParams, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "plain/text")}, opts...)
 	path := "dns/v2/monitor/metrics"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)

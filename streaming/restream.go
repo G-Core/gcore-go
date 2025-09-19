@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewRestreamService(opts ...option.RequestOption) (r RestreamService) {
 
 // Create restream
 func (r *RestreamService) New(ctx context.Context, body RestreamNewParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "streaming/restreams"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -47,7 +48,7 @@ func (r *RestreamService) New(ctx context.Context, body RestreamNewParams, opts 
 
 // Updates restream settings
 func (r *RestreamService) Update(ctx context.Context, restreamID int64, body RestreamUpdateParams, opts ...option.RequestOption) (res *Restream, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/restreams/%v", restreamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -56,7 +57,7 @@ func (r *RestreamService) Update(ctx context.Context, restreamID int64, body Res
 // Returns a list of created restreams
 func (r *RestreamService) List(ctx context.Context, query RestreamListParams, opts ...option.RequestOption) (res *pagination.PageStreaming[Restream], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "streaming/restreams"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -78,7 +79,7 @@ func (r *RestreamService) ListAutoPaging(ctx context.Context, query RestreamList
 
 // Delete restream
 func (r *RestreamService) Delete(ctx context.Context, restreamID int64, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("streaming/restreams/%v", restreamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
@@ -87,7 +88,7 @@ func (r *RestreamService) Delete(ctx context.Context, restreamID int64, opts ...
 
 // Returns restream details
 func (r *RestreamService) Get(ctx context.Context, restreamID int64, opts ...option.RequestOption) (res *Restream, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/restreams/%v", restreamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

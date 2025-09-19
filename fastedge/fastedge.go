@@ -5,6 +5,7 @@ package fastedge
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -45,7 +46,7 @@ func NewFastedgeService(opts ...option.RequestOption) (r FastedgeService) {
 
 // Get status and limits for the client
 func (r *FastedgeService) GetAccountOverview(ctx context.Context, opts ...option.RequestOption) (res *Client, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

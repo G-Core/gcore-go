@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -47,7 +48,7 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 // Creates a new storage instance (S3 or SFTP) in the specified location and
 // returns the storage details including credentials.
 func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ...option.RequestOption) (res *Storage, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "storage/provisioning/v2/storage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -56,7 +57,7 @@ func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ..
 // Updates storage configuration such as expiration date and server alias. Used for
 // SFTP storages.
 func (r *StorageService) Update(ctx context.Context, storageID int64, body StorageUpdateParams, opts ...option.RequestOption) (res *Storage, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/provisioning/v2/storage/%v", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *StorageService) Update(ctx context.Context, storageID int64, body Stora
 // results: the current page of storages according to limit/offset
 func (r *StorageService) List(ctx context.Context, query StorageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Storage], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "storage/provisioning/v3/storage"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -93,7 +94,7 @@ func (r *StorageService) ListAutoPaging(ctx context.Context, query StorageListPa
 
 // Permanently deletes a storage and all its data. This action cannot be undone.
 func (r *StorageService) Delete(ctx context.Context, storageID int64, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
@@ -103,7 +104,7 @@ func (r *StorageService) Delete(ctx context.Context, storageID int64, opts ...op
 // Retrieves detailed information about a specific storage including its
 // configuration, credentials, and current status.
 func (r *StorageService) Get(ctx context.Context, storageID int64, opts ...option.RequestOption) (res *Storage, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -113,7 +114,7 @@ func (r *StorageService) Get(ctx context.Context, storageID int64, opts ...optio
 // authentication. Only works with SFTP storage types - not applicable to
 // S3-compatible storage.
 func (r *StorageService) LinkSSHKey(ctx context.Context, keyID int64, body StorageLinkSSHKeyParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/key/%v/link", body.StorageID, keyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
@@ -123,7 +124,7 @@ func (r *StorageService) LinkSSHKey(ctx context.Context, keyID int64, body Stora
 // Restores a previously deleted S3 storage if it was deleted within the last 2
 // weeks. SFTP storages cannot be restored.
 func (r *StorageService) Restore(ctx context.Context, storageID int64, body StorageRestoreParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/restore", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -134,7 +135,7 @@ func (r *StorageService) Restore(ctx context.Context, storageID int64, body Stor
 // authentication for that key. The key itself remains available for other
 // storages.
 func (r *StorageService) UnlinkSSHKey(ctx context.Context, keyID int64, body StorageUnlinkSSHKeyParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/key/%v/unlink", body.StorageID, keyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)

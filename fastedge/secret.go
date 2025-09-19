@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewSecretService(opts ...option.RequestOption) (r SecretService) {
 
 // Add a new secret
 func (r *SecretService) New(ctx context.Context, body SecretNewParams, opts ...option.RequestOption) (res *SecretNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/secrets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *SecretService) New(ctx context.Context, body SecretNewParams, opts ...o
 
 // Update a secret
 func (r *SecretService) Update(ctx context.Context, id int64, body SecretUpdateParams, opts ...option.RequestOption) (res *Secret, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *SecretService) Update(ctx context.Context, id int64, body SecretUpdateP
 
 // List available secrets
 func (r *SecretService) List(ctx context.Context, query SecretListParams, opts ...option.RequestOption) (res *SecretListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/secrets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -63,7 +64,7 @@ func (r *SecretService) List(ctx context.Context, query SecretListParams, opts .
 
 // Delete a secret
 func (r *SecretService) Delete(ctx context.Context, id int64, body SecretDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
@@ -72,7 +73,7 @@ func (r *SecretService) Delete(ctx context.Context, id int64, body SecretDeleteP
 
 // Get secret by id
 func (r *SecretService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *Secret, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -80,7 +81,7 @@ func (r *SecretService) Get(ctx context.Context, id int64, opts ...option.Reques
 
 // Update a secret
 func (r *SecretService) Replace(ctx context.Context, id int64, body SecretReplaceParams, opts ...option.RequestOption) (res *Secret, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
