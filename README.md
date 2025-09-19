@@ -37,7 +37,7 @@ go get -u 'github.com/G-Core/gcore-go@v0.13.0'
 
 ## Requirements
 
-This library requires Go 1.18+.
+This library requires Go 1.22+.
 
 ## Usage
 
