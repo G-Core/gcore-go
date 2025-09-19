@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -45,7 +46,7 @@ func NewVolumeService(opts ...option.RequestOption) (r VolumeService) {
 // scratch, from an image, or from a snapshot. Optionally attach the volume to an
 // instance during creation.
 func (r *VolumeService) New(ctx context.Context, params VolumeNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -102,7 +103,7 @@ func (r *VolumeService) NewAndPoll(ctx context.Context, params VolumeNewParams, 
 
 // Rename a volume or update tags
 func (r *VolumeService) Update(ctx context.Context, volumeID string, params VolumeUpdateParams, opts ...option.RequestOption) (res *Volume, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -131,7 +132,7 @@ func (r *VolumeService) Update(ctx context.Context, volumeID string, params Volu
 // ID, name, and ID.
 func (r *VolumeService) List(ctx context.Context, params VolumeListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Volume], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -170,7 +171,7 @@ func (r *VolumeService) ListAutoPaging(ctx context.Context, params VolumeListPar
 // Delete a volume and all its snapshots. The volume must be in an available state
 // to be deleted.
 func (r *VolumeService) Delete(ctx context.Context, volumeID string, params VolumeDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -213,7 +214,7 @@ func (r *VolumeService) DeleteAndPoll(ctx context.Context, volumeID string, para
 // Attach the volume to instance. Note: ultra volume can only be attached to an
 // instance with shared flavor
 func (r *VolumeService) AttachToInstance(ctx context.Context, volumeID string, params VolumeAttachToInstanceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -256,7 +257,7 @@ func (r *VolumeService) AttachToInstanceAndPoll(ctx context.Context, volumeID st
 // Change the type of a volume. The volume must not have any snapshots to change
 // its type.
 func (r *VolumeService) ChangeType(ctx context.Context, volumeID string, params VolumeChangeTypeParams, opts ...option.RequestOption) (res *Volume, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -282,7 +283,7 @@ func (r *VolumeService) ChangeType(ctx context.Context, volumeID string, params 
 
 // Detach the volume from instance
 func (r *VolumeService) DetachFromInstance(ctx context.Context, volumeID string, params VolumeDetachFromInstanceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -324,7 +325,7 @@ func (r *VolumeService) DetachFromInstanceAndPoll(ctx context.Context, volumeID 
 
 // Retrieve detailed information about a specific volume.
 func (r *VolumeService) Get(ctx context.Context, volumeID string, query VolumeGetParams, opts ...option.RequestOption) (res *Volume, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -351,7 +352,7 @@ func (r *VolumeService) Get(ctx context.Context, volumeID string, query VolumeGe
 // Increase the size of a volume. The new size must be greater than the current
 // size.
 func (r *VolumeService) Resize(ctx context.Context, volumeID string, params VolumeResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -409,7 +410,7 @@ func (r *VolumeService) ResizeAndPoll(ctx context.Context, volumeID string, para
 // Revert a volume to its last snapshot. The volume must be in an available state
 // to be reverted.
 func (r *VolumeService) RevertToLastSnapshot(ctx context.Context, volumeID string, body VolumeRevertToLastSnapshotParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {

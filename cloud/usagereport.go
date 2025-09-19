@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewUsageReportService(opts ...option.RequestOption) (r UsageReportService) 
 // potentially extending beyond 24 hours until the servers are back online and the
 // missing data is filled in.
 func (r *UsageReportService) Get(ctx context.Context, body UsageReportGetParams, opts ...option.RequestOption) (res *UsageReport, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v1/usage_report"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

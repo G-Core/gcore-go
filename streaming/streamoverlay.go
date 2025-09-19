@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
@@ -89,7 +90,7 @@ func NewStreamOverlayService(opts ...option.RequestOption) (r StreamOverlayServi
 //     limitations. We are working to ensure that widgets remain in the recordings as
 //     well. Follow the news.
 func (r *StreamOverlayService) New(ctx context.Context, streamID int64, body StreamOverlayNewParams, opts ...option.RequestOption) (res *[]Overlay, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v/overlays", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -97,7 +98,7 @@ func (r *StreamOverlayService) New(ctx context.Context, streamID int64, body Str
 
 // Updates overlay settings
 func (r *StreamOverlayService) Update(ctx context.Context, overlayID int64, params StreamOverlayUpdateParams, opts ...option.RequestOption) (res *Overlay, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v/overlays/%v", params.StreamID, overlayID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
@@ -105,7 +106,7 @@ func (r *StreamOverlayService) Update(ctx context.Context, overlayID int64, para
 
 // Returns a list of HTML overlay widgets which are attached to a stream
 func (r *StreamOverlayService) List(ctx context.Context, streamID int64, opts ...option.RequestOption) (res *[]Overlay, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v/overlays", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -113,7 +114,7 @@ func (r *StreamOverlayService) List(ctx context.Context, streamID int64, opts ..
 
 // Delete an overlay
 func (r *StreamOverlayService) Delete(ctx context.Context, overlayID int64, body StreamOverlayDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v/overlays/%v", body.StreamID, overlayID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
@@ -122,7 +123,7 @@ func (r *StreamOverlayService) Delete(ctx context.Context, overlayID int64, body
 
 // Get overlay details
 func (r *StreamOverlayService) Get(ctx context.Context, overlayID int64, query StreamOverlayGetParams, opts ...option.RequestOption) (res *Overlay, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v/overlays/%v", query.StreamID, overlayID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -130,7 +131,7 @@ func (r *StreamOverlayService) Get(ctx context.Context, overlayID int64, query S
 
 // Updates settings for set of overlays
 func (r *StreamOverlayService) UpdateMultiple(ctx context.Context, streamID int64, body StreamOverlayUpdateMultipleParams, opts ...option.RequestOption) (res *[]Overlay, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v/overlays", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return

@@ -5,6 +5,7 @@ package streaming
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -70,7 +71,7 @@ func NewQualitySetService(opts ...option.RequestOption) (r QualitySetService) {
 //     used for audio can also affect the overall quality. Note: Custom quality set
 //     is a paid feature.
 func (r *QualitySetService) List(ctx context.Context, opts ...option.RequestOption) (res *QualitySets, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/quality_sets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -91,7 +92,7 @@ func (r *QualitySetService) List(ctx context.Context, opts ...option.RequestOpti
 //     attribute "`quality_set_id`".
 //   - Otherwise these default values will be used by the system by default.
 func (r *QualitySetService) SetDefault(ctx context.Context, body QualitySetSetDefaultParams, opts ...option.RequestOption) (res *QualitySets, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/quality_sets/default"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

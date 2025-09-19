@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewDomainInsightSilenceService(opts ...option.RequestOption) (r DomainInsig
 // Create a new insight silence for a specified domain. Insight silences help in
 // temporarily disabling certain insights based on specific criteria.
 func (r *DomainInsightSilenceService) New(ctx context.Context, domainID int64, body DomainInsightSilenceNewParams, opts ...option.RequestOption) (res *WaapInsightSilence, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/insight-silences", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *DomainInsightSilenceService) New(ctx context.Context, domainID int64, b
 
 // Update an insight silence for a specific domain.
 func (r *DomainInsightSilenceService) Update(ctx context.Context, silenceID string, params DomainInsightSilenceUpdateParams, opts ...option.RequestOption) (res *WaapInsightSilence, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if silenceID == "" {
 		err = errors.New("missing required silence_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *DomainInsightSilenceService) Update(ctx context.Context, silenceID stri
 // Retrieve a list of insight silences for a specific domain
 func (r *DomainInsightSilenceService) List(ctx context.Context, domainID int64, query DomainInsightSilenceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapInsightSilence], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/insight-silences", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -84,7 +85,7 @@ func (r *DomainInsightSilenceService) ListAutoPaging(ctx context.Context, domain
 
 // Delete an insight silence for a specific domain.
 func (r *DomainInsightSilenceService) Delete(ctx context.Context, silenceID string, body DomainInsightSilenceDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if silenceID == "" {
 		err = errors.New("missing required silence_id parameter")
@@ -97,7 +98,7 @@ func (r *DomainInsightSilenceService) Delete(ctx context.Context, silenceID stri
 
 // Retrieve a specific insight silence for a specific domain
 func (r *DomainInsightSilenceService) Get(ctx context.Context, silenceID string, query DomainInsightSilenceGetParams, opts ...option.RequestOption) (res *WaapInsightSilence, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if silenceID == "" {
 		err = errors.New("missing required silence_id parameter")
 		return

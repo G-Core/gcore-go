@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
@@ -34,7 +35,7 @@ func NewGPUBaremetalClusterInterfaceService(opts ...option.RequestOption) (r GPU
 
 // Retrieve a list of network interfaces attached to the GPU cluster servers.
 func (r *GPUBaremetalClusterInterfaceService) List(ctx context.Context, clusterID string, query GPUBaremetalClusterInterfaceListParams, opts ...option.RequestOption) (res *NetworkInterfaceList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

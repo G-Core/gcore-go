@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -46,7 +47,7 @@ func NewBucketService(opts ...option.RequestOption) (r BucketService) {
 // Creates a new bucket within an S3 storage. Only applicable to S3-compatible
 // storages.
 func (r *BucketService) New(ctx context.Context, bucketName string, body BucketNewParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
@@ -62,7 +63,7 @@ func (r *BucketService) New(ctx context.Context, bucketName string, body BucketN
 // current page of buckets according to limit/offset
 func (r *BucketService) List(ctx context.Context, storageID int64, query BucketListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Bucket], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v2/storage/%v/s3/buckets", storageID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -87,7 +88,7 @@ func (r *BucketService) ListAutoPaging(ctx context.Context, storageID int64, que
 // Removes a bucket from an S3 storage. All objects in the bucket will be
 // automatically deleted before the bucket is removed.
 func (r *BucketService) Delete(ctx context.Context, bucketName string, body BucketDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")

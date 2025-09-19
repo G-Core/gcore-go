@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -40,7 +41,7 @@ func NewK8Service(opts ...option.RequestOption) (r K8Service) {
 
 // List available k8s cluster versions for creation
 func (r *K8Service) ListVersions(ctx context.Context, query K8ListVersionsParams, opts ...option.RequestOption) (res *K8sClusterVersionList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

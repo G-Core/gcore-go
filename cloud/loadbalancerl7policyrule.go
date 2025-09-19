@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewLoadBalancerL7PolicyRuleService(opts ...option.RequestOption) (r LoadBal
 
 // Create load balancer L7 rule
 func (r *LoadBalancerL7PolicyRuleService) New(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyRuleNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -63,7 +64,7 @@ func (r *LoadBalancerL7PolicyRuleService) New(ctx context.Context, l7policyID st
 
 // List load balancer L7 policy rules
 func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID string, query LoadBalancerL7PolicyRuleListParams, opts ...option.RequestOption) (res *LoadBalancerL7RuleList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -89,7 +90,7 @@ func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID s
 
 // Delete load balancer L7 rule
 func (r *LoadBalancerL7PolicyRuleService) Delete(ctx context.Context, l7ruleID string, body LoadBalancerL7PolicyRuleDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -119,7 +120,7 @@ func (r *LoadBalancerL7PolicyRuleService) Delete(ctx context.Context, l7ruleID s
 
 // Get load balancer L7 rule
 func (r *LoadBalancerL7PolicyRuleService) Get(ctx context.Context, l7ruleID string, query LoadBalancerL7PolicyRuleGetParams, opts ...option.RequestOption) (res *LoadBalancerL7Rule, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -149,7 +150,7 @@ func (r *LoadBalancerL7PolicyRuleService) Get(ctx context.Context, l7ruleID stri
 
 // Replace load balancer L7 rule properties
 func (r *LoadBalancerL7PolicyRuleService) Replace(ctx context.Context, l7ruleID string, params LoadBalancerL7PolicyRuleReplaceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

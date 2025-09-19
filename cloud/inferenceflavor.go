@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewInferenceFlavorService(opts ...option.RequestOption) (r InferenceFlavorS
 // List inference flavors
 func (r *InferenceFlavorService) List(ctx context.Context, query InferenceFlavorListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InferenceFlavor], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cloud/v3/inference/flavors"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -62,7 +63,7 @@ func (r *InferenceFlavorService) ListAutoPaging(ctx context.Context, query Infer
 
 // Get inference flavor
 func (r *InferenceFlavorService) Get(ctx context.Context, flavorName string, opts ...option.RequestOption) (res *InferenceFlavor, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if flavorName == "" {
 		err = errors.New("missing required flavor_name parameter")
 		return

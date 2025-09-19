@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewDomainAPIPathGroupService(opts ...option.RequestOption) (r DomainAPIPath
 
 // Retrieve a list of API path groups for a specific domain
 func (r *DomainAPIPathGroupService) List(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *APIPathGroupList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-path-groups", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

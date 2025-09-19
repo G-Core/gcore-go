@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewPlayerService(opts ...option.RequestOption) (r PlayerService) {
 
 // Create player
 func (r *PlayerService) New(ctx context.Context, body PlayerNewParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "streaming/players"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -48,7 +49,7 @@ func (r *PlayerService) New(ctx context.Context, body PlayerNewParams, opts ...o
 
 // Updates player settings
 func (r *PlayerService) Update(ctx context.Context, playerID int64, body PlayerUpdateParams, opts ...option.RequestOption) (res *Player, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/players/%v", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -57,7 +58,7 @@ func (r *PlayerService) Update(ctx context.Context, playerID int64, body PlayerU
 // Returns a list of created players
 func (r *PlayerService) List(ctx context.Context, query PlayerListParams, opts ...option.RequestOption) (res *pagination.PageStreaming[Player], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "streaming/players"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -79,7 +80,7 @@ func (r *PlayerService) ListAutoPaging(ctx context.Context, query PlayerListPara
 
 // Delete player
 func (r *PlayerService) Delete(ctx context.Context, playerID int64, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("streaming/players/%v", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
@@ -88,7 +89,7 @@ func (r *PlayerService) Delete(ctx context.Context, playerID int64, opts ...opti
 
 // Returns player settings
 func (r *PlayerService) Get(ctx context.Context, playerID int64, opts ...option.RequestOption) (res *Player, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/players/%v", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -96,7 +97,7 @@ func (r *PlayerService) Get(ctx context.Context, playerID int64, opts ...option.
 
 // Returns player configuration in HTML
 func (r *PlayerService) Preview(ctx context.Context, playerID int64, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("streaming/players/%v/preview", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, nil, opts...)

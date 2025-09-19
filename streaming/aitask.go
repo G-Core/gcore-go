@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -152,7 +153,7 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 // Read more detailed information about our solution, and architecture, and
 // benefits in the knowledge base and blog.
 func (r *AITaskService) New(ctx context.Context, body AITaskNewParams, opts ...option.RequestOption) (res *AITaskNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/ai/tasks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -163,7 +164,7 @@ func (r *AITaskService) New(ctx context.Context, body AITaskNewParams, opts ...o
 // page by page.
 func (r *AITaskService) List(ctx context.Context, query AITaskListParams, opts ...option.RequestOption) (res *pagination.PageStreamingAI[AITask], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "streaming/ai/tasks"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -188,7 +189,7 @@ func (r *AITaskService) ListAutoPaging(ctx context.Context, query AITaskListPara
 // Stopping a previously launched AI-task without waiting for it to be fully
 // completed. The task will be moved to "REVOKED" status.
 func (r *AITaskService) Cancel(ctx context.Context, taskID string, opts ...option.RequestOption) (res *AITaskCancelResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
 		return
@@ -234,7 +235,7 @@ func (r *AITaskService) Cancel(ctx context.Context, taskID string, opts ...optio
 // billed only after successful completion of the task and transition to "SUCCESS"
 // status.
 func (r *AITaskService) Get(ctx context.Context, taskID string, opts ...option.RequestOption) (res *AITaskGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
 		return
@@ -274,7 +275,7 @@ func (r *AITaskService) Get(ctx context.Context, taskID string, opts ...option.R
 // and translation to:
 // `afr, amh, ara, hye, asm, aze, eus, bel, ben, bos, bul, mya, cat, zho, hrv, ces, dan, nld, eng, est, fin, fra, glg, kat, deu, guj, heb, hin, hun, isl, ind, ita, jpn, jav, kan, kaz, khm, kor, lao, lav, lit, mkd, mal, mlt, mar, ell, mon, nep, nno, pan, fas, pol, por, pus, ron, rus, srp, sna, snd, slk, slv, som, spa, swa, swe, tgl, tgk, tam, tel, tha, tur, ukr, urd, vie, cym, yor`.
 func (r *AITaskService) GetAISettings(ctx context.Context, query AITaskGetAISettingsParams, opts ...option.RequestOption) (res *AITaskGetAISettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/ai/info"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

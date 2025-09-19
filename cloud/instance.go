@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -64,7 +65,7 @@ func NewInstanceService(opts ...option.RequestOption) (r InstanceService) {
 //   - The password of the Admin user cannot be updated via `user_data`.
 //   - The `username` cannot be specified in the request.
 func (r *InstanceService) New(ctx context.Context, params InstanceNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -121,7 +122,7 @@ func (r *InstanceService) NewAndPoll(ctx context.Context, params InstanceNewPara
 
 // Rename instance
 func (r *InstanceService) Update(ctx context.Context, instanceID string, params InstanceUpdateParams, opts ...option.RequestOption) (res *Instance, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -149,7 +150,7 @@ func (r *InstanceService) Update(ctx context.Context, instanceID string, params 
 // by various parameters like name, status, and IP address.
 func (r *InstanceService) List(ctx context.Context, params InstanceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Instance], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -186,7 +187,7 @@ func (r *InstanceService) ListAutoPaging(ctx context.Context, params InstanceLis
 
 // Delete instance
 func (r *InstanceService) Delete(ctx context.Context, instanceID string, params InstanceDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -230,7 +231,7 @@ func (r *InstanceService) DeleteAndPoll(ctx context.Context, instanceID string, 
 // The action can be one of: start, stop, reboot, powercycle, suspend or resume.
 // Suspend and resume are not available for bare metal instances.
 func (r *InstanceService) Action(ctx context.Context, instanceID string, params InstanceActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -287,7 +288,7 @@ func (r *InstanceService) ActionAndPoll(ctx context.Context, instanceID string, 
 // Add an instance to a server group. The instance must not already be in a server
 // group. Bare metal servers do not support server groups.
 func (r *InstanceService) AddToPlacementGroup(ctx context.Context, instanceID string, params InstanceAddToPlacementGroupParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -345,7 +346,7 @@ func (r *InstanceService) AddToPlacementGroupAndPoll(ctx context.Context, instan
 // Assign the security group to the server. To assign multiple security groups to
 // all ports, use the NULL value for the `port_id` field
 func (r *InstanceService) AssignSecurityGroup(ctx context.Context, instanceID string, params InstanceAssignSecurityGroupParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -372,7 +373,7 @@ func (r *InstanceService) AssignSecurityGroup(ctx context.Context, instanceID st
 
 // Disable port security for instance interface
 func (r *InstanceService) DisablePortSecurity(ctx context.Context, portID string, body InstanceDisablePortSecurityParams, opts ...option.RequestOption) (res *InstanceInterface, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -398,7 +399,7 @@ func (r *InstanceService) DisablePortSecurity(ctx context.Context, portID string
 
 // Enable port security for instance interface
 func (r *InstanceService) EnablePortSecurity(ctx context.Context, portID string, body InstanceEnablePortSecurityParams, opts ...option.RequestOption) (res *InstanceInterface, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -432,7 +433,7 @@ func (r *InstanceService) EnablePortSecurity(ctx context.Context, portID string,
 //   - `'de'`
 //   - `'ru'`
 func (r *InstanceService) Get(ctx context.Context, instanceID string, query InstanceGetParams, opts ...option.RequestOption) (res *Instance, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -458,7 +459,7 @@ func (r *InstanceService) Get(ctx context.Context, instanceID string, query Inst
 
 // Get instance console URL
 func (r *InstanceService) GetConsole(ctx context.Context, instanceID string, params InstanceGetConsoleParams, opts ...option.RequestOption) (res *Console, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -485,7 +486,7 @@ func (r *InstanceService) GetConsole(ctx context.Context, instanceID string, par
 // Remove an instance from its current server group. The instance must be in a
 // server group to be removed. Bare metal servers do not support server groups.
 func (r *InstanceService) RemoveFromPlacementGroup(ctx context.Context, instanceID string, body InstanceRemoveFromPlacementGroupParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -542,7 +543,7 @@ func (r *InstanceService) RemoveFromPlacementGroupAndPoll(ctx context.Context, i
 
 // Change flavor of the instance
 func (r *InstanceService) Resize(ctx context.Context, instanceID string, params InstanceResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -600,7 +601,7 @@ func (r *InstanceService) ResizeAndPoll(ctx context.Context, instanceID string, 
 // Un-assign the security group to the server. To un-assign multiple security
 // groups to all ports, use the NULL value for the `port_id` field
 func (r *InstanceService) UnassignSecurityGroup(ctx context.Context, instanceID string, params InstanceUnassignSecurityGroupParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAPITokenService(opts ...option.RequestOption) (r APITokenService) {
 
 // Create an API token in the current account.
 func (r *APITokenService) New(ctx context.Context, clientID int64, body APITokenNewParams, opts ...option.RequestOption) (res *APITokenCreate, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/clients/%v/tokens", clientID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *APITokenService) New(ctx context.Context, clientID int64, body APIToken
 // Get information about your permanent API tokens in the account. A user with the
 // Administrators role gets information about all API tokens in the account.
 func (r *APITokenService) List(ctx context.Context, clientID int64, query APITokenListParams, opts ...option.RequestOption) (res *APITokenList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/clients/%v/tokens", clientID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -57,7 +58,7 @@ func (r *APITokenService) List(ctx context.Context, clientID int64, query APITok
 // use this token will not be able to get access to your account via API. The
 // action cannot be reversed.
 func (r *APITokenService) Delete(ctx context.Context, tokenID int64, body APITokenDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("iam/clients/%v/tokens/%v", body.ClientID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
@@ -66,7 +67,7 @@ func (r *APITokenService) Delete(ctx context.Context, tokenID int64, body APITok
 
 // Get API Token
 func (r *APITokenService) Get(ctx context.Context, tokenID int64, query APITokenGetParams, opts ...option.RequestOption) (res *APIToken, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/clients/%v/tokens/%v", query.ClientID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

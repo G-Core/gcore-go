@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -55,7 +56,7 @@ func NewLoadBalancerService(opts ...option.RequestOption) (r LoadBalancerService
 
 // Create load balancer
 func (r *LoadBalancerService) New(ctx context.Context, params LoadBalancerNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -80,7 +81,7 @@ func (r *LoadBalancerService) New(ctx context.Context, params LoadBalancerNewPar
 // that are provided in the request body. Any fields that are not included will
 // remain unchanged.
 func (r *LoadBalancerService) Update(ctx context.Context, loadbalancerID string, params LoadBalancerUpdateParams, opts ...option.RequestOption) (res *LoadBalancer, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -107,7 +108,7 @@ func (r *LoadBalancerService) Update(ctx context.Context, loadbalancerID string,
 // List load balancers
 func (r *LoadBalancerService) List(ctx context.Context, params LoadBalancerListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[LoadBalancer], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -143,7 +144,7 @@ func (r *LoadBalancerService) ListAutoPaging(ctx context.Context, params LoadBal
 
 // Delete load balancer
 func (r *LoadBalancerService) Delete(ctx context.Context, loadbalancerID string, body LoadBalancerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -169,7 +170,7 @@ func (r *LoadBalancerService) Delete(ctx context.Context, loadbalancerID string,
 
 // Failover load balancer
 func (r *LoadBalancerService) Failover(ctx context.Context, loadbalancerID string, params LoadBalancerFailoverParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -195,7 +196,7 @@ func (r *LoadBalancerService) Failover(ctx context.Context, loadbalancerID strin
 
 // Get load balancer
 func (r *LoadBalancerService) Get(ctx context.Context, loadbalancerID string, params LoadBalancerGetParams, opts ...option.RequestOption) (res *LoadBalancer, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -221,7 +222,7 @@ func (r *LoadBalancerService) Get(ctx context.Context, loadbalancerID string, pa
 
 // Resize load balancer
 func (r *LoadBalancerService) Resize(ctx context.Context, loadbalancerID string, params LoadBalancerResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

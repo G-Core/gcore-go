@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewRegionService(opts ...option.RequestOption) (r RegionService) {
 // List regions
 func (r *RegionService) List(ctx context.Context, query RegionListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Region], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cloud/v1/regions"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -63,7 +64,7 @@ func (r *RegionService) ListAutoPaging(ctx context.Context, query RegionListPara
 
 // Get region
 func (r *RegionService) Get(ctx context.Context, params RegionGetParams, opts ...option.RequestOption) (res *Region, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

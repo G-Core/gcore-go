@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewDomainInsightService(opts ...option.RequestOption) (r DomainInsightServi
 // Retrieve a list of insights for a specific domain.
 func (r *DomainInsightService) List(ctx context.Context, domainID int64, query DomainInsightListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapInsight], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/insights", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -63,7 +64,7 @@ func (r *DomainInsightService) ListAutoPaging(ctx context.Context, domainID int6
 
 // Retrieve a specific insight for a specific domain.
 func (r *DomainInsightService) Get(ctx context.Context, insightID string, query DomainInsightGetParams, opts ...option.RequestOption) (res *WaapInsight, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
 		return
@@ -75,7 +76,7 @@ func (r *DomainInsightService) Get(ctx context.Context, insightID string, query 
 
 // Update the status of an insight for a specific domain.
 func (r *DomainInsightService) Replace(ctx context.Context, insightID string, params DomainInsightReplaceParams, opts ...option.RequestOption) (res *WaapInsight, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
 		return

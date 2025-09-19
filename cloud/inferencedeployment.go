@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -43,7 +44,7 @@ func NewInferenceDeploymentService(opts ...option.RequestOption) (r InferenceDep
 
 // Create inference deployment
 func (r *InferenceDeploymentService) New(ctx context.Context, params InferenceDeploymentNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -60,7 +61,7 @@ func (r *InferenceDeploymentService) New(ctx context.Context, params InferenceDe
 
 // Update inference deployment
 func (r *InferenceDeploymentService) Update(ctx context.Context, deploymentName string, params InferenceDeploymentUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -82,7 +83,7 @@ func (r *InferenceDeploymentService) Update(ctx context.Context, deploymentName 
 // List inference deployments
 func (r *InferenceDeploymentService) List(ctx context.Context, params InferenceDeploymentListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InferenceDeployment], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -113,7 +114,7 @@ func (r *InferenceDeploymentService) ListAutoPaging(ctx context.Context, params 
 
 // Delete inference deployment
 func (r *InferenceDeploymentService) Delete(ctx context.Context, deploymentName string, body InferenceDeploymentDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -134,7 +135,7 @@ func (r *InferenceDeploymentService) Delete(ctx context.Context, deploymentName 
 
 // Get inference deployment
 func (r *InferenceDeploymentService) Get(ctx context.Context, deploymentName string, query InferenceDeploymentGetParams, opts ...option.RequestOption) (res *InferenceDeployment, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -157,7 +158,7 @@ func (r *InferenceDeploymentService) Get(ctx context.Context, deploymentName str
 //
 // Deprecated: deprecated
 func (r *InferenceDeploymentService) GetAPIKey(ctx context.Context, deploymentName string, query InferenceDeploymentGetAPIKeyParams, opts ...option.RequestOption) (res *InferenceDeploymentAPIKey, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -185,7 +186,7 @@ func (r *InferenceDeploymentService) GetAPIKey(ctx context.Context, deploymentNa
 //   - It will automatically scale up when it receives requests or SQS messages,
 //     according to the configured scaling rules.
 func (r *InferenceDeploymentService) Start(ctx context.Context, deploymentName string, body InferenceDeploymentStartParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -214,7 +215,7 @@ func (r *InferenceDeploymentService) Start(ctx context.Context, deploymentName s
 //   - It will **not** restart automatically and must be started manually.
 //   - While stopped, the deployment will **not** incur any charges.
 func (r *InferenceDeploymentService) Stop(ctx context.Context, deploymentName string, body InferenceDeploymentStopParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewSecurityGroupRuleService(opts ...option.RequestOption) (r SecurityGroupR
 
 // Add a new rule to an existing security group.
 func (r *SecurityGroupRuleService) New(ctx context.Context, groupID string, params SecurityGroupRuleNewParams, opts ...option.RequestOption) (res *SecurityGroupRule, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -61,7 +62,7 @@ func (r *SecurityGroupRuleService) New(ctx context.Context, groupID string, para
 
 // Delete a specific rule from a security group.
 func (r *SecurityGroupRuleService) Delete(ctx context.Context, ruleID string, body SecurityGroupRuleDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -88,7 +89,7 @@ func (r *SecurityGroupRuleService) Delete(ctx context.Context, ruleID string, bo
 
 // Update the configuration of an existing security group rule.
 func (r *SecurityGroupRuleService) Replace(ctx context.Context, ruleID string, params SecurityGroupRuleReplaceParams, opts ...option.RequestOption) (res *SecurityGroupRule, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

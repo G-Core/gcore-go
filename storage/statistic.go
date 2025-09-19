@@ -5,6 +5,7 @@ package storage
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -39,7 +40,7 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 //
 // Shows storage total usage data in filtered by storages, locations and interval.
 func (r *StatisticService) GetUsageAggregated(ctx context.Context, body StatisticGetUsageAggregatedParams, opts ...option.RequestOption) (res *UsageTotal, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "storage/stats/v1/storage/usage/total"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -53,7 +54,7 @@ func (r *StatisticService) GetUsageAggregated(ctx context.Context, body Statisti
 // Shows storage usage data in series format filtered by clients, storages and
 // interval.
 func (r *StatisticService) GetUsageSeries(ctx context.Context, body StatisticGetUsageSeriesParams, opts ...option.RequestOption) (res *StatisticGetUsageSeriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "storage/stats/v1/storage/usage/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
