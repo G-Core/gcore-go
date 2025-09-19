@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewIPInfoMetricService(opts ...option.RequestOption) (r IPInfoMetricService
 // statistical overview, aiding in analyzing the interaction and access patterns of
 // the IP address in context.
 func (r *IPInfoMetricService) List(ctx context.Context, query IPInfoMetricListParams, opts ...option.RequestOption) (res *WaapIPInfoCounts, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/ip-info/counts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

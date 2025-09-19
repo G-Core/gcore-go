@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewTaskService(opts ...option.RequestOption) (r TaskService) {
 // List tasks
 func (r *TaskService) List(ctx context.Context, query TaskListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Task], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cloud/v1/tasks"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -63,7 +64,7 @@ func (r *TaskService) ListAutoPaging(ctx context.Context, query TaskListParams, 
 
 // Acknowledge all tasks
 func (r *TaskService) AcknowledgeAll(ctx context.Context, body TaskAcknowledgeAllParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "cloud/v1/tasks/acknowledge_all"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -72,7 +73,7 @@ func (r *TaskService) AcknowledgeAll(ctx context.Context, body TaskAcknowledgeAl
 
 // Acknowledge one task
 func (r *TaskService) AcknowledgeOne(ctx context.Context, taskID string, opts ...option.RequestOption) (res *Task, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
 		return
@@ -84,7 +85,7 @@ func (r *TaskService) AcknowledgeOne(ctx context.Context, taskID string, opts ..
 
 // Get task
 func (r *TaskService) Get(ctx context.Context, taskID string, opts ...option.RequestOption) (res *Task, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
 		return

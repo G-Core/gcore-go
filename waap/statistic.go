@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 // day, respectively. The response will include explicit 0 values for any missing
 // data points.
 func (r *StatisticService) GetUsageSeries(ctx context.Context, query StatisticGetUsageSeriesParams, opts ...option.RequestOption) (res *WaapStatisticsSeries, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/statistics/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

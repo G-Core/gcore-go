@@ -5,6 +5,7 @@ package dns
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
@@ -31,7 +32,7 @@ func NewPickerPresetService(opts ...option.RequestOption) (r PickerPresetService
 
 // Returns list of picker preset
 func (r *PickerPresetService) List(ctx context.Context, opts ...option.RequestOption) (res *PickerPresetListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/pickers/presets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

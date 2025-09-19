@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewInferenceAPIKeyService(opts ...option.RequestOption) (r InferenceAPIKeyS
 // This endpoint creates a new API key for everywhere inference. It returs api
 // key's actual secret only once after creation.
 func (r *InferenceAPIKeyService) New(ctx context.Context, params InferenceAPIKeyNewParams, opts ...option.RequestOption) (res *InferenceAPIKeyCreate, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -57,7 +58,7 @@ func (r *InferenceAPIKeyService) New(ctx context.Context, params InferenceAPIKey
 
 // This endpoint updates a specific API key for everywhere inference.
 func (r *InferenceAPIKeyService) Update(ctx context.Context, apiKeyName string, params InferenceAPIKeyUpdateParams, opts ...option.RequestOption) (res *InferenceAPIKey, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -79,7 +80,7 @@ func (r *InferenceAPIKeyService) Update(ctx context.Context, apiKeyName string, 
 // This endpoint retrieves a list of API keys for everywhere inference.
 func (r *InferenceAPIKeyService) List(ctx context.Context, params InferenceAPIKeyListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InferenceAPIKey], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -112,7 +113,7 @@ func (r *InferenceAPIKeyService) ListAutoPaging(ctx context.Context, params Infe
 // key is attached to any inference deployments, it will not be removed.
 // ConflictError will be raised
 func (r *InferenceAPIKeyService) Delete(ctx context.Context, apiKeyName string, body InferenceAPIKeyDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -134,7 +135,7 @@ func (r *InferenceAPIKeyService) Delete(ctx context.Context, apiKeyName string, 
 
 // This endpoint retrieves a specific API key for everywhere inference.
 func (r *InferenceAPIKeyService) Get(ctx context.Context, apiKeyName string, query InferenceAPIKeyGetParams, opts ...option.RequestOption) (res *InferenceAPIKey, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

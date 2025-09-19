@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -45,7 +46,7 @@ func NewGPUBaremetalClusterServerService(opts ...option.RequestOption) (r GPUBar
 // paginated.
 func (r *GPUBaremetalClusterServerService) List(ctx context.Context, clusterID string, params GPUBaremetalClusterServerListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[GPUBaremetalClusterServer], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -87,7 +88,7 @@ func (r *GPUBaremetalClusterServerService) ListAutoPaging(ctx context.Context, c
 // Delete a specific node from a GPU cluster. The node must be in a state that
 // allows deletion.
 func (r *GPUBaremetalClusterServerService) Delete(ctx context.Context, instanceID string, params GPUBaremetalClusterServerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -133,7 +134,7 @@ func (r *GPUBaremetalClusterServerService) DeleteAndPoll(ctx context.Context, in
 
 // Attach interface to bare metal GPU cluster server
 func (r *GPUBaremetalClusterServerService) AttachInterface(ctx context.Context, instanceID string, params GPUBaremetalClusterServerAttachInterfaceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -159,7 +160,7 @@ func (r *GPUBaremetalClusterServerService) AttachInterface(ctx context.Context, 
 
 // Detach interface from bare metal GPU cluster server
 func (r *GPUBaremetalClusterServerService) DetachInterface(ctx context.Context, instanceID string, params GPUBaremetalClusterServerDetachInterfaceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -185,7 +186,7 @@ func (r *GPUBaremetalClusterServerService) DetachInterface(ctx context.Context, 
 
 // Get bare metal GPU cluster server console URL
 func (r *GPUBaremetalClusterServerService) GetConsole(ctx context.Context, instanceID string, query GPUBaremetalClusterServerGetConsoleParams, opts ...option.RequestOption) (res *Console, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -211,7 +212,7 @@ func (r *GPUBaremetalClusterServerService) GetConsole(ctx context.Context, insta
 
 // Stops and then starts the server, effectively performing a hard reboot.
 func (r *GPUBaremetalClusterServerService) Powercycle(ctx context.Context, instanceID string, body GPUBaremetalClusterServerPowercycleParams, opts ...option.RequestOption) (res *GPUBaremetalClusterServerV1, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -237,7 +238,7 @@ func (r *GPUBaremetalClusterServerService) Powercycle(ctx context.Context, insta
 
 // Reboot one bare metal GPU cluster server
 func (r *GPUBaremetalClusterServerService) Reboot(ctx context.Context, instanceID string, body GPUBaremetalClusterServerRebootParams, opts ...option.RequestOption) (res *GPUBaremetalClusterServerV1, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

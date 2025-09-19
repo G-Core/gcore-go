@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewBgpAnnounceService(opts ...option.RequestOption) (r BgpAnnounceService) 
 // meaning that to get a non-empty response, the client must have at least one
 // active profile.
 func (r *BgpAnnounceService) List(ctx context.Context, query BgpAnnounceListParams, opts ...option.RequestOption) (res *[]ClientAnnounce, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "security/sifter/v2/protected_addresses/announces"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *BgpAnnounceService) List(ctx context.Context, query BgpAnnounceListPara
 // updated). Can be applied to already existing announces in active profiles,
 // meaning that the client must have at least one active profile.
 func (r *BgpAnnounceService) Toggle(ctx context.Context, params BgpAnnounceToggleParams, opts ...option.RequestOption) (res *BgpAnnounceToggleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "security/sifter/v2/protected_addresses/announces"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return

@@ -5,6 +5,7 @@ package cloud
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -45,7 +46,7 @@ func NewInferenceService(opts ...option.RequestOption) (r InferenceService) {
 
 // Get inference capacity by region
 func (r *InferenceService) GetCapacityByRegion(ctx context.Context, opts ...option.RequestOption) (res *InferenceRegionCapacityList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v3/inference/capacity"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewK8ClusterNodeService(opts ...option.RequestOption) (r K8ClusterNodeServi
 
 // List k8s cluster nodes
 func (r *K8ClusterNodeService) List(ctx context.Context, clusterName string, params K8ClusterNodeListParams, opts ...option.RequestOption) (res *InstanceList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -63,7 +64,7 @@ func (r *K8ClusterNodeService) List(ctx context.Context, clusterName string, par
 // After deletion, the node will be automatically recreated to maintain the desired
 // pool size.
 func (r *K8ClusterNodeService) Delete(ctx context.Context, instanceID string, body K8ClusterNodeDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {

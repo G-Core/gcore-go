@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewInferenceDeploymentLogService(opts ...option.RequestOption) (r Inference
 // Get inference deployment logs
 func (r *InferenceDeploymentLogService) List(ctx context.Context, deploymentName string, params InferenceDeploymentLogListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InferenceDeploymentLog], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {

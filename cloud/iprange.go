@@ -5,6 +5,7 @@ package cloud
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -47,7 +48,7 @@ func NewIPRangeService(opts ...option.RequestOption) (r IPRangeService) {
 //     space. The response is an array of CIDR blocks; duplicate prefixes are not
 //     returned.
 func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption) (res *IPRanges, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "cloud/public/v1/ipranges/egress"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

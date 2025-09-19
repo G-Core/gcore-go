@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -98,7 +99,7 @@ func NewPlaylistService(opts ...option.RequestOption) (r PlaylistService) {
 //
 // ```
 func (r *PlaylistService) New(ctx context.Context, body PlaylistNewParams, opts ...option.RequestOption) (res *PlaylistCreate, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "streaming/playlists"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -106,7 +107,7 @@ func (r *PlaylistService) New(ctx context.Context, body PlaylistNewParams, opts 
 
 // Change playlist
 func (r *PlaylistService) Update(ctx context.Context, playlistID int64, body PlaylistUpdateParams, opts ...option.RequestOption) (res *Playlist, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/playlists/%v", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -115,7 +116,7 @@ func (r *PlaylistService) Update(ctx context.Context, playlistID int64, body Pla
 // Returns a list of created playlists
 func (r *PlaylistService) List(ctx context.Context, query PlaylistListParams, opts ...option.RequestOption) (res *pagination.PageStreaming[Playlist], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "streaming/playlists"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -137,7 +138,7 @@ func (r *PlaylistService) ListAutoPaging(ctx context.Context, query PlaylistList
 
 // Delete playlist
 func (r *PlaylistService) Delete(ctx context.Context, playlistID int64, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := fmt.Sprintf("streaming/playlists/%v", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
@@ -146,7 +147,7 @@ func (r *PlaylistService) Delete(ctx context.Context, playlistID int64, opts ...
 
 // Returns a playlist details
 func (r *PlaylistService) Get(ctx context.Context, playlistID int64, opts ...option.RequestOption) (res *Playlist, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/playlists/%v", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -154,7 +155,7 @@ func (r *PlaylistService) Get(ctx context.Context, playlistID int64, opts ...opt
 
 // Shows ordered array of playlist videos
 func (r *PlaylistService) ListVideos(ctx context.Context, playlistID int64, opts ...option.RequestOption) (res *[]PlaylistVideo, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/playlists/%v/videos", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
