@@ -118,17 +118,23 @@ type WaapAdvancedRule struct {
 	Name string `json:"name,required"`
 	// A CEL syntax expression that contains the rule's conditions. Allowed objects
 	// are: request, whois, session, response, tags, `user_defined_tags`, `user_agent`,
-	// `client_data`. More info can be found here:
+	// `client_data`.
+	//
+	// More info can be found here:
 	// https://gcore.com/docs/waap/waap-rules/advanced-rules
 	Source string `json:"source,required"`
 	// The description assigned to the rule
 	Description string `json:"description"`
-	// The WAAP request/response phase for applying the rule. Default is "access". The
-	// "access" phase is responsible for modifying the request before it is sent to the
-	// origin server. The "`header_filter`" phase is responsible for modifying the HTTP
-	// headers of a response before they are sent back to the client. The
-	// "`body_filter`" phase is responsible for modifying the body of a response before
-	// it is sent back to the client.
+	// The WAAP request/response phase for applying the rule. Default is "access".
+	//
+	// The "access" phase is responsible for modifying the request before it is sent to
+	// the origin server.
+	//
+	// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+	// response before they are sent back to the client.
+	//
+	// The "`body_filter`" phase is responsible for modifying the body of a response
+	// before it is sent back to the client.
 	//
 	// Any of "access", "header_filter", "body_filter".
 	Phase WaapAdvancedRulePhase `json:"phase,nullable"`
@@ -232,12 +238,16 @@ func (r *WaapAdvancedRuleActionTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The WAAP request/response phase for applying the rule. Default is "access". The
-// "access" phase is responsible for modifying the request before it is sent to the
-// origin server. The "`header_filter`" phase is responsible for modifying the HTTP
-// headers of a response before they are sent back to the client. The
-// "`body_filter`" phase is responsible for modifying the body of a response before
-// it is sent back to the client.
+// The WAAP request/response phase for applying the rule. Default is "access".
+//
+// The "access" phase is responsible for modifying the request before it is sent to
+// the origin server.
+//
+// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+// response before they are sent back to the client.
+//
+// The "`body_filter`" phase is responsible for modifying the body of a response
+// before it is sent back to the client.
 type WaapAdvancedRulePhase string
 
 const (
@@ -256,17 +266,23 @@ type DomainAdvancedRuleNewParams struct {
 	Name string `json:"name,required"`
 	// A CEL syntax expression that contains the rule's conditions. Allowed objects
 	// are: request, whois, session, response, tags, `user_defined_tags`, `user_agent`,
-	// `client_data`. More info can be found here:
+	// `client_data`.
+	//
+	// More info can be found here:
 	// https://gcore.com/docs/waap/waap-rules/advanced-rules
 	Source string `json:"source,required"`
 	// The description assigned to the rule
 	Description param.Opt[string] `json:"description,omitzero"`
-	// The WAAP request/response phase for applying the rule. Default is "access". The
-	// "access" phase is responsible for modifying the request before it is sent to the
-	// origin server. The "`header_filter`" phase is responsible for modifying the HTTP
-	// headers of a response before they are sent back to the client. The
-	// "`body_filter`" phase is responsible for modifying the body of a response before
-	// it is sent back to the client.
+	// The WAAP request/response phase for applying the rule. Default is "access".
+	//
+	// The "access" phase is responsible for modifying the request before it is sent to
+	// the origin server.
+	//
+	// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+	// response before they are sent back to the client.
+	//
+	// The "`body_filter`" phase is responsible for modifying the body of a response
+	// before it is sent back to the client.
 	//
 	// Any of "access", "header_filter", "body_filter".
 	Phase DomainAdvancedRuleNewParamsPhase `json:"phase,omitzero"`
@@ -354,12 +370,16 @@ func (r *DomainAdvancedRuleNewParamsActionTag) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The WAAP request/response phase for applying the rule. Default is "access". The
-// "access" phase is responsible for modifying the request before it is sent to the
-// origin server. The "`header_filter`" phase is responsible for modifying the HTTP
-// headers of a response before they are sent back to the client. The
-// "`body_filter`" phase is responsible for modifying the body of a response before
-// it is sent back to the client.
+// The WAAP request/response phase for applying the rule. Default is "access".
+//
+// The "access" phase is responsible for modifying the request before it is sent to
+// the origin server.
+//
+// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+// response before they are sent back to the client.
+//
+// The "`body_filter`" phase is responsible for modifying the body of a response
+// before it is sent back to the client.
 type DomainAdvancedRuleNewParamsPhase string
 
 const (
@@ -379,17 +399,23 @@ type DomainAdvancedRuleUpdateParams struct {
 	Name param.Opt[string] `json:"name,omitzero"`
 	// A CEL syntax expression that contains the rule's conditions. Allowed objects
 	// are: request, whois, session, response, tags, `user_defined_tags`, `user_agent`,
-	// `client_data`. More info can be found here:
+	// `client_data`.
+	//
+	// More info can be found here:
 	// https://gcore.com/docs/waap/waap-rules/advanced-rules
 	Source param.Opt[string] `json:"source,omitzero"`
 	// The action that a WAAP rule takes when triggered.
 	Action DomainAdvancedRuleUpdateParamsAction `json:"action,omitzero"`
-	// The WAAP request/response phase for applying the rule. The "access" phase is
-	// responsible for modifying the request before it is sent to the origin server.
+	// The WAAP request/response phase for applying the rule.
+	//
+	// The "access" phase is responsible for modifying the request before it is sent to
+	// the origin server.
+	//
 	// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
-	// response before they are sent back to the client. The "`body_filter`" phase is
-	// responsible for modifying the body of a response before it is sent back to the
-	// client.
+	// response before they are sent back to the client.
+	//
+	// The "`body_filter`" phase is responsible for modifying the body of a response
+	// before it is sent back to the client.
 	//
 	// Any of "access", "header_filter", "body_filter".
 	Phase DomainAdvancedRuleUpdateParamsPhase `json:"phase,omitzero"`
@@ -476,12 +502,16 @@ func (r *DomainAdvancedRuleUpdateParamsActionTag) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The WAAP request/response phase for applying the rule. The "access" phase is
-// responsible for modifying the request before it is sent to the origin server.
+// The WAAP request/response phase for applying the rule.
+//
+// The "access" phase is responsible for modifying the request before it is sent to
+// the origin server.
+//
 // The "`header_filter`" phase is responsible for modifying the HTTP headers of a
-// response before they are sent back to the client. The "`body_filter`" phase is
-// responsible for modifying the body of a response before it is sent back to the
-// client.
+// response before they are sent back to the client.
+//
+// The "`body_filter`" phase is responsible for modifying the body of a response
+// before it is sent back to the client.
 type DomainAdvancedRuleUpdateParamsPhase string
 
 const (
@@ -510,12 +540,16 @@ type DomainAdvancedRuleListParams struct {
 	//
 	// Any of "allow", "block", "captcha", "handshake", "monitor", "tag".
 	Action DomainAdvancedRuleListParamsAction `query:"action,omitzero" json:"-"`
-	// Filter rules based on the WAAP request/response phase for applying the rule. The
-	// "access" phase is responsible for modifying the request before it is sent to the
-	// origin server. The "`header_filter`" phase is responsible for modifying the HTTP
-	// headers of a response before they are sent back to the client. The
-	// "`body_filter`" phase is responsible for modifying the body of a response before
-	// it is sent back to the client.
+	// Filter rules based on the WAAP request/response phase for applying the rule.
+	//
+	// The "access" phase is responsible for modifying the request before it is sent to
+	// the origin server.
+	//
+	// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+	// response before they are sent back to the client.
+	//
+	// The "`body_filter`" phase is responsible for modifying the body of a response
+	// before it is sent back to the client.
 	//
 	// Any of "access", "header_filter", "body_filter".
 	Phase DomainAdvancedRuleListParamsPhase `query:"phase,omitzero" json:"-"`
@@ -561,12 +595,16 @@ const (
 	DomainAdvancedRuleListParamsOrderingMinusPhase       DomainAdvancedRuleListParamsOrdering = "-phase"
 )
 
-// Filter rules based on the WAAP request/response phase for applying the rule. The
-// "access" phase is responsible for modifying the request before it is sent to the
-// origin server. The "`header_filter`" phase is responsible for modifying the HTTP
-// headers of a response before they are sent back to the client. The
-// "`body_filter`" phase is responsible for modifying the body of a response before
-// it is sent back to the client.
+// Filter rules based on the WAAP request/response phase for applying the rule.
+//
+// The "access" phase is responsible for modifying the request before it is sent to
+// the origin server.
+//
+// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+// response before they are sent back to the client.
+//
+// The "`body_filter`" phase is responsible for modifying the body of a response
+// before it is sent back to the client.
 type DomainAdvancedRuleListParamsPhase string
 
 const (

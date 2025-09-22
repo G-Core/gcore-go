@@ -43,22 +43,26 @@ func NewStreamService(opts ...option.RequestOption) (r StreamService) {
 //
 // The input in API may contain streams of different formats, including the most
 // common ones RTMP, RTMPS, SRT, HLS. Note that multicast MPEG-TS over UDP and
-// others are supported too, ask the Support Team please. For ingestion, you can
-// use both PUSH and PULL methods. Also you can use the main and backup servers,
-// which are geographically located in different locations. By default, any free
-// ingest points in the world are used. Settings have been applied that deliver
-// low-latency streams in the optimal way. If for some reason you need to set a
-// fixed ingest point, or if you need to set the main and backup ingest points in
-// the same region (for example, do not send streams outside the EU or US), then
-// contact our Support Team.
+// others are supported too, ask the Support Team please.
+//
+// For ingestion, you can use both PUSH and PULL methods.
+//
+// Also you can use the main and backup servers, which are geographically located
+// in different locations. By default, any free ingest points in the world are
+// used. Settings have been applied that deliver low-latency streams in the optimal
+// way. If for some reason you need to set a fixed ingest point, or if you need to
+// set the main and backup ingest points in the same region (for example, do not
+// send streams outside the EU or US), then contact our Support Team.
 //
 // The output is HLS and MPEG-DASH with ABR. We transcode video for you by our
 // cloud-based infrastructure. ABR ladder supports all qualities from SD to 8K HDR
-// 60fps. All our streams are Low Latency enabled. We support a delay of ±4 seconds
-// for video streams by utilizing Common Media Application Format (CMAF)
-// technology. So you obtain latency from the traditional 30-50 seconds to ±4
-// seconds only by default. If you need legacy non-low-latency HLS, then look at
-// HLS MPEG-TS delivery below.
+// 60fps.
+//
+// All our streams are Low Latency enabled. We support a delay of ±4 seconds for
+// video streams by utilizing Common Media Application Format (CMAF) technology. So
+// you obtain latency from the traditional 30-50 seconds to ±4 seconds only by
+// default. If you need legacy non-low-latency HLS, then look at HLS MPEG-TS
+// delivery below.
 //
 // You have access to additional functions such as:
 //
@@ -71,6 +75,7 @@ func NewStreamService(opts ...option.RequestOption) (r StreamService) {
 // For more information see specific API methods, and the Knowledge Base. To
 // organize streaming with ultra-low latency, look for WebRTC delivery in different
 // section in the Knowledge Base.
+//
 // ![HTML Overlays](https://demo-files.gvideo.io/apidocs/low-latency-football.gif)
 func (r *StreamService) New(ctx context.Context, body StreamNewParams, opts ...option.RequestOption) (res *Stream, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -113,11 +118,14 @@ func (r *StreamService) ListAutoPaging(ctx context.Context, query StreamListPara
 // Delete a live stream.
 //
 // After deleting the live stream, all associated data is deleted: settings, PUSH
-// and PULL links, video playback links, etc. Live stream information is deleted
-// permanently and irreversibly. Therefore, it is impossible to restore data and
-// files after this. But if the live had recordings, they continue to remain
-// independent Video entities. The "`stream_id`" parameter will simply point to a
-// stream that no longer exists.
+// and PULL links, video playback links, etc.
+//
+// Live stream information is deleted permanently and irreversibly. Therefore, it
+// is impossible to restore data and files after this.
+//
+// But if the live had recordings, they continue to remain independent Video
+// entities. The "`stream_id`" parameter will simply point to a stream that no
+// longer exists.
 //
 // Perhaps, instead of deleting, you may use the stream deactivation:
 //
@@ -144,22 +152,28 @@ func (r *StreamService) ClearDvr(ctx context.Context, streamID int64, opts ...op
 	return
 }
 
-// Create an instant clip from on-going live stream. Instant clips are applicable
-// in cases where there is no time to wait for the broadcast to be completed and
-// recorded. For example, for quickly cutting highlights in sport events, or
-// cutting an important moment in the news or live performance.
+// Create an instant clip from on-going live stream.
+//
+// Instant clips are applicable in cases where there is no time to wait for the
+// broadcast to be completed and recorded. For example, for quickly cutting
+// highlights in sport events, or cutting an important moment in the news or live
+// performance.
 //
 // Instant clip becomes available for viewing in the following formats:
 //
-//   - HLS .m3u8,
-//   - MP4,
-//   - VOD in video hosting with a permanent link to watch video.
-//     ![HTML Overlays](https://demo-files.gvideo.io/apidocs/clip_recording_mp4_hls.gif)
+// - HLS .m3u8,
+// - MP4,
+// - VOD in video hosting with a permanent link to watch video.
 //
-// **Clip lifetime:** Instant clips are a copy of the stream, created from a live
-// stream. They are stored in memory for a limited time, after which the clip
-// ceases to exist and you will receive a 404 on the link. Limits that you should
-// keep in mind:
+// ![HTML Overlays](https://demo-files.gvideo.io/apidocs/clip_recording_mp4_hls.gif)
+//
+// **Clip lifetime:**
+//
+// Instant clips are a copy of the stream, created from a live stream. They are
+// stored in memory for a limited time, after which the clip ceases to exist and
+// you will receive a 404 on the link.
+//
+// Limits that you should keep in mind:
 //
 //   - The clip's lifespan is controlled by `expiration` parameter.
 //   - The default expiration value is 1 hour. The value can be set from 1 minute to
@@ -173,9 +187,10 @@ func (r *StreamService) ClearDvr(ctx context.Context, streamID int64, opts ...op
 //     you try to request it before this time, the response will be error code 425
 //     "Too Early".
 //
-// **Cutting a clip from a source:** In order to use clips recording feature, DVR
-// must be enabled for a stream: "`dvr_enabled`: true". The DVR serves as a source
-// for creating clips:
+// **Cutting a clip from a source:**
+//
+// In order to use clips recording feature, DVR must be enabled for a stream:
+// "`dvr_enabled`: true". The DVR serves as a source for creating clips:
 //
 //   - By default live stream DVR is set to 1 hour (3600 seconds). You can create an
 //     instant clip using any segment of this time period by specifying the desired
@@ -183,10 +198,13 @@ func (r *StreamService) ClearDvr(ctx context.Context, streamID int64, opts ...op
 //   - If you create a clip, but the DVR expires, the clip will still exist for the
 //     specified time as a copy of the stream.
 //
-// **Getting permanent VOD:** To get permanent VOD version of a live clip use this
-// parameter when making a request to create a clip: `vod_required: true`. Later,
-// when the clip is ready, grab `video_id` value from the response and query the
-// video by regular GET /video/{id} method.
+// **Getting permanent VOD:**
+//
+// To get permanent VOD version of a live clip use this parameter when making a
+// request to create a clip: `vod_required: true`.
+//
+// Later, when the clip is ready, grab `video_id` value from the response and query
+// the video by regular GET /video/{id} method.
 func (r *StreamService) NewClip(ctx context.Context, streamID int64, body StreamNewClipParams, opts ...option.RequestOption) (res *Clip, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v/clip_recording", streamID)
@@ -207,11 +225,13 @@ func (r *StreamService) Get(ctx context.Context, streamID int64, opts ...option.
 // You can now use both MP4 just-in-time packager and HLS for all clips. Get URLs
 // from "`hls_master`" and "`mp4_master`".
 //
-// **How to download renditions of clips:** URLs contain "master" alias by default,
-// which means maximum available quality from ABR set (based on height metadata).
-// There is also possibility to access individual bitrates from ABR ladder. That
-// works for both HLS and MP4. You can replace manually "master" to a value from
-// renditions list in order to get exact bitrate/quality from the set. Example:
+// **How to download renditions of clips:**
+//
+// URLs contain "master" alias by default, which means maximum available quality
+// from ABR set (based on height metadata). There is also possibility to access
+// individual bitrates from ABR ladder. That works for both HLS and MP4. You can
+// replace manually "master" to a value from renditions list in order to get exact
+// bitrate/quality from the set. Example:
 //
 //   - HLS 720p:
 //     `https://CID.domain.com/rec/111_1000/rec_d7bsli54p8n4_qsid42_master.m3u8`
@@ -245,12 +265,14 @@ func (r *StreamService) ListClips(ctx context.Context, streamID int64, opts ...o
 //   - If you have access to the premium feature of saving the original stream (so
 //     not just transcoded renditions), then the link to the original file will be in
 //     the "`origin_url`" field. Look at the description of the field how to use it.
-//     Stream must be live for the recording to start, please check fields "live"
-//     and/or "`backup_live`". After the recording starts, field "recording" will
-//     switch to "true", and the recording duration in seconds will appear in the
-//     "`recording_duration`" field. Please, keep in mind that recording doesn't
-//     start instantly, it takes ±3-7 seconds to initialize the process after
-//     executing this method.
+//
+// Stream must be live for the recording to start, please check fields "live"
+// and/or "`backup_live`". After the recording starts, field "recording" will
+// switch to "true", and the recording duration in seconds will appear in the
+// "`recording_duration`" field.
+//
+// Please, keep in mind that recording doesn't start instantly, it takes ±3-7
+// seconds to initialize the process after executing this method.
 //
 // Stream recording stops when:
 //
@@ -259,6 +281,7 @@ func (r *StreamService) ListClips(ctx context.Context, streamID int64, opts ...o
 //     method again, the recording will be made to a new video file.
 //   - When sending the stream stops on the client side, or stops accidentally. In
 //     this case, recording process is waiting for 10 seconds to resume recording:
+//
 //   - If the stream resumes within that period, recording will continue to the same
 //     file.
 //   - After that period, the file will be completely saved and closed.
@@ -290,29 +313,40 @@ func (r *StreamService) StopRecording(ctx context.Context, streamID int64, opts 
 type Clip struct {
 	// ID of the clip
 	ID string `json:"id,required"`
-	// Requested segment duration in seconds to be cut. Please, note that cutting is
-	// based on the idea of instantly creating a clip, instead of precise timing. So
-	// final segment may be:
+	// Requested segment duration in seconds to be cut.
+	//
+	// Please, note that cutting is based on the idea of instantly creating a clip,
+	// instead of precise timing. So final segment may be:
 	//
 	//   - Less than the specified value if there is less data in the DVR than the
 	//     requested segment.
 	//   - Greater than the specified value, because segment is aligned to the first and
 	//     last key frames of already stored fragment in DVR, this way -1 and +1 chunks
-	//     can be added to left and right. Duration of cutted segment cannot be greater
-	//     than DVR duration for this stream. Therefore, to change the maximum, use
-	//     "`dvr_duration`" parameter of this stream.
+	//     can be added to left and right.
+	//
+	// Duration of cutted segment cannot be greater than DVR duration for this stream.
+	// Therefore, to change the maximum, use "`dvr_duration`" parameter of this stream.
 	Duration int64 `json:"duration,required"`
 	// Creation date and time. Format is date time in ISO 8601
 	CreatedAt string `json:"created_at"`
-	// Expire time of the clip via a public link. Unix timestamp in seconds, absolute
-	// value. This is the time how long the instant clip will be stored in the server
-	// memory and can be accessed via public HLS/MP4 links. Download and/or use the
-	// instant clip before this time expires. After the time has expired, the clip is
-	// deleted from memory and is no longer available via the link. You need to create
-	// a new segment, or use `vod_required: true` attribute. If value is omitted, then
-	// expiration is counted as +3600 seconds (1 hour) to the end of the clip (i.e.
-	// `unix timestamp = <start> + <duration> + 3600`). Allowed range: 1m <= expiration
-	// <= 4h. Example:
+	// Expire time of the clip via a public link.
+	//
+	// Unix timestamp in seconds, absolute value.
+	//
+	// This is the time how long the instant clip will be stored in the server memory
+	// and can be accessed via public HLS/MP4 links. Download and/or use the instant
+	// clip before this time expires.
+	//
+	// After the time has expired, the clip is deleted from memory and is no longer
+	// available via the link. You need to create a new segment, or use
+	// `vod_required: true` attribute.
+	//
+	// If value is omitted, then expiration is counted as +3600 seconds (1 hour) to the
+	// end of the clip (i.e. `unix timestamp = <start> + <duration> + 3600`).
+	//
+	// Allowed range: 1m <= expiration <= 4h.
+	//
+	// Example:
 	// `24.05.2024 14:00:00 (GMT) + 60 seconds of duration + 3600 seconds of expiration = 24.05.2024 15:01:00 (GMT) is Unix timestamp = 1716562860`
 	Expiration int64 `json:"expiration"`
 	// Link to HLS .m3u8 with immediate clip. The link retains same adaptive bitrate as
@@ -329,10 +363,13 @@ type Clip struct {
 	MP4Master string `json:"mp4_master"`
 	// List of available rendition heights
 	Renditions []string `json:"renditions"`
-	// Starting point of the segment to cut. Unix timestamp in seconds, absolute value.
-	// Example: `24.05.2024 14:00:00 (GMT) is Unix timestamp = 1716559200` If a value
-	// from the past is specified, it is used as the starting point for the segment to
-	// cut. If the value is omitted, then clip will start from now.
+	// Starting point of the segment to cut.
+	//
+	// Unix timestamp in seconds, absolute value. Example:
+	// `24.05.2024 14:00:00 (GMT) is Unix timestamp = 1716559200`
+	//
+	// If a value from the past is specified, it is used as the starting point for the
+	// segment to cut. If the value is omitted, then clip will start from now.
 	Start int64 `json:"start"`
 	// ID of the created video if `vod_required`=true
 	VideoID int64 `json:"video_id"`
@@ -362,8 +399,12 @@ func (r *Clip) UnmarshalJSON(data []byte) error {
 }
 
 type Stream struct {
-	// Stream name. Often used as a human-readable name for the stream, but can contain
-	// any text you wish. The values are not unique and may be repeated. Examples:
+	// Stream name.
+	//
+	// Often used as a human-readable name for the stream, but can contain any text you
+	// wish. The values are not unique and may be repeated.
+	//
+	// Examples:
 	//
 	// - Conference in July
 	// - Stream #10003
@@ -373,36 +414,45 @@ type Stream struct {
 	// Stream ID
 	ID int64 `json:"id"`
 	// Stream switch between on and off. This is not an indicator of the status "stream
-	// is receiving and it is LIVE", but rather an on/off switch. When stream is
-	// switched off, there is no way to process it: PULL is deactivated and PUSH will
-	// return an error.
+	// is receiving and it is LIVE", but rather an on/off switch.
+	//
+	// When stream is switched off, there is no way to process it: PULL is deactivated
+	// and PUSH will return an error.
 	//
 	// - true – stream can be processed
 	// - false – stream is off, and cannot be processed
 	Active bool `json:"active"`
 	// Enables autotomatic recording of the stream when it started. So you don't need
-	// to call recording manually. Result of recording is automatically added to video
-	// hosting. For details see the /streams/`start_recording` method and in knowledge
-	// base Values:
+	// to call recording manually.
+	//
+	// Result of recording is automatically added to video hosting. For details see the
+	// /streams/`start_recording` method and in knowledge base
+	//
+	// Values:
 	//
 	// - true – auto recording is enabled
 	// - false – auto recording is disabled
 	AutoRecord bool `json:"auto_record"`
 	// State of receiving and transcoding master stream from source by backup server if
-	// you pushing stream to "`backup_push_url`" or "`backup_push_url_srt`". Displays
-	// the backup server status of PUSH method only. For PULL a "live" field is always
-	// used, even when origin servers are switched using round robin scheduling (look
-	// "uri" field for details).
+	// you pushing stream to "`backup_push_url`" or "`backup_push_url_srt`".
+	//
+	// Displays the backup server status of PUSH method only. For PULL a "live" field
+	// is always used, even when origin servers are switched using round robin
+	// scheduling (look "uri" field for details).
 	BackupLive bool `json:"backup_live"`
 	// URL to PUSH master stream to our backup server using RTMP/S protocols. Servers
-	// for the main and backup streams are distributed geographically. Mainly sending
-	// one stream to main server is enough. But if you need a backup stream, then this
-	// is the field to PUSH it. To use RTMPS just manually change the protocol name
-	// from "rtmp://" to "rtmps://". The backup logs are as follows: In PUSH mode, you
-	// initiate sending a stream from your machine. If your stream stops or breaks for
-	// some reason and it stops coming to the main server, then after 3-10 seconds of
-	// waiting the stream will turn off or the backup one will be automatically turned
-	// on, if you are pushing it too.
+	// for the main and backup streams are distributed geographically.
+	//
+	// Mainly sending one stream to main server is enough. But if you need a backup
+	// stream, then this is the field to PUSH it.
+	//
+	// To use RTMPS just manually change the protocol name from "rtmp://" to
+	// "rtmps://".
+	//
+	// The backup logs are as follows: In PUSH mode, you initiate sending a stream from
+	// your machine. If your stream stops or breaks for some reason and it stops coming
+	// to the main server, then after 3-10 seconds of waiting the stream will turn off
+	// or the backup one will be automatically turned on, if you are pushing it too.
 	BackupPushURL string `json:"backup_push_url"`
 	// URL to PUSH master stream to our backup server using SRT protocol with the same
 	// logic of backup-streams
@@ -424,11 +474,15 @@ type Stream struct {
 	// Datetime of creation in ISO 8601
 	CreatedAt string `json:"created_at"`
 	// MPEG-DASH output. URL for transcoded result stream in MPEG-DASH format, with
-	// .mpd link. Low Latency support: YES. This is CMAF-based MPEG-DASH stream.
-	// Encoder and packager dynamically assemble the video stream with fMP4 fragments.
-	// Chunks have ±2-4 seconds duration depending on the settings. All chunks for DASH
-	// are transferred through CDN using chunk transfer technology, which allows to use
-	// all the advantages of low latency delivery of DASH.
+	// .mpd link.
+	//
+	// Low Latency support: YES.
+	//
+	// This is CMAF-based MPEG-DASH stream. Encoder and packager dynamically assemble
+	// the video stream with fMP4 fragments. Chunks have ±2-4 seconds duration
+	// depending on the settings. All chunks for DASH are transferred through CDN using
+	// chunk transfer technology, which allows to use all the advantages of low latency
+	// delivery of DASH.
 	//
 	//   - by default low latency is ±4 sec, because it's stable for almost all last-mile
 	//     use cases.
@@ -438,35 +492,43 @@ type Stream struct {
 	// Knowledge Base.
 	DashURL string `json:"dash_url"`
 	// DVR duration in seconds if DVR feature is enabled for the stream. So this is
-	// duration of how far the user can rewind the live stream. `dvr_duration` range is
-	// [30...14400]. Maximum value is 4 hours = 14400 seconds. If you need more, ask
-	// the Support Team please.
+	// duration of how far the user can rewind the live stream.
+	//
+	// `dvr_duration` range is [30...14400].
+	//
+	// Maximum value is 4 hours = 14400 seconds. If you need more, ask the Support Team
+	// please.
 	DvrDuration int64 `json:"dvr_duration"`
 	// Enables DVR for the stream:
 	//
 	// - true – DVR is enabled
 	// - false – DVR is disabled
 	DvrEnabled bool `json:"dvr_enabled"`
-	// Time when the stream ended for the last time. Datetime in ISO 8601. After
-	// restarting the stream, this value is not reset to "null", and the time of the
-	// last/previous end is always displayed here. That is, when the start time is
+	// Time when the stream ended for the last time. Datetime in ISO 8601.
+	//
+	// After restarting the stream, this value is not reset to "null", and the time of
+	// the last/previous end is always displayed here. That is, when the start time is
 	// greater than the end time, it means the current session is still ongoing and the
-	// stream has not ended yet. If you want to see all information about acitivity of
-	// the stream, you can get it from another method /streaming/statistics/ffprobe.
-	// This method shows aggregated activity parameters during a time, when stream was
-	// alive and transcoded. Also you can create graphs to see the activity. For
-	// example
+	// stream has not ended yet.
+	//
+	// If you want to see all information about acitivity of the stream, you can get it
+	// from another method /streaming/statistics/ffprobe. This method shows aggregated
+	// activity parameters during a time, when stream was alive and transcoded. Also
+	// you can create graphs to see the activity. For example
 	// /streaming/statistics/ffprobe?interval=6000&`date_from`=2023-10-01&`date_to`=2023-10-11&`stream_id`=12345
 	FinishedAtPrimary string `json:"finished_at_primary"`
 	// Current FPS of the original stream, if stream is transcoding
 	FrameRate float64 `json:"frame_rate"`
 	// HLS output. URL for transcoded result of stream in HLS CMAF format, with .m3u8
-	// link. Recommended for use for all HLS streams. Low Latency support: YES. This is
-	// CMAF-based HLS stream. Encoder and packager dynamically assemble the video
-	// stream with fMP4 fragments. Chunks have ±2-4 seconds duration depending on the
-	// settings. All chunks for LL-HLS are transferred through CDN via dividing into
-	// parts (small segments `#EXT-X-PART` of 0.5-1.0 sec duration), which allows to
-	// use all the advantages of low latency delivery of LL-HLS.
+	// link. Recommended for use for all HLS streams.
+	//
+	// Low Latency support: YES.
+	//
+	// This is CMAF-based HLS stream. Encoder and packager dynamically assemble the
+	// video stream with fMP4 fragments. Chunks have ±2-4 seconds duration depending on
+	// the settings. All chunks for LL-HLS are transferred through CDN via dividing
+	// into parts (small segments `#EXT-X-PART` of 0.5-1.0 sec duration), which allows
+	// to use all the advantages of low latency delivery of LL-HLS.
 	//
 	//   - by default low latency is ±5 sec, because it's stable for almost all last-mile
 	//     use cases.
@@ -483,13 +545,18 @@ type Stream struct {
 	// stream when broadcast is ended.
 	HlsMpegtsEndlistTag bool `json:"hls_mpegts_endlist_tag"`
 	// HLS output for legacy devices. URL for transcoded result of stream in HLS
-	// MPEG-TS (.ts) format, with .m3u8 link. Low Latency support: NO. Some legacy
-	// devices or software may require MPEG-TS (.ts) segments as a format for
-	// streaming, so we provide this options keeping backward compatibility with any of
-	// your existing workflows. For other cases it's better to use "`hls_cmaf_url`"
-	// instead. You can use this legacy HLSv6 format based on MPEG-TS segmenter in
-	// parallel with main HLS CMAF. Both formats are sharing same segments size,
-	// manifest length (DVR), etc.
+	// MPEG-TS (.ts) format, with .m3u8 link.
+	//
+	// Low Latency support: NO.
+	//
+	// Some legacy devices or software may require MPEG-TS (.ts) segments as a format
+	// for streaming, so we provide this options keeping backward compatibility with
+	// any of your existing workflows. For other cases it's better to use
+	// "`hls_cmaf_url`" instead.
+	//
+	// You can use this legacy HLSv6 format based on MPEG-TS segmenter in parallel with
+	// main HLS CMAF. Both formats are sharing same segments size, manifest length
+	// (DVR), etc.
 	//
 	// It is also possible to use additional modifier-attributes:
 	//
@@ -499,10 +566,13 @@ type Stream struct {
 	//     length multiple of whole seconds, or a fractional number separated by a dot
 	//     for chunks that are not multiples of seconds. This attribute allows you to
 	//     determine duration in seconds at the level of analyzing the logs of CDN
-	//     requests and compare it with file size (so to use it in your analytics). Such
-	//     modifier attributes are applied manually and added to the link obtained from
-	//     this field. I.e. `<hls_url>?get_duration_sec=true` Example:
-	//     `https://demo.gvideo.io/mpegts/2675_19146/master_mpegts.m3u8?get_duration_sec=true`
+	//     requests and compare it with file size (so to use it in your analytics).
+	//
+	// Such modifier attributes are applied manually and added to the link obtained
+	// from this field. I.e. `<hls_url>?get_duration_sec=true`
+	//
+	// Example:
+	// `https://demo.gvideo.io/mpegts/2675_19146/master_mpegts.m3u8?get_duration_sec=true`
 	//
 	// ```
 	// #EXTM3U
@@ -522,14 +592,19 @@ type Stream struct {
 	HTMLOverlays []Overlay `json:"html_overlays"`
 	// A URL to a built-in HTML web player with the stream inside. It can be inserted
 	// into an iframe on your website and the video will automatically play in all
-	// browsers. Please, remember that transcoded streams from "`hls_cmaf_url`" with
-	// .m3u8 at the end, and from "`dash_url`" with .mpd at the end are to be played
-	// inside video players only. For example: AVplayer on iOS, Exoplayer on Android,
-	// HTML web player in browser, etc. General bowsers like Chrome, Firefox, etc
-	// cannot play transcoded streams with .m3u8 and .mpd at the end. The only
-	// exception is Safari, which can only play Apple's HLS .m3u8 format with limits.
+	// browsers.
+	//
+	// Please, remember that transcoded streams from "`hls_cmaf_url`" with .m3u8 at the
+	// end, and from "`dash_url`" with .mpd at the end are to be played inside video
+	// players only. For example: AVplayer on iOS, Exoplayer on Android, HTML web
+	// player in browser, etc. General bowsers like Chrome, Firefox, etc cannot play
+	// transcoded streams with .m3u8 and .mpd at the end. The only exception is Safari,
+	// which can only play Apple's HLS .m3u8 format with limits.
+	//
 	// That's why you may need to use this HTML web player. Please, look Knowledge Base
-	// for details. Example of usage on a web page:
+	// for details.
+	//
+	// Example of usage on a web page:
 	//
 	// <iframe width="560" height="315" src="https://player.gvideo.co/streams/2675_201693" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 	IframeURL string `json:"iframe_url"`
@@ -537,7 +612,9 @@ type Stream struct {
 	Live bool `json:"live"`
 	// Visualization mode for 360° streams, how the stream is rendered in our web
 	// player ONLY. If you would like to show video 360° in an external video player,
-	// then use parameters of that video player. Modes:
+	// then use parameters of that video player.
+	//
+	// Modes:
 	//
 	// - regular – regular “flat” stream
 	// - vr360 – display stream in 360° mode
@@ -555,8 +632,11 @@ type Stream struct {
 	//     from end-device to our Streaming Platform, i.e. from your encoder, mobile app
 	//     or OBS Studio.
 	Pull bool `json:"pull"`
-	// URL to PUSH master stream to our main server using RTMP and RTMPS protocols. To
-	// use RTMPS just manually change the protocol name from "rtmp://" to "rtmps://".
+	// URL to PUSH master stream to our main server using RTMP and RTMPS protocols.
+	//
+	// To use RTMPS just manually change the protocol name from "rtmp://" to
+	// "rtmps://".
+	//
 	// Use only 1 protocol of sending a master stream: eitheronly RTMP/S (`push_url`),
 	// or only SRT (`push_url_srt`).
 	//
@@ -571,8 +651,9 @@ type Stream struct {
 	//
 	// Please note that 1 connection and 1 protocol can be used at a single moment in
 	// time per unique stream key input. Trying to send 2+ connection requests into
-	// `push_url` to once, or 2+ protocols at once will not lead to a result. For
-	// example, transcoding process will fail if:
+	// `push_url` to once, or 2+ protocols at once will not lead to a result.
+	//
+	// For example, transcoding process will fail if:
 	//
 	//   - you are pushing primary and backup RTMP to the same single `push_url`
 	//     simultaneously
@@ -585,30 +666,37 @@ type Stream struct {
 	// But if you clearly don’t understand why you need this, then it’s best to use the
 	// default single URL in the "`push_url`" attribute.
 	PushURL string `json:"push_url"`
-	// URL to PUSH master stream to our main server using SRT protocol. Use only 1
-	// protocol of sending a master stream: eitheronly RTMP/S (`push_url`), or only SRT
-	// (`push_url_srt`).
+	// URL to PUSH master stream to our main server using SRT protocol.
 	//
-	// **Setup SRT latency on your sender side** SRT is designed as a low-latency
-	// transport protocol, but real networks are not always stable and in some cases
-	// the end-to-end path from the venue to the ingest point can be long. For this
-	// reason, it is important to configure the latency parameter carefully to match
-	// the actual network conditions. Small latency values may lead to packet loss when
-	// jitter or retransmissions occur, while very large values introduce unnecessary
-	// end-to-end delay. \*Incorrect or low default value is one of the most common
-	// reasons for packet loss, frames loss, and bad picture.\*
+	// Use only 1 protocol of sending a master stream: eitheronly RTMP/S (`push_url`),
+	// or only SRT (`push_url_srt`).
+	//
+	// **Setup SRT latency on your sender side**
+	//
+	// SRT is designed as a low-latency transport protocol, but real networks are not
+	// always stable and in some cases the end-to-end path from the venue to the ingest
+	// point can be long. For this reason, it is important to configure the latency
+	// parameter carefully to match the actual network conditions.
+	//
+	// Small latency values may lead to packet loss when jitter or retransmissions
+	// occur, while very large values introduce unnecessary end-to-end delay.
+	// \*Incorrect or low default value is one of the most common reasons for packet
+	// loss, frames loss, and bad picture.\*
 	//
 	// We therefore recommend setting latency manually rather than relying on the
 	// default, to ensure the buffer is correctly sized for your environment. A
 	// practical range is 400–2000 ms, with the exact value chosen based on RTT,
-	// jitter, and expected packet loss. Be sure to check and test SRT settings on your
-	// sender side. The default values do not take into account your specific scenarios
-	// and do not work well. If necessary, ask us and we will help you.
+	// jitter, and expected packet loss.
+	//
+	// Be sure to check and test SRT settings on your sender side. The default values
+	// do not take into account your specific scenarios and do not work well. If
+	// necessary, ask us and we will help you.
 	//
 	// Please note that 1 connection and 1 protocol can be used at a single moment in
 	// time per unique stream key input. Trying to send 2+ connection requests into
-	// `push_url_srt` to once, or 2+ protocols at once will not lead to a result. For
-	// example, transcoding process will fail if:
+	// `push_url_srt` to once, or 2+ protocols at once will not lead to a result.
+	//
+	// For example, transcoding process will fail if:
 	//
 	//   - you are pushing primary and backup SRT to the same single `push_url_srt`
 	//     simultaneously
@@ -619,37 +707,52 @@ type Stream struct {
 	PushURLSrt string `json:"push_url_srt"`
 	// URL to PUSH WebRTC stream to our server using WHIP protocol.
 	//
-	// **WebRTC WHIP to LL-HLS and DASH** Video Streaming supports WebRTC HTTP Ingest
-	// Protocol (WHIP), and WebRTC to HLS/DASH converter. As a result you can stream
-	// from web broswers natively. **WebRTC WHIP server** We have dedicated WebRTC WHIP
-	// servers in our infrastructure. WebRTC WHIP server organizes both signaling and
-	// receives video data. Signaling is a term to describe communication between
-	// WebRTC endpoints, needed to initiate and maintain a session. WHIP is an open
-	// specification for a simple signaling protocol for starting WebRTC sessions in an
-	// outgoing direction, (i.e., streaming from your device). There is the primary
-	// link only for WHIP, so no backup link. **WebRTC stream encoding parameters** At
-	// least one video and audio track both must be present in the stream:
+	// **WebRTC WHIP to LL-HLS and DASH**
 	//
-	//   - Video must be encoded with H.264.
-	//   - Audio must be encoded with OPUS. Note. Specifically for WebRTC mode a method
-	//     of constant transcoding with an initial given resolution is used. This means
-	//     that if WebRTC in the end-user's browser decides to reduce the quality or
-	//     resolution of the master stream (to let say 360p) due to restrictions on the
-	//     end-user's device (network conditions, CPU consumption, etc.), the transcoder
-	//     will still continue to transcode the reduced stream to the initial resolution
-	//     (let say 1080p ABR). When the restrictions on the end-user's device are
-	//     removed, quiality will improve again. **WebRTC WHIP Client** We provide a
-	//     convenient WebRTC WHIP library for working in browsers. You can use our
-	//     library, or any other you prefer. Simple example of usage is here:
-	//     https://stackblitz.com/edit/stackblitz-starters-j2r9ar?file=index.html Also
-	//     try to use the feature in UI of the Customer Portal. In the Streaming section
-	//     inside the settings of a specific live stream, a new section "Quick start in
-	//     browser" has been added.
+	// Video Streaming supports WebRTC HTTP Ingest Protocol (WHIP), and WebRTC to
+	// HLS/DASH converter. As a result you can stream from web broswers natively.
+	//
+	// **WebRTC WHIP server**
+	//
+	// We have dedicated WebRTC WHIP servers in our infrastructure. WebRTC WHIP server
+	// organizes both signaling and receives video data. Signaling is a term to
+	// describe communication between WebRTC endpoints, needed to initiate and maintain
+	// a session. WHIP is an open specification for a simple signaling protocol for
+	// starting WebRTC sessions in an outgoing direction, (i.e., streaming from your
+	// device).
+	//
+	// There is the primary link only for WHIP, so no backup link.
+	//
+	// **WebRTC stream encoding parameters**
+	//
+	// At least one video and audio track both must be present in the stream:
+	//
+	// - Video must be encoded with H.264.
+	// - Audio must be encoded with OPUS.
+	//
+	// Note. Specifically for WebRTC mode a method of constant transcoding with an
+	// initial given resolution is used. This means that if WebRTC in the end-user's
+	// browser decides to reduce the quality or resolution of the master stream (to let
+	// say 360p) due to restrictions on the end-user's device (network conditions, CPU
+	// consumption, etc.), the transcoder will still continue to transcode the reduced
+	// stream to the initial resolution (let say 1080p ABR). When the restrictions on
+	// the end-user's device are removed, quiality will improve again.
+	//
+	// **WebRTC WHIP Client**
+	//
+	// We provide a convenient WebRTC WHIP library for working in browsers. You can use
+	// our library, or any other you prefer. Simple example of usage is here:
+	// https://stackblitz.com/edit/stackblitz-starters-j2r9ar?file=index.html
+	//
+	// Also try to use the feature in UI of the Customer Portal. In the Streaming
+	// section inside the settings of a specific live stream, a new section "Quick
+	// start in browser" has been added.
 	//
 	// Please note that 1 connection and 1 protocol can be used at a single moment in
 	// time per unique stream key input. Trying to send 2+ connection requests into
-	// `push_url_whip` to once, or 2+ protocols at once will not lead to a result. For
-	// example, transcoding process will fail if:
+	// `push_url_whip` to once, or 2+ protocols at once will not lead to a result.
+	//
+	// For example, transcoding process will fail if:
 	//
 	//   - you are pushing primary and backup WHIP to the same single `push_url_whip`
 	//     simultaneously
@@ -661,7 +764,9 @@ type Stream struct {
 	// your conditions. Look at GET /`quality_sets` method
 	QualitySetID int64 `json:"quality_set_id"`
 	// Method of recording a stream. Specifies the source from which the stream will be
-	// recorded: original or transcoded. Types:
+	// recorded: original or transcoded.
+	//
+	// Types:
 	//
 	//   - "origin" – To record RMTP/SRT/etc original clean media source.
 	//   - "transcoded" – To record the output transcoded version of the stream,
@@ -673,37 +778,46 @@ type Stream struct {
 	RecordingDuration float64 `json:"recording_duration"`
 	// An instant screenshot taken from a live stream, and available as a static JPEG
 	// image. Resolution 1080 pixels wide, or less if the original stream has a lower
-	// resolution. Screenshot is taken every 10 seconds while the stream is live. This
-	// field contains a link to the last screenshot created by the system. Screenshot
-	// history is not stored, so if you need a series of screenshots over time, then
-	// download them.
+	// resolution.
+	//
+	// Screenshot is taken every 10 seconds while the stream is live. This field
+	// contains a link to the last screenshot created by the system. Screenshot history
+	// is not stored, so if you need a series of screenshots over time, then download
+	// them.
 	Screenshot string `json:"screenshot"`
 	// Time of the last session when backup server started receiving the stream.
 	// Datetime in ISO 8601
 	StartedAtBackup string `json:"started_at_backup"`
 	// Time of the last session when main server started receiving the stream. Datetime
-	// in ISO 8601. This means that if the stream was started 1 time, then here will be
-	// the time it was started. If the stream was started several times, or restarted
-	// on your side, then only the time of the last session is displayed here.
+	// in ISO 8601.
+	//
+	// This means that if the stream was started 1 time, then here will be the time it
+	// was started. If the stream was started several times, or restarted on your side,
+	// then only the time of the last session is displayed here.
 	StartedAtPrimary string `json:"started_at_primary"`
 	// Array of qualities to which live stream is transcoded
 	TranscodedQualities []string `json:"transcoded_qualities"`
-	// Speed of transcoding the stream. Mainly it must be 1.0 for real-time processing.
-	// May be less than 1.0 if your stream has problems in delivery due to your local
-	// internet provider's conditions, or the stream does not meet stream inbound
-	// requirements. See Knowledge Base for details.
+	// Speed of transcoding the stream.
+	//
+	// Mainly it must be 1.0 for real-time processing. May be less than 1.0 if your
+	// stream has problems in delivery due to your local internet provider's
+	// conditions, or the stream does not meet stream inbound requirements. See
+	// Knowledge Base for details.
 	TranscodingSpeed float64 `json:"transcoding_speed"`
-	// When using PULL method, this is the URL to pull a stream from. You can specify
-	// multiple addresses separated by a space (" "), so you can organize a backup
-	// plan. In this case, the specified addresses will be selected one by one using
-	// round robin scheduling. If the first address does not respond, then the next one
-	// in the list will be automatically requested, returning to the first and so on in
-	// a circle. Also, if the sucessfully working stream stops sending data, then the
-	// next one will be selected according to the same scheme. After 2 hours of
-	// inactivity of your original stream, the system stops PULL requests and the
-	// stream is deactivated (the "active" field switches to "false"). Please, note
-	// that this field is for PULL only, so is not suitable for PUSH. Look at fields
-	// "`push_url`" and "`push_url_srt`" from GET method.
+	// When using PULL method, this is the URL to pull a stream from.
+	//
+	// You can specify multiple addresses separated by a space (" "), so you can
+	// organize a backup plan. In this case, the specified addresses will be selected
+	// one by one using round robin scheduling. If the first address does not respond,
+	// then the next one in the list will be automatically requested, returning to the
+	// first and so on in a circle. Also, if the sucessfully working stream stops
+	// sending data, then the next one will be selected according to the same scheme.
+	//
+	// After 2 hours of inactivity of your original stream, the system stops PULL
+	// requests and the stream is deactivated (the "active" field switches to "false").
+	//
+	// Please, note that this field is for PULL only, so is not suitable for PUSH. Look
+	// at fields "`push_url`" and "`push_url_srt`" from GET method.
 	Uri string `json:"uri"`
 	// Current height of frame of the original stream, if stream is transcoding
 	VideoHeight float64 `json:"video_height"`
@@ -764,7 +878,9 @@ func (r *Stream) UnmarshalJSON(data []byte) error {
 
 // Visualization mode for 360° streams, how the stream is rendered in our web
 // player ONLY. If you would like to show video 360° in an external video player,
-// then use parameters of that video player. Modes:
+// then use parameters of that video player.
+//
+// Modes:
 //
 // - regular – regular “flat” stream
 // - vr360 – display stream in 360° mode
@@ -780,7 +896,9 @@ const (
 )
 
 // Method of recording a stream. Specifies the source from which the stream will be
-// recorded: original or transcoded. Types:
+// recorded: original or transcoded.
+//
+// Types:
 //
 //   - "origin" – To record RMTP/SRT/etc original clean media source.
 //   - "transcoded" – To record the output transcoded version of the stream,
@@ -944,8 +1062,12 @@ func (r *StreamStartRecordingResponseWarningSourceObject) UnmarshalJSON(data []b
 }
 
 type StreamNewParams struct {
-	// Stream name. Often used as a human-readable name for the stream, but can contain
-	// any text you wish. The values are not unique and may be repeated. Examples:
+	// Stream name.
+	//
+	// Often used as a human-readable name for the stream, but can contain any text you
+	// wish. The values are not unique and may be repeated.
+	//
+	// Examples:
 	//
 	// - Conference in July
 	// - Stream #10003
@@ -953,17 +1075,21 @@ type StreamNewParams struct {
 	// - 480fd499-2de2-4988-bc1a-a4eebe9818ee
 	Name string `json:"name,required"`
 	// Stream switch between on and off. This is not an indicator of the status "stream
-	// is receiving and it is LIVE", but rather an on/off switch. When stream is
-	// switched off, there is no way to process it: PULL is deactivated and PUSH will
-	// return an error.
+	// is receiving and it is LIVE", but rather an on/off switch.
+	//
+	// When stream is switched off, there is no way to process it: PULL is deactivated
+	// and PUSH will return an error.
 	//
 	// - true – stream can be processed
 	// - false – stream is off, and cannot be processed
 	Active param.Opt[bool] `json:"active,omitzero"`
 	// Enables autotomatic recording of the stream when it started. So you don't need
-	// to call recording manually. Result of recording is automatically added to video
-	// hosting. For details see the /streams/`start_recording` method and in knowledge
-	// base Values:
+	// to call recording manually.
+	//
+	// Result of recording is automatically added to video hosting. For details see the
+	// /streams/`start_recording` method and in knowledge base
+	//
+	// Values:
 	//
 	// - true – auto recording is enabled
 	// - false – auto recording is disabled
@@ -981,9 +1107,12 @@ type StreamNewParams struct {
 	// field in any way when processing the stream. Example: `client_user_id = 1001`
 	ClientUserID param.Opt[int64] `json:"client_user_id,omitzero"`
 	// DVR duration in seconds if DVR feature is enabled for the stream. So this is
-	// duration of how far the user can rewind the live stream. `dvr_duration` range is
-	// [30...14400]. Maximum value is 4 hours = 14400 seconds. If you need more, ask
-	// the Support Team please.
+	// duration of how far the user can rewind the live stream.
+	//
+	// `dvr_duration` range is [30...14400].
+	//
+	// Maximum value is 4 hours = 14400 seconds. If you need more, ask the Support Team
+	// please.
 	DvrDuration param.Opt[int64] `json:"dvr_duration,omitzero"`
 	// Enables DVR for the stream:
 	//
@@ -1008,23 +1137,28 @@ type StreamNewParams struct {
 	// Custom quality set ID for transcoding, if transcoding is required according to
 	// your conditions. Look at GET /`quality_sets` method
 	QualitySetID param.Opt[int64] `json:"quality_set_id,omitzero"`
-	// When using PULL method, this is the URL to pull a stream from. You can specify
-	// multiple addresses separated by a space (" "), so you can organize a backup
-	// plan. In this case, the specified addresses will be selected one by one using
-	// round robin scheduling. If the first address does not respond, then the next one
-	// in the list will be automatically requested, returning to the first and so on in
-	// a circle. Also, if the sucessfully working stream stops sending data, then the
-	// next one will be selected according to the same scheme. After 2 hours of
-	// inactivity of your original stream, the system stops PULL requests and the
-	// stream is deactivated (the "active" field switches to "false"). Please, note
-	// that this field is for PULL only, so is not suitable for PUSH. Look at fields
-	// "`push_url`" and "`push_url_srt`" from GET method.
+	// When using PULL method, this is the URL to pull a stream from.
+	//
+	// You can specify multiple addresses separated by a space (" "), so you can
+	// organize a backup plan. In this case, the specified addresses will be selected
+	// one by one using round robin scheduling. If the first address does not respond,
+	// then the next one in the list will be automatically requested, returning to the
+	// first and so on in a circle. Also, if the sucessfully working stream stops
+	// sending data, then the next one will be selected according to the same scheme.
+	//
+	// After 2 hours of inactivity of your original stream, the system stops PULL
+	// requests and the stream is deactivated (the "active" field switches to "false").
+	//
+	// Please, note that this field is for PULL only, so is not suitable for PUSH. Look
+	// at fields "`push_url`" and "`push_url_srt`" from GET method.
 	Uri param.Opt[string] `json:"uri,omitzero"`
 	// IDs of broadcasts which will include this stream
 	BroadcastIDs []int64 `json:"broadcast_ids,omitzero"`
 	// Visualization mode for 360° streams, how the stream is rendered in our web
 	// player ONLY. If you would like to show video 360° in an external video player,
-	// then use parameters of that video player. Modes:
+	// then use parameters of that video player.
+	//
+	// Modes:
 	//
 	// - regular – regular “flat” stream
 	// - vr360 – display stream in 360° mode
@@ -1034,7 +1168,9 @@ type StreamNewParams struct {
 	// Any of "regular", "vr360", "vr180", "vr360tb".
 	Projection StreamNewParamsProjection `json:"projection,omitzero"`
 	// Method of recording a stream. Specifies the source from which the stream will be
-	// recorded: original or transcoded. Types:
+	// recorded: original or transcoded.
+	//
+	// Types:
 	//
 	//   - "origin" – To record RMTP/SRT/etc original clean media source.
 	//   - "transcoded" – To record the output transcoded version of the stream,
@@ -1055,7 +1191,9 @@ func (r *StreamNewParams) UnmarshalJSON(data []byte) error {
 
 // Visualization mode for 360° streams, how the stream is rendered in our web
 // player ONLY. If you would like to show video 360° in an external video player,
-// then use parameters of that video player. Modes:
+// then use parameters of that video player.
+//
+// Modes:
 //
 // - regular – regular “flat” stream
 // - vr360 – display stream in 360° mode
@@ -1071,7 +1209,9 @@ const (
 )
 
 // Method of recording a stream. Specifies the source from which the stream will be
-// recorded: original or transcoded. Types:
+// recorded: original or transcoded.
+//
+// Types:
 //
 //   - "origin" – To record RMTP/SRT/etc original clean media source.
 //   - "transcoded" – To record the output transcoded version of the stream,
@@ -1098,8 +1238,12 @@ func (r *StreamUpdateParams) UnmarshalJSON(data []byte) error {
 
 // The property Name is required.
 type StreamUpdateParamsStream struct {
-	// Stream name. Often used as a human-readable name for the stream, but can contain
-	// any text you wish. The values are not unique and may be repeated. Examples:
+	// Stream name.
+	//
+	// Often used as a human-readable name for the stream, but can contain any text you
+	// wish. The values are not unique and may be repeated.
+	//
+	// Examples:
 	//
 	// - Conference in July
 	// - Stream #10003
@@ -1107,17 +1251,21 @@ type StreamUpdateParamsStream struct {
 	// - 480fd499-2de2-4988-bc1a-a4eebe9818ee
 	Name string `json:"name,required"`
 	// Stream switch between on and off. This is not an indicator of the status "stream
-	// is receiving and it is LIVE", but rather an on/off switch. When stream is
-	// switched off, there is no way to process it: PULL is deactivated and PUSH will
-	// return an error.
+	// is receiving and it is LIVE", but rather an on/off switch.
+	//
+	// When stream is switched off, there is no way to process it: PULL is deactivated
+	// and PUSH will return an error.
 	//
 	// - true – stream can be processed
 	// - false – stream is off, and cannot be processed
 	Active param.Opt[bool] `json:"active,omitzero"`
 	// Enables autotomatic recording of the stream when it started. So you don't need
-	// to call recording manually. Result of recording is automatically added to video
-	// hosting. For details see the /streams/`start_recording` method and in knowledge
-	// base Values:
+	// to call recording manually.
+	//
+	// Result of recording is automatically added to video hosting. For details see the
+	// /streams/`start_recording` method and in knowledge base
+	//
+	// Values:
 	//
 	// - true – auto recording is enabled
 	// - false – auto recording is disabled
@@ -1135,9 +1283,12 @@ type StreamUpdateParamsStream struct {
 	// field in any way when processing the stream. Example: `client_user_id = 1001`
 	ClientUserID param.Opt[int64] `json:"client_user_id,omitzero"`
 	// DVR duration in seconds if DVR feature is enabled for the stream. So this is
-	// duration of how far the user can rewind the live stream. `dvr_duration` range is
-	// [30...14400]. Maximum value is 4 hours = 14400 seconds. If you need more, ask
-	// the Support Team please.
+	// duration of how far the user can rewind the live stream.
+	//
+	// `dvr_duration` range is [30...14400].
+	//
+	// Maximum value is 4 hours = 14400 seconds. If you need more, ask the Support Team
+	// please.
 	DvrDuration param.Opt[int64] `json:"dvr_duration,omitzero"`
 	// Enables DVR for the stream:
 	//
@@ -1162,23 +1313,28 @@ type StreamUpdateParamsStream struct {
 	// Custom quality set ID for transcoding, if transcoding is required according to
 	// your conditions. Look at GET /`quality_sets` method
 	QualitySetID param.Opt[int64] `json:"quality_set_id,omitzero"`
-	// When using PULL method, this is the URL to pull a stream from. You can specify
-	// multiple addresses separated by a space (" "), so you can organize a backup
-	// plan. In this case, the specified addresses will be selected one by one using
-	// round robin scheduling. If the first address does not respond, then the next one
-	// in the list will be automatically requested, returning to the first and so on in
-	// a circle. Also, if the sucessfully working stream stops sending data, then the
-	// next one will be selected according to the same scheme. After 2 hours of
-	// inactivity of your original stream, the system stops PULL requests and the
-	// stream is deactivated (the "active" field switches to "false"). Please, note
-	// that this field is for PULL only, so is not suitable for PUSH. Look at fields
-	// "`push_url`" and "`push_url_srt`" from GET method.
+	// When using PULL method, this is the URL to pull a stream from.
+	//
+	// You can specify multiple addresses separated by a space (" "), so you can
+	// organize a backup plan. In this case, the specified addresses will be selected
+	// one by one using round robin scheduling. If the first address does not respond,
+	// then the next one in the list will be automatically requested, returning to the
+	// first and so on in a circle. Also, if the sucessfully working stream stops
+	// sending data, then the next one will be selected according to the same scheme.
+	//
+	// After 2 hours of inactivity of your original stream, the system stops PULL
+	// requests and the stream is deactivated (the "active" field switches to "false").
+	//
+	// Please, note that this field is for PULL only, so is not suitable for PUSH. Look
+	// at fields "`push_url`" and "`push_url_srt`" from GET method.
 	Uri param.Opt[string] `json:"uri,omitzero"`
 	// IDs of broadcasts which will include this stream
 	BroadcastIDs []int64 `json:"broadcast_ids,omitzero"`
 	// Visualization mode for 360° streams, how the stream is rendered in our web
 	// player ONLY. If you would like to show video 360° in an external video player,
-	// then use parameters of that video player. Modes:
+	// then use parameters of that video player.
+	//
+	// Modes:
 	//
 	// - regular – regular “flat” stream
 	// - vr360 – display stream in 360° mode
@@ -1188,7 +1344,9 @@ type StreamUpdateParamsStream struct {
 	// Any of "regular", "vr360", "vr180", "vr360tb".
 	Projection string `json:"projection,omitzero"`
 	// Method of recording a stream. Specifies the source from which the stream will be
-	// recorded: original or transcoded. Types:
+	// recorded: original or transcoded.
+	//
+	// Types:
 	//
 	//   - "origin" – To record RMTP/SRT/etc original clean media source.
 	//   - "transcoded" – To record the output transcoded version of the stream,
@@ -1234,33 +1392,47 @@ func (r StreamListParams) URLQuery() (v url.Values, err error) {
 }
 
 type StreamNewClipParams struct {
-	// Requested segment duration in seconds to be cut. Please, note that cutting is
-	// based on the idea of instantly creating a clip, instead of precise timing. So
-	// final segment may be:
+	// Requested segment duration in seconds to be cut.
+	//
+	// Please, note that cutting is based on the idea of instantly creating a clip,
+	// instead of precise timing. So final segment may be:
 	//
 	//   - Less than the specified value if there is less data in the DVR than the
 	//     requested segment.
 	//   - Greater than the specified value, because segment is aligned to the first and
 	//     last key frames of already stored fragment in DVR, this way -1 and +1 chunks
-	//     can be added to left and right. Duration of cutted segment cannot be greater
-	//     than DVR duration for this stream. Therefore, to change the maximum, use
-	//     "`dvr_duration`" parameter of this stream.
+	//     can be added to left and right.
+	//
+	// Duration of cutted segment cannot be greater than DVR duration for this stream.
+	// Therefore, to change the maximum, use "`dvr_duration`" parameter of this stream.
 	Duration int64 `json:"duration,required"`
-	// Expire time of the clip via a public link. Unix timestamp in seconds, absolute
-	// value. This is the time how long the instant clip will be stored in the server
-	// memory and can be accessed via public HLS/MP4 links. Download and/or use the
-	// instant clip before this time expires. After the time has expired, the clip is
-	// deleted from memory and is no longer available via the link. You need to create
-	// a new segment, or use `vod_required: true` attribute. If value is omitted, then
-	// expiration is counted as +3600 seconds (1 hour) to the end of the clip (i.e.
-	// `unix timestamp = <start> + <duration> + 3600`). Allowed range: 1m <= expiration
-	// <= 4h. Example:
+	// Expire time of the clip via a public link.
+	//
+	// Unix timestamp in seconds, absolute value.
+	//
+	// This is the time how long the instant clip will be stored in the server memory
+	// and can be accessed via public HLS/MP4 links. Download and/or use the instant
+	// clip before this time expires.
+	//
+	// After the time has expired, the clip is deleted from memory and is no longer
+	// available via the link. You need to create a new segment, or use
+	// `vod_required: true` attribute.
+	//
+	// If value is omitted, then expiration is counted as +3600 seconds (1 hour) to the
+	// end of the clip (i.e. `unix timestamp = <start> + <duration> + 3600`).
+	//
+	// Allowed range: 1m <= expiration <= 4h.
+	//
+	// Example:
 	// `24.05.2024 14:00:00 (GMT) + 60 seconds of duration + 3600 seconds of expiration = 24.05.2024 15:01:00 (GMT) is Unix timestamp = 1716562860`
 	Expiration param.Opt[int64] `json:"expiration,omitzero"`
-	// Starting point of the segment to cut. Unix timestamp in seconds, absolute value.
-	// Example: `24.05.2024 14:00:00 (GMT) is Unix timestamp = 1716559200` If a value
-	// from the past is specified, it is used as the starting point for the segment to
-	// cut. If the value is omitted, then clip will start from now.
+	// Starting point of the segment to cut.
+	//
+	// Unix timestamp in seconds, absolute value. Example:
+	// `24.05.2024 14:00:00 (GMT) is Unix timestamp = 1716559200`
+	//
+	// If a value from the past is specified, it is used as the starting point for the
+	// segment to cut. If the value is omitted, then clip will start from now.
 	Start param.Opt[int64] `json:"start,omitzero"`
 	// Indicates if video needs to be stored also as permanent VOD
 	VodRequired param.Opt[bool] `json:"vod_required,omitzero"`

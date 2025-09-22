@@ -37,15 +37,19 @@ func NewCostReportService(opts ...option.RequestOption) (r CostReportService) {
 }
 
 // Get cost report totals (aggregated costs) for a given period. Requested period
-// should not exceed 31 days. Note: This report assumes there are no active commit
-// features in the billing plan. If there are active commit features (pre-paid
-// resources) in your plan, use /v1/`reservation_cost_report`/totals, as the
-// results from this report will not be accurate. Receiving data from the past hour
-// might lead to incomplete statistics. For the most accurate data, we recommend
-// accessing the statistics after at least one hour. Typically, updates are
-// available within a 24-hour period, although the frequency can vary. Maintenance
-// periods or other exceptions may cause delays, potentially extending beyond 24
-// hours until the servers are back online and the missing data is filled in.
+// should not exceed 31 days.
+//
+// Note: This report assumes there are no active commit features in the billing
+// plan. If there are active commit features (pre-paid resources) in your plan, use
+// /v1/`reservation_cost_report`/totals, as the results from this report will not
+// be accurate.
+//
+// Receiving data from the past hour might lead to incomplete statistics. For the
+// most accurate data, we recommend accessing the statistics after at least one
+// hour. Typically, updates are available within a 24-hour period, although the
+// frequency can vary. Maintenance periods or other exceptions may cause delays,
+// potentially extending beyond 24 hours until the servers are back online and the
+// missing data is filled in.
 func (r *CostReportService) GetAggregated(ctx context.Context, body CostReportGetAggregatedParams, opts ...option.RequestOption) (res *CostReportAggregated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v1/cost_report/totals"
@@ -56,12 +60,14 @@ func (r *CostReportService) GetAggregated(ctx context.Context, body CostReportGe
 // Retrieve a detailed cost report totals for a specified month, which includes
 // both commit and pay-as-you-go (overcommit) prices. Additionally, it provides the
 // spent billing units (e.g., hours or GB) for resources. The "`time_to`" parameter
-// represents all days in the specified month. Receiving data from the past hour
-// might lead to incomplete statistics. For the most accurate data, we recommend
-// accessing the statistics after at least one hour. Typically, updates are
-// available within a 24-hour period, although the frequency can vary. Maintenance
-// periods or other exceptions may cause delays, potentially extending beyond 24
-// hours until the servers are back online and the missing data is filled in.
+// represents all days in the specified month.
+//
+// Receiving data from the past hour might lead to incomplete statistics. For the
+// most accurate data, we recommend accessing the statistics after at least one
+// hour. Typically, updates are available within a 24-hour period, although the
+// frequency can vary. Maintenance periods or other exceptions may cause delays,
+// potentially extending beyond 24 hours until the servers are back online and the
+// missing data is filled in.
 func (r *CostReportService) GetAggregatedMonthly(ctx context.Context, body CostReportGetAggregatedMonthlyParams, opts ...option.RequestOption) (res *CostReportAggregatedMonthly, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v1/reservation_cost_report/totals"
@@ -70,16 +76,19 @@ func (r *CostReportService) GetAggregatedMonthly(ctx context.Context, body CostR
 }
 
 // Get a detailed cost report for a given period and specific resources. Requested
-// period should not exceed 31 days. Note: This report assumes there are no active
-// commit features in the billing plan. If there are active commit features
-// (pre-paid resources) in your plan, use /v1/`reservation_cost_report`/totals, as
-// the results from this report will not be accurate. Receiving data from the past
-// hour might lead to incomplete statistics. For the most accurate data, we
-// recommend accessing the statistics after at least one hour. Typically, updates
-// are available within a 24-hour period, although the frequency can vary.
-// Maintenance periods or other exceptions may cause delays, potentially extending
-// beyond 24 hours until the servers are back online and the missing data is filled
-// in.
+// period should not exceed 31 days.
+//
+// Note: This report assumes there are no active commit features in the billing
+// plan. If there are active commit features (pre-paid resources) in your plan, use
+// /v1/`reservation_cost_report`/totals, as the results from this report will not
+// be accurate.
+//
+// Receiving data from the past hour might lead to incomplete statistics. For the
+// most accurate data, we recommend accessing the statistics after at least one
+// hour. Typically, updates are available within a 24-hour period, although the
+// frequency can vary. Maintenance periods or other exceptions may cause delays,
+// potentially extending beyond 24 hours until the servers are back online and the
+// missing data is filled in.
 func (r *CostReportService) GetDetailed(ctx context.Context, body CostReportGetDetailedParams, opts ...option.RequestOption) (res *CostReportDetailed, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v1/cost_report/resources"

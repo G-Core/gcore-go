@@ -64,9 +64,11 @@ func (r *StorageService) Update(ctx context.Context, storageID int64, body Stora
 }
 
 // Returns storages with the same filtering and pagination as v2, but in a
-// simplified response shape for easier client consumption. Response format: count:
-// total number of storages matching the filter (independent of pagination)
-// results: the current page of storages according to limit/offset
+// simplified response shape for easier client consumption.
+//
+// Response format: count: total number of storages matching the filter
+// (independent of pagination) results: the current page of storages according to
+// limit/offset
 func (r *StorageService) List(ctx context.Context, query StorageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Storage], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -85,9 +87,11 @@ func (r *StorageService) List(ctx context.Context, query StorageListParams, opts
 }
 
 // Returns storages with the same filtering and pagination as v2, but in a
-// simplified response shape for easier client consumption. Response format: count:
-// total number of storages matching the filter (independent of pagination)
-// results: the current page of storages according to limit/offset
+// simplified response shape for easier client consumption.
+//
+// Response format: count: total number of storages matching the filter
+// (independent of pagination) results: the current page of storages according to
+// limit/offset
 func (r *StorageService) ListAutoPaging(ctx context.Context, query StorageListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Storage] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }

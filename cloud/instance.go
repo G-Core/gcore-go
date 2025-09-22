@@ -49,7 +49,11 @@ func NewInstanceService(opts ...option.RequestOption) (r InstanceService) {
 	return
 }
 
-// Create an instance with specified configuration. How to get access: For Linux,
+// Create an instance with specified configuration.
+//
+// How to get access:
+//
+// For Linux,
 //
 //   - Use the `user_data` field to provide a
 //     [cloud-init script](https://cloudinit.readthedocs.io/en/latest/reference/examples.html)
@@ -57,7 +61,10 @@ func NewInstanceService(opts ...option.RequestOption) (r InstanceService) {
 //   - Specify the `username` and `password` to create a new user.
 //   - When only `password` is provided, it is set as the password for the default
 //     user of the image.
-//   - The `user_data` is ignored when the `password` is specified. For Windows,
+//   - The `user_data` is ignored when the `password` is specified.
+//
+// For Windows,
+//
 //   - Use the `user_data` field to provide a
 //     [cloudbase-init script](https://cloudbase-init.readthedocs.io/en/latest/userdata.html#cloud-config)
 //     in base64 to create new users on Windows.
@@ -425,7 +432,9 @@ func (r *InstanceService) EnablePortSecurity(ctx context.Context, portID string,
 
 // Retrieve detailed information about a specific instance. The response content
 // language for `ddos_profile` can be controlled via the 'language' cookie
-// parameter. **Cookie Parameters**:
+// parameter.
+//
+// **Cookie Parameters**:
 //
 //   - `language` (str, optional): Language for the response content. Affects the
 //     `ddos_profile` field. Supported values:
@@ -701,7 +710,9 @@ type InstanceNewParams struct {
 	// '`user_data`' field to provide a script to create new users on Windows. The
 	// password of the Admin user cannot be updated via '`user_data`'.
 	Password param.Opt[string] `json:"password,omitzero"`
-	// Placement group ID for instance placement policy. Supported group types:
+	// Placement group ID for instance placement policy.
+	//
+	// Supported group types:
 	//
 	//   - `anti-affinity`: Ensures instances are placed on different hosts for high
 	//     availability.
