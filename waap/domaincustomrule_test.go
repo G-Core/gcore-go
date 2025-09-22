@@ -71,12 +71,12 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 					Negation:   gcore.Bool(true),
 				},
 				IP: waap.DomainCustomRuleNewParamsConditionIP{
-					IPAddress: "192.168.1.1",
+					IPAddress: "ip_address",
 					Negation:  gcore.Bool(true),
 				},
 				IPRange: waap.DomainCustomRuleNewParamsConditionIPRange{
-					LowerBound: "192.168.1.1",
-					UpperBound: "192.168.1.1",
+					LowerBound: "lower_bound",
+					UpperBound: "upper_bound",
 					Negation:   gcore.Bool(true),
 				},
 				Organization: waap.DomainCustomRuleNewParamsConditionOrganization{
@@ -92,7 +92,7 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 					Requests:       20,
 					Time:           1,
 					HTTPMethods:    []string{"CONNECT"},
-					IPs:            []string{"192.168.1.1"},
+					IPs:            []string{"string"},
 					UserDefinedTag: gcore.String("SQfNklznVLBBpr"),
 				},
 				ResponseHeader: waap.DomainCustomRuleNewParamsConditionResponseHeader{
@@ -200,12 +200,12 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 					Negation:   gcore.Bool(true),
 				},
 				IP: waap.DomainCustomRuleUpdateParamsConditionIP{
-					IPAddress: "192.168.1.1",
+					IPAddress: "ip_address",
 					Negation:  gcore.Bool(true),
 				},
 				IPRange: waap.DomainCustomRuleUpdateParamsConditionIPRange{
-					LowerBound: "192.168.1.1",
-					UpperBound: "192.168.1.1",
+					LowerBound: "lower_bound",
+					UpperBound: "upper_bound",
 					Negation:   gcore.Bool(true),
 				},
 				Organization: waap.DomainCustomRuleUpdateParamsConditionOrganization{
@@ -221,7 +221,7 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 					Requests:       20,
 					Time:           1,
 					HTTPMethods:    []string{"CONNECT"},
-					IPs:            []string{"192.168.1.1"},
+					IPs:            []string{"string"},
 					UserDefinedTag: gcore.String("SQfNklznVLBBpr"),
 				},
 				ResponseHeader: waap.DomainCustomRuleUpdateParamsConditionResponseHeader{

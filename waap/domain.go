@@ -434,7 +434,7 @@ type DomainUpdateParams struct {
 	// The current status of the domain
 	//
 	// Any of "active", "monitor".
-	Status DomainUpdateParamsStatus `json:"status,omitzero"`
+	Status DomainUpdateParamsStatus `json:"status,omitzero,required"`
 	paramObj
 }
 

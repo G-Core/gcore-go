@@ -93,7 +93,7 @@ type WaapInsight struct {
 	Description string `json:"description,required"`
 	// The date and time the insight was first seen in ISO 8601 format
 	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
-	// The type of the insight represented as a slug
+	// The slug of the insight type
 	InsightType string `json:"insight_type,required"`
 	// A hash table of label names and values that apply to the insight
 	Labels map[string]string `json:"labels,required"`
