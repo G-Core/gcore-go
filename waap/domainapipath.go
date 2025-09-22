@@ -220,13 +220,10 @@ type DomainAPIPathNewParams struct {
 	Method DomainAPIPathNewParamsMethod `json:"method,omitzero,required"`
 	// The API path, locations that are saved for resource IDs will be put in curly
 	// brackets
-	Path string `json:"path,required"`
-	// The API version
+	Path       string            `json:"path,required"`
 	APIVersion param.Opt[string] `json:"api_version,omitzero"`
-	// An array of api groups associated with the API path
-	APIGroups []string `json:"api_groups,omitzero"`
-	// An array of tags associated with the API path
-	Tags []string `json:"tags,omitzero"`
+	APIGroups  []string          `json:"api_groups,omitzero"`
+	Tags       []string          `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -265,15 +262,13 @@ type DomainAPIPathUpdateParams struct {
 	DomainID int64 `path:"domain_id,required" json:"-"`
 	// The updated API path. When updating the path, variables can be renamed, path
 	// parts can be converted to variables and vice versa.
-	Path param.Opt[string] `json:"path,omitzero"`
-	// An array of api groups associated with the API path
-	APIGroups []string `json:"api_groups,omitzero"`
-	// The status of the discovered API path
+	Path      param.Opt[string] `json:"path,omitzero"`
+	APIGroups []string          `json:"api_groups,omitzero"`
+	// The different statuses an API path can have
 	//
 	// Any of "CONFIRMED_API", "POTENTIAL_API", "NOT_API", "DELISTED_API".
 	Status DomainAPIPathUpdateParamsStatus `json:"status,omitzero"`
-	// An array of tags associated with the API path
-	Tags []string `json:"tags,omitzero"`
+	Tags   []string                        `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -285,7 +280,7 @@ func (r *DomainAPIPathUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The status of the discovered API path
+// The different statuses an API path can have
 type DomainAPIPathUpdateParamsStatus string
 
 const (

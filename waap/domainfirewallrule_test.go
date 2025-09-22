@@ -39,12 +39,12 @@ func TestDomainFirewallRuleNewWithOptionalParams(t *testing.T) {
 			},
 			Conditions: []waap.DomainFirewallRuleNewParamsCondition{{
 				IP: waap.DomainFirewallRuleNewParamsConditionIP{
-					IPAddress: "192.168.1.1",
+					IPAddress: "ip_address",
 					Negation:  gcore.Bool(true),
 				},
 				IPRange: waap.DomainFirewallRuleNewParamsConditionIPRange{
-					LowerBound: "192.168.1.1",
-					UpperBound: "192.168.1.1",
+					LowerBound: "lower_bound",
+					UpperBound: "upper_bound",
 					Negation:   gcore.Bool(true),
 				},
 			}},
@@ -88,12 +88,12 @@ func TestDomainFirewallRuleUpdateWithOptionalParams(t *testing.T) {
 			},
 			Conditions: []waap.DomainFirewallRuleUpdateParamsCondition{{
 				IP: waap.DomainFirewallRuleUpdateParamsConditionIP{
-					IPAddress: "192.168.1.1",
+					IPAddress: "ip_address",
 					Negation:  gcore.Bool(true),
 				},
 				IPRange: waap.DomainFirewallRuleUpdateParamsConditionIPRange{
-					LowerBound: "192.168.1.1",
-					UpperBound: "192.168.1.1",
+					LowerBound: "lower_bound",
+					UpperBound: "upper_bound",
 					Negation:   gcore.Bool(true),
 				},
 			}},

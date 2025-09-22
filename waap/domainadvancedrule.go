@@ -109,7 +109,8 @@ func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdv
 type WaapAdvancedRule struct {
 	// The unique identifier for the rule
 	ID int64 `json:"id,required"`
-	// The action that the rule takes when triggered
+	// The action that the rule takes when triggered. Only one action can be set per
+	// rule.
 	Action WaapAdvancedRuleAction `json:"action,required"`
 	// Whether or not the rule is enabled
 	Enabled bool `json:"enabled,required"`
@@ -121,7 +122,7 @@ type WaapAdvancedRule struct {
 	// https://gcore.com/docs/waap/waap-rules/advanced-rules
 	Source string `json:"source,required"`
 	// The description assigned to the rule
-	Description string `json:"description,nullable"`
+	Description string `json:"description"`
 	// The WAAP request/response phase for applying the rule. Default is "access". The
 	// "access" phase is responsible for modifying the request before it is sent to the
 	// origin server. The "`header_filter`" phase is responsible for modifying the HTTP
@@ -151,21 +152,22 @@ func (r *WaapAdvancedRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that the rule takes when triggered
+// The action that the rule takes when triggered. Only one action can be set per
+// rule.
 type WaapAdvancedRuleAction struct {
 	// The WAAP allowed the request
-	Allow any `json:"allow,nullable"`
+	Allow any `json:"allow"`
 	// WAAP block action behavior could be configured with response status code and
 	// action duration.
-	Block WaapAdvancedRuleActionBlock `json:"block,nullable"`
+	Block WaapAdvancedRuleActionBlock `json:"block"`
 	// The WAAP presented the user with a captcha
-	Captcha any `json:"captcha,nullable"`
+	Captcha any `json:"captcha"`
 	// The WAAP performed automatic browser validation
-	Handshake any `json:"handshake,nullable"`
+	Handshake any `json:"handshake"`
 	// The WAAP monitored the request but took no action
-	Monitor any `json:"monitor,nullable"`
+	Monitor any `json:"monitor"`
 	// WAAP tag action gets a list of tags to tag the request scope with
-	Tag WaapAdvancedRuleActionTag `json:"tag,nullable"`
+	Tag WaapAdvancedRuleActionTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Allow       respjson.Field
@@ -192,11 +194,11 @@ type WaapAdvancedRuleActionBlock struct {
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
 	// are not allowed.
-	ActionDuration string `json:"action_duration,nullable"`
-	// Designates the HTTP status code to deliver when a request is blocked.
+	ActionDuration string `json:"action_duration"`
+	// A custom HTTP status code that the WAAP returns if a rule blocks a request
 	//
 	// Any of 403, 405, 418, 429.
-	StatusCode int64 `json:"status_code,nullable"`
+	StatusCode int64 `json:"status_code"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ActionDuration respjson.Field
@@ -245,7 +247,8 @@ const (
 )
 
 type DomainAdvancedRuleNewParams struct {
-	// The action that the rule takes when triggered
+	// The action that the rule takes when triggered. Only one action can be set per
+	// rule.
 	Action DomainAdvancedRuleNewParamsAction `json:"action,omitzero,required"`
 	// Whether or not the rule is enabled
 	Enabled bool `json:"enabled,required"`
@@ -278,7 +281,8 @@ func (r *DomainAdvancedRuleNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that the rule takes when triggered
+// The action that the rule takes when triggered. Only one action can be set per
+// rule.
 type DomainAdvancedRuleNewParamsAction struct {
 	// The WAAP allowed the request
 	Allow any `json:"allow,omitzero"`
@@ -312,7 +316,7 @@ type DomainAdvancedRuleNewParamsActionBlock struct {
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
 	// are not allowed.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
-	// Designates the HTTP status code to deliver when a request is blocked.
+	// A custom HTTP status code that the WAAP returns if a rule blocks a request
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code,omitzero"`
@@ -378,7 +382,7 @@ type DomainAdvancedRuleUpdateParams struct {
 	// `client_data`. More info can be found here:
 	// https://gcore.com/docs/waap/waap-rules/advanced-rules
 	Source param.Opt[string] `json:"source,omitzero"`
-	// The action that a WAAP rule takes when triggered
+	// The action that a WAAP rule takes when triggered.
 	Action DomainAdvancedRuleUpdateParamsAction `json:"action,omitzero"`
 	// The WAAP request/response phase for applying the rule. The "access" phase is
 	// responsible for modifying the request before it is sent to the origin server.
@@ -400,7 +404,7 @@ func (r *DomainAdvancedRuleUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that a WAAP rule takes when triggered
+// The action that a WAAP rule takes when triggered.
 type DomainAdvancedRuleUpdateParamsAction struct {
 	// The WAAP allowed the request
 	Allow any `json:"allow,omitzero"`
@@ -434,7 +438,7 @@ type DomainAdvancedRuleUpdateParamsActionBlock struct {
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
 	// are not allowed.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
-	// Designates the HTTP status code to deliver when a request is blocked.
+	// A custom HTTP status code that the WAAP returns if a rule blocks a request
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code,omitzero"`
