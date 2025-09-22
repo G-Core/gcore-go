@@ -12,6 +12,7 @@ import (
 	"github.com/G-Core/gcore-go/cloud"
 	"github.com/G-Core/gcore-go/internal/testutil"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/param"
 )
 
 func TestUserRoleAssignmentNewWithOptionalParams(t *testing.T) {
@@ -30,7 +31,7 @@ func TestUserRoleAssignmentNewWithOptionalParams(t *testing.T) {
 		Role:      cloud.UserRoleAssignmentNewParamsRoleClientAdministrator,
 		UserID:    777,
 		ClientID:  gcore.Int(8),
-		ProjectID: gcore.Int(0),
+		ProjectID: param.Null[int64](),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -60,7 +61,7 @@ func TestUserRoleAssignmentUpdateWithOptionalParams(t *testing.T) {
 			Role:      cloud.UserRoleAssignmentUpdateParamsRoleClientAdministrator,
 			UserID:    777,
 			ClientID:  gcore.Int(8),
-			ProjectID: gcore.Int(0),
+			ProjectID: param.Null[int64](),
 		},
 	)
 	if err != nil {
