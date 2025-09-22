@@ -12,6 +12,7 @@ import (
 	"github.com/G-Core/gcore-go/cloud"
 	"github.com/G-Core/gcore-go/internal/testutil"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/param"
 )
 
 func TestK8ClusterNewWithOptionalParams(t *testing.T) {
@@ -99,7 +100,7 @@ func TestK8ClusterNewWithOptionalParams(t *testing.T) {
 					"0": 45046,
 					"1": 45047,
 				},
-				Value: gcore.String("value"),
+				Value: param.Null[string](),
 			}},
 			ProfileTemplate:     gcore.Int(29),
 			ProfileTemplateName: gcore.String("profile_template_name"),
@@ -186,7 +187,7 @@ func TestK8ClusterUpdateWithOptionalParams(t *testing.T) {
 						"0": 45046,
 						"1": 45047,
 					},
-					Value: gcore.String("value"),
+					Value: param.Null[string](),
 				}},
 				ProfileTemplate:     gcore.Int(29),
 				ProfileTemplateName: gcore.String("profile_template_name"),
