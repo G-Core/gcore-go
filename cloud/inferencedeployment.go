@@ -275,7 +275,9 @@ type InferenceDeployment struct {
 	Probes InferenceDeploymentProbes `json:"probes,required"`
 	// Project ID. If not provided, your default project ID will be used.
 	ProjectID int64 `json:"project_id,required"`
-	// Inference instance status. Value can be one of the following:
+	// Inference instance status.
+	//
+	// Value can be one of the following:
 	//
 	//   - `DEPLOYING` - The instance is being deployed. Containers are not yet created.
 	//   - `PARTIALLYDEPLOYED` - All containers have been created, but some may not be
@@ -649,7 +651,9 @@ func (r *InferenceDeploymentProbes) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Inference instance status. Value can be one of the following:
+// Inference instance status.
+//
+// Value can be one of the following:
 //
 //   - `DEPLOYING` - The instance is being deployed. Containers are not yet created.
 //   - `PARTIALLYDEPLOYED` - All containers have been created, but some may not be

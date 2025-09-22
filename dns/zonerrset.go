@@ -55,9 +55,11 @@ func NewZoneRrsetService(opts ...option.RequestOption) (r ZoneRrsetService) {
 // determined by EDNS Client Subnet (ECS) if defined, otherwise - by
 // client/recursor IP. Selector pickers are used in the specified order until the
 // first match, in case of match - all next selectors are bypassed. Filters or
-// mutators are applied to the match according to the order they are specified. For
-// example, sort records by proximity to user, shuffle based on weights and return
-// not more than 3:
+// mutators are applied to the match according to the order they are specified.
+//
+// For example, sort records by proximity to user, shuffle based on weights and
+// return not more than 3:
+//
 // `"pickers": [ { "type": "geodistance" }, { "type": "`weighted_shuffle`" }, { "type": "`first_n`", "limit": 3 } ]`
 //
 // #### geodns filter
@@ -72,11 +74,14 @@ func NewZoneRrsetService(opts ...option.RequestOption) (r ZoneRrsetService) {
 //   - `regions` - list of region codes, e.g. `["de-bw", "de-by"]`;
 //   - `countries` - list of country codes, e.g. `["de", "lu", "lt"]`;
 //   - `continents` - list of continent codes, e.g.
-//     `["af", "an", "eu", "as", "na", "sa", "oc"]`. If there is a record (or
-//     multiple) with metadata matched IP, it's used as a response. If not - asn,
-//     then country and then continent are checked for a match. If there is no match,
-//     then the behaviour is defined by _strict_ parameter of the filter. Example:
-//     `"pickers": [ { "type": "geodns", "strict": true } ]`
+//     `["af", "an", "eu", "as", "na", "sa", "oc"]`.
+//
+// If there is a record (or multiple) with metadata matched IP, it's used as a
+// response. If not - asn, then country and then continent are checked for a match.
+// If there is no match, then the behaviour is defined by _strict_ parameter of the
+// filter.
+//
+// Example: `"pickers": [ { "type": "geodns", "strict": true } ]`
 //
 // ##### Strict parameter
 //
@@ -88,41 +93,50 @@ func NewZoneRrsetService(opts ...option.RequestOption) (r ZoneRrsetService) {
 //
 // Resource records which ASN metadata matches ASN of the requestor are picked by
 // this selector, and passed to the next non-selector picker, if there is no
-// match - next configured picker starts with all records. Example:
-// `"pickers": [ {"type": "asn"} ]`
+// match - next configured picker starts with all records.
+//
+// Example: `"pickers": [ {"type": "asn"} ]`
 //
 // #### country selector
 //
 // Resource records which country metadata matches country of the requestor are
 // picked by this selector, and passed to the next non-selector picker, if there is
-// no match - next configured picker starts with all records. Example:
-// `"pickers": [ { "type": "country" } ]`
+// no match - next configured picker starts with all records.
+//
+// Example: `"pickers": [ { "type": "country" } ]`
 //
 // #### continent selector
 //
 // Resource records which continent metadata matches continent of the requestor are
 // picked by this selector, and passed to the next non-selector picker, if there is
-// no match - next configured picker starts with all records. Example:
-// `"pickers": [ { "type": "continent" } ]`
+// no match - next configured picker starts with all records.
+//
+// Example: `"pickers": [ { "type": "continent" } ]`
 //
 // #### region selector
 //
 // Resource records which region metadata matches region of the requestor are
 // picked by this selector, and passed to the next non-selector picker, if there is
 // no match - next configured picker starts with all records. e.g. `fr-nor` for
-// France/Normandy. Example: `"pickers": [ { "type": "region" } ]`
+// France/Normandy.
+//
+// Example: `"pickers": [ { "type": "region" } ]`
 //
 // #### ip selector
 //
 // Resource records which IP metadata matches IP of the requestor are picked by
 // this selector, and passed to the next non-selector picker, if there is no
 // match - next configured picker starts with all records. Maximum 100 subnets are
-// allowed to specify in meta of RR. Example: `"pickers": [ { "type": "ip" } ]`
+// allowed to specify in meta of RR.
+//
+// Example: `"pickers": [ { "type": "ip" } ]`
 //
 // #### default selector
 //
 // When enabled, records marked as default are selected:
-// `"meta": {"default": true}`. Example:
+// `"meta": {"default": true}`.
+//
+// Example:
 // `"pickers": [ { "type": "geodns", "strict": false }, { "type": "default" }, { "type": "`first_n`", "limit": 2 } ]`
 //
 // #### geodistance mutator
@@ -131,19 +145,22 @@ func NewZoneRrsetService(opts ...option.RequestOption) (r ZoneRrsetService) {
 // meters) from requestor to the coordinates specified in latlong metadata.
 // Distance is calculated using Haversine formula. The "nearest" to the user's IP
 // RR goes first. The records without latlong metadata come last. e.g. for Berlin
-// `[52.520008, 13.404954]`.; In this configuration the only "nearest" to the
-// requestor record to be returned:
+// `[52.520008, 13.404954]`.;
+//
+// In this configuration the only "nearest" to the requestor record to be returned:
 // `"pickers": [ { "type": "geodistance" }, { "type": "`first_n`", "limit": 1 } ]`
 //
 // #### `weighted_shuffle` mutator
 //
 // The resource records are rearranged in random order based on the `weight`
-// metadata. Default weight (if not specified) is 50. Example:
-// `"pickers": [ { "type": "`weighted_shuffle`" } ]`
+// metadata. Default weight (if not specified) is 50.
+//
+// Example: `"pickers": [ { "type": "`weighted_shuffle`" } ]`
 //
 // #### `first_n` filter
 //
 // Slices first N (N specified as a limit parameter value) resource records.
+//
 // Example: `"pickers": [ { "type": "`first_n`", "limit": 1 } ]` returns only the
 // first resource record.
 //
@@ -361,17 +378,21 @@ type DNSOutputRrsetResourceRecord struct {
 	// Meta information for record Map with string key and any valid json as value,
 	// with valid keys
 	//
-	//  1. `asn` (array of int)
-	//  2. `continents` (array of string)
-	//  3. `countries` (array of string)
-	//  4. `latlong` (array of float64, latitude and longitude)
-	//  5. `fallback` (bool)
-	//  6. `backup` (bool)
-	//  7. `notes` (string)
-	//  8. `weight` (float)
-	//  9. `ip` (string) Some keys are reserved for balancing, @see
-	//     https://api.gcore.com/dns/v2/info/meta This meta will be used to decide which
-	//     resource record should pass through filters from the filter set
+	// 1. `asn` (array of int)
+	// 2. `continents` (array of string)
+	// 3. `countries` (array of string)
+	// 4. `latlong` (array of float64, latitude and longitude)
+	// 5. `fallback` (bool)
+	// 6. `backup` (bool)
+	// 7. `notes` (string)
+	// 8. `weight` (float)
+	// 9. `ip` (string)
+	//
+	// Some keys are reserved for balancing, @see
+	// https://api.gcore.com/dns/v2/info/meta
+	//
+	// This meta will be used to decide which resource record should pass through
+	// filters from the filter set
 	Meta map[string]any `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

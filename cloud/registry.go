@@ -248,8 +248,11 @@ func (r *RegistryTag) UnmarshalJSON(data []byte) error {
 type RegistryNewParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// A name for the container registry. Should be in lowercase, consisting only of
-	// numbers, letters and -, with maximum length of 24 characters
+	// A name for the container registry.
+	//
+	// Should be in lowercase, consisting only of numbers, letters and -,
+	//
+	// with maximum length of 24 characters
 	Name string `json:"name,required"`
 	// Registry storage limit, GiB
 	StorageLimit param.Opt[int64] `json:"storage_limit,omitzero"`

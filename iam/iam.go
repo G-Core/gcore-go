@@ -779,7 +779,9 @@ type AccountOverviewUser struct {
 	Deleted bool `json:"deleted"`
 	// User's email address.
 	Email string `json:"email" format:"email"`
-	// User's group in the current account. IAM supports 5 groups:
+	// User's group in the current account.
+	//
+	// IAM supports 5 groups:
 	//
 	// - Users
 	// - Administrators
@@ -787,7 +789,9 @@ type AccountOverviewUser struct {
 	// - Purge and Prefetch only (API)
 	// - Purge and Prefetch only (API+Web)
 	Groups []AccountOverviewUserGroup `json:"groups"`
-	// User's language. Defines language of the control panel and email messages.
+	// User's language.
+	//
+	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
 	Lang string `json:"lang"`
