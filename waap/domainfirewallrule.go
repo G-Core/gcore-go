@@ -126,7 +126,7 @@ type WaapFirewallRule struct {
 	// The name assigned to the rule
 	Name string `json:"name,required"`
 	// The description assigned to the rule
-	Description string `json:"description,nullable"`
+	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -175,11 +175,11 @@ type WaapFirewallRuleActionBlock struct {
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
 	// are not allowed.
-	ActionDuration string `json:"action_duration,nullable"`
-	// Designates the HTTP status code to deliver when a request is blocked.
+	ActionDuration string `json:"action_duration"`
+	// A custom HTTP status code that the WAAP returns if a rule blocks a request
 	//
 	// Any of 403, 405, 418, 429.
-	StatusCode int64 `json:"status_code,nullable"`
+	StatusCode int64 `json:"status_code"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ActionDuration respjson.Field
@@ -199,9 +199,9 @@ func (r *WaapFirewallRuleActionBlock) UnmarshalJSON(data []byte) error {
 // those criteria can take
 type WaapFirewallRuleCondition struct {
 	// Match the incoming request against a single IP address
-	IP WaapFirewallRuleConditionIP `json:"ip,nullable"`
+	IP WaapFirewallRuleConditionIP `json:"ip"`
 	// Match the incoming request against an IP range
-	IPRange WaapFirewallRuleConditionIPRange `json:"ip_range,nullable"`
+	IPRange WaapFirewallRuleConditionIPRange `json:"ip_range"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IP          respjson.Field
@@ -220,7 +220,7 @@ func (r *WaapFirewallRuleCondition) UnmarshalJSON(data []byte) error {
 // Match the incoming request against a single IP address
 type WaapFirewallRuleConditionIP struct {
 	// A single IPv4 or IPv6 address
-	IPAddress string `json:"ip_address,required" format:"ipv4"`
+	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -241,9 +241,9 @@ func (r *WaapFirewallRuleConditionIP) UnmarshalJSON(data []byte) error {
 // Match the incoming request against an IP range
 type WaapFirewallRuleConditionIPRange struct {
 	// The lower bound IPv4 or IPv6 address to match against
-	LowerBound string `json:"lower_bound,required" format:"ipv4"`
+	LowerBound string `json:"lower_bound,required" format:"ipvanyaddress"`
 	// The upper bound IPv4 or IPv6 address to match against
-	UpperBound string `json:"upper_bound,required" format:"ipv4"`
+	UpperBound string `json:"upper_bound,required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -310,7 +310,7 @@ type DomainFirewallRuleNewParamsActionBlock struct {
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
 	// are not allowed.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
-	// Designates the HTTP status code to deliver when a request is blocked.
+	// A custom HTTP status code that the WAAP returns if a rule blocks a request
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code,omitzero"`
@@ -354,7 +354,7 @@ func (r *DomainFirewallRuleNewParamsCondition) UnmarshalJSON(data []byte) error 
 // The property IPAddress is required.
 type DomainFirewallRuleNewParamsConditionIP struct {
 	// A single IPv4 or IPv6 address
-	IPAddress string `json:"ip_address,required" format:"ipv4"`
+	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -373,9 +373,9 @@ func (r *DomainFirewallRuleNewParamsConditionIP) UnmarshalJSON(data []byte) erro
 // The properties LowerBound, UpperBound are required.
 type DomainFirewallRuleNewParamsConditionIPRange struct {
 	// The lower bound IPv4 or IPv6 address to match against
-	LowerBound string `json:"lower_bound,required" format:"ipv4"`
+	LowerBound string `json:"lower_bound,required" format:"ipvanyaddress"`
 	// The upper bound IPv4 or IPv6 address to match against
-	UpperBound string `json:"upper_bound,required" format:"ipv4"`
+	UpperBound string `json:"upper_bound,required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -439,7 +439,7 @@ type DomainFirewallRuleUpdateParamsActionBlock struct {
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
 	// are not allowed.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
-	// Designates the HTTP status code to deliver when a request is blocked.
+	// A custom HTTP status code that the WAAP returns if a rule blocks a request
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code,omitzero"`
@@ -483,7 +483,7 @@ func (r *DomainFirewallRuleUpdateParamsCondition) UnmarshalJSON(data []byte) err
 // The property IPAddress is required.
 type DomainFirewallRuleUpdateParamsConditionIP struct {
 	// A single IPv4 or IPv6 address
-	IPAddress string `json:"ip_address,required" format:"ipv4"`
+	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -502,9 +502,9 @@ func (r *DomainFirewallRuleUpdateParamsConditionIP) UnmarshalJSON(data []byte) e
 // The properties LowerBound, UpperBound are required.
 type DomainFirewallRuleUpdateParamsConditionIPRange struct {
 	// The lower bound IPv4 or IPv6 address to match against
-	LowerBound string `json:"lower_bound,required" format:"ipv4"`
+	LowerBound string `json:"lower_bound,required" format:"ipvanyaddress"`
 	// The upper bound IPv4 or IPv6 address to match against
-	UpperBound string `json:"upper_bound,required" format:"ipv4"`
+	UpperBound string `json:"upper_bound,required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj

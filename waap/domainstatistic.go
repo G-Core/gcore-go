@@ -496,7 +496,7 @@ type WaapDDOSAttack struct {
 	// End time of DDoS attack
 	EndTime time.Time `json:"end_time,nullable" format:"date-time"`
 	// Start time of DDoS attack
-	StartTime time.Time `json:"start_time" format:"date-time"`
+	StartTime time.Time `json:"start_time,nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EndTime     respjson.Field

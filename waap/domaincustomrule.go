@@ -118,7 +118,8 @@ func (r *DomainCustomRuleService) Toggle(ctx context.Context, action DomainCusto
 type WaapCustomRule struct {
 	// The unique identifier for the rule
 	ID int64 `json:"id,required"`
-	// The action that the rule takes when triggered
+	// The action that the rule takes when triggered. Only one action can be set per
+	// rule.
 	Action WaapCustomRuleAction `json:"action,required"`
 	// The conditions required for the WAAP engine to trigger the rule. Rules may have
 	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
@@ -128,7 +129,7 @@ type WaapCustomRule struct {
 	// The name assigned to the rule
 	Name string `json:"name,required"`
 	// The description assigned to the rule
-	Description string `json:"description,nullable"`
+	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -148,21 +149,22 @@ func (r *WaapCustomRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that the rule takes when triggered
+// The action that the rule takes when triggered. Only one action can be set per
+// rule.
 type WaapCustomRuleAction struct {
 	// The WAAP allowed the request
-	Allow any `json:"allow,nullable"`
+	Allow any `json:"allow"`
 	// WAAP block action behavior could be configured with response status code and
 	// action duration.
-	Block WaapCustomRuleActionBlock `json:"block,nullable"`
+	Block WaapCustomRuleActionBlock `json:"block"`
 	// The WAAP presented the user with a captcha
-	Captcha any `json:"captcha,nullable"`
+	Captcha any `json:"captcha"`
 	// The WAAP performed automatic browser validation
-	Handshake any `json:"handshake,nullable"`
+	Handshake any `json:"handshake"`
 	// The WAAP monitored the request but took no action
-	Monitor any `json:"monitor,nullable"`
+	Monitor any `json:"monitor"`
 	// WAAP tag action gets a list of tags to tag the request scope with
-	Tag WaapCustomRuleActionTag `json:"tag,nullable"`
+	Tag WaapCustomRuleActionTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Allow       respjson.Field
@@ -189,11 +191,11 @@ type WaapCustomRuleActionBlock struct {
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
 	// are not allowed.
-	ActionDuration string `json:"action_duration,nullable"`
-	// Designates the HTTP status code to deliver when a request is blocked.
+	ActionDuration string `json:"action_duration"`
+	// A custom HTTP status code that the WAAP returns if a rule blocks a request
 	//
 	// Any of 403, 405, 418, 429.
-	StatusCode int64 `json:"status_code,nullable"`
+	StatusCode int64 `json:"status_code"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ActionDuration respjson.Field
@@ -231,43 +233,43 @@ func (r *WaapCustomRuleActionTag) UnmarshalJSON(data []byte) error {
 // those criteria can take
 type WaapCustomRuleCondition struct {
 	// Match the requested Content-Type
-	ContentType WaapCustomRuleConditionContentType `json:"content_type,nullable"`
+	ContentType WaapCustomRuleConditionContentType `json:"content_type"`
 	// Match the country that the request originated from
-	Country WaapCustomRuleConditionCountry `json:"country,nullable"`
+	Country WaapCustomRuleConditionCountry `json:"country"`
 	// Match the incoming file extension
-	FileExtension WaapCustomRuleConditionFileExtension `json:"file_extension,nullable"`
+	FileExtension WaapCustomRuleConditionFileExtension `json:"file_extension"`
 	// Match an incoming request header
-	Header WaapCustomRuleConditionHeader `json:"header,nullable"`
+	Header WaapCustomRuleConditionHeader `json:"header"`
 	// Match when an incoming request header is present
-	HeaderExists WaapCustomRuleConditionHeaderExists `json:"header_exists,nullable"`
+	HeaderExists WaapCustomRuleConditionHeaderExists `json:"header_exists"`
 	// Match the incoming HTTP method
-	HTTPMethod WaapCustomRuleConditionHTTPMethod `json:"http_method,nullable"`
+	HTTPMethod WaapCustomRuleConditionHTTPMethod `json:"http_method"`
 	// Match the incoming request against a single IP address
-	IP WaapCustomRuleConditionIP `json:"ip,nullable"`
+	IP WaapCustomRuleConditionIP `json:"ip"`
 	// Match the incoming request against an IP range
-	IPRange WaapCustomRuleConditionIPRange `json:"ip_range,nullable"`
+	IPRange WaapCustomRuleConditionIPRange `json:"ip_range"`
 	// Match the organization the request originated from, as determined by a WHOIS
 	// lookup of the requesting IP
-	Organization WaapCustomRuleConditionOrganization `json:"organization,nullable"`
+	Organization WaapCustomRuleConditionOrganization `json:"organization"`
 	// Match the type of organization that owns the IP address making an incoming
 	// request
-	OwnerTypes WaapCustomRuleConditionOwnerTypes `json:"owner_types,nullable"`
+	OwnerTypes WaapCustomRuleConditionOwnerTypes `json:"owner_types"`
 	// Match the rate at which requests come in that match certain conditions
-	RequestRate WaapCustomRuleConditionRequestRate `json:"request_rate,nullable"`
+	RequestRate WaapCustomRuleConditionRequestRate `json:"request_rate"`
 	// Match a response header
-	ResponseHeader WaapCustomRuleConditionResponseHeader `json:"response_header,nullable"`
+	ResponseHeader WaapCustomRuleConditionResponseHeader `json:"response_header"`
 	// Match when a response header is present
-	ResponseHeaderExists WaapCustomRuleConditionResponseHeaderExists `json:"response_header_exists,nullable"`
+	ResponseHeaderExists WaapCustomRuleConditionResponseHeaderExists `json:"response_header_exists"`
 	// Match the number of dynamic page requests made in a WAAP session
-	SessionRequestCount WaapCustomRuleConditionSessionRequestCount `json:"session_request_count,nullable"`
+	SessionRequestCount WaapCustomRuleConditionSessionRequestCount `json:"session_request_count"`
 	// Matches requests based on specified tags
-	Tags WaapCustomRuleConditionTags `json:"tags,nullable"`
+	Tags WaapCustomRuleConditionTags `json:"tags"`
 	// Match the incoming request URL
-	URL WaapCustomRuleConditionURL `json:"url,nullable"`
+	URL WaapCustomRuleConditionURL `json:"url"`
 	// Match the user agent making the request
-	UserAgent WaapCustomRuleConditionUserAgent `json:"user_agent,nullable"`
+	UserAgent WaapCustomRuleConditionUserAgent `json:"user_agent"`
 	// Matches requests based on user-defined tags
-	UserDefinedTags WaapCustomRuleConditionUserDefinedTags `json:"user_defined_tags,nullable"`
+	UserDefinedTags WaapCustomRuleConditionUserDefinedTags `json:"user_defined_tags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ContentType          respjson.Field
@@ -440,7 +442,7 @@ func (r *WaapCustomRuleConditionHTTPMethod) UnmarshalJSON(data []byte) error {
 // Match the incoming request against a single IP address
 type WaapCustomRuleConditionIP struct {
 	// A single IPv4 or IPv6 address
-	IPAddress string `json:"ip_address,required" format:"ipv4"`
+	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -461,9 +463,9 @@ func (r *WaapCustomRuleConditionIP) UnmarshalJSON(data []byte) error {
 // Match the incoming request against an IP range
 type WaapCustomRuleConditionIPRange struct {
 	// The lower bound IPv4 or IPv6 address to match against
-	LowerBound string `json:"lower_bound,required" format:"ipv4"`
+	LowerBound string `json:"lower_bound,required" format:"ipvanyaddress"`
 	// The upper bound IPv4 or IPv6 address to match against
-	UpperBound string `json:"upper_bound,required" format:"ipv4"`
+	UpperBound string `json:"upper_bound,required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -544,12 +546,12 @@ type WaapCustomRuleConditionRequestRate struct {
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".
-	HTTPMethods []string `json:"http_methods,nullable"`
+	HTTPMethods []string `json:"http_methods"`
 	// A list of source IPs that can trigger a request rate condition
-	IPs []string `json:"ips,nullable" format:"ipv4"`
+	IPs []string `json:"ips" format:"ipvanyaddress"`
 	// A user-defined tag that can be included in incoming requests and used to trigger
 	// a request rate condition
-	UserDefinedTag string `json:"user_defined_tag,nullable"`
+	UserDefinedTag string `json:"user_defined_tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PathPattern    respjson.Field
@@ -741,7 +743,8 @@ func (r *WaapCustomRuleConditionUserDefinedTags) UnmarshalJSON(data []byte) erro
 }
 
 type DomainCustomRuleNewParams struct {
-	// The action that the rule takes when triggered
+	// The action that the rule takes when triggered. Only one action can be set per
+	// rule.
 	Action DomainCustomRuleNewParamsAction `json:"action,omitzero,required"`
 	// The conditions required for the WAAP engine to trigger the rule. Rules may have
 	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
@@ -763,7 +766,8 @@ func (r *DomainCustomRuleNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that the rule takes when triggered
+// The action that the rule takes when triggered. Only one action can be set per
+// rule.
 type DomainCustomRuleNewParamsAction struct {
 	// The WAAP allowed the request
 	Allow any `json:"allow,omitzero"`
@@ -797,7 +801,7 @@ type DomainCustomRuleNewParamsActionBlock struct {
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
 	// are not allowed.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
-	// Designates the HTTP status code to deliver when a request is blocked.
+	// A custom HTTP status code that the WAAP returns if a rule blocks a request
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code,omitzero"`
@@ -1028,7 +1032,7 @@ func init() {
 // The property IPAddress is required.
 type DomainCustomRuleNewParamsConditionIP struct {
 	// A single IPv4 or IPv6 address
-	IPAddress string `json:"ip_address,required" format:"ipv4"`
+	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1047,9 +1051,9 @@ func (r *DomainCustomRuleNewParamsConditionIP) UnmarshalJSON(data []byte) error 
 // The properties LowerBound, UpperBound are required.
 type DomainCustomRuleNewParamsConditionIPRange struct {
 	// The lower bound IPv4 or IPv6 address to match against
-	LowerBound string `json:"lower_bound,required" format:"ipv4"`
+	LowerBound string `json:"lower_bound,required" format:"ipvanyaddress"`
 	// The upper bound IPv4 or IPv6 address to match against
-	UpperBound string `json:"upper_bound,required" format:"ipv4"`
+	UpperBound string `json:"upper_bound,required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1126,7 +1130,7 @@ type DomainCustomRuleNewParamsConditionRequestRate struct {
 	// "TRACE".
 	HTTPMethods []string `json:"http_methods,omitzero"`
 	// A list of source IPs that can trigger a request rate condition
-	IPs []string `json:"ips,omitzero" format:"ipv4"`
+	IPs []string `json:"ips,omitzero" format:"ipvanyaddress"`
 	paramObj
 }
 
@@ -1318,7 +1322,7 @@ type DomainCustomRuleUpdateParams struct {
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// The name assigned to the rule
 	Name param.Opt[string] `json:"name,omitzero"`
-	// The action that a WAAP rule takes when triggered
+	// The action that a WAAP rule takes when triggered.
 	Action DomainCustomRuleUpdateParamsAction `json:"action,omitzero"`
 	// The conditions required for the WAAP engine to trigger the rule. Rules may have
 	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
@@ -1334,7 +1338,7 @@ func (r *DomainCustomRuleUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that a WAAP rule takes when triggered
+// The action that a WAAP rule takes when triggered.
 type DomainCustomRuleUpdateParamsAction struct {
 	// The WAAP allowed the request
 	Allow any `json:"allow,omitzero"`
@@ -1368,7 +1372,7 @@ type DomainCustomRuleUpdateParamsActionBlock struct {
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
 	// are not allowed.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
-	// Designates the HTTP status code to deliver when a request is blocked.
+	// A custom HTTP status code that the WAAP returns if a rule blocks a request
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code,omitzero"`
@@ -1599,7 +1603,7 @@ func init() {
 // The property IPAddress is required.
 type DomainCustomRuleUpdateParamsConditionIP struct {
 	// A single IPv4 or IPv6 address
-	IPAddress string `json:"ip_address,required" format:"ipv4"`
+	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1618,9 +1622,9 @@ func (r *DomainCustomRuleUpdateParamsConditionIP) UnmarshalJSON(data []byte) err
 // The properties LowerBound, UpperBound are required.
 type DomainCustomRuleUpdateParamsConditionIPRange struct {
 	// The lower bound IPv4 or IPv6 address to match against
-	LowerBound string `json:"lower_bound,required" format:"ipv4"`
+	LowerBound string `json:"lower_bound,required" format:"ipvanyaddress"`
 	// The upper bound IPv4 or IPv6 address to match against
-	UpperBound string `json:"upper_bound,required" format:"ipv4"`
+	UpperBound string `json:"upper_bound,required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1697,7 +1701,7 @@ type DomainCustomRuleUpdateParamsConditionRequestRate struct {
 	// "TRACE".
 	HTTPMethods []string `json:"http_methods,omitzero"`
 	// A list of source IPs that can trigger a request rate condition
-	IPs []string `json:"ips,omitzero" format:"ipv4"`
+	IPs []string `json:"ips,omitzero" format:"ipvanyaddress"`
 	paramObj
 }
 

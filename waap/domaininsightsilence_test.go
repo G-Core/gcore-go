@@ -33,7 +33,7 @@ func TestDomainInsightSilenceNewWithOptionalParams(t *testing.T) {
 		waap.DomainInsightSilenceNewParams{
 			Author:      "author",
 			Comment:     "comment",
-			InsightType: "insight_type",
+			InsightType: "26f1klzn5713-56bincal4ca-60zz1k91s4",
 			Labels: map[string]string{
 				"foo": "string",
 			},
