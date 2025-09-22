@@ -45,9 +45,11 @@ func (r *UserService) Update(ctx context.Context, userID int64, body UserUpdateP
 	return
 }
 
-// Get a list of users. Pass a value for the `limit` parameter in your request if
-// you want retrieve a paginated result. Otherwise API returns a list with all
-// users without pagination.
+// Get a list of users.
+//
+// Pass a value for the `limit` parameter in your request if you want retrieve a
+// paginated result. Otherwise API returns a list with all users without
+// pagination.
 func (r *UserService) List(ctx context.Context, query UserListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[User], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -65,9 +67,11 @@ func (r *UserService) List(ctx context.Context, query UserListParams, opts ...op
 	return res, nil
 }
 
-// Get a list of users. Pass a value for the `limit` parameter in your request if
-// you want retrieve a paginated result. Otherwise API returns a list with all
-// users without pagination.
+// Get a list of users.
+//
+// Pass a value for the `limit` parameter in your request if you want retrieve a
+// paginated result. Otherwise API returns a list with all users without
+// pagination.
 func (r *UserService) ListAutoPaging(ctx context.Context, query UserListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[User] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
@@ -90,9 +94,11 @@ func (r *UserService) Get(ctx context.Context, userID int64, opts ...option.Requ
 	return
 }
 
-// Invite a user to the account. User will receive an email. The new user will
-// receive an invitation email with a link to create an account password, the
-// existing user will be notified about the invitation to the account.
+// Invite a user to the account.
+//
+// User will receive an email. The new user will receive an invitation email with a
+// link to create an account password, the existing user will be notified about the
+// invitation to the account.
 func (r *UserService) Invite(ctx context.Context, body UserInviteParams, opts ...option.RequestOption) (res *UserInvite, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "iam/clients/invite_user"
@@ -120,7 +126,9 @@ type User struct {
 	Deleted bool `json:"deleted"`
 	// User's email address.
 	Email string `json:"email" format:"email"`
-	// User's group in the current account. IAM supports 5 groups:
+	// User's group in the current account.
+	//
+	// IAM supports 5 groups:
 	//
 	// - Users
 	// - Administrators
@@ -128,7 +136,9 @@ type User struct {
 	// - Purge and Prefetch only (API)
 	// - Purge and Prefetch only (API+Web)
 	Groups []UserGroup `json:"groups"`
-	// User's language. Defines language of the control panel and email messages.
+	// User's language.
+	//
+	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
 	Lang UserLang `json:"lang"`
@@ -203,7 +213,9 @@ func (r *UserGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// User's language. Defines language of the control panel and email messages.
+// User's language.
+//
+// Defines language of the control panel and email messages.
 type UserLang string
 
 const (
@@ -243,7 +255,9 @@ type UserDetailed struct {
 	Deleted bool `json:"deleted"`
 	// User's email address.
 	Email string `json:"email" format:"email"`
-	// User's group in the current account. IAM supports 5 groups:
+	// User's group in the current account.
+	//
+	// IAM supports 5 groups:
 	//
 	// - Users
 	// - Administrators
@@ -253,7 +267,9 @@ type UserDetailed struct {
 	Groups []UserDetailedGroup `json:"groups"`
 	// User activity flag.
 	IsActive bool `json:"is_active"`
-	// User's language. Defines language of the control panel and email messages.
+	// User's language.
+	//
+	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
 	Lang UserDetailedLang `json:"lang"`
@@ -354,7 +370,9 @@ func (r *UserDetailedGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// User's language. Defines language of the control panel and email messages.
+// User's language.
+//
+// Defines language of the control panel and email messages.
 type UserDetailedLang string
 
 const (
@@ -416,7 +434,9 @@ type UserUpdate struct {
 	Deleted bool `json:"deleted"`
 	// User's email address.
 	Email string `json:"email" format:"email"`
-	// User's group in the current account. IAM supports 5 groups:
+	// User's group in the current account.
+	//
+	// IAM supports 5 groups:
 	//
 	// - Users
 	// - Administrators
@@ -426,7 +446,9 @@ type UserUpdate struct {
 	Groups []UserUpdateGroup `json:"groups"`
 	// User activity flag.
 	IsActive bool `json:"is_active"`
-	// User's language. Defines language of the control panel and email messages.
+	// User's language.
+	//
+	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
 	Lang UserUpdateLang `json:"lang"`
@@ -527,7 +549,9 @@ func (r *UserUpdateGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// User's language. Defines language of the control panel and email messages.
+// User's language.
+//
+// Defines language of the control panel and email messages.
 type UserUpdateLang string
 
 const (
@@ -560,7 +584,9 @@ type UserUpdateParams struct {
 	//
 	// Any of "password", "sso", "github", "google-oauth2".
 	AuthTypes []string `json:"auth_types,omitzero"`
-	// User's group in the current account. IAM supports 5 groups:
+	// User's group in the current account.
+	//
+	// IAM supports 5 groups:
 	//
 	// - Users
 	// - Administrators
@@ -568,7 +594,9 @@ type UserUpdateParams struct {
 	// - Purge and Prefetch only (API)
 	// - Purge and Prefetch only (API+Web)
 	Groups []UserUpdateParamsGroup `json:"groups,omitzero"`
-	// User's language. Defines language of the control panel and email messages.
+	// User's language.
+	//
+	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
 	Lang UserUpdateParamsLang `json:"lang,omitzero"`
@@ -611,7 +639,9 @@ func init() {
 	)
 }
 
-// User's language. Defines language of the control panel and email messages.
+// User's language.
+//
+// Defines language of the control panel and email messages.
 type UserUpdateParamsLang string
 
 const (
@@ -651,7 +681,9 @@ type UserInviteParams struct {
 	UserRole UserInviteParamsUserRole `json:"user_role,omitzero,required"`
 	// User name.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// User's language. Defines language of the control panel and email messages.
+	// User's language.
+	//
+	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
 	Lang UserInviteParamsLang `json:"lang,omitzero"`
@@ -694,7 +726,9 @@ func init() {
 	)
 }
 
-// User's language. Defines language of the control panel and email messages.
+// User's language.
+//
+// Defines language of the control panel and email messages.
 type UserInviteParamsLang string
 
 const (

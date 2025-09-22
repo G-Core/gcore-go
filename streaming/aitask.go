@@ -39,38 +39,50 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 	return
 }
 
-// Creating an AI task. This method allows you to create an AI task for VOD video
-// processing:
+// Creating an AI task.
 //
-//   - ASR: Transcribe video
-//   - ASR: Translate subtitles
-//   - CM: Sports detection
-//   - CM: Not Safe For Work (NSFW) content detection
-//   - CM: Soft nudity detection
-//   - CM: Hard nudity detection
-//   - CM: Objects recognition (soon)
-//     ![Auto generated subtitles example](https://demo-files.gvideo.io/apidocs/captions.gif)
-//     How to use:
-//   - Create an AI task, specify algoritm to use
-//   - Get `task_id`
-//   - Check a result using `.../ai/tasks/{task_id}` method For more detailed
-//     information, see the description of each method separately.
+// This method allows you to create an AI task for VOD video processing:
 //
-// **AI Automatic Speech Recognition (ASR)** AI is instrumental in automatic video
-// processing for subtitles creation by using Automatic Speech Recognition (ASR)
-// technology to transcribe spoken words into text, which can then be translated
-// into multiple languages for broader accessibility. Categories:
+// - ASR: Transcribe video
+// - ASR: Translate subtitles
+// - CM: Sports detection
+// - CM: Not Safe For Work (NSFW) content detection
+// - CM: Soft nudity detection
+// - CM: Hard nudity detection
+// - CM: Objects recognition (soon)
+//
+// ![Auto generated subtitles example](https://demo-files.gvideo.io/apidocs/captions.gif)
+//
+// How to use:
+//
+// - Create an AI task, specify algoritm to use
+// - Get `task_id`
+// - Check a result using `.../ai/tasks/{task_id}` method
+//
+// For more detailed information, see the description of each method separately.
+//
+// **AI Automatic Speech Recognition (ASR)**
+//
+// AI is instrumental in automatic video processing for subtitles creation by using
+// Automatic Speech Recognition (ASR) technology to transcribe spoken words into
+// text, which can then be translated into multiple languages for broader
+// accessibility.
+//
+// Categories:
 //
 //   - `transcription` – to create subtitles/captions from audio in the original
 //     language.
 //   - `translation` – to transate subtitles/captions from the original language to
-//     99+ other languages. AI subtitle transcription and translation tools are
-//     highly efficient, processing large volumes of audio-visual content quickly and
-//     providing accurate transcriptions and translations with minimal human
-//     intervention. Additionally, AI-driven solutions can significantly reduce costs
-//     and turnaround times compared to traditional methods, making them an
-//     invaluable resource for content creators and broadcasters aiming to reach
-//     global audiences. Example response with positive result:
+//     99+ other languages.
+//
+// AI subtitle transcription and translation tools are highly efficient, processing
+// large volumes of audio-visual content quickly and providing accurate
+// transcriptions and translations with minimal human intervention. Additionally,
+// AI-driven solutions can significantly reduce costs and turnaround times compared
+// to traditional methods, making them an invaluable resource for content creators
+// and broadcasters aiming to reach global audiences.
+//
+// Example response with positive result:
 //
 // ```
 //
@@ -94,11 +106,14 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //
 // ```
 //
-// **AI Content Moderation (CM)** The AI Content Moderation API offers a powerful
-// solution for analyzing video content to detect various categories of
-// inappropriate material. Leveraging state-of-the-art AI models, this API ensures
-// real-time analysis and flagging of sensitive or restricted content types, making
-// it an essential tool for platforms requiring stringent content moderation.
+// **AI Content Moderation (CM)**
+//
+// The AI Content Moderation API offers a powerful solution for analyzing video
+// content to detect various categories of inappropriate material. Leveraging
+// state-of-the-art AI models, this API ensures real-time analysis and flagging of
+// sensitive or restricted content types, making it an essential tool for platforms
+// requiring stringent content moderation.
+//
 // Categories:
 //
 //   - `nsfw`: Quick algorithm to detect pornographic material, ensuring content is
@@ -108,11 +123,15 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //   - `soft_nudity`: Detailed video analysis that reveals both explicit and partial
 //     nudity, including the presence of male and female faces and other uncovered
 //     body parts.
-//   - `sport`: Recognizes various sporting activities. The AI Content Moderation API
-//     is an invaluable tool for managing and controlling the type of content being
-//     shared or streamed on your platform. By implementing this API, you can ensure
-//     compliance with community guidelines and legal requirements, as well as
-//     provide a safer environment for your users. Important notes:
+//   - `sport`: Recognizes various sporting activities.
+//
+// The AI Content Moderation API is an invaluable tool for managing and controlling
+// the type of content being shared or streamed on your platform. By implementing
+// this API, you can ensure compliance with community guidelines and legal
+// requirements, as well as provide a safer environment for your users.
+//
+// Important notes:
+//
 //   - It's allowed to analyse still images too (where applicable). Format of image:
 //     JPEG, PNG. In that case one image is the same as video of 1 second duration.
 //   - Not all frames in the video are used for analysis, but only key frames
@@ -120,7 +139,9 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //     detection will only occur at these timestamps. If an object appears and
 //     disappears between these time stamps, it will not be detected. We are working
 //     on a version to analyze more frames, please contact your manager or our
-//     support team to enable this method. Example response with positive result:
+//     support team to enable this method.
+//
+// Example response with positive result:
 //
 // ```
 //
@@ -141,9 +162,11 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //
 // ```
 //
-// **Additional information** Billing takes into account the duration of the
-// analyzed video. Or the duration until the stop tag(where applicable), if the
-// condition was triggered during the analysis.
+// **Additional information**
+//
+// Billing takes into account the duration of the analyzed video. Or the duration
+// until the stop tag(where applicable), if the condition was triggered during the
+// analysis.
 //
 // The heart of content moderation is AI, with additional services. They run on our
 // own infrastructure, so the files/data are not transferred anywhere to external
@@ -159,9 +182,10 @@ func (r *AITaskService) New(ctx context.Context, body AITaskNewParams, opts ...o
 	return
 }
 
-// Returns a list of previously created and processed AI tasks. The list contains
-// brief information about the task and its execution status. Data is displayed
-// page by page.
+// Returns a list of previously created and processed AI tasks.
+//
+// The list contains brief information about the task and its execution status.
+// Data is displayed page by page.
 func (r *AITaskService) List(ctx context.Context, query AITaskListParams, opts ...option.RequestOption) (res *pagination.PageStreamingAI[AITask], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -179,15 +203,18 @@ func (r *AITaskService) List(ctx context.Context, query AITaskListParams, opts .
 	return res, nil
 }
 
-// Returns a list of previously created and processed AI tasks. The list contains
-// brief information about the task and its execution status. Data is displayed
-// page by page.
+// Returns a list of previously created and processed AI tasks.
+//
+// The list contains brief information about the task and its execution status.
+// Data is displayed page by page.
 func (r *AITaskService) ListAutoPaging(ctx context.Context, query AITaskListParams, opts ...option.RequestOption) *pagination.PageStreamingAIAutoPager[AITask] {
 	return pagination.NewPageStreamingAIAutoPager(r.List(ctx, query, opts...))
 }
 
 // Stopping a previously launched AI-task without waiting for it to be fully
-// completed. The task will be moved to "REVOKED" status.
+// completed.
+//
+// The task will be moved to "REVOKED" status.
 func (r *AITaskService) Cancel(ctx context.Context, taskID string, opts ...option.RequestOption) (res *AITaskCancelResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
@@ -200,9 +227,10 @@ func (r *AITaskService) Cancel(ctx context.Context, taskID string, opts ...optio
 }
 
 // This is the single method to check the execution status of an AI task, and
-// obtain the result of any type of AI task. Based on the results of processing,
-// the “result” field will contain an answer corresponding to the type of the
-// initially created task:
+// obtain the result of any type of AI task.
+//
+// Based on the results of processing, the “result” field will contain an answer
+// corresponding to the type of the initially created task:
 //
 // - ASR: Transcribe video
 // - ASR: Translate subtitles
@@ -214,7 +242,9 @@ func (r *AITaskService) Cancel(ctx context.Context, taskID string, opts ...optio
 // - etc... (see other methods from /ai/ domain)
 //
 // A queue is used to process videos. The waiting time depends on the total number
-// of requests in the system, so sometimes you will have to wait. Statuses:
+// of requests in the system, so sometimes you will have to wait.
+//
+// Statuses:
 //
 //   - PENDING – the task is received and it is pending for available resources
 //   - STARTED – processing has started
@@ -222,12 +252,14 @@ func (r *AITaskService) Cancel(ctx context.Context, taskID string, opts ...optio
 //   - FAILURE – processing failed
 //   - REVOKED – processing was cancelled by the user (or the system)
 //   - RETRY – the task execution failed due to internal reasons, the task is queued
-//     for re-execution (up to 3 times) Each task is processed in sub-stages, for
-//     example, original language is first determined in a video, and then
-//     transcription is performed. In such cases, the video processing status may
-//     change from "STARTED" to "PENDING", and back. This is due to waiting for
-//     resources for a specific processing sub-stage. In this case, the overall
-//     percentage "progress" of video processing will reflect the full picture.
+//     for re-execution (up to 3 times)
+//
+// Each task is processed in sub-stages, for example, original language is first
+// determined in a video, and then transcription is performed. In such cases, the
+// video processing status may change from "STARTED" to "PENDING", and back. This
+// is due to waiting for resources for a specific processing sub-stage. In this
+// case, the overall percentage "progress" of video processing will reflect the
+// full picture.
 //
 // The result data is stored for 1 month, after which it is deleted.
 //
@@ -254,12 +286,17 @@ func (r *AITaskService) Get(ctx context.Context, taskID string, opts ...option.R
 //     or not for AI translation.
 //   - this list will expand as new AI methods are added.
 //
-// **`language_support`** There are many languages available for transcription. But
-// not all languages can be automatically translated to and from with good quality.
-// In order to determine the availability of translation from the audio language to
-// the desired subtitle language, you can use this type of "`language_support`". AI
-// models are constantly improving, so this method can be used for dynamic
-// determination. Example:
+// **`language_support`**
+//
+// There are many languages available for transcription. But not all languages can
+// be automatically translated to and from with good quality. In order to determine
+// the availability of translation from the audio language to the desired subtitle
+// language, you can use this type of "`language_support`".
+//
+// AI models are constantly improving, so this method can be used for dynamic
+// determination.
+//
+// Example:
 //
 // ```
 // curl -L 'https://api.gcore.com/streaming/ai/info?type=language_support&audio_language=eng&subtitles_language=fre'
@@ -267,10 +304,12 @@ func (r *AITaskService) Get(ctx context.Context, taskID string, opts ...option.R
 // { "supported": true }
 // ```
 //
-// Today we provide the following capabilities as below. These are the 100
-// languages for which we support only transcription and translation to English.
-// The iso639-2b codes for these are:
+// Today we provide the following capabilities as below.
+//
+// These are the 100 languages for which we support only transcription and
+// translation to English. The iso639-2b codes for these are:
 // `afr, sqi, amh, ara, hye, asm, aze, bak, eus, bel, ben, bos, bre, bul, mya, cat, zho, hrv, ces, dan, nld, eng, est, fao, fin, fra, glg, kat, deu, guj, hat, hau, haw, heb, hin, hun, isl, ind, ita, jpn, jav, kan, kaz, khm, kor, lao, lat, lav, lin, lit, ltz, mkd, mlg, msa, mal, mlt, mri, mar, ell, mon, nep, nor, nno, oci, pan, fas, pol, por, pus, ron, rus, san, srp, sna, snd, sin, slk, slv, som, spa, sun, swa, swe, tgl, tgk, tam, tat, tel, tha, bod, tur, tuk, ukr, urd, uzb, vie, cym, yid, yor`.
+//
 // These are the 77 languages for which we support translation to other languages
 // and translation to:
 // `afr, amh, ara, hye, asm, aze, eus, bel, ben, bos, bul, mya, cat, zho, hrv, ces, dan, nld, eng, est, fin, fra, glg, kat, deu, guj, heb, hin, hun, isl, ind, ita, jpn, jav, kan, kaz, khm, kor, lao, lav, lit, mkd, mal, mlt, mar, ell, mon, nep, nno, pan, fas, pol, por, pus, ron, rus, srp, sna, snd, slk, slv, som, spa, swa, swe, tgl, tgk, tam, tel, tha, tur, ukr, urd, vie, cym, yor`.
@@ -294,10 +333,12 @@ type AIContentmoderationHardnudity struct {
 	URL string `json:"url,required"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
-	// processing. For example, if an AI-task was created automatically when you
-	// uploaded a video with the AI auto-processing option (nudity detection, etc),
-	// then the ID of the associated video for which the task was performed will be
-	// explicitly indicated here.
+	// processing.
+	//
+	// For example, if an AI-task was created automatically when you uploaded a video
+	// with the AI auto-processing option (nudity detection, etc), then the ID of the
+	// associated video for which the task was performed will be explicitly indicated
+	// here.
 	ClientEntityData string `json:"client_entity_data"`
 	// Meta parameter, designed to store your own identifier. Can be used by you to tag
 	// requests from different end-users. It is not used in any way in video
@@ -371,10 +412,12 @@ type AIContentmoderationNsfw struct {
 	URL string `json:"url,required"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
-	// processing. For example, if an AI-task was created automatically when you
-	// uploaded a video with the AI auto-processing option (nudity detection, etc),
-	// then the ID of the associated video for which the task was performed will be
-	// explicitly indicated here.
+	// processing.
+	//
+	// For example, if an AI-task was created automatically when you uploaded a video
+	// with the AI auto-processing option (nudity detection, etc), then the ID of the
+	// associated video for which the task was performed will be explicitly indicated
+	// here.
 	ClientEntityData string `json:"client_entity_data"`
 	// Meta parameter, designed to store your own identifier. Can be used by you to tag
 	// requests from different end-users. It is not used in any way in video
@@ -428,10 +471,12 @@ type AIContentmoderationSoftnudity struct {
 	URL string `json:"url,required"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
-	// processing. For example, if an AI-task was created automatically when you
-	// uploaded a video with the AI auto-processing option (nudity detection, etc),
-	// then the ID of the associated video for which the task was performed will be
-	// explicitly indicated here.
+	// processing.
+	//
+	// For example, if an AI-task was created automatically when you uploaded a video
+	// with the AI auto-processing option (nudity detection, etc), then the ID of the
+	// associated video for which the task was performed will be explicitly indicated
+	// here.
 	ClientEntityData string `json:"client_entity_data"`
 	// Meta parameter, designed to store your own identifier. Can be used by you to tag
 	// requests from different end-users. It is not used in any way in video
@@ -520,10 +565,12 @@ type AIContentmoderationSport struct {
 	URL string `json:"url,required"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
-	// processing. For example, if an AI-task was created automatically when you
-	// uploaded a video with the AI auto-processing option (nudity detection, etc),
-	// then the ID of the associated video for which the task was performed will be
-	// explicitly indicated here.
+	// processing.
+	//
+	// For example, if an AI-task was created automatically when you uploaded a video
+	// with the AI auto-processing option (nudity detection, etc), then the ID of the
+	// associated video for which the task was performed will be explicitly indicated
+	// here.
 	ClientEntityData string `json:"client_entity_data"`
 	// Meta parameter, designed to store your own identifier. Can be used by you to tag
 	// requests from different end-users. It is not used in any way in video
@@ -682,13 +729,20 @@ type AITaskTaskDataAITranscribe struct {
 	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
 	URL string `json:"url,required"`
 	// Language in original audio (transcription only). This value is used to determine
-	// the language from which to transcribe. If this is not set, the system will run
-	// auto language identification and the subtitles will be in the detected language.
-	// The method also works based on AI analysis. It's fairly accurate, but if it's
-	// wrong, then set the language explicitly. Additionally, when this is not set, we
-	// also support recognition of alternate languages in the video (language
-	// code-switching). Language is set by 3-letter language code according to
-	// ISO-639-2 (bibliographic code). We can process languages:
+	// the language from which to transcribe.
+	//
+	// If this is not set, the system will run auto language identification and the
+	// subtitles will be in the detected language. The method also works based on AI
+	// analysis. It's fairly accurate, but if it's wrong, then set the language
+	// explicitly.
+	//
+	// Additionally, when this is not set, we also support recognition of alternate
+	// languages in the video (language code-switching).
+	//
+	// Language is set by 3-letter language code according to ISO-639-2 (bibliographic
+	// code).
+	//
+	// We can process languages:
 	//
 	// - 'afr': Afrikaans
 	// - 'alb': Albanian
@@ -792,10 +846,12 @@ type AITaskTaskDataAITranscribe struct {
 	AudioLanguage string `json:"audio_language"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
-	// processing. For example, if an AI-task was created automatically when you
-	// uploaded a video with the AI auto-processing option (transcribing,
-	// translationing), then the ID of the associated video for which the task was
-	// performed will be explicitly indicated here.
+	// processing.
+	//
+	// For example, if an AI-task was created automatically when you uploaded a video
+	// with the AI auto-processing option (transcribing, translationing), then the ID
+	// of the associated video for which the task was performed will be explicitly
+	// indicated here.
 	ClientEntityData string `json:"client_entity_data"`
 	// Meta parameter, designed to store your own identifier. Can be used by you to tag
 	// requests from different end-users. It is not used in any way in video
@@ -803,6 +859,7 @@ type AITaskTaskDataAITranscribe struct {
 	ClientUserID string `json:"client_user_id"`
 	// Indicates which language it is clearly necessary to translate into. If this is
 	// not set, the original language will be used from attribute "`audio_language`".
+	//
 	// Please note that:
 	//
 	//   - transcription into the original language is a free procedure,
@@ -1055,9 +1112,11 @@ type AITaskGetResponseResultAIResultsTranscribe struct {
 	// languages will be displayed here. Also please note that for multilingual audio,
 	// the first 5 languages are displayed in order of frequency of use.
 	Languages []string `json:"languages"`
-	// Determines whether speech was detected or not. Please note: If the task is in
-	// "SUCCESS" status and speech was not found in the entire file, then "false" will
-	// be indicated here and the `subtitles` field will be empty.
+	// Determines whether speech was detected or not.
+	//
+	// Please note: If the task is in "SUCCESS" status and speech was not found in the
+	// entire file, then "false" will be indicated here and the `subtitles` field will
+	// be empty.
 	SpeechDetected bool `json:"speech_detected"`
 	// An array of phrases divided into time intervals, in the format "json". Suitable
 	// when you need to display the result in chronometric form, or transfer the text
@@ -1355,13 +1414,20 @@ type AITaskNewParams struct {
 	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
 	URL string `json:"url,required"`
 	// Language in original audio (transcription only). This value is used to determine
-	// the language from which to transcribe. If this is not set, the system will run
-	// auto language identification and the subtitles will be in the detected language.
-	// The method also works based on AI analysis. It's fairly accurate, but if it's
-	// wrong, then set the language explicitly. Additionally, when this is not set, we
-	// also support recognition of alternate languages in the video (language
-	// code-switching). Language is set by 3-letter language code according to
-	// ISO-639-2 (bibliographic code). We can process languages:
+	// the language from which to transcribe.
+	//
+	// If this is not set, the system will run auto language identification and the
+	// subtitles will be in the detected language. The method also works based on AI
+	// analysis. It's fairly accurate, but if it's wrong, then set the language
+	// explicitly.
+	//
+	// Additionally, when this is not set, we also support recognition of alternate
+	// languages in the video (language code-switching).
+	//
+	// Language is set by 3-letter language code according to ISO-639-2 (bibliographic
+	// code).
+	//
+	// We can process languages:
 	//
 	// - 'afr': Afrikaans
 	// - 'alb': Albanian
@@ -1465,10 +1531,12 @@ type AITaskNewParams struct {
 	AudioLanguage param.Opt[string] `json:"audio_language,omitzero"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
-	// processing. For example, if an AI-task was created automatically when you
-	// uploaded a video with the AI auto-processing option (nudity detection, etc),
-	// then the ID of the associated video for which the task was performed will be
-	// explicitly indicated here.
+	// processing.
+	//
+	// For example, if an AI-task was created automatically when you uploaded a video
+	// with the AI auto-processing option (nudity detection, etc), then the ID of the
+	// associated video for which the task was performed will be explicitly indicated
+	// here.
 	ClientEntityData param.Opt[string] `json:"client_entity_data,omitzero"`
 	// Meta parameter, designed to store your own identifier. Can be used by you to tag
 	// requests from different end-users. It is not used in any way in video
@@ -1476,6 +1544,7 @@ type AITaskNewParams struct {
 	ClientUserID param.Opt[string] `json:"client_user_id,omitzero"`
 	// Indicates which language it is clearly necessary to translate into. If this is
 	// not set, the original language will be used from attribute "`audio_language`".
+	//
 	// Please note that:
 	//
 	//   - transcription into the original language is a free procedure,
@@ -1528,9 +1597,13 @@ type AITaskListParams struct {
 	// Page to view from task list, starting from 1
 	Page param.Opt[int64] `query:"page,omitzero" json:"-"`
 	// This is an field for combined text search in the following fields: `task_id`,
-	// `task_name`, status, and `task_data`. Both full and partial searches are
-	// possible inside specified above fields. For example, you can filter tasks of a
-	// certain category, or tasks by a specific original file. Example:
+	// `task_name`, status, and `task_data`.
+	//
+	// Both full and partial searches are possible inside specified above fields. For
+	// example, you can filter tasks of a certain category, or tasks by a specific
+	// original file.
+	//
+	// Example:
 	//
 	//   - To filter tasks of Content Moderation NSFW method:
 	//     `GET /streaming/ai/tasks?search=nsfw`
@@ -1540,8 +1613,10 @@ type AITaskListParams struct {
 	// The task unique identifier to fiund
 	TaskID param.Opt[string] `query:"task_id,omitzero" format:"uuid" json:"-"`
 	// Which field to use when ordering the results: `task_id`, status, and
-	// `task_name`. Sorting is done in ascending (ASC) order. If parameter is omitted
-	// then "`started_at` DESC" is used for ordering by default.
+	// `task_name`. Sorting is done in ascending (ASC) order.
+	//
+	// If parameter is omitted then "`started_at` DESC" is used for ordering by
+	// default.
 	//
 	// Any of "task_id", "status", "task_name", "started_at".
 	Ordering AITaskListParamsOrdering `query:"ordering,omitzero" json:"-"`
@@ -1567,8 +1642,10 @@ func (r AITaskListParams) URLQuery() (v url.Values, err error) {
 }
 
 // Which field to use when ordering the results: `task_id`, status, and
-// `task_name`. Sorting is done in ascending (ASC) order. If parameter is omitted
-// then "`started_at` DESC" is used for ordering by default.
+// `task_name`. Sorting is done in ascending (ASC) order.
+//
+// If parameter is omitted then "`started_at` DESC" is used for ordering by
+// default.
 type AITaskListParamsOrdering string
 
 const (

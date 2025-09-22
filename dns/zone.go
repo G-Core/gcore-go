@@ -134,12 +134,15 @@ func (r *ZoneService) Get(ctx context.Context, name string, opts ...option.Reque
 	return
 }
 
-// Statistics of DNS zone in common and by record types. To get summary statistics
-// for all zones use `all` instead of zone name in path. Note: Consumption
-// statistics is updated in near real-time as a standard practice. However, the
-// frequency of updates can vary, but they are typically available within a 30
-// minutes period. Exceptions, such as maintenance periods, may delay data beyond
-// 30 minutes until servers resume and backfill missing statistics.
+// Statistics of DNS zone in common and by record types.
+//
+// To get summary statistics for all zones use `all` instead of zone name in path.
+//
+// Note: Consumption statistics is updated in near real-time as a standard
+// practice. However, the frequency of updates can vary, but they are typically
+// available within a 30 minutes period. Exceptions, such as maintenance periods,
+// may delay data beyond 30 minutes until servers resume and backfill missing
+// statistics.
 func (r *ZoneService) GetStatistics(ctx context.Context, name string, query ZoneGetStatisticsParams, opts ...option.RequestOption) (res *ZoneGetStatisticsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
@@ -561,7 +564,9 @@ func (r *ZoneGetResponseZoneRrsetsAmountDynamic) UnmarshalJSON(data []byte) erro
 // StatisticsZoneResponse
 type ZoneGetStatisticsResponse struct {
 	// Requests amount (values) for particular zone fractionated by time intervals
-	// (keys). Example of response:
+	// (keys).
+	//
+	// Example of response:
 	// `{ "requests": { "1598608080000": 14716, "1598608140000": 51167, "1598608200000": 53432, "1598611020000": 51050, "1598611080000": 52611, "1598611140000": 46884 } }`
 	Requests any `json:"requests"`
 	// Total - sum of all values
@@ -717,14 +722,18 @@ const (
 )
 
 type ZoneGetStatisticsParams struct {
-	// Beginning of the requested time period (Unix Timestamp, UTC.) In a query string:
-	// &from=1709068637
+	// Beginning of the requested time period (Unix Timestamp, UTC.)
+	//
+	// In a query string: &from=1709068637
 	From param.Opt[int64] `query:"from,omitzero" json:"-"`
 	// Granularity parameter string is a sequence of decimal numbers, each with
-	// optional fraction and a unit suffix, such as "300ms", "1.5h" or "2h45m". Valid
-	// time units are "s", "m", "h".
+	// optional fraction and a unit suffix, such as "300ms", "1.5h" or "2h45m".
+	//
+	// Valid time units are "s", "m", "h".
 	Granularity param.Opt[string] `query:"granularity,omitzero" json:"-"`
-	// DNS record type. Possible values:
+	// DNS record type.
+	//
+	// Possible values:
 	//
 	// - A
 	// - AAAA
@@ -735,8 +744,9 @@ type ZoneGetStatisticsParams struct {
 	// - SVCB
 	// - HTTPS
 	RecordType param.Opt[string] `query:"record_type,omitzero" json:"-"`
-	// End of the requested time period (Unix Timestamp, UTC.) In a query string:
-	// &to=1709673437
+	// End of the requested time period (Unix Timestamp, UTC.)
+	//
+	// In a query string: &to=1709673437
 	To param.Opt[int64] `query:"to,omitzero" json:"-"`
 	paramObj
 }
@@ -755,20 +765,27 @@ type ZoneImportParams struct {
 	// n <= len(p)) and any error encountered. Even if Read returns n < len(p), it may
 	// use all of p as scratch space during the call. If some data is available but not
 	// len(p) bytes, Read conventionally returns what is available instead of waiting
-	// for more. When Read encounters an error or end-of-file condition after
-	// successfully reading n > 0 bytes, it returns the number of bytes read. It may
-	// return the (non-nil) error from the same call or return the error (and n == 0)
-	// from a subsequent call. An instance of this general case is that a Reader
-	// returning a non-zero number of bytes at the end of the input stream may return
-	// either err == EOF or err == nil. The next Read should return 0, EOF. Callers
-	// should always process the n > 0 bytes returned before considering the error err.
-	// Doing so correctly handles I/O errors that happen after reading some bytes and
-	// also both of the allowed EOF behaviors. If len(p) == 0, Read should always
-	// return n == 0. It may return a non-nil error if some error condition is known,
-	// such as EOF. Implementations of Read are discouraged from returning a zero byte
-	// count with a nil error, except when len(p) == 0. Callers should treat a return
-	// of 0 and nil as indicating that nothing happened; in particular it does not
-	// indicate EOF. Implementations must not retain p.
+	// for more.
+	//
+	// When Read encounters an error or end-of-file condition after successfully
+	// reading n > 0 bytes, it returns the number of bytes read. It may return the
+	// (non-nil) error from the same call or return the error (and n == 0) from a
+	// subsequent call. An instance of this general case is that a Reader returning a
+	// non-zero number of bytes at the end of the input stream may return either err ==
+	// EOF or err == nil. The next Read should return 0, EOF.
+	//
+	// Callers should always process the n > 0 bytes returned before considering the
+	// error err. Doing so correctly handles I/O errors that happen after reading some
+	// bytes and also both of the allowed EOF behaviors.
+	//
+	// If len(p) == 0, Read should always return n == 0. It may return a non-nil error
+	// if some error condition is known, such as EOF.
+	//
+	// Implementations of Read are discouraged from returning a zero byte count with a
+	// nil error, except when len(p) == 0. Callers should treat a return of 0 and nil
+	// as indicating that nothing happened; in particular it does not indicate EOF.
+	//
+	// Implementations must not retain p.
 	Body any
 	paramObj
 }

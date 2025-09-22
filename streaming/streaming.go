@@ -62,8 +62,10 @@ type CreateVideoParam struct {
 	// length if the video, then you can provide timecodes of starting point and
 	// duration of a segment to process. Start encoding from is a number in seconds.
 	ClipStartSeconds param.Opt[int64] `json:"clip_start_seconds,omitzero"`
-	// Deprecated. Custom URL of IFrame for video player to be used in share panel in
-	// player. Auto generated IFrame URL provided by default
+	// Deprecated.
+	//
+	// Custom URL of IFrame for video player to be used in share panel in player. Auto
+	// generated IFrame URL provided by default
 	CustomIframeURL param.Opt[string] `json:"custom_iframe_url,omitzero"`
 	// Video details; not visible to the end-users
 	Description param.Opt[string] `json:"description,omitzero"`
@@ -71,8 +73,11 @@ type CreateVideoParam struct {
 	DirectoryID param.Opt[int64] `json:"directory_id,omitzero"`
 	// Authorization HTTP request header. Will be used as credentials to authenticate a
 	// request to download a file (specified in "`origin_url`" parameter) on an
-	// external server. Syntax:
-	// `Authorization: <auth-scheme> <authorization-parameters>` Examples:
+	// external server.
+	//
+	// Syntax: `Authorization: <auth-scheme> <authorization-parameters>`
+	//
+	// Examples:
 	//
 	//   - "`origin_http_headers`": "Authorization: Basic ..."
 	//   - "`origin_http_headers`": "Authorization: Bearer ..."
@@ -95,14 +100,20 @@ type CreateVideoParam struct {
 	// transcoding.
 	OriginURL param.Opt[string] `json:"origin_url,omitzero"`
 	// Poster is your own static image which can be displayed before the video starts.
+	//
 	// After uploading the video, the system will automatically create several
 	// screenshots (they will be stored in "screenshots" attribute) from which you can
 	// select an default screenshot. This "poster" field is for uploading your own
 	// image. Also use attribute "`screenshot_id`" to select poster as a default
-	// screnshot. Attribute accepts single image as base64-encoded string
+	// screnshot.
+	//
+	// Attribute accepts single image as base64-encoded string
 	// [(RFC 2397 – The "data" URL scheme)](https://www.rfc-editor.org/rfc/rfc2397). In
-	// format: `data:[<mediatype>];base64,<data>` MIME-types are image/jpeg,
-	// image/webp, and image/png and file sizes up to 1Mb. Examples:
+	// format: `data:[<mediatype>];base64,<data>`
+	//
+	// MIME-types are image/jpeg, image/webp, and image/png and file sizes up to 1Mb.
+	//
+	// Examples:
 	//
 	// - `data:image/jpeg;base64,/9j/4AA...qf/2Q==`
 	// - `data:image/png;base64,iVBORw0KGg...ggg==`
@@ -110,11 +121,14 @@ type CreateVideoParam struct {
 	Poster param.Opt[string] `json:"poster,omitzero"`
 	// Priority allows you to adjust the urgency of processing some videos before
 	// others in your account, if your algorithm requires it. For example, when there
-	// are very urgent video and some regular ones that can wait in the queue. Value
-	// range, integer [-10..10]. -10 is the lowest down-priority, 10 is the highest
-	// up-priority. Default priority is 0.
+	// are very urgent video and some regular ones that can wait in the queue.
+	//
+	// Value range, integer [-10..10]. -10 is the lowest down-priority, 10 is the
+	// highest up-priority. Default priority is 0.
 	Priority param.Opt[int64] `json:"priority,omitzero"`
-	// Deprecated. Regulates the video format:
+	// Deprecated.
+	//
+	// Regulates the video format:
 	//
 	// - **regular** — plays the video as usual
 	// - **vr360** — plays the video in 360 degree mode
@@ -127,21 +141,29 @@ type CreateVideoParam struct {
 	// your conditions. Look at GET /`quality_sets` method
 	QualitySetID param.Opt[int64] `json:"quality_set_id,omitzero"`
 	// Poster URL to download from external resource, instead of uploading via "poster"
-	// attribute. It has the same restrictions as "poster" attribute.
+	// attribute.
+	//
+	// It has the same restrictions as "poster" attribute.
 	RemotePosterURL param.Opt[string] `json:"remote_poster_url,omitzero"`
 	// Set it to true to remove poster
 	RemovePoster param.Opt[bool] `json:"remove_poster,omitzero"`
-	// Default screenshot index. Specify an ID from the "screenshots" array, so that
-	// the URL of the required screenshot appears in the "screenshot" attribute as the
-	// default screenshot. By default 5 static screenshots will be taken from different
-	// places in the video after transcoding. If the video is short, there may be fewer
-	// screenshots. Counting from 0. A value of -1 sets the default screenshot to the
-	// URL of your own image from the "poster" attribute. Look at "screenshot"
-	// attribute in GET /videos/{`video_id`} for details.
+	// Default screenshot index.
+	//
+	// Specify an ID from the "screenshots" array, so that the URL of the required
+	// screenshot appears in the "screenshot" attribute as the default screenshot. By
+	// default 5 static screenshots will be taken from different places in the video
+	// after transcoding. If the video is short, there may be fewer screenshots.
+	//
+	// Counting from 0. A value of -1 sets the default screenshot to the URL of your
+	// own image from the "poster" attribute.
+	//
+	// Look at "screenshot" attribute in GET /videos/{`video_id`} for details.
 	ScreenshotID param.Opt[int64] `json:"screenshot_id,omitzero"`
-	// Deprecated. Custom URL or iframe displayed in the link field when a user clicks
-	// on a sharing button in player. If empty, the link field and social network
-	// sharing is disabled
+	// Deprecated.
+	//
+	// Custom URL or iframe displayed in the link field when a user clicks on a sharing
+	// button in player. If empty, the link field and social network sharing is
+	// disabled
 	ShareURL param.Opt[string] `json:"share_url,omitzero"`
 	// The option allows you to set the video transcoding rule so that the output
 	// bitrate in ABR ladder is not exceeding the bitrate of the original video.
@@ -151,20 +173,25 @@ type CreateVideoParam struct {
 	// By default `source_bitrate_limit: true` this option allows you to have the
 	// output bitrate not more than in the original video, thus to transcode video
 	// faster and to deliver it to end-viewers faster as well. At the same time, the
-	// quality will be similar to the original. If for some reason you need more
-	// byte-space in the output quality when encoding, you can set this option to
-	// `source_bitrate_limit: false`. Then, when transcoding, the quality ceiling will
-	// be raised from the bitrate of the original video to the maximum possible limit
-	// specified in our the Product Documentation. For example, this may be needed
-	// when:
+	// quality will be similar to the original.
 	//
-	//   - to improve the visual quality parameters using PSNR, SSIM, VMAF metrics,
-	//   - to improve the picture quality on dynamic scenes,
-	//   - etc. The option is applied only at the video creation stage and cannot be
-	//     changed later. If you want to re-transcode the video using new value, then you
-	//     need to create and upload a new video only.
+	// If for some reason you need more byte-space in the output quality when encoding,
+	// you can set this option to `source_bitrate_limit: false`. Then, when
+	// transcoding, the quality ceiling will be raised from the bitrate of the original
+	// video to the maximum possible limit specified in our the Product Documentation.
+	// For example, this may be needed when:
+	//
+	// - to improve the visual quality parameters using PSNR, SSIM, VMAF metrics,
+	// - to improve the picture quality on dynamic scenes,
+	// - etc.
+	//
+	// The option is applied only at the video creation stage and cannot be changed
+	// later. If you want to re-transcode the video using new value, then you need to
+	// create and upload a new video only.
 	SourceBitrateLimit param.Opt[bool] `json:"source_bitrate_limit,omitzero"`
-	// Automatic creation of subtitles by transcribing the audio track. Values:
+	// Automatic creation of subtitles by transcribing the audio track.
+	//
+	// Values:
 	//
 	//   - disable – Do not transcribe.
 	//   - auto – Automatically detects the activation of the option based on the
@@ -174,7 +201,9 @@ type CreateVideoParam struct {
 	//     language spoken in the audio track, or when auto language detection fails.
 	//     Language is set by 3-letter language code according to ISO-639-2
 	//     (bibliographic code). List of languages is available in `audio_language`
-	//     attribute of API POST /streaming/ai/transcribe . Example:
+	//     attribute of API POST /streaming/ai/transcribe .
+	//
+	// Example:
 	//
 	// ```
 	// auto_transcribe_audio_language: "auto"
@@ -192,15 +221,23 @@ type CreateVideoParam struct {
 	AutoTranscribeAudioLanguage CreateVideoAutoTranscribeAudioLanguage `json:"auto_transcribe_audio_language,omitzero"`
 	// Automatic translation of auto-transcribed subtitles to the specified
 	// language(s). Can be used both together with `auto_transcribe_audio_language`
-	// option only. Use it when you want to make automatic subtitles in languages other
-	// than the original language in audio. Values:
+	// option only.
+	//
+	// Use it when you want to make automatic subtitles in languages other than the
+	// original language in audio.
+	//
+	// Values:
 	//
 	//   - disable – Do not translate.
 	//   - default – There are 3 default languages: eng,fre,ger
 	//   - \ – Explicit language to translate to, or list of languages separated by a
 	//     comma. Look at list of available languages in description of AI ASR task
-	//     creation. If several languages are specified for translation, a separate
-	//     subtitle will be generated for each language. Example:
+	//     creation.
+	//
+	// If several languages are specified for translation, a separate subtitle will be
+	// generated for each language.
+	//
+	// Example:
 	//
 	// ```
 	// auto_translate_subtitles_language: default
@@ -223,7 +260,9 @@ func (r *CreateVideoParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Automatic creation of subtitles by transcribing the audio track. Values:
+// Automatic creation of subtitles by transcribing the audio track.
+//
+// Values:
 //
 //   - disable – Do not transcribe.
 //   - auto – Automatically detects the activation of the option based on the
@@ -233,7 +272,9 @@ func (r *CreateVideoParam) UnmarshalJSON(data []byte) error {
 //     language spoken in the audio track, or when auto language detection fails.
 //     Language is set by 3-letter language code according to ISO-639-2
 //     (bibliographic code). List of languages is available in `audio_language`
-//     attribute of API POST /streaming/ai/transcribe . Example:
+//     attribute of API POST /streaming/ai/transcribe .
+//
+// Example:
 //
 // ```
 // auto_transcribe_audio_language: "auto"
@@ -256,15 +297,23 @@ const (
 
 // Automatic translation of auto-transcribed subtitles to the specified
 // language(s). Can be used both together with `auto_transcribe_audio_language`
-// option only. Use it when you want to make automatic subtitles in languages other
-// than the original language in audio. Values:
+// option only.
+//
+// Use it when you want to make automatic subtitles in languages other than the
+// original language in audio.
+//
+// Values:
 //
 //   - disable – Do not translate.
 //   - default – There are 3 default languages: eng,fre,ger
 //   - \ – Explicit language to translate to, or list of languages separated by a
 //     comma. Look at list of available languages in description of AI ASR task
-//     creation. If several languages are specified for translation, a separate
-//     subtitle will be generated for each language. Example:
+//     creation.
+//
+// If several languages are specified for translation, a separate subtitle will be
+// generated for each language.
+//
+// Example:
 //
 // ```
 // auto_translate_subtitles_language: default
@@ -301,22 +350,27 @@ type Video struct {
 	// generated Iframe URL provided by default.
 	CustomIframeURL string `json:"custom_iframe_url"`
 	// A URL to a master playlist MPEG-DASH (master.mpd) with CMAF or WebM based
-	// chunks. Chunk type will be selected automatically for each quality:
+	// chunks.
+	//
+	// Chunk type will be selected automatically for each quality:
 	//
 	// - CMAF for H264 and H265 codecs.
 	// - WebM for AV1 codec.
 	//
 	// This URL is a link to the main manifest. But you can also manually specify
 	// suffix-options that will allow you to change the manifest to your request:
-	// `/videos/{client_id}_{slug}/master[-min-N][-max-N][-(h264|hevc|av1)].mpd` List
-	// of suffix-options:
+	// `/videos/{client_id}_{slug}/master[-min-N][-max-N][-(h264|hevc|av1)].mpd`
+	//
+	// List of suffix-options:
 	//
 	//   - [-min-N] – ABR soft limitation of qualities from below.
 	//   - [-max-N] – ABR soft limitation of qualities from above.
 	//   - [-(h264|hevc|av1) – Video codec soft limitation. Applicable if the video was
 	//     transcoded into multiple codecs H264, H265 and AV1 at once, but you want to
 	//     return just 1 video codec in a manifest. Read the Product Documentation for
-	//     details. Read more what is ABR soft-limiting in the "`hls_url`" field above.
+	//     details.
+	//
+	// Read more what is ABR soft-limiting in the "`hls_url`" field above.
 	//
 	// Caution. Solely master.mpd is officially documented and intended for your use.
 	// Any additional internal manifests, sub-manifests, parameters, chunk names, file
@@ -346,8 +400,9 @@ type Video struct {
 	// in any manner or form. It is strongly advised not to store them in your database
 	// or cache them on your end.
 	HlsCmafURL string `json:"hls_cmaf_url"`
-	// A URL to a master playlist HLS (master.m3u8). Chunk type will be selected
-	// automatically:
+	// A URL to a master playlist HLS (master.m3u8).
+	//
+	// Chunk type will be selected automatically:
 	//
 	//   - TS if your video was encoded to H264 only.
 	//   - CMAF if your video was encoded additionally to H265 and/or AV1 codecs (as
@@ -357,6 +412,7 @@ type Video struct {
 	// You can also manually specify suffix-options that will allow you to change the
 	// manifest to your request:
 	// `/videos/{client_id}_{video_slug}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8`
+	//
 	// List of suffix-options:
 	//
 	//   - [-cmaf] – getting HLS CMAF version of the manifest. Look at the `hls_cmaf_url`
@@ -368,12 +424,15 @@ type Video struct {
 	//   - [-(h264|hevc|av1) – Video codec soft limitation. Applicable if the video was
 	//     transcoded into multiple codecs H264, H265 and AV1 at once, but you want to
 	//     return just 1 video codec in a manifest. Read the Product Documentation for
-	//     details. ABR soft-limiting: Soft limitation of the list of qualities allows
-	//     you to return not the entire list of transcoded qualities for a video, but
-	//     only those you need. For more details look at the Product Documentation. For
-	//     example, the video is available in 7 qualities from 360p to 4K, but you want
-	//     to return not more than 480p only due to the conditions of distribution of
-	//     content to a specific end-user (i.e. free account):
+	//     details.
+	//
+	// ABR soft-limiting: Soft limitation of the list of qualities allows you to return
+	// not the entire list of transcoded qualities for a video, but only those you
+	// need. For more details look at the Product Documentation. For example, the video
+	// is available in 7 qualities from 360p to 4K, but you want to return not more
+	// than 480p only due to the conditions of distribution of content to a specific
+	// end-user (i.e. free account):
+	//
 	//   - To a generic `.../master.m3u8` manifest
 	//   - Add a suffix-option to limit quality `.../master-max-480.m3u8`
 	//   - Add a suffix-option to limit quality and codec
@@ -388,21 +447,29 @@ type Video struct {
 	HlsURL string `json:"hls_url"`
 	// A URL to a built-in HTML video player with the video inside. It can be inserted
 	// into an iframe on your website and the video will automatically play in all
-	// browsers. The player can be opened or shared via this direct link. Also the
-	// video player can be integrated into your web pages using the Iframe tag. Example
-	// of usage on a web page:
+	// browsers.
+	//
+	// The player can be opened or shared via this direct link. Also the video player
+	// can be integrated into your web pages using the Iframe tag.
+	//
+	// Example of usage on a web page:
 	//
 	// <iframe width="100%" height="100%" src="https://player.gvideo.co/videos/2675_FnlHXwA16ZMxmUr" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 	//
 	// There are some link modificators you can specify and add manually:
-	// - ?`no_low_latency` – player is forced to use non-low-latency streams HLS MPEG-TS, instead of MPEG-DASH CMAF or HLS/LL-HLS CMAF.
-	// - ?t=(integer) – time to start playback from specified point in the video. Applicable for VOD only.
-	// - ?`sub_lang`=(language) – force subtitles to specific language (2 letters ISO 639 code of a language).
-	// - Read more in the Product Documentation.
+	//
+	//   - ?`no_low_latency` – player is forced to use non-low-latency streams HLS
+	//     MPEG-TS, instead of MPEG-DASH CMAF or HLS/LL-HLS CMAF.
+	//   - ?t=(integer) – time to start playback from specified point in the video.
+	//     Applicable for VOD only.
+	//   - ?`sub_lang`=(language) – force subtitles to specific language (2 letters ISO
+	//     639 code of a language).
+	//   - Read more in the Product Documentation.
 	IframeURL string `json:"iframe_url"`
-	// Title of the video. Often used as a human-readable name of the video, but can
-	// contain any text you wish. The values are not unique and may be repeated.
-	// Examples:
+	// Title of the video.
+	//
+	// Often used as a human-readable name of the video, but can contain any text you
+	// wish. The values are not unique and may be repeated. Examples:
 	//
 	// - Educational training 2024-03-29
 	// - Series X S3E14, The empire strikes back
@@ -411,32 +478,50 @@ type Video struct {
 	// Size of original file
 	OriginSize int64 `json:"origin_size"`
 	// URL to an original file from which the information for transcoding was taken.
+	//
 	// May contain a link for scenarios:
 	//
-	//   - If the video was downloaded from another origin
-	//   - If the video is a recording of a live stream
-	//   - Otherwise it is "null" **Copy from another server** URL to an original file
-	//     that was downloaded. Look at method "Copy from another server" in POST
-	//     /videos. **Recording of an original live stream** URL to the original
-	//     non-transcoded stream recording with original quality, saved in MP4 format.
-	//     File is created immediately after the completion of the stream recording. The
-	//     stream from which the recording was made is reflected in "`stream_id`" field.
-	//     Can be used for internal operations when a recording needs to be received
-	//     faster than the transcoded versions are ready. But this version is not
-	//     intended for public distribution. Views and downloads occur in the usual way,
-	//     like viewing an MP4 rendition. The MP4 file becomes available for downloading
-	//     when the video entity "status" changes from "new" to "pending". The file is
-	//     stored for 7 days, after which it will be automatically deleted. Format of URL
-	//     is `/videos/<cid>_<slug>/origin_<bitrate>_<height>.mp4` Where:
-	//   - `<bitrate>` – Encoding bitrate in Kbps.
-	//   - `<height>` – Video height. This is a premium feature, available only upon
-	//     request through your manager or support team.
+	// - If the video was downloaded from another origin
+	// - If the video is a recording of a live stream
+	// - Otherwise it is "null"
+	//
+	// **Copy from another server**
+	//
+	// URL to an original file that was downloaded. Look at method "Copy from another
+	// server" in POST /videos.
+	//
+	// **Recording of an original live stream**
+	//
+	// URL to the original non-transcoded stream recording with original quality, saved
+	// in MP4 format. File is created immediately after the completion of the stream
+	// recording. The stream from which the recording was made is reflected in
+	// "`stream_id`" field.
+	//
+	// Can be used for internal operations when a recording needs to be received faster
+	// than the transcoded versions are ready. But this version is not intended for
+	// public distribution. Views and downloads occur in the usual way, like viewing an
+	// MP4 rendition.
+	//
+	// The MP4 file becomes available for downloading when the video entity "status"
+	// changes from "new" to "pending". The file is stored for 7 days, after which it
+	// will be automatically deleted.
+	//
+	// Format of URL is `/videos/<cid>_<slug>/origin_<bitrate>_<height>.mp4` Where:
+	//
+	// - `<bitrate>` – Encoding bitrate in Kbps.
+	// - `<height>` – Video height.
+	//
+	// This is a premium feature, available only upon request through your manager or
+	// support team.
 	OriginURL string `json:"origin_url"`
 	// Original video duration in milliseconds
 	OriginVideoDuration int64 `json:"origin_video_duration"`
 	// Poster is your own static image which can be displayed before the video begins
-	// playing. This is often a frame of the video or a custom title screen. Field
-	// contains a link to your own uploaded image. Also look at "screenshot" attribute.
+	// playing. This is often a frame of the video or a custom title screen.
+	//
+	// Field contains a link to your own uploaded image.
+	//
+	// Also look at "screenshot" attribute.
 	Poster string `json:"poster"`
 	// Field contains a link to minimized poster image. Original "poster" image is
 	// proportionally scaled to a size of 200 pixels in height.
@@ -455,24 +540,29 @@ type Video struct {
 	RecordingStartedAt string `json:"recording_started_at"`
 	// A URL to the default screenshot is here. The image is selected from an array of
 	// all screenshots based on the “`screenshot_id`” attribute. If you use your own
-	// "poster", the link to it will be here too. Our video player uses this field to
-	// display the static image before the video starts playing. As soon as the user
-	// hits "play" the image will go away. If you use your own external video player,
-	// then you can use the value of this field to set the poster/thumbnail in your
-	// player. Example:
+	// "poster", the link to it will be here too.
+	//
+	// Our video player uses this field to display the static image before the video
+	// starts playing. As soon as the user hits "play" the image will go away. If you
+	// use your own external video player, then you can use the value of this field to
+	// set the poster/thumbnail in your player.
+	//
+	// Example:
 	//
 	// - `video_js`.poster: `api.screenshot`
 	// - clappr.poster: `api.screenshot`
 	Screenshot string `json:"screenshot"`
-	// ID of auto generated screenshots to be used for default screenshot. Counting
-	// from 0. A value of -1 sets the "screenshot" attribute to the URL of your own
-	// image from the "poster" attribute.
+	// ID of auto generated screenshots to be used for default screenshot.
+	//
+	// Counting from 0. A value of -1 sets the "screenshot" attribute to the URL of
+	// your own image from the "poster" attribute.
 	ScreenshotID int64 `json:"screenshot_id"`
 	// Array of auto generated screenshots from the video. By default 5 static
 	// screenshots are taken from different places in the video. If the video is short,
-	// there may be fewer screenshots. Screenshots are created automatically, so they
-	// may contain not very good frames from the video. To use your own image look at
-	// "poster" attribute.
+	// there may be fewer screenshots.
+	//
+	// Screenshots are created automatically, so they may contain not very good frames
+	// from the video. To use your own image look at "poster" attribute.
 	Screenshots []string `json:"screenshots"`
 	// Custom URL or iframe displayed in the link field when a user clicks on a sharing
 	// button in player. If empty, the link field and social network sharing is
@@ -480,7 +570,10 @@ type Video struct {
 	ShareURL string `json:"share_url"`
 	// A unique alphanumeric identifier used in public URLs to retrieve and view the
 	// video. It is unique for each video, generated randomly and set automatically by
-	// the system. Format of usage in URL is \*.../videos/{`client_id`}\_{slug}/...\*
+	// the system.
+	//
+	// Format of usage in URL is \*.../videos/{`client_id`}\_{slug}/...\*
+	//
 	// Example:
 	//
 	// - Player: /videos/`12345_neAq1bYZ2`
@@ -570,13 +663,16 @@ type VideoConvertedVideo struct {
 	// A URL to a rendition file of the specified quality in MP4 format for
 	// downloading.
 	//
-	// **Download methods** For each converted video, additional download endpoints are
-	// available under `converted_videos`/`mp4_urls`. An MP4 download enpoints:
+	// **Download methods**
 	//
-	//   - /videos/{`client_id`}\_{slug}/{filename}.mp4
-	//   - /videos/{`client_id`}\_{slug}/{filename}.mp4/download
-	//   - /videos/{`client_id`}\_{slug}/{filename}.mp4/download={`custom_filename`} The
-	//     first option returns the file as is. Response will be:
+	// For each converted video, additional download endpoints are available under
+	// `converted_videos`/`mp4_urls`. An MP4 download enpoints:
+	//
+	// - /videos/{`client_id`}\_{slug}/{filename}.mp4
+	// - /videos/{`client_id`}\_{slug}/{filename}.mp4/download
+	// - /videos/{`client_id`}\_{slug}/{filename}.mp4/download={`custom_filename`}
+	//
+	// The first option returns the file as is. Response will be:
 	//
 	// ```
 	//
@@ -602,7 +698,9 @@ type VideoConvertedVideo struct {
 	//
 	// The third option allows you to set a custom name for the file being downloaded.
 	// You can optionally specify a custom filename (just name excluding the .mp4
-	// extension) using the download= query. Filename constraints:
+	// extension) using the download= query.
+	//
+	// Filename constraints:
 	//
 	// - Length: 1-255 characters
 	// - Must NOT include the .mp4 extension (it is added automatically)
@@ -627,40 +725,55 @@ type VideoConvertedVideo struct {
 	//   - Video with custom download filename:
 	//     `https://demo-public.gvideo.io/videos/2675_1OFgHZ1FWZNNvx1A/qid3567v1_h264_4050_1080.mp4/download=highlights_v1.1_2025-05-30`
 	//
-	// **Default MP4 file name structure** Link to the file {filename} contains
-	// information about the encoding method using format:
-	// `<quality_version>_<codec>_<bitrate>_<height>.mp4`
+	// **Default MP4 file name structure**
+	//
+	// Link to the file {filename} contains information about the encoding method using
+	// format: `<quality_version>_<codec>_<bitrate>_<height>.mp4`
 	//
 	//   - `<quality_version>` – Internal quality identifier and file version. Please do
 	//     not use it, can be changed at any time without any notice.
 	//   - `<codec>` – Codec name that was used to encode the video, or audio codec if it
 	//     is an audio-only file.
 	//   - `<bitrate>` – Encoding bitrate in Kbps.
-	//   - `<height>` – Video height, or word "audio" if it is an audio-only file. Note
-	//     that this link format has been applied since 14.08.2024. If the video entity
-	//     was uploaded earlier, links may have old simplified format. Example:
-	//     `/videos/{client_id}_{slug}/qid3567v1_h264_4050_1080.mp4`
+	//   - `<height>` – Video height, or word "audio" if it is an audio-only file.
+	//
+	// Note that this link format has been applied since 14.08.2024. If the video
+	// entity was uploaded earlier, links may have old simplified format.
+	//
+	// Example: `/videos/{client_id}_{slug}/qid3567v1_h264_4050_1080.mp4`
 	//
 	// **Dynamic speed limiting** This mode sets different limits for different users
 	// or for different types of content. The speed is adjusted based on requests with
-	// the “speed” and “buffer” arguments. Example: `?speed=50k&buffer=500k` Read more
-	// in Product Documentation in CDN section "Network limits".
+	// the “speed” and “buffer” arguments.
 	//
-	// **Secure token authentication (updated)** Access to MP4 download links can be
-	// protected using secure tokens passed as query parameters. The token generation
-	// logic has been updated to allow fine-grained protection per file and bitrate.
+	// Example: `?speed=50k&buffer=500k`
+	//
+	// Read more in Product Documentation in CDN section "Network limits".
+	//
+	// **Secure token authentication (updated)**
+	//
+	// Access to MP4 download links can be protected using secure tokens passed as
+	// query parameters. The token generation logic has been updated to allow
+	// fine-grained protection per file and bitrate.
+	//
 	// Token generation uses the entire MP4 path, which ensures the token only grants
 	// access to a specific quality/version of the video. This prevents unintended
-	// access to other bitrate versions of an ABR stream. Token Query Parameters:
+	// access to other bitrate versions of an ABR stream.
 	//
-	//   - token: The generated hash
-	//   - expires: Expiration timestamp
-	//   - speed: (optional) Speed limit in bytes/sec, or empty string
-	//   - buffer: (optional) Buffer size in bytes, or empty string Optional (for
-	//     IP-bound tokens):
+	// Token Query Parameters:
+	//
+	// - token: The generated hash
+	// - expires: Expiration timestamp
+	// - speed: (optional) Speed limit in bytes/sec, or empty string
+	// - buffer: (optional) Buffer size in bytes, or empty string
+	//
+	// Optional (for IP-bound tokens):
+	//
 	//   - ip: The user’s IP address Example:
-	//     `?md5=QX39c77lbQKvYgMMAvpyMQ&expires=1743167062` Read more in Product
-	//     Documentation in Streaming section "Protected temporarily link".
+	//     `?md5=QX39c77lbQKvYgMMAvpyMQ&expires=1743167062`
+	//
+	// Read more in Product Documentation in Streaming section "Protected temporarily
+	// link".
 	MP4URL string `json:"mp4_url"`
 	// Specific quality name
 	Name string `json:"name"`

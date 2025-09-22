@@ -130,6 +130,7 @@ func (r *DomainService) TogglePolicy(ctx context.Context, policyID string, body 
 }
 
 // Represents a WAAP domain, serving as a singular unit within the WAAP service.
+//
 // Each domain functions autonomously, possessing its own set of rules and
 // configurations to manage web application firewall settings and behaviors.
 type WaapDetailedDomain struct {

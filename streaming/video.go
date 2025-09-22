@@ -43,8 +43,10 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 
 // Use this method to create a new video entity.
 //
-// **Methods of creating** To upload the original video file to the server, there
-// are several possible scenarios:
+// **Methods of creating**
+//
+// To upload the original video file to the server, there are several possible
+// scenarios:
 //
 //   - **Copy from another server** – If your video is accessable via "http://",
 //     "https://", or "sftp://" public link, then you can use this method to copy a
@@ -53,20 +55,26 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 //     execution file will be uploaded and will be sent to transcoding automatically,
 //     you don't have to do anything else. Use extra field `origin_http_headers` if
 //     authorization is required on the external server.
+//
 //   - **Direct upload from a local device** – If you need to upload video directly
 //     from your local device or from a mobile app, then use this method. Keep
 //     `origin_url` empty and use TUS protocol ([tus.io](https://tus.io)) to upload
 //     file. More details are here
 //     ["Get TUS' upload"](/docs/api-reference/streaming/videos/get-tus-parameters-for-direct-upload)
-//     After getting the video, it is processed through the queue. There are 2
-//     priority criteria: global and local. Global is determined automatically by the
-//     system as converters are ready to get next video, so your videos rarely queue
-//     longer than usual (when you don't have a dedicated region). Local priority
-//     works at the level of your account and you have full control over it, look at
-//     "priority" attribute.
 //
-// **AI processing** When uploading a video, it is possible to automatically create
-// subtitles based on AI. Read more:
+// After getting the video, it is processed through the queue. There are 2 priority
+// criteria: global and local. Global is determined automatically by the system as
+// converters are ready to get next video, so your videos rarely queue longer than
+// usual (when you don't have a dedicated region). Local priority works at the
+// level of your account and you have full control over it, look at "priority"
+// attribute.
+//
+// **AI processing**
+//
+// When uploading a video, it is possible to automatically create subtitles based
+// on AI.
+//
+// Read more:
 //
 //   - What is
 //     ["AI Speech Recognition"](/docs/api-reference/streaming/ai/create-ai-asr-task).
@@ -81,21 +89,26 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 //     subtitle will be generated for each specified language.
 //   - How to
 //     ["add AI-generated subtitles to an exist video"](/docs/api-reference/streaming/subtitles/add-subtitle).
-//     The created AI-task(s) will be automatically executed, and result will also be
-//     automatically attached to this video as subtitle(s). Please note that
-//     transcription is done automatically for all videos uploaded to our video
-//     hosting. If necessary, you can disable automatic creation of subtitles. If AI
-//     is disabled in your account, no AI functionality is called.
 //
-// **Advanced Features** For details on the requirements for incoming original
-// files, and output video parameters after transcoding, refer to the Knowledge
-// Base documentation. By default video will be transcoded according to the
-// original resolution, and a quality ladder suitable for your original video will
-// be applied. There is no automatic upscaling; the maximum quality is taken from
-// the original video. If you want to upload specific files not explicitly listed
-// in requirements or wish to modify the standard quality ladder (i.e. decrease
-// quality or add new non-standard qualities), then such customization is possible.
-// Please reach out to us for assistance.
+// The created AI-task(s) will be automatically executed, and result will also be
+// automatically attached to this video as subtitle(s).
+//
+// Please note that transcription is done automatically for all videos uploaded to
+// our video hosting. If necessary, you can disable automatic creation of
+// subtitles. If AI is disabled in your account, no AI functionality is called.
+//
+// **Advanced Features**
+//
+// For details on the requirements for incoming original files, and output video
+// parameters after transcoding, refer to the Knowledge Base documentation. By
+// default video will be transcoded according to the original resolution, and a
+// quality ladder suitable for your original video will be applied. There is no
+// automatic upscaling; the maximum quality is taken from the original video.
+//
+// If you want to upload specific files not explicitly listed in requirements or
+// wish to modify the standard quality ladder (i.e. decrease quality or add new
+// non-standard qualities), then such customization is possible. Please reach out
+// to us for assistance.
 //
 // Additionally, check the Knowledge Base for any supplementary information you may
 // need.
@@ -106,18 +119,22 @@ func (r *VideoService) New(ctx context.Context, body VideoNewParams, opts ...opt
 	return
 }
 
-// Changes parameters of the video to new values. It's allowed to update only those
-// public parameters that are described in POST method to create a new “video”
-// entity. So it's not possible to change calculated parameters like "id",
-// "duration", "`hls_url`", etc. Examples of changing:
+// Changes parameters of the video to new values.
 //
-//   - Name: `{ "name": "new name of the video" }`
-//   - Move the video to a new directory: ` { "directory_id": 200 }` Please note that
-//     some parameters are used on initial step (before transcoding) only, so after
-//     transcoding there is no use in changing their values. For example,
-//     "`origin_url`" parameter is used for downloading an original file from a
-//     source and never used after transcoding; or "priority" parameter is used to
-//     set priority of processing and never used after transcoding.
+// It's allowed to update only those public parameters that are described in POST
+// method to create a new “video” entity. So it's not possible to change calculated
+// parameters like "id", "duration", "`hls_url`", etc.
+//
+// Examples of changing:
+//
+// - Name: `{ "name": "new name of the video" }`
+// - Move the video to a new directory: ` { "directory_id": 200 }`
+//
+// Please note that some parameters are used on initial step (before transcoding)
+// only, so after transcoding there is no use in changing their values. For
+// example, "`origin_url`" parameter is used for downloading an original file from
+// a source and never used after transcoding; or "priority" parameter is used to
+// set priority of processing and never used after transcoding.
 func (r *VideoService) Update(ctx context.Context, videoID int64, body VideoUpdateParams, opts ...option.RequestOption) (res *Video, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/videos/%v", videoID)
@@ -152,8 +169,10 @@ func (r *VideoService) ListAutoPaging(ctx context.Context, query VideoListParams
 //
 // When you delete a video, all transcoded qualities and all associated files such
 // as subtitles and screenshots, as well as other data, are deleted from cloud
-// storage. The video is deleted permanently and irreversibly. Therefore, it is
-// impossible to restore files after this.
+// storage.
+//
+// The video is deleted permanently and irreversibly. Therefore, it is impossible
+// to restore files after this.
 //
 // For detailed information and information on calculating your maximum monthly
 // storage usage, please refer to the Product Documentation.
@@ -173,6 +192,7 @@ func (r *VideoService) Delete(ctx context.Context, videoID int64, opts ...option
 //
 // All videos in the request will be processed in queue in order of priority. Use
 // "priority" attribute and look at general description in POST /videos method.
+//
 // Limits:
 //
 // - Batch max size = 500 videos.
@@ -185,9 +205,12 @@ func (r *VideoService) NewMultiple(ctx context.Context, params VideoNewMultipleP
 	return
 }
 
-// Information about a video entity. Contains all the data about the video:
-// meta-data, data for streaming and renditions, static media data, data about
-// original video. You can use different methods to play video:
+// Information about a video entity.
+//
+// Contains all the data about the video: meta-data, data for streaming and
+// renditions, static media data, data about original video.
+//
+// You can use different methods to play video:
 //
 //   - `iframe_url` – a URL to a built-in HTML video player with automatically
 //     configured video playback.
@@ -198,7 +221,8 @@ func (r *VideoService) NewMultiple(ctx context.Context, params VideoNewMultipleP
 //   - `dash_url` – a URL to MPEG-DASH .mpd manifest, which can be played in most
 //     modern video players. Preferable for Android and Windows devices.
 //   - `converted_videos`/`mp4_url` – a URL to MP4 file of specific rendition.
-//     ![Video player](https://demo-files.gvideo.io/apidocs/coffee-run-player.jpg)
+//
+// ![Video player](https://demo-files.gvideo.io/apidocs/coffee-run-player.jpg)
 func (r *VideoService) Get(ctx context.Context, videoID int64, opts ...option.RequestOption) (res *Video, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/videos/%v", videoID)
@@ -207,19 +231,23 @@ func (r *VideoService) Get(ctx context.Context, videoID int64, opts ...option.Re
 }
 
 // Use this method to get TUS' session parameters: hostname of the server to
-// upload, secure token. The general sequence of actions for a direct upload of a
-// video is as follows:
+// upload, secure token.
+//
+// The general sequence of actions for a direct upload of a video is as follows:
 //
 //   - Create video entity via POST method
 //     ["Create video"](/docs/api-reference/streaming/videos/create-video)
 //   - Get TUS' session parameters (you are here now)
 //   - Upload file via TUS client, choose your implementation on
-//     [tus.io](https://tus.io/implementations) Final endpoint for uploading is
-//     constructed using the following template: "https://{hostname}/upload/". Also
-//     you have to provide token, `client_id`, `video_id` as metadata too. A short
-//     javascript example is shown below, based on tus-js-client. Variable "data"
-//     below is the result of this API request. Please, note that we support 2.x
-//     version only of tus-js-client.
+//     [tus.io](https://tus.io/implementations)
+//
+// Final endpoint for uploading is constructed using the following template:
+// "https://{hostname}/upload/". Also you have to provide token, `client_id`,
+// `video_id` as metadata too.
+//
+// A short javascript example is shown below, based on tus-js-client. Variable
+// "data" below is the result of this API request. Please, note that we support 2.x
+// version only of tus-js-client.
 //
 // ```
 //
@@ -401,8 +429,10 @@ type VideoListParams struct {
 	// Aggregated search condition. If set, the video list is filtered by one combined
 	// SQL criterion:
 	//
-	//   - id={s} OR slug={s} OR name like {s} i.e. "/videos?search=1000" returns list of
-	//     videos where id=1000 or slug=1000 or name contains "1000".
+	// - id={s} OR slug={s} OR name like {s}
+	//
+	// i.e. "/videos?search=1000" returns list of videos where id=1000 or slug=1000 or
+	// name contains "1000".
 	Search param.Opt[string] `query:"search,omitzero" json:"-"`
 	// Use it to get videos filtered by their status. Possible values:
 	//

@@ -40,8 +40,10 @@ func NewPlaylistService(opts ...option.RequestOption) (r PlaylistService) {
 }
 
 // Playlist is a curated collection of video content organized in a sequential
-// manner. This method offers several advantages and features that are typical of
-// live streaming but with more control over the content. Here's how it works:
+// manner.
+//
+// This method offers several advantages and features that are typical of live
+// streaming but with more control over the content. Here's how it works:
 //
 //   - Playlist always consists only of static VOD videos you previously uploaded to
 //     the system.
@@ -51,24 +53,33 @@ func NewPlaylistService(opts ...option.RequestOption) (r PlaylistService) {
 //   - Playlist can be looped endlessly. In this case, all the videos in the list
 //     will be constantly repeated through the list.
 //   - Playlist can be programmed to be played at a specific time in the future. In
-//     that case, before the start time there will be empty manifest. You can add new
-//     videos to the list, remove unnecessary videos, or change the order of videos
-//     in the list. But please pay attention to when the video list changes, it is
-//     updated instantly on the server. This means that after saving the changed
-//     list, the playlist will be reloaded for all users and it will start plays from
-//     the very first element. Maximum video limit = 128 videos in a row.
+//     that case, before the start time there will be empty manifest.
+//
+// You can add new videos to the list, remove unnecessary videos, or change the
+// order of videos in the list. But please pay attention to when the video list
+// changes, it is updated instantly on the server. This means that after saving the
+// changed list, the playlist will be reloaded for all users and it will start
+// plays from the very first element.
+//
+// Maximum video limit = 128 videos in a row.
 //
 // Examples of usage:
 //
-//   - Looped video playback
-//   - Scheduled playback **Looped video playback** It can be used to simulate TV
-//     channel pre-programmed behaviour.
+// - Looped video playback
+// - Scheduled playback
+//
+// **Looped video playback**
+//
+// It can be used to simulate TV channel pre-programmed behaviour.
+//
 //   - Selection: Choose a series of videos, such as TV show episodes, movies,
 //     tutorials, or any other relevant content.
 //   - Order: Arrange the selected videos in the desired sequence, much like setting
 //     a broadcast schedule.
 //   - Looping: Optionally, the playlist can be set to loop, replaying the sequence
-//     once it finishes to maintain a continuous stream. Example:
+//     once it finishes to maintain a continuous stream.
+//
+// Example:
 //
 // ```
 //
@@ -78,9 +89,11 @@ func NewPlaylistService(opts ...option.RequestOption) (r PlaylistService) {
 //
 // ```
 //
-// **Scheduled playback** It can be used to simulate live events such as virtual
-// concerts, webinars, or any special broadcasts without the logistical challenges
-// of an actual live stream.
+// **Scheduled playback**
+//
+// It can be used to simulate live events such as virtual concerts, webinars, or
+// any special broadcasts without the logistical challenges of an actual live
+// stream.
 //
 //   - Timing: Set specific start time, creating the illusion of a live broadcast
 //     schedule.
@@ -204,8 +217,10 @@ type Playlist struct {
 	HlsURL string `json:"hls_url"`
 	// A URL to a built-in HTML video player with the video inside. It can be inserted
 	// into an iframe on your website and the video will automatically play in all
-	// browsers. The player can be opened or shared via this direct link. Also the
-	// video player can be integrated into your web pages using the Iframe tag.
+	// browsers.
+	//
+	// The player can be opened or shared via this direct link. Also the video player
+	// can be integrated into your web pages using the Iframe tag.
 	//
 	// Please see the details in `iframe_url` attribute of /videos/{id} method.
 	IframeURL string `json:"iframe_url"`
@@ -226,7 +241,9 @@ type Playlist struct {
 	// Datetime in ISO 8601 format.
 	StartTime string `json:"start_time"`
 	// A list of VOD IDs included in the playlist. Order of videos in a playlist
-	// reflects the order of IDs in the array. Maximum video limit = 128.
+	// reflects the order of IDs in the array.
+	//
+	// Maximum video limit = 128.
 	VideoIDs []int64 `json:"video_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -318,8 +335,10 @@ type PlaylistParam struct {
 	HlsURL param.Opt[string] `json:"hls_url,omitzero"`
 	// A URL to a built-in HTML video player with the video inside. It can be inserted
 	// into an iframe on your website and the video will automatically play in all
-	// browsers. The player can be opened or shared via this direct link. Also the
-	// video player can be integrated into your web pages using the Iframe tag.
+	// browsers.
+	//
+	// The player can be opened or shared via this direct link. Also the video player
+	// can be integrated into your web pages using the Iframe tag.
 	//
 	// Please see the details in `iframe_url` attribute of /videos/{id} method.
 	IframeURL param.Opt[string] `json:"iframe_url,omitzero"`
@@ -340,7 +359,9 @@ type PlaylistParam struct {
 	// Any of "live", "vod".
 	PlaylistType PlaylistPlaylistType `json:"playlist_type,omitzero"`
 	// A list of VOD IDs included in the playlist. Order of videos in a playlist
-	// reflects the order of IDs in the array. Maximum video limit = 128.
+	// reflects the order of IDs in the array.
+	//
+	// Maximum video limit = 128.
 	VideoIDs []int64 `json:"video_ids,omitzero"`
 	paramObj
 }
@@ -374,7 +395,9 @@ func (r *PlaylistCreate) UnmarshalJSON(data []byte) error {
 type PlaylistVideo struct {
 	// Video name
 	Name string `json:"name,required"`
-	// Automatic creation of subtitles by transcribing the audio track. Values:
+	// Automatic creation of subtitles by transcribing the audio track.
+	//
+	// Values:
 	//
 	//   - disable – Do not transcribe.
 	//   - auto – Automatically detects the activation of the option based on the
@@ -384,7 +407,9 @@ type PlaylistVideo struct {
 	//     language spoken in the audio track, or when auto language detection fails.
 	//     Language is set by 3-letter language code according to ISO-639-2
 	//     (bibliographic code). List of languages is available in `audio_language`
-	//     attribute of API POST /streaming/ai/transcribe . Example:
+	//     attribute of API POST /streaming/ai/transcribe .
+	//
+	// Example:
 	//
 	// ```
 	// auto_transcribe_audio_language: "auto"
@@ -402,15 +427,23 @@ type PlaylistVideo struct {
 	AutoTranscribeAudioLanguage PlaylistVideoAutoTranscribeAudioLanguage `json:"auto_transcribe_audio_language"`
 	// Automatic translation of auto-transcribed subtitles to the specified
 	// language(s). Can be used both together with `auto_transcribe_audio_language`
-	// option only. Use it when you want to make automatic subtitles in languages other
-	// than the original language in audio. Values:
+	// option only.
+	//
+	// Use it when you want to make automatic subtitles in languages other than the
+	// original language in audio.
+	//
+	// Values:
 	//
 	//   - disable – Do not translate.
 	//   - default – There are 3 default languages: eng,fre,ger
 	//   - \ – Explicit language to translate to, or list of languages separated by a
 	//     comma. Look at list of available languages in description of AI ASR task
-	//     creation. If several languages are specified for translation, a separate
-	//     subtitle will be generated for each language. Example:
+	//     creation.
+	//
+	// If several languages are specified for translation, a separate subtitle will be
+	// generated for each language.
+	//
+	// Example:
 	//
 	// ```
 	// auto_translate_subtitles_language: default
@@ -432,8 +465,10 @@ type PlaylistVideo struct {
 	// length if the video, then you can provide timecodes of starting point and
 	// duration of a segment to process. Start encoding from is a number in seconds.
 	ClipStartSeconds int64 `json:"clip_start_seconds"`
-	// Deprecated. Custom URL of IFrame for video player to be used in share panel in
-	// player. Auto generated IFrame URL provided by default
+	// Deprecated.
+	//
+	// Custom URL of IFrame for video player to be used in share panel in player. Auto
+	// generated IFrame URL provided by default
 	CustomIframeURL string `json:"custom_iframe_url"`
 	// Video details; not visible to the end-users
 	Description string `json:"description"`
@@ -441,8 +476,11 @@ type PlaylistVideo struct {
 	DirectoryID int64 `json:"directory_id"`
 	// Authorization HTTP request header. Will be used as credentials to authenticate a
 	// request to download a file (specified in "`origin_url`" parameter) on an
-	// external server. Syntax:
-	// `Authorization: <auth-scheme> <authorization-parameters>` Examples:
+	// external server.
+	//
+	// Syntax: `Authorization: <auth-scheme> <authorization-parameters>`
+	//
+	// Examples:
 	//
 	//   - "`origin_http_headers`": "Authorization: Basic ..."
 	//   - "`origin_http_headers`": "Authorization: Bearer ..."
@@ -465,14 +503,20 @@ type PlaylistVideo struct {
 	// transcoding.
 	OriginURL string `json:"origin_url"`
 	// Poster is your own static image which can be displayed before the video starts.
+	//
 	// After uploading the video, the system will automatically create several
 	// screenshots (they will be stored in "screenshots" attribute) from which you can
 	// select an default screenshot. This "poster" field is for uploading your own
 	// image. Also use attribute "`screenshot_id`" to select poster as a default
-	// screnshot. Attribute accepts single image as base64-encoded string
+	// screnshot.
+	//
+	// Attribute accepts single image as base64-encoded string
 	// [(RFC 2397 – The "data" URL scheme)](https://www.rfc-editor.org/rfc/rfc2397). In
-	// format: `data:[<mediatype>];base64,<data>` MIME-types are image/jpeg,
-	// image/webp, and image/png and file sizes up to 1Mb. Examples:
+	// format: `data:[<mediatype>];base64,<data>`
+	//
+	// MIME-types are image/jpeg, image/webp, and image/png and file sizes up to 1Mb.
+	//
+	// Examples:
 	//
 	// - `data:image/jpeg;base64,/9j/4AA...qf/2Q==`
 	// - `data:image/png;base64,iVBORw0KGg...ggg==`
@@ -480,11 +524,14 @@ type PlaylistVideo struct {
 	Poster string `json:"poster"`
 	// Priority allows you to adjust the urgency of processing some videos before
 	// others in your account, if your algorithm requires it. For example, when there
-	// are very urgent video and some regular ones that can wait in the queue. Value
-	// range, integer [-10..10]. -10 is the lowest down-priority, 10 is the highest
-	// up-priority. Default priority is 0.
+	// are very urgent video and some regular ones that can wait in the queue.
+	//
+	// Value range, integer [-10..10]. -10 is the lowest down-priority, 10 is the
+	// highest up-priority. Default priority is 0.
 	Priority int64 `json:"priority"`
-	// Deprecated. Regulates the video format:
+	// Deprecated.
+	//
+	// Regulates the video format:
 	//
 	// - **regular** — plays the video as usual
 	// - **vr360** — plays the video in 360 degree mode
@@ -497,21 +544,29 @@ type PlaylistVideo struct {
 	// your conditions. Look at GET /`quality_sets` method
 	QualitySetID int64 `json:"quality_set_id"`
 	// Poster URL to download from external resource, instead of uploading via "poster"
-	// attribute. It has the same restrictions as "poster" attribute.
+	// attribute.
+	//
+	// It has the same restrictions as "poster" attribute.
 	RemotePosterURL string `json:"remote_poster_url"`
 	// Set it to true to remove poster
 	RemovePoster bool `json:"remove_poster"`
-	// Default screenshot index. Specify an ID from the "screenshots" array, so that
-	// the URL of the required screenshot appears in the "screenshot" attribute as the
-	// default screenshot. By default 5 static screenshots will be taken from different
-	// places in the video after transcoding. If the video is short, there may be fewer
-	// screenshots. Counting from 0. A value of -1 sets the default screenshot to the
-	// URL of your own image from the "poster" attribute. Look at "screenshot"
-	// attribute in GET /videos/{`video_id`} for details.
+	// Default screenshot index.
+	//
+	// Specify an ID from the "screenshots" array, so that the URL of the required
+	// screenshot appears in the "screenshot" attribute as the default screenshot. By
+	// default 5 static screenshots will be taken from different places in the video
+	// after transcoding. If the video is short, there may be fewer screenshots.
+	//
+	// Counting from 0. A value of -1 sets the default screenshot to the URL of your
+	// own image from the "poster" attribute.
+	//
+	// Look at "screenshot" attribute in GET /videos/{`video_id`} for details.
 	ScreenshotID int64 `json:"screenshot_id"`
-	// Deprecated. Custom URL or iframe displayed in the link field when a user clicks
-	// on a sharing button in player. If empty, the link field and social network
-	// sharing is disabled
+	// Deprecated.
+	//
+	// Custom URL or iframe displayed in the link field when a user clicks on a sharing
+	// button in player. If empty, the link field and social network sharing is
+	// disabled
 	ShareURL string `json:"share_url"`
 	// The option allows you to set the video transcoding rule so that the output
 	// bitrate in ABR ladder is not exceeding the bitrate of the original video.
@@ -521,18 +576,21 @@ type PlaylistVideo struct {
 	// By default `source_bitrate_limit: true` this option allows you to have the
 	// output bitrate not more than in the original video, thus to transcode video
 	// faster and to deliver it to end-viewers faster as well. At the same time, the
-	// quality will be similar to the original. If for some reason you need more
-	// byte-space in the output quality when encoding, you can set this option to
-	// `source_bitrate_limit: false`. Then, when transcoding, the quality ceiling will
-	// be raised from the bitrate of the original video to the maximum possible limit
-	// specified in our the Product Documentation. For example, this may be needed
-	// when:
+	// quality will be similar to the original.
 	//
-	//   - to improve the visual quality parameters using PSNR, SSIM, VMAF metrics,
-	//   - to improve the picture quality on dynamic scenes,
-	//   - etc. The option is applied only at the video creation stage and cannot be
-	//     changed later. If you want to re-transcode the video using new value, then you
-	//     need to create and upload a new video only.
+	// If for some reason you need more byte-space in the output quality when encoding,
+	// you can set this option to `source_bitrate_limit: false`. Then, when
+	// transcoding, the quality ceiling will be raised from the bitrate of the original
+	// video to the maximum possible limit specified in our the Product Documentation.
+	// For example, this may be needed when:
+	//
+	// - to improve the visual quality parameters using PSNR, SSIM, VMAF metrics,
+	// - to improve the picture quality on dynamic scenes,
+	// - etc.
+	//
+	// The option is applied only at the video creation stage and cannot be changed
+	// later. If you want to re-transcode the video using new value, then you need to
+	// create and upload a new video only.
 	SourceBitrateLimit bool `json:"source_bitrate_limit"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -567,7 +625,9 @@ func (r *PlaylistVideo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Automatic creation of subtitles by transcribing the audio track. Values:
+// Automatic creation of subtitles by transcribing the audio track.
+//
+// Values:
 //
 //   - disable – Do not transcribe.
 //   - auto – Automatically detects the activation of the option based on the
@@ -577,7 +637,9 @@ func (r *PlaylistVideo) UnmarshalJSON(data []byte) error {
 //     language spoken in the audio track, or when auto language detection fails.
 //     Language is set by 3-letter language code according to ISO-639-2
 //     (bibliographic code). List of languages is available in `audio_language`
-//     attribute of API POST /streaming/ai/transcribe . Example:
+//     attribute of API POST /streaming/ai/transcribe .
+//
+// Example:
 //
 // ```
 // auto_transcribe_audio_language: "auto"
@@ -600,15 +662,23 @@ const (
 
 // Automatic translation of auto-transcribed subtitles to the specified
 // language(s). Can be used both together with `auto_transcribe_audio_language`
-// option only. Use it when you want to make automatic subtitles in languages other
-// than the original language in audio. Values:
+// option only.
+//
+// Use it when you want to make automatic subtitles in languages other than the
+// original language in audio.
+//
+// Values:
 //
 //   - disable – Do not translate.
 //   - default – There are 3 default languages: eng,fre,ger
 //   - \ – Explicit language to translate to, or list of languages separated by a
 //     comma. Look at list of available languages in description of AI ASR task
-//     creation. If several languages are specified for translation, a separate
-//     subtitle will be generated for each language. Example:
+//     creation.
+//
+// If several languages are specified for translation, a separate subtitle will be
+// generated for each language.
+//
+// Example:
 //
 // ```
 // auto_translate_subtitles_language: default

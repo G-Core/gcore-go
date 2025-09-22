@@ -55,10 +55,13 @@ func (r *DirectoryService) Update(ctx context.Context, directoryID int64, body D
 //
 // After its execution, all contents of the directory will be deleted recursively:
 //
-//   - Subdirectories
-//   - Videos The directory and contents are deleted permanently and irreversibly.
-//     Therefore, it is impossible to restore files after this. For details, see the
-//     Product Documentation.
+// - Subdirectories
+// - Videos
+//
+// The directory and contents are deleted permanently and irreversibly. Therefore,
+// it is impossible to restore files after this.
+//
+// For details, see the Product Documentation.
 func (r *DirectoryService) Delete(ctx context.Context, directoryID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -76,8 +79,9 @@ func (r *DirectoryService) Get(ctx context.Context, directoryID int64, opts ...o
 	return
 }
 
-// Tree structure of directories. This endpoint returns hierarchical data about
-// directories in video hosting.
+// Tree structure of directories.
+//
+// This endpoint returns hierarchical data about directories in video hosting.
 func (r *DirectoryService) GetTree(ctx context.Context, opts ...option.RequestOption) (res *DirectoriesTree, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/directories/tree"

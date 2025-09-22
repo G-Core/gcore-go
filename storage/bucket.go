@@ -58,9 +58,10 @@ func (r *BucketService) New(ctx context.Context, bucketName string, body BucketN
 	return
 }
 
-// Returns the list of buckets for the storage in a wrapped response. Response
-// format: count: total number of buckets (independent of pagination) results:
-// current page of buckets according to limit/offset
+// Returns the list of buckets for the storage in a wrapped response.
+//
+// Response format: count: total number of buckets (independent of pagination)
+// results: current page of buckets according to limit/offset
 func (r *BucketService) List(ctx context.Context, storageID int64, query BucketListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Bucket], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -78,9 +79,10 @@ func (r *BucketService) List(ctx context.Context, storageID int64, query BucketL
 	return res, nil
 }
 
-// Returns the list of buckets for the storage in a wrapped response. Response
-// format: count: total number of buckets (independent of pagination) results:
-// current page of buckets according to limit/offset
+// Returns the list of buckets for the storage in a wrapped response.
+//
+// Response format: count: total number of buckets (independent of pagination)
+// results: current page of buckets according to limit/offset
 func (r *BucketService) ListAutoPaging(ctx context.Context, storageID int64, query BucketListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Bucket] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, storageID, query, opts...))
 }

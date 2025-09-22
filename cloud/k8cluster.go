@@ -293,8 +293,10 @@ type K8sCluster struct {
 	Version string `json:"version,required"`
 	// Cluster authentication settings
 	Authentication K8sClusterAuthentication `json:"authentication,nullable"`
-	// Cluster autoscaler configuration. It contains overrides to the default
-	// cluster-autoscaler parameters provided by the platform.
+	// Cluster autoscaler configuration.
+	//
+	// It contains overrides to the default cluster-autoscaler parameters provided by
+	// the platform.
 	AutoscalerConfig map[string]string `json:"autoscaler_config,nullable"`
 	// Cluster CNI settings
 	Cni K8sClusterCni `json:"cni,nullable"`
@@ -677,9 +679,12 @@ type K8ClusterNewParams struct {
 	ServicesIpv6Pool param.Opt[string] `json:"services_ipv6_pool,omitzero"`
 	// Authentication settings
 	Authentication K8ClusterNewParamsAuthentication `json:"authentication,omitzero"`
-	// Cluster autoscaler configuration. It allows you to override the default
-	// cluster-autoscaler parameters provided by the platform with your preferred
-	// values. Supported parameters (in alphabetical order):
+	// Cluster autoscaler configuration.
+	//
+	// It allows you to override the default cluster-autoscaler parameters provided by
+	// the platform with your preferred values.
+	//
+	// Supported parameters (in alphabetical order):
 	//
 	//   - balance-similar-node-groups (boolean: true/false) - Detect similar node groups
 	//     and balance the number of nodes between them.
@@ -1025,9 +1030,12 @@ type K8ClusterUpdateParams struct {
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Authentication settings
 	Authentication K8ClusterUpdateParamsAuthentication `json:"authentication,omitzero"`
-	// Cluster autoscaler configuration. It allows you to override the default
-	// cluster-autoscaler parameters provided by the platform with your preferred
-	// values. Supported parameters (in alphabetical order):
+	// Cluster autoscaler configuration.
+	//
+	// It allows you to override the default cluster-autoscaler parameters provided by
+	// the platform with your preferred values.
+	//
+	// Supported parameters (in alphabetical order):
 	//
 	//   - balance-similar-node-groups (boolean: true/false) - Detect similar node groups
 	//     and balance the number of nodes between them.

@@ -33,7 +33,9 @@ func NewIPRangeService(opts ...option.RequestOption) (r IPRangeService) {
 }
 
 // Returns the complete list of IPv4 and IPv6 address ranges that Cloud uses for
-// outbound (egress) traffic. Typical reasons to call this endpoint:
+// outbound (egress) traffic.
+//
+// Typical reasons to call this endpoint:
 //
 //   - Host-file delivery workflows – You upload images or other assets to the Cloud
 //     and share a download link that points to your own infrastructure. Add these
@@ -43,10 +45,11 @@ func NewIPRangeService(opts ...option.RequestOption) (r IPRangeService) {
 //     Cloud pushes events to your listener endpoint. Whitelisting the egress IP
 //     ranges lets you accept only traffic that originates from us.
 //   - General security controls, audit tooling, or SIEM rules that need to verify
-//     that traffic truly comes from the Cloud. The list is global (covers all
-//     regions) and refreshed automatically whenever Gcore allocates new egress IP
-//     space. The response is an array of CIDR blocks; duplicate prefixes are not
-//     returned.
+//     that traffic truly comes from the Cloud.
+//
+// The list is global (covers all regions) and refreshed automatically whenever
+// Gcore allocates new egress IP space. The response is an array of CIDR blocks;
+// duplicate prefixes are not returned.
 func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption) (res *IPRanges, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/public/v1/ipranges/egress"

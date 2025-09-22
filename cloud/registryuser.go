@@ -296,8 +296,11 @@ type RegistryUserNewParams struct {
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// User account operating time, days
 	Duration int64 `json:"duration,required"`
-	// A name for the registry user. Should be in lowercase, consisting only of numbers
-	// and letters, with maximum length of 16 characters
+	// A name for the registry user.
+	//
+	// Should be in lowercase, consisting only of numbers and letters,
+	//
+	// with maximum length of 16 characters
 	Name string `json:"name,required"`
 	// Read-only user
 	ReadOnly param.Opt[bool] `json:"read_only,omitzero"`
@@ -366,8 +369,11 @@ func (r *RegistryUserNewMultipleParams) UnmarshalJSON(data []byte) error {
 type RegistryUserNewMultipleParamsUser struct {
 	// User account operating time, days
 	Duration int64 `json:"duration,required"`
-	// A name for the registry user. Should be in lowercase, consisting only of numbers
-	// and letters, with maximum length of 16 characters
+	// A name for the registry user.
+	//
+	// Should be in lowercase, consisting only of numbers and letters,
+	//
+	// with maximum length of 16 characters
 	Name string `json:"name,required"`
 	// Read-only user
 	ReadOnly param.Opt[bool] `json:"read_only,omitzero"`

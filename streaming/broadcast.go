@@ -39,10 +39,12 @@ func NewBroadcastService(opts ...option.RequestOption) (r BroadcastService) {
 
 // Broadcast entity is for setting up HTML video player, which serves to combine:
 //
-//   - many live streams,
-//   - advertising,
-//   - and design in one config. If you use other players or you get streams by
-//     direct .m3u8/.mpd links, then you will not need this entity.
+// - many live streams,
+// - advertising,
+// - and design in one config.
+//
+// If you use other players or you get streams by direct .m3u8/.mpd links, then you
+// will not need this entity.
 //
 // Scheme of "broadcast" entity using:
 // ![Scheme of "broadcast" using](https://demo-files.gvideo.io/apidocs/broadcasts.png)
