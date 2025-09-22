@@ -12,6 +12,7 @@ import (
 	"github.com/G-Core/gcore-go/cloud"
 	"github.com/G-Core/gcore-go/internal/testutil"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/param"
 )
 
 func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
@@ -96,7 +97,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 			SniSecretID:          []string{"f2e734d0-fa2b-42c2-ad33-4c6db5101e00", "eb121225-7ded-4ff3-ae1f-599e145dd7cb"},
 			TimeoutClientData:    gcore.Int(50000),
 			TimeoutMemberConnect: gcore.Int(50000),
-			TimeoutMemberData:    gcore.Int(0),
+			TimeoutMemberData:    param.Null[int64](),
 			UserList: []cloud.LoadBalancerNewParamsListenerUserList{{
 				EncryptedPassword: "$5$isRr.HJ1IrQP38.m$oViu3DJOpUG2ZsjCBtbITV3mqpxxbZfyWJojLPNSPO5",
 				Username:          "admin",
