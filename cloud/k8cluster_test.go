@@ -56,6 +56,14 @@ func TestK8ClusterNewWithOptionalParams(t *testing.T) {
 			},
 		}},
 		Version: "1.28.1",
+		AddOns: cloud.K8ClusterNewParamsAddOns{
+			Slurm: cloud.K8ClusterNewParamsAddOnsSlurm{
+				Enabled:     true,
+				FileShareID: "cbc94d0e-06c6-4d12-9e86-9782ba14fc8c",
+				SSHKeyIDs:   []string{"25735292-bd97-44b0-a1af-d7eab876261d", "efc01f3a-35b9-4385-89f9-e38439093ee7"},
+				WorkerCount: 2,
+			},
+		},
 		Authentication: cloud.K8ClusterNewParamsAuthentication{
 			Oidc: cloud.K8ClusterNewParamsAuthenticationOidc{
 				ClientID:     gcore.String("kubernetes"),
@@ -148,6 +156,16 @@ func TestK8ClusterUpdateWithOptionalParams(t *testing.T) {
 		cloud.K8ClusterUpdateParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
+			AddOns: cloud.K8ClusterUpdateParamsAddOns{
+				Slurm: cloud.K8ClusterUpdateParamsAddOnsSlurmUnion{
+					OfK8sClusterSlurmAddonEnableV2Serializer: &cloud.K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer{
+						Enabled:     true,
+						FileShareID: "cbc94d0e-06c6-4d12-9e86-9782ba14fc8c",
+						SSHKeyIDs:   []string{"25735292-bd97-44b0-a1af-d7eab876261d", "efc01f3a-35b9-4385-89f9-e38439093ee7"},
+						WorkerCount: 2,
+					},
+				},
+			},
 			Authentication: cloud.K8ClusterUpdateParamsAuthentication{
 				Oidc: cloud.K8ClusterUpdateParamsAuthenticationOidc{
 					ClientID:     gcore.String("kubernetes"),

@@ -271,6 +271,8 @@ func (r *K8ClusterService) Upgrade(ctx context.Context, clusterName string, para
 type K8sCluster struct {
 	// Cluster pool uuid
 	ID string `json:"id,required"`
+	// Cluster add-ons configuration
+	AddOns K8sClusterAddOns `json:"add_ons,required"`
 	// Function creation date
 	CreatedAt string `json:"created_at,required"`
 	// Cluster CSI settings
@@ -325,6 +327,7 @@ type K8sCluster struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
+		AddOns           respjson.Field
 		CreatedAt        respjson.Field
 		Csi              respjson.Field
 		IsPublic         respjson.Field
@@ -355,6 +358,60 @@ type K8sCluster struct {
 // Returns the unmodified JSON received from the API
 func (r K8sCluster) RawJSON() string { return r.JSON.raw }
 func (r *K8sCluster) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Cluster add-ons configuration
+type K8sClusterAddOns struct {
+	// Slurm add-on configuration
+	Slurm K8sClusterAddOnsSlurm `json:"slurm,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Slurm       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r K8sClusterAddOns) RawJSON() string { return r.JSON.raw }
+func (r *K8sClusterAddOns) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Slurm add-on configuration
+type K8sClusterAddOnsSlurm struct {
+	// Indicates whether Slurm add-on is deployed in the cluster.
+	//
+	// This add-on is only supported in clusters running Kubernetes v1.31 and v1.32
+	// with at least 1 GPU cluster pool.
+	Enabled bool `json:"enabled,required"`
+	// ID of a VAST file share used as Slurm storage.
+	//
+	// The Slurm add-on creates separate Persistent Volume Claims for different
+	// purposes (controller spool, worker spool, jail) on that file share.
+	FileShareID string `json:"file_share_id,required" format:"uuid4"`
+	// IDs of SSH keys authorized for SSH connection to Slurm login nodes.
+	SSHKeyIDs []string `json:"ssh_key_ids,required" format:"uuid4"`
+	// Size of the worker pool, i.e. number of worker nodes.
+	//
+	// Each Slurm worker node is backed by a Pod scheduled on one of cluster's GPU
+	// nodes.
+	WorkerCount int64 `json:"worker_count,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled     respjson.Field
+		FileShareID respjson.Field
+		SSHKeyIDs   respjson.Field
+		WorkerCount respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r K8sClusterAddOnsSlurm) RawJSON() string { return r.JSON.raw }
+func (r *K8sClusterAddOnsSlurm) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -743,6 +800,8 @@ type K8ClusterNewParams struct {
 	DDOSProfile K8ClusterNewParamsDDOSProfile `json:"ddos_profile,omitzero"`
 	// Logging configuration
 	Logging K8ClusterNewParamsLogging `json:"logging,omitzero"`
+	// Cluster add-ons configuration
+	AddOns K8ClusterNewParamsAddOns `json:"add_ons,omitzero"`
 	// Container Storage Interface (CSI) driver settings
 	Csi K8ClusterNewParamsCsi `json:"csi,omitzero"`
 	paramObj
@@ -805,6 +864,64 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[K8ClusterNewParamsPool](
 		"servergroup_policy", "affinity", "anti-affinity", "soft-anti-affinity",
+	)
+}
+
+// Cluster add-ons configuration
+type K8ClusterNewParamsAddOns struct {
+	// Slurm add-on configuration
+	Slurm K8ClusterNewParamsAddOnsSlurm `json:"slurm,omitzero"`
+	paramObj
+}
+
+func (r K8ClusterNewParamsAddOns) MarshalJSON() (data []byte, err error) {
+	type shadow K8ClusterNewParamsAddOns
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *K8ClusterNewParamsAddOns) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Slurm add-on configuration
+//
+// The properties Enabled, FileShareID, SSHKeyIDs, WorkerCount are required.
+type K8ClusterNewParamsAddOnsSlurm struct {
+	// ID of a VAST file share to be used as Slurm storage.
+	//
+	// The Slurm add-on will create separate Persistent Volume Claims for different
+	// purposes (controller spool, worker spool, jail) on that file share.
+	//
+	// The file share must have `root_squash` disabled, while `path_length` and
+	// `allowed_characters` settings must be set to `NPL`.
+	FileShareID string `json:"file_share_id,required" format:"uuid4"`
+	// IDs of SSH keys to authorize for SSH connection to Slurm login nodes.
+	SSHKeyIDs []string `json:"ssh_key_ids,omitzero,required" format:"uuid4"`
+	// Size of the worker pool, i.e. the number of Slurm worker nodes.
+	//
+	// Each Slurm worker node will be backed by a Pod scheduled on one of cluster's GPU
+	// nodes.
+	WorkerCount int64 `json:"worker_count,required"`
+	// The Slurm add-on will be enabled in the cluster.
+	//
+	// This add-on is only supported in clusters running Kubernetes v1.31 and v1.32
+	// with at least 1 GPU cluster pool and VAST NFS support enabled.
+	//
+	// This field can be elided, and will marshal its zero value as true.
+	Enabled bool `json:"enabled,omitzero,required"`
+	paramObj
+}
+
+func (r K8ClusterNewParamsAddOnsSlurm) MarshalJSON() (data []byte, err error) {
+	type shadow K8ClusterNewParamsAddOnsSlurm
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *K8ClusterNewParamsAddOnsSlurm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8ClusterNewParamsAddOnsSlurm](
+		"enabled", true,
 	)
 }
 
@@ -1094,6 +1211,8 @@ type K8ClusterUpdateParams struct {
 	DDOSProfile K8ClusterUpdateParamsDDOSProfile `json:"ddos_profile,omitzero"`
 	// Logging configuration
 	Logging K8ClusterUpdateParamsLogging `json:"logging,omitzero"`
+	// Cluster add-ons configuration
+	AddOns K8ClusterUpdateParamsAddOns `json:"add_ons,omitzero"`
 	paramObj
 }
 
@@ -1102,6 +1221,144 @@ func (r K8ClusterUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *K8ClusterUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Cluster add-ons configuration
+type K8ClusterUpdateParamsAddOns struct {
+	// Slurm add-on configuration
+	Slurm K8ClusterUpdateParamsAddOnsSlurmUnion `json:"slurm,omitzero"`
+	paramObj
+}
+
+func (r K8ClusterUpdateParamsAddOns) MarshalJSON() (data []byte, err error) {
+	type shadow K8ClusterUpdateParamsAddOns
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *K8ClusterUpdateParamsAddOns) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type K8ClusterUpdateParamsAddOnsSlurmUnion struct {
+	OfK8sClusterSlurmAddonEnableV2Serializer  *K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer  `json:",omitzero,inline"`
+	OfK8sClusterSlurmAddonDisableV2Serializer *K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u K8ClusterUpdateParamsAddOnsSlurmUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfK8sClusterSlurmAddonEnableV2Serializer, u.OfK8sClusterSlurmAddonDisableV2Serializer)
+}
+func (u *K8ClusterUpdateParamsAddOnsSlurmUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *K8ClusterUpdateParamsAddOnsSlurmUnion) asAny() any {
+	if !param.IsOmitted(u.OfK8sClusterSlurmAddonEnableV2Serializer) {
+		return u.OfK8sClusterSlurmAddonEnableV2Serializer
+	} else if !param.IsOmitted(u.OfK8sClusterSlurmAddonDisableV2Serializer) {
+		return u.OfK8sClusterSlurmAddonDisableV2Serializer
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u K8ClusterUpdateParamsAddOnsSlurmUnion) GetFileShareID() *string {
+	if vt := u.OfK8sClusterSlurmAddonEnableV2Serializer; vt != nil {
+		return &vt.FileShareID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u K8ClusterUpdateParamsAddOnsSlurmUnion) GetSSHKeyIDs() []string {
+	if vt := u.OfK8sClusterSlurmAddonEnableV2Serializer; vt != nil {
+		return vt.SSHKeyIDs
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u K8ClusterUpdateParamsAddOnsSlurmUnion) GetWorkerCount() *int64 {
+	if vt := u.OfK8sClusterSlurmAddonEnableV2Serializer; vt != nil {
+		return &vt.WorkerCount
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u K8ClusterUpdateParamsAddOnsSlurmUnion) GetEnabled() *bool {
+	if vt := u.OfK8sClusterSlurmAddonEnableV2Serializer; vt != nil {
+		return (*bool)(&vt.Enabled)
+	} else if vt := u.OfK8sClusterSlurmAddonDisableV2Serializer; vt != nil {
+		return (*bool)(&vt.Enabled)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[K8ClusterUpdateParamsAddOnsSlurmUnion](
+		"enabled",
+		apijson.Discriminator[K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer](true),
+		apijson.Discriminator[K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer](undefined),
+	)
+}
+
+// The properties Enabled, FileShareID, SSHKeyIDs, WorkerCount are required.
+type K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer struct {
+	// ID of a VAST file share to be used as Slurm storage.
+	//
+	// The Slurm add-on will create separate Persistent Volume Claims for different
+	// purposes (controller spool, worker spool, jail) on that file share.
+	//
+	// The file share must have `root_squash` disabled, while `path_length` and
+	// `allowed_characters` settings must be set to `NPL`.
+	FileShareID string `json:"file_share_id,required" format:"uuid4"`
+	// IDs of SSH keys to authorize for SSH connection to Slurm login nodes.
+	SSHKeyIDs []string `json:"ssh_key_ids,omitzero,required" format:"uuid4"`
+	// Size of the worker pool, i.e. the number of Slurm worker nodes.
+	//
+	// Each Slurm worker node will be backed by a Pod scheduled on one of cluster's GPU
+	// nodes.
+	WorkerCount int64 `json:"worker_count,required"`
+	// The Slurm add-on will be enabled in the cluster.
+	//
+	// This add-on is only supported in clusters running Kubernetes v1.31 and v1.32
+	// with at least 1 GPU cluster pool and VAST NFS support enabled.
+	//
+	// This field can be elided, and will marshal its zero value as true.
+	Enabled bool `json:"enabled,omitzero,required"`
+	paramObj
+}
+
+func (r K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer) MarshalJSON() (data []byte, err error) {
+	type shadow K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer](
+		"enabled", true,
+	)
+}
+
+// The property Enabled is required.
+type K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer struct {
+	// The Slurm add-on will be disabled in the cluster.
+	Enabled bool `json:"enabled,required"`
+	paramObj
+}
+
+func (r K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer) MarshalJSON() (data []byte, err error) {
+	type shadow K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
