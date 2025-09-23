@@ -375,7 +375,7 @@ type K8ClusterPoolUpdateParams struct {
 	MaxNodeCount param.Opt[int64] `json:"max_node_count,omitzero"`
 	// Minimum node count
 	MinNodeCount param.Opt[int64] `json:"min_node_count,omitzero"`
-	// Current node count
+	// This field is deprecated. Please use the cluster pool resize handler instead.
 	NodeCount param.Opt[int64] `json:"node_count,omitzero"`
 	// Labels applied to the cluster pool
 	Labels map[string]string `json:"labels,omitzero"`
