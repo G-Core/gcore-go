@@ -40,6 +40,7 @@ func NewBucketPolicyService(opts ...option.RequestOption) (r BucketPolicyService
 func (r *BucketPolicyService) New(ctx context.Context, bucketName string, body BucketPolicyNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -56,6 +57,7 @@ func (r *BucketPolicyService) New(ctx context.Context, bucketName string, body B
 func (r *BucketPolicyService) Delete(ctx context.Context, bucketName string, body BucketPolicyDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -69,6 +71,7 @@ func (r *BucketPolicyService) Delete(ctx context.Context, bucketName string, bod
 // Shows if anonymous users can download objects from the bucket via HTTP requests.
 func (r *BucketPolicyService) Get(ctx context.Context, bucketName string, query BucketPolicyGetParams, opts ...option.RequestOption) (res *bool, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return

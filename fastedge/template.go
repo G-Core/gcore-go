@@ -42,6 +42,7 @@ func NewTemplateService(opts ...option.RequestOption) (r TemplateService) {
 // Add template
 func (r *TemplateService) New(ctx context.Context, body TemplateNewParams, opts ...option.RequestOption) (res *TemplateShort, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "fastedge/v1/template"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -52,6 +53,7 @@ func (r *TemplateService) List(ctx context.Context, query TemplateListParams, op
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "fastedge/v1/template"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -74,6 +76,7 @@ func (r *TemplateService) ListAutoPaging(ctx context.Context, query TemplateList
 func (r *TemplateService) Delete(ctx context.Context, id int64, body TemplateDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/template/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
 	return
@@ -82,6 +85,7 @@ func (r *TemplateService) Delete(ctx context.Context, id int64, body TemplateDel
 // Get template details
 func (r *TemplateService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *Template, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/template/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -90,6 +94,7 @@ func (r *TemplateService) Get(ctx context.Context, id int64, opts ...option.Requ
 // Update template
 func (r *TemplateService) Replace(ctx context.Context, id int64, body TemplateReplaceParams, opts ...option.RequestOption) (res *TemplateShort, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/template/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

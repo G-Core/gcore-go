@@ -41,6 +41,7 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 // Shows storage total usage data in filtered by storages, locations and interval.
 func (r *StatisticService) GetUsageAggregated(ctx context.Context, body StatisticGetUsageAggregatedParams, opts ...option.RequestOption) (res *UsageTotal, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "storage/stats/v1/storage/usage/total"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -55,6 +56,7 @@ func (r *StatisticService) GetUsageAggregated(ctx context.Context, body Statisti
 // interval.
 func (r *StatisticService) GetUsageSeries(ctx context.Context, body StatisticGetUsageSeriesParams, opts ...option.RequestOption) (res *StatisticGetUsageSeriesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "storage/stats/v1/storage/usage/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

@@ -39,6 +39,7 @@ func NewIamService(opts ...option.RequestOption) (r IamService) {
 // Get information about your profile, users and other account details.
 func (r *IamService) GetAccountOverview(ctx context.Context, opts ...option.RequestOption) (res *AccountOverview, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "iam/clients/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

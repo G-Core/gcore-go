@@ -42,6 +42,7 @@ func NewBucketLifecycleService(opts ...option.RequestOption) (r BucketLifecycleS
 func (r *BucketLifecycleService) New(ctx context.Context, bucketName string, params BucketLifecycleNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -56,6 +57,7 @@ func (r *BucketLifecycleService) New(ctx context.Context, bucketName string, par
 func (r *BucketLifecycleService) Delete(ctx context.Context, bucketName string, body BucketLifecycleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
