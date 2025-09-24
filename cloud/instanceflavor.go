@@ -42,6 +42,7 @@ func NewInstanceFlavorService(opts ...option.RequestOption) (r InstanceFlavorSer
 // clients see all prices as 0. Contact support for pricing errors.
 func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) (res *InstanceFlavorList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

@@ -55,6 +55,7 @@ func NewLoadBalancerService(opts ...option.RequestOption) (r LoadBalancerService
 // Create load balancer
 func (r *LoadBalancerService) New(ctx context.Context, params LoadBalancerNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -80,6 +81,7 @@ func (r *LoadBalancerService) New(ctx context.Context, params LoadBalancerNewPar
 // remain unchanged.
 func (r *LoadBalancerService) Update(ctx context.Context, loadbalancerID string, params LoadBalancerUpdateParams, opts ...option.RequestOption) (res *LoadBalancer, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -108,6 +110,7 @@ func (r *LoadBalancerService) List(ctx context.Context, params LoadBalancerListP
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -143,6 +146,7 @@ func (r *LoadBalancerService) ListAutoPaging(ctx context.Context, params LoadBal
 // Delete load balancer
 func (r *LoadBalancerService) Delete(ctx context.Context, loadbalancerID string, body LoadBalancerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -169,6 +173,7 @@ func (r *LoadBalancerService) Delete(ctx context.Context, loadbalancerID string,
 // Failover load balancer
 func (r *LoadBalancerService) Failover(ctx context.Context, loadbalancerID string, params LoadBalancerFailoverParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -195,6 +200,7 @@ func (r *LoadBalancerService) Failover(ctx context.Context, loadbalancerID strin
 // Get load balancer
 func (r *LoadBalancerService) Get(ctx context.Context, loadbalancerID string, params LoadBalancerGetParams, opts ...option.RequestOption) (res *LoadBalancer, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -221,6 +227,7 @@ func (r *LoadBalancerService) Get(ctx context.Context, loadbalancerID string, pa
 // Resize load balancer
 func (r *LoadBalancerService) Resize(ctx context.Context, loadbalancerID string, params LoadBalancerResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

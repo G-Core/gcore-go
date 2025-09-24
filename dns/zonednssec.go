@@ -38,6 +38,7 @@ func NewZoneDnssecService(opts ...option.RequestOption) (r ZoneDnssecService) {
 // Enable or disable DNSSEC for a DNS zone.
 func (r *ZoneDnssecService) Update(ctx context.Context, name string, body ZoneDnssecUpdateParams, opts ...option.RequestOption) (res *ZoneDnssecUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return
@@ -50,6 +51,7 @@ func (r *ZoneDnssecService) Update(ctx context.Context, name string, body ZoneDn
 // Get DNSSEC DS for a DNS zone.
 func (r *ZoneDnssecService) Get(ctx context.Context, name string, opts ...option.RequestOption) (res *ZoneDnssecGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return

@@ -44,6 +44,7 @@ func (r *RegionService) List(ctx context.Context, query RegionListParams, opts .
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v1/regions"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -65,6 +66,7 @@ func (r *RegionService) ListAutoPaging(ctx context.Context, query RegionListPara
 // Get region
 func (r *RegionService) Get(ctx context.Context, params RegionGetParams, opts ...option.RequestOption) (res *Region, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

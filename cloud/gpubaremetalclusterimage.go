@@ -37,6 +37,7 @@ func NewGPUBaremetalClusterImageService(opts ...option.RequestOption) (r GPUBare
 // List bare metal GPU images
 func (r *GPUBaremetalClusterImageService) List(ctx context.Context, query GPUBaremetalClusterImageListParams, opts ...option.RequestOption) (res *GPUImageList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -59,6 +60,7 @@ func (r *GPUBaremetalClusterImageService) List(ctx context.Context, query GPUBar
 // Delete bare metal GPU image
 func (r *GPUBaremetalClusterImageService) Delete(ctx context.Context, imageID string, body GPUBaremetalClusterImageDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -85,6 +87,7 @@ func (r *GPUBaremetalClusterImageService) Delete(ctx context.Context, imageID st
 // Get bare metal GPU image
 func (r *GPUBaremetalClusterImageService) Get(ctx context.Context, imageID string, query GPUBaremetalClusterImageGetParams, opts ...option.RequestOption) (res *GPUImage, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -111,6 +114,7 @@ func (r *GPUBaremetalClusterImageService) Get(ctx context.Context, imageID strin
 // Upload new bare metal GPU image
 func (r *GPUBaremetalClusterImageService) Upload(ctx context.Context, params GPUBaremetalClusterImageUploadParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
