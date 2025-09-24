@@ -38,6 +38,7 @@ func NewK8ClusterPoolNodeService(opts ...option.RequestOption) (r K8ClusterPoolN
 // List k8s cluster pool nodes
 func (r *K8ClusterPoolNodeService) List(ctx context.Context, poolName string, params K8ClusterPoolNodeListParams, opts ...option.RequestOption) (res *InstanceList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -70,6 +71,7 @@ func (r *K8ClusterPoolNodeService) List(ctx context.Context, poolName string, pa
 func (r *K8ClusterPoolNodeService) Delete(ctx context.Context, instanceID string, body K8ClusterPoolNodeDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

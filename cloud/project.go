@@ -43,6 +43,7 @@ func NewProjectService(opts ...option.RequestOption) (r ProjectService) {
 // this operation.
 func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v1/projects"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -54,6 +55,7 @@ func (r *ProjectService) List(ctx context.Context, query ProjectListParams, opts
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v1/projects"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -78,6 +80,7 @@ func (r *ProjectService) ListAutoPaging(ctx context.Context, query ProjectListPa
 // deleted.
 func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -95,6 +98,7 @@ func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, o
 // Retrieve detailed information about a specific project.
 func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -113,6 +117,7 @@ func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts .
 // perform this operation.
 func (r *ProjectService) Replace(ctx context.Context, params ProjectReplaceParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

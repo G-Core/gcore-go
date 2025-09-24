@@ -41,6 +41,7 @@ func NewGPUBaremetalClusterFlavorService(opts ...option.RequestOption) (r GPUBar
 // List bare metal GPU flavors
 func (r *GPUBaremetalClusterFlavorService) List(ctx context.Context, params GPUBaremetalClusterFlavorListParams, opts ...option.RequestOption) (res *GPUBaremetalFlavorList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

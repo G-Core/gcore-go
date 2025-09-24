@@ -39,6 +39,7 @@ func NewAPITokenService(opts ...option.RequestOption) (r APITokenService) {
 // Create an API token in the current account.
 func (r *APITokenService) New(ctx context.Context, clientID int64, body APITokenNewParams, opts ...option.RequestOption) (res *APITokenCreate, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("iam/clients/%v/tokens", clientID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,6 +49,7 @@ func (r *APITokenService) New(ctx context.Context, clientID int64, body APIToken
 // Administrators role gets information about all API tokens in the account.
 func (r *APITokenService) List(ctx context.Context, clientID int64, query APITokenListParams, opts ...option.RequestOption) (res *APITokenList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("iam/clients/%v/tokens", clientID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,6 +62,7 @@ func (r *APITokenService) List(ctx context.Context, clientID int64, query APITok
 func (r *APITokenService) Delete(ctx context.Context, tokenID int64, body APITokenDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("iam/clients/%v/tokens/%v", body.ClientID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -68,6 +71,7 @@ func (r *APITokenService) Delete(ctx context.Context, tokenID int64, body APITok
 // Get API Token
 func (r *APITokenService) Get(ctx context.Context, tokenID int64, query APITokenGetParams, opts ...option.RequestOption) (res *APIToken, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("iam/clients/%v/tokens/%v", query.ClientID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

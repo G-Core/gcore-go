@@ -41,6 +41,7 @@ func NewInferenceSecretService(opts ...option.RequestOption) (r InferenceSecretS
 // Create inference secret
 func (r *InferenceSecretService) New(ctx context.Context, params InferenceSecretNewParams, opts ...option.RequestOption) (res *InferenceSecret, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -60,6 +61,7 @@ func (r *InferenceSecretService) List(ctx context.Context, params InferenceSecre
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -91,6 +93,7 @@ func (r *InferenceSecretService) ListAutoPaging(ctx context.Context, params Infe
 func (r *InferenceSecretService) Delete(ctx context.Context, secretName string, body InferenceSecretDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -112,6 +115,7 @@ func (r *InferenceSecretService) Delete(ctx context.Context, secretName string, 
 // Get inference secret
 func (r *InferenceSecretService) Get(ctx context.Context, secretName string, query InferenceSecretGetParams, opts ...option.RequestOption) (res *InferenceSecret, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -133,6 +137,7 @@ func (r *InferenceSecretService) Get(ctx context.Context, secretName string, que
 // Replace inference secret
 func (r *InferenceSecretService) Replace(ctx context.Context, secretName string, params InferenceSecretReplaceParams, opts ...option.RequestOption) (res *InferenceSecret, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

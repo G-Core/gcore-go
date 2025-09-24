@@ -40,6 +40,7 @@ func NewK8ClusterPoolService(opts ...option.RequestOption) (r K8ClusterPoolServi
 // Create k8s cluster pool
 func (r *K8ClusterPoolService) New(ctx context.Context, clusterName string, params K8ClusterPoolNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -66,6 +67,7 @@ func (r *K8ClusterPoolService) New(ctx context.Context, clusterName string, para
 // Update k8s cluster pool
 func (r *K8ClusterPoolService) Update(ctx context.Context, poolName string, params K8ClusterPoolUpdateParams, opts ...option.RequestOption) (res *K8sClusterPool, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -96,6 +98,7 @@ func (r *K8ClusterPoolService) Update(ctx context.Context, poolName string, para
 // List k8s cluster pools
 func (r *K8ClusterPoolService) List(ctx context.Context, clusterName string, query K8ClusterPoolListParams, opts ...option.RequestOption) (res *K8sClusterPoolList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -122,6 +125,7 @@ func (r *K8ClusterPoolService) List(ctx context.Context, clusterName string, que
 // Delete k8s cluster pool
 func (r *K8ClusterPoolService) Delete(ctx context.Context, poolName string, body K8ClusterPoolDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -152,6 +156,7 @@ func (r *K8ClusterPoolService) Delete(ctx context.Context, poolName string, body
 // Get k8s cluster pool
 func (r *K8ClusterPoolService) Get(ctx context.Context, poolName string, query K8ClusterPoolGetParams, opts ...option.RequestOption) (res *K8sClusterPool, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -182,6 +187,7 @@ func (r *K8ClusterPoolService) Get(ctx context.Context, poolName string, query K
 // Resize k8s cluster pool
 func (r *K8ClusterPoolService) Resize(ctx context.Context, poolName string, params K8ClusterPoolResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

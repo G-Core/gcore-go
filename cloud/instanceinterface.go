@@ -39,6 +39,7 @@ func NewInstanceInterfaceService(opts ...option.RequestOption) (r InstanceInterf
 // List all network interfaces attached to the specified instance.
 func (r *InstanceInterfaceService) List(ctx context.Context, instanceID string, query InstanceInterfaceListParams, opts ...option.RequestOption) (res *NetworkInterfaceList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -65,6 +66,7 @@ func (r *InstanceInterfaceService) List(ctx context.Context, instanceID string, 
 // Attach interface to instance
 func (r *InstanceInterfaceService) Attach(ctx context.Context, instanceID string, params InstanceInterfaceAttachParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -122,6 +124,7 @@ func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID
 // Detach interface from instance
 func (r *InstanceInterfaceService) Detach(ctx context.Context, instanceID string, params InstanceInterfaceDetachParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

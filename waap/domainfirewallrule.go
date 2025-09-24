@@ -40,6 +40,7 @@ func NewDomainFirewallRuleService(opts ...option.RequestOption) (r DomainFirewal
 // Create a firewall rule
 func (r *DomainFirewallRuleService) New(ctx context.Context, domainID int64, body DomainFirewallRuleNewParams, opts ...option.RequestOption) (res *WaapFirewallRule, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,6 +50,7 @@ func (r *DomainFirewallRuleService) New(ctx context.Context, domainID int64, bod
 func (r *DomainFirewallRuleService) Update(ctx context.Context, ruleID int64, params DomainFirewallRuleUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/%v", params.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
 	return
@@ -60,6 +62,7 @@ func (r *DomainFirewallRuleService) List(ctx context.Context, domainID int64, qu
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -83,6 +86,7 @@ func (r *DomainFirewallRuleService) ListAutoPaging(ctx context.Context, domainID
 func (r *DomainFirewallRuleService) Delete(ctx context.Context, ruleID int64, body DomainFirewallRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/%v", body.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -92,6 +96,7 @@ func (r *DomainFirewallRuleService) Delete(ctx context.Context, ruleID int64, bo
 func (r *DomainFirewallRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainFirewallRuleDeleteMultipleParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/bulk_delete", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -100,6 +105,7 @@ func (r *DomainFirewallRuleService) DeleteMultiple(ctx context.Context, domainID
 // Extracts a specific firewall rule assigned to a domain
 func (r *DomainFirewallRuleService) Get(ctx context.Context, ruleID int64, query DomainFirewallRuleGetParams, opts ...option.RequestOption) (res *WaapFirewallRule, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/%v", query.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -109,6 +115,7 @@ func (r *DomainFirewallRuleService) Get(ctx context.Context, ruleID int64, query
 func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action DomainFirewallRuleToggleParamsAction, body DomainFirewallRuleToggleParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/%v/%v", body.DomainID, body.RuleID, action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, nil, opts...)
 	return

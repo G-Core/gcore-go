@@ -42,6 +42,7 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 // off.
 func (r *StatisticService) GetFfprobes(ctx context.Context, query StatisticGetFfprobesParams, opts ...option.RequestOption) (res *Ffprobes, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/ffprobe"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,6 +61,7 @@ func (r *StatisticService) GetFfprobes(ctx context.Context, query StatisticGetFf
 // ![Unique viewers via CDN in Customer Portal](https://demo-files.gvideo.io/apidocs/cdn_unique_viewers.png)
 func (r *StatisticService) GetLiveUniqueViewers(ctx context.Context, query StatisticGetLiveUniqueViewersParams, opts ...option.RequestOption) (res *[]StatisticGetLiveUniqueViewersResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/stream/viewers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -76,6 +78,7 @@ func (r *StatisticService) GetLiveUniqueViewers(ctx context.Context, query Stati
 // total watch time value; instead, use the /total method.
 func (r *StatisticService) GetLiveWatchTimeCdn(ctx context.Context, query StatisticGetLiveWatchTimeCdnParams, opts ...option.RequestOption) (res *StreamSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/stream/watching_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -88,6 +91,7 @@ func (r *StatisticService) GetLiveWatchTimeCdn(ctx context.Context, query Statis
 // player the views were made with.
 func (r *StatisticService) GetLiveWatchTimeTotalCdn(ctx context.Context, query StatisticGetLiveWatchTimeTotalCdnParams, opts ...option.RequestOption) (res *VodTotalStreamDurationSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/stream/watching_duration/total"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -97,6 +101,7 @@ func (r *StatisticService) GetLiveWatchTimeTotalCdn(ctx context.Context, query S
 // updated near realtime.
 func (r *StatisticService) GetMaxStreamsSeries(ctx context.Context, query StatisticGetMaxStreamsSeriesParams, opts ...option.RequestOption) (res *MaxStreamSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/max_stream"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -112,6 +117,7 @@ func (r *StatisticService) GetMaxStreamsSeries(ctx context.Context, query Statis
 // the players you have chosen.
 func (r *StatisticService) GetPopularVideos(ctx context.Context, query StatisticGetPopularVideosParams, opts ...option.RequestOption) (res *PopularVideos, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/popular"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -122,6 +128,7 @@ func (r *StatisticService) GetPopularVideos(ctx context.Context, query Statistic
 // sense to set the granulation less than 1 day.
 func (r *StatisticService) GetStorageSeries(ctx context.Context, query StatisticGetStorageSeriesParams, opts ...option.RequestOption) (res *StorageSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/storage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -131,6 +138,7 @@ func (r *StatisticService) GetStorageSeries(ctx context.Context, query Statistic
 // updated near realtime.
 func (r *StatisticService) GetStreamSeries(ctx context.Context, query StatisticGetStreamSeriesParams, opts ...option.RequestOption) (res *StreamSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/stream"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -150,6 +158,7 @@ func (r *StatisticService) GetStreamSeries(ctx context.Context, query StatisticG
 // the players you have chosen.
 func (r *StatisticService) GetUniqueViewers(ctx context.Context, query StatisticGetUniqueViewersParams, opts ...option.RequestOption) (res *UniqueViewers, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/uniqs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -196,6 +205,7 @@ func (r *StatisticService) GetUniqueViewers(ctx context.Context, query Statistic
 // the Play button within a unique player's session).
 func (r *StatisticService) GetUniqueViewersCdn(ctx context.Context, query StatisticGetUniqueViewersCdnParams, opts ...option.RequestOption) (res *UniqueViewersCdn, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/cdn/uniqs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -213,6 +223,7 @@ func (r *StatisticService) GetUniqueViewersCdn(ctx context.Context, query Statis
 // the players you have chosen.
 func (r *StatisticService) GetViews(ctx context.Context, query StatisticGetViewsParams, opts ...option.RequestOption) (res *Views, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/views"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -228,6 +239,7 @@ func (r *StatisticService) GetViews(ctx context.Context, query StatisticGetViews
 // the players you have chosen.
 func (r *StatisticService) GetViewsByBrowsers(ctx context.Context, query StatisticGetViewsByBrowsersParams, opts ...option.RequestOption) (res *ViewsByBrowser, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/browsers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -242,6 +254,7 @@ func (r *StatisticService) GetViewsByBrowsers(ctx context.Context, query Statist
 // the players you have chosen.
 func (r *StatisticService) GetViewsByCountry(ctx context.Context, query StatisticGetViewsByCountryParams, opts ...option.RequestOption) (res *ViewsByCountry, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/countries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -257,6 +270,7 @@ func (r *StatisticService) GetViewsByCountry(ctx context.Context, query Statisti
 // the players you have chosen.
 func (r *StatisticService) GetViewsByHostname(ctx context.Context, query StatisticGetViewsByHostnameParams, opts ...option.RequestOption) (res *ViewsByHostname, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/hosts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -272,6 +286,7 @@ func (r *StatisticService) GetViewsByHostname(ctx context.Context, query Statist
 // the players you have chosen.
 func (r *StatisticService) GetViewsByOperatingSystem(ctx context.Context, query StatisticGetViewsByOperatingSystemParams, opts ...option.RequestOption) (res *ViewsByOperatingSystem, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/systems"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -287,6 +302,7 @@ func (r *StatisticService) GetViewsByOperatingSystem(ctx context.Context, query 
 // the players you have chosen.
 func (r *StatisticService) GetViewsByReferer(ctx context.Context, query StatisticGetViewsByRefererParams, opts ...option.RequestOption) (res *ViewsByReferer, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/embeds"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -302,6 +318,7 @@ func (r *StatisticService) GetViewsByReferer(ctx context.Context, query Statisti
 // the players you have chosen.
 func (r *StatisticService) GetViewsByRegion(ctx context.Context, query StatisticGetViewsByRegionParams, opts ...option.RequestOption) (res *ViewsByRegion, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/regions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -322,6 +339,7 @@ func (r *StatisticService) GetViewsByRegion(ctx context.Context, query Statistic
 // the players you have chosen.
 func (r *StatisticService) GetViewsHeatmap(ctx context.Context, query StatisticGetViewsHeatmapParams, opts ...option.RequestOption) (res *ViewsHeatmap, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/heatmap"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -334,6 +352,7 @@ func (r *StatisticService) GetViewsHeatmap(ctx context.Context, query StatisticG
 // less than 1 day.
 func (r *StatisticService) GetVodStorageVolume(ctx context.Context, query StatisticGetVodStorageVolumeParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/vod/storage_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -346,6 +365,7 @@ func (r *StatisticService) GetVodStorageVolume(ctx context.Context, query Statis
 // less than 1 day.
 func (r *StatisticService) GetVodTranscodingDuration(ctx context.Context, query StatisticGetVodTranscodingDurationParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/vod/transcoding_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -364,6 +384,7 @@ func (r *StatisticService) GetVodTranscodingDuration(ctx context.Context, query 
 // ![Unique viewers via CDN in Customer Portal](https://demo-files.gvideo.io/apidocs/cdn_unique_viewers.png)
 func (r *StatisticService) GetVodUniqueViewersCdn(ctx context.Context, query StatisticGetVodUniqueViewersCdnParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/vod/viewers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -380,6 +401,7 @@ func (r *StatisticService) GetVodUniqueViewersCdn(ctx context.Context, query Sta
 // total watch time value; instead, use the /total method.
 func (r *StatisticService) GetVodWatchTimeCdn(ctx context.Context, query StatisticGetVodWatchTimeCdnParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/vod/watching_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -392,6 +414,7 @@ func (r *StatisticService) GetVodWatchTimeCdn(ctx context.Context, query Statist
 // player the views were made with.
 func (r *StatisticService) GetVodWatchTimeTotalCdn(ctx context.Context, query StatisticGetVodWatchTimeTotalCdnParams, opts ...option.RequestOption) (res *[]StatisticGetVodWatchTimeTotalCdnResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/statistics/vod/watching_duration/total"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

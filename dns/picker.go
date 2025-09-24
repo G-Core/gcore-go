@@ -37,6 +37,7 @@ func NewPickerService(opts ...option.RequestOption) (r PickerService) {
 // Returns list of picker
 func (r *PickerService) List(ctx context.Context, opts ...option.RequestOption) (res *[]DNSLabelName, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "dns/v2/pickers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

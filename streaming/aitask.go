@@ -177,6 +177,7 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 // benefits in the knowledge base and blog.
 func (r *AITaskService) New(ctx context.Context, body AITaskNewParams, opts ...option.RequestOption) (res *AITaskNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/ai/tasks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -190,6 +191,7 @@ func (r *AITaskService) List(ctx context.Context, query AITaskListParams, opts .
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/ai/tasks"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -217,6 +219,7 @@ func (r *AITaskService) ListAutoPaging(ctx context.Context, query AITaskListPara
 // The task will be moved to "REVOKED" status.
 func (r *AITaskService) Cancel(ctx context.Context, taskID string, opts ...option.RequestOption) (res *AITaskCancelResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
 		return
@@ -268,6 +271,7 @@ func (r *AITaskService) Cancel(ctx context.Context, taskID string, opts ...optio
 // status.
 func (r *AITaskService) Get(ctx context.Context, taskID string, opts ...option.RequestOption) (res *AITaskGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
 		return
@@ -315,6 +319,7 @@ func (r *AITaskService) Get(ctx context.Context, taskID string, opts ...option.R
 // `afr, amh, ara, hye, asm, aze, eus, bel, ben, bos, bul, mya, cat, zho, hrv, ces, dan, nld, eng, est, fin, fra, glg, kat, deu, guj, heb, hin, hun, isl, ind, ita, jpn, jav, kan, kaz, khm, kor, lao, lav, lit, mkd, mal, mlt, mar, ell, mon, nep, nno, pan, fas, pol, por, pus, ron, rus, srp, sna, snd, slk, slv, som, spa, swa, swe, tgl, tgk, tam, tel, tha, tur, ukr, urd, vie, cym, yor`.
 func (r *AITaskService) GetAISettings(ctx context.Context, query AITaskGetAISettingsParams, opts ...option.RequestOption) (res *AITaskGetAISettingsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/ai/info"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
