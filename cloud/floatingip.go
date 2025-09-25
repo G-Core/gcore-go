@@ -21,6 +21,10 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// A floating IP is a static IP address that points to one of your Instances. It
+// allows you to redirect network traffic to any of your Instances in the same
+// datacenter.
+//
 // FloatingIPService contains methods and other services that help with interacting
 // with the gcore API.
 //

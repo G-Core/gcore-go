@@ -20,18 +20,21 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewCloudService] method instead.
 type CloudService struct {
-	Options              []option.RequestOption
-	Projects             ProjectService
-	Tasks                TaskService
-	Regions              RegionService
-	Quotas               QuotaService
-	Secrets              SecretService
-	SSHKeys              SSHKeyService
-	IPRanges             IPRangeService
-	LoadBalancers        LoadBalancerService
-	ReservedFixedIPs     ReservedFixedIPService
-	Networks             NetworkService
-	Volumes              VolumeService
+	Options          []option.RequestOption
+	Projects         ProjectService
+	Tasks            TaskService
+	Regions          RegionService
+	Quotas           QuotaService
+	Secrets          SecretService
+	SSHKeys          SSHKeyService
+	IPRanges         IPRangeService
+	LoadBalancers    LoadBalancerService
+	ReservedFixedIPs ReservedFixedIPService
+	Networks         NetworkService
+	Volumes          VolumeService
+	// A floating IP is a static IP address that points to one of your Instances. It
+	// allows you to redirect network traffic to any of your Instances in the same
+	// datacenter.
 	FloatingIPs          FloatingIPService
 	SecurityGroups       SecurityGroupService
 	Users                UserService
