@@ -139,6 +139,34 @@ func (r *GPUBaremetalClusterService) Delete(ctx context.Context, clusterID strin
 	return
 }
 
+// Perform a specific action on a baremetal GPU cluster. Available actions: update
+// tags.
+func (r *GPUBaremetalClusterService) Action(ctx context.Context, clusterID string, params GPUBaremetalClusterActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	if clusterID == "" {
+		err = errors.New("missing required cluster_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/action", params.ProjectID.Value, params.RegionID.Value, clusterID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return
+}
+
 // Get detailed information about a specific bare metal GPU cluster.
 func (r *GPUBaremetalClusterService) Get(ctx context.Context, clusterID string, query GPUBaremetalClusterGetParams, opts ...option.RequestOption) (res *GPUBaremetalCluster, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -1128,6 +1156,48 @@ func (r GPUBaremetalClusterDeleteParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
+}
+
+type GPUBaremetalClusterActionParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified.
+	//
+	// **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', '`cost_center`': 'engineering', '`deprecated_tag`': null}}`
+	//     adds/updates 'environment' and '`cost_center`' while removing
+	//     '`deprecated_tag`', preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero,required"`
+	// Action name
+	//
+	// This field can be elided, and will marshal its zero value as "update_tags".
+	Action constant.UpdateTags `json:"action,required"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterActionParams) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterActionParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterActionParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type GPUBaremetalClusterGetParams struct {

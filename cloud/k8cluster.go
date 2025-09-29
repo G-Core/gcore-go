@@ -1311,7 +1311,7 @@ func init() {
 	apijson.RegisterUnion[K8ClusterUpdateParamsAddOnsSlurmUnion](
 		"enabled",
 		apijson.Discriminator[K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer](true),
-		apijson.Discriminator[K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer](undefined),
+		apijson.Discriminator[K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer](false),
 	)
 }
 
@@ -1356,10 +1356,17 @@ func init() {
 	)
 }
 
-// The property Enabled is required.
+func NewK8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer() K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer {
+	return K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer{
+		Enabled: false,
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewK8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer].
 type K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer struct {
 	// The Slurm add-on will be disabled in the cluster.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled,omitzero,required"`
 	paramObj
 }
 
@@ -1369,6 +1376,12 @@ func (r K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer)
 }
 func (r *K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer](
+		"enabled", false,
+	)
 }
 
 // Authentication settings
