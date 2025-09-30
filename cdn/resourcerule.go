@@ -1725,11 +1725,27 @@ type CdnResourceRuleOptionsQueryStringForwarding struct {
 	// parameters are forwarded to these files is crucial for maintaining the integrity
 	// of the streaming session.
 	ForwardToFileTypes []string `json:"forward_to_file_types,required"`
+	// The `forward_except_keys` field provides a mechanism to exclude specific
+	// parameters from being forwarded from playlist files to media chunk files. By
+	// listing certain keys in this field, you can ensure that these parameters are
+	// omitted during the forwarding process. This is particularly useful for
+	// preventing sensitive or irrelevant information from being included in requests
+	// for media chunks, thereby enhancing security and optimizing performance.
+	ForwardExceptKeys []string `json:"forward_except_keys"`
+	// The `forward_only_keys` field allows for granular control over which specific
+	// parameters are forwarded from playlist files to media chunk files. By specifying
+	// certain keys, only those parameters will be propagated, ensuring that only
+	// relevant information is passed along. This is particularly useful for security
+	// and performance optimization, as it prevents unnecessary or sensitive data from
+	// being included in requests for media chunks.
+	ForwardOnlyKeys []string `json:"forward_only_keys"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled              respjson.Field
 		ForwardFromFileTypes respjson.Field
 		ForwardToFileTypes   respjson.Field
+		ForwardExceptKeys    respjson.Field
+		ForwardOnlyKeys      respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
 	} `json:"-"`
@@ -3893,6 +3909,20 @@ type ResourceRuleNewParamsOptionsQueryStringForwarding struct {
 	// parameters are forwarded to these files is crucial for maintaining the integrity
 	// of the streaming session.
 	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
+	// The `forward_except_keys` field provides a mechanism to exclude specific
+	// parameters from being forwarded from playlist files to media chunk files. By
+	// listing certain keys in this field, you can ensure that these parameters are
+	// omitted during the forwarding process. This is particularly useful for
+	// preventing sensitive or irrelevant information from being included in requests
+	// for media chunks, thereby enhancing security and optimizing performance.
+	ForwardExceptKeys []string `json:"forward_except_keys,omitzero"`
+	// The `forward_only_keys` field allows for granular control over which specific
+	// parameters are forwarded from playlist files to media chunk files. By specifying
+	// certain keys, only those parameters will be propagated, ensuring that only
+	// relevant information is passed along. This is particularly useful for security
+	// and performance optimization, as it prevents unnecessary or sensitive data from
+	// being included in requests for media chunks.
+	ForwardOnlyKeys []string `json:"forward_only_keys,omitzero"`
 	paramObj
 }
 
@@ -6037,6 +6067,20 @@ type ResourceRuleUpdateParamsOptionsQueryStringForwarding struct {
 	// parameters are forwarded to these files is crucial for maintaining the integrity
 	// of the streaming session.
 	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
+	// The `forward_except_keys` field provides a mechanism to exclude specific
+	// parameters from being forwarded from playlist files to media chunk files. By
+	// listing certain keys in this field, you can ensure that these parameters are
+	// omitted during the forwarding process. This is particularly useful for
+	// preventing sensitive or irrelevant information from being included in requests
+	// for media chunks, thereby enhancing security and optimizing performance.
+	ForwardExceptKeys []string `json:"forward_except_keys,omitzero"`
+	// The `forward_only_keys` field allows for granular control over which specific
+	// parameters are forwarded from playlist files to media chunk files. By specifying
+	// certain keys, only those parameters will be propagated, ensuring that only
+	// relevant information is passed along. This is particularly useful for security
+	// and performance optimization, as it prevents unnecessary or sensitive data from
+	// being included in requests for media chunks.
+	ForwardOnlyKeys []string `json:"forward_only_keys,omitzero"`
 	paramObj
 }
 
@@ -8191,6 +8235,20 @@ type ResourceRuleReplaceParamsOptionsQueryStringForwarding struct {
 	// parameters are forwarded to these files is crucial for maintaining the integrity
 	// of the streaming session.
 	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
+	// The `forward_except_keys` field provides a mechanism to exclude specific
+	// parameters from being forwarded from playlist files to media chunk files. By
+	// listing certain keys in this field, you can ensure that these parameters are
+	// omitted during the forwarding process. This is particularly useful for
+	// preventing sensitive or irrelevant information from being included in requests
+	// for media chunks, thereby enhancing security and optimizing performance.
+	ForwardExceptKeys []string `json:"forward_except_keys,omitzero"`
+	// The `forward_only_keys` field allows for granular control over which specific
+	// parameters are forwarded from playlist files to media chunk files. By specifying
+	// certain keys, only those parameters will be propagated, ensuring that only
+	// relevant information is passed along. This is particularly useful for security
+	// and performance optimization, as it prevents unnecessary or sensitive data from
+	// being included in requests for media chunks.
+	ForwardOnlyKeys []string `json:"forward_only_keys,omitzero"`
 	paramObj
 }
 

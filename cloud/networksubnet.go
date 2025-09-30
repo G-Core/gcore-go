@@ -163,9 +163,8 @@ func (r *NetworkSubnetService) ListAutoPaging(ctx context.Context, params Networ
 }
 
 // Delete subnet
-func (r *NetworkSubnetService) Delete(ctx context.Context, subnetID string, body NetworkSubnetDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *NetworkSubnetService) Delete(ctx context.Context, subnetID string, body NetworkSubnetDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -186,7 +185,7 @@ func (r *NetworkSubnetService) Delete(ctx context.Context, subnetID string, body
 		return
 	}
 	path := fmt.Sprintf("cloud/v1/subnets/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, subnetID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 

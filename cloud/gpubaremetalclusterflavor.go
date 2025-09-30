@@ -152,10 +152,14 @@ type GPUBaremetalFlavorUnionHardwareProperties struct {
 	GPUCount        int64  `json:"gpu_count"`
 	GPUManufacturer string `json:"gpu_manufacturer"`
 	GPUModel        string `json:"gpu_model"`
+	NicEth          string `json:"nic_eth"`
+	NicIb           string `json:"nic_ib"`
 	JSON            struct {
 		GPUCount        respjson.Field
 		GPUManufacturer respjson.Field
 		GPUModel        respjson.Field
+		NicEth          respjson.Field
+		NicIb           respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -257,11 +261,17 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithoutPriceHardwareProperties st
 	GPUManufacturer string `json:"gpu_manufacturer,required"`
 	// GPU model
 	GPUModel string `json:"gpu_model,required"`
+	// The configuration of the Ethernet ports
+	NicEth string `json:"nic_eth,required"`
+	// The configuration of the InfiniBand ports
+	NicIb string `json:"nic_ib,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		GPUCount        respjson.Field
 		GPUManufacturer respjson.Field
 		GPUModel        respjson.Field
+		NicEth          respjson.Field
+		NicIb           respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -372,11 +382,17 @@ type GPUBaremetalFlavorBareMetalGPUFlavorsChemaWithPriceHardwareProperties struc
 	GPUManufacturer string `json:"gpu_manufacturer,required"`
 	// GPU model
 	GPUModel string `json:"gpu_model,required"`
+	// The configuration of the Ethernet ports
+	NicEth string `json:"nic_eth,required"`
+	// The configuration of the InfiniBand ports
+	NicIb string `json:"nic_ib,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		GPUCount        respjson.Field
 		GPUManufacturer respjson.Field
 		GPUModel        respjson.Field
+		NicEth          respjson.Field
+		NicIb           respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`

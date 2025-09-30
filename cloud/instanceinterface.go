@@ -297,7 +297,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDD
 // The property ID is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required"`
+	ID string `json:"id,required" format:"uuid"`
 	paramObj
 }
 
@@ -382,7 +382,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSPr
 // The property ID is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required"`
+	ID string `json:"id,required" format:"uuid"`
 	paramObj
 }
 
@@ -478,7 +478,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile
 // The property ID is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required"`
+	ID string `json:"id,required" format:"uuid"`
 	paramObj
 }
 
@@ -564,7 +564,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSP
 // The property ID is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required"`
+	ID string `json:"id,required" format:"uuid"`
 	paramObj
 }
 
