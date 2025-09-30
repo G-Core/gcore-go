@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.14.0 (2025-09-30)
+
+Full Changelog: [v0.13.0...v0.14.0](https://github.com/G-Core/gcore-go/compare/v0.13.0...v0.14.0)
+
+### Features
+
+* **api:** aggregated API specs update ([9563541](https://github.com/G-Core/gcore-go/commit/95635416cf5835eca96e2741a54ccf008d41d39b))
+* **api:** aggregated API specs update ([ff36e57](https://github.com/G-Core/gcore-go/commit/ff36e573b89d11a5a4fa3291dc1ea9eff1bd4cd6))
+* **api:** aggregated API specs update ([27a0d29](https://github.com/G-Core/gcore-go/commit/27a0d29637f4413e1bff44ed971ac92cbc6e2521))
+* **api:** aggregated API specs update ([5722309](https://github.com/G-Core/gcore-go/commit/5722309174710cf4567fa7f76c7fe456208fd517))
+* **api:** aggregated API specs update ([225f9e2](https://github.com/G-Core/gcore-go/commit/225f9e2616eb940261fa5e979babbfd97c6d00f3))
+* **cdn:** add API support ([e33a359](https://github.com/G-Core/gcore-go/commit/e33a3593b7bf7d54a8d72b5e079d7f3371766415))
+* **cloud:** enable TF for floating IPs ([77c64f0](https://github.com/G-Core/gcore-go/commit/77c64f00c492ffd84a8d8168783dadae20bde17a))
+* **storage:** add examples ([855c53b](https://github.com/G-Core/gcore-go/commit/855c53b7b408f0004877581b7628019e9182288c))
+
+
+### Bug Fixes
+
+* bugfix for setting JSON keys with special characters ([2de8afe](https://github.com/G-Core/gcore-go/commit/2de8afe98cab189fa4426d56ecb4452c6bc16d09))
+* **client:** correctly generate K8sClusterSlurmAddonV2Serializers ([562e94d](https://github.com/G-Core/gcore-go/commit/562e94dc6b700dbc82e4286ed7b2884940b644e7))
+* use slices.Concat instead of sometimes modifying r.Options ([0ba8706](https://github.com/G-Core/gcore-go/commit/0ba87060842833644f5574037ac4018b53de9ddf))
+
+
+### Chores
+
+* bump minimum go version to 1.22 ([e233cc3](https://github.com/G-Core/gcore-go/commit/e233cc3089abcb83b1e0b58d4abfe16dea0e6dfa))
+* do not install brew dependencies in ./scripts/bootstrap by default ([0bdb83b](https://github.com/G-Core/gcore-go/commit/0bdb83b6211f83f7b5b93d6955391f252342a1ce))
+* improve example values ([7b94270](https://github.com/G-Core/gcore-go/commit/7b94270ac1443b6ae7d38953993b93bbf965ad68))
+* update more docs for 1.22 ([983e697](https://github.com/G-Core/gcore-go/commit/983e697c23318ff9a1fbfc69d9ac156c32675ca1))
+
 ## 0.13.0 (2025-09-16)
 
 Full Changelog: [v0.12.0...v0.13.0](https://github.com/G-Core/gcore-go/compare/v0.12.0...v0.13.0)
