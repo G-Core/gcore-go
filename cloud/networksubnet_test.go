@@ -138,7 +138,7 @@ func TestNetworkSubnetDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cloud.Networks.Subnets.Delete(
+	_, err := client.Cloud.Networks.Subnets.Delete(
 		context.TODO(),
 		"b39792c3-3160-4356-912e-ba396c95cdcf",
 		cloud.NetworkSubnetDeleteParams{

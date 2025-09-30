@@ -869,7 +869,7 @@ func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalE
 // The property ID is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required"`
+	ID string `json:"id,required" format:"uuid"`
 	paramObj
 }
 
@@ -954,7 +954,7 @@ func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificS
 // The property ID is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required"`
+	ID string `json:"id,required" format:"uuid"`
 	paramObj
 }
 
@@ -1050,7 +1050,7 @@ func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnet
 // The property ID is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required"`
+	ID string `json:"id,required" format:"uuid"`
 	paramObj
 }
 
@@ -1136,7 +1136,7 @@ func (r *GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedF
 // The property ID is required.
 type GPUBaremetalClusterServerAttachInterfaceParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required"`
+	ID string `json:"id,required" format:"uuid"`
 	paramObj
 }
 

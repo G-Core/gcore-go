@@ -199,6 +199,8 @@ func TestResourceRuleNewWithOptionalParams(t *testing.T) {
 					Enabled:              true,
 					ForwardFromFileTypes: []string{"m3u8", "mpd"},
 					ForwardToFileTypes:   []string{"ts", "mp4"},
+					ForwardExceptKeys:    []string{"debug_info"},
+					ForwardOnlyKeys:      []string{"auth_token", "session_id"},
 				},
 				RedirectHTTPToHTTPS: cdn.ResourceRuleNewParamsOptionsRedirectHTTPToHTTPS{
 					Enabled: true,
@@ -482,6 +484,8 @@ func TestResourceRuleUpdateWithOptionalParams(t *testing.T) {
 					Enabled:              true,
 					ForwardFromFileTypes: []string{"m3u8", "mpd"},
 					ForwardToFileTypes:   []string{"ts", "mp4"},
+					ForwardExceptKeys:    []string{"debug_info"},
+					ForwardOnlyKeys:      []string{"auth_token", "session_id"},
 				},
 				RedirectHTTPToHTTPS: cdn.ResourceRuleUpdateParamsOptionsRedirectHTTPToHTTPS{
 					Enabled: true,
@@ -847,6 +851,8 @@ func TestResourceRuleReplaceWithOptionalParams(t *testing.T) {
 					Enabled:              true,
 					ForwardFromFileTypes: []string{"m3u8", "mpd"},
 					ForwardToFileTypes:   []string{"ts", "mp4"},
+					ForwardExceptKeys:    []string{"debug_info"},
+					ForwardOnlyKeys:      []string{"auth_token", "session_id"},
 				},
 				RedirectHTTPToHTTPS: cdn.ResourceRuleReplaceParamsOptionsRedirectHTTPToHTTPS{
 					Enabled: true,
