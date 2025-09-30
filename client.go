@@ -9,6 +9,7 @@ import (
 	"slices"
 	"strconv"
 
+	"github.com/G-Core/gcore-go/cdn"
 	"github.com/G-Core/gcore-go/cloud"
 	"github.com/G-Core/gcore-go/dns"
 	"github.com/G-Core/gcore-go/fastedge"
@@ -34,6 +35,7 @@ type Client struct {
 	Security  security.SecurityService
 	DNS       dns.DNSService
 	Storage   storage.StorageService
+	Cdn       cdn.CdnService
 }
 
 // DefaultClientOptions read from the environment (GCORE_API_KEY,
@@ -83,6 +85,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Security = security.NewSecurityService(opts...)
 	r.DNS = dns.NewDNSService(opts...)
 	r.Storage = storage.NewStorageService(opts...)
+	r.Cdn = cdn.NewCdnService(opts...)
 
 	return
 }
