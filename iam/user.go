@@ -240,26 +240,26 @@ const (
 
 type UserDetailed struct {
 	// User's ID.
-	ID int64 `json:"id"`
+	ID int64 `json:"id,required"`
 	// Email confirmation:
 	//
 	// - `true` – user confirmed the email;
 	// - `false` – user did not confirm the email.
-	Activated bool `json:"activated"`
+	Activated bool `json:"activated,required"`
 	// System field. List of auth types available for the account.
 	//
 	// Any of "password", "sso", "github", "google-oauth2".
-	AuthTypes []string `json:"auth_types"`
+	AuthTypes []string `json:"auth_types,required"`
 	// User's account ID.
-	Client float64 `json:"client"`
+	Client float64 `json:"client,required"`
 	// List of user's clients. User can access to one or more clients.
-	ClientAndRoles []UserDetailedClientAndRole `json:"client_and_roles"`
+	ClientAndRoles []UserDetailedClientAndRole `json:"client_and_roles,required"`
 	// User's company.
-	Company string `json:"company"`
+	Company string `json:"company,required"`
 	// Deletion flag. If `true` then user was deleted.
-	Deleted bool `json:"deleted"`
+	Deleted bool `json:"deleted,required"`
 	// User's email address.
-	Email string `json:"email" format:"email"`
+	Email string `json:"email,required" format:"email"`
 	// User's group in the current account.
 	//
 	// IAM supports 5 groups:
@@ -269,32 +269,32 @@ type UserDetailed struct {
 	// - Engineers
 	// - Purge and Prefetch only (API)
 	// - Purge and Prefetch only (API+Web)
-	Groups []UserDetailedGroup `json:"groups"`
+	Groups []UserDetailedGroup `json:"groups,required"`
 	// User activity flag.
-	IsActive bool `json:"is_active"`
+	IsActive bool `json:"is_active,required"`
 	// User's language.
 	//
 	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
-	Lang UserDetailedLang `json:"lang"`
+	Lang UserDetailedLang `json:"lang,required"`
 	// User's name.
-	Name string `json:"name,nullable"`
+	Name string `json:"name,required"`
 	// User's phone.
-	Phone string `json:"phone,nullable"`
+	Phone string `json:"phone,required"`
 	// Services provider ID.
-	Reseller int64 `json:"reseller"`
+	Reseller int64 `json:"reseller,required"`
 	// SSO authentication flag. If `true` then user can login via SAML SSO.
-	SSOAuth bool `json:"sso_auth"`
+	SSOAuth bool `json:"sso_auth,required"`
 	// Two-step verification:
 	//
 	// - `true` – user enabled two-step verification;
 	// - `false` – user disabled two-step verification.
-	TwoFa bool `json:"two_fa"`
+	TwoFa bool `json:"two_fa,required"`
 	// User's type.
 	//
 	// Any of "common", "reseller", "seller".
-	UserType UserDetailedUserType `json:"user_type"`
+	UserType UserDetailedUserType `json:"user_type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -399,9 +399,9 @@ const (
 
 type UserInvite struct {
 	// Status of the invitation.
-	Status string `json:"status"`
+	Status string `json:"status,required"`
 	// Invited user ID.
-	UserID int64 `json:"user_id"`
+	UserID int64 `json:"user_id,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Status      respjson.Field
@@ -419,26 +419,26 @@ func (r *UserInvite) UnmarshalJSON(data []byte) error {
 
 type UserUpdate struct {
 	// User's ID.
-	ID int64 `json:"id"`
+	ID int64 `json:"id,required"`
 	// Email confirmation:
 	//
 	// - `true` – user confirmed the email;
 	// - `false` – user did not confirm the email.
-	Activated bool `json:"activated"`
+	Activated bool `json:"activated,required"`
 	// System field. List of auth types available for the account.
 	//
 	// Any of "password", "sso", "github", "google-oauth2".
-	AuthTypes []string `json:"auth_types"`
+	AuthTypes []string `json:"auth_types,required"`
 	// User's account ID.
-	Client float64 `json:"client"`
+	Client float64 `json:"client,required"`
 	// List of user's clients. User can access to one or more clients.
-	ClientAndRoles []UserUpdateClientAndRole `json:"client_and_roles"`
+	ClientAndRoles []UserUpdateClientAndRole `json:"client_and_roles,required"`
 	// User's company.
-	Company string `json:"company"`
+	Company string `json:"company,required"`
 	// Deletion flag. If `true` then user was deleted.
-	Deleted bool `json:"deleted"`
+	Deleted bool `json:"deleted,required"`
 	// User's email address.
-	Email string `json:"email" format:"email"`
+	Email string `json:"email,required" format:"email"`
 	// User's group in the current account.
 	//
 	// IAM supports 5 groups:
@@ -448,32 +448,32 @@ type UserUpdate struct {
 	// - Engineers
 	// - Purge and Prefetch only (API)
 	// - Purge and Prefetch only (API+Web)
-	Groups []UserUpdateGroup `json:"groups"`
+	Groups []UserUpdateGroup `json:"groups,required"`
 	// User activity flag.
-	IsActive bool `json:"is_active"`
+	IsActive bool `json:"is_active,required"`
 	// User's language.
 	//
 	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
-	Lang UserUpdateLang `json:"lang"`
+	Lang UserUpdateLang `json:"lang,required"`
 	// User's name.
-	Name string `json:"name,nullable"`
+	Name string `json:"name,required"`
 	// User's phone.
-	Phone string `json:"phone,nullable"`
+	Phone string `json:"phone,required"`
 	// Services provider ID.
-	Reseller int64 `json:"reseller"`
+	Reseller int64 `json:"reseller,required"`
 	// SSO authentication flag. If `true` then user can login via SAML SSO.
-	SSOAuth bool `json:"sso_auth"`
+	SSOAuth bool `json:"sso_auth,required"`
 	// Two-step verification:
 	//
 	// - `true` – user enabled two-step verification;
 	// - `false` – user disabled two-step verification.
-	TwoFa bool `json:"two_fa"`
+	TwoFa bool `json:"two_fa,required"`
 	// User's type.
 	//
 	// Any of "common", "reseller", "seller".
-	UserType UserUpdateUserType `json:"user_type"`
+	UserType UserUpdateUserType `json:"user_type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
