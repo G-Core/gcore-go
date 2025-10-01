@@ -83,7 +83,7 @@ func main() {
 					Name: "Engineers",
 				},
 			},
-			ExpDate:     expDate,
+			ExpDate:     gcore.String(expDate),
 			Name:        fmt.Sprintf("Token for %s", userEmail),
 			Description: param.Opt[string]{Value: fmt.Sprintf("API token for invited user %s", userName)},
 		})
