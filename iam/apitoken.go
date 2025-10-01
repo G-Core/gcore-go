@@ -78,36 +78,36 @@ func (r *APITokenService) Get(ctx context.Context, tokenID int64, query APIToken
 }
 
 type APIToken struct {
+	// API token ID.
+	ID         int64              `json:"id,required"`
 	ClientUser APITokenClientUser `json:"client_user,required"`
+	// Date when the API token was issued (ISO 8086/RFC 3339 format), UTC.
+	Created string `json:"created,required"`
+	// Deletion flag. If true, then the API token was deleted.
+	Deleted bool `json:"deleted,required"`
 	// Date when the API token becomes expired (ISO 8086/RFC 3339 format), UTC. If
 	// null, then the API token will never expire.
 	ExpDate string `json:"exp_date,required"`
-	// API token name.
-	Name string `json:"name,required"`
-	// API token ID.
-	ID int64 `json:"id"`
-	// Date when the API token was issued (ISO 8086/RFC 3339 format), UTC.
-	Created string `json:"created"`
-	// Deletion flag. If true, then the API token was deleted.
-	Deleted bool `json:"deleted"`
-	// API token description.
-	Description string `json:"description"`
 	// Expiration flag. If true, then the API token has expired. When an API token
 	// expires it will be automatically deleted.
-	Expired bool `json:"expired"`
+	Expired bool `json:"expired,required"`
 	// Date when the API token was last used (ISO 8086/RFC 3339 format), UTC.
-	LastUsage string `json:"last_usage"`
+	LastUsage string `json:"last_usage,required"`
+	// API token name.
+	Name string `json:"name,required"`
+	// API token description.
+	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ClientUser  respjson.Field
-		ExpDate     respjson.Field
-		Name        respjson.Field
 		ID          respjson.Field
+		ClientUser  respjson.Field
 		Created     respjson.Field
 		Deleted     respjson.Field
-		Description respjson.Field
+		ExpDate     respjson.Field
 		Expired     respjson.Field
 		LastUsage   respjson.Field
+		Name        respjson.Field
+		Description respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -121,16 +121,16 @@ func (r *APIToken) UnmarshalJSON(data []byte) error {
 
 type APITokenClientUser struct {
 	// Account's ID.
-	ClientID int64 `json:"client_id"`
+	ClientID int64 `json:"client_id,required"`
 	// Deletion flag. If true, then the API token was deleted.
-	Deleted bool                   `json:"deleted"`
-	Role    APITokenClientUserRole `json:"role"`
+	Deleted bool                   `json:"deleted,required"`
+	Role    APITokenClientUserRole `json:"role,required"`
 	// User's email who issued the API token.
-	UserEmail string `json:"user_email"`
+	UserEmail string `json:"user_email,required"`
 	// User's ID who issued the API token.
-	UserID int64 `json:"user_id"`
+	UserID int64 `json:"user_id,required"`
 	// User's name who issued the API token.
-	UserName string `json:"user_name"`
+	UserName string `json:"user_name,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClientID    respjson.Field
@@ -197,36 +197,36 @@ func (r *APITokenCreate) UnmarshalJSON(data []byte) error {
 type APITokenList []APITokenListItem
 
 type APITokenListItem struct {
+	// API token ID.
+	ID         int64                      `json:"id,required"`
 	ClientUser APITokenListItemClientUser `json:"client_user,required"`
+	// Date when the API token was issued (ISO 8086/RFC 3339 format), UTC.
+	Created string `json:"created,required"`
+	// Deletion flag. If true, then the API token was deleted.
+	Deleted bool `json:"deleted,required"`
 	// Date when the API token becomes expired (ISO 8086/RFC 3339 format), UTC. If
 	// null, then the API token will never expire.
 	ExpDate string `json:"exp_date,required"`
-	// API token name.
-	Name string `json:"name,required"`
-	// API token ID.
-	ID int64 `json:"id"`
-	// Date when the API token was issued (ISO 8086/RFC 3339 format), UTC.
-	Created string `json:"created"`
-	// Deletion flag. If true, then the API token was deleted.
-	Deleted bool `json:"deleted"`
-	// API token description.
-	Description string `json:"description"`
 	// Expiration flag. If true, then the API token has expired. When an API token
 	// expires it will be automatically deleted.
-	Expired bool `json:"expired"`
+	Expired bool `json:"expired,required"`
 	// Date when the API token was last used (ISO 8086/RFC 3339 format), UTC.
-	LastUsage string `json:"last_usage"`
+	LastUsage string `json:"last_usage,required"`
+	// API token name.
+	Name string `json:"name,required"`
+	// API token description.
+	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ClientUser  respjson.Field
-		ExpDate     respjson.Field
-		Name        respjson.Field
 		ID          respjson.Field
+		ClientUser  respjson.Field
 		Created     respjson.Field
 		Deleted     respjson.Field
-		Description respjson.Field
+		ExpDate     respjson.Field
 		Expired     respjson.Field
 		LastUsage   respjson.Field
+		Name        respjson.Field
+		Description respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -240,16 +240,16 @@ func (r *APITokenListItem) UnmarshalJSON(data []byte) error {
 
 type APITokenListItemClientUser struct {
 	// Account's ID.
-	ClientID int64 `json:"client_id"`
+	ClientID int64 `json:"client_id,required"`
 	// Deletion flag. If true, then the API token was deleted.
-	Deleted bool                           `json:"deleted"`
-	Role    APITokenListItemClientUserRole `json:"role"`
+	Deleted bool                           `json:"deleted,required"`
+	Role    APITokenListItemClientUserRole `json:"role,required"`
 	// User's email who issued the API token.
-	UserEmail string `json:"user_email"`
+	UserEmail string `json:"user_email,required"`
 	// User's ID who issued the API token.
-	UserID int64 `json:"user_id"`
+	UserID int64 `json:"user_id,required"`
 	// User's name who issued the API token.
-	UserName string `json:"user_name"`
+	UserName string `json:"user_name,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClientID    respjson.Field
@@ -296,11 +296,11 @@ func (r *APITokenListItemClientUserRole) UnmarshalJSON(data []byte) error {
 }
 
 type APITokenNewParams struct {
-	// API token role.
-	ClientUser APITokenNewParamsClientUser `json:"client_user,omitzero,required"`
 	// Date when the API token becomes expired (ISO 8086/RFC 3339 format), UTC. If
 	// null, then the API token will never expire.
-	ExpDate string `json:"exp_date,required"`
+	ExpDate param.Opt[string] `json:"exp_date,omitzero,required"`
+	// API token role.
+	ClientUser APITokenNewParamsClientUser `json:"client_user,omitzero,required"`
 	// API token name.
 	Name string `json:"name,required"`
 	// API token description.

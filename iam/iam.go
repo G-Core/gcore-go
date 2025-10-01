@@ -47,59 +47,59 @@ func (r *IamService) GetAccountOverview(ctx context.Context, opts ...option.Requ
 
 type AccountOverview struct {
 	// The account ID.
-	ID int64 `json:"id"`
+	ID int64 `json:"id,required"`
 	// System field. Billing type of the account.
-	BillType string `json:"bill_type"`
+	BillType string `json:"bill_type,required"`
 	// System field. List of services available for the account.
 	//
 	// Any of "CDN", "STORAGE", "STREAMING", "DNS", "DDOS", "CLOUD".
-	Capabilities []string `json:"capabilities"`
+	Capabilities []string `json:"capabilities,required"`
 	// The company name.
-	CompanyName string `json:"companyName"`
-	// System field. The company country (ISO 3166-1 alpha-2 format).
-	CountryCode string `json:"country_code"`
+	CompanyName string `json:"companyName,required"`
 	// ID of the current user.
-	CurrentUser int64 `json:"currentUser"`
-	// The account custom ID.
-	CustomID string `json:"custom_id,nullable"`
+	CurrentUser int64 `json:"currentUser,required"`
 	// The field shows the status of the account:
 	//
 	// - `true` – the account has been deleted
 	// - `false` – the account is not deleted
-	Deleted bool `json:"deleted"`
+	Deleted bool `json:"deleted,required"`
 	// The account email.
-	Email string `json:"email" format:"email"`
+	Email string `json:"email,required" format:"email"`
 	// System field. Control panel domain.
-	EntryBaseDomain string `json:"entryBaseDomain,nullable"`
+	EntryBaseDomain string `json:"entryBaseDomain,required"`
 	// An object of arrays which contains information about free features available for
 	// the requested account.
-	FreeFeatures AccountOverviewFreeFeatures `json:"freeFeatures"`
+	FreeFeatures AccountOverviewFreeFeatures `json:"freeFeatures,required"`
 	// System field.
-	HasActiveAdmin bool `json:"has_active_admin"`
+	HasActiveAdmin bool `json:"has_active_admin,required"`
 	// System field:
 	//
 	// - `true` — a test account;
 	// - `false` — a production account.
-	IsTest bool `json:"is_test"`
+	IsTest bool `json:"is_test,required"`
 	// Name of a user who registered the requested account.
-	Name string `json:"name,nullable"`
+	Name string `json:"name,required"`
 	// An object of arrays which contains information about paid features available for
 	// the requested account.
-	PaidFeatures AccountOverviewPaidFeatures `json:"paidFeatures"`
-	// Phone of a user who registered the requested account.
-	Phone string `json:"phone,nullable"`
+	PaidFeatures AccountOverviewPaidFeatures `json:"paidFeatures,required"`
 	// An object of arrays which contains information about all services available for
 	// the requested account.
-	ServiceStatuses AccountOverviewServiceStatuses `json:"serviceStatuses"`
-	// System field. Type of the account registration process.
-	//
-	// Any of "sign_up_full", "sign_up_simple".
-	SignupProcess AccountOverviewSignupProcess `json:"signup_process,nullable"`
+	ServiceStatuses AccountOverviewServiceStatuses `json:"serviceStatuses,required"`
 	// Status of the account.
 	//
 	// Any of "new", "trial", "trialend", "active", "integration", "paused",
 	// "preparation", "ready".
-	Status AccountOverviewStatus `json:"status"`
+	Status AccountOverviewStatus `json:"status,required"`
+	// System field. The company country (ISO 3166-1 alpha-2 format).
+	CountryCode string `json:"country_code"`
+	// The account custom ID.
+	CustomID string `json:"custom_id,nullable"`
+	// Phone of a user who registered the requested account.
+	Phone string `json:"phone,nullable"`
+	// System field. Type of the account registration process.
+	//
+	// Any of "sign_up_full", "sign_up_simple".
+	SignupProcess AccountOverviewSignupProcess `json:"signup_process,nullable"`
 	// List of account users.
 	Users []AccountOverviewUser `json:"users"`
 	// The company website.
@@ -110,9 +110,7 @@ type AccountOverview struct {
 		BillType        respjson.Field
 		Capabilities    respjson.Field
 		CompanyName     respjson.Field
-		CountryCode     respjson.Field
 		CurrentUser     respjson.Field
-		CustomID        respjson.Field
 		Deleted         respjson.Field
 		Email           respjson.Field
 		EntryBaseDomain respjson.Field
@@ -121,10 +119,12 @@ type AccountOverview struct {
 		IsTest          respjson.Field
 		Name            respjson.Field
 		PaidFeatures    respjson.Field
-		Phone           respjson.Field
 		ServiceStatuses respjson.Field
-		SignupProcess   respjson.Field
 		Status          respjson.Field
+		CountryCode     respjson.Field
+		CustomID        respjson.Field
+		Phone           respjson.Field
+		SignupProcess   respjson.Field
 		Users           respjson.Field
 		Website         respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -738,14 +738,6 @@ func (r *AccountOverviewServiceStatusesStreaming) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// System field. Type of the account registration process.
-type AccountOverviewSignupProcess string
-
-const (
-	AccountOverviewSignupProcessSignUpFull   AccountOverviewSignupProcess = "sign_up_full"
-	AccountOverviewSignupProcessSignUpSimple AccountOverviewSignupProcess = "sign_up_simple"
-)
-
 // Status of the account.
 type AccountOverviewStatus string
 
@@ -758,6 +750,14 @@ const (
 	AccountOverviewStatusPaused      AccountOverviewStatus = "paused"
 	AccountOverviewStatusPreparation AccountOverviewStatus = "preparation"
 	AccountOverviewStatusReady       AccountOverviewStatus = "ready"
+)
+
+// System field. Type of the account registration process.
+type AccountOverviewSignupProcess string
+
+const (
+	AccountOverviewSignupProcessSignUpFull   AccountOverviewSignupProcess = "sign_up_full"
+	AccountOverviewSignupProcessSignUpSimple AccountOverviewSignupProcess = "sign_up_simple"
 )
 
 type AccountOverviewUser struct {
