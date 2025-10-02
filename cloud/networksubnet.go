@@ -189,6 +189,22 @@ func (r *NetworkSubnetService) Delete(ctx context.Context, subnetID string, body
 	return
 }
 
+// DeleteAndPoll deletes a network and polls for completion of the first task. Use the
+// [TaskService.Poll] method if you need to poll for all tasks.
+func (r *NetworkSubnetService) DeleteAndPoll(ctx context.Context, subnetID string, body NetworkSubnetDeleteParams, opts ...option.RequestOption) (err error) {
+	resource, err := r.Delete(ctx, subnetID, body, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
+}
+
 // Get subnet
 func (r *NetworkSubnetService) Get(ctx context.Context, subnetID string, query NetworkSubnetGetParams, opts ...option.RequestOption) (res *Subnet, err error) {
 	opts = slices.Concat(r.Options, opts)
