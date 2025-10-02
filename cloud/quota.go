@@ -155,9 +155,9 @@ type QuotaGetAllResponseRegionalQuota struct {
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
 	// Basic bare metal servers count usage
 	BaremetalBasicCountUsage int64 `json:"baremetal_basic_count_usage"`
-	// Baremetal A100 GPU card count limit
+	// Bare metal A100 GPU server count limit
 	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
-	// Baremetal A100 GPU card count usage
+	// Bare metal A100 GPU server count usage
 	BaremetalGPUA100CountUsage int64 `json:"baremetal_gpu_a100_count_usage"`
 	// Total number of AI GPU bare metal servers. This field is deprecated and is now
 	// always calculated automatically as the sum of `baremetal_gpu_a100_count_limit`,
@@ -173,17 +173,17 @@ type QuotaGetAllResponseRegionalQuota struct {
 	//
 	// Deprecated: deprecated
 	BaremetalGPUCountUsage int64 `json:"baremetal_gpu_count_usage"`
-	// Baremetal H100 GPU card count limit
+	// Bare metal H100 GPU server count limit
 	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
-	// Baremetal H100 GPU card count usage
+	// Bare metal H100 GPU server count usage
 	BaremetalGPUH100CountUsage int64 `json:"baremetal_gpu_h100_count_usage"`
-	// Baremetal H200 GPU card count limit
+	// Bare metal H200 GPU server count limit
 	BaremetalGPUH200CountLimit int64 `json:"baremetal_gpu_h200_count_limit"`
-	// Baremetal H200 GPU card count usage
+	// Bare metal H200 GPU server count usage
 	BaremetalGPUH200CountUsage int64 `json:"baremetal_gpu_h200_count_usage"`
-	// Baremetal L40S GPU card count limit
+	// Bare metal L40S GPU server count limit
 	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
-	// Baremetal L40S GPU card count usage
+	// Bare metal L40S GPU server count usage
 	BaremetalGPUL40sCountUsage int64 `json:"baremetal_gpu_l40s_count_usage"`
 	// High-frequency bare metal servers count limit
 	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
@@ -488,9 +488,9 @@ type QuotaGetByRegionResponse struct {
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
 	// Basic bare metal servers count usage
 	BaremetalBasicCountUsage int64 `json:"baremetal_basic_count_usage"`
-	// Baremetal A100 GPU card count limit
+	// Bare metal A100 GPU server count limit
 	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
-	// Baremetal A100 GPU card count usage
+	// Bare metal A100 GPU server count usage
 	BaremetalGPUA100CountUsage int64 `json:"baremetal_gpu_a100_count_usage"`
 	// Total number of AI GPU bare metal servers. This field is deprecated and is now
 	// always calculated automatically as the sum of `baremetal_gpu_a100_count_limit`,
@@ -506,17 +506,17 @@ type QuotaGetByRegionResponse struct {
 	//
 	// Deprecated: deprecated
 	BaremetalGPUCountUsage int64 `json:"baremetal_gpu_count_usage"`
-	// Baremetal H100 GPU card count limit
+	// Bare metal H100 GPU server count limit
 	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
-	// Baremetal H100 GPU card count usage
+	// Bare metal H100 GPU server count usage
 	BaremetalGPUH100CountUsage int64 `json:"baremetal_gpu_h100_count_usage"`
-	// Baremetal H200 GPU card count limit
+	// Bare metal H200 GPU server count limit
 	BaremetalGPUH200CountLimit int64 `json:"baremetal_gpu_h200_count_limit"`
-	// Baremetal H200 GPU card count usage
+	// Bare metal H200 GPU server count usage
 	BaremetalGPUH200CountUsage int64 `json:"baremetal_gpu_h200_count_usage"`
-	// Baremetal L40S GPU card count limit
+	// Bare metal L40S GPU server count limit
 	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
-	// Baremetal L40S GPU card count usage
+	// Bare metal L40S GPU server count usage
 	BaremetalGPUL40sCountUsage int64 `json:"baremetal_gpu_l40s_count_usage"`
 	// High-frequency bare metal servers count limit
 	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
