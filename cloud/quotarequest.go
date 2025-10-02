@@ -186,7 +186,7 @@ func (r *QuotaRequestListResponseRequestedLimitsGlobalLimits) UnmarshalJSON(data
 type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	// Basic bare metal servers count limit
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
-	// Baremetal A100 GPU card count limit
+	// Bare metal A100 GPU server count limit
 	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
 	// Total number of AI GPU bare metal servers. This field is deprecated and is now
 	// always calculated automatically as the sum of `baremetal_gpu_a100_count_limit`,
@@ -195,11 +195,11 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	//
 	// Deprecated: deprecated
 	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
-	// Baremetal H100 GPU card count limit
+	// Bare metal H100 GPU server count limit
 	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
-	// Baremetal H200 GPU card count limit
+	// Bare metal H200 GPU server count limit
 	BaremetalGPUH200CountLimit int64 `json:"baremetal_gpu_h200_count_limit"`
-	// Baremetal L40S GPU card count limit
+	// Bare metal L40S GPU server count limit
 	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
 	// High-frequency bare metal servers count limit
 	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
@@ -453,7 +453,7 @@ func (r *QuotaRequestGetResponseRequestedLimitsGlobalLimits) UnmarshalJSON(data 
 type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	// Basic bare metal servers count limit
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
-	// Baremetal A100 GPU card count limit
+	// Bare metal A100 GPU server count limit
 	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
 	// Total number of AI GPU bare metal servers. This field is deprecated and is now
 	// always calculated automatically as the sum of `baremetal_gpu_a100_count_limit`,
@@ -462,11 +462,11 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	//
 	// Deprecated: deprecated
 	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
-	// Baremetal H100 GPU card count limit
+	// Bare metal H100 GPU server count limit
 	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
-	// Baremetal H200 GPU card count limit
+	// Bare metal H200 GPU server count limit
 	BaremetalGPUH200CountLimit int64 `json:"baremetal_gpu_h200_count_limit"`
-	// Baremetal L40S GPU card count limit
+	// Bare metal L40S GPU server count limit
 	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
 	// High-frequency bare metal servers count limit
 	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
@@ -690,7 +690,7 @@ func (r *QuotaRequestNewParamsRequestedLimitsGlobalLimits) UnmarshalJSON(data []
 type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
 	// Basic bare metal servers count limit
 	BaremetalBasicCountLimit param.Opt[int64] `json:"baremetal_basic_count_limit,omitzero"`
-	// Baremetal A100 GPU card count limit
+	// Bare metal A100 GPU server count limit
 	BaremetalGPUA100CountLimit param.Opt[int64] `json:"baremetal_gpu_a100_count_limit,omitzero"`
 	// Total number of AI GPU bare metal servers. This field is deprecated and is now
 	// always calculated automatically as the sum of `baremetal_gpu_a100_count_limit`,
@@ -699,11 +699,11 @@ type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
 	//
 	// Deprecated: deprecated
 	BaremetalGPUCountLimit param.Opt[int64] `json:"baremetal_gpu_count_limit,omitzero"`
-	// Baremetal H100 GPU card count limit
+	// Bare metal H100 GPU server count limit
 	BaremetalGPUH100CountLimit param.Opt[int64] `json:"baremetal_gpu_h100_count_limit,omitzero"`
-	// Baremetal H200 GPU card count limit
+	// Bare metal H200 GPU server count limit
 	BaremetalGPUH200CountLimit param.Opt[int64] `json:"baremetal_gpu_h200_count_limit,omitzero"`
-	// Baremetal L40S GPU card count limit
+	// Bare metal L40S GPU server count limit
 	BaremetalGPUL40sCountLimit param.Opt[int64] `json:"baremetal_gpu_l40s_count_limit,omitzero"`
 	// High-frequency bare metal servers count limit
 	BaremetalHfCountLimit param.Opt[int64] `json:"baremetal_hf_count_limit,omitzero"`
