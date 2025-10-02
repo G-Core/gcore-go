@@ -65,6 +65,33 @@ func (r *ReservedFixedIPService) New(ctx context.Context, params ReservedFixedIP
 	return
 }
 
+// Update the VIP status of a reserved fixed IP.
+func (r *ReservedFixedIPService) Update(ctx context.Context, portID string, params ReservedFixedIPUpdateParams, opts ...option.RequestOption) (res *ReservedFixedIP, err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	if portID == "" {
+		err = errors.New("missing required port_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/reserved_fixed_ips/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, portID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return
+}
+
 // List all reserved fixed IPs in the specified project and region.
 func (r *ReservedFixedIPService) List(ctx context.Context, params ReservedFixedIPListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[ReservedFixedIP], err error) {
 	var raw *http.Response
@@ -422,6 +449,22 @@ func (r ReservedFixedIPNewParamsBodyPort) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ReservedFixedIPNewParamsBodyPort) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ReservedFixedIPUpdateParams struct {
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// If reserved fixed IP should be a VIP
+	IsVip bool `json:"is_vip,required"`
+	paramObj
+}
+
+func (r ReservedFixedIPUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow ReservedFixedIPUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ReservedFixedIPUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
