@@ -78,7 +78,7 @@ func listSubnets(client *gcore.Client, networkID string) {
 func deleteSubnet(client *gcore.Client, subnetID string) {
 	fmt.Println("\n=== DELETE SUBNET ===")
 	params := cloud.NetworkSubnetDeleteParams{}
-	_, err := client.Cloud.Networks.Subnets.Delete(context.Background(), subnetID, params)
+	err := client.Cloud.Networks.Subnets.DeleteAndPoll(context.Background(), subnetID, params)
 	if err != nil {
 		log.Fatalf("Error deleting subnet: %v", err)
 	}
