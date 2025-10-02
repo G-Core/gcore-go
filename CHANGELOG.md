@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.15.0 (2025-10-02)
+
+Full Changelog: [v0.14.0...v0.15.0](https://github.com/G-Core/gcore-go/compare/v0.14.0...v0.15.0)
+
+### Features
+
+* **api:** Add missing reserved_fixed_ips update method ([67057ab](https://github.com/G-Core/gcore-go/commit/67057abac2c98dbe1ac6a53e7fa3b988b4c80b19))
+* **api:** aggregated API specs update ([f635f85](https://github.com/G-Core/gcore-go/commit/f635f8570d532431857d505fd46e2e0d8259720f))
+* **api:** aggregated API specs update ([ab636ba](https://github.com/G-Core/gcore-go/commit/ab636bac399f5da60ec0e50163539148fc8cdb01))
+* **api:** aggregated API specs update ([974cae5](https://github.com/G-Core/gcore-go/commit/974cae5fa07bd88c3b5cfa98d005dfdb0fc8bbd6))
+* **cloud:** add DeleteAndPoll for subnets ([578d222](https://github.com/G-Core/gcore-go/commit/578d2222ebf5299930965c1b7023d93afc1c568c))
+
+
+### Bug Fixes
+
+* **examples:** update examples to match updated SDK signatures ([#123](https://github.com/G-Core/gcore-go/issues/123)) ([4b536bd](https://github.com/G-Core/gcore-go/commit/4b536bde1bc6677d49023c2ae45bfc57d5cf59a4))
+
 ## 0.14.0 (2025-09-30)
 
 Full Changelog: [v0.13.0...v0.14.0](https://github.com/G-Core/gcore-go/compare/v0.13.0...v0.14.0)
