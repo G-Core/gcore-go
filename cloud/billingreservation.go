@@ -39,6 +39,8 @@ func NewBillingReservationService(opts ...option.RequestOption) (r BillingReserv
 }
 
 // List reservations
+//
+// Deprecated: deprecated
 func (r *BillingReservationService) List(ctx context.Context, query BillingReservationListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[BillingReservation], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -58,11 +60,15 @@ func (r *BillingReservationService) List(ctx context.Context, query BillingReser
 }
 
 // List reservations
+//
+// Deprecated: deprecated
 func (r *BillingReservationService) ListAutoPaging(ctx context.Context, query BillingReservationListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[BillingReservation] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Get reservation
+//
+// Deprecated: deprecated
 func (r *BillingReservationService) Get(ctx context.Context, reservationID int64, opts ...option.RequestOption) (res *BillingReservation, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
