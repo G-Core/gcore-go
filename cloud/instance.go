@@ -1823,7 +1823,8 @@ type InstanceListParams struct {
 	WithInterfacesName param.Opt[bool] `query:"with_interfaces_name,omitzero" json:"-"`
 	// Order by field and direction.
 	//
-	// Any of "created.asc", "created.desc", "name.asc", "name.desc".
+	// Any of "created.asc", "created.desc", "name.asc", "name.desc", "status.asc",
+	// "status.desc".
 	OrderBy InstanceListParamsOrderBy `query:"order_by,omitzero" json:"-"`
 	// Filter result by DDoS `protection_status`. if parameter is provided. Effective
 	// only with `with_ddos` set to true. (Active, Queued or Error)
@@ -1862,6 +1863,8 @@ const (
 	InstanceListParamsOrderByCreatedDesc InstanceListParamsOrderBy = "created.desc"
 	InstanceListParamsOrderByNameAsc     InstanceListParamsOrderBy = "name.asc"
 	InstanceListParamsOrderByNameDesc    InstanceListParamsOrderBy = "name.desc"
+	InstanceListParamsOrderByStatusAsc   InstanceListParamsOrderBy = "status.asc"
+	InstanceListParamsOrderByStatusDesc  InstanceListParamsOrderBy = "status.desc"
 )
 
 // Filter result by DDoS `protection_status`. if parameter is provided. Effective
