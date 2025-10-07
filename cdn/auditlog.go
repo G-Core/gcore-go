@@ -42,7 +42,6 @@ func (r *AuditLogService) List(ctx context.Context, query AuditLogListParams, op
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/activity_log/requests"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -64,7 +63,6 @@ func (r *AuditLogService) ListAutoPaging(ctx context.Context, query AuditLogList
 // Get information about CDN activity logs record.
 func (r *AuditLogService) Get(ctx context.Context, logID int64, opts ...option.RequestOption) (res *CdnAuditLogEntry, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/activity_log/requests/%v", logID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

@@ -37,7 +37,6 @@ func NewResourceRuleService(opts ...option.RequestOption) (r ResourceRuleService
 // Create rule
 func (r *ResourceRuleService) New(ctx context.Context, resourceID int64, body ResourceRuleNewParams, opts ...option.RequestOption) (res *CdnResourceRule, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/rules", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +45,6 @@ func (r *ResourceRuleService) New(ctx context.Context, resourceID int64, body Re
 // Change rule
 func (r *ResourceRuleService) Update(ctx context.Context, ruleID int64, params ResourceRuleUpdateParams, opts ...option.RequestOption) (res *CdnResourceRule, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/rules/%v", params.ResourceID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
@@ -55,7 +53,6 @@ func (r *ResourceRuleService) Update(ctx context.Context, ruleID int64, params R
 // Get rules list
 func (r *ResourceRuleService) List(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *[]CdnResourceRule, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/rules", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -72,7 +69,6 @@ func (r *ResourceRuleService) List(ctx context.Context, resourceID int64, opts .
 func (r *ResourceRuleService) Delete(ctx context.Context, ruleID int64, body ResourceRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/rules/%v", body.ResourceID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -81,7 +77,6 @@ func (r *ResourceRuleService) Delete(ctx context.Context, ruleID int64, body Res
 // Get rule details
 func (r *ResourceRuleService) Get(ctx context.Context, ruleID int64, query ResourceRuleGetParams, opts ...option.RequestOption) (res *CdnResourceRule, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/rules/%v", query.ResourceID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -90,7 +85,6 @@ func (r *ResourceRuleService) Get(ctx context.Context, ruleID int64, query Resou
 // Change rule
 func (r *ResourceRuleService) Replace(ctx context.Context, ruleID int64, params ResourceRuleReplaceParams, opts ...option.RequestOption) (res *CdnResourceRule, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/rules/%v", params.ResourceID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return

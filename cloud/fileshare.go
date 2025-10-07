@@ -45,7 +45,6 @@ func NewFileShareService(opts ...option.RequestOption) (r FileShareService) {
 // Create file share
 func (r *FileShareService) New(ctx context.Context, params FileShareNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -68,7 +67,6 @@ func (r *FileShareService) New(ctx context.Context, params FileShareNewParams, o
 // Rename file share or update tags
 func (r *FileShareService) Update(ctx context.Context, fileShareID string, params FileShareUpdateParams, opts ...option.RequestOption) (res *FileShare, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -97,7 +95,6 @@ func (r *FileShareService) List(ctx context.Context, params FileShareListParams,
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -133,7 +130,6 @@ func (r *FileShareService) ListAutoPaging(ctx context.Context, params FileShareL
 // Delete file share
 func (r *FileShareService) Delete(ctx context.Context, fileShareID string, body FileShareDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -160,7 +156,6 @@ func (r *FileShareService) Delete(ctx context.Context, fileShareID string, body 
 // Get file share
 func (r *FileShareService) Get(ctx context.Context, fileShareID string, query FileShareGetParams, opts ...option.RequestOption) (res *FileShare, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -187,7 +182,6 @@ func (r *FileShareService) Get(ctx context.Context, fileShareID string, query Fi
 // Resize file share
 func (r *FileShareService) Resize(ctx context.Context, fileShareID string, params FileShareResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

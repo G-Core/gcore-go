@@ -41,7 +41,6 @@ func NewBucketCorService(opts ...option.RequestOption) (r BucketCorService) {
 func (r *BucketCorService) New(ctx context.Context, bucketName string, params BucketCorNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -56,7 +55,6 @@ func (r *BucketCorService) New(ctx context.Context, bucketName string, params Bu
 // browsers.
 func (r *BucketCorService) Get(ctx context.Context, bucketName string, query BucketCorGetParams, opts ...option.RequestOption) (res *BucketCors, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return

@@ -40,7 +40,6 @@ func NewOriginGroupService(opts ...option.RequestOption) (r OriginGroupService) 
 // Create an origin group with one or more origin sources.
 func (r *OriginGroupService) New(ctx context.Context, body OriginGroupNewParams, opts ...option.RequestOption) (res *OriginGroupsUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/origin_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +48,6 @@ func (r *OriginGroupService) New(ctx context.Context, body OriginGroupNewParams,
 // Change origin group
 func (r *OriginGroupService) Update(ctx context.Context, originGroupID int64, body OriginGroupUpdateParams, opts ...option.RequestOption) (res *OriginGroupsUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/origin_groups/%v", originGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -58,7 +56,6 @@ func (r *OriginGroupService) Update(ctx context.Context, originGroupID int64, bo
 // Get all origin groups and related origin sources.
 func (r *OriginGroupService) List(ctx context.Context, query OriginGroupListParams, opts ...option.RequestOption) (res *OriginGroupsList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/origin_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -68,7 +65,6 @@ func (r *OriginGroupService) List(ctx context.Context, query OriginGroupListPara
 func (r *OriginGroupService) Delete(ctx context.Context, originGroupID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/origin_groups/%v", originGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -77,7 +73,6 @@ func (r *OriginGroupService) Delete(ctx context.Context, originGroupID int64, op
 // Get origin group details
 func (r *OriginGroupService) Get(ctx context.Context, originGroupID int64, opts ...option.RequestOption) (res *OriginGroupsUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/origin_groups/%v", originGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -86,7 +81,6 @@ func (r *OriginGroupService) Get(ctx context.Context, originGroupID int64, opts 
 // Change origin group
 func (r *OriginGroupService) Replace(ctx context.Context, originGroupID int64, body OriginGroupReplaceParams, opts ...option.RequestOption) (res *OriginGroupsUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/origin_groups/%v", originGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

@@ -40,7 +40,6 @@ func NewLoadBalancerFlavorService(opts ...option.RequestOption) (r LoadBalancerF
 // price values as 0. If you get Pricing Error contact the support
 func (r *LoadBalancerFlavorService) List(ctx context.Context, params LoadBalancerFlavorListParams, opts ...option.RequestOption) (res *LoadBalancerFlavorList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

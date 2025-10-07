@@ -42,7 +42,6 @@ func NewPlayerService(opts ...option.RequestOption) (r PlayerService) {
 func (r *PlayerService) New(ctx context.Context, body PlayerNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/players"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -51,7 +50,6 @@ func (r *PlayerService) New(ctx context.Context, body PlayerNewParams, opts ...o
 // Updates player settings
 func (r *PlayerService) Update(ctx context.Context, playerID int64, body PlayerUpdateParams, opts ...option.RequestOption) (res *Player, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/players/%v", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -62,7 +60,6 @@ func (r *PlayerService) List(ctx context.Context, query PlayerListParams, opts .
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/players"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -85,7 +82,6 @@ func (r *PlayerService) ListAutoPaging(ctx context.Context, query PlayerListPara
 func (r *PlayerService) Delete(ctx context.Context, playerID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/players/%v", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -94,7 +90,6 @@ func (r *PlayerService) Delete(ctx context.Context, playerID int64, opts ...opti
 // Returns player settings
 func (r *PlayerService) Get(ctx context.Context, playerID int64, opts ...option.RequestOption) (res *Player, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/players/%v", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -104,7 +99,6 @@ func (r *PlayerService) Get(ctx context.Context, playerID int64, opts ...option.
 func (r *PlayerService) Preview(ctx context.Context, playerID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/players/%v/preview", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, nil, opts...)
 	return

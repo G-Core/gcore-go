@@ -39,7 +39,6 @@ func NewLoadBalancerPoolMemberService(opts ...option.RequestOption) (r LoadBalan
 // Create load balancer pool member
 func (r *LoadBalancerPoolMemberService) Add(ctx context.Context, poolID string, params LoadBalancerPoolMemberAddParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -66,7 +65,6 @@ func (r *LoadBalancerPoolMemberService) Add(ctx context.Context, poolID string, 
 // Delete load balancer pool member
 func (r *LoadBalancerPoolMemberService) Remove(ctx context.Context, memberID string, body LoadBalancerPoolMemberRemoveParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

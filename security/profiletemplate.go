@@ -37,7 +37,6 @@ func NewProfileTemplateService(opts ...option.RequestOption) (r ProfileTemplateS
 // profile. Client receives only common and created for him profile templates.
 func (r *ProfileTemplateService) List(ctx context.Context, opts ...option.RequestOption) (res *[]ClientProfileTemplate, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "security/iaas/profile-templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

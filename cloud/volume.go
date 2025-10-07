@@ -47,7 +47,6 @@ func NewVolumeService(opts ...option.RequestOption) (r VolumeService) {
 // instance during creation.
 func (r *VolumeService) New(ctx context.Context, params VolumeNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -105,7 +104,6 @@ func (r *VolumeService) NewAndPoll(ctx context.Context, params VolumeNewParams, 
 // Rename a volume or update tags
 func (r *VolumeService) Update(ctx context.Context, volumeID string, params VolumeUpdateParams, opts ...option.RequestOption) (res *Volume, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -136,7 +134,6 @@ func (r *VolumeService) List(ctx context.Context, params VolumeListParams, opts 
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -175,7 +172,6 @@ func (r *VolumeService) ListAutoPaging(ctx context.Context, params VolumeListPar
 // to be deleted.
 func (r *VolumeService) Delete(ctx context.Context, volumeID string, params VolumeDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -219,7 +215,6 @@ func (r *VolumeService) DeleteAndPoll(ctx context.Context, volumeID string, para
 // instance with shared flavor
 func (r *VolumeService) AttachToInstance(ctx context.Context, volumeID string, params VolumeAttachToInstanceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -263,7 +258,6 @@ func (r *VolumeService) AttachToInstanceAndPoll(ctx context.Context, volumeID st
 // its type.
 func (r *VolumeService) ChangeType(ctx context.Context, volumeID string, params VolumeChangeTypeParams, opts ...option.RequestOption) (res *Volume, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -290,7 +284,6 @@ func (r *VolumeService) ChangeType(ctx context.Context, volumeID string, params 
 // Detach the volume from instance
 func (r *VolumeService) DetachFromInstance(ctx context.Context, volumeID string, params VolumeDetachFromInstanceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -333,7 +326,6 @@ func (r *VolumeService) DetachFromInstanceAndPoll(ctx context.Context, volumeID 
 // Retrieve detailed information about a specific volume.
 func (r *VolumeService) Get(ctx context.Context, volumeID string, query VolumeGetParams, opts ...option.RequestOption) (res *Volume, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -361,7 +353,6 @@ func (r *VolumeService) Get(ctx context.Context, volumeID string, query VolumeGe
 // size.
 func (r *VolumeService) Resize(ctx context.Context, volumeID string, params VolumeResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -421,7 +412,6 @@ func (r *VolumeService) ResizeAndPoll(ctx context.Context, volumeID string, para
 func (r *VolumeService) RevertToLastSnapshot(ctx context.Context, volumeID string, body VolumeRevertToLastSnapshotParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

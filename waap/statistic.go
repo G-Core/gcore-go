@@ -44,7 +44,6 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 // data points.
 func (r *StatisticService) GetUsageSeries(ctx context.Context, query StatisticGetUsageSeriesParams, opts ...option.RequestOption) (res *WaapStatisticsSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/statistics/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

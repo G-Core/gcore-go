@@ -40,7 +40,6 @@ func NewProfileService(opts ...option.RequestOption) (r ProfileService) {
 // created
 func (r *ProfileService) New(ctx context.Context, body ProfileNewParams, opts ...option.RequestOption) (res *ClientProfile, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "security/iaas/v2/profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +48,6 @@ func (r *ProfileService) New(ctx context.Context, body ProfileNewParams, opts ..
 // Get list of protection profiles. Client receives only profiles created by him
 func (r *ProfileService) List(ctx context.Context, query ProfileListParams, opts ...option.RequestOption) (res *[]ClientProfile, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "security/iaas/v2/profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,7 +58,6 @@ func (r *ProfileService) List(ctx context.Context, query ProfileListParams, opts
 func (r *ProfileService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -69,7 +66,6 @@ func (r *ProfileService) Delete(ctx context.Context, id int64, opts ...option.Re
 // Get profile by id
 func (r *ProfileService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *ClientProfile, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -78,7 +74,6 @@ func (r *ProfileService) Get(ctx context.Context, id int64, opts ...option.Reque
 // Recreate profile with another profile template (for other cases use detail API)
 func (r *ProfileService) Recreate(ctx context.Context, id int64, body ProfileRecreateParams, opts ...option.RequestOption) (res *ClientProfile, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v/recreate", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
@@ -88,7 +83,6 @@ func (r *ProfileService) Recreate(ctx context.Context, id int64, body ProfileRec
 // updated
 func (r *ProfileService) Replace(ctx context.Context, id int64, body ProfileReplaceParams, opts ...option.RequestOption) (res *ClientProfile, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

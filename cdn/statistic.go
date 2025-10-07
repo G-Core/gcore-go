@@ -40,7 +40,6 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 // Request URL parameters should be added as a query string after the endpoint.
 func (r *StatisticService) GetLogsUsageAggregated(ctx context.Context, query StatisticGetLogsUsageAggregatedParams, opts ...option.RequestOption) (res *LogsAggregatedStats, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/statistics/raw_logs_usage/aggregated"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -51,7 +50,6 @@ func (r *StatisticService) GetLogsUsageAggregated(ctx context.Context, query Sta
 // Request URL parameters should be added as a query string after the endpoint.
 func (r *StatisticService) GetLogsUsageSeries(ctx context.Context, query StatisticGetLogsUsageSeriesParams, opts ...option.RequestOption) (res *UsageSeriesStats, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/statistics/raw_logs_usage/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -64,7 +62,6 @@ func (r *StatisticService) GetLogsUsageSeries(ctx context.Context, query Statist
 // Aggregated data does not include data for the last two hours.
 func (r *StatisticService) GetResourceUsageAggregated(ctx context.Context, query StatisticGetResourceUsageAggregatedParams, opts ...option.RequestOption) (res *ResourceAggregatedStats, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/statistics/aggregate/stats"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -73,7 +70,6 @@ func (r *StatisticService) GetResourceUsageAggregated(ctx context.Context, query
 // Get CDN resources statistics for up to 365 days starting today.
 func (r *StatisticService) GetResourceUsageSeries(ctx context.Context, query StatisticGetResourceUsageSeriesParams, opts ...option.RequestOption) (res *ResourceUsageStats, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/statistics/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -84,7 +80,6 @@ func (r *StatisticService) GetResourceUsageSeries(ctx context.Context, query Sta
 // Request URL parameters should be added as a query string after the endpoint.
 func (r *StatisticService) GetShieldUsageAggregated(ctx context.Context, query StatisticGetShieldUsageAggregatedParams, opts ...option.RequestOption) (res *ShieldAggregatedStats, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/statistics/shield_usage/aggregated"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -95,7 +90,6 @@ func (r *StatisticService) GetShieldUsageAggregated(ctx context.Context, query S
 // Request URL parameters should be added as a query string after the endpoint.
 func (r *StatisticService) GetShieldUsageSeries(ctx context.Context, query StatisticGetShieldUsageSeriesParams, opts ...option.RequestOption) (res *UsageSeriesStats, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/statistics/shield_usage/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

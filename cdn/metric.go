@@ -37,7 +37,6 @@ func NewMetricService(opts ...option.RequestOption) (r MetricService) {
 // Get CDN metrics
 func (r *MetricService) List(ctx context.Context, body MetricListParams, opts ...option.RequestOption) (res *CdnMetrics, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/advanced/v1/metrics"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

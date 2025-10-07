@@ -41,7 +41,6 @@ func NewLogsUploaderTargetService(opts ...option.RequestOption) (r LogsUploaderT
 // Create logs uploader target.
 func (r *LogsUploaderTargetService) New(ctx context.Context, body LogsUploaderTargetNewParams, opts ...option.RequestOption) (res *LogsUploaderTarget, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/logs_uploader/targets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -50,7 +49,6 @@ func (r *LogsUploaderTargetService) New(ctx context.Context, body LogsUploaderTa
 // Change logs uploader target partially.
 func (r *LogsUploaderTargetService) Update(ctx context.Context, id int64, body LogsUploaderTargetUpdateParams, opts ...option.RequestOption) (res *LogsUploaderTarget, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/targets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -59,7 +57,6 @@ func (r *LogsUploaderTargetService) Update(ctx context.Context, id int64, body L
 // Get list of logs uploader targets.
 func (r *LogsUploaderTargetService) List(ctx context.Context, query LogsUploaderTargetListParams, opts ...option.RequestOption) (res *LogsUploaderTargetList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/logs_uploader/targets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -74,7 +71,6 @@ func (r *LogsUploaderTargetService) List(ctx context.Context, query LogsUploader
 func (r *LogsUploaderTargetService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/targets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -83,7 +79,6 @@ func (r *LogsUploaderTargetService) Delete(ctx context.Context, id int64, opts .
 // Get information about logs uploader target.
 func (r *LogsUploaderTargetService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *LogsUploaderTarget, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/targets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -92,7 +87,6 @@ func (r *LogsUploaderTargetService) Get(ctx context.Context, id int64, opts ...o
 // Change logs uploader target.
 func (r *LogsUploaderTargetService) Replace(ctx context.Context, id int64, body LogsUploaderTargetReplaceParams, opts ...option.RequestOption) (res *LogsUploaderTarget, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/targets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
@@ -101,7 +95,6 @@ func (r *LogsUploaderTargetService) Replace(ctx context.Context, id int64, body 
 // Validate logs uploader target.
 func (r *LogsUploaderTargetService) Validate(ctx context.Context, id int64, opts ...option.RequestOption) (res *LogsUploaderValidation, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/targets/%v/validate", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return

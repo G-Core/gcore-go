@@ -65,7 +65,6 @@ func NewCdnService(opts ...option.RequestOption) (r CdnService) {
 // Get information about CDN service limits.
 func (r *CdnService) GetAccountLimits(ctx context.Context, opts ...option.RequestOption) (res *CdnAccountLimits, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/clients/me/limits"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -74,7 +73,6 @@ func (r *CdnService) GetAccountLimits(ctx context.Context, opts ...option.Reques
 // Get information about CDN service.
 func (r *CdnService) GetAccountOverview(ctx context.Context, opts ...option.RequestOption) (res *CdnAccount, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/clients/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -83,7 +81,6 @@ func (r *CdnService) GetAccountOverview(ctx context.Context, opts ...option.Requ
 // Get information about available CDN features.
 func (r *CdnService) GetAvailableFeatures(ctx context.Context, opts ...option.RequestOption) (res *CdnAvailableFeatures, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/clients/me/features"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -94,7 +91,6 @@ func (r *CdnService) ListPurgeStatuses(ctx context.Context, query CdnListPurgeSt
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/purge_statuses"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -116,7 +112,6 @@ func (r *CdnService) ListPurgeStatusesAutoPaging(ctx context.Context, query CdnL
 // Change information about CDN service.
 func (r *CdnService) UpdateAccount(ctx context.Context, body CdnUpdateAccountParams, opts ...option.RequestOption) (res *CdnAccount, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/clients/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return

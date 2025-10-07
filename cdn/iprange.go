@@ -41,7 +41,6 @@ func NewIPRangeService(opts ...option.RequestOption) (r IPRangeService) {
 // This request does not require authorization.
 func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption) (res *PublicNetworkList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/public-net-list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -57,7 +56,6 @@ func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption)
 // This request does not require authorization.
 func (r *IPRangeService) ListIPs(ctx context.Context, opts ...option.RequestOption) (res *PublicIPList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/public-ip-list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

@@ -39,7 +39,6 @@ func NewRegistryArtifactService(opts ...option.RequestOption) (r RegistryArtifac
 // List all artifacts in a specific repository.
 func (r *RegistryArtifactService) List(ctx context.Context, repositoryName string, query RegistryArtifactListParams, opts ...option.RequestOption) (res *RegistryArtifactList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -67,7 +66,6 @@ func (r *RegistryArtifactService) List(ctx context.Context, repositoryName strin
 func (r *RegistryArtifactService) Delete(ctx context.Context, digest string, body RegistryArtifactDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
