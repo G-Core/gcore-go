@@ -51,7 +51,6 @@ func NewWaapService(opts ...option.RequestOption) (r WaapService) {
 // Get information about WAAP service for the client
 func (r *WaapService) GetAccountOverview(ctx context.Context, opts ...option.RequestOption) (res *WaapGetAccountOverviewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/clients/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

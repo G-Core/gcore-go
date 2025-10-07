@@ -41,7 +41,6 @@ func NewIPInfoMetricService(opts ...option.RequestOption) (r IPInfoMetricService
 // the IP address in context.
 func (r *IPInfoMetricService) List(ctx context.Context, query IPInfoMetricListParams, opts ...option.RequestOption) (res *WaapIPInfoCounts, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "waap/v1/ip-info/counts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

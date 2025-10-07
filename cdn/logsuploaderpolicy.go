@@ -40,7 +40,6 @@ func NewLogsUploaderPolicyService(opts ...option.RequestOption) (r LogsUploaderP
 // Create logs uploader policy.
 func (r *LogsUploaderPolicyService) New(ctx context.Context, body LogsUploaderPolicyNewParams, opts ...option.RequestOption) (res *LogsUploaderPolicy, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/logs_uploader/policies"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +48,6 @@ func (r *LogsUploaderPolicyService) New(ctx context.Context, body LogsUploaderPo
 // Change logs uploader policy partially.
 func (r *LogsUploaderPolicyService) Update(ctx context.Context, id int64, body LogsUploaderPolicyUpdateParams, opts ...option.RequestOption) (res *LogsUploaderPolicy, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/policies/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -58,7 +56,6 @@ func (r *LogsUploaderPolicyService) Update(ctx context.Context, id int64, body L
 // Get list of logs uploader policies.
 func (r *LogsUploaderPolicyService) List(ctx context.Context, query LogsUploaderPolicyListParams, opts ...option.RequestOption) (res *LogsUploaderPolicyList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/logs_uploader/policies"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -73,7 +70,6 @@ func (r *LogsUploaderPolicyService) List(ctx context.Context, query LogsUploader
 func (r *LogsUploaderPolicyService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/policies/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -82,7 +78,6 @@ func (r *LogsUploaderPolicyService) Delete(ctx context.Context, id int64, opts .
 // Get information about logs uploader policy.
 func (r *LogsUploaderPolicyService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *LogsUploaderPolicy, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/policies/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -91,7 +86,6 @@ func (r *LogsUploaderPolicyService) Get(ctx context.Context, id int64, opts ...o
 // Get list of available fields for logs uploader policy.
 func (r *LogsUploaderPolicyService) ListFields(ctx context.Context, opts ...option.RequestOption) (res *[]string, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/logs_uploader/policies/fields"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -100,7 +94,6 @@ func (r *LogsUploaderPolicyService) ListFields(ctx context.Context, opts ...opti
 // Change logs uploader policy.
 func (r *LogsUploaderPolicyService) Replace(ctx context.Context, id int64, body LogsUploaderPolicyReplaceParams, opts ...option.RequestOption) (res *LogsUploaderPolicy, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/policies/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

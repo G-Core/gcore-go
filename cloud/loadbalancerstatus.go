@@ -36,7 +36,6 @@ func NewLoadBalancerStatusService(opts ...option.RequestOption) (r LoadBalancerS
 // List load balancers statuses
 func (r *LoadBalancerStatusService) List(ctx context.Context, query LoadBalancerStatusListParams, opts ...option.RequestOption) (res *LoadBalancerStatusList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -59,7 +58,6 @@ func (r *LoadBalancerStatusService) List(ctx context.Context, query LoadBalancer
 // Get load balancer status
 func (r *LoadBalancerStatusService) Get(ctx context.Context, loadbalancerID string, query LoadBalancerStatusGetParams, opts ...option.RequestOption) (res *LoadBalancerStatus, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

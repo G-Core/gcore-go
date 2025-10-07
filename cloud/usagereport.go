@@ -44,7 +44,6 @@ func NewUsageReportService(opts ...option.RequestOption) (r UsageReportService) 
 // missing data is filled in.
 func (r *UsageReportService) Get(ctx context.Context, body UsageReportGetParams, opts ...option.RequestOption) (res *UsageReport, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v1/usage_report"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

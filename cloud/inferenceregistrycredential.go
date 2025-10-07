@@ -41,7 +41,6 @@ func NewInferenceRegistryCredentialService(opts ...option.RequestOption) (r Infe
 // Create inference registry credential
 func (r *InferenceRegistryCredentialService) New(ctx context.Context, params InferenceRegistryCredentialNewParams, opts ...option.RequestOption) (res *InferenceRegistryCredentials, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -61,7 +60,6 @@ func (r *InferenceRegistryCredentialService) List(ctx context.Context, params In
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -93,7 +91,6 @@ func (r *InferenceRegistryCredentialService) ListAutoPaging(ctx context.Context,
 func (r *InferenceRegistryCredentialService) Delete(ctx context.Context, credentialName string, body InferenceRegistryCredentialDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -115,7 +112,6 @@ func (r *InferenceRegistryCredentialService) Delete(ctx context.Context, credent
 // Get inference registry credential
 func (r *InferenceRegistryCredentialService) Get(ctx context.Context, credentialName string, query InferenceRegistryCredentialGetParams, opts ...option.RequestOption) (res *InferenceRegistryCredentials, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -137,7 +133,6 @@ func (r *InferenceRegistryCredentialService) Get(ctx context.Context, credential
 // Replace inference registry credential
 func (r *InferenceRegistryCredentialService) Replace(ctx context.Context, credentialName string, params InferenceRegistryCredentialReplaceParams, opts ...option.RequestOption) (res *InferenceRegistryCredentials, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

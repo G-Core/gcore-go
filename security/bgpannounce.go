@@ -40,7 +40,6 @@ func NewBgpAnnounceService(opts ...option.RequestOption) (r BgpAnnounceService) 
 // active profile.
 func (r *BgpAnnounceService) List(ctx context.Context, query BgpAnnounceListParams, opts ...option.RequestOption) (res *[]ClientAnnounce, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "security/sifter/v2/protected_addresses/announces"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -51,7 +50,6 @@ func (r *BgpAnnounceService) List(ctx context.Context, query BgpAnnounceListPara
 // meaning that the client must have at least one active profile.
 func (r *BgpAnnounceService) Toggle(ctx context.Context, params BgpAnnounceToggleParams, opts ...option.RequestOption) (res *BgpAnnounceToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "security/sifter/v2/protected_addresses/announces"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return

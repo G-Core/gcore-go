@@ -37,7 +37,6 @@ func NewLogSettingService(opts ...option.RequestOption) (r LogSettingService) {
 func (r *LogSettingService) New(ctx context.Context, body LogSettingNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/raw_log_settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -47,7 +46,6 @@ func (r *LogSettingService) New(ctx context.Context, body LogSettingNewParams, o
 func (r *LogSettingService) Update(ctx context.Context, body LogSettingUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/raw_log_settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, nil, opts...)
 	return
@@ -64,7 +62,6 @@ func (r *LogSettingService) Update(ctx context.Context, body LogSettingUpdatePar
 func (r *LogSettingService) Delete(ctx context.Context, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/raw_log_settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -73,7 +70,6 @@ func (r *LogSettingService) Delete(ctx context.Context, opts ...option.RequestOp
 // Get information about raw logs feature settings.
 func (r *LogSettingService) Get(ctx context.Context, opts ...option.RequestOption) (res *LogSettings, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/raw_log_settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

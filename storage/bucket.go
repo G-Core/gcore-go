@@ -49,7 +49,6 @@ func NewBucketService(opts ...option.RequestOption) (r BucketService) {
 func (r *BucketService) New(ctx context.Context, bucketName string, body BucketNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -67,7 +66,6 @@ func (r *BucketService) List(ctx context.Context, storageID int64, query BucketL
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v2/storage/%v/s3/buckets", storageID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -94,7 +92,6 @@ func (r *BucketService) ListAutoPaging(ctx context.Context, storageID int64, que
 func (r *BucketService) Delete(ctx context.Context, bucketName string, body BucketDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return

@@ -35,7 +35,6 @@ func NewNetworkCapacityService(opts ...option.RequestOption) (r NetworkCapacityS
 // Get network capacity per country.
 func (r *NetworkCapacityService) List(ctx context.Context, opts ...option.RequestOption) (res *NetworkCapacity, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/advanced/v1/capacity"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

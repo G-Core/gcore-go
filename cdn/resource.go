@@ -43,7 +43,6 @@ func NewResourceService(opts ...option.RequestOption) (r ResourceService) {
 // Create CDN resource
 func (r *ResourceService) New(ctx context.Context, body ResourceNewParams, opts ...option.RequestOption) (res *CdnResource, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/resources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -52,7 +51,6 @@ func (r *ResourceService) New(ctx context.Context, body ResourceNewParams, opts 
 // Change CDN resource
 func (r *ResourceService) Update(ctx context.Context, resourceID int64, body ResourceUpdateParams, opts ...option.RequestOption) (res *CdnResource, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -61,7 +59,6 @@ func (r *ResourceService) Update(ctx context.Context, resourceID int64, body Res
 // Get information about all CDN resources in your account.
 func (r *ResourceService) List(ctx context.Context, query ResourceListParams, opts ...option.RequestOption) (res *CdnResourceList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/resources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -81,7 +78,6 @@ func (r *ResourceService) List(ctx context.Context, query ResourceListParams, op
 func (r *ResourceService) Delete(ctx context.Context, resourceID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -90,7 +86,6 @@ func (r *ResourceService) Delete(ctx context.Context, resourceID int64, opts ...
 // Get CDN resource details
 func (r *ResourceService) Get(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *CdnResource, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -109,7 +104,6 @@ func (r *ResourceService) Get(ctx context.Context, resourceID int64, opts ...opt
 func (r *ResourceService) Prefetch(ctx context.Context, resourceID int64, body ResourcePrefetchParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/prefetch", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -119,7 +113,6 @@ func (r *ResourceService) Prefetch(ctx context.Context, resourceID int64, body R
 func (r *ResourceService) PrevalidateSslLeCertificate(ctx context.Context, resourceID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/ssl/le/pre-validate", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return
@@ -137,7 +130,6 @@ func (r *ResourceService) PrevalidateSslLeCertificate(ctx context.Context, resou
 func (r *ResourceService) Purge(ctx context.Context, resourceID int64, body ResourcePurgeParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/purge", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -146,7 +138,6 @@ func (r *ResourceService) Purge(ctx context.Context, resourceID int64, body Reso
 // Change CDN resource
 func (r *ResourceService) Replace(ctx context.Context, resourceID int64, body ResourceReplaceParams, opts ...option.RequestOption) (res *CdnResource, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
