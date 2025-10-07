@@ -52,7 +52,6 @@ func NewGPUBaremetalClusterService(opts ...option.RequestOption) (r GPUBaremetal
 // Create a new bare metal GPU cluster with the specified configuration.
 func (r *GPUBaremetalClusterService) New(ctx context.Context, params GPUBaremetalClusterNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -77,7 +76,6 @@ func (r *GPUBaremetalClusterService) List(ctx context.Context, params GPUBaremet
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -113,7 +111,6 @@ func (r *GPUBaremetalClusterService) ListAutoPaging(ctx context.Context, params 
 // Delete a bare metal GPU cluster and all its associated resources.
 func (r *GPUBaremetalClusterService) Delete(ctx context.Context, clusterID string, params GPUBaremetalClusterDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -141,7 +138,6 @@ func (r *GPUBaremetalClusterService) Delete(ctx context.Context, clusterID strin
 // tags.
 func (r *GPUBaremetalClusterService) Action(ctx context.Context, clusterID string, params GPUBaremetalClusterActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -168,7 +164,6 @@ func (r *GPUBaremetalClusterService) Action(ctx context.Context, clusterID strin
 // Get detailed information about a specific bare metal GPU cluster.
 func (r *GPUBaremetalClusterService) Get(ctx context.Context, clusterID string, query GPUBaremetalClusterGetParams, opts ...option.RequestOption) (res *GPUBaremetalCluster, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -195,7 +190,6 @@ func (r *GPUBaremetalClusterService) Get(ctx context.Context, clusterID string, 
 // Stops and then starts all cluster servers, effectively performing a hard reboot.
 func (r *GPUBaremetalClusterService) PowercycleAllServers(ctx context.Context, clusterID string, body GPUBaremetalClusterPowercycleAllServersParams, opts ...option.RequestOption) (res *GPUBaremetalClusterServerV1List, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -222,7 +216,6 @@ func (r *GPUBaremetalClusterService) PowercycleAllServers(ctx context.Context, c
 // Reboot all bare metal GPU cluster servers
 func (r *GPUBaremetalClusterService) RebootAllServers(ctx context.Context, clusterID string, body GPUBaremetalClusterRebootAllServersParams, opts ...option.RequestOption) (res *GPUBaremetalClusterServerV1List, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -250,7 +243,6 @@ func (r *GPUBaremetalClusterService) RebootAllServers(ctx context.Context, clust
 // to update the cluster image.
 func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID string, params GPUBaremetalClusterRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -278,7 +270,6 @@ func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID stri
 // down.
 func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID string, params GPUBaremetalClusterResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

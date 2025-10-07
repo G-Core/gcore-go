@@ -48,7 +48,6 @@ func NewCertificateService(opts ...option.RequestOption) (r CertificateService) 
 func (r *CertificateService) New(ctx context.Context, body CertificateNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/sslData"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -57,7 +56,6 @@ func (r *CertificateService) New(ctx context.Context, body CertificateNewParams,
 // Get information about SSL certificates.
 func (r *CertificateService) List(ctx context.Context, query CertificateListParams, opts ...option.RequestOption) (res *SslDetailList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/sslData"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -67,7 +65,6 @@ func (r *CertificateService) List(ctx context.Context, query CertificateListPara
 func (r *CertificateService) Delete(ctx context.Context, sslID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/sslData/%v", sslID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -78,7 +75,6 @@ func (r *CertificateService) Delete(ctx context.Context, sslID int64, opts ...op
 func (r *CertificateService) ForceRetry(ctx context.Context, certID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/sslData/%v/force-retry", certID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return
@@ -87,7 +83,6 @@ func (r *CertificateService) ForceRetry(ctx context.Context, certID int64, opts 
 // Get SSL certificate details
 func (r *CertificateService) Get(ctx context.Context, sslID int64, opts ...option.RequestOption) (res *SslDetail, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/sslData/%v", sslID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -97,7 +92,6 @@ func (r *CertificateService) Get(ctx context.Context, sslID int64, opts ...optio
 // CDN resource. Returns attempts in all statuses.
 func (r *CertificateService) GetStatus(ctx context.Context, certID int64, query CertificateGetStatusParams, opts ...option.RequestOption) (res *SslRequestStatus, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/sslData/%v/status", certID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -108,7 +102,6 @@ func (r *CertificateService) GetStatus(ctx context.Context, certID int64, query 
 func (r *CertificateService) Renew(ctx context.Context, certID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/sslData/%v/renew", certID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return
@@ -117,7 +110,6 @@ func (r *CertificateService) Renew(ctx context.Context, certID int64, opts ...op
 // Change SSL certificate
 func (r *CertificateService) Replace(ctx context.Context, sslID int64, body CertificateReplaceParams, opts ...option.RequestOption) (res *SslDetail, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/sslData/%v", sslID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

@@ -42,7 +42,6 @@ func NewQuotaRequestService(opts ...option.RequestOption) (r QuotaRequestService
 func (r *QuotaRequestService) New(ctx context.Context, body QuotaRequestNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v2/limits_request"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -53,7 +52,6 @@ func (r *QuotaRequestService) List(ctx context.Context, query QuotaRequestListPa
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v2/limits_request"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -76,7 +74,6 @@ func (r *QuotaRequestService) ListAutoPaging(ctx context.Context, query QuotaReq
 func (r *QuotaRequestService) Delete(ctx context.Context, requestID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cloud/v2/limits_request/%v", requestID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -85,7 +82,6 @@ func (r *QuotaRequestService) Delete(ctx context.Context, requestID int64, opts 
 // Get detailed information about a specific quota limit request.
 func (r *QuotaRequestService) Get(ctx context.Context, requestID int64, opts ...option.RequestOption) (res *QuotaRequestGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cloud/v2/limits_request/%v", requestID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

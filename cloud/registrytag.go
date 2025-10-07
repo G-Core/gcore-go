@@ -37,7 +37,6 @@ func NewRegistryTagService(opts ...option.RequestOption) (r RegistryTagService) 
 func (r *RegistryTagService) Delete(ctx context.Context, tagName string, body RegistryTagDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

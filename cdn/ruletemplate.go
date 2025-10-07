@@ -37,7 +37,6 @@ func NewRuleTemplateService(opts ...option.RequestOption) (r RuleTemplateService
 // Create rule template
 func (r *RuleTemplateService) New(ctx context.Context, body RuleTemplateNewParams, opts ...option.RequestOption) (res *RuleTemplate, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/resources/rule_templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +45,6 @@ func (r *RuleTemplateService) New(ctx context.Context, body RuleTemplateNewParam
 // Change rule template
 func (r *RuleTemplateService) Update(ctx context.Context, ruleTemplateID int64, body RuleTemplateUpdateParams, opts ...option.RequestOption) (res *RuleTemplate, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/rule_templates/%v", ruleTemplateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -55,7 +53,6 @@ func (r *RuleTemplateService) Update(ctx context.Context, ruleTemplateID int64, 
 // Get rule templates list
 func (r *RuleTemplateService) List(ctx context.Context, opts ...option.RequestOption) (res *RuleTemplateList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/resources/rule_templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -65,7 +62,6 @@ func (r *RuleTemplateService) List(ctx context.Context, opts ...option.RequestOp
 func (r *RuleTemplateService) Delete(ctx context.Context, ruleTemplateID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/rule_templates/%v", ruleTemplateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -74,7 +70,6 @@ func (r *RuleTemplateService) Delete(ctx context.Context, ruleTemplateID int64, 
 // Get rule template details
 func (r *RuleTemplateService) Get(ctx context.Context, ruleTemplateID int64, opts ...option.RequestOption) (res *RuleTemplate, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/rule_templates/%v", ruleTemplateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -83,7 +78,6 @@ func (r *RuleTemplateService) Get(ctx context.Context, ruleTemplateID int64, opt
 // Change rule template
 func (r *RuleTemplateService) Replace(ctx context.Context, ruleTemplateID int64, body RuleTemplateReplaceParams, opts ...option.RequestOption) (res *RuleTemplate, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/rule_templates/%v", ruleTemplateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

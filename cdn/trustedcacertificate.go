@@ -42,7 +42,6 @@ func NewTrustedCaCertificateService(opts ...option.RequestOption) (r TrustedCaCe
 // be separated by the "\n" symbol.
 func (r *TrustedCaCertificateService) New(ctx context.Context, body TrustedCaCertificateNewParams, opts ...option.RequestOption) (res *CaCertificate, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/sslCertificates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -51,7 +50,6 @@ func (r *TrustedCaCertificateService) New(ctx context.Context, body TrustedCaCer
 // Get list of trusted CA certificates used to verify an origin.
 func (r *TrustedCaCertificateService) List(ctx context.Context, query TrustedCaCertificateListParams, opts ...option.RequestOption) (res *CaCertificateList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/sslCertificates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -61,7 +59,6 @@ func (r *TrustedCaCertificateService) List(ctx context.Context, query TrustedCaC
 func (r *TrustedCaCertificateService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/sslCertificates/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -70,7 +67,6 @@ func (r *TrustedCaCertificateService) Delete(ctx context.Context, id int64, opts
 // Get trusted CA certificate details
 func (r *TrustedCaCertificateService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *CaCertificate, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/sslCertificates/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -79,7 +75,6 @@ func (r *TrustedCaCertificateService) Get(ctx context.Context, id int64, opts ..
 // Change trusted CA certificate
 func (r *TrustedCaCertificateService) Replace(ctx context.Context, id int64, body TrustedCaCertificateReplaceParams, opts ...option.RequestOption) (res *CaCertificate, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/sslCertificates/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

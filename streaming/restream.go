@@ -41,7 +41,6 @@ func NewRestreamService(opts ...option.RequestOption) (r RestreamService) {
 func (r *RestreamService) New(ctx context.Context, body RestreamNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/restreams"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -50,7 +49,6 @@ func (r *RestreamService) New(ctx context.Context, body RestreamNewParams, opts 
 // Updates restream settings
 func (r *RestreamService) Update(ctx context.Context, restreamID int64, body RestreamUpdateParams, opts ...option.RequestOption) (res *Restream, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/restreams/%v", restreamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -61,7 +59,6 @@ func (r *RestreamService) List(ctx context.Context, query RestreamListParams, op
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/restreams"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -84,7 +81,6 @@ func (r *RestreamService) ListAutoPaging(ctx context.Context, query RestreamList
 func (r *RestreamService) Delete(ctx context.Context, restreamID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/restreams/%v", restreamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -93,7 +89,6 @@ func (r *RestreamService) Delete(ctx context.Context, restreamID int64, opts ...
 // Returns restream details
 func (r *RestreamService) Get(ctx context.Context, restreamID int64, opts ...option.RequestOption) (res *Restream, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/restreams/%v", restreamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

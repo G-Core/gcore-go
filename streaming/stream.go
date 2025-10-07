@@ -79,7 +79,6 @@ func NewStreamService(opts ...option.RequestOption) (r StreamService) {
 // ![HTML Overlays](https://demo-files.gvideo.io/apidocs/low-latency-football.gif)
 func (r *StreamService) New(ctx context.Context, body StreamNewParams, opts ...option.RequestOption) (res *Stream, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/streams"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -88,7 +87,6 @@ func (r *StreamService) New(ctx context.Context, body StreamNewParams, opts ...o
 // Updates stream settings
 func (r *StreamService) Update(ctx context.Context, streamID int64, body StreamUpdateParams, opts ...option.RequestOption) (res *Stream, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -99,7 +97,6 @@ func (r *StreamService) List(ctx context.Context, query StreamListParams, opts .
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "streaming/streams"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
@@ -141,7 +138,6 @@ func (r *StreamService) ListAutoPaging(ctx context.Context, query StreamListPara
 func (r *StreamService) Delete(ctx context.Context, streamID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -151,7 +147,6 @@ func (r *StreamService) Delete(ctx context.Context, streamID int64, opts ...opti
 func (r *StreamService) ClearDvr(ctx context.Context, streamID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v/dvr_cleanup", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, nil, opts...)
 	return
@@ -212,7 +207,6 @@ func (r *StreamService) ClearDvr(ctx context.Context, streamID int64, opts ...op
 // the video by regular GET /video/{id} method.
 func (r *StreamService) NewClip(ctx context.Context, streamID int64, body StreamNewClipParams, opts ...option.RequestOption) (res *Clip, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v/clip_recording", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
@@ -221,7 +215,6 @@ func (r *StreamService) NewClip(ctx context.Context, streamID int64, body Stream
 // Returns stream details
 func (r *StreamService) Get(ctx context.Context, streamID int64, opts ...option.RequestOption) (res *Stream, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -250,7 +243,6 @@ func (r *StreamService) Get(ctx context.Context, streamID int64, opts ...option.
 //     `https://CID.domain.com/rec/111_1000/rec_d7bsli54p8n4_qsid42_media_1_360.mp4`
 func (r *StreamService) ListClips(ctx context.Context, streamID int64, opts ...option.RequestOption) (res *[]Clip, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v/clip_recording", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -299,7 +291,6 @@ func (r *StreamService) ListClips(ctx context.Context, streamID int64, opts ...o
 //     is fixed, but can be changed upon request to the Support Team.
 func (r *StreamService) StartRecording(ctx context.Context, streamID int64, opts ...option.RequestOption) (res *StreamStartRecordingResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v/start_recording", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return
@@ -314,7 +305,6 @@ func (r *StreamService) StartRecording(ctx context.Context, streamID int64, opts
 // a stream in the description of method /`start_recording`.
 func (r *StreamService) StopRecording(ctx context.Context, streamID int64, opts ...option.RequestOption) (res *Video, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v/stop_recording", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return

@@ -39,7 +39,6 @@ func NewResourceShieldService(opts ...option.RequestOption) (r ResourceShieldSer
 // Get information about origin shielding.
 func (r *ResourceShieldService) Get(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *OriginShielding, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/shielding_v2", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -48,7 +47,6 @@ func (r *ResourceShieldService) Get(ctx context.Context, resourceID int64, opts 
 // Change origin shielding settings or disabled origin shielding.
 func (r *ResourceShieldService) Replace(ctx context.Context, resourceID int64, body ResourceShieldReplaceParams, opts ...option.RequestOption) (res *OriginShieldingUpdated, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/shielding_v2", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return

@@ -35,7 +35,6 @@ func NewShieldService(opts ...option.RequestOption) (r ShieldService) {
 // Get information about all origin shielding locations available in the account.
 func (r *ShieldService) List(ctx context.Context, opts ...option.RequestOption) (res *[]ShieldListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cdn/shieldingpop_v2"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

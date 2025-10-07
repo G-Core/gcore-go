@@ -39,7 +39,6 @@ func NewLoadBalancerListenerService(opts ...option.RequestOption) (r LoadBalance
 // Create load balancer listener
 func (r *LoadBalancerListenerService) New(ctx context.Context, params LoadBalancerListenerNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -62,7 +61,6 @@ func (r *LoadBalancerListenerService) New(ctx context.Context, params LoadBalanc
 // Update load balancer listener
 func (r *LoadBalancerListenerService) Update(ctx context.Context, listenerID string, params LoadBalancerListenerUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -89,7 +87,6 @@ func (r *LoadBalancerListenerService) Update(ctx context.Context, listenerID str
 // List load balancer listeners
 func (r *LoadBalancerListenerService) List(ctx context.Context, params LoadBalancerListenerListParams, opts ...option.RequestOption) (res *LoadBalancerListenerList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -112,7 +109,6 @@ func (r *LoadBalancerListenerService) List(ctx context.Context, params LoadBalan
 // Delete load balancer listener
 func (r *LoadBalancerListenerService) Delete(ctx context.Context, listenerID string, body LoadBalancerListenerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -139,7 +135,6 @@ func (r *LoadBalancerListenerService) Delete(ctx context.Context, listenerID str
 // Get load balancer listener
 func (r *LoadBalancerListenerService) Get(ctx context.Context, listenerID string, params LoadBalancerListenerGetParams, opts ...option.RequestOption) (res *LoadBalancerListenerDetail, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

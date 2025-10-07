@@ -52,7 +52,6 @@ func NewIPRangeService(opts ...option.RequestOption) (r IPRangeService) {
 // duplicate prefixes are not returned.
 func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption) (res *IPRanges, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/public/v1/ipranges/egress"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

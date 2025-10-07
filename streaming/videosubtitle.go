@@ -103,7 +103,6 @@ func NewVideoSubtitleService(opts ...option.RequestOption) (r VideoSubtitleServi
 // ![Auto generated subtitles example](https://demo-files.gvideo.io/apidocs/captions.gif)
 func (r *VideoSubtitleService) New(ctx context.Context, videoID int64, body VideoSubtitleNewParams, opts ...option.RequestOption) (res *Subtitle, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v/subtitles", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -124,7 +123,6 @@ func (r *VideoSubtitleService) New(ctx context.Context, videoID int64, body Vide
 // POST method for details.
 func (r *VideoSubtitleService) Update(ctx context.Context, id int64, params VideoSubtitleUpdateParams, opts ...option.RequestOption) (res *SubtitleBase, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v/subtitles/%v", params.VideoID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
@@ -133,7 +131,6 @@ func (r *VideoSubtitleService) Update(ctx context.Context, id int64, params Vide
 // Method returns a list of all subtitles that are already attached to a video.
 func (r *VideoSubtitleService) List(ctx context.Context, videoID int64, opts ...option.RequestOption) (res *[]Subtitle, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v/subtitles", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -143,7 +140,6 @@ func (r *VideoSubtitleService) List(ctx context.Context, videoID int64, opts ...
 func (r *VideoSubtitleService) Delete(ctx context.Context, id int64, body VideoSubtitleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v/subtitles/%v", body.VideoID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -152,7 +148,6 @@ func (r *VideoSubtitleService) Delete(ctx context.Context, id int64, body VideoS
 // Returns information about a specific subtitle for a video.
 func (r *VideoSubtitleService) Get(ctx context.Context, id int64, query VideoSubtitleGetParams, opts ...option.RequestOption) (res *Subtitle, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v/subtitles/%v", query.VideoID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

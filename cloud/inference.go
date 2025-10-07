@@ -47,7 +47,6 @@ func NewInferenceService(opts ...option.RequestOption) (r InferenceService) {
 // Get inference capacity by region
 func (r *InferenceService) GetCapacityByRegion(ctx context.Context, opts ...option.RequestOption) (res *InferenceRegionCapacityList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.gcore.com/")}, opts...)
 	path := "cloud/v3/inference/capacity"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
