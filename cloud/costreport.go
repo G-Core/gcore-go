@@ -44,12 +44,11 @@ func NewCostReportService(opts ...option.RequestOption) (r CostReportService) {
 // /v1/`reservation_cost_report`/totals, as the results from this report will not
 // be accurate.
 //
-// Receiving data from the past hour might lead to incomplete statistics. For the
-// most accurate data, we recommend accessing the statistics after at least one
-// hour. Typically, updates are available within a 24-hour period, although the
-// frequency can vary. Maintenance periods or other exceptions may cause delays,
-// potentially extending beyond 24 hours until the servers are back online and the
-// missing data is filled in.
+// Data from the past hour may not reflect the full set of statistics. For the most
+// complete and accurate results, we recommend accessing the data at least one hour
+// after the relevant time period. Updates are generally available within a 24-hour
+// window, though timing can vary. Scheduled maintenance or other exceptions may
+// occasionally cause delays beyond 24 hours.
 func (r *CostReportService) GetAggregated(ctx context.Context, body CostReportGetAggregatedParams, opts ...option.RequestOption) (res *CostReportAggregated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v1/cost_report/totals"
@@ -62,12 +61,11 @@ func (r *CostReportService) GetAggregated(ctx context.Context, body CostReportGe
 // spent billing units (e.g., hours or GB) for resources. The "`time_to`" parameter
 // represents all days in the specified month.
 //
-// Receiving data from the past hour might lead to incomplete statistics. For the
-// most accurate data, we recommend accessing the statistics after at least one
-// hour. Typically, updates are available within a 24-hour period, although the
-// frequency can vary. Maintenance periods or other exceptions may cause delays,
-// potentially extending beyond 24 hours until the servers are back online and the
-// missing data is filled in.
+// Data from the past hour may not reflect the full set of statistics. For the most
+// complete and accurate results, we recommend accessing the data at least one hour
+// after the relevant time period. Updates are generally available within a 24-hour
+// window, though timing can vary. Scheduled maintenance or other exceptions may
+// occasionally cause delays beyond 24 hours.
 func (r *CostReportService) GetAggregatedMonthly(ctx context.Context, body CostReportGetAggregatedMonthlyParams, opts ...option.RequestOption) (res *CostReportAggregatedMonthly, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v1/reservation_cost_report/totals"
@@ -83,12 +81,11 @@ func (r *CostReportService) GetAggregatedMonthly(ctx context.Context, body CostR
 // /v1/`reservation_cost_report`/totals, as the results from this report will not
 // be accurate.
 //
-// Receiving data from the past hour might lead to incomplete statistics. For the
-// most accurate data, we recommend accessing the statistics after at least one
-// hour. Typically, updates are available within a 24-hour period, although the
-// frequency can vary. Maintenance periods or other exceptions may cause delays,
-// potentially extending beyond 24 hours until the servers are back online and the
-// missing data is filled in.
+// Data from the past hour may not reflect the full set of statistics. For the most
+// complete and accurate results, we recommend accessing the data at least one hour
+// after the relevant time period. Updates are generally available within a 24-hour
+// window, though timing can vary. Scheduled maintenance or other exceptions may
+// occasionally cause delays beyond 24 hours.
 func (r *CostReportService) GetDetailed(ctx context.Context, body CostReportGetDetailedParams, opts ...option.RequestOption) (res *CostReportDetailed, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v1/cost_report/resources"
