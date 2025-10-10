@@ -4952,10 +4952,10 @@ func (r *CostReportDetailedResultDbaasPostgreSQLVolume) UnmarshalJSON(data []byt
 
 type CostReportGetAggregatedParams struct {
 	// The start date of the report period (ISO 8601). The report starts from the
-	// beginning of this day.
+	// beginning of this day in UTC.
 	TimeFrom time.Time `json:"time_from,required" format:"date-time"`
 	// The end date of the report period (ISO 8601). The report ends just before the
-	// beginning of this day.
+	// beginning of this day in UTC.
 	TimeTo time.Time `json:"time_to,required" format:"date-time"`
 	// Expenses for the last specified day are taken into account. As the default,
 	// False.
@@ -7151,10 +7151,10 @@ func (r *CostReportGetAggregatedMonthlyParamsTagsCondition) UnmarshalJSON(data [
 
 type CostReportGetDetailedParams struct {
 	// The start date of the report period (ISO 8601). The report starts from the
-	// beginning of this day.
+	// beginning of this day in UTC.
 	TimeFrom time.Time `json:"time_from,required" format:"date-time"`
 	// The end date of the report period (ISO 8601). The report ends just before the
-	// beginning of this day.
+	// beginning of this day in UTC.
 	TimeTo time.Time `json:"time_to,required" format:"date-time"`
 	// Expenses for the last specified day are taken into account. As the default,
 	// False.
