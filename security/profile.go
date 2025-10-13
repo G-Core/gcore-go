@@ -175,8 +175,8 @@ func (r *ClientProfileOptions) UnmarshalJSON(data []byte) error {
 type ProfileNewParams struct {
 	Fields          []ProfileNewParamsField `json:"fields,omitzero,required"`
 	ProfileTemplate int64                   `json:"profile_template,required"`
+	Site            string                  `json:"site,required"`
 	IPAddress       param.Opt[string]       `json:"ip_address,omitzero"`
-	Site            param.Opt[string]       `json:"site,omitzero"`
 	paramObj
 }
 

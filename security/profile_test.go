@@ -32,8 +32,8 @@ func TestProfileNewWithOptionalParams(t *testing.T) {
 			FieldValue: map[string]interface{}{},
 		}},
 		ProfileTemplate: 1,
+		Site:            "GNC",
 		IPAddress:       gcore.String("123.43.2.10"),
-		Site:            gcore.String("ED"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
