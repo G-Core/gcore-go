@@ -78,7 +78,7 @@ func TestInstanceNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestInstanceUpdate(t *testing.T) {
+func TestInstanceUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -96,7 +96,10 @@ func TestInstanceUpdate(t *testing.T) {
 		cloud.InstanceUpdateParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
-			Name:      "my-resource",
+			Name:      gcore.String("instance_name"),
+			Tags: cloud.TagUpdateMap{
+				"foo": "my-tag-value",
+			},
 		},
 	)
 	if err != nil {

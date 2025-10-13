@@ -65,6 +65,11 @@ func (r *FileShareService) New(ctx context.Context, params FileShareNewParams, o
 }
 
 // Rename file share or update tags
+//
+// **Deprecated**: Use PATCH
+// /v3/`file_shares`/{`project_id`}/{`region_id`}/{`file_share_id`} instead
+//
+// Deprecated: deprecated
 func (r *FileShareService) Update(ctx context.Context, fileShareID string, params FileShareUpdateParams, opts ...option.RequestOption) (res *FileShare, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
