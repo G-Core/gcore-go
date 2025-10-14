@@ -55,6 +55,30 @@ func (r *InferenceApplicationDeploymentService) New(ctx context.Context, params 
 	return
 }
 
+// Updates an existing application deployment. You can modify the target regions
+// and update configurations for individual components. To disable a component, set
+// its value to null. Only the provided fields will be updated; all others remain
+// unchanged.
+func (r *InferenceApplicationDeploymentService) Update(ctx context.Context, deploymentName string, params InferenceApplicationDeploymentUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if deploymentName == "" {
+		err = errors.New("missing required deployment_name parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v3/inference/applications/%v/deployments/%s", params.ProjectID.Value, deploymentName)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return
+}
+
 // Returns a list of your application deployments, including deployment names,
 // associated catalog applications, regions, component configurations, and current
 // status. Useful for monitoring and managing all active AI application instances.
@@ -118,30 +142,6 @@ func (r *InferenceApplicationDeploymentService) Get(ctx context.Context, deploym
 	}
 	path := fmt.Sprintf("cloud/v3/inference/applications/%v/deployments/%s", query.ProjectID.Value, deploymentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Updates an existing application deployment. You can modify the target regions
-// and update configurations for individual components. To disable a component, set
-// its value to null. Only the provided fields will be updated; all others remain
-// unchanged.
-func (r *InferenceApplicationDeploymentService) Patch(ctx context.Context, deploymentName string, params InferenceApplicationDeploymentPatchParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	if deploymentName == "" {
-		err = errors.New("missing required deployment_name parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v3/inference/applications/%v/deployments/%s", params.ProjectID.Value, deploymentName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
 }
 
@@ -455,6 +455,80 @@ func (r *InferenceApplicationDeploymentNewParamsComponentsConfigurationParameter
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type InferenceApplicationDeploymentUpdateParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// List of API keys for the application
+	APIKeys []string `json:"api_keys,omitzero"`
+	// Mapping of component names to their configuration (e.g., `"model": {...}`)
+	ComponentsConfiguration map[string]InferenceApplicationDeploymentUpdateParamsComponentsConfiguration `json:"components_configuration,omitzero"`
+	// Geographical regions to be updated for the deployment
+	Regions []int64 `json:"regions,omitzero"`
+	paramObj
+}
+
+func (r InferenceApplicationDeploymentUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceApplicationDeploymentUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceApplicationDeploymentUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceApplicationDeploymentUpdateParamsComponentsConfiguration struct {
+	// Whether the component should be exposed via a public endpoint (e.g., for
+	// external inference/API access).
+	Exposed param.Opt[bool] `json:"exposed,omitzero"`
+	// Specifies the compute configuration (e.g., CPU/GPU size) to be used for the
+	// component.
+	Flavor param.Opt[string] `json:"flavor,omitzero"`
+	// Map of parameter overrides for customization
+	ParameterOverrides map[string]InferenceApplicationDeploymentUpdateParamsComponentsConfigurationParameterOverride `json:"parameter_overrides,omitzero"`
+	// Scaling parameters of the component
+	Scale InferenceApplicationDeploymentUpdateParamsComponentsConfigurationScale `json:"scale,omitzero"`
+	paramObj
+}
+
+func (r InferenceApplicationDeploymentUpdateParamsComponentsConfiguration) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceApplicationDeploymentUpdateParamsComponentsConfiguration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceApplicationDeploymentUpdateParamsComponentsConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Value is required.
+type InferenceApplicationDeploymentUpdateParamsComponentsConfigurationParameterOverride struct {
+	// New value assigned to the overridden parameter
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r InferenceApplicationDeploymentUpdateParamsComponentsConfigurationParameterOverride) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceApplicationDeploymentUpdateParamsComponentsConfigurationParameterOverride
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceApplicationDeploymentUpdateParamsComponentsConfigurationParameterOverride) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Scaling parameters of the component
+type InferenceApplicationDeploymentUpdateParamsComponentsConfigurationScale struct {
+	// Maximum number of replicas the container can be scaled up to
+	Max param.Opt[int64] `json:"max,omitzero"`
+	// Minimum number of replicas the component can be scaled down to
+	Min param.Opt[int64] `json:"min,omitzero"`
+	paramObj
+}
+
+func (r InferenceApplicationDeploymentUpdateParamsComponentsConfigurationScale) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceApplicationDeploymentUpdateParamsComponentsConfigurationScale
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceApplicationDeploymentUpdateParamsComponentsConfigurationScale) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type InferenceApplicationDeploymentListParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
@@ -471,78 +545,4 @@ type InferenceApplicationDeploymentGetParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
-}
-
-type InferenceApplicationDeploymentPatchParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// List of API keys for the application
-	APIKeys []string `json:"api_keys,omitzero"`
-	// Mapping of component names to their configuration (e.g., `"model": {...}`)
-	ComponentsConfiguration map[string]InferenceApplicationDeploymentPatchParamsComponentsConfiguration `json:"components_configuration,omitzero"`
-	// Geographical regions to be updated for the deployment
-	Regions []int64 `json:"regions,omitzero"`
-	paramObj
-}
-
-func (r InferenceApplicationDeploymentPatchParams) MarshalJSON() (data []byte, err error) {
-	type shadow InferenceApplicationDeploymentPatchParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InferenceApplicationDeploymentPatchParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InferenceApplicationDeploymentPatchParamsComponentsConfiguration struct {
-	// Whether the component should be exposed via a public endpoint (e.g., for
-	// external inference/API access).
-	Exposed param.Opt[bool] `json:"exposed,omitzero"`
-	// Specifies the compute configuration (e.g., CPU/GPU size) to be used for the
-	// component.
-	Flavor param.Opt[string] `json:"flavor,omitzero"`
-	// Map of parameter overrides for customization
-	ParameterOverrides map[string]InferenceApplicationDeploymentPatchParamsComponentsConfigurationParameterOverride `json:"parameter_overrides,omitzero"`
-	// Scaling parameters of the component
-	Scale InferenceApplicationDeploymentPatchParamsComponentsConfigurationScale `json:"scale,omitzero"`
-	paramObj
-}
-
-func (r InferenceApplicationDeploymentPatchParamsComponentsConfiguration) MarshalJSON() (data []byte, err error) {
-	type shadow InferenceApplicationDeploymentPatchParamsComponentsConfiguration
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InferenceApplicationDeploymentPatchParamsComponentsConfiguration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Value is required.
-type InferenceApplicationDeploymentPatchParamsComponentsConfigurationParameterOverride struct {
-	// New value assigned to the overridden parameter
-	Value string `json:"value,required"`
-	paramObj
-}
-
-func (r InferenceApplicationDeploymentPatchParamsComponentsConfigurationParameterOverride) MarshalJSON() (data []byte, err error) {
-	type shadow InferenceApplicationDeploymentPatchParamsComponentsConfigurationParameterOverride
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InferenceApplicationDeploymentPatchParamsComponentsConfigurationParameterOverride) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Scaling parameters of the component
-type InferenceApplicationDeploymentPatchParamsComponentsConfigurationScale struct {
-	// Maximum number of replicas the container can be scaled up to
-	Max param.Opt[int64] `json:"max,omitzero"`
-	// Minimum number of replicas the component can be scaled down to
-	Min param.Opt[int64] `json:"min,omitzero"`
-	paramObj
-}
-
-func (r InferenceApplicationDeploymentPatchParamsComponentsConfigurationScale) MarshalJSON() (data []byte, err error) {
-	type shadow InferenceApplicationDeploymentPatchParamsComponentsConfigurationScale
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InferenceApplicationDeploymentPatchParamsComponentsConfigurationScale) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
