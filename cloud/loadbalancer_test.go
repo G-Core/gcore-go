@@ -131,6 +131,48 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestLoadBalancerUpdateWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.LoadBalancers.Update(
+		context.TODO(),
+		"load_balancer_id",
+		cloud.LoadBalancerUpdateParams{
+			ProjectID: gcore.Int(0),
+			RegionID:  gcore.Int(0),
+			Logging: cloud.LoadBalancerUpdateParamsLogging{
+				DestinationRegionID: gcore.Int(1),
+				Enabled:             gcore.Bool(true),
+				RetentionPolicy: cloud.LaasIndexRetentionPolicyParam{
+					Period: gcore.Int(45),
+				},
+				TopicName: gcore.String("my-log-name"),
+			},
+			Name:                  gcore.String("some_name"),
+			PreferredConnectivity: cloud.LoadBalancerMemberConnectivityL2,
+			Tags: cloud.TagUpdateMap{
+				"foo": "my-tag-value",
+			},
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestLoadBalancerListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -157,6 +199,126 @@ func TestLoadBalancerListWithOptionalParams(t *testing.T) {
 		TagKeyValue:      gcore.String("tag_key_value"),
 		WithDDOS:         gcore.Bool(true),
 	})
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLoadBalancerDelete(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.LoadBalancers.Delete(
+		context.TODO(),
+		"load_balancer_id",
+		cloud.LoadBalancerDeleteParams{
+			ProjectID: gcore.Int(0),
+			RegionID:  gcore.Int(0),
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLoadBalancerFailoverWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.LoadBalancers.Failover(
+		context.TODO(),
+		"load_balancer_id",
+		cloud.LoadBalancerFailoverParams{
+			ProjectID: gcore.Int(0),
+			RegionID:  gcore.Int(0),
+			Force:     gcore.Bool(true),
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLoadBalancerGetWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.LoadBalancers.Get(
+		context.TODO(),
+		"load_balancer_id",
+		cloud.LoadBalancerGetParams{
+			ProjectID: gcore.Int(0),
+			RegionID:  gcore.Int(0),
+			ShowStats: gcore.Bool(true),
+			WithDDOS:  gcore.Bool(true),
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLoadBalancerResize(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.LoadBalancers.Resize(
+		context.TODO(),
+		"load_balancer_id",
+		cloud.LoadBalancerResizeParams{
+			ProjectID: gcore.Int(0),
+			RegionID:  gcore.Int(0),
+			Flavor:    "lb1-2-4",
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
