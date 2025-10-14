@@ -74,6 +74,35 @@ func (r *LoadBalancerService) New(ctx context.Context, params LoadBalancerNewPar
 	return
 }
 
+// Rename load balancer, activate/deactivate logging, update preferred connectivity
+// type and/or modify load balancer tags. The request will only process the fields
+// that are provided in the request body. Any fields that are not included will
+// remain unchanged.
+func (r *LoadBalancerService) Update(ctx context.Context, loadBalancerID string, params LoadBalancerUpdateParams, opts ...option.RequestOption) (res *LoadBalancer, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	if loadBalancerID == "" {
+		err = errors.New("missing required load_balancer_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/loadbalancers/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, loadBalancerID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return
+}
+
 // List load balancers
 func (r *LoadBalancerService) List(ctx context.Context, params LoadBalancerListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[LoadBalancer], err error) {
 	var raw *http.Response
@@ -109,6 +138,110 @@ func (r *LoadBalancerService) List(ctx context.Context, params LoadBalancerListP
 // List load balancers
 func (r *LoadBalancerService) ListAutoPaging(ctx context.Context, params LoadBalancerListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[LoadBalancer] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
+}
+
+// Delete load balancer
+func (r *LoadBalancerService) Delete(ctx context.Context, loadBalancerID string, body LoadBalancerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
+	if !body.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !body.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	if loadBalancerID == "" {
+		err = errors.New("missing required load_balancer_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/loadbalancers/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, loadBalancerID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
+}
+
+// Failover load balancer
+func (r *LoadBalancerService) Failover(ctx context.Context, loadBalancerID string, params LoadBalancerFailoverParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	if loadBalancerID == "" {
+		err = errors.New("missing required load_balancer_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/loadbalancers/%v/%v/%s/failover", params.ProjectID.Value, params.RegionID.Value, loadBalancerID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return
+}
+
+// Get load balancer
+func (r *LoadBalancerService) Get(ctx context.Context, loadBalancerID string, params LoadBalancerGetParams, opts ...option.RequestOption) (res *LoadBalancer, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	if loadBalancerID == "" {
+		err = errors.New("missing required load_balancer_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/loadbalancers/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, loadBalancerID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
+	return
+}
+
+// Resize load balancer
+func (r *LoadBalancerService) Resize(ctx context.Context, loadBalancerID string, params LoadBalancerResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	if loadBalancerID == "" {
+		err = errors.New("missing required load_balancer_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/loadbalancers/%v/%v/%s/resize", params.ProjectID.Value, params.RegionID.Value, loadBalancerID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return
 }
 
 type HealthMonitor struct {
@@ -759,6 +892,61 @@ type LoadBalancerListenerList struct {
 // Returns the unmodified JSON received from the API
 func (r LoadBalancerListenerList) RawJSON() string { return r.JSON.raw }
 func (r *LoadBalancerListenerList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerMetrics struct {
+	// CPU utilization, % (max 100% for multi-core)
+	CPUUtil float64 `json:"cpu_util,nullable"`
+	// RAM utilization, %
+	MemoryUtil float64 `json:"memory_util,nullable"`
+	// Network out, bytes per second
+	NetworkBpsEgress float64 `json:"network_Bps_egress,nullable"`
+	// Network in, bytes per second
+	NetworkBpsIngress float64 `json:"network_Bps_ingress,nullable"`
+	// Network out, packets per second
+	NetworkPpsEgress float64 `json:"network_pps_egress,nullable"`
+	// Network in, packets per second
+	NetworkPpsIngress float64 `json:"network_pps_ingress,nullable"`
+	// Timestamp
+	Time string `json:"time,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CPUUtil           respjson.Field
+		MemoryUtil        respjson.Field
+		NetworkBpsEgress  respjson.Field
+		NetworkBpsIngress respjson.Field
+		NetworkPpsEgress  respjson.Field
+		NetworkPpsIngress respjson.Field
+		Time              respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerMetrics) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerMetrics) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerMetricsList struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []LoadBalancerMetrics `json:"results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerMetricsList) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerMetricsList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1724,6 +1912,72 @@ func (r *LoadBalancerNewParamsLogging) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type LoadBalancerUpdateParams struct {
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Name.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Logging configuration
+	Logging LoadBalancerUpdateParamsLogging `json:"logging,omitzero"`
+	// Preferred option to establish connectivity between load balancer and its pools
+	// members
+	//
+	// Any of "L2", "L3".
+	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity,omitzero"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified.
+	//
+	// **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', '`cost_center`': 'engineering', '`deprecated_tag`': null}}`
+	//     adds/updates 'environment' and '`cost_center`' while removing
+	//     '`deprecated_tag`', preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero"`
+	paramObj
+}
+
+func (r LoadBalancerUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Logging configuration
+type LoadBalancerUpdateParamsLogging struct {
+	// Destination region id to which the logs will be written
+	DestinationRegionID param.Opt[int64] `json:"destination_region_id,omitzero"`
+	// The topic name to which the logs will be written
+	TopicName param.Opt[string] `json:"topic_name,omitzero"`
+	// Enable/disable forwarding logs to LaaS
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// The logs retention policy
+	RetentionPolicy LaasIndexRetentionPolicyParam `json:"retention_policy,omitzero"`
+	paramObj
+}
+
+func (r LoadBalancerUpdateParamsLogging) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerUpdateParamsLogging
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerUpdateParamsLogging) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type LoadBalancerListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -1759,4 +2013,60 @@ func (r LoadBalancerListParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
+}
+
+type LoadBalancerDeleteParams struct {
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	paramObj
+}
+
+type LoadBalancerFailoverParams struct {
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Validate current load balancer status before failover or not.
+	Force param.Opt[bool] `json:"force,omitzero"`
+	paramObj
+}
+
+func (r LoadBalancerFailoverParams) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerFailoverParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerFailoverParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerGetParams struct {
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Show statistics
+	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
+	// Show DDoS profile
+	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [LoadBalancerGetParams]'s query parameters as `url.Values`.
+func (r LoadBalancerGetParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+type LoadBalancerResizeParams struct {
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Name of the desired flavor to resize to.
+	Flavor string `json:"flavor,required"`
+	paramObj
+}
+
+func (r LoadBalancerResizeParams) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerResizeParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerResizeParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
