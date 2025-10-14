@@ -283,8 +283,8 @@ func (r *LoadBalancerService) NewAndPoll(ctx context.Context, params LoadBalance
 
 // DeleteAndPoll delete load balancer and poll for completion of the first task. Use the [TaskService.Poll] method if
 // you need to poll for all tasks.
-func (r *LoadBalancerService) DeleteAndPoll(ctx context.Context, loadbalancerID string, params LoadBalancerDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, loadbalancerID, params, opts...)
+func (r *LoadBalancerService) DeleteAndPoll(ctx context.Context, loadBalancerID string, params LoadBalancerDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, loadBalancerID, params, opts...)
 	if err != nil {
 		return err
 	}
@@ -301,8 +301,8 @@ func (r *LoadBalancerService) DeleteAndPoll(ctx context.Context, loadbalancerID 
 
 // FailoverAndPoll failover load balancer and poll for completion of the first task. Use the [TaskService.Poll] method if
 // you need to poll for all tasks.
-func (r *LoadBalancerService) FailoverAndPoll(ctx context.Context, loadbalancerID string, params LoadBalancerFailoverParams, opts ...option.RequestOption) (v *LoadBalancer, err error) {
-	resource, err := r.Failover(ctx, loadbalancerID, params, opts...)
+func (r *LoadBalancerService) FailoverAndPoll(ctx context.Context, loadBalancerID string, params LoadBalancerFailoverParams, opts ...option.RequestOption) (v *LoadBalancer, err error) {
+	resource, err := r.Failover(ctx, loadBalancerID, params, opts...)
 	if err != nil {
 		return
 	}
@@ -328,13 +328,13 @@ func (r *LoadBalancerService) FailoverAndPoll(ctx context.Context, loadbalancerI
 		return
 	}
 
-	return r.Get(ctx, loadbalancerID, getParams, opts...)
+	return r.Get(ctx, loadBalancerID, getParams, opts...)
 }
 
 // ResizeAndPoll resize load balancer and poll for completion of the first task. Use the [TaskService.Poll] method if
 // you need to poll for all tasks.
-func (r *LoadBalancerService) ResizeAndPoll(ctx context.Context, loadbalancerID string, params LoadBalancerResizeParams, opts ...option.RequestOption) (v *LoadBalancer, err error) {
-	resource, err := r.Resize(ctx, loadbalancerID, params, opts...)
+func (r *LoadBalancerService) ResizeAndPoll(ctx context.Context, loadBalancerID string, params LoadBalancerResizeParams, opts ...option.RequestOption) (v *LoadBalancer, err error) {
+	resource, err := r.Resize(ctx, loadBalancerID, params, opts...)
 	if err != nil {
 		return
 	}
@@ -360,7 +360,7 @@ func (r *LoadBalancerService) ResizeAndPoll(ctx context.Context, loadbalancerID 
 		return
 	}
 
-	return r.Get(ctx, loadbalancerID, getParams, opts...)
+	return r.Get(ctx, loadBalancerID, getParams, opts...)
 }
 
 type HealthMonitor struct {
