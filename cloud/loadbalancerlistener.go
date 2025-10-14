@@ -270,7 +270,7 @@ type LoadBalancerListenerNewParams struct {
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Load balancer ID
-	LoadbalancerID string `json:"loadbalancer_id,required" format:"uuid4"`
+	LoadBalancerID string `json:"load_balancer_id,required" format:"uuid4"`
 	// Load balancer listener name
 	Name string `json:"name,required"`
 	// Load balancer listener protocol
@@ -387,7 +387,7 @@ type LoadBalancerListenerListParams struct {
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Load Balancer ID
-	LoadbalancerID param.Opt[string] `query:"loadbalancer_id,omitzero" format:"uuid4" json:"-"`
+	LoadBalancerID param.Opt[string] `query:"load_balancer_id,omitzero" format:"uuid4" json:"-"`
 	// Show stats
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
 	paramObj

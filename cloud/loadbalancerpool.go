@@ -286,7 +286,7 @@ type LoadBalancerPoolNewParams struct {
 	// Listener ID
 	ListenerID param.Opt[string] `json:"listener_id,omitzero" format:"uuid4"`
 	// Loadbalancer ID
-	LoadbalancerID param.Opt[string] `json:"loadbalancer_id,omitzero" format:"uuid4"`
+	LoadBalancerID param.Opt[string] `json:"load_balancer_id,omitzero" format:"uuid4"`
 	// Secret ID for TLS client authentication to the member servers
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
 	// Frontend client inactivity timeout in milliseconds
@@ -605,7 +605,7 @@ type LoadBalancerPoolListParams struct {
 	// Listener ID
 	ListenerID param.Opt[string] `query:"listener_id,omitzero" format:"uuid4" json:"-"`
 	// Load Balancer ID
-	LoadbalancerID param.Opt[string] `query:"loadbalancer_id,omitzero" format:"uuid4" json:"-"`
+	LoadBalancerID param.Opt[string] `query:"load_balancer_id,omitzero" format:"uuid4" json:"-"`
 	paramObj
 }
 
