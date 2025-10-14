@@ -57,6 +57,51 @@ func TestInferenceApplicationDeploymentNewWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestInferenceApplicationDeploymentUpdateWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.Inference.Applications.Deployments.Update(
+		context.TODO(),
+		"deployment_name",
+		cloud.InferenceApplicationDeploymentUpdateParams{
+			ProjectID: gcore.Int(1),
+			APIKeys:   []string{"key1", "key2"},
+			ComponentsConfiguration: map[string]cloud.InferenceApplicationDeploymentUpdateParamsComponentsConfiguration{
+				"model": {
+					Exposed: gcore.Bool(true),
+					Flavor:  gcore.String("flavor"),
+					ParameterOverrides: map[string]cloud.InferenceApplicationDeploymentUpdateParamsComponentsConfigurationParameterOverride{
+						"foo": {
+							Value: "value",
+						},
+					},
+					Scale: cloud.InferenceApplicationDeploymentUpdateParamsComponentsConfigurationScale{
+						Max: gcore.Int(2),
+						Min: gcore.Int(0),
+					},
+				},
+			},
+			Regions: []int64{1, 2},
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestInferenceApplicationDeploymentList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -126,51 +171,6 @@ func TestInferenceApplicationDeploymentGet(t *testing.T) {
 		"deployment_name",
 		cloud.InferenceApplicationDeploymentGetParams{
 			ProjectID: gcore.Int(1),
-		},
-	)
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestInferenceApplicationDeploymentPatchWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Cloud.Inference.Applications.Deployments.Patch(
-		context.TODO(),
-		"deployment_name",
-		cloud.InferenceApplicationDeploymentPatchParams{
-			ProjectID: gcore.Int(1),
-			APIKeys:   []string{"key1", "key2"},
-			ComponentsConfiguration: map[string]cloud.InferenceApplicationDeploymentPatchParamsComponentsConfiguration{
-				"model": {
-					Exposed: gcore.Bool(true),
-					Flavor:  gcore.String("flavor"),
-					ParameterOverrides: map[string]cloud.InferenceApplicationDeploymentPatchParamsComponentsConfigurationParameterOverride{
-						"foo": {
-							Value: "value",
-						},
-					},
-					Scale: cloud.InferenceApplicationDeploymentPatchParamsComponentsConfigurationScale{
-						Max: gcore.Int(2),
-						Min: gcore.Int(0),
-					},
-				},
-			},
-			Regions: []int64{1, 2},
 		},
 	)
 	if err != nil {
