@@ -23,6 +23,7 @@ import (
 // the [NewLoadBalancerPoolMemberService] method instead.
 type LoadBalancerPoolMemberService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewLoadBalancerPoolMemberService generates a new service that applies the given
@@ -31,6 +32,7 @@ type LoadBalancerPoolMemberService struct {
 func NewLoadBalancerPoolMemberService(opts ...option.RequestOption) (r LoadBalancerPoolMemberService) {
 	r = LoadBalancerPoolMemberService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -90,6 +92,69 @@ func (r *LoadBalancerPoolMemberService) Remove(ctx context.Context, memberID str
 	path := fmt.Sprintf("cloud/v1/lbpools/%v/%v/%s/member/%s", body.ProjectID.Value, body.RegionID.Value, body.PoolID, memberID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
+}
+
+// AddAndPoll creates a load balancer pool member and polls until the operation completes
+func (r *LoadBalancerPoolMemberService) AddAndPoll(ctx context.Context, poolID string, params LoadBalancerPoolMemberAddParams, opts ...option.RequestOption) (v *Member, err error) {
+	resource, err := r.Add(ctx, poolID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = append(r.Options[:], opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams LoadBalancerPoolGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Members) != 1 {
+		return nil, errors.New("expected exactly one member to be created in a task")
+	}
+	memberID := task.CreatedResources.Members[0]
+
+	poolService := NewLoadBalancerPoolService(opts...)
+	pool, err := poolService.Get(ctx, poolID, getParams, opts...)
+	if err != nil {
+		return
+	}
+
+	for _, member := range pool.Members {
+		if member.ID == memberID {
+			return &member, nil
+		}
+	}
+
+	return nil, fmt.Errorf("member %s not found in pool %s after creation", memberID, poolID)
+}
+
+// RemoveAndPoll deletes a load balancer pool member and polls for completion
+func (r *LoadBalancerPoolMemberService) RemoveAndPoll(ctx context.Context, memberID string, params LoadBalancerPoolMemberRemoveParams, opts ...option.RequestOption) error {
+	resource, err := r.Remove(ctx, memberID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = append(r.Options[:], opts...)
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }
 
 type LoadBalancerPoolMemberAddParams struct {
