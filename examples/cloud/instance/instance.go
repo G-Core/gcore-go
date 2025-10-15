@@ -11,6 +11,7 @@ import (
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/shared/constant"
 )
 
@@ -186,7 +187,7 @@ func updateInstance(client *gcore.Client, instanceID string) {
 	fmt.Println("\n=== UPDATE INSTANCE ===")
 
 	params := cloud.InstanceUpdateParams{
-		Name: "gcore-go-example-updated",
+		Name: param.NewOpt("gcore-go-example-updated"),
 	}
 	instance, err := client.Cloud.Instances.Update(context.Background(), instanceID, params)
 	if err != nil {
