@@ -101,7 +101,7 @@ func (r *LoadBalancerPoolMemberService) AddAndPoll(ctx context.Context, poolID s
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -148,7 +148,7 @@ func (r *LoadBalancerPoolMemberService) RemoveAndPoll(ctx context.Context, membe
 		return err
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
