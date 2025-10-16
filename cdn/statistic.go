@@ -35,7 +35,7 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 	return
 }
 
-// Get the number of CDN resources that used raw logs.
+// Get the number of CDN resources that used Logs uploader.
 //
 // Request URL parameters should be added as a query string after the endpoint.
 func (r *StatisticService) GetLogsUsageAggregated(ctx context.Context, query StatisticGetLogsUsageAggregatedParams, opts ...option.RequestOption) (res *LogsAggregatedStats, err error) {
@@ -45,7 +45,7 @@ func (r *StatisticService) GetLogsUsageAggregated(ctx context.Context, query Sta
 	return
 }
 
-// Get raw logs usage statistics for up to 90 days starting today.
+// Get Logs uploader usage statistics for up to 90 days starting today.
 //
 // Request URL parameters should be added as a query string after the endpoint.
 func (r *StatisticService) GetLogsUsageSeries(ctx context.Context, query StatisticGetLogsUsageSeriesParams, opts ...option.RequestOption) (res *UsageSeriesStats, err error) {
@@ -100,7 +100,7 @@ type LogsAggregatedStats struct {
 	Number1Example any `json:"1 (example)"`
 	// Statistics parameters.
 	Metrics any `json:"metrics"`
-	// Number of resources that used raw logs.
+	// Number of resources that used Logs uploader.
 	RawLogsUsage string `json:"raw_logs_usage"`
 	// Resources IDs by which statistics data is grouped..
 	Resource any `json:"resource"`

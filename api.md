@@ -2055,17 +2055,6 @@ Methods:
 
 ### Settings
 
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#LogSettings">LogSettings</a>
-
-Methods:
-
-- <code title="post /cdn/raw_log_settings">client.Cdn.Logs.Settings.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#LogSettingService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#LogSettingNewParams">LogSettingNewParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
-- <code title="put /cdn/raw_log_settings">client.Cdn.Logs.Settings.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#LogSettingService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#LogSettingUpdateParams">LogSettingUpdateParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
-- <code title="delete /cdn/raw_log_settings">client.Cdn.Logs.Settings.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#LogSettingService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
-- <code title="get /cdn/raw_log_settings">client.Cdn.Logs.Settings.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#LogSettingService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#LogSettings">LogSettings</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
 ## LogsUploader
 
 Response Types:
