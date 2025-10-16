@@ -45,7 +45,7 @@ func TestLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
 			URLPath:        gcore.String("/"),
 		},
 		ListenerID:     gcore.String("listener_id"),
-		LoadBalancerID: gcore.String("bbb35f84-35cc-4b2f-84c2-a6a29bba68aa"),
+		LoadbalancerID: gcore.String("bbb35f84-35cc-4b2f-84c2-a6a29bba68aa"),
 		Members: []cloud.LoadBalancerPoolNewParamsMember{{
 			Address:        "192.168.1.101",
 			ProtocolPort:   8000,
@@ -169,7 +169,7 @@ func TestLoadBalancerPoolListWithOptionalParams(t *testing.T) {
 		RegionID:       gcore.Int(1),
 		Details:        gcore.Bool(true),
 		ListenerID:     gcore.String("00000000-0000-4000-8000-000000000000"),
-		LoadBalancerID: gcore.String("00000000-0000-4000-8000-000000000000"),
+		LoadbalancerID: gcore.String("00000000-0000-4000-8000-000000000000"),
 	})
 	if err != nil {
 		var apierr *gcore.Error

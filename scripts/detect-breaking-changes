@@ -24,7 +24,6 @@ TEST_PATHS=(
 	cloud/loadbalancerpool_test.go
 	cloud/loadbalancerpoolhealthmonitor_test.go
 	cloud/loadbalancerpoolmember_test.go
-	cloud/loadbalancermetric_test.go
 	cloud/loadbalancerstatus_test.go
 	cloud/reservedfixedip_test.go
 	cloud/reservedfixedipvip_test.go
