@@ -698,11 +698,11 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BillingReservation">BillingReservation</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BillingReservations">BillingReservations</a>
 
 Methods:
 
-- <code title="get /cloud/v1/reservations">client.Cloud.BillingReservations.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BillingReservationService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BillingReservationListParams">BillingReservationListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BillingReservation">BillingReservation</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /cloud/v1/reservations/{reservation_id}">client.Cloud.BillingReservations.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BillingReservationService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, reservationID <a href="https://pkg.go.dev/builtin#int64">int64</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BillingReservation">BillingReservation</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /cloud/v2/reservations">client.Cloud.BillingReservations.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BillingReservationService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BillingReservationListParams">BillingReservationListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BillingReservations">BillingReservations</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## GPUBaremetalClusters
 
