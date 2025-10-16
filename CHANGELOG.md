@@ -1,5 +1,45 @@
 # Changelog
 
+## 0.16.0 (2025-10-16)
+
+Full Changelog: [v0.15.0...v0.16.0](https://github.com/G-Core/gcore-go/compare/v0.15.0...v0.16.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** remove get and update list method for billing reservations
+* **cloud:** rename to load_balancer_id path param
+* **cloud:** rename inference applications deployments update method
+
+### Features
+
+* **api:** aggregated API specs update ([888df9e](https://github.com/G-Core/gcore-go/commit/888df9ec0d4f282d6a70cd95fe718a9f019015e5))
+* **api:** aggregated API specs update ([9b66b72](https://github.com/G-Core/gcore-go/commit/9b66b72da0c1ad78b63d4ca6729105a153b4e347))
+* **api:** aggregated API specs update ([554de1e](https://github.com/G-Core/gcore-go/commit/554de1e99f089f0910eddf54f99462fea753346f))
+* **api:** aggregated API specs update ([0a0de0b](https://github.com/G-Core/gcore-go/commit/0a0de0befb37e9254afb70b9a5edbca65e6684c8))
+* **api:** aggregated API specs update ([e663d7a](https://github.com/G-Core/gcore-go/commit/e663d7ac6bc5c338e3251fb01da45c59702e0e19))
+* **api:** aggregated API specs update ([37bd6ab](https://github.com/G-Core/gcore-go/commit/37bd6ab35fba956455bd60d4ec92ac7b6e6fe800))
+* **api:** aggregated API specs update ([e6fc584](https://github.com/G-Core/gcore-go/commit/e6fc584ade819d92e17497d8b64cd3f3534b4522))
+* **api:** aggregated API specs update ([fb41f9f](https://github.com/G-Core/gcore-go/commit/fb41f9f73d2846e276219d49e3b3923622d1376e))
+* **api:** aggregated API specs update ([9197fbf](https://github.com/G-Core/gcore-go/commit/9197fbf615634b2c165e82e3344c3fc828f43441))
+* **cloud:** add NewAndPoll and DeleteAndPoll methods to NetworkRouterService ([#136](https://github.com/G-Core/gcore-go/issues/136)) ([53b38be](https://github.com/G-Core/gcore-go/commit/53b38beaed90e595819d28c191f3fd4fb76b563e))
+* **cloude:** remove cloud_lbmember name ([00d3139](https://github.com/G-Core/gcore-go/commit/00d313988440ba6782325932fe74f07b65962d47))
+* **cloud:** implement AddAndPoll and RemoveAndPoll methods for LoadBalancerPoolMemberService ([#137](https://github.com/G-Core/gcore-go/issues/137)) ([3314f5b](https://github.com/G-Core/gcore-go/commit/3314f5bd889ec0cb8ce5dfccefe8b6c09db2614c))
+* **cloud:** remove get and update list method for billing reservations ([58d2841](https://github.com/G-Core/gcore-go/commit/58d2841510f0e147da56e42e0ccc9d5c1e3a6ccd))
+
+
+### Bug Fixes
+
+* **cloud:** rename to load_balancer_id path param ([ec29fce](https://github.com/G-Core/gcore-go/commit/ec29fce204368ac71d36d4c23a6a751bb3c40729))
+* **examples:** make name optional in cloud instance update ([9072242](https://github.com/G-Core/gcore-go/commit/9072242e9f8b84c3f606108a55a2b91ac3187eeb))
+
+
+### Chores
+
+* add pull request template ([1375c8c](https://github.com/G-Core/gcore-go/commit/1375c8c18b2315a79a79b961262751399d635e26))
+* **ci:** add fossa ([252fef9](https://github.com/G-Core/gcore-go/commit/252fef94dc187569fb70fef1e50e3623ffa26be7))
+* **cloud:** rename inference applications deployments update method ([ce36a20](https://github.com/G-Core/gcore-go/commit/ce36a20667c7c9bb4b80ec00f5c012b208e664bf))
+* **cloud:** rename loadBalancerID parameter ([a516645](https://github.com/G-Core/gcore-go/commit/a51664588e91947b12250c5f214c6ab10f57f39a))
+
 ## 0.15.0 (2025-10-02)
 
 Full Changelog: [v0.14.0...v0.15.0](https://github.com/G-Core/gcore-go/compare/v0.14.0...v0.15.0)
