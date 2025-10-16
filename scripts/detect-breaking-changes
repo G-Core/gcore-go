@@ -150,7 +150,6 @@ TEST_PATHS=(
 	cdn/trustedcacertificate_test.go
 	cdn/auditlog_test.go
 	cdn/log_test.go
-	cdn/logsetting_test.go
 	cdn/logsuploaderpolicy_test.go
 	cdn/logsuploadertarget_test.go
 	cdn/logsuploaderconfig_test.go
