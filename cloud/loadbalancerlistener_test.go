@@ -30,7 +30,7 @@ func TestLoadBalancerListenerNewWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.LoadBalancers.Listeners.New(context.TODO(), cloud.LoadBalancerListenerNewParams{
 		ProjectID:            gcore.Int(1),
 		RegionID:             gcore.Int(1),
-		LoadBalancerID:       "30f4f55b-4a7c-48e0-9954-5cddfee216e7",
+		LoadbalancerID:       "30f4f55b-4a7c-48e0-9954-5cddfee216e7",
 		Name:                 "my_listener",
 		Protocol:             cloud.LbListenerProtocolHTTP,
 		ProtocolPort:         80,
@@ -112,7 +112,7 @@ func TestLoadBalancerListenerListWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.LoadBalancers.Listeners.List(context.TODO(), cloud.LoadBalancerListenerListParams{
 		ProjectID:      gcore.Int(1),
 		RegionID:       gcore.Int(1),
-		LoadBalancerID: gcore.String("00000000-0000-4000-8000-000000000000"),
+		LoadbalancerID: gcore.String("00000000-0000-4000-8000-000000000000"),
 		ShowStats:      gcore.Bool(true),
 	})
 	if err != nil {

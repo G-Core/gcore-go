@@ -55,39 +55,7 @@ func (r *LoadBalancerStatusService) List(ctx context.Context, query LoadBalancer
 	return
 }
 
-// Get load balancer status
-func (r *LoadBalancerStatusService) Get(ctx context.Context, loadBalancerID string, query LoadBalancerStatusGetParams, opts ...option.RequestOption) (res *LoadBalancerStatus, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	if !query.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return
-	}
-	if loadBalancerID == "" {
-		err = errors.New("missing required load_balancer_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v1/loadbalancers/%v/%v/%s/status", query.ProjectID.Value, query.RegionID.Value, loadBalancerID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
 type LoadBalancerStatusListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	paramObj
-}
-
-type LoadBalancerStatusGetParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
