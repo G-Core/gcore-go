@@ -99,7 +99,7 @@ func (r *InstanceService) NewAndPoll(ctx context.Context, params InstanceNewPara
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -226,7 +226,7 @@ func (r *InstanceService) DeleteAndPoll(ctx context.Context, instanceID string, 
 		return err
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
@@ -269,7 +269,7 @@ func (r *InstanceService) ActionAndPoll(ctx context.Context, instanceID string, 
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -327,7 +327,7 @@ func (r *InstanceService) AddToPlacementGroupAndPoll(ctx context.Context, instan
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -527,7 +527,7 @@ func (r *InstanceService) RemoveFromPlacementGroupAndPoll(ctx context.Context, i
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -584,7 +584,7 @@ func (r *InstanceService) ResizeAndPoll(ctx context.Context, instanceID string, 
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

@@ -2120,7 +2120,7 @@ func (r *InferenceDeploymentService) NewAndPoll(ctx context.Context, params Infe
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -2154,7 +2154,7 @@ func (r *InferenceDeploymentService) DeleteAndPoll(ctx context.Context, deployme
 		return err
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
@@ -2171,7 +2171,7 @@ func (r *InferenceDeploymentService) UpdateAndPoll(ctx context.Context, deployme
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
