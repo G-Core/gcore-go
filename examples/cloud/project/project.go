@@ -120,7 +120,7 @@ func listProjectsWithAutopager(client *gcore.Client) {
 func updateProject(client *gcore.Client, projectID int64) {
 	fmt.Println("\n=== UPDATE PROJECT ===")
 
-	project, err := client.Cloud.Projects.Replace(context.Background(), cloud.ProjectReplaceParams{
+	project, err := client.Cloud.Projects.Update(context.Background(), cloud.ProjectUpdateParams{
 		ProjectID:   gcore.Int(projectID),
 		Name:        "gcore-go-example-updated",
 		Description: gcore.String("Updated project description"),
