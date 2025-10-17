@@ -1343,7 +1343,7 @@ func (r *BaremetalServerService) NewAndPoll(ctx context.Context, params Baremeta
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -1391,7 +1391,7 @@ func (r *BaremetalServerService) RebuildAndPoll(ctx context.Context, serverID st
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

@@ -302,7 +302,7 @@ func (r *GPUBaremetalClusterService) NewAndPoll(ctx context.Context, params GPUB
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -338,7 +338,7 @@ func (r *GPUBaremetalClusterService) RebuildAndPoll(ctx context.Context, cluster
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -369,7 +369,7 @@ func (r *GPUBaremetalClusterService) ResizeAndPoll(ctx context.Context, clusterI
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

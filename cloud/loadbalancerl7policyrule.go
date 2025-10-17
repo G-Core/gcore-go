@@ -185,7 +185,7 @@ func (r *LoadBalancerL7PolicyRuleService) NewAndPoll(ctx context.Context, l7poli
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -222,7 +222,7 @@ func (r *LoadBalancerL7PolicyRuleService) DeleteAndPoll(ctx context.Context, l7r
 		return err
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
@@ -239,7 +239,7 @@ func (r *LoadBalancerL7PolicyRuleService) ReplaceAndPoll(ctx context.Context, l7
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

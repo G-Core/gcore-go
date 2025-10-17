@@ -75,7 +75,7 @@ func (r *FloatingIPService) NewAndPoll(ctx context.Context, params FloatingIPNew
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
