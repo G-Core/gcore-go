@@ -64,13 +64,8 @@ func (r *FileShareService) New(ctx context.Context, params FileShareNewParams, o
 	return
 }
 
-// Rename file share or update tags
-//
-// **Deprecated**: Use PATCH
-// /v3/`file_shares`/{`project_id`}/{`region_id`}/{`file_share_id`} instead
-//
-// Deprecated: deprecated
-func (r *FileShareService) Update(ctx context.Context, fileShareID string, params FileShareUpdateParams, opts ...option.RequestOption) (res *FileShare, err error) {
+// Rename file share, update tags or set share specific properties
+func (r *FileShareService) Update(ctx context.Context, fileShareID string, params FileShareUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -90,7 +85,7 @@ func (r *FileShareService) Update(ctx context.Context, fileShareID string, param
 		err = errors.New("missing required file_share_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/file_shares/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, fileShareID)
+	path := fmt.Sprintf("cloud/v3/file_shares/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, fileShareID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
 }
