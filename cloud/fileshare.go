@@ -30,6 +30,7 @@ import (
 type FileShareService struct {
 	Options     []option.RequestOption
 	AccessRules FileShareAccessRuleService
+	tasks       TaskService
 }
 
 // NewFileShareService generates a new service that applies the given options to
@@ -39,6 +40,7 @@ func NewFileShareService(opts ...option.RequestOption) (r FileShareService) {
 	r = FileShareService{}
 	r.Options = opts
 	r.AccessRules = NewFileShareAccessRuleService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -64,13 +66,8 @@ func (r *FileShareService) New(ctx context.Context, params FileShareNewParams, o
 	return
 }
 
-// Rename file share or update tags
-//
-// **Deprecated**: Use PATCH
-// /v3/`file_shares`/{`project_id`}/{`region_id`}/{`file_share_id`} instead
-//
-// Deprecated: deprecated
-func (r *FileShareService) Update(ctx context.Context, fileShareID string, params FileShareUpdateParams, opts ...option.RequestOption) (res *FileShare, err error) {
+// Rename file share, update tags or set share specific properties
+func (r *FileShareService) Update(ctx context.Context, fileShareID string, params FileShareUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -90,9 +87,38 @@ func (r *FileShareService) Update(ctx context.Context, fileShareID string, param
 		err = errors.New("missing required file_share_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/file_shares/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, fileShareID)
+	path := fmt.Sprintf("cloud/v3/file_shares/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, fileShareID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
+}
+
+func (r *FileShareService) UpdateAndPoll(ctx context.Context, fileShareID string, params FileShareUpdateParams, opts ...option.RequestOption) (res *FileShare, err error) {
+	resource, err := r.Update(ctx, fileShareID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams FileShareGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Get(ctx, fileShareID, getParams, opts...)
 }
 
 // List file shares
