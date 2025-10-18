@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.17.0 (2025-10-18)
+
+Full Changelog: [v0.16.0...v0.17.0](https://github.com/G-Core/gcore-go/compare/v0.16.0...v0.17.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** rename to projects update
+* **cloud:** use new PATCH files shares endpoint
+
+### Features
+
+* **cloud:** enable TF for placement groups ([8c81678](https://github.com/G-Core/gcore-go/commit/8c81678e22ea49f8fdfefd94d1440cd6d97c6af8))
+
+
+### Chores
+
+* **cloud:** rename to projects update ([d17ea13](https://github.com/G-Core/gcore-go/commit/d17ea13bcf4f4511e562d0236d0f9352c583d418))
+* **cloud:** use new PATCH files shares endpoint ([1c63726](https://github.com/G-Core/gcore-go/commit/1c637263aff81c5251731fede31901dfa5d3030c))
+
+
+### Refactors
+
+* **cloud:** improve opts concatenation in poll methods ([dc3204c](https://github.com/G-Core/gcore-go/commit/dc3204cbf684712ddd754e62b3aff87aa401a73e))
+
 ## 0.16.0 (2025-10-16)
 
 Full Changelog: [v0.15.0...v0.16.0](https://github.com/G-Core/gcore-go/compare/v0.15.0...v0.16.0)

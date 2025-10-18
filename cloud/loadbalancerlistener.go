@@ -6,10 +6,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/G-Core/gcore-go/packages/respjson"
 	"net/http"
 	"net/url"
 	"slices"
+
+	"github.com/G-Core/gcore-go/packages/respjson"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -168,7 +169,7 @@ func (r *LoadBalancerListenerService) NewAndPoll(ctx context.Context, params Loa
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -204,7 +205,7 @@ func (r *LoadBalancerListenerService) DeleteAndPoll(ctx context.Context, listene
 		return err
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
@@ -221,7 +222,7 @@ func (r *LoadBalancerListenerService) UpdateAndPoll(ctx context.Context, listene
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

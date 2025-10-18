@@ -157,7 +157,7 @@ func updateFileShare(client *gcore.Client, fileShareID, newName string) {
 		Name: param.NewOpt(newName),
 	}
 
-	fileShare, err := client.Cloud.FileShares.Update(context.Background(), fileShareID, params)
+	fileShare, err := client.Cloud.FileShares.UpdateAndPoll(context.Background(), fileShareID, params)
 	if err != nil {
 		log.Fatalf("Error updating file share: %v", err)
 	}

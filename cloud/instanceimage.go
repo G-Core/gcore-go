@@ -123,7 +123,7 @@ func (r *InstanceImageService) DeleteAndPoll(ctx context.Context, imageID string
 		return err
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
@@ -163,7 +163,7 @@ func (r *InstanceImageService) NewFromVolumeAndPoll(ctx context.Context, params 
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -248,7 +248,7 @@ func (r *InstanceImageService) UploadAndPoll(ctx context.Context, params Instanc
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

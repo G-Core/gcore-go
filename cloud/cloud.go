@@ -35,10 +35,12 @@ type CloudService struct {
 	// A floating IP is a static IP address that points to one of your Instances. It
 	// allows you to redirect network traffic to any of your Instances in the same
 	// datacenter.
-	FloatingIPs          FloatingIPService
-	SecurityGroups       SecurityGroupService
-	Users                UserService
-	Inference            InferenceService
+	FloatingIPs    FloatingIPService
+	SecurityGroups SecurityGroupService
+	Users          UserService
+	Inference      InferenceService
+	// Placement Groups allow you to specific a policy that determines whether Virtual
+	// Machines will be hosted on the same physical server or on different ones.
 	PlacementGroups      PlacementGroupService
 	Baremetal            BaremetalService
 	Registries           RegistryService

@@ -279,12 +279,15 @@ func (r *StreamService) ListClips(ctx context.Context, streamID int64, opts ...o
 //   - Explicit execution of the method /`stop_recording`. In this case, the file
 //     will be completely saved and closed. When you execute the stream recording
 //     method again, the recording will be made to a new video file.
+//
 //   - When sending the stream stops on the client side, or stops accidentally. In
 //     this case, recording process is waiting for 10 seconds to resume recording:
 //
 //   - If the stream resumes within that period, recording will continue to the same
 //     file.
+//
 //   - After that period, the file will be completely saved and closed.
+//
 //   - If the stream suddenly resumes after this period, the recording will go to a
 //     new file, because old file is closed already. Please, also note that if you
 //     have long broadcasts, the recording will be cut into 4-hour videos. This value

@@ -73,7 +73,7 @@ func (r *ReservedFixedIPService) NewAndPoll(ctx context.Context, params Reserved
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

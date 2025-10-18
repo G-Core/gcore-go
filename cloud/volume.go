@@ -73,7 +73,7 @@ func (r *VolumeService) NewAndPoll(ctx context.Context, params VolumeNewParams, 
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -384,7 +384,7 @@ func (r *VolumeService) ResizeAndPoll(ctx context.Context, volumeID string, para
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

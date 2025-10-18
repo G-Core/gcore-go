@@ -48,6 +48,24 @@ func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ..
 	return
 }
 
+// Update project name and description. Project management must be enabled to
+// perform this operation.
+func (r *ProjectService) Update(ctx context.Context, params ProjectUpdateParams, opts ...option.RequestOption) (res *Project, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v1/projects/%v", params.ProjectID.Value)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
+	return
+}
+
 // Retrieve a list of projects for a client. Results can be filtered by name and
 // ordered by various fields.
 func (r *ProjectService) List(ctx context.Context, query ProjectListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Project], err error) {
@@ -106,24 +124,6 @@ func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts .
 	}
 	path := fmt.Sprintf("cloud/v1/projects/%v", query.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Update project name and description. Project management must be enabled to
-// perform this operation.
-func (r *ProjectService) Replace(ctx context.Context, params ProjectReplaceParams, opts ...option.RequestOption) (res *Project, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v1/projects/%v", params.ProjectID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
@@ -192,6 +192,23 @@ func (r *ProjectNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ProjectUpdateParams struct {
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Name of the entity, following a specific format.
+	Name string `json:"name,required"`
+	// Description of the project.
+	Description param.Opt[string] `json:"description,omitzero"`
+	paramObj
+}
+
+func (r ProjectUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow ProjectUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ProjectUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ProjectListParams struct {
 	// Client ID filter for administrators.
 	ClientID param.Opt[int64] `query:"client_id,omitzero" json:"-"`
@@ -236,21 +253,4 @@ type ProjectDeleteParams struct {
 type ProjectGetParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
-}
-
-type ProjectReplaceParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// Name of the entity, following a specific format.
-	Name string `json:"name,required"`
-	// Description of the project.
-	Description param.Opt[string] `json:"description,omitzero"`
-	paramObj
-}
-
-func (r ProjectReplaceParams) MarshalJSON() (data []byte, err error) {
-	type shadow ProjectReplaceParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ProjectReplaceParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }

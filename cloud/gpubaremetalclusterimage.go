@@ -140,7 +140,7 @@ func (r *GPUBaremetalClusterImageService) UploadAndPoll(ctx context.Context, par
 		return
 	}
 
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

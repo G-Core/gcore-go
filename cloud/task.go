@@ -99,7 +99,7 @@ func (r *TaskService) Get(ctx context.Context, taskID string, opts ...option.Req
 // of 1 second which can be overridden to values greater than 0 (otherwise the default value is used).
 func (r *TaskService) Poll(ctx context.Context, taskID string, opts ...requestconfig.RequestOption) (*Task, error) {
 	// extract polling interval from options, if not explicitly set, the default value is used
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
