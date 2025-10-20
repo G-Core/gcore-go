@@ -104,6 +104,22 @@ func (r *SecretService) Delete(ctx context.Context, secretID string, body Secret
 	return
 }
 
+// DeleteAndPoll deletes a secret and polls the corresponding task until it is completed.
+// Use the [TaskService.Poll] method if you need to poll for all tasks.
+func (r *SecretService) DeleteAndPoll(ctx context.Context, secretID string, params SecretDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, secretID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.task.Poll(ctx, taskID, opts...)
+	return err
+}
+
 // Get secret
 func (r *SecretService) Get(ctx context.Context, secretID string, query SecretGetParams, opts ...option.RequestOption) (res *Secret, err error) {
 	opts = slices.Concat(r.Options, opts)
