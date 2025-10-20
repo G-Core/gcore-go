@@ -200,7 +200,7 @@ type SslRequestStatus struct {
 	LatestStatus SslRequestStatusLatestStatus `json:"latest_status"`
 	// Time of the next scheduled attempt to issue the Let's Encrypt certificate (ISO
 	// 8601/RFC 3339 format, UTC).
-	NextAttemptTime string `json:"next_attempt_time"`
+	NextAttemptTime string `json:"next_attempt_time,nullable"`
 	// CDN resource ID.
 	Resource int64 `json:"resource"`
 	// Date when the process of issuing a Let's Encrypt certificate was started (ISO
