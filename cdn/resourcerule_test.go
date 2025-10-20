@@ -124,13 +124,13 @@ func TestResourceRuleNewWithOptionalParams(t *testing.T) {
 					Enabled: true,
 				},
 				ForceReturn: cdn.ResourceRuleNewParamsOptionsForceReturn{
-					Body:    "body",
-					Code:    100,
+					Body:    "http://example.com/redirect_address",
+					Code:    301,
 					Enabled: true,
 					TimeInterval: cdn.ResourceRuleNewParamsOptionsForceReturnTimeInterval{
-						EndTime:   "18:11:19.117Z",
-						StartTime: "18:11:19.117Z",
-						TimeZone:  gcore.String("Europe/Luxembourg"),
+						EndTime:   "20:00",
+						StartTime: "09:00",
+						TimeZone:  gcore.String("CET"),
 					},
 				},
 				ForwardHostHeader: cdn.ResourceRuleNewParamsOptionsForwardHostHeader{
@@ -262,8 +262,12 @@ func TestResourceRuleNewWithOptionalParams(t *testing.T) {
 				},
 				StaticHeaders: cdn.ResourceRuleNewParamsOptionsStaticHeaders{
 					Enabled: true,
-					Value: map[string]string{
-						"foo": "string",
+					Value: map[string]interface{}{
+						"X-Example": "Value_1",
+						"X-Example-Multiple": map[string]interface{}{
+							"0": "Value_2",
+							"1": "Value_3",
+						},
 					},
 				},
 				StaticRequestHeaders: cdn.ResourceRuleNewParamsOptionsStaticRequestHeaders{
@@ -409,13 +413,13 @@ func TestResourceRuleUpdateWithOptionalParams(t *testing.T) {
 					Enabled: true,
 				},
 				ForceReturn: cdn.ResourceRuleUpdateParamsOptionsForceReturn{
-					Body:    "body",
-					Code:    100,
+					Body:    "http://example.com/redirect_address",
+					Code:    301,
 					Enabled: true,
 					TimeInterval: cdn.ResourceRuleUpdateParamsOptionsForceReturnTimeInterval{
-						EndTime:   "18:11:19.117Z",
-						StartTime: "18:11:19.117Z",
-						TimeZone:  gcore.String("Europe/Luxembourg"),
+						EndTime:   "20:00",
+						StartTime: "09:00",
+						TimeZone:  gcore.String("CET"),
 					},
 				},
 				ForwardHostHeader: cdn.ResourceRuleUpdateParamsOptionsForwardHostHeader{
@@ -547,8 +551,12 @@ func TestResourceRuleUpdateWithOptionalParams(t *testing.T) {
 				},
 				StaticHeaders: cdn.ResourceRuleUpdateParamsOptionsStaticHeaders{
 					Enabled: true,
-					Value: map[string]string{
-						"foo": "string",
+					Value: map[string]interface{}{
+						"X-Example": "Value_1",
+						"X-Example-Multiple": map[string]interface{}{
+							"0": "Value_2",
+							"1": "Value_3",
+						},
 					},
 				},
 				StaticRequestHeaders: cdn.ResourceRuleUpdateParamsOptionsStaticRequestHeaders{
@@ -776,13 +784,13 @@ func TestResourceRuleReplaceWithOptionalParams(t *testing.T) {
 					Enabled: true,
 				},
 				ForceReturn: cdn.ResourceRuleReplaceParamsOptionsForceReturn{
-					Body:    "body",
-					Code:    100,
+					Body:    "http://example.com/redirect_address",
+					Code:    301,
 					Enabled: true,
 					TimeInterval: cdn.ResourceRuleReplaceParamsOptionsForceReturnTimeInterval{
-						EndTime:   "18:11:19.117Z",
-						StartTime: "18:11:19.117Z",
-						TimeZone:  gcore.String("Europe/Luxembourg"),
+						EndTime:   "20:00",
+						StartTime: "09:00",
+						TimeZone:  gcore.String("CET"),
 					},
 				},
 				ForwardHostHeader: cdn.ResourceRuleReplaceParamsOptionsForwardHostHeader{
@@ -914,8 +922,12 @@ func TestResourceRuleReplaceWithOptionalParams(t *testing.T) {
 				},
 				StaticHeaders: cdn.ResourceRuleReplaceParamsOptionsStaticHeaders{
 					Enabled: true,
-					Value: map[string]string{
-						"foo": "string",
+					Value: map[string]interface{}{
+						"X-Example": "Value_1",
+						"X-Example-Multiple": map[string]interface{}{
+							"0": "Value_2",
+							"1": "Value_3",
+						},
 					},
 				},
 				StaticRequestHeaders: cdn.ResourceRuleReplaceParamsOptionsStaticRequestHeaders{

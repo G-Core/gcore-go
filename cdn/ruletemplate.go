@@ -1151,10 +1151,10 @@ func (r *RuleTemplateOptionsForceReturn) UnmarshalJSON(data []byte) error {
 type RuleTemplateOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	EndTime string `json:"end_time,required" format:"time"`
+	EndTime string `json:"end_time,required"`
 	// Time from which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	StartTime string `json:"start_time,required" format:"time"`
+	StartTime string `json:"start_time,required"`
 	// Time zone used to calculate time.
 	TimeZone string `json:"time_zone" format:"timezone"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2221,7 +2221,7 @@ type RuleTemplateOptionsStaticHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,required"`
+	Value any `json:"value,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -3333,10 +3333,10 @@ func (r *RuleTemplateNewParamsOptionsForceReturn) UnmarshalJSON(data []byte) err
 type RuleTemplateNewParamsOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	EndTime string `json:"end_time,required" format:"time"`
+	EndTime string `json:"end_time,required"`
 	// Time from which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	StartTime string `json:"start_time,required" format:"time"`
+	StartTime string `json:"start_time,required"`
 	// Time zone used to calculate time.
 	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
 	paramObj
@@ -4375,7 +4375,7 @@ type RuleTemplateNewParamsOptionsStaticHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,omitzero,required"`
+	Value any `json:"value,omitzero,required"`
 	paramObj
 }
 
@@ -5478,10 +5478,10 @@ func (r *RuleTemplateUpdateParamsOptionsForceReturn) UnmarshalJSON(data []byte) 
 type RuleTemplateUpdateParamsOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	EndTime string `json:"end_time,required" format:"time"`
+	EndTime string `json:"end_time,required"`
 	// Time from which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	StartTime string `json:"start_time,required" format:"time"`
+	StartTime string `json:"start_time,required"`
 	// Time zone used to calculate time.
 	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
 	paramObj
@@ -6520,7 +6520,7 @@ type RuleTemplateUpdateParamsOptionsStaticHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,omitzero,required"`
+	Value any `json:"value,omitzero,required"`
 	paramObj
 }
 
@@ -7623,10 +7623,10 @@ func (r *RuleTemplateReplaceParamsOptionsForceReturn) UnmarshalJSON(data []byte)
 type RuleTemplateReplaceParamsOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	EndTime string `json:"end_time,required" format:"time"`
+	EndTime string `json:"end_time,required"`
 	// Time from which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	StartTime string `json:"start_time,required" format:"time"`
+	StartTime string `json:"start_time,required"`
 	// Time zone used to calculate time.
 	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
 	paramObj
@@ -8665,7 +8665,7 @@ type RuleTemplateReplaceParamsOptionsStaticHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,omitzero,required"`
+	Value any `json:"value,omitzero,required"`
 	paramObj
 }
 
