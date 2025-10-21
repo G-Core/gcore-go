@@ -221,6 +221,7 @@ type RequestConfig struct {
 	Middlewares                 []middleware
 	APIKey                      string
 	CloudPollingIntervalSeconds int64
+	CloudPollingTimeoutSeconds  int64
 	CloudProjectID              *int64
 	CloudRegionID               *int64
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
@@ -598,6 +599,7 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		CloudProjectID:              cfg.CloudProjectID,
 		CloudRegionID:               cfg.CloudRegionID,
 		CloudPollingIntervalSeconds: cfg.CloudPollingIntervalSeconds,
+		CloudPollingTimeoutSeconds:  cfg.CloudPollingTimeoutSeconds,
 	}
 
 	return new

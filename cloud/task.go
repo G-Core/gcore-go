@@ -110,9 +110,18 @@ func (r *TaskService) Poll(ctx context.Context, taskID string, opts ...requestco
 		pollingInterval = time.Second
 	}
 
+	// set up polling timeout if configured, otherwise use the provided context
+	pollingCtx := ctx
+	var cancel context.CancelFunc
+	if precfg.CloudPollingTimeoutSeconds > 0 {
+		pollingTimeout := time.Duration(precfg.CloudPollingTimeoutSeconds) * time.Second
+		pollingCtx, cancel = context.WithTimeout(ctx, pollingTimeout)
+		defer cancel()
+	}
+
 	// poll the task status until it is finished or an error occurs
 	for {
-		task, err := r.Get(ctx, taskID)
+		task, err := r.Get(pollingCtx, taskID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get task status: %w", err)
 		}
@@ -125,13 +134,12 @@ func (r *TaskService) Poll(ctx context.Context, taskID string, opts ...requestco
 			return nil, fmt.Errorf("task %s failed with error: %s", taskID, task.Error)
 		}
 
-		time.Sleep(pollingInterval)
-
-		// check if the context is done, if so return the error
+		// check if the context is done before sleeping
 		select {
-		case <-ctx.Done():
-			return nil, ctx.Err()
-		default:
+		// handles both timeout and cancellation
+		case <-pollingCtx.Done():
+			return nil, pollingCtx.Err()
+		case <-time.After(pollingInterval):
 		}
 	}
 }
