@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.17.0 (2025-10-21)
+
+Full Changelog: [v0.16.0...v0.17.0](https://github.com/G-Core/gcore-go/compare/v0.16.0...v0.17.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** rename to projects update
+* **cloud:** use new PATCH files shares endpoint
+
+### Features
+
+* **api:** aggregated API specs update ([558fa44](https://github.com/G-Core/gcore-go/commit/558fa447f33919c7ac06e66cc2d21584db51c9b5))
+* **cdn:** add methods to list aws and alibaba regions ([4ee3849](https://github.com/G-Core/gcore-go/commit/4ee3849d2ee55a8b620bea84b2bd2fcd235eb856))
+* **client:** add client opt for cloud polling timeout ([95edc63](https://github.com/G-Core/gcore-go/commit/95edc639b26fa1f8786aff68514f6ba9bff779a3))
+* **cloud:** add DeleteAndPoll to placement groups ([a287293](https://github.com/G-Core/gcore-go/commit/a287293020adad577b035a23661d3144fa78d7cc))
+* **cloud:** add DeleteAndPoll to projects ([16f7b78](https://github.com/G-Core/gcore-go/commit/16f7b78eaa7b44c5d99af98d214949514d53190a))
+* **cloud:** add Secret.DeleteAndPoll method ([#146](https://github.com/G-Core/gcore-go/issues/146)) ([4267ffd](https://github.com/G-Core/gcore-go/commit/4267ffd4fa26e734e02c8eec45b78fe77ed3f0ef))
+* **cloud:** enable TF for placement groups ([8c81678](https://github.com/G-Core/gcore-go/commit/8c81678e22ea49f8fdfefd94d1440cd6d97c6af8))
+
+
+### Chores
+
+* **cloud:** rename to projects update ([d17ea13](https://github.com/G-Core/gcore-go/commit/d17ea13bcf4f4511e562d0236d0f9352c583d418))
+* **cloud:** use new PATCH files shares endpoint ([1c63726](https://github.com/G-Core/gcore-go/commit/1c637263aff81c5251731fede31901dfa5d3030c))
+
+
+### Refactors
+
+* **cloud:** improve opts concatenation in poll methods ([dc3204c](https://github.com/G-Core/gcore-go/commit/dc3204cbf684712ddd754e62b3aff87aa401a73e))
+* **spec:** remove CDN deprecated endpoints ([2608b61](https://github.com/G-Core/gcore-go/commit/2608b6171c4d782bdc41ff65531c2f4ae1c35146))
+
 ## 0.16.0 (2025-10-16)
 
 Full Changelog: [v0.15.0...v0.16.0](https://github.com/G-Core/gcore-go/compare/v0.15.0...v0.16.0)
