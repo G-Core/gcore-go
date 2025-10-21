@@ -47,6 +47,7 @@ func DefaultClientOptions() []option.RequestOption {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
 	defaults = append(defaults, option.WithCloudPollingIntervalSeconds(3))
+	defaults = append(defaults, option.WithCloudPollingTimeoutSeconds(7200))
 	if o, ok := os.LookupEnv("GCORE_API_KEY"); ok {
 		defaults = append(defaults, option.WithAPIKey(o))
 	}
