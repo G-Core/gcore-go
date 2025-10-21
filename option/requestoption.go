@@ -297,3 +297,11 @@ func WithCloudPollingIntervalSeconds(value int64) RequestOption {
 		return nil
 	})
 }
+
+// WithCloudPollingTimeoutSeconds returns a RequestOption that sets the client setting "cloud_polling_timeout_seconds".
+func WithCloudPollingTimeoutSeconds(value int64) RequestOption {
+	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		r.CloudPollingTimeoutSeconds = value
+		return nil
+	})
+}
