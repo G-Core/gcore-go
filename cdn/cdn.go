@@ -12,7 +12,6 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
-	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -86,27 +85,28 @@ func (r *CdnService) GetAvailableFeatures(ctx context.Context, opts ...option.Re
 	return
 }
 
-// Get purges history.
-func (r *CdnService) ListPurgeStatuses(ctx context.Context, query CdnListPurgeStatusesParams, opts ...option.RequestOption) (res *pagination.OffsetPageCdn[PurgeStatus], err error) {
-	var raw *http.Response
+// Get the list of Alibaba Cloud regions.
+func (r *CdnService) ListAlibabaRegions(ctx context.Context, opts ...option.RequestOption) (res *AlibabaRegions, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "cdn/purge_statuses"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
+	path := "cdn/alibaba_regions"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
+// Get the list of Amazon AWS regions.
+func (r *CdnService) ListAwsRegions(ctx context.Context, opts ...option.RequestOption) (res *AwsRegions, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "cdn/aws_regions"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
 }
 
 // Get purges history.
-func (r *CdnService) ListPurgeStatusesAutoPaging(ctx context.Context, query CdnListPurgeStatusesParams, opts ...option.RequestOption) *pagination.OffsetPageCdnAutoPager[PurgeStatus] {
-	return pagination.NewOffsetPageCdnAutoPager(r.ListPurgeStatuses(ctx, query, opts...))
+func (r *CdnService) ListPurgeStatuses(ctx context.Context, query CdnListPurgeStatusesParams, opts ...option.RequestOption) (res *[]PurgeStatus, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "cdn/purge_statuses"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Change information about CDN service.
@@ -115,6 +115,56 @@ func (r *CdnService) UpdateAccount(ctx context.Context, body CdnUpdateAccountPar
 	path := "cdn/clients/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
+}
+
+type AlibabaRegions []AlibabaRegion
+
+type AlibabaRegion struct {
+	// Region ID.
+	ID int64 `json:"id"`
+	// Region code.
+	Code string `json:"code"`
+	// Region name.
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Code        respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AlibabaRegion) RawJSON() string { return r.JSON.raw }
+func (r *AlibabaRegion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AwsRegions []AwsRegion
+
+type AwsRegion struct {
+	// Region ID.
+	ID int64 `json:"id"`
+	// Region code.
+	Code string `json:"code"`
+	// Region name.
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Code        respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AwsRegion) RawJSON() string { return r.JSON.raw }
+func (r *AwsRegion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CdnAccount struct {
