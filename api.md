@@ -2053,8 +2053,6 @@ Methods:
 - <code title="get /cdn/advanced/v1/logs">client.Cdn.Logs.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#LogService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#LogListParams">LogListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPageCdnLogs">OffsetPageCdnLogs</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#CdnLogEntryData">CdnLogEntryData</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /cdn/advanced/v1/logs/download">client.Cdn.Logs.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#LogService.Download">Download</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#LogDownloadParams">LogDownloadParams</a>) (http.Response, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
-### Settings
-
 ## LogsUploader
 
 Response Types:
