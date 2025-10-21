@@ -24,8 +24,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewLogService] method instead.
 type LogService struct {
-	Options  []option.RequestOption
-	Settings LogSettingService
+	Options []option.RequestOption
 }
 
 // NewLogService generates a new service that applies the given options to each
@@ -34,7 +33,6 @@ type LogService struct {
 func NewLogService(opts ...option.RequestOption) (r LogService) {
 	r = LogService{}
 	r.Options = opts
-	r.Settings = NewLogSettingService(opts...)
 	return
 }
 
