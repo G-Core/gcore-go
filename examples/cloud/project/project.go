@@ -136,7 +136,7 @@ func updateProject(client *gcore.Client, projectID int64) {
 func deleteProject(client *gcore.Client, projectID int64) {
 	fmt.Println("\n=== DELETE PROJECT ===")
 
-	_, err := client.Cloud.Projects.Delete(context.Background(), cloud.ProjectDeleteParams{
+	err := client.Cloud.Projects.DeleteAndPoll(context.Background(), cloud.ProjectDeleteParams{
 		ProjectID: gcore.Int(projectID),
 	})
 	if err != nil {

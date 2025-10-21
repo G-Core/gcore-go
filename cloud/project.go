@@ -28,6 +28,7 @@ import (
 // the [NewProjectService] method instead.
 type ProjectService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewProjectService generates a new service that applies the given options to each
@@ -36,6 +37,7 @@ type ProjectService struct {
 func NewProjectService(opts ...option.RequestOption) (r ProjectService) {
 	r = ProjectService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -108,6 +110,22 @@ func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, o
 	path := fmt.Sprintf("cloud/v1/projects/%v", body.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
+}
+
+// DeleteAndPoll deletes a project and polls for completion of the first task. Use the
+// [TaskService.Poll] method if you need to poll for all tasks.
+func (r *ProjectService) DeleteAndPoll(ctx context.Context, body ProjectDeleteParams, opts ...option.RequestOption) (err error) {
+	resource, err := r.Delete(ctx, body, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }
 
 // Retrieve detailed information about a specific project.
