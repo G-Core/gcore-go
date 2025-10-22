@@ -626,8 +626,6 @@ type QuotaRequestNewParams struct {
 	Description string `json:"description,required"`
 	// Limits you want to increase.
 	RequestedLimits QuotaRequestNewParamsRequestedLimits `json:"requested_limits,omitzero,required"`
-	// Client ID that requests the limit increase.
-	ClientID param.Opt[int64] `json:"client_id,omitzero"`
 	paramObj
 }
 

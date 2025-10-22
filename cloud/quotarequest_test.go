@@ -93,7 +93,6 @@ func TestQuotaRequestNewWithOptionalParams(t *testing.T) {
 				VolumeSnapshotsSizeLimit:          gcore.Int(0),
 			}},
 		},
-		ClientID: gcore.Int(1),
 	})
 	if err != nil {
 		var apierr *gcore.Error

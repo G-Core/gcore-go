@@ -215,7 +215,7 @@ type ResourceUsageStats struct {
 	// Possible values:
 	//
 	//   - **`upstream_bytes`** – Traffic in bytes from an origin server to CDN servers
-	//     or to origin shielding, if used.
+	//     or to origin shielding when used.
 	//   - **`sent_bytes`** – Traffic in bytes from CDN servers to clients.
 	//   - **`shield_bytes`** – Traffic in bytes from origin shielding to CDN servers.
 	//   - **`backblaze_bytes`** - Traffic in bytes from Backblaze origin.
@@ -232,37 +232,38 @@ type ResourceUsageStats struct {
 	//   - **`response_types`** – Statistics by content type. It returns a number of
 	//     responses for content with different MIME types.
 	//   - **`cache_hit_traffic_ratio`** – Formula: 1 - `upstream_bytes` / `sent_bytes`.
-	//     We deduct the non-cached traffic from the total traffic value.
-	//   - **`cache_hit_requests_ratio`** – Share of sending cached content. Formula:
-	//     `responses_hit` / requests.
-	//   - **`shield_traffic_ratio`** – Origin shielding efficiency: how much more
-	//     traffic is sent from the origin shielding than from the origin. Formula:
-	//     (`shield_bytes` - `upstream_bytes`) / `shield_bytes`.
+	//     We deduct the non-cached traffic from the total traffic amount.
+	//   - **`cache_hit_requests_ratio`** – Formula: `responses_hit` / requests. The
+	//     share of sending cached content.
+	//   - **`shield_traffic_ratio`** – Formula: (`shield_bytes` - `upstream_bytes`) /
+	//     `shield_bytes`. The efficiency of the Origin Shielding: how much more traffic
+	//     is sent from the Origin Shielding than from the origin.
 	//   - **`image_processed`** - Number of images transformed on the Image optimization
 	//     service.
 	//   - **`request_time`** - Time elapsed between the first bytes of a request were
 	//     processed and logging after the last bytes were sent to a user.
 	//   - **`upstream_response_time`** - Number of milliseconds it took to receive a
 	//     response from an origin. If upstream `response_time_` contains several
-	//     indications for one request (when there is more than one origin,) we summarize
-	//     them. When aggregating several queries, the average is calculated.
+	//     indications for one request (in case of more than 1 origin), we summarize
+	//     them. In case of aggregating several queries, the average of this amount is
+	//     calculated.
 	//
 	// Metrics **`upstream_response_time`** and **`request_time`** should be requested
 	// separately from other metrics
 	Metrics any `json:"metrics"`
-	// Locations (regions) by which the data is grouped.
+	// Regions for which data is displayed.
 	//
 	// Possible values:
 	//
+	// - **na** – North America
+	// - **eu** – Europe
+	// - **cis** – Commonwealth of Independent States
 	// - **asia** – Asia
 	// - **au** – Australia
-	// - **cis** – CIS (Commonwealth of Independent States)
-	// - **eu** – Europe
 	// - **latam** – Latin America
 	// - **me** – Middle East
-	// - **na** – North America
-	// - **africa** – Africa
-	// - **sa** – South America
+	// - **africa** - Africa
+	// - **sa** - South America
 	Region any `json:"region"`
 	// Resources IDs by which statistics data is grouped.
 	Resource any `json:"resource"`
@@ -372,7 +373,7 @@ type StatisticGetLogsUsageAggregatedParams struct {
 	From string `query:"from,required" json:"-"`
 	// End of the requested time period (ISO 8601/RFC 3339 format, UTC.)
 	To string `query:"to,required" json:"-"`
-	// The waу parameters are arranged in the response.
+	// The way the parameters are arranged in the response.
 	//
 	// Possible values:
 	//
@@ -390,6 +391,9 @@ type StatisticGetLogsUsageAggregatedParams struct {
 	// To request multiple values, use:
 	//
 	// - &resource=1&resource=2
+	//
+	// If CDN resource ID is not specified, data related to all CDN resources is
+	// returned.
 	Resource param.Opt[int64] `query:"resource,omitzero" json:"-"`
 	paramObj
 }
@@ -405,22 +409,17 @@ func (r StatisticGetLogsUsageAggregatedParams) URLQuery() (v url.Values, err err
 
 type StatisticGetLogsUsageSeriesParams struct {
 	// Beginning of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	//
-	// Example:
-	//
-	// - &from=2020-01-01T00:00:00.000
 	From string `query:"from,required" json:"-"`
 	// End of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	//
-	// Example:
-	//
-	// - &from=2020-01-01T00:00:00.000
 	To string `query:"to,required" json:"-"`
 	// CDN resources IDs by that statistics data is grouped.
 	//
 	// To request multiple values, use:
 	//
 	// - &resource=1&resource=2
+	//
+	// If CDN resource ID is not specified, data related to all CDN resources is
+	// returned.
 	Resource param.Opt[int64] `query:"resource,omitzero" json:"-"`
 	paramObj
 }
@@ -436,11 +435,6 @@ func (r StatisticGetLogsUsageSeriesParams) URLQuery() (v url.Values, err error) 
 
 type StatisticGetResourceUsageAggregatedParams struct {
 	// Beginning of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	//
-	// Examples:
-	//
-	// - &from=2018-11-01T00:00:00.000
-	// - &from=2018-11-01
 	From string `query:"from,required" json:"-"`
 	// Types of statistics data.
 	//
@@ -497,16 +491,9 @@ type StatisticGetResourceUsageAggregatedParams struct {
 	// - CDN
 	Service string `query:"service,required" json:"-"`
 	// End of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	//
-	// Examples:
-	//
-	// - &to=2018-11-01T00:00:00.000
-	// - &to=2018-11-01
 	To string `query:"to,required" json:"-"`
-	// Names of countries for which data is displayed.
-	//
-	// English short name from [ISO 3166 standard][1] without the definite article
-	// "the" should be used.
+	// Names of countries for which data should be displayed. English short name from
+	// [ISO 3166 standard][1] without the definite article ("the") should be used.
 	//
 	// To request multiple values, use:
 	//
@@ -514,7 +501,7 @@ type StatisticGetResourceUsageAggregatedParams struct {
 	//
 	// [1]: https://www.iso.org/obp/ui/#search/code/
 	Countries param.Opt[string] `query:"countries,omitzero" json:"-"`
-	// The waу the parameters are arranged in the response.
+	// The way the parameters are arranged in the response.
 	//
 	// Possible values:
 	//
@@ -525,10 +512,12 @@ type StatisticGetResourceUsageAggregatedParams struct {
 	//
 	// Possible values:
 	//
-	// - **resource** – Data is grouped by CDN resources IDs.
-	// - **region** – Data is grouped by regions of CDN edge servers.
-	// - **country** – Data is grouped by countries of CDN edge servers.
-	// - **vhost** – Data is grouped by resources CNAME.
+	//   - **resource** – Data is grouped by CDN resources IDs.
+	//   - **region** – Data is grouped by regions of CDN edge servers.
+	//   - **country** – Data is grouped by countries of CDN edge servers.
+	//   - **vhost** – Data is grouped by resources CNAMEs.
+	//   - **`client_country`** - Data is grouped by countries, based on end-users'
+	//     location.
 	//
 	// To request multiple values, use:
 	//
@@ -548,7 +537,7 @@ type StatisticGetResourceUsageAggregatedParams struct {
 	// - **africa** - Africa
 	// - **sa** - South America
 	Regions param.Opt[string] `query:"regions,omitzero" json:"-"`
-	// CDN resources IDs by which statistics data is grouped.
+	// CDN resources IDs by that statistics data is grouped.
 	//
 	// To request multiple values, use:
 	//
@@ -644,10 +633,12 @@ type StatisticGetResourceUsageSeriesParams struct {
 	//
 	// Possible values:
 	//
-	// - **resource** – Data is grouped by CDN resources IDs.
-	// - **region** – Data is grouped by regions of CDN edge servers.
-	// - **country** – Data is grouped by countries of CDN edge servers.
-	// - **vhost** – Data is grouped by resources CNAMEs.
+	//   - **resource** – Data is grouped by CDN resources IDs.
+	//   - **region** – Data is grouped by regions of CDN edge servers.
+	//   - **country** – Data is grouped by countries of CDN edge servers.
+	//   - **vhost** – Data is grouped by resources CNAMEs.
+	//   - **`client_country`** - Data is grouped by countries, based on end-users'
+	//     location.
 	//
 	// To request multiple values, use:
 	//
@@ -667,11 +658,14 @@ type StatisticGetResourceUsageSeriesParams struct {
 	// - **africa** - Africa
 	// - **sa** - South America
 	Regions param.Opt[string] `query:"regions,omitzero" json:"-"`
-	// CDN resource IDs.
+	// CDN resources IDs by that statistics data is grouped.
 	//
 	// To request multiple values, use:
 	//
 	// - &resource=1&resource=2
+	//
+	// If CDN resource ID is not specified, data related to all CDN resources is
+	// returned.
 	Resource param.Opt[int64] `query:"resource,omitzero" json:"-"`
 	paramObj
 }
@@ -690,7 +684,7 @@ type StatisticGetShieldUsageAggregatedParams struct {
 	From string `query:"from,required" json:"-"`
 	// End of the requested time period (ISO 8601/RFC 3339 format, UTC.)
 	To string `query:"to,required" json:"-"`
-	// The waу parameters are arranged in the response.
+	// The way the parameters are arranged in the response.
 	//
 	// Possible values:
 	//
@@ -701,13 +695,16 @@ type StatisticGetShieldUsageAggregatedParams struct {
 	//
 	// Possible value:
 	//
-	// - **resource** - Data is grouped by CDN resource.
+	// - **resource** - Data is grouped by CDN resources.
 	GroupBy param.Opt[string] `query:"group_by,omitzero" json:"-"`
 	// CDN resources IDs by that statistics data is grouped.
 	//
 	// To request multiple values, use:
 	//
 	// - &resource=1&resource=2
+	//
+	// If CDN resource ID is not specified, data related to all CDN resources is
+	// returned.
 	Resource param.Opt[int64] `query:"resource,omitzero" json:"-"`
 	paramObj
 }
@@ -731,6 +728,9 @@ type StatisticGetShieldUsageSeriesParams struct {
 	// To request multiple values, use:
 	//
 	// - &resource=1&resource=2
+	//
+	// If CDN resource ID is not specified, data related to all CDN resources is
+	// returned.
 	Resource param.Opt[int64] `query:"resource,omitzero" json:"-"`
 	paramObj
 }
