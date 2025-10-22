@@ -9,11 +9,12 @@ import (
 	"testing"
 
 	"github.com/G-Core/gcore-go"
+	"github.com/G-Core/gcore-go/cdn"
 	"github.com/G-Core/gcore-go/internal/testutil"
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestIPRangeList(t *testing.T) {
+func TestIPRangeListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,7 +26,10 @@ func TestIPRangeList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.IPRanges.List(context.TODO())
+	_, err := client.Cdn.IPRanges.List(context.TODO(), cdn.IPRangeListParams{
+		Format: cdn.IPRangeListParamsFormatJson,
+		Accept: cdn.IPRangeListParamsAcceptApplicationJson,
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -35,7 +39,7 @@ func TestIPRangeList(t *testing.T) {
 	}
 }
 
-func TestIPRangeListIPs(t *testing.T) {
+func TestIPRangeListIPsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -47,7 +51,10 @@ func TestIPRangeListIPs(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.IPRanges.ListIPs(context.TODO())
+	_, err := client.Cdn.IPRanges.ListIPs(context.TODO(), cdn.IPRangeListIPsParams{
+		Format: cdn.IPRangeListIPsParamsFormatJson,
+		Accept: cdn.IPRangeListIPsParamsAcceptApplicationJson,
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
