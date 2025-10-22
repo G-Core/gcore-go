@@ -246,7 +246,11 @@ type SecurityGroup struct {
 	RegionID int64 `json:"region_id,required"`
 	// The number of revisions
 	RevisionNumber int64 `json:"revision_number,required"`
-	// Tags for a security group
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
 	TagsV2 []Tag `json:"tags_v2,required"`
 	// Datetime when the security group was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`

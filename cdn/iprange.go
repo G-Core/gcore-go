@@ -4,10 +4,13 @@ package cdn
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/respjson"
@@ -39,10 +42,13 @@ func NewIPRangeService(opts ...option.RequestOption) (r IPRangeService) {
 // relevance. We recommend using a script for automatically update IP ACL.
 //
 // This request does not require authorization.
-func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption) (res *PublicNetworkList, err error) {
+func (r *IPRangeService) List(ctx context.Context, params IPRangeListParams, opts ...option.RequestOption) (res *PublicNetworkList, err error) {
+	if !param.IsOmitted(params.Accept) {
+		opts = append(opts, option.WithHeader("Accept", fmt.Sprintf("%s", params.Accept)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/public-net-list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
 }
 
@@ -54,10 +60,13 @@ func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption)
 // relevance. We recommend using a script to automatically update IP ACL.
 //
 // This request does not require authorization.
-func (r *IPRangeService) ListIPs(ctx context.Context, opts ...option.RequestOption) (res *PublicIPList, err error) {
+func (r *IPRangeService) ListIPs(ctx context.Context, params IPRangeListIPsParams, opts ...option.RequestOption) (res *PublicIPList, err error) {
+	if !param.IsOmitted(params.Accept) {
+		opts = append(opts, option.WithHeader("Accept", fmt.Sprintf("%s", params.Accept)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/public-ip-list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
 }
 
@@ -100,3 +109,73 @@ func (r PublicNetworkList) RawJSON() string { return r.JSON.raw }
 func (r *PublicNetworkList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type IPRangeListParams struct {
+	// Optional format override. When set, this takes precedence over the `Accept`
+	// header.
+	//
+	// Any of "json", "plain".
+	Format IPRangeListParamsFormat `query:"format,omitzero" json:"-"`
+	// Any of "application/json", "text/plain".
+	Accept IPRangeListParamsAccept `header:"Accept,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [IPRangeListParams]'s query parameters as `url.Values`.
+func (r IPRangeListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Optional format override. When set, this takes precedence over the `Accept`
+// header.
+type IPRangeListParamsFormat string
+
+const (
+	IPRangeListParamsFormatJson  IPRangeListParamsFormat = "json"
+	IPRangeListParamsFormatPlain IPRangeListParamsFormat = "plain"
+)
+
+type IPRangeListParamsAccept string
+
+const (
+	IPRangeListParamsAcceptApplicationJson IPRangeListParamsAccept = "application/json"
+	IPRangeListParamsAcceptTextPlain       IPRangeListParamsAccept = "text/plain"
+)
+
+type IPRangeListIPsParams struct {
+	// Optional format override. When set, this takes precedence over the `Accept`
+	// header.
+	//
+	// Any of "json", "plain".
+	Format IPRangeListIPsParamsFormat `query:"format,omitzero" json:"-"`
+	// Any of "application/json", "text/plain".
+	Accept IPRangeListIPsParamsAccept `header:"Accept,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [IPRangeListIPsParams]'s query parameters as `url.Values`.
+func (r IPRangeListIPsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Optional format override. When set, this takes precedence over the `Accept`
+// header.
+type IPRangeListIPsParamsFormat string
+
+const (
+	IPRangeListIPsParamsFormatJson  IPRangeListIPsParamsFormat = "json"
+	IPRangeListIPsParamsFormatPlain IPRangeListIPsParamsFormat = "plain"
+)
+
+type IPRangeListIPsParamsAccept string
+
+const (
+	IPRangeListIPsParamsAcceptApplicationJson IPRangeListIPsParamsAccept = "application/json"
+	IPRangeListIPsParamsAcceptTextPlain       IPRangeListIPsParamsAccept = "text/plain"
+)
