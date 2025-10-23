@@ -28,7 +28,7 @@ import (
 // the [NewSecretService] method instead.
 type SecretService struct {
 	Options []option.RequestOption
-	task    TaskService
+	tasks   TaskService
 }
 
 // NewSecretService generates a new service that applies the given options to each
@@ -37,7 +37,7 @@ type SecretService struct {
 func NewSecretService(opts ...option.RequestOption) (r SecretService) {
 	r = SecretService{}
 	r.Options = opts
-	r.task = NewTaskService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -116,7 +116,7 @@ func (r *SecretService) DeleteAndPoll(ctx context.Context, secretID string, para
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.task.Poll(ctx, taskID, opts...)
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	return err
 }
 
@@ -190,7 +190,7 @@ func (r *SecretService) UploadTlsCertificateAndPoll(ctx context.Context, params 
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.task.Poll(ctx, taskID, opts...)
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
 		return
 	}

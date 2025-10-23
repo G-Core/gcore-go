@@ -30,7 +30,7 @@ import (
 type ReservedFixedIPService struct {
 	Options []option.RequestOption
 	Vip     ReservedFixedIPVipService
-	task    TaskService
+	tasks   TaskService
 }
 
 // NewReservedFixedIPService generates a new service that applies the given options
@@ -40,7 +40,7 @@ func NewReservedFixedIPService(opts ...option.RequestOption) (r ReservedFixedIPS
 	r = ReservedFixedIPService{}
 	r.Options = opts
 	r.Vip = NewReservedFixedIPVipService(opts...)
-	r.task = NewTaskService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -88,7 +88,7 @@ func (r *ReservedFixedIPService) NewAndPoll(ctx context.Context, params Reserved
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.task.Poll(ctx, taskID, opts...)
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
 		return
 	}
@@ -202,7 +202,7 @@ func (r *ReservedFixedIPService) DeleteAndPoll(ctx context.Context, portID strin
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.task.Poll(ctx, taskID, opts...)
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	return err
 }
 

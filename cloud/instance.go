@@ -46,6 +46,7 @@ func NewInstanceService(opts ...option.RequestOption) (r InstanceService) {
 	r.Interfaces = NewInstanceInterfaceService(opts...)
 	r.Images = NewInstanceImageService(opts...)
 	r.Metrics = NewInstanceMetricService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
