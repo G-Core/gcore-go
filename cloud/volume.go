@@ -29,7 +29,7 @@ import (
 // the [NewVolumeService] method instead.
 type VolumeService struct {
 	Options []option.RequestOption
-	task    TaskService
+	tasks   TaskService
 }
 
 // NewVolumeService generates a new service that applies the given options to each
@@ -38,7 +38,7 @@ type VolumeService struct {
 func NewVolumeService(opts ...option.RequestOption) (r VolumeService) {
 	r = VolumeService{}
 	r.Options = opts
-	r.task = NewTaskService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -88,7 +88,7 @@ func (r *VolumeService) NewAndPoll(ctx context.Context, params VolumeNewParams, 
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.task.Poll(ctx, taskID, opts...)
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
 		return
 	}
@@ -207,7 +207,7 @@ func (r *VolumeService) DeleteAndPoll(ctx context.Context, volumeID string, para
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.task.Poll(ctx, taskID, opts...)
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	return err
 }
 
@@ -250,7 +250,7 @@ func (r *VolumeService) AttachToInstanceAndPoll(ctx context.Context, volumeID st
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.task.Poll(ctx, taskID, opts...)
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	return err
 }
 
@@ -319,7 +319,7 @@ func (r *VolumeService) DetachFromInstanceAndPoll(ctx context.Context, volumeID 
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.task.Poll(ctx, taskID, opts...)
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	return err
 }
 
@@ -399,7 +399,7 @@ func (r *VolumeService) ResizeAndPoll(ctx context.Context, volumeID string, para
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.task.Poll(ctx, taskID, opts...)
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
 		return
 	}
