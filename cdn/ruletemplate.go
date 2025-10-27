@@ -1552,6 +1552,8 @@ type RuleTemplateOptionsProxyConnectTimeout struct {
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled,required"`
 	// Timeout value in seconds.
+	//
+	// Supported range: **1s - 5s**.
 	Value string `json:"value,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1582,6 +1584,8 @@ type RuleTemplateOptionsProxyReadTimeout struct {
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled,required"`
 	// Timeout value in seconds.
+	//
+	// Supported range: **1s - 30s**.
 	Value string `json:"value,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3717,6 +3721,8 @@ type RuleTemplateNewParamsOptionsProxyConnectTimeout struct {
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled,required"`
 	// Timeout value in seconds.
+	//
+	// Supported range: **1s - 5s**.
 	Value string `json:"value,required"`
 	paramObj
 }
@@ -3745,6 +3751,8 @@ type RuleTemplateNewParamsOptionsProxyReadTimeout struct {
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled,required"`
 	// Timeout value in seconds.
+	//
+	// Supported range: **1s - 30s**.
 	Value string `json:"value,required"`
 	paramObj
 }
@@ -5862,6 +5870,8 @@ type RuleTemplateUpdateParamsOptionsProxyConnectTimeout struct {
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled,required"`
 	// Timeout value in seconds.
+	//
+	// Supported range: **1s - 5s**.
 	Value string `json:"value,required"`
 	paramObj
 }
@@ -5890,6 +5900,8 @@ type RuleTemplateUpdateParamsOptionsProxyReadTimeout struct {
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled,required"`
 	// Timeout value in seconds.
+	//
+	// Supported range: **1s - 30s**.
 	Value string `json:"value,required"`
 	paramObj
 }
@@ -8007,6 +8019,8 @@ type RuleTemplateReplaceParamsOptionsProxyConnectTimeout struct {
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled,required"`
 	// Timeout value in seconds.
+	//
+	// Supported range: **1s - 5s**.
 	Value string `json:"value,required"`
 	paramObj
 }
@@ -8035,6 +8049,8 @@ type RuleTemplateReplaceParamsOptionsProxyReadTimeout struct {
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled,required"`
 	// Timeout value in seconds.
+	//
+	// Supported range: **1s - 30s**.
 	Value string `json:"value,required"`
 	paramObj
 }
