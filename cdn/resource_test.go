@@ -794,7 +794,7 @@ func TestResourcePurgeWithOptionalParams(t *testing.T) {
 		0,
 		cdn.ResourcePurgeParams{
 			OfPurgeByURL: &cdn.ResourcePurgeParamsBodyPurgeByURL{
-				URLs: []string{"string"},
+				URLs: []string{"/some-url.jpg", "/img/example.jpg"},
 			},
 		},
 	)
