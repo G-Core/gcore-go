@@ -111,19 +111,19 @@ func (r *LoadBalancerListenerService) List(ctx context.Context, params LoadBalan
 }
 
 // Delete load balancer listener
-func (r *LoadBalancerListenerService) Delete(ctx context.Context, listenerID string, body LoadBalancerListenerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *LoadBalancerListenerService) Delete(ctx context.Context, listenerID string, params LoadBalancerListenerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !body.RegionID.Valid() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -131,8 +131,8 @@ func (r *LoadBalancerListenerService) Delete(ctx context.Context, listenerID str
 		err = errors.New("missing required listener_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/lblisteners/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, listenerID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	path := fmt.Sprintf("cloud/v1/lblisteners/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, listenerID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
 	return
 }
 
@@ -286,7 +286,8 @@ type LoadBalancerListenerNewParams struct {
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
 	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
-	// Limit of the simultaneous connections
+	// Limit of the simultaneous connections. If -1 is provided, it is translated to
+	// the default value 100000.
 	ConnectionLimit param.Opt[int64] `json:"connection_limit,omitzero"`
 	// Add headers X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto to requests.
 	// Only used with HTTP or `TERMINATED_HTTPS` protocols.
@@ -343,7 +344,8 @@ type LoadBalancerListenerUpdateParams struct {
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
 	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
-	// Limit of simultaneous connections
+	// Limit of simultaneous connections. If -1 is provided, it is translated to the
+	// default value 100000.
 	ConnectionLimit param.Opt[int64] `json:"connection_limit,omitzero"`
 	// Load balancer listener name
 	Name param.Opt[string] `json:"name,omitzero"`
@@ -408,7 +410,18 @@ type LoadBalancerListenerDeleteParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Delete default pool attached directly to the listener.
+	DeleteDefaultPool param.Opt[bool] `query:"delete_default_pool,omitzero" json:"-"`
 	paramObj
+}
+
+// URLQuery serializes [LoadBalancerListenerDeleteParams]'s query parameters as
+// `url.Values`.
+func (r LoadBalancerListenerDeleteParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }
 
 type LoadBalancerListenerGetParams struct {
