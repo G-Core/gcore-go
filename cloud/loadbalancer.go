@@ -1682,7 +1682,8 @@ type LoadBalancerNewParamsListener struct {
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
 	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
-	// Limit of the simultaneous connections
+	// Limit of the simultaneous connections. If -1 is provided, it is translated to
+	// the default value 100000.
 	ConnectionLimit param.Opt[int64] `json:"connection_limit,omitzero"`
 	// Add headers X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto to requests.
 	// Only used with HTTP or `TERMINATED_HTTPS` protocols.

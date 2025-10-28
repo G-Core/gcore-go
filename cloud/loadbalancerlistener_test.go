@@ -124,7 +124,7 @@ func TestLoadBalancerListenerListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestLoadBalancerListenerDelete(t *testing.T) {
+func TestLoadBalancerListenerDeleteWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -140,8 +140,9 @@ func TestLoadBalancerListenerDelete(t *testing.T) {
 		context.TODO(),
 		"00000000-0000-4000-8000-000000000000",
 		cloud.LoadBalancerListenerDeleteParams{
-			ProjectID: gcore.Int(1),
-			RegionID:  gcore.Int(1),
+			ProjectID:         gcore.Int(1),
+			RegionID:          gcore.Int(1),
+			DeleteDefaultPool: gcore.Bool(false),
 		},
 	)
 	if err != nil {
