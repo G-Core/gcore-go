@@ -45,6 +45,10 @@ func TestGPUBaremetalClusterNewWithOptionalParams(t *testing.T) {
 				SSHKeyName: gcore.String("my-ssh-key"),
 				Username:   gcore.String("admin"),
 			},
+			FileShares: []cloud.GPUBaremetalClusterNewParamsServersSettingsFileShare{{
+				ID:        "a3f2d1b8-45e6-4f8a-bb5d-19dbf2cd7e9a",
+				MountPath: "/mnt/vast",
+			}},
 			SecurityGroups: []cloud.GPUBaremetalClusterNewParamsServersSettingsSecurityGroup{{
 				ID: "b4849ffa-89f2-45a1-951f-0ae5b7809d98",
 			}},

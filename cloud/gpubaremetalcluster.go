@@ -356,15 +356,18 @@ const (
 )
 
 type GPUBaremetalClusterServersSettings struct {
+	// List of file shares mounted across the cluster.
+	FileShares []GPUBaremetalClusterServersSettingsFileShare      `json:"file_shares,required"`
 	Interfaces []GPUBaremetalClusterServersSettingsInterfaceUnion `json:"interfaces,required"`
 	// Security groups names
 	SecurityGroups []GPUBaremetalClusterServersSettingsSecurityGroup `json:"security_groups,required"`
 	// SSH key name
 	SSHKeyName string `json:"ssh_key_name,required"`
-	// Optional custom user data (Base64-encoded) Mutually exclusive with 'password'.
+	// Optional custom user data
 	UserData string `json:"user_data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FileShares     respjson.Field
 		Interfaces     respjson.Field
 		SecurityGroups respjson.Field
 		SSHKeyName     respjson.Field
@@ -377,6 +380,26 @@ type GPUBaremetalClusterServersSettings struct {
 // Returns the unmodified JSON received from the API
 func (r GPUBaremetalClusterServersSettings) RawJSON() string { return r.JSON.raw }
 func (r *GPUBaremetalClusterServersSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GPUBaremetalClusterServersSettingsFileShare struct {
+	// Unique identifier of the file share in UUID format.
+	ID string `json:"id,required" format:"uuid4"`
+	// Absolute mount path inside the system where the file share will be mounted.
+	MountPath string `json:"mount_path,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		MountPath   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalClusterServersSettingsFileShare) RawJSON() string { return r.JSON.raw }
+func (r *GPUBaremetalClusterServersSettingsFileShare) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -688,6 +711,8 @@ type GPUBaremetalClusterNewParamsServersSettings struct {
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	// Optional server access credentials
 	Credentials GPUBaremetalClusterNewParamsServersSettingsCredentials `json:"credentials,omitzero"`
+	// List of file shares to be mounted across the cluster.
+	FileShares []GPUBaremetalClusterNewParamsServersSettingsFileShare `json:"file_shares,omitzero"`
 	// List of security groups UUIDs
 	SecurityGroups []GPUBaremetalClusterNewParamsServersSettingsSecurityGroup `json:"security_groups,omitzero"`
 	paramObj
@@ -976,6 +1001,23 @@ func (r GPUBaremetalClusterNewParamsServersSettingsCredentials) MarshalJSON() (d
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GPUBaremetalClusterNewParamsServersSettingsCredentials) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties ID, MountPath are required.
+type GPUBaremetalClusterNewParamsServersSettingsFileShare struct {
+	// Unique identifier of the file share in UUID format.
+	ID string `json:"id,required" format:"uuid4"`
+	// Absolute mount path inside the system where the file share will be mounted.
+	MountPath string `json:"mount_path,required"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterNewParamsServersSettingsFileShare) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsServersSettingsFileShare
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterNewParamsServersSettingsFileShare) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
