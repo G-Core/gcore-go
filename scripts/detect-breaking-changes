@@ -119,10 +119,6 @@ TEST_PATHS=(
 	streaming/streamoverlay_test.go
 	streaming/restream_test.go
 	streaming/statistic_test.go
-	security/event_test.go
-	security/bgpannounce_test.go
-	security/profiletemplate_test.go
-	security/profile_test.go
 	dns/dns_test.go
 	dns/location_test.go
 	dns/metric_test.go
