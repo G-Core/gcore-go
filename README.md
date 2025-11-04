@@ -60,7 +60,7 @@ func main() {
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("GCORE_API_KEY")
 	)
 	project, err := client.Cloud.Projects.New(context.TODO(), cloud.ProjectNewParams{
-		Name: "New Project",
+		Name: "my-project",
 	})
 	if err != nil {
 		panic(err.Error())
@@ -332,7 +332,7 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Cloud.Projects.New(context.TODO(), cloud.ProjectNewParams{
-	Name: "New Project",
+	Name: "my-project",
 })
 if err != nil {
 	var apierr *gcore.Error
@@ -361,7 +361,7 @@ defer cancel()
 client.Cloud.Projects.New(
 	ctx,
 	cloud.ProjectNewParams{
-		Name: "New Project",
+		Name: "my-project",
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -399,7 +399,7 @@ client := gcore.NewClient(
 client.Cloud.Projects.New(
 	context.TODO(),
 	cloud.ProjectNewParams{
-		Name: "New Project",
+		Name: "my-project",
 	},
 	option.WithMaxRetries(5),
 )
@@ -416,7 +416,7 @@ var response *http.Response
 project, err := client.Cloud.Projects.New(
 	context.TODO(),
 	cloud.ProjectNewParams{
-		Name: "New Project",
+		Name: "my-project",
 	},
 	option.WithResponseInto(&response),
 )
