@@ -60,6 +60,7 @@ type New string                             // Always "new"
 type NewVolume string                       // Always "new-volume"
 type Nfs string                             // Always "NFS"
 type Port string                            // Always "port"
+type Public string                          // Always "public"
 type ReservedFixedIP string                 // Always "reserved_fixed_ip"
 type Snapshot string                        // Always "snapshot"
 type Standard string                        // Always "standard"
@@ -115,6 +116,7 @@ func (c New) Default() New                                     { return "new" }
 func (c NewVolume) Default() NewVolume                         { return "new-volume" }
 func (c Nfs) Default() Nfs                                     { return "NFS" }
 func (c Port) Default() Port                                   { return "port" }
+func (c Public) Default() Public                               { return "public" }
 func (c ReservedFixedIP) Default() ReservedFixedIP             { return "reserved_fixed_ip" }
 func (c Snapshot) Default() Snapshot                           { return "snapshot" }
 func (c Standard) Default() Standard                           { return "standard" }
@@ -166,6 +168,7 @@ func (c New) MarshalJSON() ([]byte, error)                             { return 
 func (c NewVolume) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c Nfs) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c Port) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
+func (c Public) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c ReservedFixedIP) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Snapshot) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
 func (c Standard) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
