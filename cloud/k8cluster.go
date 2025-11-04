@@ -667,19 +667,31 @@ func (r *K8sClusterCertificate) UnmarshalJSON(data []byte) error {
 }
 
 type K8sClusterKubeconfig struct {
+	// String in base64 format. Cluster client certificate
+	ClientCertificate string `json:"client_certificate,required"`
+	// String in base64 format. Cluster client key
+	ClientKey string `json:"client_key,required"`
+	// String in base64 format. Cluster ca certificate
+	ClusterCaCertificate string `json:"cluster_ca_certificate,required"`
 	// Cluster kubeconfig
 	Config string `json:"config,required"`
+	// Cluster host
+	Host string `json:"host,required"`
 	// Kubeconfig creation date
 	CreatedAt time.Time `json:"created_at,nullable" format:"date-time"`
 	// Kubeconfig expiration date
 	ExpiresAt time.Time `json:"expires_at,nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Config      respjson.Field
-		CreatedAt   respjson.Field
-		ExpiresAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ClientCertificate    respjson.Field
+		ClientKey            respjson.Field
+		ClusterCaCertificate respjson.Field
+		Config               respjson.Field
+		Host                 respjson.Field
+		CreatedAt            respjson.Field
+		ExpiresAt            respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
