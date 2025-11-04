@@ -76,6 +76,10 @@ TEST_PATHS=(
 	cloud/auditlog_test.go
 	cloud/costreport_test.go
 	cloud/usagereport_test.go
+	cloud/databasepostgrescluster_test.go
+	cloud/databasepostgresclusterusercredential_test.go
+	cloud/databasepostgresconfiguration_test.go
+	cloud/databasepostgrescustomconfiguration_test.go
 	waap/waap_test.go
 	waap/statistic_test.go
 	waap/domain_test.go
