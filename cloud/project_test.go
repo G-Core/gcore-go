@@ -27,10 +27,8 @@ func TestProjectNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Projects.New(context.TODO(), cloud.ProjectNewParams{
-		Name:        "New Project",
-		ClientID:    gcore.Int(3),
+		Name:        "my-project",
 		Description: gcore.String("Project description"),
-		State:       gcore.String("ACTIVE"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -55,7 +53,7 @@ func TestProjectUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Projects.Update(context.TODO(), cloud.ProjectUpdateParams{
 		ProjectID:   gcore.Int(0),
-		Name:        "New Project",
+		Name:        "my-project",
 		Description: gcore.String("Project description"),
 	})
 	if err != nil {

@@ -26,7 +26,7 @@ func TestUsage(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	project, err := client.Cloud.Projects.New(context.TODO(), cloud.ProjectNewParams{
-		Name: "New Project",
+		Name: "my-project",
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())

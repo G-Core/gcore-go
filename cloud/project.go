@@ -50,8 +50,7 @@ func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ..
 	return
 }
 
-// Update project name and description. Project management must be enabled to
-// perform this operation.
+// Update project name and description.
 func (r *ProjectService) Update(ctx context.Context, params ProjectUpdateParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -193,12 +192,8 @@ func (r *Project) UnmarshalJSON(data []byte) error {
 type ProjectNewParams struct {
 	// Unique project name for a client. Each client always has one "default" project.
 	Name string `json:"name,required"`
-	// ID associated with the client.
-	ClientID param.Opt[int64] `json:"client_id,omitzero"`
 	// Description of the project.
 	Description param.Opt[string] `json:"description,omitzero"`
-	// State of the project.
-	State param.Opt[string] `json:"state,omitzero"`
 	paramObj
 }
 
