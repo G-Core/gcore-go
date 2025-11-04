@@ -1860,10 +1860,10 @@ type LoadBalancerNewParamsListenerPool struct {
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
 	// Health monitor details
 	Healthmonitor LoadBalancerNewParamsListenerPoolHealthmonitor `json:"healthmonitor,omitzero"`
-	// Pool members
-	Members []LoadBalancerNewParamsListenerPoolMember `json:"members,omitzero"`
 	// Session persistence details
 	SessionPersistence LoadBalancerNewParamsListenerPoolSessionPersistence `json:"session_persistence,omitzero"`
+	// Pool members
+	Members []LoadBalancerNewParamsListenerPoolMember `json:"members,omitzero"`
 	paramObj
 }
 
