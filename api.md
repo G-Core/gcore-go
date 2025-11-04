@@ -932,6 +932,58 @@ Methods:
 
 - <code title="post /cloud/v1/usage_report">client.Cloud.UsageReports.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#UsageReportService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#UsageReportGetParams">UsageReportGetParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#UsageReport">UsageReport</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## Databases
+
+### Postgres
+
+#### Clusters
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PostgresCluster">PostgresCluster</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PostgresClusterShort">PostgresClusterShort</a>
+
+Methods:
+
+- <code title="post /cloud/v1/dbaas/postgres/clusters/{project_id}/{region_id}">client.Cloud.Databases.Postgres.Clusters.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterNewParams">DatabasePostgresClusterNewParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#TaskIDList">TaskIDList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /cloud/v1/dbaas/postgres/clusters/{project_id}/{region_id}/{cluster_name}">client.Cloud.Databases.Postgres.Clusters.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, clusterName <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterUpdateParams">DatabasePostgresClusterUpdateParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#TaskIDList">TaskIDList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /cloud/v1/dbaas/postgres/clusters/{project_id}/{region_id}">client.Cloud.Databases.Postgres.Clusters.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterListParams">DatabasePostgresClusterListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PostgresClusterShort">PostgresClusterShort</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /cloud/v1/dbaas/postgres/clusters/{project_id}/{region_id}/{cluster_name}">client.Cloud.Databases.Postgres.Clusters.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, clusterName <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterDeleteParams">DatabasePostgresClusterDeleteParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#TaskIDList">TaskIDList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /cloud/v1/dbaas/postgres/clusters/{project_id}/{region_id}/{cluster_name}">client.Cloud.Databases.Postgres.Clusters.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, clusterName <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterGetParams">DatabasePostgresClusterGetParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PostgresCluster">PostgresCluster</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+##### Metrics
+
+##### UserCredentials
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PostgresUserCredentials">PostgresUserCredentials</a>
+
+Methods:
+
+- <code title="get /cloud/v1/dbaas/postgres/clusters/{project_id}/{region_id}/{cluster_name}/users/{username}/credentials">client.Cloud.Databases.Postgres.Clusters.UserCredentials.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterUserCredentialService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, username <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterUserCredentialGetParams">DatabasePostgresClusterUserCredentialGetParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PostgresUserCredentials">PostgresUserCredentials</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /cloud/v1/dbaas/postgres/clusters/{project_id}/{region_id}/{cluster_name}/users/{username}/credentials">client.Cloud.Databases.Postgres.Clusters.UserCredentials.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterUserCredentialService.Regenerate">Regenerate</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, username <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresClusterUserCredentialRegenerateParams">DatabasePostgresClusterUserCredentialRegenerateParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PostgresUserCredentials">PostgresUserCredentials</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+#### Configurations
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PostgresConfiguration">PostgresConfiguration</a>
+
+Methods:
+
+- <code title="get /cloud/v1/dbaas/postgres/configuration/{project_id}/{region_id}">client.Cloud.Databases.Postgres.Configurations.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresConfigurationService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresConfigurationGetParams">DatabasePostgresConfigurationGetParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PostgresConfiguration">PostgresConfiguration</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+#### CustomConfigurations
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PgConfValidation">PgConfValidation</a>
+
+Methods:
+
+- <code title="post /cloud/v1/dbaas/postgres/validate_pg_conf/{project_id}/{region_id}">client.Cloud.Databases.Postgres.CustomConfigurations.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresCustomConfigurationService.Validate">Validate</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresCustomConfigurationValidateParams">DatabasePostgresCustomConfigurationValidateParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PgConfValidation">PgConfValidation</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Waap
 
 Response Types:
