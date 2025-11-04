@@ -31,6 +31,7 @@ type DatabasePostgresClusterService struct {
 	Options         []option.RequestOption
 	Metrics         DatabasePostgresClusterMetricService
 	UserCredentials DatabasePostgresClusterUserCredentialService
+	tasks           TaskService
 }
 
 // NewDatabasePostgresClusterService generates a new service that applies the given
@@ -41,6 +42,7 @@ func NewDatabasePostgresClusterService(opts ...option.RequestOption) (r Database
 	r.Options = opts
 	r.Metrics = NewDatabasePostgresClusterMetricService(opts...)
 	r.UserCredentials = NewDatabasePostgresClusterUserCredentialService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -64,6 +66,41 @@ func (r *DatabasePostgresClusterService) New(ctx context.Context, params Databas
 	path := fmt.Sprintf("cloud/v1/dbaas/postgres/clusters/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a new PostgreSQL cluster and polls for completion
+func (r *DatabasePostgresClusterService) NewAndPoll(ctx context.Context, params DatabasePostgresClusterNewParams, opts ...option.RequestOption) (v *PostgresCluster, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams DatabasePostgresClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.PostgreSQLClusters) != 1 {
+		return nil, errors.New("expected exactly one postgres cluster to be created in a task")
+	}
+	resourceID := task.CreatedResources.PostgreSQLClusters[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
 // Update the configuration of an existing PostgreSQL cluster.
@@ -90,6 +127,37 @@ func (r *DatabasePostgresClusterService) Update(ctx context.Context, clusterName
 	path := fmt.Sprintf("cloud/v1/dbaas/postgres/clusters/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
+}
+
+// UpdateAndPoll updates a PostgreSQL cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
+func (r *DatabasePostgresClusterService) UpdateAndPoll(ctx context.Context, clusterName string, params DatabasePostgresClusterUpdateParams, opts ...option.RequestOption) (v *PostgresCluster, err error) {
+	resource, err := r.Update(ctx, clusterName, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams DatabasePostgresClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Get(ctx, clusterName, getParams, opts...)
 }
 
 // List all PostgreSQL clusters in the specified project and region. Results can be
@@ -155,6 +223,23 @@ func (r *DatabasePostgresClusterService) Delete(ctx context.Context, clusterName
 	path := fmt.Sprintf("cloud/v1/dbaas/postgres/clusters/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
+}
+
+// DeleteAndPoll deletes a PostgreSQL cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
+func (r *DatabasePostgresClusterService) DeleteAndPoll(ctx context.Context, clusterName string, body DatabasePostgresClusterDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, clusterName, body, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }
 
 // Get detailed information about a specific PostgreSQL cluster.
