@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.18.0 (2025-11-04)
+
+Full Changelog: [v0.17.0...v0.18.0](https://github.com/G-Core/gcore-go/compare/v0.17.0...v0.18.0)
+
+### Features
+
+* **api:** aggregated API specs update ([410ee99](https://github.com/G-Core/gcore-go/commit/410ee99998501fae43838121e4ae6cef7efaf379))
+* **api:** aggregated API specs update ([bbecad5](https://github.com/G-Core/gcore-go/commit/bbecad533162983e18ef394c1225c5623aefb35d))
+* **api:** aggregated API specs update ([16853b1](https://github.com/G-Core/gcore-go/commit/16853b10dfb9fd3dc6b922296eaa821fd2cd3e68))
+* **api:** aggregated API specs update ([d6ea9ad](https://github.com/G-Core/gcore-go/commit/d6ea9ad1c3c42caf8aa946479524af7b1e31b826))
+* **api:** aggregated API specs update ([4c37826](https://github.com/G-Core/gcore-go/commit/4c3782693de7e65edb98fd743b0794b5f1e4253f))
+* **api:** aggregated API specs update ([417769e](https://github.com/G-Core/gcore-go/commit/417769e6cff42f234a7a8ee053970d23a0078ec3))
+* **api:** aggregated API specs update ([2202759](https://github.com/G-Core/gcore-go/commit/220275985846733c431453ef8d9b539a9aeb0839))
+* **api:** aggregated API specs update ([c10e1b8](https://github.com/G-Core/gcore-go/commit/c10e1b8e5ee2b5a00192aadf638c1ee11d3a27d9))
+* **api:** aggregated API specs update ([993f01a](https://github.com/G-Core/gcore-go/commit/993f01a2a86fb6e0f35d626c4a345d81022c4bbf))
+* **cloud:** add polling methods to postgres clusters ([3d06488](https://github.com/G-Core/gcore-go/commit/3d06488064032dc77f1c589376c5fa28ff12c03b))
+* **cloud:** add support for postgres ([da38400](https://github.com/G-Core/gcore-go/commit/da384003a4237eec8cec624f279d6cbf5be5f383))
+
+
+### Bug Fixes
+
+* **client:** make sure to import param package when used ([a689cfd](https://github.com/G-Core/gcore-go/commit/a689cfd3b21e99e0e8841eeb68c9c97eafbd650a))
+* **cloud:** internal task service initialization in instance ([8dc5dd0](https://github.com/G-Core/gcore-go/commit/8dc5dd0ff71119dadbab850df4acd8b3c6071bd8))
+
+
+### Chores
+
+* **internal:** grammar fix (it's -&gt; its) ([53e9730](https://github.com/G-Core/gcore-go/commit/53e9730eb72a5a621734ade0c73d52fc9c742df0))
+
 ## 0.17.0 (2025-10-21)
 
 Full Changelog: [v0.16.0...v0.17.0](https://github.com/G-Core/gcore-go/compare/v0.16.0...v0.17.0)
