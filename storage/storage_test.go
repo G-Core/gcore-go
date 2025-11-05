@@ -27,7 +27,7 @@ func TestStorageNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Storage.New(context.TODO(), storage.StorageNewParams{
-		Location:             storage.StorageNewParamsLocationSEd1,
+		Location:             "s-region-1",
 		Name:                 "my-storage-prod",
 		Type:                 storage.StorageNewParamsTypeS3,
 		GenerateSftpPassword: gcore.Bool(true),
