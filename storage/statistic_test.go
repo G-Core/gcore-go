@@ -28,7 +28,7 @@ func TestStatisticGetUsageAggregatedWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Storage.Statistics.GetUsageAggregated(context.TODO(), storage.StatisticGetUsageAggregatedParams{
 		From:      gcore.String("2006-01-02"),
-		Locations: []string{"s-ed1", "s-drc2", "s-sgc1"},
+		Locations: []string{"s-region-1", "s-region-2"},
 		Storages:  []string{"123-myStorage"},
 		To:        gcore.String("2006-01-02"),
 	})
@@ -56,7 +56,7 @@ func TestStatisticGetUsageSeriesWithOptionalParams(t *testing.T) {
 	_, err := client.Storage.Statistics.GetUsageSeries(context.TODO(), storage.StatisticGetUsageSeriesParams{
 		From:        gcore.String("2006-01-02"),
 		Granularity: gcore.String("12h"),
-		Locations:   []string{"s-ed1", "s-drc2", "s-sgc1"},
+		Locations:   []string{"s-region-1", "s-region-2"},
 		Source:      gcore.Int(0),
 		Storages:    []string{"123-myStorage"},
 		To:          gcore.String("2006-01-02"),
