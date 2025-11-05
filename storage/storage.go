@@ -156,10 +156,7 @@ type Storage struct {
 	// ISO 8601 timestamp when the storage was created
 	CreatedAt string `json:"created_at,required"`
 	// Geographic location code where the storage is provisioned
-	//
-	// Any of "s-ed1", "s-drc2", "s-sgc1", "s-nhn2", "s-darz", "s-ws1", "ams", "sin",
-	// "fra", "mia".
-	Location StorageLocation `json:"location,required"`
+	Location string `json:"location,required"`
 	// User-defined name for the storage instance
 	Name string `json:"name,required"`
 	// Current provisioning status of the storage instance
@@ -219,22 +216,6 @@ func (r Storage) RawJSON() string { return r.JSON.raw }
 func (r *Storage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Geographic location code where the storage is provisioned
-type StorageLocation string
-
-const (
-	StorageLocationSEd1  StorageLocation = "s-ed1"
-	StorageLocationSDrc2 StorageLocation = "s-drc2"
-	StorageLocationSSgc1 StorageLocation = "s-sgc1"
-	StorageLocationSNhn2 StorageLocation = "s-nhn2"
-	StorageLocationSDarz StorageLocation = "s-darz"
-	StorageLocationSWs1  StorageLocation = "s-ws1"
-	StorageLocationAms   StorageLocation = "ams"
-	StorageLocationSin   StorageLocation = "sin"
-	StorageLocationFra   StorageLocation = "fra"
-	StorageLocationMia   StorageLocation = "mia"
-)
 
 // Current provisioning status of the storage instance
 type StorageProvisioningStatus string
@@ -325,10 +306,7 @@ func (r *StorageCredentialsS3) UnmarshalJSON(data []byte) error {
 type StorageNewParams struct {
 	// Geographic location where the storage will be provisioned. Each location
 	// represents a specific data center region.
-	//
-	// Any of "s-ed1", "s-drc2", "s-sgc1", "s-nhn2", "s-darz", "s-ws1", "ams", "sin",
-	// "fra", "mia".
-	Location StorageNewParamsLocation `json:"location,omitzero,required"`
+	Location string `json:"location,required"`
 	// Unique storage name identifier. Must contain only letters, numbers, dashes, and
 	// underscores. Cannot be empty and must be less than 256 characters.
 	Name string `json:"name,required"`
@@ -355,23 +333,6 @@ func (r StorageNewParams) MarshalJSON() (data []byte, err error) {
 func (r *StorageNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Geographic location where the storage will be provisioned. Each location
-// represents a specific data center region.
-type StorageNewParamsLocation string
-
-const (
-	StorageNewParamsLocationSEd1  StorageNewParamsLocation = "s-ed1"
-	StorageNewParamsLocationSDrc2 StorageNewParamsLocation = "s-drc2"
-	StorageNewParamsLocationSSgc1 StorageNewParamsLocation = "s-sgc1"
-	StorageNewParamsLocationSNhn2 StorageNewParamsLocation = "s-nhn2"
-	StorageNewParamsLocationSDarz StorageNewParamsLocation = "s-darz"
-	StorageNewParamsLocationSWs1  StorageNewParamsLocation = "s-ws1"
-	StorageNewParamsLocationAms   StorageNewParamsLocation = "ams"
-	StorageNewParamsLocationSin   StorageNewParamsLocation = "sin"
-	StorageNewParamsLocationFra   StorageNewParamsLocation = "fra"
-	StorageNewParamsLocationMia   StorageNewParamsLocation = "mia"
-)
 
 // Storage protocol type. Choose 's3' for S3-compatible object storage with API
 // access, or `sftp` for SFTP file transfer protocol.
