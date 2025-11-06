@@ -359,7 +359,7 @@ type GPUBaremetalClusterServersSettings struct {
 	// List of file shares mounted across the cluster.
 	FileShares []GPUBaremetalClusterServersSettingsFileShare      `json:"file_shares,required"`
 	Interfaces []GPUBaremetalClusterServersSettingsInterfaceUnion `json:"interfaces,required"`
-	// Security groups names
+	// Security groups
 	SecurityGroups []GPUBaremetalClusterServersSettingsSecurityGroup `json:"security_groups,required"`
 	// SSH key name
 	SSHKeyName string `json:"ssh_key_name,required"`
@@ -642,10 +642,13 @@ func (r *GPUBaremetalClusterServersSettingsInterfaceAnySubnetFloatingIP) Unmarsh
 }
 
 type GPUBaremetalClusterServersSettingsSecurityGroup struct {
-	// Name.
+	// Security group ID
+	ID string `json:"id,required"`
+	// Security group name
 	Name string `json:"name,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
