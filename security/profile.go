@@ -97,7 +97,7 @@ type ClientProfile struct {
 	Protocols       []map[string]any      `json:"protocols,required"`
 	Site            string                `json:"site,required"`
 	Status          map[string]any        `json:"status,required"`
-	IPAddress       string                `json:"ip_address,nullable"`
+	IPAddress       string                `json:"ip_address"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -176,7 +176,8 @@ type ProfileNewParams struct {
 	Fields          []ProfileNewParamsField `json:"fields,omitzero,required"`
 	ProfileTemplate int64                   `json:"profile_template,required"`
 	Site            string                  `json:"site,required"`
-	IPAddress       param.Opt[string]       `json:"ip_address,omitzero"`
+	// Required for Universal template only. Optional for all others.
+	IPAddress param.Opt[string] `json:"ip_address,omitzero"`
 	paramObj
 }
 
@@ -230,8 +231,9 @@ func (r ProfileListParams) URLQuery() (v url.Values, err error) {
 type ProfileRecreateParams struct {
 	Fields          []ProfileRecreateParamsField `json:"fields,omitzero,required"`
 	ProfileTemplate int64                        `json:"profile_template,required"`
-	IPAddress       param.Opt[string]            `json:"ip_address,omitzero"`
-	Site            param.Opt[string]            `json:"site,omitzero"`
+	// Required for Universal template only. Optional for all others.
+	IPAddress param.Opt[string] `json:"ip_address,omitzero"`
+	Site      param.Opt[string] `json:"site,omitzero"`
 	paramObj
 }
 
@@ -269,8 +271,9 @@ func (r *ProfileRecreateParamsField) UnmarshalJSON(data []byte) error {
 type ProfileReplaceParams struct {
 	Fields          []ProfileReplaceParamsField `json:"fields,omitzero,required"`
 	ProfileTemplate int64                       `json:"profile_template,required"`
-	IPAddress       param.Opt[string]           `json:"ip_address,omitzero"`
-	Site            param.Opt[string]           `json:"site,omitzero"`
+	// Required for Universal template only. Optional for all others.
+	IPAddress param.Opt[string] `json:"ip_address,omitzero"`
+	Site      param.Opt[string] `json:"site,omitzero"`
 	paramObj
 }
 

@@ -79,7 +79,6 @@ type BgpAnnounceToggleResponse = any
 
 type BgpAnnounceListParams struct {
 	Announced param.Opt[bool]   `query:"announced,omitzero" json:"-"`
-	ClientID  param.Opt[int64]  `query:"client_id,omitzero" json:"-"`
 	Site      param.Opt[string] `query:"site,omitzero" json:"-"`
 	// Any of "STATIC", "DYNAMIC".
 	Origin BgpAnnounceListParamsOrigin `query:"origin,omitzero" json:"-"`
