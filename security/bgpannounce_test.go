@@ -28,7 +28,6 @@ func TestBgpAnnounceListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Security.BgpAnnounces.List(context.TODO(), security.BgpAnnounceListParams{
 		Announced: gcore.Bool(true),
-		ClientID:  gcore.Int(0),
 		Origin:    security.BgpAnnounceListParamsOriginStatic,
 		Site:      gcore.String("x"),
 	})

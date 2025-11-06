@@ -60,7 +60,7 @@ func TestProfileListWithOptionalParams(t *testing.T) {
 		ExcludeEmptyAddress: gcore.Bool(true),
 		IncludeDeleted:      gcore.Bool(true),
 		IPAddress:           gcore.String("ip_address"),
-		Site:                gcore.String("site"),
+		Site:                gcore.String("ED"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
