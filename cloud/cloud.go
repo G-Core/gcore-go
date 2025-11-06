@@ -747,6 +747,12 @@ type GPUImage struct {
 	Visibility string `json:"visibility,required"`
 	// Image architecture type
 	Architecture string `json:"architecture,nullable"`
+	// Name of the GPU driver vendor
+	GPUDriver string `json:"gpu_driver,nullable"`
+	// Type of the GPU driver
+	GPUDriverType string `json:"gpu_driver_type,nullable"`
+	// Version of the installed GPU driver
+	GPUDriverVersion string `json:"gpu_driver_version,nullable"`
 	// OS Distribution
 	OsDistro string `json:"os_distro,nullable"`
 	// The operating system installed on the image
@@ -763,24 +769,27 @@ type GPUImage struct {
 	TaskID string `json:"task_id,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		MinDisk      respjson.Field
-		MinRam       respjson.Field
-		Name         respjson.Field
-		Status       respjson.Field
-		Tags         respjson.Field
-		UpdatedAt    respjson.Field
-		Visibility   respjson.Field
-		Architecture respjson.Field
-		OsDistro     respjson.Field
-		OsType       respjson.Field
-		OsVersion    respjson.Field
-		Size         respjson.Field
-		SSHKey       respjson.Field
-		TaskID       respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID               respjson.Field
+		CreatedAt        respjson.Field
+		MinDisk          respjson.Field
+		MinRam           respjson.Field
+		Name             respjson.Field
+		Status           respjson.Field
+		Tags             respjson.Field
+		UpdatedAt        respjson.Field
+		Visibility       respjson.Field
+		Architecture     respjson.Field
+		GPUDriver        respjson.Field
+		GPUDriverType    respjson.Field
+		GPUDriverVersion respjson.Field
+		OsDistro         respjson.Field
+		OsType           respjson.Field
+		OsVersion        respjson.Field
+		Size             respjson.Field
+		SSHKey           respjson.Field
+		TaskID           respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
 	} `json:"-"`
 }
 
@@ -874,6 +883,12 @@ type Image struct {
 	// Image description
 	Description  string `json:"description,nullable"`
 	DisplayOrder int64  `json:"display_order,nullable"`
+	// Name of the GPU driver vendor
+	GPUDriver string `json:"gpu_driver,nullable"`
+	// Type of the GPU driver
+	GPUDriverType string `json:"gpu_driver_type,nullable"`
+	// Version of the installed GPU driver
+	GPUDriverVersion string `json:"gpu_driver_version,nullable"`
 	// Specifies the type of firmware with which to boot the guest.
 	//
 	// Any of "bios", "uefi".
@@ -894,34 +909,37 @@ type Image struct {
 	TaskID string `json:"task_id,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID             respjson.Field
-		CreatedAt      respjson.Field
-		DiskFormat     respjson.Field
-		MinDisk        respjson.Field
-		MinRam         respjson.Field
-		Name           respjson.Field
-		OsDistro       respjson.Field
-		OsType         respjson.Field
-		OsVersion      respjson.Field
-		ProjectID      respjson.Field
-		Region         respjson.Field
-		RegionID       respjson.Field
-		Size           respjson.Field
-		Status         respjson.Field
-		Tags           respjson.Field
-		UpdatedAt      respjson.Field
-		Visibility     respjson.Field
-		Architecture   respjson.Field
-		CreatorTaskID  respjson.Field
-		Description    respjson.Field
-		DisplayOrder   respjson.Field
-		HwFirmwareType respjson.Field
-		HwMachineType  respjson.Field
-		IsBaremetal    respjson.Field
-		SSHKey         respjson.Field
-		TaskID         respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		ID               respjson.Field
+		CreatedAt        respjson.Field
+		DiskFormat       respjson.Field
+		MinDisk          respjson.Field
+		MinRam           respjson.Field
+		Name             respjson.Field
+		OsDistro         respjson.Field
+		OsType           respjson.Field
+		OsVersion        respjson.Field
+		ProjectID        respjson.Field
+		Region           respjson.Field
+		RegionID         respjson.Field
+		Size             respjson.Field
+		Status           respjson.Field
+		Tags             respjson.Field
+		UpdatedAt        respjson.Field
+		Visibility       respjson.Field
+		Architecture     respjson.Field
+		CreatorTaskID    respjson.Field
+		Description      respjson.Field
+		DisplayOrder     respjson.Field
+		GPUDriver        respjson.Field
+		GPUDriverType    respjson.Field
+		GPUDriverVersion respjson.Field
+		HwFirmwareType   respjson.Field
+		HwMachineType    respjson.Field
+		IsBaremetal      respjson.Field
+		SSHKey           respjson.Field
+		TaskID           respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
 	} `json:"-"`
 }
 

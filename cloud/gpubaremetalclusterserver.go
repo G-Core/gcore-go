@@ -275,7 +275,7 @@ type GPUBaremetalClusterServer struct {
 	IPAddresses []string `json:"ip_addresses,required"`
 	// Server's name generated using cluster's name
 	Name string `json:"name,required"`
-	// Security groups names
+	// Security groups
 	SecurityGroups []GPUBaremetalClusterServerSecurityGroup `json:"security_groups,required"`
 	// SSH key pair assigned to the server
 	SSHKeyName string `json:"ssh_key_name,required"`
@@ -318,10 +318,13 @@ func (r *GPUBaremetalClusterServer) UnmarshalJSON(data []byte) error {
 }
 
 type GPUBaremetalClusterServerSecurityGroup struct {
-	// Name.
+	// Security group ID
+	ID string `json:"id,required"`
+	// Security group name
 	Name string `json:"name,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
