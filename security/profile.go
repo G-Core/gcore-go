@@ -95,9 +95,10 @@ type ClientProfile struct {
 	Plan            string                `json:"plan,required"`
 	ProfileTemplate ClientProfileTemplate `json:"profile_template,required"`
 	Protocols       []map[string]any      `json:"protocols,required"`
-	Site            string                `json:"site,required"`
-	Status          map[string]any        `json:"status,required"`
-	IPAddress       string                `json:"ip_address"`
+	// Region where the protection profiles will be deployed
+	Site      string         `json:"site,required"`
+	Status    map[string]any `json:"status,required"`
+	IPAddress string         `json:"ip_address"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -175,7 +176,8 @@ func (r *ClientProfileOptions) UnmarshalJSON(data []byte) error {
 type ProfileNewParams struct {
 	Fields          []ProfileNewParamsField `json:"fields,omitzero,required"`
 	ProfileTemplate int64                   `json:"profile_template,required"`
-	Site            string                  `json:"site,required"`
+	// Region where the protection profiles will be deployed
+	Site string `json:"site,required"`
 	// Required for Universal template only. Optional for all others.
 	IPAddress param.Opt[string] `json:"ip_address,omitzero"`
 	paramObj
@@ -233,7 +235,8 @@ type ProfileRecreateParams struct {
 	ProfileTemplate int64                        `json:"profile_template,required"`
 	// Required for Universal template only. Optional for all others.
 	IPAddress param.Opt[string] `json:"ip_address,omitzero"`
-	Site      param.Opt[string] `json:"site,omitzero"`
+	// Region where the protection profiles will be deployed
+	Site param.Opt[string] `json:"site,omitzero"`
 	paramObj
 }
 
@@ -273,7 +276,8 @@ type ProfileReplaceParams struct {
 	ProfileTemplate int64                       `json:"profile_template,required"`
 	// Required for Universal template only. Optional for all others.
 	IPAddress param.Opt[string] `json:"ip_address,omitzero"`
-	Site      param.Opt[string] `json:"site,omitzero"`
+	// Region where the protection profiles will be deployed
+	Site param.Opt[string] `json:"site,omitzero"`
 	paramObj
 }
 
