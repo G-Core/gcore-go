@@ -146,8 +146,6 @@ func (r *SecretSecretSlot) UnmarshalJSON(data []byte) error {
 }
 
 type SecretParam struct {
-	// The number of applications that use this secret.
-	AppCount param.Opt[int64] `json:"app_count,omitzero"`
 	// A description or comment about the secret.
 	Comment param.Opt[string] `json:"comment,omitzero"`
 	// The unique name of the secret.
@@ -169,8 +167,6 @@ func (r *SecretParam) UnmarshalJSON(data []byte) error {
 type SecretSecretSlotParam struct {
 	// Secret slot ID.
 	Slot int64 `json:"slot,required"`
-	// A checksum of the secret value for integrity verification.
-	Checksum param.Opt[string] `json:"checksum,omitzero"`
 	// The value of the secret.
 	Value param.Opt[string] `json:"value,omitzero"`
 	paramObj
