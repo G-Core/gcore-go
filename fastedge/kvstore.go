@@ -140,14 +140,8 @@ func (r *KvStoreByod) UnmarshalJSON(data []byte) error {
 }
 
 type KvStoreParam struct {
-	// The unique identifier of the store
-	ID param.Opt[int64] `json:"id,omitzero"`
-	// The number of applications that use this store
-	AppCount param.Opt[int64] `json:"app_count,omitzero"`
 	// A description of the store
 	Comment param.Opt[string] `json:"comment,omitzero"`
-	// Last update time
-	Updated param.Opt[time.Time] `json:"updated,omitzero" format:"date-time"`
 	// BYOD (Bring Your Own Data) settings
 	Byod KvStoreByodParam `json:"byod,omitzero"`
 	paramObj

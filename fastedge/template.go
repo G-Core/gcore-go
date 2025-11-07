@@ -141,8 +141,6 @@ func (r Template) ToParam() TemplateParam {
 
 // The properties APIType, BinaryID, Name, Owned, Params are required.
 type TemplateParam struct {
-	// Wasm API type
-	APIType string `json:"api_type,required"`
 	// Binary ID
 	BinaryID int64 `json:"binary_id,required"`
 	// Name of the template

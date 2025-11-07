@@ -224,22 +224,14 @@ func (r *AppSecret) UnmarshalJSON(data []byte) error {
 }
 
 type AppParam struct {
-	// Wasm API type
-	APIType param.Opt[string] `json:"api_type,omitzero"`
 	// Binary ID
 	Binary param.Opt[int64] `json:"binary,omitzero"`
 	// App description
 	Comment param.Opt[string] `json:"comment,omitzero"`
 	// Switch on logging for 30 minutes (switched off by default)
 	Debug param.Opt[bool] `json:"debug,omitzero"`
-	// When debugging finishes
-	DebugUntil param.Opt[time.Time] `json:"debug_until,omitzero" format:"date-time"`
 	// App name
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Plan name
-	Plan param.Opt[string] `json:"plan,omitzero"`
-	// Plan ID
-	PlanID param.Opt[int64] `json:"plan_id,omitzero"`
 	// Status code:
 	// 0 - draft (inactive)
 	// 1 - enabled
@@ -250,18 +242,12 @@ type AppParam struct {
 	Status param.Opt[int64] `json:"status,omitzero"`
 	// Template ID
 	Template param.Opt[int64] `json:"template,omitzero"`
-	// Template name
-	TemplateName param.Opt[string] `json:"template_name,omitzero"`
-	// App URL
-	URL param.Opt[string] `json:"url,omitzero"`
 	// Logging channel (by default - kafka, which allows exploring logs with API)
 	//
 	// Any of "kafka", "none".
 	Log AppLog `json:"log,omitzero"`
 	// Environment variables
 	Env map[string]string `json:"env,omitzero"`
-	// Networks
-	Networks []string `json:"networks,omitzero"`
 	// Extra headers to add to the response
 	RspHeaders map[string]string `json:"rsp_headers,omitzero"`
 	// Application secrets
@@ -285,10 +271,6 @@ func (r *AppParam) UnmarshalJSON(data []byte) error {
 type AppSecretParam struct {
 	// The unique identifier of the secret.
 	ID int64 `json:"id,required"`
-	// A description or comment about the secret.
-	Comment param.Opt[string] `json:"comment,omitzero"`
-	// The unique name of the secret.
-	Name param.Opt[string] `json:"name,omitzero"`
 	paramObj
 }
 
