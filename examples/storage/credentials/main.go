@@ -43,7 +43,7 @@ func createS3Storage(client *gcore.Client) int64 {
 	params := storage.StorageNewParams{
 		Name:     s3Name,
 		Type:     storage.StorageNewParamsTypeS3,
-		Location: storage.StorageNewParamsLocationFra,
+		Location: "s-ed1",
 	}
 
 	newStorage, err := client.Storage.New(context.Background(), params)
@@ -74,7 +74,7 @@ func createSFTPStorage(client *gcore.Client) int64 {
 	params := storage.StorageNewParams{
 		Name:                 sftpName,
 		Type:                 storage.StorageNewParamsTypeSftp,
-		Location:             storage.StorageNewParamsLocationFra,
+		Location:             "s-ed1",
 		GenerateSftpPassword: param.NewOpt(true),
 	}
 

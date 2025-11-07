@@ -39,7 +39,7 @@ func createStorage(client *gcore.Client) int64 {
 	params := storage.StorageNewParams{
 		Name:     name,
 		Type:     storage.StorageNewParamsTypeS3,
-		Location: storage.StorageNewParamsLocationAms,
+		Location: "ams",
 	}
 
 	newStorage, err := client.Storage.New(context.Background(), params)
