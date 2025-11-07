@@ -4524,9 +4524,7 @@ type ResourceNewParamsOptionsRequestLimiter struct {
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled,required"`
 	// Maximum request rate.
-	Rate  int64            `json:"rate,required"`
-	Burst param.Opt[int64] `json:"burst,omitzero"`
-	Delay param.Opt[int64] `json:"delay,omitzero"`
+	Rate int64 `json:"rate,required"`
 	// Units of measurement for the `rate` field.
 	//
 	// Possible values:
@@ -6864,9 +6862,7 @@ type ResourceUpdateParamsOptionsRequestLimiter struct {
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled,required"`
 	// Maximum request rate.
-	Rate  int64            `json:"rate,required"`
-	Burst param.Opt[int64] `json:"burst,omitzero"`
-	Delay param.Opt[int64] `json:"delay,omitzero"`
+	Rate int64 `json:"rate,required"`
 	// Units of measurement for the `rate` field.
 	//
 	// Possible values:
@@ -9424,9 +9420,7 @@ type ResourceReplaceParamsOptionsRequestLimiter struct {
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled,required"`
 	// Maximum request rate.
-	Rate  int64            `json:"rate,required"`
-	Burst param.Opt[int64] `json:"burst,omitzero"`
-	Delay param.Opt[int64] `json:"delay,omitzero"`
+	Rate int64 `json:"rate,required"`
 	// Units of measurement for the `rate` field.
 	//
 	// Possible values:

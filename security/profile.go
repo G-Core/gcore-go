@@ -194,15 +194,8 @@ func (r *ProfileNewParams) UnmarshalJSON(data []byte) error {
 // The properties ID, BaseField, Default, Description, FieldType, Name, Required,
 // ValidationSchema are required.
 type ProfileNewParamsField struct {
-	ID               int64          `json:"id,required"`
-	BaseField        int64          `json:"base_field,required"`
-	Default          string         `json:"default,required"`
-	Description      string         `json:"description,required"`
-	FieldType        string         `json:"field_type,required"`
-	Name             string         `json:"name,required"`
-	Required         bool           `json:"required,required"`
-	ValidationSchema map[string]any `json:"validation_schema,omitzero,required"`
-	FieldValue       any            `json:"field_value,omitzero"`
+	BaseField  int64 `json:"base_field,required"`
+	FieldValue any   `json:"field_value,omitzero"`
 	paramObj
 }
 
@@ -251,15 +244,8 @@ func (r *ProfileRecreateParams) UnmarshalJSON(data []byte) error {
 // The properties ID, BaseField, Default, Description, FieldType, Name, Required,
 // ValidationSchema are required.
 type ProfileRecreateParamsField struct {
-	ID               int64          `json:"id,required"`
-	BaseField        int64          `json:"base_field,required"`
-	Default          string         `json:"default,required"`
-	Description      string         `json:"description,required"`
-	FieldType        string         `json:"field_type,required"`
-	Name             string         `json:"name,required"`
-	Required         bool           `json:"required,required"`
-	ValidationSchema map[string]any `json:"validation_schema,omitzero,required"`
-	FieldValue       any            `json:"field_value,omitzero"`
+	BaseField  int64 `json:"base_field,required"`
+	FieldValue any   `json:"field_value,omitzero"`
 	paramObj
 }
 
@@ -292,15 +278,8 @@ func (r *ProfileReplaceParams) UnmarshalJSON(data []byte) error {
 // The properties ID, BaseField, Default, Description, FieldType, Name, Required,
 // ValidationSchema are required.
 type ProfileReplaceParamsField struct {
-	ID               int64          `json:"id,required"`
-	BaseField        int64          `json:"base_field,required"`
-	Default          string         `json:"default,required"`
-	Description      string         `json:"description,required"`
-	FieldType        string         `json:"field_type,required"`
-	Name             string         `json:"name,required"`
-	Required         bool           `json:"required,required"`
-	ValidationSchema map[string]any `json:"validation_schema,omitzero,required"`
-	FieldValue       any            `json:"field_value,omitzero"`
+	BaseField  int64 `json:"base_field,required"`
+	FieldValue any   `json:"field_value,omitzero"`
 	paramObj
 }
 
