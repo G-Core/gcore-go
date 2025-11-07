@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.19.0 (2025-11-07)
+
+Full Changelog: [v0.18.0...v0.19.0](https://github.com/G-Core/gcore-go/compare/v0.18.0...v0.19.0)
+
+### Features
+
+* **api:** aggregated API specs update ([843bd35](https://github.com/G-Core/gcore-go/commit/843bd35bdccd4d12990e0e11a1e946e5db0880a3))
+* **api:** aggregated API specs update ([9dc8473](https://github.com/G-Core/gcore-go/commit/9dc84730118a792f55b46d05cffe8202e3cc20c6))
+* **api:** aggregated API specs update ([003cd96](https://github.com/G-Core/gcore-go/commit/003cd966ae4af17a478366171561898f17c4faeb))
+* **api:** aggregated API specs update ([d73045f](https://github.com/G-Core/gcore-go/commit/d73045fda8dd183f066933290c7801088af3ba4c))
+
+
+### Bug Fixes
+
+* **examples:** update storage location to string ([e9ea78e](https://github.com/G-Core/gcore-go/commit/e9ea78e94a6876fe8b0295647db1eb6eb90a0363))
+* remove readonly parameters from request params ([825a766](https://github.com/G-Core/gcore-go/commit/825a766a2cbfeff545359b277d2e6d1025d28ebc))
+
 ## 0.18.0 (2025-11-04)
 
 Full Changelog: [v0.17.0...v0.18.0](https://github.com/G-Core/gcore-go/compare/v0.17.0...v0.18.0)
