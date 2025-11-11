@@ -35,6 +35,7 @@ type GPUVirtualClusterService struct {
 	Interfaces GPUVirtualClusterInterfaceService
 	Flavors    GPUVirtualClusterFlavorService
 	Images     GPUVirtualClusterImageService
+	tasks      TaskService
 }
 
 // NewGPUVirtualClusterService generates a new service that applies the given
@@ -48,6 +49,7 @@ func NewGPUVirtualClusterService(opts ...option.RequestOption) (r GPUVirtualClus
 	r.Interfaces = NewGPUVirtualClusterInterfaceService(opts...)
 	r.Flavors = NewGPUVirtualClusterFlavorService(opts...)
 	r.Images = NewGPUVirtualClusterImageService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -213,6 +215,89 @@ func (r *GPUVirtualClusterService) Get(ctx context.Context, clusterID string, qu
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s", query.ProjectID.Value, query.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a new virtual GPU cluster and polls for completion
+func (r *GPUVirtualClusterService) NewAndPoll(ctx context.Context, params GPUVirtualClusterNewParams, opts ...option.RequestOption) (v *GPUVirtualCluster, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams GPUVirtualClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.AIClusters) != 1 {
+		return nil, errors.New("expected exactly one GPU virtual cluster to be created in a task")
+	}
+	resourceID := task.CreatedResources.AIClusters[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
+// DeleteAndPoll deletes a virtual GPU cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
+func (r *GPUVirtualClusterService) DeleteAndPoll(ctx context.Context, clusterID string, params GPUVirtualClusterDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, clusterID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
+}
+
+// ActionAndPoll performs an action on a virtual GPU cluster and polls for completion of the first task. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
+func (r *GPUVirtualClusterService) ActionAndPoll(ctx context.Context, clusterID string, params GPUVirtualClusterActionParams, opts ...option.RequestOption) (v *GPUVirtualCluster, err error) {
+	resource, err := r.Action(ctx, clusterID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams GPUVirtualClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Get(ctx, clusterID, getParams, opts...)
 }
 
 type GPUVirtualCluster struct {
