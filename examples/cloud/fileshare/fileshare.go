@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/G-Core/gcore-go/packages/param"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/G-Core/gcore-go/packages/param"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
@@ -70,25 +71,14 @@ func createFileShare(client *gcore.Client, networkID string) *cloud.FileShare {
 			Network: cloud.FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork{
 				NetworkID: networkID,
 			},
-			Size:       1,
-			VolumeType: "default_share_type",
-			Protocol:   constant.ValueOf[constant.Nfs](),
+			Size:     1,
+			Protocol: constant.ValueOf[constant.Nfs](),
 		},
 	}
 
-	taskList, err := client.Cloud.FileShares.New(context.Background(), params)
+	fileShare, err := client.Cloud.FileShares.NewAndPoll(context.Background(), params)
 	if err != nil {
 		log.Fatalf("Error creating file share: %v", err)
-	}
-
-	task, err := client.Cloud.Tasks.Poll(context.Background(), taskList.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling task: %v", err)
-	}
-
-	fileShare, err := client.Cloud.FileShares.Get(context.Background(), task.CreatedResources.FileShares[0], cloud.FileShareGetParams{})
-	if err != nil {
-		log.Fatalf("Error getting created file share: %v", err)
 	}
 
 	fmt.Printf("Created File Share: ID=%s, Name=%s, Size=%d GiB, Status=%s\n",
@@ -174,31 +164,21 @@ func resizeFileShare(client *gcore.Client, fileShareID string, newSize int64) {
 		Size: newSize,
 	}
 
-	taskList, err := client.Cloud.FileShares.Resize(context.Background(), fileShareID, params)
+	fileShare, err := client.Cloud.FileShares.ResizeAndPoll(context.Background(), fileShareID, params)
 	if err != nil {
 		log.Fatalf("Error resizing file share: %v", err)
 	}
 
-	_, err = client.Cloud.Tasks.Poll(context.Background(), taskList.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling resize task: %v", err)
-	}
-
-	fmt.Printf("File Share %s successfully resized to %d GiB\n", fileShareID, newSize)
+	fmt.Printf("File Share %s successfully resized to %d GiB (Status: %s)\n", fileShare.ID, fileShare.Size, fileShare.Status)
 	fmt.Println("=========================")
 }
 
 func deleteFileShare(client *gcore.Client, fileShareID string) {
 	fmt.Println("\n=== DELETE FILE SHARE ===")
 
-	taskList, err := client.Cloud.FileShares.Delete(context.Background(), fileShareID, cloud.FileShareDeleteParams{})
+	err := client.Cloud.FileShares.DeleteAndPoll(context.Background(), fileShareID, cloud.FileShareDeleteParams{})
 	if err != nil {
 		log.Fatalf("Error deleting file share: %v", err)
-	}
-
-	_, err = client.Cloud.Tasks.Poll(context.Background(), taskList.Tasks[0])
-	if err != nil {
-		log.Fatalf("Error polling delete task: %v", err)
 	}
 
 	fmt.Printf("File Share %s successfully deleted\n", fileShareID)

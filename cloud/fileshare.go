@@ -66,6 +66,41 @@ func (r *FileShareService) New(ctx context.Context, params FileShareNewParams, o
 	return
 }
 
+// NewAndPoll creates a new file share and polls for completion
+func (r *FileShareService) NewAndPoll(ctx context.Context, params FileShareNewParams, opts ...option.RequestOption) (v *FileShare, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams FileShareGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.FileShares) != 1 {
+		return nil, errors.New("expected exactly one file share to be created in a task")
+	}
+	resourceID := task.CreatedResources.FileShares[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
 // Rename file share, update tags or set share specific properties
 func (r *FileShareService) Update(ctx context.Context, fileShareID string, params FileShareUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -184,6 +219,23 @@ func (r *FileShareService) Delete(ctx context.Context, fileShareID string, body 
 	return
 }
 
+// DeleteAndPoll deletes a file share and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
+func (r *FileShareService) DeleteAndPoll(ctx context.Context, fileShareID string, body FileShareDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, fileShareID, body, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
+}
+
 // Get file share
 func (r *FileShareService) Get(ctx context.Context, fileShareID string, query FileShareGetParams, opts ...option.RequestOption) (res *FileShare, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -234,6 +286,37 @@ func (r *FileShareService) Resize(ctx context.Context, fileShareID string, param
 	path := fmt.Sprintf("cloud/v1/file_shares/%v/%v/%s/extend", params.ProjectID.Value, params.RegionID.Value, fileShareID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// ResizeAndPoll resizes a file share and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
+func (r *FileShareService) ResizeAndPoll(ctx context.Context, fileShareID string, params FileShareResizeParams, opts ...option.RequestOption) (v *FileShare, err error) {
+	resource, err := r.Resize(ctx, fileShareID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams FileShareGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Get(ctx, fileShareID, getParams, opts...)
 }
 
 type FileShare struct {
