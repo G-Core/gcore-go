@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.20.0 (2025-11-11)
+
+Full Changelog: [v0.19.0...v0.20.0](https://github.com/G-Core/gcore-go/compare/v0.19.0...v0.20.0)
+
+### Features
+
+* **api:** aggregated API specs update ([eca759c](https://github.com/G-Core/gcore-go/commit/eca759c54b9a09ac2e77040fdd3c7098e34c7918))
+* **cloud:** add polling methods for GPU virtual clusters ([2b191d7](https://github.com/G-Core/gcore-go/commit/2b191d706ea835b74dab73aa7e957a00261ba2f5))
+* **cloud:** add polling methods to file shares ([99a6917](https://github.com/G-Core/gcore-go/commit/99a6917736f33b2b8d9003a8d6fbb71f92b0317b))
+* **cloud:** add support for GPU virtual clusters ([ed186c7](https://github.com/G-Core/gcore-go/commit/ed186c7c30925452f8b8ee7c40ba9909ca388664))
+
+
+### Chores
+
+* bump gjson version ([2513026](https://github.com/G-Core/gcore-go/commit/2513026b5a823e6201c9250a1a9b65be7aa3b79a))
+
 ## 0.19.0 (2025-11-07)
 
 Full Changelog: [v0.18.0...v0.19.0](https://github.com/G-Core/gcore-go/compare/v0.18.0...v0.19.0)
