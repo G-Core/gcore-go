@@ -23,6 +23,7 @@ import (
 // the [NewGPUVirtualClusterImageService] method instead.
 type GPUVirtualClusterImageService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewGPUVirtualClusterImageService generates a new service that applies the given
@@ -31,6 +32,7 @@ type GPUVirtualClusterImageService struct {
 func NewGPUVirtualClusterImageService(opts ...option.RequestOption) (r GPUVirtualClusterImageService) {
 	r = GPUVirtualClusterImageService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -128,6 +130,59 @@ func (r *GPUVirtualClusterImageService) Upload(ctx context.Context, params GPUVi
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/images", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// UploadAndPoll uploads a new virtual GPU image and polls for completion of the first task. Use the
+// [TaskService.Poll] method if you need to poll for all tasks.
+func (r *GPUVirtualClusterImageService) UploadAndPoll(ctx context.Context, params GPUVirtualClusterImageUploadParams, opts ...option.RequestOption) (v *GPUImage, err error) {
+	resource, err := r.Upload(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams GPUVirtualClusterImageGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Images) != 1 {
+		return nil, errors.New("expected exactly one image to be created in a task")
+	}
+	resourceID := task.CreatedResources.Images[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
+// DeleteAndPoll deletes a virtual GPU image and polls for completion of the first task. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
+func (r *GPUVirtualClusterImageService) DeleteAndPoll(ctx context.Context, imageID string, body GPUVirtualClusterImageDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, imageID, body, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }
 
 type GPUVirtualClusterImageListParams struct {
