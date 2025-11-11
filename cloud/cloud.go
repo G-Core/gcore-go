@@ -47,6 +47,7 @@ type CloudService struct {
 	FileShares           FileShareService
 	BillingReservations  BillingReservationService
 	GPUBaremetalClusters GPUBaremetalClusterService
+	GPUVirtualClusters   GPUVirtualClusterService
 	Instances            InstanceService
 	K8s                  K8Service
 	AuditLogs            AuditLogService
@@ -82,6 +83,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.FileShares = NewFileShareService(opts...)
 	r.BillingReservations = NewBillingReservationService(opts...)
 	r.GPUBaremetalClusters = NewGPUBaremetalClusterService(opts...)
+	r.GPUVirtualClusters = NewGPUVirtualClusterService(opts...)
 	r.Instances = NewInstanceService(opts...)
 	r.K8s = NewK8Service(opts...)
 	r.AuditLogs = NewAuditLogService(opts...)

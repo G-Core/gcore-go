@@ -48,6 +48,7 @@ type GB string                              // Always "GB"
 type Gbminutes string                       // Always "gbminutes"
 type GBs string                             // Always "GBS"
 type GiB string                             // Always "GiB"
+type HardReboot string                      // Always "hard_reboot"
 type Image string                           // Always "image"
 type Inference string                       // Always "inference"
 type Instance string                        // Always "instance"
@@ -62,9 +63,12 @@ type Nfs string                             // Always "NFS"
 type Port string                            // Always "port"
 type Public string                          // Always "public"
 type ReservedFixedIP string                 // Always "reserved_fixed_ip"
+type Resize string                          // Always "resize"
 type Snapshot string                        // Always "snapshot"
+type SoftReboot string                      // Always "soft_reboot"
 type Standard string                        // Always "standard"
 type Start string                           // Always "start"
+type Stop string                            // Always "stop"
 type Subnet string                          // Always "subnet"
 type UpdateTags string                      // Always "update_tags"
 type Vast string                            // Always "vast"
@@ -104,6 +108,7 @@ func (c GB) Default() GB                                       { return "GB" }
 func (c Gbminutes) Default() Gbminutes                         { return "gbminutes" }
 func (c GBs) Default() GBs                                     { return "GBS" }
 func (c GiB) Default() GiB                                     { return "GiB" }
+func (c HardReboot) Default() HardReboot                       { return "hard_reboot" }
 func (c Image) Default() Image                                 { return "image" }
 func (c Inference) Default() Inference                         { return "inference" }
 func (c Instance) Default() Instance                           { return "instance" }
@@ -118,9 +123,12 @@ func (c Nfs) Default() Nfs                                     { return "NFS" }
 func (c Port) Default() Port                                   { return "port" }
 func (c Public) Default() Public                               { return "public" }
 func (c ReservedFixedIP) Default() ReservedFixedIP             { return "reserved_fixed_ip" }
+func (c Resize) Default() Resize                               { return "resize" }
 func (c Snapshot) Default() Snapshot                           { return "snapshot" }
+func (c SoftReboot) Default() SoftReboot                       { return "soft_reboot" }
 func (c Standard) Default() Standard                           { return "standard" }
 func (c Start) Default() Start                                 { return "start" }
+func (c Stop) Default() Stop                                   { return "stop" }
 func (c Subnet) Default() Subnet                               { return "subnet" }
 func (c UpdateTags) Default() UpdateTags                       { return "update_tags" }
 func (c Vast) Default() Vast                                   { return "vast" }
@@ -156,6 +164,7 @@ func (c GB) MarshalJSON() ([]byte, error)                              { return 
 func (c Gbminutes) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c GBs) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c GiB) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
+func (c HardReboot) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
 func (c Image) MarshalJSON() ([]byte, error)                           { return marshalString(c) }
 func (c Inference) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c Instance) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
@@ -170,9 +179,12 @@ func (c Nfs) MarshalJSON() ([]byte, error)                             { return 
 func (c Port) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c Public) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c ReservedFixedIP) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
+func (c Resize) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c Snapshot) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
+func (c SoftReboot) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
 func (c Standard) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
 func (c Start) MarshalJSON() ([]byte, error)                           { return marshalString(c) }
+func (c Stop) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c Subnet) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c UpdateTags) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
 func (c Vast) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
