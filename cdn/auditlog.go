@@ -183,9 +183,9 @@ type AuditLogListParams struct {
 	MinRequestedAt param.Opt[string] `query:"min_requested_at,omitzero" json:"-"`
 	// Offset relative to the beginning of activity logs.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Path that a requested URL should contain.
+	// Exact URL path.
 	Path param.Opt[string] `query:"path,omitzero" json:"-"`
-	// IP address or part of it from which requests are sent.
+	// Exact IP address from which requests are sent.
 	RemoteIPAddress param.Opt[string] `query:"remote_ip_address,omitzero" json:"-"`
 	// Status code returned in the response.
 	//
