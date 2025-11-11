@@ -62,6 +62,12 @@ TEST_PATHS=(
 	cloud/gpubaremetalclusterserver_test.go
 	cloud/gpubaremetalclusterflavor_test.go
 	cloud/gpubaremetalclusterimage_test.go
+	cloud/gpuvirtualcluster_test.go
+	cloud/gpuvirtualclusterserver_test.go
+	cloud/gpuvirtualclustervolume_test.go
+	cloud/gpuvirtualclusterinterface_test.go
+	cloud/gpuvirtualclusterflavor_test.go
+	cloud/gpuvirtualclusterimage_test.go
 	cloud/instance_test.go
 	cloud/instanceflavor_test.go
 	cloud/instanceinterface_test.go
