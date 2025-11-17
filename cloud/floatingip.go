@@ -258,7 +258,8 @@ type FloatingIPDetailed struct {
 	RegionID int64 `json:"region_id,required"`
 	// Router ID
 	RouterID string `json:"router_id,required" format:"uuid4"`
-	// Floating IP status
+	// Floating IP status. DOWN - unassigned (available). ACTIVE - attached to a port
+	// (in use). ERROR - error state.
 	//
 	// Any of "ACTIVE", "DOWN", "ERROR".
 	Status FloatingIPStatus `json:"status,required"`
@@ -537,15 +538,20 @@ type FloatingIPUpdateParams struct {
 	//   - **Add/update tags:**
 	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
 	//     updates existing ones.
-	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//
+	// - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
+	//
 	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
 	//     tags are preserved).
+	//
 	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
 	//     specified tags.
+	//
 	//   - **Mixed operations:**
-	//     `{'tags': {'environment': 'production', '`cost_center`': 'engineering', '`deprecated_tag`': null}}`
+	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
 	//     adds/updates 'environment' and '`cost_center`' while removing
 	//     '`deprecated_tag`', preserving other existing tags.
+	//
 	//   - **Replace all:** first delete existing tags with null values, then add new
 	//     ones in the same request.
 	Tags TagUpdateMap `json:"tags,omitzero"`
@@ -572,6 +578,11 @@ type FloatingIPListParams struct {
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Optional. Filter by tag key-value pairs.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
+	// Filter by floating IP status. DOWN - unassigned (available). ACTIVE - attached
+	// to a port (in use). ERROR - error state.
+	//
+	// Any of "ACTIVE", "DOWN", "ERROR".
+	Status FloatingIPStatus `query:"status,omitzero" json:"-"`
 	// Optional. Filter by tag keys. ?`tag_key`=key1&`tag_key`=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj

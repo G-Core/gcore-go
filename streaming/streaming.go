@@ -572,7 +572,7 @@ type Video struct {
 	// video. It is unique for each video, generated randomly and set automatically by
 	// the system.
 	//
-	// Format of usage in URL is \*.../videos/{`client_id`}\_{slug}/...\*
+	// Format of usage in URL is _.../videos/{`client_id`}\_{slug}/..._
 	//
 	// Example:
 	//

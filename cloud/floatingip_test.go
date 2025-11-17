@@ -93,6 +93,7 @@ func TestFloatingIPListWithOptionalParams(t *testing.T) {
 		RegionID:    gcore.Int(1),
 		Limit:       gcore.Int(1000),
 		Offset:      gcore.Int(0),
+		Status:      cloud.FloatingIPStatusActive,
 		TagKey:      []string{"key1", "key2"},
 		TagKeyValue: gcore.String("tag_key_value"),
 	})

@@ -237,7 +237,7 @@ type InferenceDeployment struct {
 	// Address of the inference instance
 	Address string `json:"address,required" format:"uri"`
 	// `true` if instance uses API key authentication.
-	// `"Authorization": "Bearer ****\*"` or `"X-Api-Key": "****\*"` header is required
+	// `"Authorization": "Bearer *****"` or `"X-Api-Key": "*****"` header is required
 	// for the requests to the instance if enabled.
 	//
 	// Deprecated: deprecated
@@ -855,7 +855,7 @@ type InferenceDeploymentNewParams struct {
 	// when the parameter is not set is 120.
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
 	// Set to `true` to enable API key authentication for the inference instance.
-	// `"Authorization": "Bearer ****\*"` or `"X-Api-Key": "****\*"` header is required
+	// `"Authorization": "Bearer *****"` or `"X-Api-Key": "*****"` header is required
 	// for the requests to the instance if enabled. This field is deprecated and will
 	// be removed in the future. Use `api_keys` field instead.If `auth_enabled` and
 	// `api_keys` are both specified, a ValidationError will be raised.
@@ -1480,7 +1480,7 @@ type InferenceDeploymentUpdateParams struct {
 	// when the parameter is not set is 120.
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
 	// Set to `true` to enable API key authentication for the inference instance.
-	// `"Authorization": "Bearer ****\*"` or `"X-Api-Key": "****\*"` header is required
+	// `"Authorization": "Bearer *****"` or `"X-Api-Key": "*****"` header is required
 	// for the requests to the instance if enabled. This field is deprecated and will
 	// be removed in the future. Use `api_keys` field instead.If `auth_enabled` and
 	// `api_keys` are both specified, a ValidationError will be raised.

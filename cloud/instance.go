@@ -524,8 +524,8 @@ type InstanceNewParams struct {
 	// If you want the instance name to be automatically generated based on IP
 	// addresses, you can provide a name template instead of specifying the name
 	// manually. The template should include a placeholder that will be replaced during
-	// provisioning. Supported placeholders are: `{`ip_octets`}` (last 3 octets of the
-	// IP), `{`two_ip_octets`}`, and `{`one_ip_octet`}`.
+	// provisioning. Supported placeholders are: `{ip_octets}` (last 3 octets of the
+	// IP), `{two_ip_octets}`, and `{one_ip_octet}`.
 	NameTemplate param.Opt[string] `json:"name_template,omitzero"`
 	// For Linux instances, 'username' and 'password' are used to create a new user.
 	// When only 'password' is provided, it is set as the password for the default user
@@ -1751,15 +1751,20 @@ type InstanceUpdateParams struct {
 	//   - **Add/update tags:**
 	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
 	//     updates existing ones.
-	//   - **Delete tags:** `{'tags': {'`old_tag`': null}}` removes specific tags.
+	//
+	// - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
+	//
 	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
 	//     tags are preserved).
+	//
 	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
 	//     specified tags.
+	//
 	//   - **Mixed operations:**
-	//     `{'tags': {'environment': 'production', '`cost_center`': 'engineering', '`deprecated_tag`': null}}`
+	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
 	//     adds/updates 'environment' and '`cost_center`' while removing
 	//     '`deprecated_tag`', preserving other existing tags.
+	//
 	//   - **Replace all:** first delete existing tags with null values, then add new
 	//     ones in the same request.
 	Tags TagUpdateMap `json:"tags,omitzero"`

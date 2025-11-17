@@ -282,7 +282,7 @@ type CdnResourceRuleOptions struct {
 	//  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
 	//     you enable it in CDN resource and want to use `gzipON` and
 	//     `brotli_compression` in a rule, you have to specify
-	//     `"`fetch_compressed`": false` in the rule.
+	//     `"fetch_compressed": false` in the rule.
 	FetchCompressed CdnResourceRuleOptionsFetchCompressed `json:"fetch_compressed,nullable"`
 	// Enables redirection from origin. If the origin server returns a redirect, the
 	// option allows the CDN to pull the requested content from the origin server that
@@ -306,8 +306,7 @@ type CdnResourceRuleOptions struct {
 	//     options enabled.
 	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
-	//     `gzipON` in rules, you need to specify `"`fetch_compressed`":false` for
-	//     rules.
+	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
 	GzipOn CdnResourceRuleOptionsGzipOn `json:"gzipOn,nullable"`
 	// Sets the Host header that CDN servers use when request content from an origin
 	// server. Your server must be able to process requests with the chosen header.
@@ -705,7 +704,7 @@ type CdnResourceRuleOptionsCors struct {
 	// Possible values:
 	//
 	//   - **Adds \* as the Access-Control-Allow-Origin header value** - Content will be
-	//     uploaded for requests from any domain. `"value": ["\*"]`
+	//     uploaded for requests from any domain. `"value": ["*"]`
 	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
@@ -713,7 +712,7 @@ type CdnResourceRuleOptionsCors struct {
 	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
-	//     header in the response. `"value": ["$`http_origin`"]`
+	//     header in the response. `"value": ["$http_origin"]`
 	Value []string `json:"value,required"`
 	// Defines whether the Access-Control-Allow-Origin header should be added to a
 	// response from CDN regardless of response code.
@@ -1082,7 +1081,7 @@ func (r *CdnResourceRuleOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []b
 //  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
 //     you enable it in CDN resource and want to use `gzipON` and
 //     `brotli_compression` in a rule, you have to specify
-//     `"`fetch_compressed`": false` in the rule.
+//     `"fetch_compressed": false` in the rule.
 type CdnResourceRuleOptionsFetchCompressed struct {
 	// Controls the option state.
 	//
@@ -1247,8 +1246,7 @@ func (r *CdnResourceRuleOptionsForwardHostHeader) UnmarshalJSON(data []byte) err
 //     options enabled.
 //  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 //     rules. If you enable `fetch_compressed` in CDN resource and want to enable
-//     `gzipON` in rules, you need to specify `"`fetch_compressed`":false` for
-//     rules.
+//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
 type CdnResourceRuleOptionsGzipOn struct {
 	// Controls the option state.
 	//
@@ -1839,7 +1837,7 @@ type CdnResourceRuleOptionsReferrerACL struct {
 	// Examples:
 	//
 	// - `example.com`
-	// - `\*.example.com`
+	// - `*.example.com`
 	ExceptedValues []string `json:"excepted_values,required" format:"domain or wildcard"`
 	// Policy type.
 	//
@@ -1971,7 +1969,7 @@ type CdnResourceRuleOptionsRewrite struct {
 	//
 	// Example:
 	//
-	// - `/(.\*) /media/$1`
+	// - `/(.*) /media/$1`
 	Body string `json:"body,required"`
 	// Controls the option state.
 	//
@@ -2594,7 +2592,7 @@ type ResourceRuleNewParamsOptions struct {
 	//  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
 	//     you enable it in CDN resource and want to use `gzipON` and
 	//     `brotli_compression` in a rule, you have to specify
-	//     `"`fetch_compressed`": false` in the rule.
+	//     `"fetch_compressed": false` in the rule.
 	FetchCompressed ResourceRuleNewParamsOptionsFetchCompressed `json:"fetch_compressed,omitzero"`
 	// Enables redirection from origin. If the origin server returns a redirect, the
 	// option allows the CDN to pull the requested content from the origin server that
@@ -2618,8 +2616,7 @@ type ResourceRuleNewParamsOptions struct {
 	//     options enabled.
 	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
-	//     `gzipON` in rules, you need to specify `"`fetch_compressed`":false` for
-	//     rules.
+	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
 	GzipOn ResourceRuleNewParamsOptionsGzipOn `json:"gzipOn,omitzero"`
 	// Sets the Host header that CDN servers use when request content from an origin
 	// server. Your server must be able to process requests with the chosen header.
@@ -2959,7 +2956,7 @@ type ResourceRuleNewParamsOptionsCors struct {
 	// Possible values:
 	//
 	//   - **Adds \* as the Access-Control-Allow-Origin header value** - Content will be
-	//     uploaded for requests from any domain. `"value": ["\*"]`
+	//     uploaded for requests from any domain. `"value": ["*"]`
 	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
@@ -2967,7 +2964,7 @@ type ResourceRuleNewParamsOptionsCors struct {
 	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
-	//     header in the response. `"value": ["$`http_origin`"]`
+	//     header in the response. `"value": ["$http_origin"]`
 	Value []string `json:"value,omitzero,required"`
 	// Defines whether the Access-Control-Allow-Origin header should be added to a
 	// response from CDN regardless of response code.
@@ -3301,7 +3298,7 @@ func (r *ResourceRuleNewParamsOptionsFastedgeOnResponseHeaders) UnmarshalJSON(da
 //  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
 //     you enable it in CDN resource and want to use `gzipON` and
 //     `brotli_compression` in a rule, you have to specify
-//     `"`fetch_compressed`": false` in the rule.
+//     `"fetch_compressed": false` in the rule.
 //
 // The properties Enabled, Value are required.
 type ResourceRuleNewParamsOptionsFetchCompressed struct {
@@ -3453,8 +3450,7 @@ func (r *ResourceRuleNewParamsOptionsForwardHostHeader) UnmarshalJSON(data []byt
 //     options enabled.
 //  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 //     rules. If you enable `fetch_compressed` in CDN resource and want to enable
-//     `gzipON` in rules, you need to specify `"`fetch_compressed`":false` for
-//     rules.
+//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
 //
 // The properties Enabled, Value are required.
 type ResourceRuleNewParamsOptionsGzipOn struct {
@@ -4018,7 +4014,7 @@ type ResourceRuleNewParamsOptionsReferrerACL struct {
 	// Examples:
 	//
 	// - `example.com`
-	// - `\*.example.com`
+	// - `*.example.com`
 	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
 	// Policy type.
 	//
@@ -4155,7 +4151,7 @@ type ResourceRuleNewParamsOptionsRewrite struct {
 	//
 	// Example:
 	//
-	// - `/(.\*) /media/$1`
+	// - `/(.*) /media/$1`
 	Body string `json:"body,required"`
 	// Controls the option state.
 	//
@@ -4754,7 +4750,7 @@ type ResourceRuleUpdateParamsOptions struct {
 	//  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
 	//     you enable it in CDN resource and want to use `gzipON` and
 	//     `brotli_compression` in a rule, you have to specify
-	//     `"`fetch_compressed`": false` in the rule.
+	//     `"fetch_compressed": false` in the rule.
 	FetchCompressed ResourceRuleUpdateParamsOptionsFetchCompressed `json:"fetch_compressed,omitzero"`
 	// Enables redirection from origin. If the origin server returns a redirect, the
 	// option allows the CDN to pull the requested content from the origin server that
@@ -4778,8 +4774,7 @@ type ResourceRuleUpdateParamsOptions struct {
 	//     options enabled.
 	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
-	//     `gzipON` in rules, you need to specify `"`fetch_compressed`":false` for
-	//     rules.
+	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
 	GzipOn ResourceRuleUpdateParamsOptionsGzipOn `json:"gzipOn,omitzero"`
 	// Sets the Host header that CDN servers use when request content from an origin
 	// server. Your server must be able to process requests with the chosen header.
@@ -5119,7 +5114,7 @@ type ResourceRuleUpdateParamsOptionsCors struct {
 	// Possible values:
 	//
 	//   - **Adds \* as the Access-Control-Allow-Origin header value** - Content will be
-	//     uploaded for requests from any domain. `"value": ["\*"]`
+	//     uploaded for requests from any domain. `"value": ["*"]`
 	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
@@ -5127,7 +5122,7 @@ type ResourceRuleUpdateParamsOptionsCors struct {
 	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
-	//     header in the response. `"value": ["$`http_origin`"]`
+	//     header in the response. `"value": ["$http_origin"]`
 	Value []string `json:"value,omitzero,required"`
 	// Defines whether the Access-Control-Allow-Origin header should be added to a
 	// response from CDN regardless of response code.
@@ -5461,7 +5456,7 @@ func (r *ResourceRuleUpdateParamsOptionsFastedgeOnResponseHeaders) UnmarshalJSON
 //  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
 //     you enable it in CDN resource and want to use `gzipON` and
 //     `brotli_compression` in a rule, you have to specify
-//     `"`fetch_compressed`": false` in the rule.
+//     `"fetch_compressed": false` in the rule.
 //
 // The properties Enabled, Value are required.
 type ResourceRuleUpdateParamsOptionsFetchCompressed struct {
@@ -5613,8 +5608,7 @@ func (r *ResourceRuleUpdateParamsOptionsForwardHostHeader) UnmarshalJSON(data []
 //     options enabled.
 //  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 //     rules. If you enable `fetch_compressed` in CDN resource and want to enable
-//     `gzipON` in rules, you need to specify `"`fetch_compressed`":false` for
-//     rules.
+//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
 //
 // The properties Enabled, Value are required.
 type ResourceRuleUpdateParamsOptionsGzipOn struct {
@@ -6178,7 +6172,7 @@ type ResourceRuleUpdateParamsOptionsReferrerACL struct {
 	// Examples:
 	//
 	// - `example.com`
-	// - `\*.example.com`
+	// - `*.example.com`
 	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
 	// Policy type.
 	//
@@ -6315,7 +6309,7 @@ type ResourceRuleUpdateParamsOptionsRewrite struct {
 	//
 	// Example:
 	//
-	// - `/(.\*) /media/$1`
+	// - `/(.*) /media/$1`
 	Body string `json:"body,required"`
 	// Controls the option state.
 	//
@@ -6924,7 +6918,7 @@ type ResourceRuleReplaceParamsOptions struct {
 	//  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
 	//     you enable it in CDN resource and want to use `gzipON` and
 	//     `brotli_compression` in a rule, you have to specify
-	//     `"`fetch_compressed`": false` in the rule.
+	//     `"fetch_compressed": false` in the rule.
 	FetchCompressed ResourceRuleReplaceParamsOptionsFetchCompressed `json:"fetch_compressed,omitzero"`
 	// Enables redirection from origin. If the origin server returns a redirect, the
 	// option allows the CDN to pull the requested content from the origin server that
@@ -6948,8 +6942,7 @@ type ResourceRuleReplaceParamsOptions struct {
 	//     options enabled.
 	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
-	//     `gzipON` in rules, you need to specify `"`fetch_compressed`":false` for
-	//     rules.
+	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
 	GzipOn ResourceRuleReplaceParamsOptionsGzipOn `json:"gzipOn,omitzero"`
 	// Sets the Host header that CDN servers use when request content from an origin
 	// server. Your server must be able to process requests with the chosen header.
@@ -7289,7 +7282,7 @@ type ResourceRuleReplaceParamsOptionsCors struct {
 	// Possible values:
 	//
 	//   - **Adds \* as the Access-Control-Allow-Origin header value** - Content will be
-	//     uploaded for requests from any domain. `"value": ["\*"]`
+	//     uploaded for requests from any domain. `"value": ["*"]`
 	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
@@ -7297,7 +7290,7 @@ type ResourceRuleReplaceParamsOptionsCors struct {
 	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
-	//     header in the response. `"value": ["$`http_origin`"]`
+	//     header in the response. `"value": ["$http_origin"]`
 	Value []string `json:"value,omitzero,required"`
 	// Defines whether the Access-Control-Allow-Origin header should be added to a
 	// response from CDN regardless of response code.
@@ -7631,7 +7624,7 @@ func (r *ResourceRuleReplaceParamsOptionsFastedgeOnResponseHeaders) UnmarshalJSO
 //  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
 //     you enable it in CDN resource and want to use `gzipON` and
 //     `brotli_compression` in a rule, you have to specify
-//     `"`fetch_compressed`": false` in the rule.
+//     `"fetch_compressed": false` in the rule.
 //
 // The properties Enabled, Value are required.
 type ResourceRuleReplaceParamsOptionsFetchCompressed struct {
@@ -7783,8 +7776,7 @@ func (r *ResourceRuleReplaceParamsOptionsForwardHostHeader) UnmarshalJSON(data [
 //     options enabled.
 //  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 //     rules. If you enable `fetch_compressed` in CDN resource and want to enable
-//     `gzipON` in rules, you need to specify `"`fetch_compressed`":false` for
-//     rules.
+//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
 //
 // The properties Enabled, Value are required.
 type ResourceRuleReplaceParamsOptionsGzipOn struct {
@@ -8348,7 +8340,7 @@ type ResourceRuleReplaceParamsOptionsReferrerACL struct {
 	// Examples:
 	//
 	// - `example.com`
-	// - `\*.example.com`
+	// - `*.example.com`
 	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
 	// Policy type.
 	//
@@ -8485,7 +8477,7 @@ type ResourceRuleReplaceParamsOptionsRewrite struct {
 	//
 	// Example:
 	//
-	// - `/(.\*) /media/$1`
+	// - `/(.*) /media/$1`
 	Body string `json:"body,required"`
 	// Controls the option state.
 	//
