@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.21.0 (2025-11-17)
+
+Full Changelog: [v0.20.0...v0.21.0](https://github.com/G-Core/gcore-go/compare/v0.20.0...v0.21.0)
+
+### Features
+
+* **api:** aggregated API specs update ([2b7ffb7](https://github.com/G-Core/gcore-go/commit/2b7ffb784f783fac21535053535bc8101f2cb14e))
+
 ## 0.20.0 (2025-11-11)
 
 Full Changelog: [v0.19.0...v0.20.0](https://github.com/G-Core/gcore-go/compare/v0.19.0...v0.20.0)
