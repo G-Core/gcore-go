@@ -692,7 +692,7 @@ type ZoneListParams struct {
 	UpdatedAtTo   param.Opt[time.Time] `query:"updated_at_to,omitzero" format:"date-time" json:"-"`
 	// to pass several ids `id=1&id=3&id=5...`
 	ID []int64 `query:"id,omitzero" json:"-"`
-	// to pass several `client_ids` `client_id=1&`client_id`=3&`client_id`=5...`
+	// to pass several `client_ids` `client_id=1&client_id=3&client_id=5...`
 	ClientID      []int64 `query:"client_id,omitzero" json:"-"`
 	IamResellerID []int64 `query:"iam_reseller_id,omitzero" json:"-"`
 	// to pass several names `name=first&name=second...`
