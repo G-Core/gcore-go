@@ -673,7 +673,8 @@ type FloatingIP struct {
 	RegionID int64 `json:"region_id,required"`
 	// Router ID
 	RouterID string `json:"router_id,required" format:"uuid4"`
-	// Floating IP status
+	// Floating IP status. DOWN - unassigned (available). ACTIVE - attached to a port
+	// (in use). ERROR - error state.
 	//
 	// Any of "ACTIVE", "DOWN", "ERROR".
 	Status FloatingIPStatus `json:"status,required"`
@@ -2342,9 +2343,9 @@ type TaskIDList struct {
 	// List of task IDs representing asynchronous operations. Use these IDs to monitor
 	// operation progress:
 	//
-	//   - `GET /v1/tasks/{`task_id`}` - Check individual task status and details Poll
-	//     task status until completion (`FINISHED`/`ERROR`) before proceeding with
-	//     dependent operations.
+	//   - `GET /v1/tasks/{task_id}` - Check individual task status and details Poll task
+	//     status until completion (`FINISHED`/`ERROR`) before proceeding with dependent
+	//     operations.
 	Tasks []string `json:"tasks,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

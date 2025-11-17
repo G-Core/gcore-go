@@ -2,6 +2,7 @@
 
 Params Types:
 
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#FloatingIPStatus">FloatingIPStatus</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#HTTPMethod">HTTPMethod</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceMetricsTimeUnit">InstanceMetricsTimeUnit</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InterfaceIPFamily">InterfaceIPFamily</a>

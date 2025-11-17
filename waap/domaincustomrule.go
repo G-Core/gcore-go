@@ -669,7 +669,7 @@ type WaapCustomRuleConditionURL struct {
 	// `match_type`:
 	//
 	//   - **Exact/Contains**: plain text matching (e.g., `/admin`, must comply with
-	//     `^[\w!\$~:#\[\]@\(\)\\*\+,=\/\-\.\%]+$`).
+	//     `^[\w!\$~:#\[\]@\(\)*\+,=\/\-\.\%]+$`).
 	//   - **Regex**: a valid regular expression (e.g., `^/upload(/\d+)?/\w+`).
 	//     Lookahead/lookbehind constructs are forbidden.
 	URL string `json:"url,required"`
@@ -1238,7 +1238,7 @@ type DomainCustomRuleNewParamsConditionURL struct {
 	// `match_type`:
 	//
 	//   - **Exact/Contains**: plain text matching (e.g., `/admin`, must comply with
-	//     `^[\w!\$~:#\[\]@\(\)\\*\+,=\/\-\.\%]+$`).
+	//     `^[\w!\$~:#\[\]@\(\)*\+,=\/\-\.\%]+$`).
 	//   - **Regex**: a valid regular expression (e.g., `^/upload(/\d+)?/\w+`).
 	//     Lookahead/lookbehind constructs are forbidden.
 	URL string `json:"url,required"`
@@ -1809,7 +1809,7 @@ type DomainCustomRuleUpdateParamsConditionURL struct {
 	// `match_type`:
 	//
 	//   - **Exact/Contains**: plain text matching (e.g., `/admin`, must comply with
-	//     `^[\w!\$~:#\[\]@\(\)\\*\+,=\/\-\.\%]+$`).
+	//     `^[\w!\$~:#\[\]@\(\)*\+,=\/\-\.\%]+$`).
 	//   - **Regex**: a valid regular expression (e.g., `^/upload(/\d+)?/\w+`).
 	//     Lookahead/lookbehind constructs are forbidden.
 	URL string `json:"url,required"`

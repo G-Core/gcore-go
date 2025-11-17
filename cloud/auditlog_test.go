@@ -39,7 +39,9 @@ func TestAuditLogListWithOptionalParams(t *testing.T) {
 		ResourceID:    []string{"string"},
 		SearchField:   gcore.String("default"),
 		Sorting:       cloud.AuditLogListParamsSortingAsc,
+		SourceUserIPs: []string{"203.0.113.42", "192.168.1.100"},
 		ToTimestamp:   gcore.Time(time.Now()),
+		UserAgents:    []string{"Mozilla/5.0", "MyApp/1.0.0"},
 	})
 	if err != nil {
 		var apierr *gcore.Error

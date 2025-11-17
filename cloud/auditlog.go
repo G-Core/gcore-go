@@ -108,6 +108,8 @@ type AuditLogEntry struct {
 	RegionID int64 `json:"region_id,required"`
 	// Resources
 	Resources []AuditLogEntryResource `json:"resources,required"`
+	// User IP that made the request
+	SourceUserIP string `json:"source_user_ip,required"`
 	// Task ID
 	TaskID string `json:"task_id,required"`
 	// Datetime. Action timestamp
@@ -116,6 +118,8 @@ type AuditLogEntry struct {
 	TokenID int64 `json:"token_id,required"`
 	// Total resource price VAT inclusive
 	TotalPrice AuditLogEntryTotalPrice `json:"total_price,required"`
+	// User-Agent that made the request
+	UserAgent string `json:"user_agent,required"`
 	// User ID
 	UserID int64 `json:"user_id,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -132,10 +136,12 @@ type AuditLogEntry struct {
 		ProjectID      respjson.Field
 		RegionID       respjson.Field
 		Resources      respjson.Field
+		SourceUserIP   respjson.Field
 		TaskID         respjson.Field
 		Timestamp      respjson.Field
 		TokenID        respjson.Field
 		TotalPrice     respjson.Field
+		UserAgent      respjson.Field
 		UserID         respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
@@ -376,6 +382,12 @@ type AuditLogListParams struct {
 	//
 	// Any of "asc", "desc".
 	Sorting AuditLogListParamsSorting `query:"sorting,omitzero" json:"-"`
+	// Originating IP address of the client making the request. Several options can be
+	// specified.
+	SourceUserIPs []string `query:"source_user_ips,omitzero" json:"-"`
+	// User-Agent string identifying the client making the request. Several options can
+	// be specified.
+	UserAgents []string `query:"user_agents,omitzero" json:"-"`
 	paramObj
 }
 
