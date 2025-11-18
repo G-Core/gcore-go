@@ -64,7 +64,7 @@ func (r *OriginGroupService) List(ctx context.Context, query OriginGroupListPara
 // Delete origin group
 func (r *OriginGroupService) Delete(ctx context.Context, originGroupID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/origin_groups/%v", originGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

@@ -68,7 +68,7 @@ func (r *ResourceRuleService) List(ctx context.Context, resourceID int64, opts .
 //     cannot be recovered.
 func (r *ResourceRuleService) Delete(ctx context.Context, ruleID int64, body ResourceRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/rules/%v", body.ResourceID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

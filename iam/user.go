@@ -80,7 +80,7 @@ func (r *UserService) ListAutoPaging(ctx context.Context, query UserListParams, 
 // have access to multiple accounts, the user is deleted.
 func (r *UserService) Delete(ctx context.Context, userID int64, body UserDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("iam/clients/%v/client-users/%v", body.ClientID, userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

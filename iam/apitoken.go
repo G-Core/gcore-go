@@ -59,7 +59,7 @@ func (r *APITokenService) List(ctx context.Context, clientID int64, query APITok
 // action cannot be reversed.
 func (r *APITokenService) Delete(ctx context.Context, tokenID int64, body APITokenDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("iam/clients/%v/tokens/%v", body.ClientID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

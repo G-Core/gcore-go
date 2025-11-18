@@ -152,7 +152,7 @@ func (r *PlaylistService) ListAutoPaging(ctx context.Context, query PlaylistList
 // Delete playlist
 func (r *PlaylistService) Delete(ctx context.Context, playlistID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/playlists/%v", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

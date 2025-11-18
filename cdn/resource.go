@@ -77,7 +77,7 @@ func (r *ResourceService) List(ctx context.Context, query ResourceListParams, op
 //     resource cannot be recovered.
 func (r *ResourceService) Delete(ctx context.Context, resourceID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -103,7 +103,7 @@ func (r *ResourceService) Get(ctx context.Context, resourceID int64, opts ...opt
 // prefetch.
 func (r *ResourceService) Prefetch(ctx context.Context, resourceID int64, body ResourcePrefetchParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/prefetch", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -112,7 +112,7 @@ func (r *ResourceService) Prefetch(ctx context.Context, resourceID int64, body R
 // Check whether a Let's Encrypt certificate can be issued for the CDN resource.
 func (r *ResourceService) PrevalidateSslLeCertificate(ctx context.Context, resourceID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/ssl/le/pre-validate", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return
@@ -129,7 +129,7 @@ func (r *ResourceService) PrevalidateSslLeCertificate(ctx context.Context, resou
 //     purge request is limited to 10 patterns.
 func (r *ResourceService) Purge(ctx context.Context, resourceID int64, body ResourcePurgeParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/purge", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return

@@ -185,7 +185,7 @@ func (r *InferenceDeploymentService) GetAPIKey(ctx context.Context, deploymentNa
 //     according to the configured scaling rules.
 func (r *InferenceDeploymentService) Start(ctx context.Context, deploymentName string, body InferenceDeploymentStartParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
@@ -214,7 +214,7 @@ func (r *InferenceDeploymentService) Start(ctx context.Context, deploymentName s
 //   - While stopped, the deployment will **not** incur any charges.
 func (r *InferenceDeploymentService) Stop(ctx context.Context, deploymentName string, body InferenceDeploymentStopParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

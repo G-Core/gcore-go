@@ -65,7 +65,7 @@ func (r *SecretService) List(ctx context.Context, query SecretListParams, opts .
 // Delete a secret
 func (r *SecretService) Delete(ctx context.Context, id int64, body SecretDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
 	return
