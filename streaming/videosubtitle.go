@@ -139,7 +139,7 @@ func (r *VideoSubtitleService) List(ctx context.Context, videoID int64, opts ...
 // Delete specified video subtitle
 func (r *VideoSubtitleService) Delete(ctx context.Context, id int64, body VideoSubtitleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v/subtitles/%v", body.VideoID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

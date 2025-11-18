@@ -57,7 +57,7 @@ func (r *ProfileService) List(ctx context.Context, query ProfileListParams, opts
 // deleted
 func (r *ProfileService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

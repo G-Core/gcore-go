@@ -36,7 +36,7 @@ func NewDomainSettingService(opts ...option.RequestOption) (r DomainSettingServi
 // Update settings for a specific domain
 func (r *DomainSettingService) Update(ctx context.Context, domainID int64, body DomainSettingUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/settings", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
 	return

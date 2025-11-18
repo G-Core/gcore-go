@@ -53,7 +53,7 @@ func (r *CustomPageSetService) New(ctx context.Context, body CustomPageSetNewPar
 // have. Any field not included will be removed.
 func (r *CustomPageSetService) Update(ctx context.Context, setID int64, body CustomPageSetUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/custom-page-sets/%v", setID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
 	return
@@ -85,7 +85,7 @@ func (r *CustomPageSetService) ListAutoPaging(ctx context.Context, query CustomP
 // Delete a custom page set
 func (r *CustomPageSetService) Delete(ctx context.Context, setID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/custom-page-sets/%v", setID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

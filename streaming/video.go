@@ -178,7 +178,7 @@ func (r *VideoService) ListAutoPaging(ctx context.Context, query VideoListParams
 // storage usage, please refer to the Product Documentation.
 func (r *VideoService) Delete(ctx context.Context, videoID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -276,7 +276,7 @@ func (r *VideoService) GetParametersForDirectUpload(ctx context.Context, videoID
 // Returns names for specified video IDs
 func (r *VideoService) ListNames(ctx context.Context, query VideoListNamesParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "streaming/videos/names"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
 	return
