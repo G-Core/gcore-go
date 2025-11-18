@@ -41,7 +41,7 @@ func NewPlayerService(opts ...option.RequestOption) (r PlayerService) {
 // Create player
 func (r *PlayerService) New(ctx context.Context, body PlayerNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "streaming/players"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -81,7 +81,7 @@ func (r *PlayerService) ListAutoPaging(ctx context.Context, query PlayerListPara
 // Delete player
 func (r *PlayerService) Delete(ctx context.Context, playerID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/players/%v", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -98,7 +98,7 @@ func (r *PlayerService) Get(ctx context.Context, playerID int64, opts ...option.
 // Returns player configuration in HTML
 func (r *PlayerService) Preview(ctx context.Context, playerID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/players/%v/preview", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, nil, opts...)
 	return

@@ -69,7 +69,7 @@ func (r *LogsUploaderPolicyService) List(ctx context.Context, query LogsUploader
 //     uploader policy cannot be recovered.
 func (r *LogsUploaderPolicyService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/policies/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

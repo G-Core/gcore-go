@@ -61,7 +61,7 @@ func (r *RuleTemplateService) List(ctx context.Context, opts ...option.RequestOp
 // Delete rule template
 func (r *RuleTemplateService) Delete(ctx context.Context, ruleTemplateID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/resources/rule_templates/%v", ruleTemplateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
