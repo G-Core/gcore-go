@@ -47,7 +47,7 @@ func NewCertificateService(opts ...option.RequestOption) (r CertificateService) 
 // to your CDN resource.
 func (r *CertificateService) New(ctx context.Context, body CertificateNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "cdn/sslData"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -64,7 +64,7 @@ func (r *CertificateService) List(ctx context.Context, query CertificateListPara
 // Delete SSL certificate
 func (r *CertificateService) Delete(ctx context.Context, sslID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/sslData/%v", sslID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -74,7 +74,7 @@ func (r *CertificateService) Delete(ctx context.Context, sslID int64, opts ...op
 // failed.
 func (r *CertificateService) ForceRetry(ctx context.Context, certID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/sslData/%v/force-retry", certID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return
@@ -101,7 +101,7 @@ func (r *CertificateService) GetStatus(ctx context.Context, certID int64, query 
 // fifteen minutes.
 func (r *CertificateService) Renew(ctx context.Context, certID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/sslData/%v/renew", certID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return

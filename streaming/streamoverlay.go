@@ -123,7 +123,7 @@ func (r *StreamOverlayService) List(ctx context.Context, streamID int64, opts ..
 // Delete an overlay
 func (r *StreamOverlayService) Delete(ctx context.Context, overlayID int64, body StreamOverlayDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v/overlays/%v", body.StreamID, overlayID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

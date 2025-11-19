@@ -112,7 +112,7 @@ func (r *SSHKeyService) ListAutoPaging(ctx context.Context, params SSHKeyListPar
 // Delete SSH key
 func (r *SSHKeyService) Delete(ctx context.Context, sshKeyID string, body SSHKeyDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

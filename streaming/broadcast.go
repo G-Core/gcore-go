@@ -50,7 +50,7 @@ func NewBroadcastService(opts ...option.RequestOption) (r BroadcastService) {
 // ![Scheme of "broadcast" using](https://demo-files.gvideo.io/apidocs/broadcasts.png)
 func (r *BroadcastService) New(ctx context.Context, body BroadcastNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "streaming/broadcasts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -96,7 +96,7 @@ func (r *BroadcastService) ListAutoPaging(ctx context.Context, query BroadcastLi
 // Delete broadcast
 func (r *BroadcastService) Delete(ctx context.Context, broadcastID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/broadcasts/%v", broadcastID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

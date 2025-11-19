@@ -90,7 +90,7 @@ func (r *InferenceSecretService) ListAutoPaging(ctx context.Context, params Infe
 // Delete Inference Secret
 func (r *InferenceSecretService) Delete(ctx context.Context, secretName string, body InferenceSecretDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

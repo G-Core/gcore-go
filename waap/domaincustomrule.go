@@ -48,7 +48,7 @@ func (r *DomainCustomRuleService) New(ctx context.Context, domainID int64, body 
 // Only properties present in the request will be updated
 func (r *DomainCustomRuleService) Update(ctx context.Context, ruleID int64, params DomainCustomRuleUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/%v", params.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
 	return
@@ -82,7 +82,7 @@ func (r *DomainCustomRuleService) ListAutoPaging(ctx context.Context, domainID i
 // Delete a custom rule
 func (r *DomainCustomRuleService) Delete(ctx context.Context, ruleID int64, body DomainCustomRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/%v", body.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -91,7 +91,7 @@ func (r *DomainCustomRuleService) Delete(ctx context.Context, ruleID int64, body
 // Delete multiple WAAP rules
 func (r *DomainCustomRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainCustomRuleDeleteMultipleParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/bulk_delete", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -108,7 +108,7 @@ func (r *DomainCustomRuleService) Get(ctx context.Context, ruleID int64, query D
 // Toggle a custom rule
 func (r *DomainCustomRuleService) Toggle(ctx context.Context, action DomainCustomRuleToggleParamsAction, body DomainCustomRuleToggleParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/%v/%v", body.DomainID, body.RuleID, action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, nil, opts...)
 	return

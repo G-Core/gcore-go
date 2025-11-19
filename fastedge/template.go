@@ -73,7 +73,7 @@ func (r *TemplateService) ListAutoPaging(ctx context.Context, query TemplateList
 // Delete template
 func (r *TemplateService) Delete(ctx context.Context, id int64, body TemplateDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/template/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
 	return

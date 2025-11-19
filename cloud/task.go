@@ -65,7 +65,7 @@ func (r *TaskService) ListAutoPaging(ctx context.Context, query TaskListParams, 
 // Acknowledge all tasks
 func (r *TaskService) AcknowledgeAll(ctx context.Context, body TaskAcknowledgeAllParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "cloud/v1/tasks/acknowledge_all"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return

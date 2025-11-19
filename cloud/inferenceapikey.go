@@ -114,7 +114,7 @@ func (r *InferenceAPIKeyService) ListAutoPaging(ctx context.Context, params Infe
 // ConflictError will be raised
 func (r *InferenceAPIKeyService) Delete(ctx context.Context, apiKeyName string, body InferenceAPIKeyDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

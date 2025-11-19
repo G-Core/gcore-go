@@ -41,7 +41,7 @@ func NewQuotaRequestService(opts ...option.RequestOption) (r QuotaRequestService
 // Create a request to change current quotas.
 func (r *QuotaRequestService) New(ctx context.Context, body QuotaRequestNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "cloud/v2/limits_request"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -73,7 +73,7 @@ func (r *QuotaRequestService) ListAutoPaging(ctx context.Context, query QuotaReq
 // Delete a specific quota limit request.
 func (r *QuotaRequestService) Delete(ctx context.Context, requestID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cloud/v2/limits_request/%v", requestID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

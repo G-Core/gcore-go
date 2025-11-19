@@ -137,7 +137,7 @@ func (r *StreamService) ListAutoPaging(ctx context.Context, query StreamListPara
 // For details, see the Product Documentation.
 func (r *StreamService) Delete(ctx context.Context, streamID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
@@ -146,7 +146,7 @@ func (r *StreamService) Delete(ctx context.Context, streamID int64, opts ...opti
 // Clear live stream DVR
 func (r *StreamService) ClearDvr(ctx context.Context, streamID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/streams/%v/dvr_cleanup", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, nil, opts...)
 	return

@@ -64,7 +64,7 @@ func (r *DirectoryService) Update(ctx context.Context, directoryID int64, body D
 // For details, see the Product Documentation.
 func (r *DirectoryService) Delete(ctx context.Context, directoryID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/directories/%v", directoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

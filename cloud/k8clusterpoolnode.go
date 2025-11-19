@@ -69,7 +69,7 @@ func (r *K8ClusterPoolNodeService) List(ctx context.Context, poolName string, pa
 // pool size.
 func (r *K8ClusterPoolNodeService) Delete(ctx context.Context, instanceID string, body K8ClusterPoolNodeDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

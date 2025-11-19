@@ -50,7 +50,7 @@ func (r *DomainAPIPathService) New(ctx context.Context, domainID int64, body Dom
 // Update a specific API path for a domain
 func (r *DomainAPIPathService) Update(ctx context.Context, pathID string, params DomainAPIPathUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if pathID == "" {
 		err = errors.New("missing required path_id parameter")
 		return
@@ -86,7 +86,7 @@ func (r *DomainAPIPathService) ListAutoPaging(ctx context.Context, domainID int6
 // Delete a specific API path for a domain
 func (r *DomainAPIPathService) Delete(ctx context.Context, pathID string, body DomainAPIPathDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if pathID == "" {
 		err = errors.New("missing required path_id parameter")
 		return

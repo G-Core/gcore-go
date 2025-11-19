@@ -86,7 +86,7 @@ func (r *DomainInsightSilenceService) ListAutoPaging(ctx context.Context, domain
 // Delete an insight silence for a specific domain.
 func (r *DomainInsightSilenceService) Delete(ctx context.Context, silenceID string, body DomainInsightSilenceDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if silenceID == "" {
 		err = errors.New("missing required silence_id parameter")
 		return

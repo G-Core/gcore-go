@@ -39,7 +39,7 @@ func NewBucketPolicyService(opts ...option.RequestOption) (r BucketPolicyService
 // objects without proper authentication.
 func (r *BucketPolicyService) New(ctx context.Context, bucketName string, body BucketPolicyNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -55,7 +55,7 @@ func (r *BucketPolicyService) New(ctx context.Context, bucketName string, body B
 // requests.
 func (r *BucketPolicyService) Delete(ctx context.Context, bucketName string, body BucketPolicyDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return

@@ -90,7 +90,7 @@ func (r *FileShareAccessRuleService) List(ctx context.Context, fileShareID strin
 // Delete file share access rule
 func (r *FileShareAccessRuleService) Delete(ctx context.Context, accessRuleID string, body FileShareAccessRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return

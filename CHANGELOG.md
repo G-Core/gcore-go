@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.22.0 (2025-11-19)
+
+Full Changelog: [v0.21.0...v0.22.0](https://github.com/G-Core/gcore-go/compare/v0.21.0...v0.22.0)
+
+### Features
+
+* **api:** aggregated API specs update ([885872b](https://github.com/G-Core/gcore-go/commit/885872b5ae3bbd3ab927070b90a19917ee26d8c5))
+
+
+### Bug Fixes
+
+* **client:** correctly specify Accept header with */* instead of empty ([b3be1c8](https://github.com/G-Core/gcore-go/commit/b3be1c89ed77bdb8a42db8e33f5807d0bc6e2184))
+
 ## 0.21.0 (2025-11-17)
 
 Full Changelog: [v0.20.0...v0.21.0](https://github.com/G-Core/gcore-go/compare/v0.20.0...v0.21.0)

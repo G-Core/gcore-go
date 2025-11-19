@@ -70,7 +70,7 @@ func (r *LogsUploaderTargetService) List(ctx context.Context, query LogsUploader
 //     uploader target cannot be recovered.
 func (r *LogsUploaderTargetService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/targets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return

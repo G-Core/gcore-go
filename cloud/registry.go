@@ -91,7 +91,7 @@ func (r *RegistryService) List(ctx context.Context, query RegistryListParams, op
 // Delete a specific container registry and all its associated resources.
 func (r *RegistryService) Delete(ctx context.Context, registryID int64, body RegistryDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
