@@ -264,8 +264,10 @@ func (r *LoadBalancerL7PolicyRuleService) ReplaceAndPoll(ctx context.Context, l7
 }
 
 type LoadBalancerL7PolicyRuleNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// The comparison type for the L7 rule
 	//
 	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
@@ -275,13 +277,11 @@ type LoadBalancerL7PolicyRuleNewParams struct {
 	// Any of "COOKIE", "FILE_TYPE", "HEADER", "HOST_NAME", "PATH",
 	// "SSL_CONN_HAS_CERT", "SSL_DN_FIELD", "SSL_VERIFY_RESULT".
 	Type LoadBalancerL7PolicyRuleNewParamsType `json:"type,omitzero,required"`
-	// The value to use for the comparison. For example, the file type to compare
+	// The value to use for the comparison
 	Value string `json:"value,required"`
-	// When true the logic of the rule is inverted. For example, with invert true,
-	// 'equal to' would become 'not equal to'. Default is false.
+	// When true the logic of the rule is inverted.
 	Invert param.Opt[bool] `json:"invert,omitzero"`
-	// The key to use for the comparison. For example, the name of the cookie to
-	// evaluate.
+	// The key to use for the comparison.
 	Key param.Opt[string] `json:"key,omitzero"`
 	// A list of simple strings assigned to the l7 rule
 	Tags []string `json:"tags,omitzero"`
@@ -322,41 +322,50 @@ const (
 )
 
 type LoadBalancerL7PolicyRuleListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyRuleDeleteParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	L7policyID string           `path:"l7policy_id,required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// L7 policy ID
+	L7policyID string `path:"l7policy_id,required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyRuleGetParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	L7policyID string           `path:"l7policy_id,required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// L7 policy ID
+	L7policyID string `path:"l7policy_id,required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyRuleReplaceParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	L7policyID string           `path:"l7policy_id,required" json:"-"`
-	// When true the logic of the rule is inverted. For example, with invert true,
-	// 'equal to' would become 'not equal to'. Default is false.
-	Invert param.Opt[bool] `json:"invert,omitzero"`
-	// The key to use for the comparison. For example, the name of the cookie to
-	// evaluate.
-	Key param.Opt[string] `json:"key,omitzero"`
-	// The value to use for the comparison. For example, the file type to compare
-	Value param.Opt[string] `json:"value,omitzero"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// L7 policy ID
+	L7policyID string `path:"l7policy_id,required" json:"-"`
 	// The comparison type for the L7 rule
 	//
 	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
-	CompareType LoadBalancerL7PolicyRuleReplaceParamsCompareType `json:"compare_type,omitzero"`
+	CompareType LoadBalancerL7PolicyRuleReplaceParamsCompareType `json:"compare_type,omitzero,required"`
+	// When true the logic of the rule is inverted.
+	Invert param.Opt[bool] `json:"invert,omitzero"`
+	// The key to use for the comparison.
+	Key param.Opt[string] `json:"key,omitzero"`
+	// The value to use for the comparison
+	Value param.Opt[string] `json:"value,omitzero"`
 	// A list of simple strings assigned to the l7 rule
 	Tags []string `json:"tags,omitzero"`
 	// The L7 rule type

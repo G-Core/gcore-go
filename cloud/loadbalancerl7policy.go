@@ -13,6 +13,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/shared/constant"
 )
 
 // LoadBalancerL7PolicyService contains methods and other services that help with
@@ -134,7 +135,10 @@ func (r *LoadBalancerL7PolicyService) Get(ctx context.Context, l7policyID string
 	return
 }
 
-// Replace load balancer L7 policy
+// Replaces the entire L7 policy configuration with the provided data. Any fields
+// omitted from the request body will be unset (set to null) or reset to their
+// default values (such as "`redirect_http_code`") depending on the "action". This
+// is a destructive operation that overwrites the complete policy configuration.
 func (r *LoadBalancerL7PolicyService) Replace(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyReplaceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -244,115 +248,304 @@ func (r *LoadBalancerL7PolicyService) ReplaceAndPoll(ctx context.Context, l7poli
 }
 
 type LoadBalancerL7PolicyNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Action
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+
 	//
-	// Any of "REDIRECT_PREFIX", "REDIRECT_TO_POOL", "REDIRECT_TO_URL", "REJECT".
-	Action LoadBalancerL7PolicyNewParamsAction `json:"action,omitzero,required"`
-	// Listener ID
-	ListenerID string `json:"listener_id,required"`
-	// Human-readable name of the policy
-	Name param.Opt[string] `json:"name,omitzero"`
-	// The position of this policy on the listener. Positions start at 1.
-	Position param.Opt[int64] `json:"position,omitzero"`
-	// Requests matching this policy will be redirected to the specified URL or Prefix
-	// URL with the HTTP response code. Valid if action is `REDIRECT_TO_URL` or
-	// `REDIRECT_PREFIX`. Valid options are 301, 302, 303, 307, or 308. Default is 302.
-	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
-	// Requests matching this policy will be redirected to the pool withthis ID. Only
-	// valid if action is `REDIRECT_TO_POOL`.
-	RedirectPoolID param.Opt[string] `json:"redirect_pool_id,omitzero"`
-	// Requests matching this policy will be redirected to this Prefix URL. Only valid
-	// if action is `REDIRECT_PREFIX`.
-	RedirectPrefix param.Opt[string] `json:"redirect_prefix,omitzero"`
-	// Requests matching this policy will be redirected to this URL. Only valid if
-	// action is `REDIRECT_TO_URL`.
-	RedirectURL param.Opt[string] `json:"redirect_url,omitzero"`
-	// A list of simple strings assigned to the resource.
-	Tags []string `json:"tags,omitzero"`
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	OfRedirectToURL *LoadBalancerL7PolicyNewParamsBodyRedirectToURL `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfRedirectPrefix *LoadBalancerL7PolicyNewParamsBodyRedirectPrefix `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfRedirectToPool *LoadBalancerL7PolicyNewParamsBodyRedirectToPool `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfReject *LoadBalancerL7PolicyNewParamsBodyReject `json:",inline"`
+
 	paramObj
 }
 
-func (r LoadBalancerL7PolicyNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow LoadBalancerL7PolicyNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
+func (u LoadBalancerL7PolicyNewParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfRedirectToURL, u.OfRedirectPrefix, u.OfRedirectToPool, u.OfReject)
 }
 func (r *LoadBalancerL7PolicyNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Action
-type LoadBalancerL7PolicyNewParamsAction string
+// The properties Action, ListenerID, RedirectURL are required.
+type LoadBalancerL7PolicyNewParamsBodyRedirectToURL struct {
+	// Listener ID
+	ListenerID string `json:"listener_id,required"`
+	// Requests matching this policy will be redirected to this URL.
+	RedirectURL string `json:"redirect_url,required"`
+	// Human-readable name of the policy
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The position of this policy on the listener
+	Position param.Opt[int64] `json:"position,omitzero"`
+	// Requests matching this policy will be redirected to the specified URL or Prefix
+	// URL with the HTTP response code. Valid options are 301, 302, 303, 307, or 308.
+	// Default is 302.
+	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
+	// A list of simple strings assigned to the resource.
+	Tags []string `json:"tags,omitzero"`
+	// Action
+	//
+	// This field can be elided, and will marshal its zero value as "REDIRECT_TO_URL".
+	Action constant.RedirectToURL `json:"action,required"`
+	paramObj
+}
 
-const (
-	LoadBalancerL7PolicyNewParamsActionRedirectPrefix LoadBalancerL7PolicyNewParamsAction = "REDIRECT_PREFIX"
-	LoadBalancerL7PolicyNewParamsActionRedirectToPool LoadBalancerL7PolicyNewParamsAction = "REDIRECT_TO_POOL"
-	LoadBalancerL7PolicyNewParamsActionRedirectToURL  LoadBalancerL7PolicyNewParamsAction = "REDIRECT_TO_URL"
-	LoadBalancerL7PolicyNewParamsActionReject         LoadBalancerL7PolicyNewParamsAction = "REJECT"
-)
+func (r LoadBalancerL7PolicyNewParamsBodyRedirectToURL) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerL7PolicyNewParamsBodyRedirectToURL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerL7PolicyNewParamsBodyRedirectToURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Action, ListenerID, RedirectPrefix are required.
+type LoadBalancerL7PolicyNewParamsBodyRedirectPrefix struct {
+	// Listener ID
+	ListenerID string `json:"listener_id,required"`
+	// Requests matching this policy will be redirected to this Prefix URL.
+	RedirectPrefix string `json:"redirect_prefix,required"`
+	// Human-readable name of the policy
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The position of this policy on the listener
+	Position param.Opt[int64] `json:"position,omitzero"`
+	// Requests matching this policy will be redirected to the specified URL or Prefix
+	// URL with the HTTP response code. Valid options are 301, 302, 303, 307, or 308.
+	// Default is 302.
+	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
+	// A list of simple strings assigned to the resource.
+	Tags []string `json:"tags,omitzero"`
+	// Action
+	//
+	// This field can be elided, and will marshal its zero value as "REDIRECT_PREFIX".
+	Action constant.RedirectPrefix `json:"action,required"`
+	paramObj
+}
+
+func (r LoadBalancerL7PolicyNewParamsBodyRedirectPrefix) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerL7PolicyNewParamsBodyRedirectPrefix
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerL7PolicyNewParamsBodyRedirectPrefix) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Action, ListenerID, RedirectPoolID are required.
+type LoadBalancerL7PolicyNewParamsBodyRedirectToPool struct {
+	// Listener ID
+	ListenerID string `json:"listener_id,required"`
+	// Requests matching this policy will be redirected to the pool with this ID.
+	RedirectPoolID string `json:"redirect_pool_id,required"`
+	// Human-readable name of the policy
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The position of this policy on the listener
+	Position param.Opt[int64] `json:"position,omitzero"`
+	// A list of simple strings assigned to the resource.
+	Tags []string `json:"tags,omitzero"`
+	// Action
+	//
+	// This field can be elided, and will marshal its zero value as "REDIRECT_TO_POOL".
+	Action constant.RedirectToPool `json:"action,required"`
+	paramObj
+}
+
+func (r LoadBalancerL7PolicyNewParamsBodyRedirectToPool) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerL7PolicyNewParamsBodyRedirectToPool
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerL7PolicyNewParamsBodyRedirectToPool) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Action, ListenerID are required.
+type LoadBalancerL7PolicyNewParamsBodyReject struct {
+	// Listener ID
+	ListenerID string `json:"listener_id,required"`
+	// Human-readable name of the policy
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The position of this policy on the listener
+	Position param.Opt[int64] `json:"position,omitzero"`
+	// A list of simple strings assigned to the resource.
+	Tags []string `json:"tags,omitzero"`
+	// Action
+	//
+	// This field can be elided, and will marshal its zero value as "REJECT".
+	Action constant.Reject `json:"action,required"`
+	paramObj
+}
+
+func (r LoadBalancerL7PolicyNewParamsBodyReject) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerL7PolicyNewParamsBodyReject
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerL7PolicyNewParamsBodyReject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type LoadBalancerL7PolicyListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyReplaceParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Action
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+
 	//
-	// Any of "REDIRECT_PREFIX", "REDIRECT_TO_POOL", "REDIRECT_TO_URL", "REJECT".
-	Action LoadBalancerL7PolicyReplaceParamsAction `json:"action,omitzero,required"`
-	// Human-readable name of the policy
-	Name param.Opt[string] `json:"name,omitzero"`
-	// The position of this policy on the listener. Positions start at 1.
-	Position param.Opt[int64] `json:"position,omitzero"`
-	// Requests matching this policy will be redirected to the specified URL or Prefix
-	// URL with the HTTP response code. Valid if action is `REDIRECT_TO_URL` or
-	// `REDIRECT_PREFIX`. Valid options are 301, 302, 303, 307, or 308. Default is 302.
-	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
-	// Requests matching this policy will be redirected to the pool with this ID. Only
-	// valid if action is `REDIRECT_TO_POOL`.
-	RedirectPoolID param.Opt[string] `json:"redirect_pool_id,omitzero"`
-	// Requests matching this policy will be redirected to this Prefix URL. Only valid
-	// if action is `REDIRECT_PREFIX`.
-	RedirectPrefix param.Opt[string] `json:"redirect_prefix,omitzero"`
-	// Requests matching this policy will be redirected to this URL. Only valid if
-	// action is `REDIRECT_TO_URL`.
-	RedirectURL param.Opt[string] `json:"redirect_url,omitzero"`
-	// A list of simple strings assigned to the resource.
-	Tags []string `json:"tags,omitzero"`
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	OfRedirectToURL *LoadBalancerL7PolicyReplaceParamsBodyRedirectToURL `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfRedirectPrefix *LoadBalancerL7PolicyReplaceParamsBodyRedirectPrefix `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfRedirectToPool *LoadBalancerL7PolicyReplaceParamsBodyRedirectToPool `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfReject *LoadBalancerL7PolicyReplaceParamsBodyReject `json:",inline"`
+
 	paramObj
 }
 
-func (r LoadBalancerL7PolicyReplaceParams) MarshalJSON() (data []byte, err error) {
-	type shadow LoadBalancerL7PolicyReplaceParams
-	return param.MarshalObject(r, (*shadow)(&r))
+func (u LoadBalancerL7PolicyReplaceParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfRedirectToURL, u.OfRedirectPrefix, u.OfRedirectToPool, u.OfReject)
 }
 func (r *LoadBalancerL7PolicyReplaceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Action
-type LoadBalancerL7PolicyReplaceParamsAction string
+// The properties Action, RedirectURL are required.
+type LoadBalancerL7PolicyReplaceParamsBodyRedirectToURL struct {
+	// Requests matching this policy will be redirected to this URL. Only valid if
+	// action is `REDIRECT_TO_URL`.
+	RedirectURL string `json:"redirect_url,required"`
+	// Human-readable name of the policy
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The position of this policy on the listener
+	Position param.Opt[int64] `json:"position,omitzero"`
+	// Requests matching this policy will be redirected to the specified URL or Prefix
+	// URL with the HTTP response code. Valid if action is `REDIRECT_TO_URL` or
+	// `REDIRECT_PREFIX`. Valid options are 301, 302, 303, 307, or 308. Default is 302.
+	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
+	// A list of simple strings assigned to the resource.
+	Tags []string `json:"tags,omitzero"`
+	// Action
+	//
+	// This field can be elided, and will marshal its zero value as "REDIRECT_TO_URL".
+	Action constant.RedirectToURL `json:"action,required"`
+	paramObj
+}
 
-const (
-	LoadBalancerL7PolicyReplaceParamsActionRedirectPrefix LoadBalancerL7PolicyReplaceParamsAction = "REDIRECT_PREFIX"
-	LoadBalancerL7PolicyReplaceParamsActionRedirectToPool LoadBalancerL7PolicyReplaceParamsAction = "REDIRECT_TO_POOL"
-	LoadBalancerL7PolicyReplaceParamsActionRedirectToURL  LoadBalancerL7PolicyReplaceParamsAction = "REDIRECT_TO_URL"
-	LoadBalancerL7PolicyReplaceParamsActionReject         LoadBalancerL7PolicyReplaceParamsAction = "REJECT"
-)
+func (r LoadBalancerL7PolicyReplaceParamsBodyRedirectToURL) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerL7PolicyReplaceParamsBodyRedirectToURL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerL7PolicyReplaceParamsBodyRedirectToURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Action, RedirectPrefix are required.
+type LoadBalancerL7PolicyReplaceParamsBodyRedirectPrefix struct {
+	// Requests matching this policy will be redirected to this Prefix URL.
+	RedirectPrefix string `json:"redirect_prefix,required"`
+	// Human-readable name of the policy
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The position of this policy on the listener
+	Position param.Opt[int64] `json:"position,omitzero"`
+	// Requests matching this policy will be redirected to the specified URL or Prefix
+	// URL with the HTTP response code. Valid options are 301, 302, 303, 307, or 308.
+	// Default is 302.
+	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
+	// A list of simple strings assigned to the resource.
+	Tags []string `json:"tags,omitzero"`
+	// Action
+	//
+	// This field can be elided, and will marshal its zero value as "REDIRECT_PREFIX".
+	Action constant.RedirectPrefix `json:"action,required"`
+	paramObj
+}
+
+func (r LoadBalancerL7PolicyReplaceParamsBodyRedirectPrefix) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerL7PolicyReplaceParamsBodyRedirectPrefix
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerL7PolicyReplaceParamsBodyRedirectPrefix) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Action, RedirectPoolID are required.
+type LoadBalancerL7PolicyReplaceParamsBodyRedirectToPool struct {
+	// Requests matching this policy will be redirected to the pool with this ID.
+	RedirectPoolID string `json:"redirect_pool_id,required"`
+	// Human-readable name of the policy
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The position of this policy on the listener
+	Position param.Opt[int64] `json:"position,omitzero"`
+	// A list of simple strings assigned to the resource.
+	Tags []string `json:"tags,omitzero"`
+	// Action
+	//
+	// This field can be elided, and will marshal its zero value as "REDIRECT_TO_POOL".
+	Action constant.RedirectToPool `json:"action,required"`
+	paramObj
+}
+
+func (r LoadBalancerL7PolicyReplaceParamsBodyRedirectToPool) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerL7PolicyReplaceParamsBodyRedirectToPool
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerL7PolicyReplaceParamsBodyRedirectToPool) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Action is required.
+type LoadBalancerL7PolicyReplaceParamsBodyReject struct {
+	// Human-readable name of the policy
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The position of this policy on the listener
+	Position param.Opt[int64] `json:"position,omitzero"`
+	// A list of simple strings assigned to the resource.
+	Tags []string `json:"tags,omitzero"`
+	// Action
+	//
+	// This field can be elided, and will marshal its zero value as "REJECT".
+	Action constant.Reject `json:"action,required"`
+	paramObj
+}
+
+func (r LoadBalancerL7PolicyReplaceParamsBodyReject) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerL7PolicyReplaceParamsBodyReject
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerL7PolicyReplaceParamsBodyReject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}

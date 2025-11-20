@@ -173,12 +173,40 @@ func (r *APITokenClientUserRole) UnmarshalJSON(data []byte) error {
 }
 
 type APITokenCreate struct {
+	// API token ID.
+	ID         int64                    `json:"id,required"`
+	ClientUser APITokenCreateClientUser `json:"client_user,required"`
+	// Date when the API token was issued (ISO 8086/RFC 3339 format), UTC.
+	Created string `json:"created,required"`
+	// Deletion flag. If true, then the API token was deleted.
+	Deleted bool `json:"deleted,required"`
+	// Date when the API token becomes expired (ISO 8086/RFC 3339 format), UTC. If
+	// null, then the API token will never expire.
+	ExpDate string `json:"exp_date,required"`
+	// Expiration flag. If true, then the API token has expired. When an API token
+	// expires it will be automatically deleted.
+	Expired bool `json:"expired,required"`
+	// Date when the API token was last used (ISO 8086/RFC 3339 format), UTC.
+	LastUsage string `json:"last_usage,required"`
+	// API token name.
+	Name string `json:"name,required"`
 	// API token. Copy it, because you will not be able to get it again. We do not
 	// store tokens. All responsibility for token storage and usage is on the issuer.
 	Token string `json:"token"`
+	// API token description.
+	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
+		ClientUser  respjson.Field
+		Created     respjson.Field
+		Deleted     respjson.Field
+		ExpDate     respjson.Field
+		Expired     respjson.Field
+		LastUsage   respjson.Field
+		Name        respjson.Field
 		Token       respjson.Field
+		Description respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -187,6 +215,63 @@ type APITokenCreate struct {
 // Returns the unmodified JSON received from the API
 func (r APITokenCreate) RawJSON() string { return r.JSON.raw }
 func (r *APITokenCreate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type APITokenCreateClientUser struct {
+	// Account's ID.
+	ClientID int64 `json:"client_id,required"`
+	// Deletion flag. If true, then the API token was deleted.
+	Deleted bool                         `json:"deleted,required"`
+	Role    APITokenCreateClientUserRole `json:"role,required"`
+	// User's email who issued the API token.
+	UserEmail string `json:"user_email,required"`
+	// User's ID who issued the API token.
+	UserID int64 `json:"user_id,required"`
+	// User's name who issued the API token.
+	UserName string `json:"user_name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ClientID    respjson.Field
+		Deleted     respjson.Field
+		Role        respjson.Field
+		UserEmail   respjson.Field
+		UserID      respjson.Field
+		UserName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenCreateClientUser) RawJSON() string { return r.JSON.raw }
+func (r *APITokenCreateClientUser) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type APITokenCreateClientUserRole struct {
+	// Group's ID: Possible values are:
+	//
+	//   - 1 - Administrators* 2 - Users* 5 - Engineers* 3009 - Purge and Prefetch only
+	//     (API+Web)* 3022 - Purge and Prefetch only (API)
+	ID int64 `json:"id"`
+	// Group's name.
+	//
+	// Any of "Users", "Administrators", "Engineers", "Purge and Prefetch only (API)",
+	// "Purge and Prefetch only (API+Web)".
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenCreateClientUserRole) RawJSON() string { return r.JSON.raw }
+func (r *APITokenCreateClientUserRole) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
