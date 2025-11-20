@@ -313,6 +313,9 @@ type SSHKeyListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Maximum number of SSH keys to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// SSH key name. Partial substring match. Example: `name=abc` matches any key
+	// containing `abc` in name.
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Offset for pagination
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Sort order for the SSH keys

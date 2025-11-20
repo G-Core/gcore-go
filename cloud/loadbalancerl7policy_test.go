@@ -27,17 +27,16 @@ func TestLoadBalancerL7PolicyNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.New(context.TODO(), cloud.LoadBalancerL7PolicyNewParams{
-		ProjectID:        gcore.Int(0),
-		RegionID:         gcore.Int(0),
-		Action:           cloud.LoadBalancerL7PolicyNewParamsActionRedirectToURL,
-		ListenerID:       "023f2e34-7806-443b-bfae-16c324569a3d",
-		Name:             gcore.String("redirect-example.com"),
-		Position:         gcore.Int(1),
-		RedirectHTTPCode: gcore.Int(301),
-		RedirectPoolID:   gcore.String("redirect_pool_id"),
-		RedirectPrefix:   gcore.String("redirect_prefix"),
-		RedirectURL:      gcore.String("http://www.example.com"),
-		Tags:             []string{"test_tag"},
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(1),
+		OfRedirectToURL: &cloud.LoadBalancerL7PolicyNewParamsBodyRedirectToURL{
+			ListenerID:       "023f2e34-7806-443b-bfae-16c324569a3d",
+			RedirectURL:      "https://www.example.com",
+			Name:             gcore.String("redirect-example.com"),
+			Position:         gcore.Int(1),
+			RedirectHTTPCode: gcore.Int(301),
+			Tags:             []string{"test_tag"},
+		},
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -61,8 +60,8 @@ func TestLoadBalancerL7PolicyList(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.List(context.TODO(), cloud.LoadBalancerL7PolicyListParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(1),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -87,10 +86,10 @@ func TestLoadBalancerL7PolicyDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.Delete(
 		context.TODO(),
-		"l7policy_id",
+		"023f2e34-7806-443b-bfae-16c324569a3d",
 		cloud.LoadBalancerL7PolicyDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -116,10 +115,10 @@ func TestLoadBalancerL7PolicyGet(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.Get(
 		context.TODO(),
-		"l7policy_id",
+		"023f2e34-7806-443b-bfae-16c324569a3d",
 		cloud.LoadBalancerL7PolicyGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -145,18 +144,17 @@ func TestLoadBalancerL7PolicyReplaceWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.Replace(
 		context.TODO(),
-		"l7policy_id",
+		"023f2e34-7806-443b-bfae-16c324569a3d",
 		cloud.LoadBalancerL7PolicyReplaceParams{
-			ProjectID:        gcore.Int(0),
-			RegionID:         gcore.Int(0),
-			Action:           cloud.LoadBalancerL7PolicyReplaceParamsActionRedirectToURL,
-			Name:             gcore.String("redirect-images.example.com"),
-			Position:         gcore.Int(1),
-			RedirectHTTPCode: gcore.Int(301),
-			RedirectPoolID:   gcore.String("redirect_pool_id"),
-			RedirectPrefix:   gcore.String("redirect_prefix"),
-			RedirectURL:      gcore.String("http://images.example.com"),
-			Tags:             []string{"updated_tag"},
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			OfRedirectToURL: &cloud.LoadBalancerL7PolicyReplaceParamsBodyRedirectToURL{
+				RedirectURL:      "https://www.example.com",
+				Name:             gcore.String("redirect-example.com"),
+				Position:         gcore.Int(1),
+				RedirectHTTPCode: gcore.Int(301),
+				Tags:             []string{"test_tag"},
+			},
 		},
 	)
 	if err != nil {

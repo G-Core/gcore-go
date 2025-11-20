@@ -85,6 +85,7 @@ func TestSSHKeyListWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.SSHKeys.List(context.TODO(), cloud.SSHKeyListParams{
 		ProjectID: gcore.Int(1),
 		Limit:     gcore.Int(100),
+		Name:      gcore.String("my-ssh-key"),
 		Offset:    gcore.Int(0),
 		OrderBy:   cloud.SSHKeyListParamsOrderByCreatedAtDesc,
 	})
