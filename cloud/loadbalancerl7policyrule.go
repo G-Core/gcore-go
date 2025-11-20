@@ -13,6 +13,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // LoadBalancerL7PolicyRuleService contains methods and other services that help
@@ -61,7 +62,7 @@ func (r *LoadBalancerL7PolicyRuleService) New(ctx context.Context, l7policyID st
 }
 
 // List load balancer L7 policy rules
-func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID string, query LoadBalancerL7PolicyRuleListParams, opts ...option.RequestOption) (res *LoadBalancerL7RuleList, err error) {
+func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID string, query LoadBalancerL7PolicyRuleListParams, opts ...option.RequestOption) (res *LoadBalancerL7PolicyRuleListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -117,7 +118,7 @@ func (r *LoadBalancerL7PolicyRuleService) Delete(ctx context.Context, l7ruleID s
 }
 
 // Get load balancer L7 rule
-func (r *LoadBalancerL7PolicyRuleService) Get(ctx context.Context, l7ruleID string, query LoadBalancerL7PolicyRuleGetParams, opts ...option.RequestOption) (res *LoadBalancerL7Rule, err error) {
+func (r *LoadBalancerL7PolicyRuleService) Get(ctx context.Context, l7ruleID string, query LoadBalancerL7PolicyRuleGetParams, opts ...option.RequestOption) (res *LoadBalancerL7PolicyRuleGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -176,9 +177,186 @@ func (r *LoadBalancerL7PolicyRuleService) Replace(ctx context.Context, l7ruleID 
 	return
 }
 
+type LoadBalancerL7PolicyRuleListResponse struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []LoadBalancerL7PolicyRuleListResponseResult `json:"results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerL7PolicyRuleListResponse) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerL7PolicyRuleListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerL7PolicyRuleListResponseResult struct {
+	// L7Rule ID
+	ID string `json:"id,required"`
+	// The comparison type for the L7 rule
+	//
+	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
+	CompareType string `json:"compare_type,required"`
+	// When true the logic of the rule is inverted. For example, with invert true,
+	// 'equal to' would become 'not equal to'. Default is false.
+	Invert bool `json:"invert,required"`
+	// The key to use for the comparison. For example, the name of the cookie to
+	// evaluate.
+	Key string `json:"key,required"`
+	// L7 policy operating status
+	//
+	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	// Project ID
+	ProjectID int64 `json:"project_id,required"`
+	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
+	// "PENDING_UPDATE".
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	// Region name
+	Region string `json:"region,required"`
+	// Region ID
+	RegionID int64 `json:"region_id,required"`
+	// A list of simple strings assigned to the l7 rule
+	Tags []string `json:"tags,required"`
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
+	TaskID string `json:"task_id,required" format:"uuid4"`
+	// The L7 rule type
+	//
+	// Any of "COOKIE", "FILE_TYPE", "HEADER", "HOST_NAME", "PATH",
+	// "SSL_CONN_HAS_CERT", "SSL_DN_FIELD", "SSL_VERIFY_RESULT".
+	Type string `json:"type,required"`
+	// The value to use for the comparison. For example, the file type to compare.
+	Value string `json:"value,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		CompareType        respjson.Field
+		Invert             respjson.Field
+		Key                respjson.Field
+		OperatingStatus    respjson.Field
+		ProjectID          respjson.Field
+		ProvisioningStatus respjson.Field
+		Region             respjson.Field
+		RegionID           respjson.Field
+		Tags               respjson.Field
+		TaskID             respjson.Field
+		Type               respjson.Field
+		Value              respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerL7PolicyRuleListResponseResult) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerL7PolicyRuleListResponseResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerL7PolicyRuleGetResponse struct {
+	// L7Rule ID
+	ID string `json:"id,required"`
+	// The comparison type for the L7 rule
+	//
+	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
+	CompareType LoadBalancerL7PolicyRuleGetResponseCompareType `json:"compare_type,required"`
+	// When true the logic of the rule is inverted. For example, with invert true,
+	// 'equal to' would become 'not equal to'. Default is false.
+	Invert bool `json:"invert,required"`
+	// The key to use for the comparison. For example, the name of the cookie to
+	// evaluate.
+	Key string `json:"key,required"`
+	// L7 policy operating status
+	//
+	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	// Project ID
+	ProjectID int64 `json:"project_id,required"`
+	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
+	// "PENDING_UPDATE".
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	// Region name
+	Region string `json:"region,required"`
+	// Region ID
+	RegionID int64 `json:"region_id,required"`
+	// A list of simple strings assigned to the l7 rule
+	Tags []string `json:"tags,required"`
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
+	TaskID string `json:"task_id,required" format:"uuid4"`
+	// The L7 rule type
+	//
+	// Any of "COOKIE", "FILE_TYPE", "HEADER", "HOST_NAME", "PATH",
+	// "SSL_CONN_HAS_CERT", "SSL_DN_FIELD", "SSL_VERIFY_RESULT".
+	Type LoadBalancerL7PolicyRuleGetResponseType `json:"type,required"`
+	// The value to use for the comparison. For example, the file type to compare.
+	Value string `json:"value,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		CompareType        respjson.Field
+		Invert             respjson.Field
+		Key                respjson.Field
+		OperatingStatus    respjson.Field
+		ProjectID          respjson.Field
+		ProvisioningStatus respjson.Field
+		Region             respjson.Field
+		RegionID           respjson.Field
+		Tags               respjson.Field
+		TaskID             respjson.Field
+		Type               respjson.Field
+		Value              respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerL7PolicyRuleGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerL7PolicyRuleGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The comparison type for the L7 rule
+type LoadBalancerL7PolicyRuleGetResponseCompareType string
+
+const (
+	LoadBalancerL7PolicyRuleGetResponseCompareTypeContains   LoadBalancerL7PolicyRuleGetResponseCompareType = "CONTAINS"
+	LoadBalancerL7PolicyRuleGetResponseCompareTypeEndsWith   LoadBalancerL7PolicyRuleGetResponseCompareType = "ENDS_WITH"
+	LoadBalancerL7PolicyRuleGetResponseCompareTypeEqualTo    LoadBalancerL7PolicyRuleGetResponseCompareType = "EQUAL_TO"
+	LoadBalancerL7PolicyRuleGetResponseCompareTypeRegex      LoadBalancerL7PolicyRuleGetResponseCompareType = "REGEX"
+	LoadBalancerL7PolicyRuleGetResponseCompareTypeStartsWith LoadBalancerL7PolicyRuleGetResponseCompareType = "STARTS_WITH"
+)
+
+// The L7 rule type
+type LoadBalancerL7PolicyRuleGetResponseType string
+
+const (
+	LoadBalancerL7PolicyRuleGetResponseTypeCookie          LoadBalancerL7PolicyRuleGetResponseType = "COOKIE"
+	LoadBalancerL7PolicyRuleGetResponseTypeFileType        LoadBalancerL7PolicyRuleGetResponseType = "FILE_TYPE"
+	LoadBalancerL7PolicyRuleGetResponseTypeHeader          LoadBalancerL7PolicyRuleGetResponseType = "HEADER"
+	LoadBalancerL7PolicyRuleGetResponseTypeHostName        LoadBalancerL7PolicyRuleGetResponseType = "HOST_NAME"
+	LoadBalancerL7PolicyRuleGetResponseTypePath            LoadBalancerL7PolicyRuleGetResponseType = "PATH"
+	LoadBalancerL7PolicyRuleGetResponseTypeSslConnHasCert  LoadBalancerL7PolicyRuleGetResponseType = "SSL_CONN_HAS_CERT"
+	LoadBalancerL7PolicyRuleGetResponseTypeSslDnField      LoadBalancerL7PolicyRuleGetResponseType = "SSL_DN_FIELD"
+	LoadBalancerL7PolicyRuleGetResponseTypeSslVerifyResult LoadBalancerL7PolicyRuleGetResponseType = "SSL_VERIFY_RESULT"
+)
+
 type LoadBalancerL7PolicyRuleNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// The comparison type for the L7 rule
 	//
 	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
@@ -188,13 +366,11 @@ type LoadBalancerL7PolicyRuleNewParams struct {
 	// Any of "COOKIE", "FILE_TYPE", "HEADER", "HOST_NAME", "PATH",
 	// "SSL_CONN_HAS_CERT", "SSL_DN_FIELD", "SSL_VERIFY_RESULT".
 	Type LoadBalancerL7PolicyRuleNewParamsType `json:"type,omitzero,required"`
-	// The value to use for the comparison. For example, the file type to compare
+	// The value to use for the comparison
 	Value string `json:"value,required"`
-	// When true the logic of the rule is inverted. For example, with invert true,
-	// 'equal to' would become 'not equal to'. Default is false.
+	// When true the logic of the rule is inverted.
 	Invert param.Opt[bool] `json:"invert,omitzero"`
-	// The key to use for the comparison. For example, the name of the cookie to
-	// evaluate.
+	// The key to use for the comparison.
 	Key param.Opt[string] `json:"key,omitzero"`
 	// A list of simple strings assigned to the l7 rule
 	Tags []string `json:"tags,omitzero"`
@@ -235,41 +411,50 @@ const (
 )
 
 type LoadBalancerL7PolicyRuleListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyRuleDeleteParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	L7policyID string           `path:"l7policy_id,required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// L7 policy ID
+	L7policyID string `path:"l7policy_id,required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyRuleGetParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	L7policyID string           `path:"l7policy_id,required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// L7 policy ID
+	L7policyID string `path:"l7policy_id,required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyRuleReplaceParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	L7policyID string           `path:"l7policy_id,required" json:"-"`
-	// When true the logic of the rule is inverted. For example, with invert true,
-	// 'equal to' would become 'not equal to'. Default is false.
-	Invert param.Opt[bool] `json:"invert,omitzero"`
-	// The key to use for the comparison. For example, the name of the cookie to
-	// evaluate.
-	Key param.Opt[string] `json:"key,omitzero"`
-	// The value to use for the comparison. For example, the file type to compare
-	Value param.Opt[string] `json:"value,omitzero"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// L7 policy ID
+	L7policyID string `path:"l7policy_id,required" json:"-"`
 	// The comparison type for the L7 rule
 	//
 	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
-	CompareType LoadBalancerL7PolicyRuleReplaceParamsCompareType `json:"compare_type,omitzero"`
+	CompareType LoadBalancerL7PolicyRuleReplaceParamsCompareType `json:"compare_type,omitzero,required"`
+	// When true the logic of the rule is inverted.
+	Invert param.Opt[bool] `json:"invert,omitzero"`
+	// The key to use for the comparison.
+	Key param.Opt[string] `json:"key,omitzero"`
+	// The value to use for the comparison
+	Value param.Opt[string] `json:"value,omitzero"`
 	// A list of simple strings assigned to the l7 rule
 	Tags []string `json:"tags,omitzero"`
 	// The L7 rule type

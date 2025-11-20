@@ -28,16 +28,16 @@ func TestLoadBalancerL7PolicyRuleNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.Rules.New(
 		context.TODO(),
-		"l7policy_id",
+		"023f2e34-7806-443b-bfae-16c324569a3d",
 		cloud.LoadBalancerL7PolicyRuleNewParams{
-			ProjectID:   gcore.Int(0),
-			RegionID:    gcore.Int(0),
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(1),
 			CompareType: cloud.LoadBalancerL7PolicyRuleNewParamsCompareTypeRegex,
 			Type:        cloud.LoadBalancerL7PolicyRuleNewParamsTypePath,
 			Value:       "/images*",
-			Invert:      gcore.Bool(false),
-			Key:         gcore.String("key"),
-			Tags:        []string{"test_tag"},
+			Invert:      gcore.Bool(true),
+			Key:         gcore.String("the name of the cookie to evaluate."),
+			Tags:        []string{"test_tag_1", "test_tag_2"},
 		},
 	)
 	if err != nil {
@@ -63,10 +63,10 @@ func TestLoadBalancerL7PolicyRuleList(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.Rules.List(
 		context.TODO(),
-		"l7policy_id",
+		"023f2e34-7806-443b-bfae-16c324569a3d",
 		cloud.LoadBalancerL7PolicyRuleListParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -92,11 +92,11 @@ func TestLoadBalancerL7PolicyRuleDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.Rules.Delete(
 		context.TODO(),
-		"l7rule_id",
+		"023f2e34-7806-443b-bfae-16c324569a3d",
 		cloud.LoadBalancerL7PolicyRuleDeleteParams{
-			ProjectID:  gcore.Int(0),
-			RegionID:   gcore.Int(0),
-			L7policyID: "l7policy_id",
+			ProjectID:  gcore.Int(1),
+			RegionID:   gcore.Int(1),
+			L7policyID: "023f2e34-7806-443b-bfae-16c324569a3d",
 		},
 	)
 	if err != nil {
@@ -122,11 +122,11 @@ func TestLoadBalancerL7PolicyRuleGet(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.Rules.Get(
 		context.TODO(),
-		"l7rule_id",
+		"023f2e34-7806-443b-bfae-16c324569a3d",
 		cloud.LoadBalancerL7PolicyRuleGetParams{
-			ProjectID:  gcore.Int(0),
-			RegionID:   gcore.Int(0),
-			L7policyID: "l7policy_id",
+			ProjectID:  gcore.Int(1),
+			RegionID:   gcore.Int(1),
+			L7policyID: "023f2e34-7806-443b-bfae-16c324569a3d",
 		},
 	)
 	if err != nil {
@@ -152,17 +152,17 @@ func TestLoadBalancerL7PolicyRuleReplaceWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.L7Policies.Rules.Replace(
 		context.TODO(),
-		"l7rule_id",
+		"023f2e34-7806-443b-bfae-16c324569a3d",
 		cloud.LoadBalancerL7PolicyRuleReplaceParams{
-			ProjectID:   gcore.Int(0),
-			RegionID:    gcore.Int(0),
-			L7policyID:  "l7policy_id",
-			CompareType: cloud.LoadBalancerL7PolicyRuleReplaceParamsCompareTypeContains,
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(1),
+			L7policyID:  "023f2e34-7806-443b-bfae-16c324569a3d",
+			CompareType: cloud.LoadBalancerL7PolicyRuleReplaceParamsCompareTypeRegex,
 			Invert:      gcore.Bool(true),
-			Key:         gcore.String("key"),
-			Tags:        []string{"string"},
-			Type:        cloud.LoadBalancerL7PolicyRuleReplaceParamsTypeCookie,
-			Value:       gcore.String("value"),
+			Key:         gcore.String("the name of the cookie to evaluate."),
+			Tags:        []string{"test_tag_1", "test_tag_2"},
+			Type:        cloud.LoadBalancerL7PolicyRuleReplaceParamsTypePath,
+			Value:       gcore.String("/images*"),
 		},
 	)
 	if err != nil {
