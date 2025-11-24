@@ -42,8 +42,8 @@ func TestSecurityGroupNewWithOptionalParams(t *testing.T) {
 				RemoteGroupID:  gcore.String("00000000-0000-4000-8000-000000000000"),
 				RemoteIPPrefix: gcore.String("10.0.0.0/8"),
 			}},
-			Tags: map[string]any{
-				"my-tag": "bar",
+			Tags: map[string]string{
+				"my-tag": "my-tag-value",
 			},
 		},
 		Instances: []string{"00000000-0000-4000-8000-000000000000"},
