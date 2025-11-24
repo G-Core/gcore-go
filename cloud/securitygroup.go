@@ -423,10 +423,11 @@ type SecurityGroupNewParamsSecurityGroup struct {
 	SecurityGroupRules []SecurityGroupNewParamsSecurityGroupSecurityGroupRule `json:"security_group_rules,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
-	// better organization and management. Some tags are read-only and cannot be
-	// modified by the user. Tags are also integrated with cost reports, allowing cost
-	// data to be filtered based on tag keys or values.
-	Tags map[string]any `json:"tags,omitzero"`
+	// better organization and management. Both tag keys and values have a maximum
+	// length of 255 characters. Some tags are read-only and cannot be modified by the
+	// user. Tags are also integrated with cost reports, allowing cost data to be
+	// filtered based on tag keys or values.
+	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
 
