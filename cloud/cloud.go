@@ -206,7 +206,8 @@ func (r *BaremetalFlavorList) UnmarshalJSON(data []byte) error {
 }
 
 type BlackholePort struct {
-	// A date-time string giving the time that the alarm ended
+	// A date-time string giving the time that the alarm ended. If not yet ended, time
+	// will be given as 0001-01-01T00:00:00Z
 	AlarmEnd time.Time `json:"AlarmEnd,required" format:"date-time"`
 	// A date-time string giving the time that the alarm started
 	AlarmStart time.Time `json:"AlarmStart,required" format:"date-time"`
@@ -2315,11 +2316,11 @@ func (r *Subnet) UnmarshalJSON(data []byte) error {
 // with cost reports, allowing cost data to be filtered based on tag keys or
 // values.
 type Tag struct {
-	// Tag key. The maximum size for a key is 255 bytes.
+	// Tag key. The maximum size for a key is 255 characters.
 	Key string `json:"key,required"`
 	// If true, the tag is read-only and cannot be modified by the user
 	ReadOnly bool `json:"read_only,required"`
-	// Tag value. The maximum size for a value is 1024 bytes.
+	// Tag value. The maximum size for a value is 255 characters.
 	Value string `json:"value,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
