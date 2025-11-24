@@ -13,7 +13,6 @@ import (
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
-	"github.com/G-Core/gcore-go/packages/respjson"
 	"github.com/G-Core/gcore-go/shared/constant"
 )
 
@@ -61,7 +60,7 @@ func (r *LoadBalancerL7PolicyService) New(ctx context.Context, params LoadBalanc
 }
 
 // List load balancer L7 policies
-func (r *LoadBalancerL7PolicyService) List(ctx context.Context, query LoadBalancerL7PolicyListParams, opts ...option.RequestOption) (res *LoadBalancerL7PolicyListResponse, err error) {
+func (r *LoadBalancerL7PolicyService) List(ctx context.Context, query LoadBalancerL7PolicyListParams, opts ...option.RequestOption) (res *LoadBalancerL7PolicyList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -109,7 +108,7 @@ func (r *LoadBalancerL7PolicyService) Delete(ctx context.Context, l7policyID str
 }
 
 // Get load balancer L7 policy
-func (r *LoadBalancerL7PolicyService) Get(ctx context.Context, l7policyID string, query LoadBalancerL7PolicyGetParams, opts ...option.RequestOption) (res *LoadBalancerL7PolicyGetResponse, err error) {
+func (r *LoadBalancerL7PolicyService) Get(ctx context.Context, l7policyID string, query LoadBalancerL7PolicyGetParams, opts ...option.RequestOption) (res *LoadBalancerL7Policy, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -161,248 +160,6 @@ func (r *LoadBalancerL7PolicyService) Replace(ctx context.Context, l7policyID st
 	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, l7policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
-}
-
-type LoadBalancerL7PolicyListResponse struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []LoadBalancerL7PolicyListResponseResult `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerL7PolicyListResponse) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerL7PolicyListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LoadBalancerL7PolicyListResponseResult struct {
-	// ID
-	ID string `json:"id,required"`
-	// Action
-	//
-	// Any of "REDIRECT_PREFIX", "REDIRECT_TO_POOL", "REDIRECT_TO_URL", "REJECT".
-	Action string `json:"action,required"`
-	// Listener ID
-	ListenerID string `json:"listener_id,required"`
-	// Human-readable name of the policy
-	Name string `json:"name,required"`
-	// L7 policy operating status
-	//
-	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// The position of this policy on the listener. Positions start at 1.
-	Position int64 `json:"position,required"`
-	// Project ID
-	ProjectID int64 `json:"project_id,required"`
-	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
-	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// Requests matching this policy will be redirected to the specified URL or Prefix
-	// URL with the HTTP response code. Valid if action is `REDIRECT_TO_URL` or
-	// `REDIRECT_PREFIX`. Valid options are 301, 302, 303, 307, or 308. Default is 302.
-	RedirectHTTPCode int64 `json:"redirect_http_code,required"`
-	// Requests matching this policy will be redirected to the pool with this ID. Only
-	// valid if action is `REDIRECT_TO_POOL`.
-	RedirectPoolID string `json:"redirect_pool_id,required"`
-	// Requests matching this policy will be redirected to this Prefix URL. Only valid
-	// if action is `REDIRECT_PREFIX`.
-	RedirectPrefix string `json:"redirect_prefix,required"`
-	// Requests matching this policy will be redirected to this URL. Only valid if
-	// action is `REDIRECT_TO_URL`.
-	RedirectURL string `json:"redirect_url,required"`
-	// Region name
-	Region string `json:"region,required"`
-	// Region ID
-	RegionID int64 `json:"region_id,required"`
-	// Rules. All the rules associated with a given policy are logically ANDed
-	// together. A request must match all the policy’s rules to match the policy.If you
-	// need to express a logical OR operation between rules, then do this by creating
-	// multiple policies with the same action.
-	Rules []LoadBalancerL7PolicyListResponseResultRule `json:"rules,required"`
-	// A list of simple strings assigned to the resource.
-	Tags []string `json:"tags,required"`
-	// The UUID of the active task that currently holds a lock on the resource. This
-	// lock prevents concurrent modifications to ensure consistency. If `null`, the
-	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                 respjson.Field
-		Action             respjson.Field
-		ListenerID         respjson.Field
-		Name               respjson.Field
-		OperatingStatus    respjson.Field
-		Position           respjson.Field
-		ProjectID          respjson.Field
-		ProvisioningStatus respjson.Field
-		RedirectHTTPCode   respjson.Field
-		RedirectPoolID     respjson.Field
-		RedirectPrefix     respjson.Field
-		RedirectURL        respjson.Field
-		Region             respjson.Field
-		RegionID           respjson.Field
-		Rules              respjson.Field
-		Tags               respjson.Field
-		TaskID             respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerL7PolicyListResponseResult) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerL7PolicyListResponseResult) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LoadBalancerL7PolicyListResponseResultRule struct {
-	// L7Rule ID
-	ID string `json:"id,required"`
-	// Project ID
-	ProjectID int64 `json:"project_id,required"`
-	// Region name
-	Region string `json:"region,required"`
-	// Region ID
-	RegionID int64 `json:"region_id,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ProjectID   respjson.Field
-		Region      respjson.Field
-		RegionID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerL7PolicyListResponseResultRule) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerL7PolicyListResponseResultRule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LoadBalancerL7PolicyGetResponse struct {
-	// ID
-	ID string `json:"id,required"`
-	// Action
-	//
-	// Any of "REDIRECT_PREFIX", "REDIRECT_TO_POOL", "REDIRECT_TO_URL", "REJECT".
-	Action LoadBalancerL7PolicyGetResponseAction `json:"action,required"`
-	// Listener ID
-	ListenerID string `json:"listener_id,required"`
-	// Human-readable name of the policy
-	Name string `json:"name,required"`
-	// L7 policy operating status
-	//
-	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
-	// The position of this policy on the listener. Positions start at 1.
-	Position int64 `json:"position,required"`
-	// Project ID
-	ProjectID int64 `json:"project_id,required"`
-	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
-	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
-	// Requests matching this policy will be redirected to the specified URL or Prefix
-	// URL with the HTTP response code. Valid if action is `REDIRECT_TO_URL` or
-	// `REDIRECT_PREFIX`. Valid options are 301, 302, 303, 307, or 308. Default is 302.
-	RedirectHTTPCode int64 `json:"redirect_http_code,required"`
-	// Requests matching this policy will be redirected to the pool with this ID. Only
-	// valid if action is `REDIRECT_TO_POOL`.
-	RedirectPoolID string `json:"redirect_pool_id,required"`
-	// Requests matching this policy will be redirected to this Prefix URL. Only valid
-	// if action is `REDIRECT_PREFIX`.
-	RedirectPrefix string `json:"redirect_prefix,required"`
-	// Requests matching this policy will be redirected to this URL. Only valid if
-	// action is `REDIRECT_TO_URL`.
-	RedirectURL string `json:"redirect_url,required"`
-	// Region name
-	Region string `json:"region,required"`
-	// Region ID
-	RegionID int64 `json:"region_id,required"`
-	// Rules. All the rules associated with a given policy are logically ANDed
-	// together. A request must match all the policy’s rules to match the policy.If you
-	// need to express a logical OR operation between rules, then do this by creating
-	// multiple policies with the same action.
-	Rules []LoadBalancerL7PolicyGetResponseRule `json:"rules,required"`
-	// A list of simple strings assigned to the resource.
-	Tags []string `json:"tags,required"`
-	// The UUID of the active task that currently holds a lock on the resource. This
-	// lock prevents concurrent modifications to ensure consistency. If `null`, the
-	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                 respjson.Field
-		Action             respjson.Field
-		ListenerID         respjson.Field
-		Name               respjson.Field
-		OperatingStatus    respjson.Field
-		Position           respjson.Field
-		ProjectID          respjson.Field
-		ProvisioningStatus respjson.Field
-		RedirectHTTPCode   respjson.Field
-		RedirectPoolID     respjson.Field
-		RedirectPrefix     respjson.Field
-		RedirectURL        respjson.Field
-		Region             respjson.Field
-		RegionID           respjson.Field
-		Rules              respjson.Field
-		Tags               respjson.Field
-		TaskID             respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerL7PolicyGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerL7PolicyGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Action
-type LoadBalancerL7PolicyGetResponseAction string
-
-const (
-	LoadBalancerL7PolicyGetResponseActionRedirectPrefix LoadBalancerL7PolicyGetResponseAction = "REDIRECT_PREFIX"
-	LoadBalancerL7PolicyGetResponseActionRedirectToPool LoadBalancerL7PolicyGetResponseAction = "REDIRECT_TO_POOL"
-	LoadBalancerL7PolicyGetResponseActionRedirectToURL  LoadBalancerL7PolicyGetResponseAction = "REDIRECT_TO_URL"
-	LoadBalancerL7PolicyGetResponseActionReject         LoadBalancerL7PolicyGetResponseAction = "REJECT"
-)
-
-type LoadBalancerL7PolicyGetResponseRule struct {
-	// L7Rule ID
-	ID string `json:"id,required"`
-	// Project ID
-	ProjectID int64 `json:"project_id,required"`
-	// Region name
-	Region string `json:"region,required"`
-	// Region ID
-	RegionID int64 `json:"region_id,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ProjectID   respjson.Field
-		Region      respjson.Field
-		RegionID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerL7PolicyGetResponseRule) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerL7PolicyGetResponseRule) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type LoadBalancerL7PolicyNewParams struct {
