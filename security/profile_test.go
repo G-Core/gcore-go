@@ -29,7 +29,7 @@ func TestProfileNewWithOptionalParams(t *testing.T) {
 	_, err := client.Security.Profiles.New(context.TODO(), security.ProfileNewParams{
 		Fields: []security.ProfileNewParamsField{{
 			BaseField:  1,
-			FieldValue: map[string]interface{}{},
+			FieldValue: map[string]any{},
 		}},
 		ProfileTemplate: 1,
 		Site:            "GNC",
@@ -133,7 +133,7 @@ func TestProfileRecreateWithOptionalParams(t *testing.T) {
 		security.ProfileRecreateParams{
 			Fields: []security.ProfileRecreateParamsField{{
 				BaseField:  1,
-				FieldValue: map[string]interface{}{},
+				FieldValue: map[string]any{},
 			}},
 			ProfileTemplate: 1,
 			IPAddress:       gcore.String("ip_address"),
@@ -167,7 +167,7 @@ func TestProfileReplaceWithOptionalParams(t *testing.T) {
 		security.ProfileReplaceParams{
 			Fields: []security.ProfileReplaceParamsField{{
 				BaseField:  1,
-				FieldValue: map[string]interface{}{},
+				FieldValue: map[string]any{},
 			}},
 			ProfileTemplate: 1,
 			IPAddress:       gcore.String("ip_address"),

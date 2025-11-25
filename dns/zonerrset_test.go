@@ -33,10 +33,10 @@ func TestZoneRrsetNewWithOptionalParams(t *testing.T) {
 			ZoneName:  "zoneName",
 			RrsetName: "rrsetName",
 			ResourceRecords: []dns.ZoneRrsetNewParamsResourceRecord{{
-				Content: []any{map[string]interface{}{}},
+				Content: []any{map[string]any{}},
 				Enabled: gcore.Bool(true),
 				Meta: map[string]any{
-					"foo": map[string]interface{}{},
+					"foo": map[string]any{},
 				},
 			}},
 			Meta: map[string]any{},
@@ -196,10 +196,10 @@ func TestZoneRrsetReplaceWithOptionalParams(t *testing.T) {
 			ZoneName:  "zoneName",
 			RrsetName: "rrsetName",
 			ResourceRecords: []dns.ZoneRrsetReplaceParamsResourceRecord{{
-				Content: []any{map[string]interface{}{}},
+				Content: []any{map[string]any{}},
 				Enabled: gcore.Bool(true),
 				Meta: map[string]any{
-					"foo": map[string]interface{}{},
+					"foo": map[string]any{},
 				},
 			}},
 			Meta: map[string]any{},

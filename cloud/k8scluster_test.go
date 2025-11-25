@@ -104,9 +104,9 @@ func TestK8SClusterNewWithOptionalParams(t *testing.T) {
 			Enabled: true,
 			Fields: []cloud.K8SClusterNewParamsDDOSProfileField{{
 				BaseField: 10,
-				FieldValue: map[string]interface{}{
-					"0": 45046,
-					"1": 45047,
+				FieldValue: []float64{
+					45046,
+					45047,
 				},
 				Value: param.Null[string](),
 			}},
@@ -201,9 +201,9 @@ func TestK8SClusterUpdateWithOptionalParams(t *testing.T) {
 				Enabled: true,
 				Fields: []cloud.K8SClusterUpdateParamsDDOSProfileField{{
 					BaseField: 10,
-					FieldValue: map[string]interface{}{
-						"0": 45046,
-						"1": 45047,
+					FieldValue: []float64{
+						45046,
+						45047,
 					},
 					Value: param.Null[string](),
 				}},

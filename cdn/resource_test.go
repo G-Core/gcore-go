@@ -265,11 +265,11 @@ func TestResourceNewWithOptionalParams(t *testing.T) {
 			},
 			StaticHeaders: cdn.ResourceNewParamsOptionsStaticHeaders{
 				Enabled: true,
-				Value: map[string]interface{}{
+				Value: map[string]any{
 					"X-Example": "Value_1",
-					"X-Example-Multiple": map[string]interface{}{
-						"0": "Value_2",
-						"1": "Value_3",
+					"X-Example-Multiple": []string{
+						"Value_2",
+						"Value_3",
 					},
 				},
 			},
@@ -580,11 +580,11 @@ func TestResourceUpdateWithOptionalParams(t *testing.T) {
 				},
 				StaticHeaders: cdn.ResourceUpdateParamsOptionsStaticHeaders{
 					Enabled: true,
-					Value: map[string]interface{}{
+					Value: map[string]any{
 						"X-Example": "Value_1",
-						"X-Example-Multiple": map[string]interface{}{
-							"0": "Value_2",
-							"1": "Value_3",
+						"X-Example-Multiple": []string{
+							"Value_2",
+							"Value_3",
 						},
 					},
 				},
@@ -1058,11 +1058,11 @@ func TestResourceReplaceWithOptionalParams(t *testing.T) {
 				},
 				StaticHeaders: cdn.ResourceReplaceParamsOptionsStaticHeaders{
 					Enabled: true,
-					Value: map[string]interface{}{
+					Value: map[string]any{
 						"X-Example": "Value_1",
-						"X-Example-Multiple": map[string]interface{}{
-							"0": "Value_2",
-							"1": "Value_3",
+						"X-Example-Multiple": []string{
+							"Value_2",
+							"Value_3",
 						},
 					},
 				},

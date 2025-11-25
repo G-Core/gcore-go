@@ -68,9 +68,9 @@ func TestInstanceInterfaceAttachWithOptionalParams(t *testing.T) {
 					Fields: []cloud.InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField{{
 						BaseField: gcore.Int(10),
 						FieldName: gcore.String("field_name"),
-						FieldValue: map[string]interface{}{
-							"0": 45046,
-							"1": 45047,
+						FieldValue: []float64{
+							45046,
+							45047,
 						},
 						Value: param.Null[string](),
 					}},
