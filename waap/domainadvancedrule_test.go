@@ -31,14 +31,14 @@ func TestDomainAdvancedRuleNewWithOptionalParams(t *testing.T) {
 		1,
 		waap.DomainAdvancedRuleNewParams{
 			Action: waap.DomainAdvancedRuleNewParamsAction{
-				Allow: map[string]interface{}{},
+				Allow: map[string]any{},
 				Block: waap.DomainAdvancedRuleNewParamsActionBlock{
 					ActionDuration: gcore.String("12h"),
 					StatusCode:     403,
 				},
-				Captcha:   map[string]interface{}{},
-				Handshake: map[string]interface{}{},
-				Monitor:   map[string]interface{}{},
+				Captcha:   map[string]any{},
+				Handshake: map[string]any{},
+				Monitor:   map[string]any{},
 				Tag: waap.DomainAdvancedRuleNewParamsActionTag{
 					Tags: []string{"string"},
 				},
@@ -77,14 +77,14 @@ func TestDomainAdvancedRuleUpdateWithOptionalParams(t *testing.T) {
 		waap.DomainAdvancedRuleUpdateParams{
 			DomainID: 1,
 			Action: waap.DomainAdvancedRuleUpdateParamsAction{
-				Allow: map[string]interface{}{},
+				Allow: map[string]any{},
 				Block: waap.DomainAdvancedRuleUpdateParamsActionBlock{
 					ActionDuration: gcore.String("12h"),
 					StatusCode:     403,
 				},
-				Captcha:   map[string]interface{}{},
-				Handshake: map[string]interface{}{},
-				Monitor:   map[string]interface{}{},
+				Captcha:   map[string]any{},
+				Handshake: map[string]any{},
+				Monitor:   map[string]any{},
 				Tag: waap.DomainAdvancedRuleUpdateParamsActionTag{
 					Tags: []string{"string"},
 				},

@@ -39,16 +39,16 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 				PortGroup:     gcore.Int(0),
 			},
 		}},
-		AppConfig:     map[string]interface{}{},
+		AppConfig:     map[string]any{},
 		ApptemplateID: gcore.String("apptemplate_id"),
 		DDOSProfile: cloud.BaremetalServerNewParamsDDOSProfile{
 			ProfileTemplate: 123,
 			Fields: []cloud.BaremetalServerNewParamsDDOSProfileField{{
 				BaseField: gcore.Int(10),
 				FieldName: param.Null[string](),
-				FieldValue: map[string]interface{}{
-					"0": 45046,
-					"1": 45047,
+				FieldValue: []float64{
+					45046,
+					45047,
 				},
 				Value: param.Null[string](),
 			}},
