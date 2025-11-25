@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.22.0 (2025-11-25)
+
+Full Changelog: [v0.21.0...v0.22.0](https://github.com/G-Core/gcore-go/compare/v0.21.0...v0.22.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** k8s references from k8 to k8s
+* **cloud:** updates to get/list LB l7 policy/rules models
+* **cloud:** updates to get/list LB l7 policy/rules models
+* **cloud:** updates to get/list LB l7 policy/rules models
+
+### Features
+
+* **api:** aggregated API specs update ([bd20645](https://github.com/G-Core/gcore-go/commit/bd20645510519e5c78d4912749ae2c2424689774))
+* **api:** aggregated API specs update ([53cc5fb](https://github.com/G-Core/gcore-go/commit/53cc5fb144855f818dbca6404f311d3ddffefdbd))
+* **api:** aggregated API specs update ([885872b](https://github.com/G-Core/gcore-go/commit/885872b5ae3bbd3ab927070b90a19917ee26d8c5))
+* **cloud:** updates to get/list LB l7 policy/rules models ([f379e4c](https://github.com/G-Core/gcore-go/commit/f379e4c9e2a0f962496da34e1b6d62afd08d2e27))
+* **cloud:** updates to get/list LB l7 policy/rules models ([28c64ce](https://github.com/G-Core/gcore-go/commit/28c64cea6a9739bb7c520e632ddcea634ed8e72b))
+* **cloud:** updates to get/list LB l7 policy/rules models ([3f3f123](https://github.com/G-Core/gcore-go/commit/3f3f123ca5a1917662bae39f9ddfe1c28824cb8f))
+
+
+### Bug Fixes
+
+* **client:** correctly specify Accept header with */* instead of empty ([b3be1c8](https://github.com/G-Core/gcore-go/commit/b3be1c89ed77bdb8a42db8e33f5807d0bc6e2184))
+* **cloud:** k8s references from k8 to k8s ([77ff542](https://github.com/G-Core/gcore-go/commit/77ff542326c3f0d3d8869f026578f7574d1149bb))
+* **cloud:** remove duplicate LoadBalancer type definitions ([#164](https://github.com/G-Core/gcore-go/issues/164)) ([ec1a7e7](https://github.com/G-Core/gcore-go/commit/ec1a7e73e28e62a71b7b10cc68b5d983f1e85bf1))
+* **cloud:** remove duplicate LoadBalancerL7Policy and related types ([#166](https://github.com/G-Core/gcore-go/issues/166)) ([48d62a0](https://github.com/G-Core/gcore-go/commit/48d62a0b802d12d515ea8736eb30187aab542da7))
+
+
+### Chores
+
+* fix empty interfaces ([4ff161c](https://github.com/G-Core/gcore-go/commit/4ff161c40fde3280fec58eb29ef35830d7e6d960))
+
 ## 0.21.0 (2025-11-17)
 
 Full Changelog: [v0.20.0...v0.21.0](https://github.com/G-Core/gcore-go/compare/v0.20.0...v0.21.0)
