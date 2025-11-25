@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestK8ListVersions(t *testing.T) {
+func TestK8SFlavorListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,9 +26,11 @@ func TestK8ListVersions(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.ListVersions(context.TODO(), cloud.K8ListVersionsParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+	_, err := client.Cloud.K8S.Flavors.List(context.TODO(), cloud.K8SFlavorListParams{
+		ProjectID:     gcore.Int(0),
+		RegionID:      gcore.Int(0),
+		ExcludeGPU:    gcore.Bool(true),
+		IncludePrices: gcore.Bool(true),
 	})
 	if err != nil {
 		var apierr *gcore.Error

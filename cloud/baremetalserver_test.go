@@ -92,7 +92,7 @@ func TestBaremetalServerListWithOptionalParams(t *testing.T) {
 		ChangesSince:            gcore.Time(time.Now()),
 		FlavorID:                gcore.String("bm2-hf-small"),
 		FlavorPrefix:            gcore.String("bm2-"),
-		IncludeK8s:              gcore.Bool(true),
+		IncludeK8S:              gcore.Bool(true),
 		IP:                      gcore.String("192.168.0.1"),
 		Limit:                   gcore.Int(1000),
 		Name:                    gcore.String("name"),
