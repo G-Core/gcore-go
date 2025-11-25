@@ -16,31 +16,31 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
-// K8Service contains methods and other services that help with interacting with
+// K8SService contains methods and other services that help with interacting with
 // the gcore API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewK8Service] method instead.
-type K8Service struct {
+// the [NewK8SService] method instead.
+type K8SService struct {
 	Options  []option.RequestOption
-	Flavors  K8FlavorService
-	Clusters K8ClusterService
+	Flavors  K8SFlavorService
+	Clusters K8SClusterService
 }
 
-// NewK8Service generates a new service that applies the given options to each
+// NewK8SService generates a new service that applies the given options to each
 // request. These options are applied after the parent client's options (if there
 // is one), and before any request-specific options.
-func NewK8Service(opts ...option.RequestOption) (r K8Service) {
-	r = K8Service{}
+func NewK8SService(opts ...option.RequestOption) (r K8SService) {
+	r = K8SService{}
 	r.Options = opts
-	r.Flavors = NewK8FlavorService(opts...)
-	r.Clusters = NewK8ClusterService(opts...)
+	r.Flavors = NewK8SFlavorService(opts...)
+	r.Clusters = NewK8SClusterService(opts...)
 	return
 }
 
 // List available k8s cluster versions for creation
-func (r *K8Service) ListVersions(ctx context.Context, query K8ListVersionsParams, opts ...option.RequestOption) (res *K8sClusterVersionList, err error) {
+func (r *K8SService) ListVersions(ctx context.Context, query K8SListVersionsParams, opts ...option.RequestOption) (res *K8SClusterVersionList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -61,7 +61,7 @@ func (r *K8Service) ListVersions(ctx context.Context, query K8ListVersionsParams
 	return
 }
 
-type K8sClusterVersion struct {
+type K8SClusterVersion struct {
 	// List of supported Kubernetes cluster versions
 	Version string `json:"version,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -73,16 +73,16 @@ type K8sClusterVersion struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterVersion) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterVersion) UnmarshalJSON(data []byte) error {
+func (r K8SClusterVersion) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterVersion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8sClusterVersionList struct {
+type K8SClusterVersionList struct {
 	// Number of objects
 	Count int64 `json:"count,required"`
 	// Objects
-	Results []K8sClusterVersion `json:"results,required"`
+	Results []K8SClusterVersion `json:"results,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -93,12 +93,12 @@ type K8sClusterVersionList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterVersionList) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterVersionList) UnmarshalJSON(data []byte) error {
+func (r K8SClusterVersionList) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterVersionList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8ListVersionsParams struct {
+type K8SListVersionsParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj

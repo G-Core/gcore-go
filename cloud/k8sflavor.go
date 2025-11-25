@@ -16,21 +16,21 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
-// K8FlavorService contains methods and other services that help with interacting
+// K8SFlavorService contains methods and other services that help with interacting
 // with the gcore API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewK8FlavorService] method instead.
-type K8FlavorService struct {
+// the [NewK8SFlavorService] method instead.
+type K8SFlavorService struct {
 	Options []option.RequestOption
 }
 
-// NewK8FlavorService generates a new service that applies the given options to
+// NewK8SFlavorService generates a new service that applies the given options to
 // each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewK8FlavorService(opts ...option.RequestOption) (r K8FlavorService) {
-	r = K8FlavorService{}
+func NewK8SFlavorService(opts ...option.RequestOption) (r K8SFlavorService) {
+	r = K8SFlavorService{}
 	r.Options = opts
 	return
 }
@@ -38,7 +38,7 @@ func NewK8FlavorService(opts ...option.RequestOption) (r K8FlavorService) {
 // Retrieve a list of flavors for k8s pool. When the `include_prices` query
 // parameter is specified, the list shows prices. A client in trial mode gets all
 // price values as 0. If you get Pricing Error contact the support
-func (r *K8FlavorService) List(ctx context.Context, params K8FlavorListParams, opts ...option.RequestOption) (res *BaremetalFlavorList, err error) {
+func (r *K8SFlavorService) List(ctx context.Context, params K8SFlavorListParams, opts ...option.RequestOption) (res *BaremetalFlavorList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -59,7 +59,7 @@ func (r *K8FlavorService) List(ctx context.Context, params K8FlavorListParams, o
 	return
 }
 
-type K8FlavorListParams struct {
+type K8SFlavorListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Set to false to include GPU flavors. Default is True.
@@ -69,8 +69,8 @@ type K8FlavorListParams struct {
 	paramObj
 }
 
-// URLQuery serializes [K8FlavorListParams]'s query parameters as `url.Values`.
-func (r K8FlavorListParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [K8SFlavorListParams]'s query parameters as `url.Values`.
+func (r K8SFlavorListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,

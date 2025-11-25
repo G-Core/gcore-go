@@ -123,7 +123,7 @@ type Region struct {
 	// Region has Advanced DDoS Protection capability
 	HasDDOS bool `json:"has_ddos,required"`
 	// Region has managed kubernetes capability
-	HasK8s bool `json:"has_k8s,required"`
+	HasK8S bool `json:"has_k8s,required"`
 	// Region has KVM virtualization capability
 	HasKvm bool `json:"has_kvm,required"`
 	// Region has SFS capability
@@ -172,7 +172,7 @@ type Region struct {
 		HasBasicVm           respjson.Field
 		HasDbaas             respjson.Field
 		HasDDOS              respjson.Field
-		HasK8s               respjson.Field
+		HasK8S               respjson.Field
 		HasKvm               respjson.Field
 		HasSfs               respjson.Field
 		KeystoneID           respjson.Field

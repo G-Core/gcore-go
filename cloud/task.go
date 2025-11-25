@@ -215,9 +215,9 @@ type TaskCreatedResources struct {
 	// IDs of created instances
 	Instances []string `json:"instances"`
 	// IDs of created Kubernetes clusters
-	K8sClusters []string `json:"k8s_clusters"`
+	K8SClusters []string `json:"k8s_clusters"`
 	// IDs of created Kubernetes pools
-	K8sPools []string `json:"k8s_pools"`
+	K8SPools []string `json:"k8s_pools"`
 	// IDs of created L7 policies
 	L7polices []string `json:"l7polices"`
 	// IDs of created L7 rules
@@ -270,8 +270,8 @@ type TaskCreatedResources struct {
 		Images             respjson.Field
 		InferenceInstances respjson.Field
 		Instances          respjson.Field
-		K8sClusters        respjson.Field
-		K8sPools           respjson.Field
+		K8SClusters        respjson.Field
+		K8SPools           respjson.Field
 		L7polices          respjson.Field
 		L7rules            respjson.Field
 		LaasTopic          respjson.Field

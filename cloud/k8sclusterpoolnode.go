@@ -16,27 +16,27 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
-// K8ClusterPoolNodeService contains methods and other services that help with
+// K8SClusterPoolNodeService contains methods and other services that help with
 // interacting with the gcore API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewK8ClusterPoolNodeService] method instead.
-type K8ClusterPoolNodeService struct {
+// the [NewK8SClusterPoolNodeService] method instead.
+type K8SClusterPoolNodeService struct {
 	Options []option.RequestOption
 }
 
-// NewK8ClusterPoolNodeService generates a new service that applies the given
+// NewK8SClusterPoolNodeService generates a new service that applies the given
 // options to each request. These options are applied after the parent client's
 // options (if there is one), and before any request-specific options.
-func NewK8ClusterPoolNodeService(opts ...option.RequestOption) (r K8ClusterPoolNodeService) {
-	r = K8ClusterPoolNodeService{}
+func NewK8SClusterPoolNodeService(opts ...option.RequestOption) (r K8SClusterPoolNodeService) {
+	r = K8SClusterPoolNodeService{}
 	r.Options = opts
 	return
 }
 
 // List k8s cluster pool nodes
-func (r *K8ClusterPoolNodeService) List(ctx context.Context, poolName string, params K8ClusterPoolNodeListParams, opts ...option.RequestOption) (res *InstanceList, err error) {
+func (r *K8SClusterPoolNodeService) List(ctx context.Context, poolName string, params K8SClusterPoolNodeListParams, opts ...option.RequestOption) (res *InstanceList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -67,7 +67,7 @@ func (r *K8ClusterPoolNodeService) List(ctx context.Context, poolName string, pa
 
 // After deletion, the node will be automatically recreated to maintain the desired
 // pool size.
-func (r *K8ClusterPoolNodeService) Delete(ctx context.Context, instanceID string, body K8ClusterPoolNodeDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *K8SClusterPoolNodeService) Delete(ctx context.Context, instanceID string, body K8SClusterPoolNodeDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -101,7 +101,7 @@ func (r *K8ClusterPoolNodeService) Delete(ctx context.Context, instanceID string
 	return
 }
 
-type K8ClusterPoolNodeListParams struct {
+type K8SClusterPoolNodeListParams struct {
 	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	ClusterName string           `path:"cluster_name,required" json:"-"`
@@ -110,16 +110,16 @@ type K8ClusterPoolNodeListParams struct {
 	paramObj
 }
 
-// URLQuery serializes [K8ClusterPoolNodeListParams]'s query parameters as
+// URLQuery serializes [K8SClusterPoolNodeListParams]'s query parameters as
 // `url.Values`.
-func (r K8ClusterPoolNodeListParams) URLQuery() (v url.Values, err error) {
+func (r K8SClusterPoolNodeListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
 
-type K8ClusterPoolNodeDeleteParams struct {
+type K8SClusterPoolNodeDeleteParams struct {
 	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	ClusterName string           `path:"cluster_name,required" json:"-"`

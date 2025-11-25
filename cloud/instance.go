@@ -1810,7 +1810,7 @@ type InstanceListParams struct {
 	// Include bare metal servers. Please, use `GET /v1/bminstances/` instead
 	IncludeBaremetal param.Opt[bool] `query:"include_baremetal,omitzero" json:"-"`
 	// Include managed k8s worker nodes
-	IncludeK8s param.Opt[bool] `query:"include_k8s,omitzero" json:"-"`
+	IncludeK8S param.Opt[bool] `query:"include_k8s,omitzero" json:"-"`
 	// An IPv4 address to filter results by. Note: partial matches are allowed. For
 	// example, searching for 192.168.0.1 will return 192.168.0.1, 192.168.0.10,
 	// 192.168.0.110, and so on.

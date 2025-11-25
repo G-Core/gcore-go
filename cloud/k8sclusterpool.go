@@ -16,29 +16,29 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
-// K8ClusterPoolService contains methods and other services that help with
+// K8SClusterPoolService contains methods and other services that help with
 // interacting with the gcore API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewK8ClusterPoolService] method instead.
-type K8ClusterPoolService struct {
+// the [NewK8SClusterPoolService] method instead.
+type K8SClusterPoolService struct {
 	Options []option.RequestOption
-	Nodes   K8ClusterPoolNodeService
+	Nodes   K8SClusterPoolNodeService
 }
 
-// NewK8ClusterPoolService generates a new service that applies the given options
+// NewK8SClusterPoolService generates a new service that applies the given options
 // to each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewK8ClusterPoolService(opts ...option.RequestOption) (r K8ClusterPoolService) {
-	r = K8ClusterPoolService{}
+func NewK8SClusterPoolService(opts ...option.RequestOption) (r K8SClusterPoolService) {
+	r = K8SClusterPoolService{}
 	r.Options = opts
-	r.Nodes = NewK8ClusterPoolNodeService(opts...)
+	r.Nodes = NewK8SClusterPoolNodeService(opts...)
 	return
 }
 
 // Create k8s cluster pool
-func (r *K8ClusterPoolService) New(ctx context.Context, clusterName string, params K8ClusterPoolNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *K8SClusterPoolService) New(ctx context.Context, clusterName string, params K8SClusterPoolNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -64,7 +64,7 @@ func (r *K8ClusterPoolService) New(ctx context.Context, clusterName string, para
 }
 
 // Update k8s cluster pool
-func (r *K8ClusterPoolService) Update(ctx context.Context, poolName string, params K8ClusterPoolUpdateParams, opts ...option.RequestOption) (res *K8sClusterPool, err error) {
+func (r *K8SClusterPoolService) Update(ctx context.Context, poolName string, params K8SClusterPoolUpdateParams, opts ...option.RequestOption) (res *K8SClusterPool, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -94,7 +94,7 @@ func (r *K8ClusterPoolService) Update(ctx context.Context, poolName string, para
 }
 
 // List k8s cluster pools
-func (r *K8ClusterPoolService) List(ctx context.Context, clusterName string, query K8ClusterPoolListParams, opts ...option.RequestOption) (res *K8sClusterPoolList, err error) {
+func (r *K8SClusterPoolService) List(ctx context.Context, clusterName string, query K8SClusterPoolListParams, opts ...option.RequestOption) (res *K8SClusterPoolList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -120,7 +120,7 @@ func (r *K8ClusterPoolService) List(ctx context.Context, clusterName string, que
 }
 
 // Delete k8s cluster pool
-func (r *K8ClusterPoolService) Delete(ctx context.Context, poolName string, body K8ClusterPoolDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *K8SClusterPoolService) Delete(ctx context.Context, poolName string, body K8SClusterPoolDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -150,7 +150,7 @@ func (r *K8ClusterPoolService) Delete(ctx context.Context, poolName string, body
 }
 
 // Get k8s cluster pool
-func (r *K8ClusterPoolService) Get(ctx context.Context, poolName string, query K8ClusterPoolGetParams, opts ...option.RequestOption) (res *K8sClusterPool, err error) {
+func (r *K8SClusterPoolService) Get(ctx context.Context, poolName string, query K8SClusterPoolGetParams, opts ...option.RequestOption) (res *K8SClusterPool, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -180,7 +180,7 @@ func (r *K8ClusterPoolService) Get(ctx context.Context, poolName string, query K
 }
 
 // Resize k8s cluster pool
-func (r *K8ClusterPoolService) Resize(ctx context.Context, poolName string, params K8ClusterPoolResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *K8SClusterPoolService) Resize(ctx context.Context, poolName string, params K8SClusterPoolResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -209,7 +209,7 @@ func (r *K8ClusterPoolService) Resize(ctx context.Context, poolName string, para
 	return
 }
 
-type K8sClusterPool struct {
+type K8SClusterPool struct {
 	// UUID of the cluster pool
 	ID string `json:"id,required"`
 	// Indicates the status of auto healing
@@ -275,16 +275,16 @@ type K8sClusterPool struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterPool) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterPool) UnmarshalJSON(data []byte) error {
+func (r K8SClusterPool) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterPool) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8sClusterPoolList struct {
+type K8SClusterPoolList struct {
 	// Number of objects
 	Count int64 `json:"count,required"`
 	// Objects
-	Results []K8sClusterPool `json:"results,required"`
+	Results []K8SClusterPool `json:"results,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -295,12 +295,12 @@ type K8sClusterPoolList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterPoolList) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterPoolList) UnmarshalJSON(data []byte) error {
+func (r K8SClusterPoolList) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterPoolList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8ClusterPoolNewParams struct {
+type K8SClusterPoolNewParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Flavor ID
@@ -320,7 +320,7 @@ type K8ClusterPoolNewParams struct {
 	// Boot volume type
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
-	BootVolumeType K8ClusterPoolNewParamsBootVolumeType `json:"boot_volume_type,omitzero"`
+	BootVolumeType K8SClusterPoolNewParamsBootVolumeType `json:"boot_volume_type,omitzero"`
 	// Cri-o configuration for pool nodes
 	CrioConfig map[string]string `json:"crio_config,omitzero"`
 	// Kubelet configuration for pool nodes
@@ -330,42 +330,42 @@ type K8ClusterPoolNewParams struct {
 	// Server group policy: anti-affinity, soft-anti-affinity or affinity
 	//
 	// Any of "affinity", "anti-affinity", "soft-anti-affinity".
-	ServergroupPolicy K8ClusterPoolNewParamsServergroupPolicy `json:"servergroup_policy,omitzero"`
+	ServergroupPolicy K8SClusterPoolNewParamsServergroupPolicy `json:"servergroup_policy,omitzero"`
 	// Taints applied to the cluster pool
 	Taints map[string]string `json:"taints,omitzero"`
 	paramObj
 }
 
-func (r K8ClusterPoolNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterPoolNewParams
+func (r K8SClusterPoolNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterPoolNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterPoolNewParams) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterPoolNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Boot volume type
-type K8ClusterPoolNewParamsBootVolumeType string
+type K8SClusterPoolNewParamsBootVolumeType string
 
 const (
-	K8ClusterPoolNewParamsBootVolumeTypeCold          K8ClusterPoolNewParamsBootVolumeType = "cold"
-	K8ClusterPoolNewParamsBootVolumeTypeSsdHiiops     K8ClusterPoolNewParamsBootVolumeType = "ssd_hiiops"
-	K8ClusterPoolNewParamsBootVolumeTypeSsdLocal      K8ClusterPoolNewParamsBootVolumeType = "ssd_local"
-	K8ClusterPoolNewParamsBootVolumeTypeSsdLowlatency K8ClusterPoolNewParamsBootVolumeType = "ssd_lowlatency"
-	K8ClusterPoolNewParamsBootVolumeTypeStandard      K8ClusterPoolNewParamsBootVolumeType = "standard"
-	K8ClusterPoolNewParamsBootVolumeTypeUltra         K8ClusterPoolNewParamsBootVolumeType = "ultra"
+	K8SClusterPoolNewParamsBootVolumeTypeCold          K8SClusterPoolNewParamsBootVolumeType = "cold"
+	K8SClusterPoolNewParamsBootVolumeTypeSsdHiiops     K8SClusterPoolNewParamsBootVolumeType = "ssd_hiiops"
+	K8SClusterPoolNewParamsBootVolumeTypeSsdLocal      K8SClusterPoolNewParamsBootVolumeType = "ssd_local"
+	K8SClusterPoolNewParamsBootVolumeTypeSsdLowlatency K8SClusterPoolNewParamsBootVolumeType = "ssd_lowlatency"
+	K8SClusterPoolNewParamsBootVolumeTypeStandard      K8SClusterPoolNewParamsBootVolumeType = "standard"
+	K8SClusterPoolNewParamsBootVolumeTypeUltra         K8SClusterPoolNewParamsBootVolumeType = "ultra"
 )
 
 // Server group policy: anti-affinity, soft-anti-affinity or affinity
-type K8ClusterPoolNewParamsServergroupPolicy string
+type K8SClusterPoolNewParamsServergroupPolicy string
 
 const (
-	K8ClusterPoolNewParamsServergroupPolicyAffinity         K8ClusterPoolNewParamsServergroupPolicy = "affinity"
-	K8ClusterPoolNewParamsServergroupPolicyAntiAffinity     K8ClusterPoolNewParamsServergroupPolicy = "anti-affinity"
-	K8ClusterPoolNewParamsServergroupPolicySoftAntiAffinity K8ClusterPoolNewParamsServergroupPolicy = "soft-anti-affinity"
+	K8SClusterPoolNewParamsServergroupPolicyAffinity         K8SClusterPoolNewParamsServergroupPolicy = "affinity"
+	K8SClusterPoolNewParamsServergroupPolicyAntiAffinity     K8SClusterPoolNewParamsServergroupPolicy = "anti-affinity"
+	K8SClusterPoolNewParamsServergroupPolicySoftAntiAffinity K8SClusterPoolNewParamsServergroupPolicy = "soft-anti-affinity"
 )
 
-type K8ClusterPoolUpdateParams struct {
+type K8SClusterPoolUpdateParams struct {
 	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	ClusterName string           `path:"cluster_name,required" json:"-"`
@@ -384,35 +384,35 @@ type K8ClusterPoolUpdateParams struct {
 	paramObj
 }
 
-func (r K8ClusterPoolUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterPoolUpdateParams
+func (r K8SClusterPoolUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterPoolUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterPoolUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterPoolUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8ClusterPoolListParams struct {
+type K8SClusterPoolListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
-type K8ClusterPoolDeleteParams struct {
+type K8SClusterPoolDeleteParams struct {
 	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	ClusterName string           `path:"cluster_name,required" json:"-"`
 	paramObj
 }
 
-type K8ClusterPoolGetParams struct {
+type K8SClusterPoolGetParams struct {
 	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	ClusterName string           `path:"cluster_name,required" json:"-"`
 	paramObj
 }
 
-type K8ClusterPoolResizeParams struct {
+type K8SClusterPoolResizeParams struct {
 	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	ClusterName string           `path:"cluster_name,required" json:"-"`
@@ -421,10 +421,10 @@ type K8ClusterPoolResizeParams struct {
 	paramObj
 }
 
-func (r K8ClusterPoolResizeParams) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterPoolResizeParams
+func (r K8SClusterPoolResizeParams) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterPoolResizeParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterPoolResizeParams) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterPoolResizeParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

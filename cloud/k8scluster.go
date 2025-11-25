@@ -19,31 +19,31 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
-// K8ClusterService contains methods and other services that help with interacting
+// K8SClusterService contains methods and other services that help with interacting
 // with the gcore API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewK8ClusterService] method instead.
-type K8ClusterService struct {
+// the [NewK8SClusterService] method instead.
+type K8SClusterService struct {
 	Options []option.RequestOption
-	Nodes   K8ClusterNodeService
-	Pools   K8ClusterPoolService
+	Nodes   K8SClusterNodeService
+	Pools   K8SClusterPoolService
 }
 
-// NewK8ClusterService generates a new service that applies the given options to
+// NewK8SClusterService generates a new service that applies the given options to
 // each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewK8ClusterService(opts ...option.RequestOption) (r K8ClusterService) {
-	r = K8ClusterService{}
+func NewK8SClusterService(opts ...option.RequestOption) (r K8SClusterService) {
+	r = K8SClusterService{}
 	r.Options = opts
-	r.Nodes = NewK8ClusterNodeService(opts...)
-	r.Pools = NewK8ClusterPoolService(opts...)
+	r.Nodes = NewK8SClusterNodeService(opts...)
+	r.Pools = NewK8SClusterPoolService(opts...)
 	return
 }
 
 // Create k8s cluster
-func (r *K8ClusterService) New(ctx context.Context, params K8ClusterNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *K8SClusterService) New(ctx context.Context, params K8SClusterNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -65,7 +65,7 @@ func (r *K8ClusterService) New(ctx context.Context, params K8ClusterNewParams, o
 }
 
 // Update k8s cluster
-func (r *K8ClusterService) Update(ctx context.Context, clusterName string, params K8ClusterUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *K8SClusterService) Update(ctx context.Context, clusterName string, params K8SClusterUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -91,7 +91,7 @@ func (r *K8ClusterService) Update(ctx context.Context, clusterName string, param
 }
 
 // List k8s clusters
-func (r *K8ClusterService) List(ctx context.Context, query K8ClusterListParams, opts ...option.RequestOption) (res *K8sClusterList, err error) {
+func (r *K8SClusterService) List(ctx context.Context, query K8SClusterListParams, opts ...option.RequestOption) (res *K8SClusterList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -113,7 +113,7 @@ func (r *K8ClusterService) List(ctx context.Context, query K8ClusterListParams, 
 }
 
 // Delete k8s cluster
-func (r *K8ClusterService) Delete(ctx context.Context, clusterName string, params K8ClusterDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *K8SClusterService) Delete(ctx context.Context, clusterName string, params K8SClusterDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -139,7 +139,7 @@ func (r *K8ClusterService) Delete(ctx context.Context, clusterName string, param
 }
 
 // Get k8s cluster
-func (r *K8ClusterService) Get(ctx context.Context, clusterName string, query K8ClusterGetParams, opts ...option.RequestOption) (res *K8sCluster, err error) {
+func (r *K8SClusterService) Get(ctx context.Context, clusterName string, query K8SClusterGetParams, opts ...option.RequestOption) (res *K8SCluster, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -165,7 +165,7 @@ func (r *K8ClusterService) Get(ctx context.Context, clusterName string, query K8
 }
 
 // Get k8s cluster CA certificate
-func (r *K8ClusterService) GetCertificate(ctx context.Context, clusterName string, query K8ClusterGetCertificateParams, opts ...option.RequestOption) (res *K8sClusterCertificate, err error) {
+func (r *K8SClusterService) GetCertificate(ctx context.Context, clusterName string, query K8SClusterGetCertificateParams, opts ...option.RequestOption) (res *K8SClusterCertificate, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -191,7 +191,7 @@ func (r *K8ClusterService) GetCertificate(ctx context.Context, clusterName strin
 }
 
 // Get k8s cluster kubeconfig
-func (r *K8ClusterService) GetKubeconfig(ctx context.Context, clusterName string, query K8ClusterGetKubeconfigParams, opts ...option.RequestOption) (res *K8sClusterKubeconfig, err error) {
+func (r *K8SClusterService) GetKubeconfig(ctx context.Context, clusterName string, query K8SClusterGetKubeconfigParams, opts ...option.RequestOption) (res *K8SClusterKubeconfig, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -217,7 +217,7 @@ func (r *K8ClusterService) GetKubeconfig(ctx context.Context, clusterName string
 }
 
 // List available k8s cluster versions for upgrade
-func (r *K8ClusterService) ListVersionsForUpgrade(ctx context.Context, clusterName string, query K8ClusterListVersionsForUpgradeParams, opts ...option.RequestOption) (res *K8sClusterVersionList, err error) {
+func (r *K8SClusterService) ListVersionsForUpgrade(ctx context.Context, clusterName string, query K8SClusterListVersionsForUpgradeParams, opts ...option.RequestOption) (res *K8SClusterVersionList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -243,7 +243,7 @@ func (r *K8ClusterService) ListVersionsForUpgrade(ctx context.Context, clusterNa
 }
 
 // Upgrade k8s cluster
-func (r *K8ClusterService) Upgrade(ctx context.Context, clusterName string, params K8ClusterUpgradeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *K8SClusterService) Upgrade(ctx context.Context, clusterName string, params K8SClusterUpgradeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -268,15 +268,15 @@ func (r *K8ClusterService) Upgrade(ctx context.Context, clusterName string, para
 	return
 }
 
-type K8sCluster struct {
+type K8SCluster struct {
 	// Cluster pool uuid
 	ID string `json:"id,required"`
 	// Cluster add-ons configuration
-	AddOns K8sClusterAddOns `json:"add_ons,required"`
+	AddOns K8SClusterAddOns `json:"add_ons,required"`
 	// Function creation date
 	CreatedAt string `json:"created_at,required"`
 	// Cluster CSI settings
-	Csi K8sClusterCsi `json:"csi,required"`
+	Csi K8SClusterCsi `json:"csi,required"`
 	// Cluster is public
 	IsPublic bool `json:"is_public,required"`
 	// Keypair
@@ -286,26 +286,26 @@ type K8sCluster struct {
 	// Name
 	Name string `json:"name,required"`
 	// pools
-	Pools []K8sClusterPool `json:"pools,required"`
+	Pools []K8SClusterPool `json:"pools,required"`
 	// Status
 	//
 	// Any of "Deleting", "Provisioned", "Provisioning".
-	Status K8sClusterStatus `json:"status,required"`
+	Status K8SClusterStatus `json:"status,required"`
 	// K8s version
 	Version string `json:"version,required"`
 	// Cluster authentication settings
-	Authentication K8sClusterAuthentication `json:"authentication,nullable"`
+	Authentication K8SClusterAuthentication `json:"authentication,nullable"`
 	// Cluster autoscaler configuration.
 	//
 	// It contains overrides to the default cluster-autoscaler parameters provided by
 	// the platform.
 	AutoscalerConfig map[string]string `json:"autoscaler_config,nullable"`
 	// Cluster CNI settings
-	Cni K8sClusterCni `json:"cni,nullable"`
+	Cni K8SClusterCni `json:"cni,nullable"`
 	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id,nullable"`
 	// Advanced DDoS Protection profile
-	DDOSProfile K8sClusterDDOSProfile `json:"ddos_profile,nullable"`
+	DDOSProfile K8SClusterDDOSProfile `json:"ddos_profile,nullable"`
 	// Fixed network id
 	FixedNetwork string `json:"fixed_network,nullable"`
 	// Fixed subnet id
@@ -356,15 +356,15 @@ type K8sCluster struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sCluster) RawJSON() string { return r.JSON.raw }
-func (r *K8sCluster) UnmarshalJSON(data []byte) error {
+func (r K8SCluster) RawJSON() string { return r.JSON.raw }
+func (r *K8SCluster) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Cluster add-ons configuration
-type K8sClusterAddOns struct {
+type K8SClusterAddOns struct {
 	// Slurm add-on configuration
-	Slurm K8sClusterAddOnsSlurm `json:"slurm,required"`
+	Slurm K8SClusterAddOnsSlurm `json:"slurm,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Slurm       respjson.Field
@@ -374,13 +374,13 @@ type K8sClusterAddOns struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterAddOns) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterAddOns) UnmarshalJSON(data []byte) error {
+func (r K8SClusterAddOns) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterAddOns) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Slurm add-on configuration
-type K8sClusterAddOnsSlurm struct {
+type K8SClusterAddOnsSlurm struct {
 	// Indicates whether Slurm add-on is deployed in the cluster.
 	//
 	// This add-on is only supported in clusters running Kubernetes v1.31 and v1.32
@@ -410,15 +410,15 @@ type K8sClusterAddOnsSlurm struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterAddOnsSlurm) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterAddOnsSlurm) UnmarshalJSON(data []byte) error {
+func (r K8SClusterAddOnsSlurm) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterAddOnsSlurm) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Cluster CSI settings
-type K8sClusterCsi struct {
+type K8SClusterCsi struct {
 	// NFS settings
-	Nfs K8sClusterCsiNfs `json:"nfs,required"`
+	Nfs K8SClusterCsiNfs `json:"nfs,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Nfs         respjson.Field
@@ -428,13 +428,13 @@ type K8sClusterCsi struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterCsi) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterCsi) UnmarshalJSON(data []byte) error {
+func (r K8SClusterCsi) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterCsi) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // NFS settings
-type K8sClusterCsiNfs struct {
+type K8SClusterCsiNfs struct {
 	// Indicates the status of VAST NFS integration
 	VastEnabled bool `json:"vast_enabled,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -446,28 +446,28 @@ type K8sClusterCsiNfs struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterCsiNfs) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterCsiNfs) UnmarshalJSON(data []byte) error {
+func (r K8SClusterCsiNfs) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterCsiNfs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Status
-type K8sClusterStatus string
+type K8SClusterStatus string
 
 const (
-	K8sClusterStatusDeleting     K8sClusterStatus = "Deleting"
-	K8sClusterStatusProvisioned  K8sClusterStatus = "Provisioned"
-	K8sClusterStatusProvisioning K8sClusterStatus = "Provisioning"
+	K8SClusterStatusDeleting     K8SClusterStatus = "Deleting"
+	K8SClusterStatusProvisioned  K8SClusterStatus = "Provisioned"
+	K8SClusterStatusProvisioning K8SClusterStatus = "Provisioning"
 )
 
 // Cluster authentication settings
-type K8sClusterAuthentication struct {
+type K8SClusterAuthentication struct {
 	// Kubeconfig creation date
 	KubeconfigCreatedAt time.Time `json:"kubeconfig_created_at,nullable" format:"date-time"`
 	// Kubeconfig expiration date
 	KubeconfigExpiresAt time.Time `json:"kubeconfig_expires_at,nullable" format:"date-time"`
 	// OIDC authentication settings
-	Oidc K8sClusterAuthenticationOidc `json:"oidc,nullable"`
+	Oidc K8SClusterAuthenticationOidc `json:"oidc,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		KubeconfigCreatedAt respjson.Field
@@ -479,13 +479,13 @@ type K8sClusterAuthentication struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterAuthentication) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterAuthentication) UnmarshalJSON(data []byte) error {
+func (r K8SClusterAuthentication) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterAuthentication) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // OIDC authentication settings
-type K8sClusterAuthenticationOidc struct {
+type K8SClusterAuthenticationOidc struct {
 	// Client ID
 	ClientID string `json:"client_id,nullable"`
 	// JWT claim to use as the user's group
@@ -521,15 +521,15 @@ type K8sClusterAuthenticationOidc struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterAuthenticationOidc) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterAuthenticationOidc) UnmarshalJSON(data []byte) error {
+func (r K8SClusterAuthenticationOidc) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterAuthenticationOidc) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Cluster CNI settings
-type K8sClusterCni struct {
+type K8SClusterCni struct {
 	// Cilium settings
-	Cilium K8sClusterCniCilium `json:"cilium,nullable"`
+	Cilium K8SClusterCniCilium `json:"cilium,nullable"`
 	// CNI provider
 	//
 	// Any of "calico", "cilium".
@@ -544,13 +544,13 @@ type K8sClusterCni struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterCni) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterCni) UnmarshalJSON(data []byte) error {
+func (r K8SClusterCni) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterCni) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Cilium settings
-type K8sClusterCniCilium struct {
+type K8SClusterCniCilium struct {
 	// Wireguard encryption
 	Encryption bool `json:"encryption"`
 	// Hubble Relay
@@ -592,17 +592,17 @@ type K8sClusterCniCilium struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterCniCilium) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterCniCilium) UnmarshalJSON(data []byte) error {
+func (r K8SClusterCniCilium) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterCniCilium) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Advanced DDoS Protection profile
-type K8sClusterDDOSProfile struct {
+type K8SClusterDDOSProfile struct {
 	// Enable advanced DDoS protection
 	Enabled bool `json:"enabled,required"`
 	// DDoS profile parameters
-	Fields []K8sClusterDDOSProfileField `json:"fields,nullable"`
+	Fields []K8SClusterDDOSProfileField `json:"fields,nullable"`
 	// DDoS profile template ID
 	ProfileTemplate int64 `json:"profile_template,nullable"`
 	// DDoS profile template name
@@ -619,12 +619,12 @@ type K8sClusterDDOSProfile struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterDDOSProfile) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterDDOSProfile) UnmarshalJSON(data []byte) error {
+func (r K8SClusterDDOSProfile) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterDDOSProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8sClusterDDOSProfileField struct {
+type K8SClusterDDOSProfileField struct {
 	BaseField int64 `json:"base_field,required"`
 	// Complex value. Only one of 'value' or '`field_value`' must be specified
 	FieldValue any `json:"field_value"`
@@ -641,12 +641,12 @@ type K8sClusterDDOSProfileField struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterDDOSProfileField) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterDDOSProfileField) UnmarshalJSON(data []byte) error {
+func (r K8SClusterDDOSProfileField) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterDDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8sClusterCertificate struct {
+type K8SClusterCertificate struct {
 	// Cluster CA certificate
 	Certificate string `json:"certificate,required"`
 	// Cluster CA private key
@@ -661,12 +661,12 @@ type K8sClusterCertificate struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterCertificate) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterCertificate) UnmarshalJSON(data []byte) error {
+func (r K8SClusterCertificate) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterCertificate) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8sClusterKubeconfig struct {
+type K8SClusterKubeconfig struct {
 	// String in base64 format. Cluster client certificate
 	ClientCertificate string `json:"client_certificate,required"`
 	// String in base64 format. Cluster client key
@@ -696,16 +696,16 @@ type K8sClusterKubeconfig struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterKubeconfig) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterKubeconfig) UnmarshalJSON(data []byte) error {
+func (r K8SClusterKubeconfig) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterKubeconfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8sClusterList struct {
+type K8SClusterList struct {
 	// Number of objects
 	Count int64 `json:"count,required"`
 	// Objects
-	Results []K8sCluster `json:"results,required"`
+	Results []K8SCluster `json:"results,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -716,12 +716,12 @@ type K8sClusterList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8sClusterList) RawJSON() string { return r.JSON.raw }
-func (r *K8sClusterList) UnmarshalJSON(data []byte) error {
+func (r K8SClusterList) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8ClusterNewParams struct {
+type K8SClusterNewParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// The keypair of the cluster
@@ -729,7 +729,7 @@ type K8ClusterNewParams struct {
 	// The name of the cluster
 	Name string `json:"name,required"`
 	// The pools of the cluster
-	Pools []K8ClusterNewParamsPool `json:"pools,omitzero,required"`
+	Pools []K8SClusterNewParamsPool `json:"pools,omitzero,required"`
 	// The version of the k8s cluster
 	Version string `json:"version,required"`
 	// The network of the cluster
@@ -747,7 +747,7 @@ type K8ClusterNewParams struct {
 	// The IPv6 pool for the services
 	ServicesIpv6Pool param.Opt[string] `json:"services_ipv6_pool,omitzero"`
 	// Authentication settings
-	Authentication K8ClusterNewParamsAuthentication `json:"authentication,omitzero"`
+	Authentication K8SClusterNewParamsAuthentication `json:"authentication,omitzero"`
 	// Cluster autoscaler configuration.
 	//
 	// It allows you to override the default cluster-autoscaler parameters provided by
@@ -807,28 +807,28 @@ type K8ClusterNewParams struct {
 	//     mirror pods).
 	AutoscalerConfig map[string]string `json:"autoscaler_config,omitzero"`
 	// Cluster CNI settings
-	Cni K8ClusterNewParamsCni `json:"cni,omitzero"`
+	Cni K8SClusterNewParamsCni `json:"cni,omitzero"`
 	// Advanced DDoS Protection profile
-	DDOSProfile K8ClusterNewParamsDDOSProfile `json:"ddos_profile,omitzero"`
+	DDOSProfile K8SClusterNewParamsDDOSProfile `json:"ddos_profile,omitzero"`
 	// Logging configuration
-	Logging K8ClusterNewParamsLogging `json:"logging,omitzero"`
+	Logging K8SClusterNewParamsLogging `json:"logging,omitzero"`
 	// Cluster add-ons configuration
-	AddOns K8ClusterNewParamsAddOns `json:"add_ons,omitzero"`
+	AddOns K8SClusterNewParamsAddOns `json:"add_ons,omitzero"`
 	// Container Storage Interface (CSI) driver settings
-	Csi K8ClusterNewParamsCsi `json:"csi,omitzero"`
+	Csi K8SClusterNewParamsCsi `json:"csi,omitzero"`
 	paramObj
 }
 
-func (r K8ClusterNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParams
+func (r K8SClusterNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParams) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties FlavorID, MinNodeCount, Name are required.
-type K8ClusterNewParamsPool struct {
+type K8SClusterNewParamsPool struct {
 	// Flavor ID
 	FlavorID string `json:"flavor_id,required"`
 	// Minimum node count
@@ -862,42 +862,42 @@ type K8ClusterNewParamsPool struct {
 	paramObj
 }
 
-func (r K8ClusterNewParamsPool) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParamsPool
+func (r K8SClusterNewParamsPool) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParamsPool
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParamsPool) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParamsPool) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[K8ClusterNewParamsPool](
+	apijson.RegisterFieldValidator[K8SClusterNewParamsPool](
 		"boot_volume_type", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
 	)
-	apijson.RegisterFieldValidator[K8ClusterNewParamsPool](
+	apijson.RegisterFieldValidator[K8SClusterNewParamsPool](
 		"servergroup_policy", "affinity", "anti-affinity", "soft-anti-affinity",
 	)
 }
 
 // Cluster add-ons configuration
-type K8ClusterNewParamsAddOns struct {
+type K8SClusterNewParamsAddOns struct {
 	// Slurm add-on configuration
-	Slurm K8ClusterNewParamsAddOnsSlurm `json:"slurm,omitzero"`
+	Slurm K8SClusterNewParamsAddOnsSlurm `json:"slurm,omitzero"`
 	paramObj
 }
 
-func (r K8ClusterNewParamsAddOns) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParamsAddOns
+func (r K8SClusterNewParamsAddOns) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParamsAddOns
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParamsAddOns) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParamsAddOns) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Slurm add-on configuration
 //
 // The properties Enabled, FileShareID, SSHKeyIDs, WorkerCount are required.
-type K8ClusterNewParamsAddOnsSlurm struct {
+type K8SClusterNewParamsAddOnsSlurm struct {
 	// ID of a VAST file share to be used as Slurm storage.
 	//
 	// The Slurm add-on will create separate Persistent Volume Claims for different
@@ -923,37 +923,37 @@ type K8ClusterNewParamsAddOnsSlurm struct {
 	paramObj
 }
 
-func (r K8ClusterNewParamsAddOnsSlurm) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParamsAddOnsSlurm
+func (r K8SClusterNewParamsAddOnsSlurm) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParamsAddOnsSlurm
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParamsAddOnsSlurm) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParamsAddOnsSlurm) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[K8ClusterNewParamsAddOnsSlurm](
+	apijson.RegisterFieldValidator[K8SClusterNewParamsAddOnsSlurm](
 		"enabled", true,
 	)
 }
 
 // Authentication settings
-type K8ClusterNewParamsAuthentication struct {
+type K8SClusterNewParamsAuthentication struct {
 	// OIDC authentication settings
-	Oidc K8ClusterNewParamsAuthenticationOidc `json:"oidc,omitzero"`
+	Oidc K8SClusterNewParamsAuthenticationOidc `json:"oidc,omitzero"`
 	paramObj
 }
 
-func (r K8ClusterNewParamsAuthentication) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParamsAuthentication
+func (r K8SClusterNewParamsAuthentication) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParamsAuthentication
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParamsAuthentication) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParamsAuthentication) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // OIDC authentication settings
-type K8ClusterNewParamsAuthenticationOidc struct {
+type K8SClusterNewParamsAuthenticationOidc struct {
 	// Client ID
 	ClientID param.Opt[string] `json:"client_id,omitzero"`
 	// JWT claim to use as the user's group
@@ -976,18 +976,18 @@ type K8ClusterNewParamsAuthenticationOidc struct {
 	paramObj
 }
 
-func (r K8ClusterNewParamsAuthenticationOidc) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParamsAuthenticationOidc
+func (r K8SClusterNewParamsAuthenticationOidc) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParamsAuthenticationOidc
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParamsAuthenticationOidc) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParamsAuthenticationOidc) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Cluster CNI settings
-type K8ClusterNewParamsCni struct {
+type K8SClusterNewParamsCni struct {
 	// Cilium settings
-	Cilium K8ClusterNewParamsCniCilium `json:"cilium,omitzero"`
+	Cilium K8SClusterNewParamsCniCilium `json:"cilium,omitzero"`
 	// CNI provider
 	//
 	// Any of "calico", "cilium".
@@ -995,22 +995,22 @@ type K8ClusterNewParamsCni struct {
 	paramObj
 }
 
-func (r K8ClusterNewParamsCni) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParamsCni
+func (r K8SClusterNewParamsCni) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParamsCni
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParamsCni) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParamsCni) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[K8ClusterNewParamsCni](
+	apijson.RegisterFieldValidator[K8SClusterNewParamsCni](
 		"provider", "calico", "cilium",
 	)
 }
 
 // Cilium settings
-type K8ClusterNewParamsCniCilium struct {
+type K8SClusterNewParamsCniCilium struct {
 	// Wireguard encryption
 	Encryption param.Opt[bool] `json:"encryption,omitzero"`
 	// Hubble Relay
@@ -1038,43 +1038,43 @@ type K8ClusterNewParamsCniCilium struct {
 	paramObj
 }
 
-func (r K8ClusterNewParamsCniCilium) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParamsCniCilium
+func (r K8SClusterNewParamsCniCilium) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParamsCniCilium
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParamsCniCilium) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParamsCniCilium) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[K8ClusterNewParamsCniCilium](
+	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
 		"lb_mode", "dsr", "hybrid", "snat",
 	)
-	apijson.RegisterFieldValidator[K8ClusterNewParamsCniCilium](
+	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
 		"routing_mode", "native", "tunnel",
 	)
-	apijson.RegisterFieldValidator[K8ClusterNewParamsCniCilium](
+	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
 		"tunnel", "", "geneve", "vxlan",
 	)
 }
 
 // Container Storage Interface (CSI) driver settings
-type K8ClusterNewParamsCsi struct {
+type K8SClusterNewParamsCsi struct {
 	// NFS CSI driver settings
-	Nfs K8ClusterNewParamsCsiNfs `json:"nfs,omitzero"`
+	Nfs K8SClusterNewParamsCsiNfs `json:"nfs,omitzero"`
 	paramObj
 }
 
-func (r K8ClusterNewParamsCsi) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParamsCsi
+func (r K8SClusterNewParamsCsi) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParamsCsi
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParamsCsi) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParamsCsi) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // NFS CSI driver settings
-type K8ClusterNewParamsCsiNfs struct {
+type K8SClusterNewParamsCsiNfs struct {
 	// Enable or disable VAST NFS integration. The default value is `false`. When set
 	// to `true`, a dedicated StorageClass will be created in the cluster for each VAST
 	// NFS file share defined in the cloud. All file shares created prior to cluster
@@ -1084,18 +1084,18 @@ type K8ClusterNewParamsCsiNfs struct {
 	paramObj
 }
 
-func (r K8ClusterNewParamsCsiNfs) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParamsCsiNfs
+func (r K8SClusterNewParamsCsiNfs) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParamsCsiNfs
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParamsCsiNfs) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParamsCsiNfs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Advanced DDoS Protection profile
 //
 // The property Enabled is required.
-type K8ClusterNewParamsDDOSProfile struct {
+type K8SClusterNewParamsDDOSProfile struct {
 	// Enable advanced DDoS protection
 	Enabled bool `json:"enabled,required"`
 	// DDoS profile template ID
@@ -1103,20 +1103,20 @@ type K8ClusterNewParamsDDOSProfile struct {
 	// DDoS profile template name
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// DDoS profile parameters
-	Fields []K8ClusterNewParamsDDOSProfileField `json:"fields,omitzero"`
+	Fields []K8SClusterNewParamsDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
 
-func (r K8ClusterNewParamsDDOSProfile) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParamsDDOSProfile
+func (r K8SClusterNewParamsDDOSProfile) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParamsDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParamsDDOSProfile) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParamsDDOSProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property BaseField is required.
-type K8ClusterNewParamsDDOSProfileField struct {
+type K8SClusterNewParamsDDOSProfileField struct {
 	BaseField int64 `json:"base_field,required"`
 	// Basic value. Only one of 'value' or '`field_value`' must be specified
 	Value param.Opt[string] `json:"value,omitzero"`
@@ -1125,16 +1125,16 @@ type K8ClusterNewParamsDDOSProfileField struct {
 	paramObj
 }
 
-func (r K8ClusterNewParamsDDOSProfileField) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParamsDDOSProfileField
+func (r K8SClusterNewParamsDDOSProfileField) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParamsDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParamsDDOSProfileField) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParamsDDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Logging configuration
-type K8ClusterNewParamsLogging struct {
+type K8SClusterNewParamsLogging struct {
 	// Destination region id to which the logs will be written
 	DestinationRegionID param.Opt[int64] `json:"destination_region_id,omitzero"`
 	// The topic name to which the logs will be written
@@ -1146,19 +1146,19 @@ type K8ClusterNewParamsLogging struct {
 	paramObj
 }
 
-func (r K8ClusterNewParamsLogging) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterNewParamsLogging
+func (r K8SClusterNewParamsLogging) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterNewParamsLogging
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterNewParamsLogging) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterNewParamsLogging) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8ClusterUpdateParams struct {
+type K8SClusterUpdateParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Authentication settings
-	Authentication K8ClusterUpdateParamsAuthentication `json:"authentication,omitzero"`
+	Authentication K8SClusterUpdateParamsAuthentication `json:"authentication,omitzero"`
 	// Cluster autoscaler configuration.
 	//
 	// It allows you to override the default cluster-autoscaler parameters provided by
@@ -1218,108 +1218,108 @@ type K8ClusterUpdateParams struct {
 	//     mirror pods).
 	AutoscalerConfig map[string]string `json:"autoscaler_config,omitzero"`
 	// Cluster CNI settings
-	Cni K8ClusterUpdateParamsCni `json:"cni,omitzero"`
+	Cni K8SClusterUpdateParamsCni `json:"cni,omitzero"`
 	// Advanced DDoS Protection profile
-	DDOSProfile K8ClusterUpdateParamsDDOSProfile `json:"ddos_profile,omitzero"`
+	DDOSProfile K8SClusterUpdateParamsDDOSProfile `json:"ddos_profile,omitzero"`
 	// Logging configuration
-	Logging K8ClusterUpdateParamsLogging `json:"logging,omitzero"`
+	Logging K8SClusterUpdateParamsLogging `json:"logging,omitzero"`
 	// Cluster add-ons configuration
-	AddOns K8ClusterUpdateParamsAddOns `json:"add_ons,omitzero"`
+	AddOns K8SClusterUpdateParamsAddOns `json:"add_ons,omitzero"`
 	paramObj
 }
 
-func (r K8ClusterUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterUpdateParams
+func (r K8SClusterUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Cluster add-ons configuration
-type K8ClusterUpdateParamsAddOns struct {
+type K8SClusterUpdateParamsAddOns struct {
 	// Slurm add-on configuration
-	Slurm K8ClusterUpdateParamsAddOnsSlurmUnion `json:"slurm,omitzero"`
+	Slurm K8SClusterUpdateParamsAddOnsSlurmUnion `json:"slurm,omitzero"`
 	paramObj
 }
 
-func (r K8ClusterUpdateParamsAddOns) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterUpdateParamsAddOns
+func (r K8SClusterUpdateParamsAddOns) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterUpdateParamsAddOns
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterUpdateParamsAddOns) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterUpdateParamsAddOns) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type K8ClusterUpdateParamsAddOnsSlurmUnion struct {
-	OfK8sClusterSlurmAddonEnableV2Serializer  *K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer  `json:",omitzero,inline"`
-	OfK8sClusterSlurmAddonDisableV2Serializer *K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer `json:",omitzero,inline"`
+type K8SClusterUpdateParamsAddOnsSlurmUnion struct {
+	OfK8SClusterSlurmAddonEnableV2Serializer  *K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer  `json:",omitzero,inline"`
+	OfK8SClusterSlurmAddonDisableV2Serializer *K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u K8ClusterUpdateParamsAddOnsSlurmUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfK8sClusterSlurmAddonEnableV2Serializer, u.OfK8sClusterSlurmAddonDisableV2Serializer)
+func (u K8SClusterUpdateParamsAddOnsSlurmUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfK8SClusterSlurmAddonEnableV2Serializer, u.OfK8SClusterSlurmAddonDisableV2Serializer)
 }
-func (u *K8ClusterUpdateParamsAddOnsSlurmUnion) UnmarshalJSON(data []byte) error {
+func (u *K8SClusterUpdateParamsAddOnsSlurmUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *K8ClusterUpdateParamsAddOnsSlurmUnion) asAny() any {
-	if !param.IsOmitted(u.OfK8sClusterSlurmAddonEnableV2Serializer) {
-		return u.OfK8sClusterSlurmAddonEnableV2Serializer
-	} else if !param.IsOmitted(u.OfK8sClusterSlurmAddonDisableV2Serializer) {
-		return u.OfK8sClusterSlurmAddonDisableV2Serializer
+func (u *K8SClusterUpdateParamsAddOnsSlurmUnion) asAny() any {
+	if !param.IsOmitted(u.OfK8SClusterSlurmAddonEnableV2Serializer) {
+		return u.OfK8SClusterSlurmAddonEnableV2Serializer
+	} else if !param.IsOmitted(u.OfK8SClusterSlurmAddonDisableV2Serializer) {
+		return u.OfK8SClusterSlurmAddonDisableV2Serializer
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u K8ClusterUpdateParamsAddOnsSlurmUnion) GetFileShareID() *string {
-	if vt := u.OfK8sClusterSlurmAddonEnableV2Serializer; vt != nil {
+func (u K8SClusterUpdateParamsAddOnsSlurmUnion) GetFileShareID() *string {
+	if vt := u.OfK8SClusterSlurmAddonEnableV2Serializer; vt != nil {
 		return &vt.FileShareID
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u K8ClusterUpdateParamsAddOnsSlurmUnion) GetSSHKeyIDs() []string {
-	if vt := u.OfK8sClusterSlurmAddonEnableV2Serializer; vt != nil {
+func (u K8SClusterUpdateParamsAddOnsSlurmUnion) GetSSHKeyIDs() []string {
+	if vt := u.OfK8SClusterSlurmAddonEnableV2Serializer; vt != nil {
 		return vt.SSHKeyIDs
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u K8ClusterUpdateParamsAddOnsSlurmUnion) GetWorkerCount() *int64 {
-	if vt := u.OfK8sClusterSlurmAddonEnableV2Serializer; vt != nil {
+func (u K8SClusterUpdateParamsAddOnsSlurmUnion) GetWorkerCount() *int64 {
+	if vt := u.OfK8SClusterSlurmAddonEnableV2Serializer; vt != nil {
 		return &vt.WorkerCount
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u K8ClusterUpdateParamsAddOnsSlurmUnion) GetEnabled() *bool {
-	if vt := u.OfK8sClusterSlurmAddonEnableV2Serializer; vt != nil {
+func (u K8SClusterUpdateParamsAddOnsSlurmUnion) GetEnabled() *bool {
+	if vt := u.OfK8SClusterSlurmAddonEnableV2Serializer; vt != nil {
 		return (*bool)(&vt.Enabled)
-	} else if vt := u.OfK8sClusterSlurmAddonDisableV2Serializer; vt != nil {
+	} else if vt := u.OfK8SClusterSlurmAddonDisableV2Serializer; vt != nil {
 		return (*bool)(&vt.Enabled)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[K8ClusterUpdateParamsAddOnsSlurmUnion](
+	apijson.RegisterUnion[K8SClusterUpdateParamsAddOnsSlurmUnion](
 		"enabled",
-		apijson.Discriminator[K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer](true),
-		apijson.Discriminator[K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer](false),
+		apijson.Discriminator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer](true),
+		apijson.Discriminator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer](false),
 	)
 }
 
 // The properties Enabled, FileShareID, SSHKeyIDs, WorkerCount are required.
-type K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer struct {
+type K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer struct {
 	// ID of a VAST file share to be used as Slurm storage.
 	//
 	// The Slurm add-on will create separate Persistent Volume Claims for different
@@ -1345,65 +1345,65 @@ type K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer stru
 	paramObj
 }
 
-func (r K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer
+func (r K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer](
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer](
 		"enabled", true,
 	)
 }
 
-func NewK8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer() K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer {
-	return K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer{
+func NewK8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer() K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer {
+	return K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer{
 		Enabled: false,
 	}
 }
 
 // This struct has a constant value, construct it with
-// [NewK8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer].
-type K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer struct {
+// [NewK8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer].
+type K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer struct {
 	// The Slurm add-on will be disabled in the cluster.
 	Enabled bool `json:"enabled,omitzero,required"`
 	paramObj
 }
 
-func (r K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer
+func (r K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonDisableV2Serializer](
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer](
 		"enabled", false,
 	)
 }
 
 // Authentication settings
-type K8ClusterUpdateParamsAuthentication struct {
+type K8SClusterUpdateParamsAuthentication struct {
 	// OIDC authentication settings
-	Oidc K8ClusterUpdateParamsAuthenticationOidc `json:"oidc,omitzero"`
+	Oidc K8SClusterUpdateParamsAuthenticationOidc `json:"oidc,omitzero"`
 	paramObj
 }
 
-func (r K8ClusterUpdateParamsAuthentication) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterUpdateParamsAuthentication
+func (r K8SClusterUpdateParamsAuthentication) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterUpdateParamsAuthentication
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterUpdateParamsAuthentication) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterUpdateParamsAuthentication) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // OIDC authentication settings
-type K8ClusterUpdateParamsAuthenticationOidc struct {
+type K8SClusterUpdateParamsAuthenticationOidc struct {
 	// Client ID
 	ClientID param.Opt[string] `json:"client_id,omitzero"`
 	// JWT claim to use as the user's group
@@ -1426,18 +1426,18 @@ type K8ClusterUpdateParamsAuthenticationOidc struct {
 	paramObj
 }
 
-func (r K8ClusterUpdateParamsAuthenticationOidc) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterUpdateParamsAuthenticationOidc
+func (r K8SClusterUpdateParamsAuthenticationOidc) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterUpdateParamsAuthenticationOidc
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterUpdateParamsAuthenticationOidc) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterUpdateParamsAuthenticationOidc) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Cluster CNI settings
-type K8ClusterUpdateParamsCni struct {
+type K8SClusterUpdateParamsCni struct {
 	// Cilium settings
-	Cilium K8ClusterUpdateParamsCniCilium `json:"cilium,omitzero"`
+	Cilium K8SClusterUpdateParamsCniCilium `json:"cilium,omitzero"`
 	// CNI provider
 	//
 	// Any of "calico", "cilium".
@@ -1445,22 +1445,22 @@ type K8ClusterUpdateParamsCni struct {
 	paramObj
 }
 
-func (r K8ClusterUpdateParamsCni) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterUpdateParamsCni
+func (r K8SClusterUpdateParamsCni) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterUpdateParamsCni
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterUpdateParamsCni) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterUpdateParamsCni) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[K8ClusterUpdateParamsCni](
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCni](
 		"provider", "calico", "cilium",
 	)
 }
 
 // Cilium settings
-type K8ClusterUpdateParamsCniCilium struct {
+type K8SClusterUpdateParamsCniCilium struct {
 	// Wireguard encryption
 	Encryption param.Opt[bool] `json:"encryption,omitzero"`
 	// Hubble Relay
@@ -1488,22 +1488,22 @@ type K8ClusterUpdateParamsCniCilium struct {
 	paramObj
 }
 
-func (r K8ClusterUpdateParamsCniCilium) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterUpdateParamsCniCilium
+func (r K8SClusterUpdateParamsCniCilium) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterUpdateParamsCniCilium
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterUpdateParamsCniCilium) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterUpdateParamsCniCilium) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[K8ClusterUpdateParamsCniCilium](
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
 		"lb_mode", "dsr", "hybrid", "snat",
 	)
-	apijson.RegisterFieldValidator[K8ClusterUpdateParamsCniCilium](
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
 		"routing_mode", "native", "tunnel",
 	)
-	apijson.RegisterFieldValidator[K8ClusterUpdateParamsCniCilium](
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
 		"tunnel", "", "geneve", "vxlan",
 	)
 }
@@ -1511,7 +1511,7 @@ func init() {
 // Advanced DDoS Protection profile
 //
 // The property Enabled is required.
-type K8ClusterUpdateParamsDDOSProfile struct {
+type K8SClusterUpdateParamsDDOSProfile struct {
 	// Enable advanced DDoS protection
 	Enabled bool `json:"enabled,required"`
 	// DDoS profile template ID
@@ -1519,20 +1519,20 @@ type K8ClusterUpdateParamsDDOSProfile struct {
 	// DDoS profile template name
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// DDoS profile parameters
-	Fields []K8ClusterUpdateParamsDDOSProfileField `json:"fields,omitzero"`
+	Fields []K8SClusterUpdateParamsDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
 
-func (r K8ClusterUpdateParamsDDOSProfile) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterUpdateParamsDDOSProfile
+func (r K8SClusterUpdateParamsDDOSProfile) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterUpdateParamsDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterUpdateParamsDDOSProfile) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterUpdateParamsDDOSProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property BaseField is required.
-type K8ClusterUpdateParamsDDOSProfileField struct {
+type K8SClusterUpdateParamsDDOSProfileField struct {
 	BaseField int64 `json:"base_field,required"`
 	// Basic value. Only one of 'value' or '`field_value`' must be specified
 	Value param.Opt[string] `json:"value,omitzero"`
@@ -1541,16 +1541,16 @@ type K8ClusterUpdateParamsDDOSProfileField struct {
 	paramObj
 }
 
-func (r K8ClusterUpdateParamsDDOSProfileField) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterUpdateParamsDDOSProfileField
+func (r K8SClusterUpdateParamsDDOSProfileField) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterUpdateParamsDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterUpdateParamsDDOSProfileField) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterUpdateParamsDDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Logging configuration
-type K8ClusterUpdateParamsLogging struct {
+type K8SClusterUpdateParamsLogging struct {
 	// Destination region id to which the logs will be written
 	DestinationRegionID param.Opt[int64] `json:"destination_region_id,omitzero"`
 	// The topic name to which the logs will be written
@@ -1562,21 +1562,21 @@ type K8ClusterUpdateParamsLogging struct {
 	paramObj
 }
 
-func (r K8ClusterUpdateParamsLogging) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterUpdateParamsLogging
+func (r K8SClusterUpdateParamsLogging) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterUpdateParamsLogging
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterUpdateParamsLogging) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterUpdateParamsLogging) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8ClusterListParams struct {
+type K8SClusterListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
-type K8ClusterDeleteParams struct {
+type K8SClusterDeleteParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Comma separated list of volume IDs to be deleted with the cluster
@@ -1584,39 +1584,39 @@ type K8ClusterDeleteParams struct {
 	paramObj
 }
 
-// URLQuery serializes [K8ClusterDeleteParams]'s query parameters as `url.Values`.
-func (r K8ClusterDeleteParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [K8SClusterDeleteParams]'s query parameters as `url.Values`.
+func (r K8SClusterDeleteParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
 
-type K8ClusterGetParams struct {
+type K8SClusterGetParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
-type K8ClusterGetCertificateParams struct {
+type K8SClusterGetCertificateParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
-type K8ClusterGetKubeconfigParams struct {
+type K8SClusterGetKubeconfigParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
-type K8ClusterListVersionsForUpgradeParams struct {
+type K8SClusterListVersionsForUpgradeParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
-type K8ClusterUpgradeParams struct {
+type K8SClusterUpgradeParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Target k8s cluster version
@@ -1624,10 +1624,10 @@ type K8ClusterUpgradeParams struct {
 	paramObj
 }
 
-func (r K8ClusterUpgradeParams) MarshalJSON() (data []byte, err error) {
-	type shadow K8ClusterUpgradeParams
+func (r K8SClusterUpgradeParams) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterUpgradeParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *K8ClusterUpgradeParams) UnmarshalJSON(data []byte) error {
+func (r *K8SClusterUpgradeParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
