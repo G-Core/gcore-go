@@ -31,7 +31,7 @@ func TestDomainFirewallRuleNewWithOptionalParams(t *testing.T) {
 		1,
 		waap.DomainFirewallRuleNewParams{
 			Action: waap.DomainFirewallRuleNewParamsAction{
-				Allow: map[string]interface{}{},
+				Allow: map[string]any{},
 				Block: waap.DomainFirewallRuleNewParamsActionBlock{
 					ActionDuration: gcore.String("12h"),
 					StatusCode:     403,
@@ -80,7 +80,7 @@ func TestDomainFirewallRuleUpdateWithOptionalParams(t *testing.T) {
 		waap.DomainFirewallRuleUpdateParams{
 			DomainID: 1,
 			Action: waap.DomainFirewallRuleUpdateParamsAction{
-				Allow: map[string]interface{}{},
+				Allow: map[string]any{},
 				Block: waap.DomainFirewallRuleUpdateParamsActionBlock{
 					ActionDuration: gcore.String("12h"),
 					StatusCode:     403,

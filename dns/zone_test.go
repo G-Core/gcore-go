@@ -33,7 +33,7 @@ func TestZoneNewWithOptionalParams(t *testing.T) {
 		Enabled: gcore.Bool(true),
 		Expiry:  gcore.Int(0),
 		Meta: map[string]any{
-			"foo": map[string]interface{}{},
+			"foo": map[string]any{},
 		},
 		NxTtl:         gcore.Int(0),
 		PrimaryServer: gcore.String("primary_server"),
@@ -269,7 +269,7 @@ func TestZoneImportWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"zoneName",
 		dns.ZoneImportParams{
-			Body: map[string]interface{}{},
+			Body: map[string]any{},
 		},
 	)
 	if err != nil {
@@ -302,7 +302,7 @@ func TestZoneReplaceWithOptionalParams(t *testing.T) {
 			Enabled: gcore.Bool(true),
 			Expiry:  gcore.Int(0),
 			Meta: map[string]any{
-				"foo": map[string]interface{}{},
+				"foo": map[string]any{},
 			},
 			NxTtl:         gcore.Int(0),
 			PrimaryServer: gcore.String("primary_server"),

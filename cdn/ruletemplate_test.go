@@ -257,11 +257,11 @@ func TestRuleTemplateNewWithOptionalParams(t *testing.T) {
 			},
 			StaticHeaders: cdn.RuleTemplateNewParamsOptionsStaticHeaders{
 				Enabled: true,
-				Value: map[string]interface{}{
+				Value: map[string]any{
 					"X-Example": "Value_1",
-					"X-Example-Multiple": map[string]interface{}{
-						"0": "Value_2",
-						"1": "Value_3",
+					"X-Example-Multiple": []string{
+						"Value_2",
+						"Value_3",
 					},
 				},
 			},
@@ -542,11 +542,11 @@ func TestRuleTemplateUpdateWithOptionalParams(t *testing.T) {
 				},
 				StaticHeaders: cdn.RuleTemplateUpdateParamsOptionsStaticHeaders{
 					Enabled: true,
-					Value: map[string]interface{}{
+					Value: map[string]any{
 						"X-Example": "Value_1",
-						"X-Example-Multiple": map[string]interface{}{
-							"0": "Value_2",
-							"1": "Value_3",
+						"X-Example-Multiple": []string{
+							"Value_2",
+							"Value_3",
 						},
 					},
 				},
@@ -898,11 +898,11 @@ func TestRuleTemplateReplaceWithOptionalParams(t *testing.T) {
 				},
 				StaticHeaders: cdn.RuleTemplateReplaceParamsOptionsStaticHeaders{
 					Enabled: true,
-					Value: map[string]interface{}{
+					Value: map[string]any{
 						"X-Example": "Value_1",
-						"X-Example-Multiple": map[string]interface{}{
-							"0": "Value_2",
-							"1": "Value_3",
+						"X-Example-Multiple": []string{
+							"Value_2",
+							"Value_3",
 						},
 					},
 				},

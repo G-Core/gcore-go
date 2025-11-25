@@ -54,7 +54,7 @@ func TestInstanceNewWithOptionalParams(t *testing.T) {
 			},
 		}},
 		AllowAppPorts: gcore.Bool(true),
-		Configuration: map[string]interface{}{},
+		Configuration: map[string]any{},
 		Name:          gcore.String("my-instance"),
 		NameTemplate:  gcore.String("name_template"),
 		Password:      gcore.String("password"),
