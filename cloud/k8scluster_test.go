@@ -15,7 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
-func TestK8ClusterNewWithOptionalParams(t *testing.T) {
+func TestK8SClusterNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,12 +27,12 @@ func TestK8ClusterNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.New(context.TODO(), cloud.K8ClusterNewParams{
+	_, err := client.Cloud.K8S.Clusters.New(context.TODO(), cloud.K8SClusterNewParams{
 		ProjectID: gcore.Int(0),
 		RegionID:  gcore.Int(0),
 		Keypair:   "some_keypair",
 		Name:      "string",
-		Pools: []cloud.K8ClusterNewParamsPool{{
+		Pools: []cloud.K8SClusterNewParamsPool{{
 			FlavorID:           "g1-standard-1-2",
 			MinNodeCount:       3,
 			Name:               "my-pool",
@@ -56,16 +56,16 @@ func TestK8ClusterNewWithOptionalParams(t *testing.T) {
 			},
 		}},
 		Version: "1.28.1",
-		AddOns: cloud.K8ClusterNewParamsAddOns{
-			Slurm: cloud.K8ClusterNewParamsAddOnsSlurm{
+		AddOns: cloud.K8SClusterNewParamsAddOns{
+			Slurm: cloud.K8SClusterNewParamsAddOnsSlurm{
 				Enabled:     true,
 				FileShareID: "cbc94d0e-06c6-4d12-9e86-9782ba14fc8c",
 				SSHKeyIDs:   []string{"25735292-bd97-44b0-a1af-d7eab876261d", "efc01f3a-35b9-4385-89f9-e38439093ee7"},
 				WorkerCount: 2,
 			},
 		},
-		Authentication: cloud.K8ClusterNewParamsAuthentication{
-			Oidc: cloud.K8ClusterNewParamsAuthenticationOidc{
+		Authentication: cloud.K8SClusterNewParamsAuthentication{
+			Oidc: cloud.K8SClusterNewParamsAuthenticationOidc{
 				ClientID:     gcore.String("kubernetes"),
 				GroupsClaim:  gcore.String("groups"),
 				GroupsPrefix: gcore.String("oidc:"),
@@ -81,8 +81,8 @@ func TestK8ClusterNewWithOptionalParams(t *testing.T) {
 		AutoscalerConfig: map[string]string{
 			"scale-down-unneeded-time": "5m",
 		},
-		Cni: cloud.K8ClusterNewParamsCni{
-			Cilium: cloud.K8ClusterNewParamsCniCilium{
+		Cni: cloud.K8SClusterNewParamsCni{
+			Cilium: cloud.K8SClusterNewParamsCniCilium{
 				Encryption:     gcore.Bool(true),
 				HubbleRelay:    gcore.Bool(true),
 				HubbleUi:       gcore.Bool(true),
@@ -95,14 +95,14 @@ func TestK8ClusterNewWithOptionalParams(t *testing.T) {
 			},
 			Provider: "cilium",
 		},
-		Csi: cloud.K8ClusterNewParamsCsi{
-			Nfs: cloud.K8ClusterNewParamsCsiNfs{
+		Csi: cloud.K8SClusterNewParamsCsi{
+			Nfs: cloud.K8SClusterNewParamsCsiNfs{
 				VastEnabled: gcore.Bool(true),
 			},
 		},
-		DDOSProfile: cloud.K8ClusterNewParamsDDOSProfile{
+		DDOSProfile: cloud.K8SClusterNewParamsDDOSProfile{
 			Enabled: true,
-			Fields: []cloud.K8ClusterNewParamsDDOSProfileField{{
+			Fields: []cloud.K8SClusterNewParamsDDOSProfileField{{
 				BaseField: 10,
 				FieldValue: map[string]interface{}{
 					"0": 45046,
@@ -116,7 +116,7 @@ func TestK8ClusterNewWithOptionalParams(t *testing.T) {
 		FixedNetwork: gcore.String("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
 		FixedSubnet:  gcore.String("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
 		IsIpv6:       gcore.Bool(true),
-		Logging: cloud.K8ClusterNewParamsLogging{
+		Logging: cloud.K8SClusterNewParamsLogging{
 			DestinationRegionID: gcore.Int(1),
 			Enabled:             gcore.Bool(true),
 			RetentionPolicy: cloud.LaasIndexRetentionPolicyParam{
@@ -138,7 +138,7 @@ func TestK8ClusterNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestK8ClusterUpdateWithOptionalParams(t *testing.T) {
+func TestK8SClusterUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -150,15 +150,15 @@ func TestK8ClusterUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.Update(
+	_, err := client.Cloud.K8S.Clusters.Update(
 		context.TODO(),
 		"cluster_name",
-		cloud.K8ClusterUpdateParams{
+		cloud.K8SClusterUpdateParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
-			AddOns: cloud.K8ClusterUpdateParamsAddOns{
-				Slurm: cloud.K8ClusterUpdateParamsAddOnsSlurmUnion{
-					OfK8sClusterSlurmAddonEnableV2Serializer: &cloud.K8ClusterUpdateParamsAddOnsSlurmK8sClusterSlurmAddonEnableV2Serializer{
+			AddOns: cloud.K8SClusterUpdateParamsAddOns{
+				Slurm: cloud.K8SClusterUpdateParamsAddOnsSlurmUnion{
+					OfK8SClusterSlurmAddonEnableV2Serializer: &cloud.K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer{
 						Enabled:     true,
 						FileShareID: "cbc94d0e-06c6-4d12-9e86-9782ba14fc8c",
 						SSHKeyIDs:   []string{"25735292-bd97-44b0-a1af-d7eab876261d", "efc01f3a-35b9-4385-89f9-e38439093ee7"},
@@ -166,8 +166,8 @@ func TestK8ClusterUpdateWithOptionalParams(t *testing.T) {
 					},
 				},
 			},
-			Authentication: cloud.K8ClusterUpdateParamsAuthentication{
-				Oidc: cloud.K8ClusterUpdateParamsAuthenticationOidc{
+			Authentication: cloud.K8SClusterUpdateParamsAuthentication{
+				Oidc: cloud.K8SClusterUpdateParamsAuthenticationOidc{
 					ClientID:     gcore.String("kubernetes"),
 					GroupsClaim:  gcore.String("groups"),
 					GroupsPrefix: gcore.String("oidc:"),
@@ -183,8 +183,8 @@ func TestK8ClusterUpdateWithOptionalParams(t *testing.T) {
 			AutoscalerConfig: map[string]string{
 				"scale-down-unneeded-time": "5m",
 			},
-			Cni: cloud.K8ClusterUpdateParamsCni{
-				Cilium: cloud.K8ClusterUpdateParamsCniCilium{
+			Cni: cloud.K8SClusterUpdateParamsCni{
+				Cilium: cloud.K8SClusterUpdateParamsCniCilium{
 					Encryption:     gcore.Bool(true),
 					HubbleRelay:    gcore.Bool(true),
 					HubbleUi:       gcore.Bool(true),
@@ -197,9 +197,9 @@ func TestK8ClusterUpdateWithOptionalParams(t *testing.T) {
 				},
 				Provider: "cilium",
 			},
-			DDOSProfile: cloud.K8ClusterUpdateParamsDDOSProfile{
+			DDOSProfile: cloud.K8SClusterUpdateParamsDDOSProfile{
 				Enabled: true,
-				Fields: []cloud.K8ClusterUpdateParamsDDOSProfileField{{
+				Fields: []cloud.K8SClusterUpdateParamsDDOSProfileField{{
 					BaseField: 10,
 					FieldValue: map[string]interface{}{
 						"0": 45046,
@@ -210,7 +210,7 @@ func TestK8ClusterUpdateWithOptionalParams(t *testing.T) {
 				ProfileTemplate:     gcore.Int(29),
 				ProfileTemplateName: gcore.String("profile_template_name"),
 			},
-			Logging: cloud.K8ClusterUpdateParamsLogging{
+			Logging: cloud.K8SClusterUpdateParamsLogging{
 				DestinationRegionID: gcore.Int(1),
 				Enabled:             gcore.Bool(true),
 				RetentionPolicy: cloud.LaasIndexRetentionPolicyParam{
@@ -229,7 +229,7 @@ func TestK8ClusterUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestK8ClusterList(t *testing.T) {
+func TestK8SClusterList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -241,7 +241,7 @@ func TestK8ClusterList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.List(context.TODO(), cloud.K8ClusterListParams{
+	_, err := client.Cloud.K8S.Clusters.List(context.TODO(), cloud.K8SClusterListParams{
 		ProjectID: gcore.Int(0),
 		RegionID:  gcore.Int(0),
 	})
@@ -254,7 +254,7 @@ func TestK8ClusterList(t *testing.T) {
 	}
 }
 
-func TestK8ClusterDeleteWithOptionalParams(t *testing.T) {
+func TestK8SClusterDeleteWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -266,10 +266,10 @@ func TestK8ClusterDeleteWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.Delete(
+	_, err := client.Cloud.K8S.Clusters.Delete(
 		context.TODO(),
 		"cluster_name",
-		cloud.K8ClusterDeleteParams{
+		cloud.K8SClusterDeleteParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
 			Volumes:   gcore.String("volumes"),
@@ -284,7 +284,7 @@ func TestK8ClusterDeleteWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestK8ClusterGet(t *testing.T) {
+func TestK8SClusterGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -296,10 +296,10 @@ func TestK8ClusterGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.Get(
+	_, err := client.Cloud.K8S.Clusters.Get(
 		context.TODO(),
 		"cluster_name",
-		cloud.K8ClusterGetParams{
+		cloud.K8SClusterGetParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
 		},
@@ -313,7 +313,7 @@ func TestK8ClusterGet(t *testing.T) {
 	}
 }
 
-func TestK8ClusterGetCertificate(t *testing.T) {
+func TestK8SClusterGetCertificate(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -325,10 +325,10 @@ func TestK8ClusterGetCertificate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.GetCertificate(
+	_, err := client.Cloud.K8S.Clusters.GetCertificate(
 		context.TODO(),
 		"cluster_name",
-		cloud.K8ClusterGetCertificateParams{
+		cloud.K8SClusterGetCertificateParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
 		},
@@ -342,7 +342,7 @@ func TestK8ClusterGetCertificate(t *testing.T) {
 	}
 }
 
-func TestK8ClusterGetKubeconfig(t *testing.T) {
+func TestK8SClusterGetKubeconfig(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -354,10 +354,10 @@ func TestK8ClusterGetKubeconfig(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.GetKubeconfig(
+	_, err := client.Cloud.K8S.Clusters.GetKubeconfig(
 		context.TODO(),
 		"cluster_name",
-		cloud.K8ClusterGetKubeconfigParams{
+		cloud.K8SClusterGetKubeconfigParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
 		},
@@ -371,7 +371,7 @@ func TestK8ClusterGetKubeconfig(t *testing.T) {
 	}
 }
 
-func TestK8ClusterListVersionsForUpgrade(t *testing.T) {
+func TestK8SClusterListVersionsForUpgrade(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -383,10 +383,10 @@ func TestK8ClusterListVersionsForUpgrade(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.ListVersionsForUpgrade(
+	_, err := client.Cloud.K8S.Clusters.ListVersionsForUpgrade(
 		context.TODO(),
 		"cluster_name",
-		cloud.K8ClusterListVersionsForUpgradeParams{
+		cloud.K8SClusterListVersionsForUpgradeParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
 		},
@@ -400,7 +400,7 @@ func TestK8ClusterListVersionsForUpgrade(t *testing.T) {
 	}
 }
 
-func TestK8ClusterUpgrade(t *testing.T) {
+func TestK8SClusterUpgrade(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -412,10 +412,10 @@ func TestK8ClusterUpgrade(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.Upgrade(
+	_, err := client.Cloud.K8S.Clusters.Upgrade(
 		context.TODO(),
 		"cluster_name",
-		cloud.K8ClusterUpgradeParams{
+		cloud.K8SClusterUpgradeParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
 			Version:   "v1.28.1",

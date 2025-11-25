@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestK8ClusterPoolNodeListWithOptionalParams(t *testing.T) {
+func TestK8SClusterNodeListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,14 +26,13 @@ func TestK8ClusterPoolNodeListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.Pools.Nodes.List(
+	_, err := client.Cloud.K8S.Clusters.Nodes.List(
 		context.TODO(),
-		"pool_name",
-		cloud.K8ClusterPoolNodeListParams{
-			ProjectID:   gcore.Int(0),
-			RegionID:    gcore.Int(0),
-			ClusterName: "cluster_name",
-			WithDDOS:    gcore.Bool(true),
+		"cluster_name",
+		cloud.K8SClusterNodeListParams{
+			ProjectID: gcore.Int(0),
+			RegionID:  gcore.Int(0),
+			WithDDOS:  gcore.Bool(true),
 		},
 	)
 	if err != nil {
@@ -45,7 +44,7 @@ func TestK8ClusterPoolNodeListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestK8ClusterPoolNodeDelete(t *testing.T) {
+func TestK8SClusterNodeDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,14 +56,13 @@ func TestK8ClusterPoolNodeDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cloud.K8s.Clusters.Pools.Nodes.Delete(
+	err := client.Cloud.K8S.Clusters.Nodes.Delete(
 		context.TODO(),
 		"instance_id",
-		cloud.K8ClusterPoolNodeDeleteParams{
+		cloud.K8SClusterNodeDeleteParams{
 			ProjectID:   gcore.Int(0),
 			RegionID:    gcore.Int(0),
 			ClusterName: "cluster_name",
-			PoolName:    "pool_name",
 		},
 	)
 	if err != nil {

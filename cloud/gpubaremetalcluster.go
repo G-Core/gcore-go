@@ -450,7 +450,7 @@ func (r *GPUBaremetalCluster) UnmarshalJSON(data []byte) error {
 type GPUBaremetalClusterManagedBy string
 
 const (
-	GPUBaremetalClusterManagedByK8s  GPUBaremetalClusterManagedBy = "k8s"
+	GPUBaremetalClusterManagedByK8S  GPUBaremetalClusterManagedBy = "k8s"
 	GPUBaremetalClusterManagedByUser GPUBaremetalClusterManagedBy = "user"
 )
 

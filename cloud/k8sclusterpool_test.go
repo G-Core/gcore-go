@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestK8ClusterPoolNewWithOptionalParams(t *testing.T) {
+func TestK8SClusterPoolNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,10 +26,10 @@ func TestK8ClusterPoolNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.Pools.New(
+	_, err := client.Cloud.K8S.Clusters.Pools.New(
 		context.TODO(),
 		"cluster_name",
-		cloud.K8ClusterPoolNewParams{
+		cloud.K8SClusterPoolNewParams{
 			ProjectID:          gcore.Int(0),
 			RegionID:           gcore.Int(0),
 			FlavorID:           "g1-standard-1-2",
@@ -37,7 +37,7 @@ func TestK8ClusterPoolNewWithOptionalParams(t *testing.T) {
 			Name:               "my-pool",
 			AutoHealingEnabled: gcore.Bool(true),
 			BootVolumeSize:     gcore.Int(50),
-			BootVolumeType:     cloud.K8ClusterPoolNewParamsBootVolumeTypeSsdHiiops,
+			BootVolumeType:     cloud.K8SClusterPoolNewParamsBootVolumeTypeSsdHiiops,
 			CrioConfig: map[string]string{
 				"default-ulimits": "nofile=1024:2048",
 			},
@@ -49,7 +49,7 @@ func TestK8ClusterPoolNewWithOptionalParams(t *testing.T) {
 				"my-label": "foo",
 			},
 			MaxNodeCount:      gcore.Int(5),
-			ServergroupPolicy: cloud.K8ClusterPoolNewParamsServergroupPolicyAffinity,
+			ServergroupPolicy: cloud.K8SClusterPoolNewParamsServergroupPolicyAffinity,
 			Taints: map[string]string{
 				"my-taint": "bar:NoSchedule",
 			},
@@ -64,7 +64,7 @@ func TestK8ClusterPoolNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestK8ClusterPoolUpdateWithOptionalParams(t *testing.T) {
+func TestK8SClusterPoolUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -76,10 +76,10 @@ func TestK8ClusterPoolUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.Pools.Update(
+	_, err := client.Cloud.K8S.Clusters.Pools.Update(
 		context.TODO(),
 		"pool_name",
-		cloud.K8ClusterPoolUpdateParams{
+		cloud.K8SClusterPoolUpdateParams{
 			ProjectID:          gcore.Int(0),
 			RegionID:           gcore.Int(0),
 			ClusterName:        "cluster_name",
@@ -104,7 +104,7 @@ func TestK8ClusterPoolUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestK8ClusterPoolList(t *testing.T) {
+func TestK8SClusterPoolList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -116,10 +116,10 @@ func TestK8ClusterPoolList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.Pools.List(
+	_, err := client.Cloud.K8S.Clusters.Pools.List(
 		context.TODO(),
 		"cluster_name",
-		cloud.K8ClusterPoolListParams{
+		cloud.K8SClusterPoolListParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
 		},
@@ -133,7 +133,7 @@ func TestK8ClusterPoolList(t *testing.T) {
 	}
 }
 
-func TestK8ClusterPoolDelete(t *testing.T) {
+func TestK8SClusterPoolDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -145,10 +145,10 @@ func TestK8ClusterPoolDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.Pools.Delete(
+	_, err := client.Cloud.K8S.Clusters.Pools.Delete(
 		context.TODO(),
 		"pool_name",
-		cloud.K8ClusterPoolDeleteParams{
+		cloud.K8SClusterPoolDeleteParams{
 			ProjectID:   gcore.Int(0),
 			RegionID:    gcore.Int(0),
 			ClusterName: "cluster_name",
@@ -163,7 +163,7 @@ func TestK8ClusterPoolDelete(t *testing.T) {
 	}
 }
 
-func TestK8ClusterPoolGet(t *testing.T) {
+func TestK8SClusterPoolGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -175,10 +175,10 @@ func TestK8ClusterPoolGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.Pools.Get(
+	_, err := client.Cloud.K8S.Clusters.Pools.Get(
 		context.TODO(),
 		"pool_name",
-		cloud.K8ClusterPoolGetParams{
+		cloud.K8SClusterPoolGetParams{
 			ProjectID:   gcore.Int(0),
 			RegionID:    gcore.Int(0),
 			ClusterName: "cluster_name",
@@ -193,7 +193,7 @@ func TestK8ClusterPoolGet(t *testing.T) {
 	}
 }
 
-func TestK8ClusterPoolResize(t *testing.T) {
+func TestK8SClusterPoolResize(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -205,10 +205,10 @@ func TestK8ClusterPoolResize(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.K8s.Clusters.Pools.Resize(
+	_, err := client.Cloud.K8S.Clusters.Pools.Resize(
 		context.TODO(),
 		"pool_name",
-		cloud.K8ClusterPoolResizeParams{
+		cloud.K8SClusterPoolResizeParams{
 			ProjectID:   gcore.Int(0),
 			RegionID:    gcore.Int(0),
 			ClusterName: "cluster_name",

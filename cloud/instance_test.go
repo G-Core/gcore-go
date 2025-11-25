@@ -135,7 +135,7 @@ func TestInstanceListWithOptionalParams(t *testing.T) {
 		FlavorPrefix:            gcore.String("g2-"),
 		IncludeAI:               gcore.Bool(false),
 		IncludeBaremetal:        gcore.Bool(false),
-		IncludeK8s:              gcore.Bool(true),
+		IncludeK8S:              gcore.Bool(true),
 		IP:                      gcore.String("192.168.0.1"),
 		Limit:                   gcore.Int(1000),
 		Name:                    gcore.String("name"),
