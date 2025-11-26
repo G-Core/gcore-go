@@ -394,8 +394,10 @@ const (
 )
 
 type SecurityGroupNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Security group
 	SecurityGroup SecurityGroupNewParamsSecurityGroup `json:"security_group,omitzero,required"`
 	// List of instances
@@ -593,15 +595,17 @@ func init() {
 }
 
 type SecurityGroupListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Limit the number of returned security groups
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Limit of items on a single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result
+	// Offset in results list
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Filter by tag key-value pairs. Must be a valid JSON string.
+	// Optional. Filter by tag key-value pairs. Must be a valid JSON string.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// Filter by tag keys.
+	// Optional. Filter by tag keys.
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
