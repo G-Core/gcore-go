@@ -145,9 +145,6 @@ type BaremetalFlavor struct {
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus BaremetalFlavorPriceStatus `json:"price_status,nullable"`
-	// Count of reserved but not used nodes. If a client don't have reservations for
-	// the flavor, it's None.
-	ReservedInStock int64 `json:"reserved_in_stock,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -164,7 +161,6 @@ type BaremetalFlavor struct {
 		PricePerHour        respjson.Field
 		PricePerMonth       respjson.Field
 		PriceStatus         respjson.Field
-		ReservedInStock     respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`

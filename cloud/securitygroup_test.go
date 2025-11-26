@@ -27,8 +27,8 @@ func TestSecurityGroupNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.SecurityGroups.New(context.TODO(), cloud.SecurityGroupNewParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(1),
 		SecurityGroup: cloud.SecurityGroupNewParamsSecurityGroup{
 			Name:        "my_security_group",
 			Description: gcore.String("Some description"),
@@ -115,11 +115,11 @@ func TestSecurityGroupListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.SecurityGroups.List(context.TODO(), cloud.SecurityGroupListParams{
-		ProjectID:   gcore.Int(0),
-		RegionID:    gcore.Int(0),
-		Limit:       gcore.Int(0),
+		ProjectID:   gcore.Int(1),
+		RegionID:    gcore.Int(1),
+		Limit:       gcore.Int(10),
 		Offset:      gcore.Int(0),
-		TagKey:      []string{"string"},
+		TagKey:      []string{"my-tag"},
 		TagKeyValue: gcore.String("tag_key_value"),
 	})
 	if err != nil {
