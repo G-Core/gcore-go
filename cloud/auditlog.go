@@ -66,7 +66,7 @@ type AuditLogEntry struct {
 	// User action log was successfully received by its subscriber in case there is one
 	Acknowledged bool `json:"acknowledged,required"`
 	// Additional information about the action
-	ActionData any `json:"action_data,required"`
+	ActionData map[string]any `json:"action_data,required"`
 	// Action type
 	//
 	// Any of "activate", "attach", "change_logging_resources", "create",
@@ -276,7 +276,7 @@ type AuditLogEntryResource struct {
 	// "subnet", "token", "user", "virtual_gpu_cluster", "volume".
 	ResourceType string `json:"resource_type,required"`
 	// Free-form object, resource body.
-	ResourceBody any `json:"resource_body,nullable"`
+	ResourceBody map[string]any `json:"resource_body,nullable"`
 	// Often used property for filtering actions. It can be a name, IP address, or
 	// other property, depending on the `resource_type`
 	SearchField string `json:"search_field,nullable"`
