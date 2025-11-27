@@ -4,6 +4,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -204,8 +205,8 @@ const (
 
 // Coordinates of the region
 type RegionCoordinates struct {
-	Latitude  float64 `json:"latitude,required"`
-	Longitude float64 `json:"longitude,required"`
+	Latitude  RegionCoordinatesLatitudeUnion  `json:"latitude,required"`
+	Longitude RegionCoordinatesLongitudeUnion `json:"longitude,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Latitude    respjson.Field
@@ -218,6 +219,78 @@ type RegionCoordinates struct {
 // Returns the unmodified JSON received from the API
 func (r RegionCoordinates) RawJSON() string { return r.JSON.raw }
 func (r *RegionCoordinates) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// RegionCoordinatesLatitudeUnion contains all possible properties and values from
+// [float64], [string].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfFloat OfString]
+type RegionCoordinatesLatitudeUnion struct {
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	JSON     struct {
+		OfFloat  respjson.Field
+		OfString respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u RegionCoordinatesLatitudeUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u RegionCoordinatesLatitudeUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u RegionCoordinatesLatitudeUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *RegionCoordinatesLatitudeUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// RegionCoordinatesLongitudeUnion contains all possible properties and values from
+// [float64], [string].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfFloat OfString]
+type RegionCoordinatesLongitudeUnion struct {
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	JSON     struct {
+		OfFloat  respjson.Field
+		OfString respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u RegionCoordinatesLongitudeUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u RegionCoordinatesLongitudeUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u RegionCoordinatesLongitudeUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *RegionCoordinatesLongitudeUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

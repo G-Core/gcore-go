@@ -555,7 +555,7 @@ type InstanceNewParams struct {
 	Username param.Opt[string] `json:"username,omitzero"`
 	// Parameters for the application template if creating the instance from an
 	// `apptemplate`.
-	Configuration any `json:"configuration,omitzero"`
+	Configuration map[string]any `json:"configuration,omitzero"`
 	// Specifies security group UUIDs to be applied to all instance network interfaces.
 	SecurityGroups []InstanceNewParamsSecurityGroup `json:"security_groups,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that

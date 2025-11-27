@@ -431,7 +431,7 @@ type LoadBalancerFlavorDetail struct {
 	// Flavor name
 	FlavorName string `json:"flavor_name,required"`
 	// Additional hardware description.
-	HardwareDescription FlavorHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription LoadBalancerFlavorDetailHardwareDescriptionUnion `json:"hardware_description,required"`
 	// RAM size in MiB
 	Ram int64 `json:"ram,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
@@ -465,6 +465,57 @@ type LoadBalancerFlavorDetail struct {
 // Returns the unmodified JSON received from the API
 func (r LoadBalancerFlavorDetail) RawJSON() string { return r.JSON.raw }
 func (r *LoadBalancerFlavorDetail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// LoadBalancerFlavorDetailHardwareDescriptionUnion contains all possible
+// properties and values from [FlavorHardwareDescription], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfLoadBalancerFlavorDetailHardwareDescriptionMapItem]
+type LoadBalancerFlavorDetailHardwareDescriptionUnion struct {
+	// This field will be present if the value is a [any] instead of an object.
+	OfLoadBalancerFlavorDetailHardwareDescriptionMapItem any `json:",inline"`
+	// This field is from variant [FlavorHardwareDescription].
+	CPU string `json:"cpu"`
+	// This field is from variant [FlavorHardwareDescription].
+	Disk string `json:"disk"`
+	// This field is from variant [FlavorHardwareDescription].
+	Ephemeral string `json:"ephemeral"`
+	// This field is from variant [FlavorHardwareDescription].
+	GPU string `json:"gpu"`
+	// This field is from variant [FlavorHardwareDescription].
+	Network string `json:"network"`
+	// This field is from variant [FlavorHardwareDescription].
+	Ram  string `json:"ram"`
+	JSON struct {
+		OfLoadBalancerFlavorDetailHardwareDescriptionMapItem respjson.Field
+		CPU                                                  respjson.Field
+		Disk                                                 respjson.Field
+		Ephemeral                                            respjson.Field
+		GPU                                                  respjson.Field
+		Network                                              respjson.Field
+		Ram                                                  respjson.Field
+		raw                                                  string
+	} `json:"-"`
+}
+
+func (u LoadBalancerFlavorDetailHardwareDescriptionUnion) AsFlavorHardwareDescriptionSchemaHardwareHintsForAFlavor() (v FlavorHardwareDescription) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u LoadBalancerFlavorDetailHardwareDescriptionUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u LoadBalancerFlavorDetailHardwareDescriptionUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *LoadBalancerFlavorDetailHardwareDescriptionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -754,7 +805,7 @@ type LoadBalancerListenerDetail struct {
 	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
 	// Dictionary of additional header insertion into HTTP headers. Only used with HTTP
 	// and `TERMINATED_HTTPS` protocols.
-	InsertHeaders any `json:"insert_headers,required"`
+	InsertHeaders map[string]any `json:"insert_headers,required"`
 	// Load balancer ID
 	LoadBalancerID string `json:"load_balancer_id,required" format:"uuid4"`
 	// Load balancer listener name
