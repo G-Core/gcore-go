@@ -77,10 +77,6 @@ func printFlavorDetails(flavor cloud.BaremetalFlavor, index int) {
 		fmt.Printf("     Capacity: %d\n", flavor.Capacity)
 	}
 
-	if flavor.ReservedInStock != 0 {
-		fmt.Printf("     Reserved in Stock: %d\n", flavor.ReservedInStock)
-	}
-
 	if flavor.PricePerHour != 0 {
 		fmt.Printf("     Price per Hour: %.4f %s\n", flavor.PricePerHour, flavor.CurrencyCode)
 	}
