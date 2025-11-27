@@ -509,7 +509,7 @@ type BaremetalServerNewParams struct {
 	Username param.Opt[string] `json:"username,omitzero"`
 	// Parameters for the application template if creating the instance from an
 	// `apptemplate`.
-	AppConfig any `json:"app_config,omitzero"`
+	AppConfig map[string]any `json:"app_config,omitzero"`
 	// Enable advanced DDoS protection for the server
 	DDOSProfile BaremetalServerNewParamsDDOSProfile `json:"ddos_profile,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that

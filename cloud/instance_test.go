@@ -54,10 +54,12 @@ func TestInstanceNewWithOptionalParams(t *testing.T) {
 			},
 		}},
 		AllowAppPorts: gcore.Bool(true),
-		Configuration: map[string]any{},
-		Name:          gcore.String("my-instance"),
-		NameTemplate:  gcore.String("name_template"),
-		Password:      gcore.String("password"),
+		Configuration: map[string]any{
+			"foo": "bar",
+		},
+		Name:         gcore.String("my-instance"),
+		NameTemplate: gcore.String("name_template"),
+		Password:     gcore.String("password"),
 		SecurityGroups: []cloud.InstanceNewParamsSecurityGroup{{
 			ID: "ae74714c-c380-48b4-87f8-758d656cdad6",
 		}},
