@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.23.0 (2025-12-01)
+
+Full Changelog: [v0.22.0...v0.23.0](https://github.com/G-Core/gcore-go/compare/v0.22.0...v0.23.0)
+
+### Features
+
+* **api:** aggregated API specs update ([1113ddf](https://github.com/G-Core/gcore-go/commit/1113ddfcf934371d417044677ba6569920f33dd3))
+* **api:** aggregated API specs update ([c1a50c9](https://github.com/G-Core/gcore-go/commit/c1a50c92c8b2e5b076e11c783f794d20e3f4982a))
+
+
+### Bug Fixes
+
+* **cloud:** remove flavor.ReservedInStock reference in examples ([796f842](https://github.com/G-Core/gcore-go/commit/796f842f7fa396c5ce99f2cd7df276a947a4dc68))
+
 ## 0.22.0 (2025-11-25)
 
 Full Changelog: [v0.21.0...v0.22.0](https://github.com/G-Core/gcore-go/compare/v0.21.0...v0.22.0)
