@@ -97,18 +97,15 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 // our video hosting. If necessary, you can disable automatic creation of
 // subtitles. If AI is disabled in your account, no AI functionality is called.
 //
-// **Advanced Features**
-//
-// For details on the requirements for incoming original files, and output video
-// parameters after transcoding, refer to the Knowledge Base documentation. By
-// default video will be transcoded according to the original resolution, and a
-// quality ladder suitable for your original video will be applied. There is no
-// automatic upscaling; the maximum quality is taken from the original video.
-//
-// If you want to upload specific files not explicitly listed in requirements or
-// wish to modify the standard quality ladder (i.e. decrease quality or add new
-// non-standard qualities), then such customization is possible. Please reach out
-// to us for assistance.
+// **Advanced Features** For details on the requirements for incoming original
+// files, and output video parameters after transcoding, refer to the Knowledge
+// Base documentation. By default video will be transcoded according to the
+// original resolution, and a quality ladder suitable for your original video will
+// be applied. There is no automatic upscaling; the maximum quality is taken from
+// the original video. If you want to upload specific files not explicitly listed
+// in requirements or wish to modify the standard quality ladder (i.e. decrease
+// quality or add new non-standard qualities), then such customization is possible.
+// Please reach out to us for assistance.
 //
 // Additionally, check the Knowledge Base for any supplementary information you may
 // need.
