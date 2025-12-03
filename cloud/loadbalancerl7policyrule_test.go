@@ -36,7 +36,7 @@ func TestLoadBalancerL7PolicyRuleNewWithOptionalParams(t *testing.T) {
 			Type:        cloud.LoadBalancerL7PolicyRuleNewParamsTypePath,
 			Value:       "/images*",
 			Invert:      gcore.Bool(true),
-			Key:         gcore.String("the name of the cookie to evaluate."),
+			Key:         gcore.String("the name of the cookie or header to evaluate."),
 			Tags:        []string{"test_tag_1", "test_tag_2"},
 		},
 	)
@@ -159,7 +159,7 @@ func TestLoadBalancerL7PolicyRuleReplaceWithOptionalParams(t *testing.T) {
 			L7policyID:  "023f2e34-7806-443b-bfae-16c324569a3d",
 			CompareType: cloud.LoadBalancerL7PolicyRuleReplaceParamsCompareTypeRegex,
 			Invert:      gcore.Bool(true),
-			Key:         gcore.String("the name of the cookie to evaluate."),
+			Key:         gcore.String("the name of the cookie or header to evaluate."),
 			Tags:        []string{"test_tag_1", "test_tag_2"},
 			Type:        cloud.LoadBalancerL7PolicyRuleReplaceParamsTypePath,
 			Value:       gcore.String("/images*"),
