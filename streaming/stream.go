@@ -72,9 +72,7 @@ func NewStreamService(opts ...option.RequestOption) (r StreamService) {
 // - Restreaming
 // - (soon) AI Automatic Speech Recognition for subtitles/captions generating
 //
-// For more information see specific API methods, and the Knowledge Base. To
-// organize streaming with ultra-low latency, look for WebRTC delivery in different
-// section in the Knowledge Base.
+// For more information see specific API methods, and the Knowledge Base.
 //
 // ![HTML Overlays](https://demo-files.gvideo.io/apidocs/low-latency-football.gif)
 func (r *StreamService) New(ctx context.Context, body StreamNewParams, opts ...option.RequestOption) (res *Stream, err error) {
@@ -158,6 +156,9 @@ func (r *StreamService) ClearDvr(ctx context.Context, streamID int64, opts ...op
 // broadcast to be completed and recorded. For example, for quickly cutting
 // highlights in sport events, or cutting an important moment in the news or live
 // performance.
+//
+// DVR function must be enabled for clip recording. If the DVR is disabled, the
+// response will be error 422.
 //
 // Instant clip becomes available for viewing in the following formats:
 //
@@ -650,8 +651,8 @@ type Stream struct {
 	//     Double-check the documentation for your encoder.
 	//
 	// Please note that 1 connection and 1 protocol can be used at a single moment in
-	// time per unique stream key input. Trying to send 2+ connection requests into
-	// `push_url` to once, or 2+ protocols at once will not lead to a result.
+	// time per unique stream key input. Trying to send 2+ connection requests into the
+	// single `push_url`, or 2+ protocols at once will not lead to a result.
 	//
 	// For example, transcoding process will fail if:
 	//
@@ -694,8 +695,8 @@ type Stream struct {
 	// necessary, ask us and we will help you.
 	//
 	// Please note that 1 connection and 1 protocol can be used at a single moment in
-	// time per unique stream key input. Trying to send 2+ connection requests into
-	// `push_url_srt` to once, or 2+ protocols at once will not lead to a result.
+	// time per unique stream key input. Trying to send 2+ connection requests into the
+	// single `push_url_srt`, or 2+ protocols at once will not lead to a result.
 	//
 	// For example, transcoding process will fail if:
 	//
@@ -750,8 +751,8 @@ type Stream struct {
 	// start in browser" has been added.
 	//
 	// Please note that 1 connection and 1 protocol can be used at a single moment in
-	// time per unique stream key input. Trying to send 2+ connection requests into
-	// `push_url_whip` to once, or 2+ protocols at once will not lead to a result.
+	// time per unique stream key input. Trying to send 2+ connection requests into the
+	// single `push_url_whip`, or 2+ protocols at once will not lead to a result.
 	//
 	// For example, transcoding process will fail if:
 	//
@@ -796,6 +797,13 @@ type Stream struct {
 	// was started. If the stream was started several times, or restarted on your side,
 	// then only the time of the last session is displayed here.
 	StartedAtPrimary string `json:"started_at_primary"`
+	// For the current transcoding, this specifies the source protocol: RTMP, SRT,
+	// WebRTC, or HTTPS. This does not specify which source is used primary or backup,
+	// only the source protocol type. If transcoding is inactive, the value will be
+	// null.
+	//
+	// Any of "rtmp", "srt", "webrtc", "https".
+	StreamSourceType StreamStreamSourceType `json:"stream_source_type"`
 	// Array of qualities to which live stream is transcoded
 	TranscodedQualities []string `json:"transcoded_qualities"`
 	// Speed of transcoding the stream.
@@ -861,6 +869,7 @@ type Stream struct {
 		Screenshot          respjson.Field
 		StartedAtBackup     respjson.Field
 		StartedAtPrimary    respjson.Field
+		StreamSourceType    respjson.Field
 		TranscodedQualities respjson.Field
 		TranscodingSpeed    respjson.Field
 		Uri                 respjson.Field
@@ -909,6 +918,19 @@ type StreamRecordType string
 const (
 	StreamRecordTypeOrigin     StreamRecordType = "origin"
 	StreamRecordTypeTranscoded StreamRecordType = "transcoded"
+)
+
+// For the current transcoding, this specifies the source protocol: RTMP, SRT,
+// WebRTC, or HTTPS. This does not specify which source is used primary or backup,
+// only the source protocol type. If transcoding is inactive, the value will be
+// null.
+type StreamStreamSourceType string
+
+const (
+	StreamStreamSourceTypeRtmp   StreamStreamSourceType = "rtmp"
+	StreamStreamSourceTypeSrt    StreamStreamSourceType = "srt"
+	StreamStreamSourceTypeWebrtc StreamStreamSourceType = "webrtc"
+	StreamStreamSourceTypeHTTPS  StreamStreamSourceType = "https"
 )
 
 type StreamStartRecordingResponse struct {
