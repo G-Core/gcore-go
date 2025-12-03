@@ -194,7 +194,7 @@ type LoadBalancerL7PolicyRuleNewParams struct {
 	Value string `json:"value,required"`
 	// When true the logic of the rule is inverted.
 	Invert param.Opt[bool] `json:"invert,omitzero"`
-	// The key to use for the comparison.
+	// The key to use for the comparison. Required for COOKIE and HEADER `type` only.
 	Key param.Opt[string] `json:"key,omitzero"`
 	// A list of simple strings assigned to the l7 rule
 	Tags []string `json:"tags,omitzero"`
@@ -275,7 +275,7 @@ type LoadBalancerL7PolicyRuleReplaceParams struct {
 	CompareType LoadBalancerL7PolicyRuleReplaceParamsCompareType `json:"compare_type,omitzero,required"`
 	// When true the logic of the rule is inverted.
 	Invert param.Opt[bool] `json:"invert,omitzero"`
-	// The key to use for the comparison.
+	// The key to use for the comparison. Required for COOKIE and HEADER `type` only.
 	Key param.Opt[string] `json:"key,omitzero"`
 	// The value to use for the comparison
 	Value param.Opt[string] `json:"value,omitzero"`
