@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestLoadBalancerPoolMemberAddWithOptionalParams(t *testing.T) {
+func TestLoadBalancerPoolMemberNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,10 +26,10 @@ func TestLoadBalancerPoolMemberAddWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.LoadBalancers.Pools.Members.Add(
+	_, err := client.Cloud.LoadBalancers.Pools.Members.New(
 		context.TODO(),
 		"00000000-0000-4000-8000-000000000000",
-		cloud.LoadBalancerPoolMemberAddParams{
+		cloud.LoadBalancerPoolMemberNewParams{
 			ProjectID:      gcore.Int(1),
 			RegionID:       gcore.Int(1),
 			Address:        "192.168.40.33",
@@ -52,7 +52,7 @@ func TestLoadBalancerPoolMemberAddWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestLoadBalancerPoolMemberRemove(t *testing.T) {
+func TestLoadBalancerPoolMemberDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -64,10 +64,10 @@ func TestLoadBalancerPoolMemberRemove(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.LoadBalancers.Pools.Members.Remove(
+	_, err := client.Cloud.LoadBalancers.Pools.Members.Delete(
 		context.TODO(),
 		"00000000-0000-4000-8000-000000000000",
-		cloud.LoadBalancerPoolMemberRemoveParams{
+		cloud.LoadBalancerPoolMemberDeleteParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
 			PoolID:    "00000000-0000-4000-8000-000000000000",
