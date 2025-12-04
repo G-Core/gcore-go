@@ -35,7 +35,7 @@ func NewLoadBalancerPoolMemberService(opts ...option.RequestOption) (r LoadBalan
 }
 
 // Create load balancer pool member
-func (r *LoadBalancerPoolMemberService) Add(ctx context.Context, poolID string, params LoadBalancerPoolMemberAddParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *LoadBalancerPoolMemberService) New(ctx context.Context, poolID string, params LoadBalancerPoolMemberNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -61,7 +61,7 @@ func (r *LoadBalancerPoolMemberService) Add(ctx context.Context, poolID string, 
 }
 
 // Delete load balancer pool member
-func (r *LoadBalancerPoolMemberService) Remove(ctx context.Context, memberID string, body LoadBalancerPoolMemberRemoveParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *LoadBalancerPoolMemberService) Delete(ctx context.Context, memberID string, body LoadBalancerPoolMemberDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -90,7 +90,7 @@ func (r *LoadBalancerPoolMemberService) Remove(ctx context.Context, memberID str
 	return
 }
 
-type LoadBalancerPoolMemberAddParams struct {
+type LoadBalancerPoolMemberNewParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Region ID
@@ -139,15 +139,15 @@ type LoadBalancerPoolMemberAddParams struct {
 	paramObj
 }
 
-func (r LoadBalancerPoolMemberAddParams) MarshalJSON() (data []byte, err error) {
-	type shadow LoadBalancerPoolMemberAddParams
+func (r LoadBalancerPoolMemberNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerPoolMemberNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LoadBalancerPoolMemberAddParams) UnmarshalJSON(data []byte) error {
+func (r *LoadBalancerPoolMemberNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LoadBalancerPoolMemberRemoveParams struct {
+type LoadBalancerPoolMemberDeleteParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Region ID
