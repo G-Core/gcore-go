@@ -30,7 +30,7 @@ type CdnService struct {
 	RuleTemplates         RuleTemplateService
 	Certificates          CertificateService
 	TrustedCaCertificates TrustedCaCertificateService
-	AuditLog              AuditLogService
+	AuditLogs             AuditLogService
 	Logs                  LogService
 	LogsUploader          LogsUploaderService
 	Statistics            StatisticService
@@ -51,7 +51,7 @@ func NewCdnService(opts ...option.RequestOption) (r CdnService) {
 	r.RuleTemplates = NewRuleTemplateService(opts...)
 	r.Certificates = NewCertificateService(opts...)
 	r.TrustedCaCertificates = NewTrustedCaCertificateService(opts...)
-	r.AuditLog = NewAuditLogService(opts...)
+	r.AuditLogs = NewAuditLogService(opts...)
 	r.Logs = NewLogService(opts...)
 	r.LogsUploader = NewLogsUploaderService(opts...)
 	r.Statistics = NewStatisticService(opts...)
