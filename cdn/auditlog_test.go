@@ -26,7 +26,7 @@ func TestAuditLogListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.AuditLog.List(context.TODO(), cdn.AuditLogListParams{
+	_, err := client.Cdn.AuditLogs.List(context.TODO(), cdn.AuditLogListParams{
 		ClientID:        gcore.Int(0),
 		Limit:           gcore.Int(0),
 		MaxRequestedAt:  gcore.String("max_requested_at"),
@@ -60,7 +60,7 @@ func TestAuditLogGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.AuditLog.Get(context.TODO(), 0)
+	_, err := client.Cdn.AuditLogs.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
