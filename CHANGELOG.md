@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.24.0 (2025-12-05)
+
+Full Changelog: [v0.23.0...v0.24.0](https://github.com/G-Core/gcore-go/compare/v0.23.0...v0.24.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cdn:** streamline audit_logs naming
+* **cloud:** rename load balancer pool member methods to create/delete
+* streamline naming for create/replace models
+
+### Features
+
+* **api:** aggregated API specs update ([c48a0d6](https://github.com/G-Core/gcore-go/commit/c48a0d67637a779a8fff28ec4aa5daf5a4cc750f))
+* **api:** aggregated API specs update ([5a59bd7](https://github.com/G-Core/gcore-go/commit/5a59bd7bd6fce5e57514abeeccae048bade6d3b9))
+
+
+### Bug Fixes
+
+* **cdn:** streamline audit_logs naming ([61061a9](https://github.com/G-Core/gcore-go/commit/61061a94e9dc71c9763068852082dbc6deb884e0))
+* **cloud:** rename load balancer pool member methods to create/delete ([1ac24e7](https://github.com/G-Core/gcore-go/commit/1ac24e7489cc70c7c40c133498e57580cdef20a8))
+* **mcp:** correct code tool API endpoint ([b15bf97](https://github.com/G-Core/gcore-go/commit/b15bf97cb481fb5d60ef6accaefcfaaf9346d26c))
+* rename param to avoid collision ([b37c90a](https://github.com/G-Core/gcore-go/commit/b37c90af8fb49a42366125233f02b80b27584874))
+* streamline naming for create/replace models ([f167858](https://github.com/G-Core/gcore-go/commit/f167858b25f012b073a670bc0d67ae76744997ac))
+
+
+### Chores
+
+* elide duplicate aliases ([15ed877](https://github.com/G-Core/gcore-go/commit/15ed8776baa4b6ca688b54f014063a8ad6a0ae87))
+* **internal:** codegen related update ([ff89ad2](https://github.com/G-Core/gcore-go/commit/ff89ad23fef93ef2e66d322be50b188e6ca3d28b))
+
 ## 0.23.0 (2025-12-01)
 
 Full Changelog: [v0.22.0...v0.23.0](https://github.com/G-Core/gcore-go/compare/v0.22.0...v0.23.0)
