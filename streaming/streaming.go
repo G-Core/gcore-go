@@ -359,7 +359,10 @@ type Video struct {
 	//
 	// This URL is a link to the main manifest. But you can also manually specify
 	// suffix-options that will allow you to change the manifest to your request:
-	// `/videos/{client_id}_{slug}/master[-min-N][-max-N][-(h264|hevc|av1)].mpd`
+	//
+	// ```
+	// /videos/{client_id}_{slug}/master[-min-N][-max-N][-(h264|hevc|av1)].mpd
+	// ```
 	//
 	// List of suffix-options:
 	//
@@ -400,9 +403,8 @@ type Video struct {
 	// in any manner or form. It is strongly advised not to store them in your database
 	// or cache them on your end.
 	HlsCmafURL string `json:"hls_cmaf_url"`
-	// A URL to a master playlist HLS (master.m3u8).
-	//
-	// Chunk type will be selected automatically:
+	// A URL to a master playlist HLS (master.m3u8). Chunk type will be selected
+	// automatically:
 	//
 	//   - TS if your video was encoded to H264 only.
 	//   - CMAF if your video was encoded additionally to H265 and/or AV1 codecs (as
@@ -411,7 +413,10 @@ type Video struct {
 	//
 	// You can also manually specify suffix-options that will allow you to change the
 	// manifest to your request:
-	// `/videos/{client_id}_{video_slug}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8`
+	//
+	// ```
+	// /videos/{client_id}_{video_slug}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8
+	// ```
 	//
 	// List of suffix-options:
 	//
@@ -428,15 +433,16 @@ type Video struct {
 	//
 	// ABR soft-limiting: Soft limitation of the list of qualities allows you to return
 	// not the entire list of transcoded qualities for a video, but only those you
-	// need. For more details look at the Product Documentation. For example, the video
-	// is available in 7 qualities from 360p to 4K, but you want to return not more
-	// than 480p only due to the conditions of distribution of content to a specific
-	// end-user (i.e. free account):
+	// need. For example, the video is available in 7 qualities from 360p to 4K, but
+	// you want to return not more than 480p only due to the conditions of distribution
+	// of content to a specific end-user (i.e. free account): ABR soft-limiting
+	// examples:
 	//
 	//   - To a generic `.../master.m3u8` manifest
 	//   - Add a suffix-option to limit quality `.../master-max-480.m3u8`
 	//   - Add a suffix-option to limit quality and codec
-	//     `.../master-min-320-max-320-h264.m3u8`
+	//     `.../master-min-320-max-320-h264.m3u8` For more details look at the Product
+	//     Documentation.
 	//
 	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
 	// and intended for your use. Any additional internal manifests, sub-manifests,
@@ -485,12 +491,9 @@ type Video struct {
 	// - If the video is a recording of a live stream
 	// - Otherwise it is "null"
 	//
-	// **Copy from another server**
-	//
-	// URL to an original file that was downloaded. Look at method "Copy from another
-	// server" in POST /videos.
-	//
-	// **Recording of an original live stream**
+	// **Copy from another server** URL to an original file that was downloaded. Look
+	// at method "Copy from another server" in POST /videos. **Recording of an original
+	// live stream**
 	//
 	// URL to the original non-transcoded stream recording with original quality, saved
 	// in MP4 format. File is created immediately after the completion of the stream
@@ -668,32 +671,28 @@ type VideoConvertedVideo struct {
 	// For each converted video, additional download endpoints are available under
 	// `converted_videos`/`mp4_urls`. An MP4 download enpoints:
 	//
-	// - /videos/{`client_id`}\_{slug}/{filename}.mp4
-	// - /videos/{`client_id`}\_{slug}/{filename}.mp4/download
-	// - /videos/{`client_id`}\_{slug}/{filename}.mp4/download={`custom_filename`}
+	// 1. `/videos/{client_id}_{slug}/{filename}.mp4`
+	// 2. `/videos/{client_id}_{slug}/{filename}.mp4/download`
+	// 3. `/videos/{client_id}_{slug}/{filename}.mp4/download={custom_filename}`
 	//
 	// The first option returns the file as is. Response will be:
 	//
 	// ```
-	//
-	//	GET .mp4
-	//	...
-	//	content-type: video/mp4
-	//
+	// GET .mp4
+	// ...
+	// content-type: video/mp4
 	// ```
 	//
-	// The second option with /download will respond with HTTP response header that
+	// The second option with `/download` will respond with HTTP response header that
 	// directly tells browsers to download the file instead of playing it in the
 	// browser:
 	//
 	// ```
-	//
-	//	GET .mp4/download
-	//	...
-	//	content-type: video/mp4
-	//	content-disposition: attachment
-	//	access-control-expose-headers: Content-Disposition
-	//
+	// GET .mp4/download
+	// ...
+	// content-type: video/mp4
+	// content-disposition: attachment
+	// access-control-expose-headers: Content-Disposition
 	// ```
 	//
 	// The third option allows you to set a custom name for the file being downloaded.
@@ -709,20 +708,18 @@ type VideoConvertedVideo struct {
 	// - Example valid filenames: `holiday2025`, `_backup.final`, `clip-v1.2`
 	//
 	// ```
-	//
-	//	GET .mp4/download={custom_filename}
-	//	...
-	//	content-type: video/mp4
-	//	content-disposition: attachment; filename="{custom_filename}.mp4"
-	//	access-control-expose-headers: Content-Disposition
-	//
+	// GET .mp4/download={custom_filename}
+	// ...
+	// content-type: video/mp4
+	// content-disposition: attachment; filename="{custom_filename}.mp4"
+	// access-control-expose-headers: Content-Disposition
 	// ```
 	//
 	// Examples:
 	//
-	//   - Video:
+	//   - MP4:
 	//     `https://demo-public.gvideo.io/videos/2675_1OFgHZ1FWZNNvx1A/qid3567v1_h264_4050_1080.mp4/download`
-	//   - Video with custom download filename:
+	//   - MP4 with custom download filename:
 	//     `https://demo-public.gvideo.io/videos/2675_1OFgHZ1FWZNNvx1A/qid3567v1_h264_4050_1080.mp4/download=highlights_v1.1_2025-05-30`
 	//
 	// **Default MP4 file name structure**
@@ -750,11 +747,10 @@ type VideoConvertedVideo struct {
 	//
 	// Read more in Product Documentation in CDN section "Network limits".
 	//
-	// **Secure token authentication (updated)**
+	// **Secure token authentication for MP4 (updated)**
 	//
-	// Access to MP4 download links can be protected using secure tokens passed as
-	// query parameters. The token generation logic has been updated to allow
-	// fine-grained protection per file and bitrate.
+	// Access to MP4 download links only can be protected using advanced secure tokens
+	// passed as query parameters.
 	//
 	// Token generation uses the entire MP4 path, which ensures the token only grants
 	// access to a specific quality/version of the video. This prevents unintended
