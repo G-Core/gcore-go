@@ -33,10 +33,10 @@ func TestTaskListWithOptionalParams(t *testing.T) {
 		Limit:          gcore.Int(100),
 		Offset:         gcore.Int(0),
 		OrderBy:        cloud.TaskListParamsOrderByAsc,
-		ProjectID:      []int64{0, 0},
-		RegionID:       []int64{0, 0},
+		ProjectID:      []int64{0},
+		RegionID:       []int64{0},
 		Sorting:        cloud.TaskListParamsSortingAsc,
-		State:          []string{"ERROR", "FINISHED"},
+		State:          []string{"ERROR"},
 		TaskType:       gcore.String("task_type"),
 		ToTimestamp:    gcore.Time(time.Now()),
 	})
