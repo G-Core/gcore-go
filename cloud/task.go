@@ -374,6 +374,11 @@ type TaskListParams struct {
 	FromTimestamp param.Opt[time.Time] `query:"from_timestamp,omitzero" format:"date-time" json:"-"`
 	// Filter the tasks by their acknowledgement status
 	IsAcknowledged param.Opt[bool] `query:"is_acknowledged,omitzero" json:"-"`
+	// Limit the number of returned tasks. Falls back to default of 10 if not
+	// specified. Limited by max limit value of 1000
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Offset value is used to exclude the first set of records from the result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Filter the tasks by their type one of ['`activate_ddos_profile`',
 	// '`attach_bm_to_reserved_fixed_ip`', '`attach_vm_interface`',
 	// '`attach_vm_to_reserved_fixed_ip`', '`attach_volume`',
@@ -397,17 +402,17 @@ type TaskListParams struct {
 	// '`delete_k8s_cluster_v2`', '`delete_l7policy`', '`delete_l7rule`',
 	// '`delete_lblistener`', '`delete_lbmember`', '`delete_lbmetadata`',
 	// '`delete_lbpool`', '`delete_loadbalancer`', '`delete_network`',
-	// '`delete_reserved_fixed_ip`', '`delete_router`', '`delete_secret`',
-	// '`delete_servergroup`', '`delete_sfs`', '`delete_snapshot`', '`delete_subnet`',
-	// '`delete_vm`', '`delete_volume`', '`detach_vm_interface`', '`detach_volume`',
-	// '`download_image`', '`downscale_ai_cluster_gpu`',
+	// '`delete_project`', '`delete_reserved_fixed_ip`', '`delete_router`',
+	// '`delete_secret`', '`delete_servergroup`', '`delete_sfs`', '`delete_snapshot`',
+	// '`delete_subnet`', '`delete_vm`', '`delete_volume`', '`detach_vm_interface`',
+	// '`detach_volume`', '`download_image`', '`downscale_ai_cluster_gpu`',
 	// '`downscale_gpu_virtual_cluster`', '`extend_sfs`', '`extend_volume`',
 	// '`failover_loadbalancer`', '`hard_reboot_gpu_baremetal_server`',
 	// '`hard_reboot_gpu_virtual_cluster`', '`hard_reboot_gpu_virtual_server`',
 	// '`hard_reboot_vm`', '`patch_caas_container`', '`patch_dbaas_postgres_cluster`',
 	// '`patch_faas_function`', '`patch_faas_namespace`', '`patch_lblistener`',
-	// '`patch_lbpool`', '`put_into_server_group`', '`put_l7policy`', '`put_l7rule`',
-	// '`rebuild_bm`', '`rebuild_gpu_baremetal_node`', '`remove_from_server_group`',
+	// '`patch_lbpool`', '`put_into_server_group`', '`put_l7rule`', '`rebuild_bm`',
+	// '`rebuild_gpu_baremetal_node`', '`remove_from_server_group`',
 	// '`replace_lbmetadata`', '`resize_k8s_cluster_v2`', '`resize_loadbalancer`',
 	// '`resize_vm`', '`resume_vm`', '`revert_volume`',
 	// '`soft_reboot_gpu_baremetal_server`', '`soft_reboot_gpu_virtual_cluster`',
@@ -417,7 +422,7 @@ type TaskListParams struct {
 	// '`stop_gpu_virtual_cluster`', '`stop_gpu_virtual_server`', '`stop_vm`',
 	// '`suspend_vm`', '`sync_private_flavors`', '`update_ddos_profile`',
 	// '`update_inference_application`', '`update_inference_instance`',
-	// '`update_k8s_cluster_v2`', '`update_lbmetadata`',
+	// '`update_k8s_cluster_v2`', '`update_l7policy`', '`update_lbmetadata`',
 	// '`update_port_allowed_address_pairs`', '`update_sfs`',
 	// '`update_tags_gpu_virtual_cluster`', '`upgrade_k8s_cluster_v2`',
 	// '`upscale_ai_cluster_gpu`', '`upscale_gpu_virtual_cluster`']
@@ -425,31 +430,26 @@ type TaskListParams struct {
 	// ISO formatted datetime string. Filter the tasks by creation date less than or
 	// equal to `to_timestamp`
 	ToTimestamp param.Opt[time.Time] `query:"to_timestamp,omitzero" format:"date-time" json:"-"`
-	// Limit the number of returned tasks. Falls back to default of 10 if not
-	// specified. Limited by max limit value of 1000
-	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result
-	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Sorting by creation date. Oldest first, or most recent first
+	//
+	// Any of "asc", "desc".
+	OrderBy TaskListParamsOrderBy `query:"order_by,omitzero" json:"-"`
 	// The project ID to filter the tasks by project. Supports multiple values of kind
 	// key=value1&key=value2
 	ProjectID []int64 `query:"project_id,omitzero" json:"-"`
 	// The region ID to filter the tasks by region. Supports multiple values of kind
 	// key=value1&key=value2
 	RegionID []int64 `query:"region_id,omitzero" json:"-"`
-	// Filter the tasks by state. Supports multiple values of kind
-	// key=value1&key=value2
-	//
-	// Any of "ERROR", "FINISHED", "NEW", "RUNNING".
-	State []string `query:"state,omitzero" json:"-"`
-	// Sorting by creation date. Oldest first, or most recent first
-	//
-	// Any of "asc", "desc".
-	OrderBy TaskListParamsOrderBy `query:"order_by,omitzero" json:"-"`
 	// (DEPRECATED Use '`order_by`' instead) Sorting by creation date. Oldest first, or
 	// most recent first
 	//
 	// Any of "asc", "desc".
 	Sorting TaskListParamsSorting `query:"sorting,omitzero" json:"-"`
+	// Filter the tasks by state. Supports multiple values of kind
+	// key=value1&key=value2
+	//
+	// Any of "ERROR", "FINISHED", "NEW", "RUNNING".
+	State []string `query:"state,omitzero" json:"-"`
 	paramObj
 }
 

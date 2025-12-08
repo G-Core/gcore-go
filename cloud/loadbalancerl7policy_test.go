@@ -129,39 +129,3 @@ func TestLoadBalancerL7PolicyGet(t *testing.T) {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }
-
-func TestLoadBalancerL7PolicyReplaceWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Cloud.LoadBalancers.L7Policies.Replace(
-		context.TODO(),
-		"023f2e34-7806-443b-bfae-16c324569a3d",
-		cloud.LoadBalancerL7PolicyReplaceParams{
-			ProjectID: gcore.Int(1),
-			RegionID:  gcore.Int(1),
-			OfRedirectToURL: &cloud.LoadBalancerL7PolicyReplaceParamsBodyRedirectToURL{
-				RedirectURL:      "https://www.example.com",
-				Name:             gcore.String("redirect-example.com"),
-				Position:         gcore.Int(1),
-				RedirectHTTPCode: gcore.Int(301),
-				Tags:             []string{"test_tag"},
-			},
-		},
-	)
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
