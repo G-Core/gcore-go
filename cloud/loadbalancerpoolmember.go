@@ -92,9 +92,9 @@ func (r *LoadBalancerPoolMemberService) Delete(ctx context.Context, memberID str
 	return
 }
 
-// AddAndPoll creates a load balancer pool member and polls until the operation completes
-func (r *LoadBalancerPoolMemberService) AddAndPoll(ctx context.Context, poolID string, params LoadBalancerPoolMemberAddParams, opts ...option.RequestOption) (v *Member, err error) {
-	resource, err := r.Add(ctx, poolID, params, opts...)
+// NewAndPoll creates a load balancer pool member and polls until the operation completes
+func (r *LoadBalancerPoolMemberService) NewAndPoll(ctx context.Context, poolID string, params LoadBalancerPoolMemberNewParams, opts ...option.RequestOption) (v *Member, err error) {
+	resource, err := r.New(ctx, poolID, params, opts...)
 	if err != nil {
 		return
 	}
@@ -139,9 +139,9 @@ func (r *LoadBalancerPoolMemberService) AddAndPoll(ctx context.Context, poolID s
 	return nil, fmt.Errorf("member %s not found in pool %s after creation", memberID, poolID)
 }
 
-// RemoveAndPoll deletes a load balancer pool member and polls for completion
-func (r *LoadBalancerPoolMemberService) RemoveAndPoll(ctx context.Context, memberID string, params LoadBalancerPoolMemberRemoveParams, opts ...option.RequestOption) error {
-	resource, err := r.Remove(ctx, memberID, params, opts...)
+// DeleteAndPoll deletes a load balancer pool member and polls for completion
+func (r *LoadBalancerPoolMemberService) DeleteAndPoll(ctx context.Context, memberID string, params LoadBalancerPoolMemberDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, memberID, params, opts...)
 	if err != nil {
 		return err
 	}
