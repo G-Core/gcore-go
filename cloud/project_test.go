@@ -52,7 +52,7 @@ func TestProjectUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Projects.Update(context.TODO(), cloud.ProjectUpdateParams{
-		ProjectID:   gcore.Int(0),
+		ProjectID:   gcore.Int(4),
 		Name:        "my-project",
 		Description: gcore.String("Project description"),
 	})
@@ -107,7 +107,7 @@ func TestProjectDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Projects.Delete(context.TODO(), cloud.ProjectDeleteParams{
-		ProjectID: gcore.Int(0),
+		ProjectID: gcore.Int(4),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -131,7 +131,7 @@ func TestProjectGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Projects.Get(context.TODO(), cloud.ProjectGetParams{
-		ProjectID: gcore.Int(0),
+		ProjectID: gcore.Int(4),
 	})
 	if err != nil {
 		var apierr *gcore.Error
