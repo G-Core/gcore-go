@@ -603,9 +603,9 @@ type SecurityGroupListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Offset in results list
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Optional. Filter by tag key-value pairs. Must be a valid JSON string.
+	// Optional. Filter by tag key-value pairs.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// Optional. Filter by tag keys.
+	// Optional. Filter by tag keys. ?`tag_key`=key1&`tag_key`=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
