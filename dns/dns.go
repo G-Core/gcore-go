@@ -23,11 +23,12 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewDNSService] method instead.
 type DNSService struct {
-	Options   []option.RequestOption
-	Locations LocationService
-	Metrics   MetricService
-	Pickers   PickerService
-	Zones     ZoneService
+	Options         []option.RequestOption
+	Locations       LocationService
+	Metrics         MetricService
+	Pickers         PickerService
+	Zones           ZoneService
+	NetworkMappings NetworkMappingService
 }
 
 // NewDNSService generates a new service that applies the given options to each
@@ -40,6 +41,7 @@ func NewDNSService(opts ...option.RequestOption) (r DNSService) {
 	r.Metrics = NewMetricService(opts...)
 	r.Pickers = NewPickerService(opts...)
 	r.Zones = NewZoneService(opts...)
+	r.NetworkMappings = NewNetworkMappingService(opts...)
 	return
 }
 
