@@ -119,7 +119,7 @@ func TestSecurityGroupListWithOptionalParams(t *testing.T) {
 		RegionID:    gcore.Int(1),
 		Limit:       gcore.Int(10),
 		Offset:      gcore.Int(0),
-		TagKey:      []string{"my-tag"},
+		TagKey:      []string{"key1", "key2"},
 		TagKeyValue: gcore.String("tag_key_value"),
 	})
 	if err != nil {
