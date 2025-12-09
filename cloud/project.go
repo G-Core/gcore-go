@@ -50,7 +50,10 @@ func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ..
 	return
 }
 
-// Update project name and description.
+// Update project. Depricated: Use PATCH /v1/projects/{project_id} instead Update
+// project name and description.
+//
+// Deprecated: deprecated
 func (r *ProjectService) Update(ctx context.Context, params ProjectUpdateParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -127,7 +130,7 @@ func (r *ProjectService) DeleteAndPoll(ctx context.Context, body ProjectDeletePa
 	return err
 }
 
-// Retrieve detailed information about a specific project.
+// Get project. Retrieve detailed information about a specific project.
 func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -206,6 +209,7 @@ func (r *ProjectNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type ProjectUpdateParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Name of the entity, following a specific format.
 	Name string `json:"name,required"`
@@ -259,11 +263,13 @@ const (
 )
 
 type ProjectDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type ProjectGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	paramObj
 }
