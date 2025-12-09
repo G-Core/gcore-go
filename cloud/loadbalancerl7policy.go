@@ -213,10 +213,10 @@ func (r *LoadBalancerL7PolicyService) DeleteAndPoll(ctx context.Context, l7polic
 	return err
 }
 
-// ReplaceAndPoll replaces an L7 policy and polls for completion of the first task. Use the [TaskService.Poll] method if
+// UpdateAndPoll updates an L7 policy and polls for completion of the first task. Use the [TaskService.Poll] method if
 // you need to poll for all tasks.
-func (r *LoadBalancerL7PolicyService) ReplaceAndPoll(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyReplaceParams, opts ...option.RequestOption) (v *LoadBalancerL7Policy, err error) {
-	resource, err := r.Replace(ctx, l7policyID, params, opts...)
+func (r *LoadBalancerL7PolicyService) UpdateAndPoll(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyUpdateParams, opts ...option.RequestOption) (v *LoadBalancerL7Policy, err error) {
+	resource, err := r.Update(ctx, l7policyID, params, opts...)
 	if err != nil {
 		return
 	}
