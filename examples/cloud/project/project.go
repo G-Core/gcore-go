@@ -122,7 +122,7 @@ func updateProject(client *gcore.Client, projectID int64) {
 
 	project, err := client.Cloud.Projects.Update(context.Background(), cloud.ProjectUpdateParams{
 		ProjectID:   gcore.Int(projectID),
-		Name:        "gcore-go-example-updated",
+		Name:        gcore.String("gcore-go-example-updated"),
 		Description: gcore.String("Updated project description"),
 	})
 	if err != nil {
