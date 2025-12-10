@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.24.0 (2025-12-10)
+
+Full Changelog: [v0.23.0...v0.24.0](https://github.com/G-Core/gcore-go/compare/v0.23.0...v0.24.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** replace load balancer L7 policy ReplaceAndPoll() with UpdateAndPoll()
+* **cloud:** replace PUT /cloud/v1/l7policies with PATCH
+* **cdn:** streamline audit_logs naming
+* **cloud:** rename load balancer pool member methods to create/delete
+* streamline naming for create/replace models
+
+### Features
+
+* **api:** aggregated API specs update ([a9492d3](https://github.com/G-Core/gcore-go/commit/a9492d3b8979646770b2710410bc253235749dcd))
+* **api:** aggregated API specs update ([da031f6](https://github.com/G-Core/gcore-go/commit/da031f6250a18c0023c97bf60414ae528c1b5240))
+* **api:** aggregated API specs update ([5c06188](https://github.com/G-Core/gcore-go/commit/5c0618875beb731ab6418074139008b9b36ea52b))
+* **api:** aggregated API specs update ([c48a0d6](https://github.com/G-Core/gcore-go/commit/c48a0d67637a779a8fff28ec4aa5daf5a4cc750f))
+* **api:** aggregated API specs update ([5a59bd7](https://github.com/G-Core/gcore-go/commit/5a59bd7bd6fce5e57514abeeccae048bade6d3b9))
+* **cloud:** add polling methods to k8s clusters and pools ([9e741e1](https://github.com/G-Core/gcore-go/commit/9e741e1fc43e6c9a29e1641699e80dc4b6128654))
+* **dns:** enable terraform code generation for gcore_dns_network_mapping ([6fc50fb](https://github.com/G-Core/gcore-go/commit/6fc50fb3da80b8613958f48edf91e1167209c62f))
+
+
+### Bug Fixes
+
+* **cdn:** streamline audit_logs naming ([61061a9](https://github.com/G-Core/gcore-go/commit/61061a94e9dc71c9763068852082dbc6deb884e0))
+* **cloud:** adapt load balancer pool member *AndPoll methods to correspond to its base counterparts ([47c2505](https://github.com/G-Core/gcore-go/commit/47c250530bb02ff33553d194eaa1c68864295f99))
+* **cloud:** fix type in cloud projects example ([21336c1](https://github.com/G-Core/gcore-go/commit/21336c18d11a2c5590a3b28d21e69aca36608f68))
+* **cloud:** rename load balancer pool member methods to create/delete ([1ac24e7](https://github.com/G-Core/gcore-go/commit/1ac24e7489cc70c7c40c133498e57580cdef20a8))
+* **cloud:** replace load balancer L7 policy ReplaceAndPoll() with UpdateAndPoll() ([f976275](https://github.com/G-Core/gcore-go/commit/f9762755dafad50dfdf6e37a751c17052dbe05b1))
+* **cloud:** replace PUT /cloud/v1/l7policies with PATCH ([76ce329](https://github.com/G-Core/gcore-go/commit/76ce329edd87d764b86f4c6004efb5ad67b96c9b))
+* **cloud:** use PATCH /cloud/v1/projects ([01cf2e0](https://github.com/G-Core/gcore-go/commit/01cf2e0ef6aaca4452bce5248d0b47c614acc97d))
+* **mcp:** correct code tool API endpoint ([b15bf97](https://github.com/G-Core/gcore-go/commit/b15bf97cb481fb5d60ef6accaefcfaaf9346d26c))
+* rename param to avoid collision ([b37c90a](https://github.com/G-Core/gcore-go/commit/b37c90af8fb49a42366125233f02b80b27584874))
+* streamline naming for create/replace models ([f167858](https://github.com/G-Core/gcore-go/commit/f167858b25f012b073a670bc0d67ae76744997ac))
+
+
+### Chores
+
+* elide duplicate aliases ([15ed877](https://github.com/G-Core/gcore-go/commit/15ed8776baa4b6ca688b54f014063a8ad6a0ae87))
+* **internal:** codegen related update ([ff89ad2](https://github.com/G-Core/gcore-go/commit/ff89ad23fef93ef2e66d322be50b188e6ca3d28b))
+
 ## 0.23.0 (2025-12-01)
 
 Full Changelog: [v0.22.0...v0.23.0](https://github.com/G-Core/gcore-go/compare/v0.22.0...v0.23.0)
