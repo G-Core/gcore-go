@@ -53,8 +53,8 @@ func TestProjectUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Projects.Update(context.TODO(), cloud.ProjectUpdateParams{
 		ProjectID:   gcore.Int(4),
-		Name:        "my-project",
 		Description: gcore.String("Project description"),
+		Name:        gcore.String("my-project"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
