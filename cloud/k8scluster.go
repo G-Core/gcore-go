@@ -29,6 +29,7 @@ type K8SClusterService struct {
 	Options []option.RequestOption
 	Nodes   K8SClusterNodeService
 	Pools   K8SClusterPoolService
+	tasks   TaskService
 }
 
 // NewK8SClusterService generates a new service that applies the given options to
@@ -39,6 +40,7 @@ func NewK8SClusterService(opts ...option.RequestOption) (r K8SClusterService) {
 	r.Options = opts
 	r.Nodes = NewK8SClusterNodeService(opts...)
 	r.Pools = NewK8SClusterPoolService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -62,6 +64,41 @@ func (r *K8SClusterService) New(ctx context.Context, params K8SClusterNewParams,
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a new k8s cluster and polls for completion
+func (r *K8SClusterService) NewAndPoll(ctx context.Context, params K8SClusterNewParams, opts ...option.RequestOption) (v *K8SCluster, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams K8SClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.K8SClusters) != 1 {
+		return nil, errors.New("expected exactly one k8s cluster to be created in a task")
+	}
+	resourceID := task.CreatedResources.K8SClusters[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
 // Update k8s cluster
@@ -88,6 +125,37 @@ func (r *K8SClusterService) Update(ctx context.Context, clusterName string, para
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
+}
+
+// UpdateAndPoll updates a k8s cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
+func (r *K8SClusterService) UpdateAndPoll(ctx context.Context, clusterName string, params K8SClusterUpdateParams, opts ...option.RequestOption) (v *K8SCluster, err error) {
+	resource, err := r.Update(ctx, clusterName, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams K8SClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Get(ctx, clusterName, getParams, opts...)
 }
 
 // List k8s clusters
@@ -136,6 +204,23 @@ func (r *K8SClusterService) Delete(ctx context.Context, clusterName string, para
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
 	return
+}
+
+// DeleteAndPoll deletes a k8s cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
+func (r *K8SClusterService) DeleteAndPoll(ctx context.Context, clusterName string, params K8SClusterDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, clusterName, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }
 
 // Get k8s cluster
@@ -266,6 +351,37 @@ func (r *K8SClusterService) Upgrade(ctx context.Context, clusterName string, par
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/upgrade", params.ProjectID.Value, params.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// UpgradeAndPoll upgrades a k8s cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
+func (r *K8SClusterService) UpgradeAndPoll(ctx context.Context, clusterName string, params K8SClusterUpgradeParams, opts ...option.RequestOption) (v *K8SCluster, err error) {
+	resource, err := r.Upgrade(ctx, clusterName, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams K8SClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Get(ctx, clusterName, getParams, opts...)
 }
 
 type K8SCluster struct {
