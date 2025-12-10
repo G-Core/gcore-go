@@ -50,10 +50,9 @@ func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ..
 	return
 }
 
-// Update project. Depricated: Use PATCH /v1/projects/{project_id} instead Update
-// project name and description.
-//
-// Deprecated: deprecated
+// This endpoint allows partial updates of a project (such as its name or
+// description). Only the fields explicitly provided in the request body will be
+// updated.
 func (r *ProjectService) Update(ctx context.Context, params ProjectUpdateParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -66,7 +65,7 @@ func (r *ProjectService) Update(ctx context.Context, params ProjectUpdateParams,
 		return
 	}
 	path := fmt.Sprintf("cloud/v1/projects/%v", params.ProjectID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
 }
 
@@ -211,10 +210,10 @@ func (r *ProjectNewParams) UnmarshalJSON(data []byte) error {
 type ProjectUpdateParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	// Name of the entity, following a specific format.
-	Name string `json:"name,required"`
 	// Description of the project.
 	Description param.Opt[string] `json:"description,omitzero"`
+	// Name of the entity, following a specific format.
+	Name param.Opt[string] `json:"name,omitzero"`
 	paramObj
 }
 
