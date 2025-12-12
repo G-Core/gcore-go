@@ -88,17 +88,15 @@ func (r *K8SClusterPoolService) NewAndPoll(ctx context.Context, clusterName stri
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	if err != nil {
 		return
 	}
 
-	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.K8SPools) != 1 {
-		return nil, errors.New("expected exactly one k8s cluster pool to be created in a task")
-	}
-	resourceID := task.CreatedResources.K8SPools[0]
-
-	return r.Get(ctx, resourceID, getParams, opts...)
+	// for k8s cluster pool creation the task.CreatedResources.K8SPools only contains the cluster pool ID and not the
+	// cluster pool name, which is the path parameter required to retrieve the created cluster pool. Therefore, we use
+	// the params.Name instead.
+	return r.Get(ctx, params.Name, getParams, opts...)
 }
 
 // Update k8s cluster pool

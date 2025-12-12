@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestReservedFixedIPVipToggle(t *testing.T) {
+func TestReservedFixedIPVipCandidatePortList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,13 +26,12 @@ func TestReservedFixedIPVipToggle(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.ReservedFixedIPs.Vip.Toggle(
+	_, err := client.Cloud.ReservedFixedIPs.Vip.CandidatePorts.List(
 		context.TODO(),
 		"port_id",
-		cloud.ReservedFixedIPVipToggleParams{
+		cloud.ReservedFixedIPVipCandidatePortListParams{
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
-			IsVip:     true,
 		},
 	)
 	if err != nil {

@@ -144,7 +144,7 @@ func toggleReservedFixedIPVip(client *gcore.Client, portID string, isVip bool) {
 func listCandidatePorts(client *gcore.Client, portID string) {
 	fmt.Println("\n=== LIST CANDIDATE PORTS ===")
 
-	candidatePorts, err := client.Cloud.ReservedFixedIPs.Vip.ListCandidatePorts(context.Background(), portID, cloud.ReservedFixedIPVipListCandidatePortsParams{})
+	candidatePorts, err := client.Cloud.ReservedFixedIPs.Vip.CandidatePorts.List(context.Background(), portID, cloud.ReservedFixedIPVipCandidatePortListParams{})
 	if err != nil {
 		log.Fatalf("Error listing candidate ports: %v", err)
 	}
@@ -159,7 +159,7 @@ func listCandidatePorts(client *gcore.Client, portID string) {
 func listConnectedPorts(client *gcore.Client, portID string) {
 	fmt.Println("\n=== LIST CONNECTED PORTS ===")
 
-	connectedPorts, err := client.Cloud.ReservedFixedIPs.Vip.ListConnectedPorts(context.Background(), portID, cloud.ReservedFixedIPVipListConnectedPortsParams{})
+	connectedPorts, err := client.Cloud.ReservedFixedIPs.Vip.ConnectedPorts.List(context.Background(), portID, cloud.ReservedFixedIPVipConnectedPortListParams{})
 	if err != nil {
 		log.Fatalf("Error listing connected ports: %v", err)
 	}

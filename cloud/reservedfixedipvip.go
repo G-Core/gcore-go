@@ -23,7 +23,9 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewReservedFixedIPVipService] method instead.
 type ReservedFixedIPVipService struct {
-	Options []option.RequestOption
+	Options        []option.RequestOption
+	CandidatePorts ReservedFixedIPVipCandidatePortService
+	ConnectedPorts ReservedFixedIPVipConnectedPortService
 }
 
 // NewReservedFixedIPVipService generates a new service that applies the given
@@ -32,84 +34,8 @@ type ReservedFixedIPVipService struct {
 func NewReservedFixedIPVipService(opts ...option.RequestOption) (r ReservedFixedIPVipService) {
 	r = ReservedFixedIPVipService{}
 	r.Options = opts
-	return
-}
-
-// List all instance ports that are available for connecting to a VIP.
-func (r *ReservedFixedIPVipService) ListCandidatePorts(ctx context.Context, portID string, query ReservedFixedIPVipListCandidatePortsParams, opts ...option.RequestOption) (res *CandidatePortList, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	if !query.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return
-	}
-	if portID == "" {
-		err = errors.New("missing required port_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v1/reserved_fixed_ips/%v/%v/%s/available_devices", query.ProjectID.Value, query.RegionID.Value, portID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// List all instance ports that share a VIP.
-func (r *ReservedFixedIPVipService) ListConnectedPorts(ctx context.Context, portID string, query ReservedFixedIPVipListConnectedPortsParams, opts ...option.RequestOption) (res *ConnectedPortList, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	if !query.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return
-	}
-	if portID == "" {
-		err = errors.New("missing required port_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v1/reserved_fixed_ips/%v/%v/%s/connected_devices", query.ProjectID.Value, query.RegionID.Value, portID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Replace the list of instance ports that share a VIP.
-func (r *ReservedFixedIPVipService) ReplaceConnectedPorts(ctx context.Context, portID string, params ReservedFixedIPVipReplaceConnectedPortsParams, opts ...option.RequestOption) (res *ConnectedPortList, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return
-	}
-	if portID == "" {
-		err = errors.New("missing required port_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v1/reserved_fixed_ips/%v/%v/%s/connected_devices", params.ProjectID.Value, params.RegionID.Value, portID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
+	r.CandidatePorts = NewReservedFixedIPVipCandidatePortService(opts...)
+	r.ConnectedPorts = NewReservedFixedIPVipConnectedPortService(opts...)
 	return
 }
 
@@ -139,130 +65,6 @@ func (r *ReservedFixedIPVipService) Toggle(ctx context.Context, portID string, p
 	return
 }
 
-// Add instance ports to share a VIP.
-func (r *ReservedFixedIPVipService) UpdateConnectedPorts(ctx context.Context, portID string, params ReservedFixedIPVipUpdateConnectedPortsParams, opts ...option.RequestOption) (res *ConnectedPortList, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return
-	}
-	if portID == "" {
-		err = errors.New("missing required port_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v1/reserved_fixed_ips/%v/%v/%s/connected_devices", params.ProjectID.Value, params.RegionID.Value, portID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
-}
-
-type CandidatePort struct {
-	// ID of the instance that owns the port
-	InstanceID string `json:"instance_id,required" format:"uuid4"`
-	// Name of the instance that owns the port
-	InstanceName string `json:"instance_name,required"`
-	// IP addresses assigned to this port
-	IPAssignments []IPWithSubnet `json:"ip_assignments,required"`
-	// Network details
-	Network Network `json:"network,required"`
-	// Port ID that shares VIP
-	PortID string `json:"port_id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		InstanceID    respjson.Field
-		InstanceName  respjson.Field
-		IPAssignments respjson.Field
-		Network       respjson.Field
-		PortID        respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CandidatePort) RawJSON() string { return r.JSON.raw }
-func (r *CandidatePort) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CandidatePortList struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []CandidatePort `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CandidatePortList) RawJSON() string { return r.JSON.raw }
-func (r *CandidatePortList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ConnectedPort struct {
-	// ID of the instance that owns the port
-	InstanceID string `json:"instance_id,required" format:"uuid4"`
-	// Name of the instance that owns the port
-	InstanceName string `json:"instance_name,required"`
-	// IP addresses assigned to this port
-	IPAssignments []IPWithSubnet `json:"ip_assignments,required"`
-	// Network details
-	Network Network `json:"network,required"`
-	// Port ID that shares VIP
-	PortID string `json:"port_id,required" format:"uuid4"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		InstanceID    respjson.Field
-		InstanceName  respjson.Field
-		IPAssignments respjson.Field
-		Network       respjson.Field
-		PortID        respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ConnectedPort) RawJSON() string { return r.JSON.raw }
-func (r *ConnectedPort) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ConnectedPortList struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []ConnectedPort `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ConnectedPortList) RawJSON() string { return r.JSON.raw }
-func (r *ConnectedPortList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type IPWithSubnet struct {
 	// IP address
 	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
@@ -286,34 +88,6 @@ func (r *IPWithSubnet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReservedFixedIPVipListCandidatePortsParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	paramObj
-}
-
-type ReservedFixedIPVipListConnectedPortsParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	paramObj
-}
-
-type ReservedFixedIPVipReplaceConnectedPortsParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// List of port IDs that will share one VIP
-	PortIDs []string `json:"port_ids,omitzero" format:"uuid4"`
-	paramObj
-}
-
-func (r ReservedFixedIPVipReplaceConnectedPortsParams) MarshalJSON() (data []byte, err error) {
-	type shadow ReservedFixedIPVipReplaceConnectedPortsParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ReservedFixedIPVipReplaceConnectedPortsParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type ReservedFixedIPVipToggleParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -327,21 +101,5 @@ func (r ReservedFixedIPVipToggleParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ReservedFixedIPVipToggleParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReservedFixedIPVipUpdateConnectedPortsParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// List of port IDs that will share one VIP
-	PortIDs []string `json:"port_ids,omitzero" format:"uuid4"`
-	paramObj
-}
-
-func (r ReservedFixedIPVipUpdateConnectedPortsParams) MarshalJSON() (data []byte, err error) {
-	type shadow ReservedFixedIPVipUpdateConnectedPortsParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ReservedFixedIPVipUpdateConnectedPortsParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

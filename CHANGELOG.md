@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.25.0 (2025-12-12)
+
+Full Changelog: [v0.24.0...v0.25.0](https://github.com/G-Core/gcore-go/compare/v0.24.0...v0.25.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** streamline vip connected and candidate ports
+
+### Features
+
+* **encoder:** support bracket encoding form-data object members ([500138a](https://github.com/G-Core/gcore-go/commit/500138a4ecebb960bb936efb721ccadad523b986))
+
+
+### Bug Fixes
+
+* **cloud:** fix vip examples ([ddcaf80](https://github.com/G-Core/gcore-go/commit/ddcaf808d558b74e6ce50101852b7934454c876e))
+* **cloud:** streamline vip connected and candidate ports ([893c324](https://github.com/G-Core/gcore-go/commit/893c3242b4a1c9d1b89a0d6a4ea4b76a857d51e8))
+* **cloud:** use params.Name to get k8s clusters/pools in NewAndPoll ([6e21232](https://github.com/G-Core/gcore-go/commit/6e2123228ff96c41199ef635a413665fc4c0a519))
+
 ## 0.24.0 (2025-12-10)
 
 Full Changelog: [v0.23.0...v0.24.0](https://github.com/G-Core/gcore-go/compare/v0.23.0...v0.24.0)
