@@ -202,6 +202,31 @@ func (r *K8SClusterPoolService) DeleteAndPoll(ctx context.Context, poolName stri
 	return err
 }
 
+// Calculate quota requirements for a new cluster pool before creation. Returns
+// exceeded quotas if regional limits would be violated. Use before pool creation
+// to validate resource availability. Checks: CPU, RAM, volumes, VMs, GPUs, and
+// baremetal quotas depending on flavor type.
+func (r *K8SClusterPoolService) CheckQuota(ctx context.Context, params K8SClusterPoolCheckQuotaParams, opts ...option.RequestOption) (res *K8SClusterPoolQuota, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/pools/check_limits", params.ProjectID.Value, params.RegionID.Value)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return
+}
+
 // Get k8s cluster pool
 func (r *K8SClusterPoolService) Get(ctx context.Context, poolName string, query K8SClusterPoolGetParams, opts ...option.RequestOption) (res *K8SClusterPool, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -385,6 +410,213 @@ func (r *K8SClusterPoolList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Response schema for K8s cluster quota check.
+//
+// Returns quota fields that are exceeded. Fields are only included when regional
+// limits would be violated. Empty response means no quotas exceeded.
+type K8SClusterPoolQuota struct {
+	// Bare metal A100 GPU server count limit
+	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
+	// Bare metal A100 GPU server count requested
+	BaremetalGPUA100CountRequested int64 `json:"baremetal_gpu_a100_count_requested"`
+	// Bare metal A100 GPU server count usage
+	BaremetalGPUA100CountUsage int64 `json:"baremetal_gpu_a100_count_usage"`
+	// Bare metal H100 GPU server count limit
+	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
+	// Bare metal H100 GPU server count requested
+	BaremetalGPUH100CountRequested int64 `json:"baremetal_gpu_h100_count_requested"`
+	// Bare metal H100 GPU server count usage
+	BaremetalGPUH100CountUsage int64 `json:"baremetal_gpu_h100_count_usage"`
+	// Bare metal H200 GPU server count limit
+	BaremetalGPUH200CountLimit int64 `json:"baremetal_gpu_h200_count_limit"`
+	// Bare metal H200 GPU server count requested
+	BaremetalGPUH200CountRequested int64 `json:"baremetal_gpu_h200_count_requested"`
+	// Bare metal H200 GPU server count usage
+	BaremetalGPUH200CountUsage int64 `json:"baremetal_gpu_h200_count_usage"`
+	// Bare metal L40S GPU server count limit
+	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
+	// Bare metal L40S GPU server count requested
+	BaremetalGPUL40sCountRequested int64 `json:"baremetal_gpu_l40s_count_requested"`
+	// Bare metal L40S GPU server count usage
+	BaremetalGPUL40sCountUsage int64 `json:"baremetal_gpu_l40s_count_usage"`
+	// High-frequency bare metal servers count limit
+	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
+	// High-frequency bare metal servers count requested
+	BaremetalHfCountRequested int64 `json:"baremetal_hf_count_requested"`
+	// High-frequency bare metal servers count usage
+	BaremetalHfCountUsage int64 `json:"baremetal_hf_count_usage"`
+	// K8s clusters count limit
+	ClusterCountLimit int64 `json:"cluster_count_limit"`
+	// K8s clusters count requested
+	ClusterCountRequested int64 `json:"cluster_count_requested"`
+	// K8s clusters count usage
+	ClusterCountUsage int64 `json:"cluster_count_usage"`
+	// vCPU Count limit
+	CPUCountLimit int64 `json:"cpu_count_limit"`
+	// vCPU Count requested
+	CPUCountRequested int64 `json:"cpu_count_requested"`
+	// vCPU Count usage
+	CPUCountUsage int64 `json:"cpu_count_usage"`
+	// Firewalls Count limit
+	FirewallCountLimit int64 `json:"firewall_count_limit"`
+	// Firewalls Count requested
+	FirewallCountRequested int64 `json:"firewall_count_requested"`
+	// Firewalls Count usage
+	FirewallCountUsage int64 `json:"firewall_count_usage"`
+	// Floating IP Count limit
+	FloatingCountLimit int64 `json:"floating_count_limit"`
+	// Floating IP Count requested
+	FloatingCountRequested int64 `json:"floating_count_requested"`
+	// Floating IP Count usage
+	FloatingCountUsage int64 `json:"floating_count_usage"`
+	// GPU Count limit
+	GPUCountLimit int64 `json:"gpu_count_limit"`
+	// GPU Count requested
+	GPUCountRequested int64 `json:"gpu_count_requested"`
+	// GPU Count usage
+	GPUCountUsage int64 `json:"gpu_count_usage"`
+	// Virtual A100 GPU card count limit
+	GPUVirtualA100CountLimit int64 `json:"gpu_virtual_a100_count_limit"`
+	// Virtual A100 GPU card count requested
+	GPUVirtualA100CountRequested int64 `json:"gpu_virtual_a100_count_requested"`
+	// Virtual A100 GPU card count usage
+	GPUVirtualA100CountUsage int64 `json:"gpu_virtual_a100_count_usage"`
+	// Virtual H100 GPU card count limit
+	GPUVirtualH100CountLimit int64 `json:"gpu_virtual_h100_count_limit"`
+	// Virtual H100 GPU card count requested
+	GPUVirtualH100CountRequested int64 `json:"gpu_virtual_h100_count_requested"`
+	// Virtual H100 GPU card count usage
+	GPUVirtualH100CountUsage int64 `json:"gpu_virtual_h100_count_usage"`
+	// Virtual H200 GPU card count limit
+	GPUVirtualH200CountLimit int64 `json:"gpu_virtual_h200_count_limit"`
+	// Virtual H200 GPU card count requested
+	GPUVirtualH200CountRequested int64 `json:"gpu_virtual_h200_count_requested"`
+	// Virtual H200 GPU card count usage
+	GPUVirtualH200CountUsage int64 `json:"gpu_virtual_h200_count_usage"`
+	// Virtual L40S GPU card count limit
+	GPUVirtualL40sCountLimit int64 `json:"gpu_virtual_l40s_count_limit"`
+	// Virtual L40S GPU card count requested
+	GPUVirtualL40sCountRequested int64 `json:"gpu_virtual_l40s_count_requested"`
+	// Virtual L40S GPU card count usage
+	GPUVirtualL40sCountUsage int64 `json:"gpu_virtual_l40s_count_usage"`
+	// LaaS Topics Count limit
+	LaasTopicCountLimit int64 `json:"laas_topic_count_limit"`
+	// LaaS Topics Count requested
+	LaasTopicCountRequested int64 `json:"laas_topic_count_requested"`
+	// LaaS Topics Count usage
+	LaasTopicCountUsage int64 `json:"laas_topic_count_usage"`
+	// Load Balancers Count limit
+	LoadbalancerCountLimit int64 `json:"loadbalancer_count_limit"`
+	// Load Balancers Count requested
+	LoadbalancerCountRequested int64 `json:"loadbalancer_count_requested"`
+	// Load Balancers Count usage
+	LoadbalancerCountUsage int64 `json:"loadbalancer_count_usage"`
+	// RAM Size, MiB limit
+	RamLimit int64 `json:"ram_limit"`
+	// RAM Size, MiB requested
+	RamRequested int64 `json:"ram_requested"`
+	// RAM Size, MiB usage
+	RamUsage int64 `json:"ram_usage"`
+	// Placement Group Count limit
+	ServergroupCountLimit int64 `json:"servergroup_count_limit"`
+	// Placement Group Count requested
+	ServergroupCountRequested int64 `json:"servergroup_count_requested"`
+	// Placement Group Count usage
+	ServergroupCountUsage int64 `json:"servergroup_count_usage"`
+	// VMs Count limit
+	VmCountLimit int64 `json:"vm_count_limit"`
+	// VMs Count requested
+	VmCountRequested int64 `json:"vm_count_requested"`
+	// VMs Count usage
+	VmCountUsage int64 `json:"vm_count_usage"`
+	// Volumes Count limit
+	VolumeCountLimit int64 `json:"volume_count_limit"`
+	// Volumes Count requested
+	VolumeCountRequested int64 `json:"volume_count_requested"`
+	// Volumes Count usage
+	VolumeCountUsage int64 `json:"volume_count_usage"`
+	// Volumes Size, GiB limit
+	VolumeSizeLimit int64 `json:"volume_size_limit"`
+	// Volumes Size, GiB requested
+	VolumeSizeRequested int64 `json:"volume_size_requested"`
+	// Volumes Size, GiB usage
+	VolumeSizeUsage int64 `json:"volume_size_usage"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BaremetalGPUA100CountLimit     respjson.Field
+		BaremetalGPUA100CountRequested respjson.Field
+		BaremetalGPUA100CountUsage     respjson.Field
+		BaremetalGPUH100CountLimit     respjson.Field
+		BaremetalGPUH100CountRequested respjson.Field
+		BaremetalGPUH100CountUsage     respjson.Field
+		BaremetalGPUH200CountLimit     respjson.Field
+		BaremetalGPUH200CountRequested respjson.Field
+		BaremetalGPUH200CountUsage     respjson.Field
+		BaremetalGPUL40sCountLimit     respjson.Field
+		BaremetalGPUL40sCountRequested respjson.Field
+		BaremetalGPUL40sCountUsage     respjson.Field
+		BaremetalHfCountLimit          respjson.Field
+		BaremetalHfCountRequested      respjson.Field
+		BaremetalHfCountUsage          respjson.Field
+		ClusterCountLimit              respjson.Field
+		ClusterCountRequested          respjson.Field
+		ClusterCountUsage              respjson.Field
+		CPUCountLimit                  respjson.Field
+		CPUCountRequested              respjson.Field
+		CPUCountUsage                  respjson.Field
+		FirewallCountLimit             respjson.Field
+		FirewallCountRequested         respjson.Field
+		FirewallCountUsage             respjson.Field
+		FloatingCountLimit             respjson.Field
+		FloatingCountRequested         respjson.Field
+		FloatingCountUsage             respjson.Field
+		GPUCountLimit                  respjson.Field
+		GPUCountRequested              respjson.Field
+		GPUCountUsage                  respjson.Field
+		GPUVirtualA100CountLimit       respjson.Field
+		GPUVirtualA100CountRequested   respjson.Field
+		GPUVirtualA100CountUsage       respjson.Field
+		GPUVirtualH100CountLimit       respjson.Field
+		GPUVirtualH100CountRequested   respjson.Field
+		GPUVirtualH100CountUsage       respjson.Field
+		GPUVirtualH200CountLimit       respjson.Field
+		GPUVirtualH200CountRequested   respjson.Field
+		GPUVirtualH200CountUsage       respjson.Field
+		GPUVirtualL40sCountLimit       respjson.Field
+		GPUVirtualL40sCountRequested   respjson.Field
+		GPUVirtualL40sCountUsage       respjson.Field
+		LaasTopicCountLimit            respjson.Field
+		LaasTopicCountRequested        respjson.Field
+		LaasTopicCountUsage            respjson.Field
+		LoadbalancerCountLimit         respjson.Field
+		LoadbalancerCountRequested     respjson.Field
+		LoadbalancerCountUsage         respjson.Field
+		RamLimit                       respjson.Field
+		RamRequested                   respjson.Field
+		RamUsage                       respjson.Field
+		ServergroupCountLimit          respjson.Field
+		ServergroupCountRequested      respjson.Field
+		ServergroupCountUsage          respjson.Field
+		VmCountLimit                   respjson.Field
+		VmCountRequested               respjson.Field
+		VmCountUsage                   respjson.Field
+		VolumeCountLimit               respjson.Field
+		VolumeCountRequested           respjson.Field
+		VolumeCountUsage               respjson.Field
+		VolumeSizeLimit                respjson.Field
+		VolumeSizeRequested            respjson.Field
+		VolumeSizeUsage                respjson.Field
+		ExtraFields                    map[string]respjson.Field
+		raw                            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r K8SClusterPoolQuota) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterPoolQuota) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type K8SClusterPoolNewParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
@@ -489,6 +721,47 @@ type K8SClusterPoolDeleteParams struct {
 	ClusterName string           `path:"cluster_name,required" json:"-"`
 	paramObj
 }
+
+type K8SClusterPoolCheckQuotaParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Flavor ID
+	FlavorID string `json:"flavor_id,required"`
+	// Boot volume size
+	BootVolumeSize param.Opt[int64] `json:"boot_volume_size,omitzero"`
+	// Maximum node count
+	MaxNodeCount param.Opt[int64] `json:"max_node_count,omitzero"`
+	// Minimum node count
+	MinNodeCount param.Opt[int64] `json:"min_node_count,omitzero"`
+	// Name of the cluster pool
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Maximum node count
+	NodeCount param.Opt[int64] `json:"node_count,omitzero"`
+	// Server group policy: anti-affinity, soft-anti-affinity or affinity
+	//
+	// Any of "affinity", "anti-affinity", "soft-anti-affinity".
+	ServergroupPolicy K8SClusterPoolCheckQuotaParamsServergroupPolicy `json:"servergroup_policy,omitzero"`
+	paramObj
+}
+
+func (r K8SClusterPoolCheckQuotaParams) MarshalJSON() (data []byte, err error) {
+	type shadow K8SClusterPoolCheckQuotaParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *K8SClusterPoolCheckQuotaParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Server group policy: anti-affinity, soft-anti-affinity or affinity
+type K8SClusterPoolCheckQuotaParamsServergroupPolicy string
+
+const (
+	K8SClusterPoolCheckQuotaParamsServergroupPolicyAffinity         K8SClusterPoolCheckQuotaParamsServergroupPolicy = "affinity"
+	K8SClusterPoolCheckQuotaParamsServergroupPolicyAntiAffinity     K8SClusterPoolCheckQuotaParamsServergroupPolicy = "anti-affinity"
+	K8SClusterPoolCheckQuotaParamsServergroupPolicySoftAntiAffinity K8SClusterPoolCheckQuotaParamsServergroupPolicy = "soft-anti-affinity"
+)
 
 type K8SClusterPoolGetParams struct {
 	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
