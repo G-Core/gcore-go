@@ -28,10 +28,9 @@ func TestNetworkMappingNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.DNS.NetworkMappings.New(context.TODO(), dns.NetworkMappingNewParams{
 		DNSNetworkMapping: dns.DNSNetworkMappingParam{
-			ID: gcore.Int(0),
 			Mapping: []dns.DNSMappingEntryParam{{
-				Cidr4: []any{map[string]any{}},
-				Cidr6: []any{map[string]any{}},
+				Cidr4: []string{"string"},
+				Cidr6: []string{"string"},
 				Tags:  []string{"string"},
 			}},
 			Name: gcore.String("name"),
@@ -178,10 +177,9 @@ func TestNetworkMappingReplaceWithOptionalParams(t *testing.T) {
 		0,
 		dns.NetworkMappingReplaceParams{
 			DNSNetworkMapping: dns.DNSNetworkMappingParam{
-				ID: gcore.Int(0),
 				Mapping: []dns.DNSMappingEntryParam{{
-					Cidr4: []any{map[string]any{}},
-					Cidr6: []any{map[string]any{}},
+					Cidr4: []string{"string"},
+					Cidr6: []string{"string"},
 					Tags:  []string{"string"},
 				}},
 				Name: gcore.String("name"),
