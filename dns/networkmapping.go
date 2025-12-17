@@ -272,8 +272,8 @@ func (r *NetworkMappingService) Replace(ctx context.Context, id int64, body Netw
 }
 
 type DNSMappingEntry struct {
-	Cidr4 []any    `json:"cidr4"`
-	Cidr6 []any    `json:"cidr6"`
+	Cidr4 []string `json:"cidr4"`
+	Cidr6 []string `json:"cidr6"`
 	Tags  []string `json:"tags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -301,8 +301,8 @@ func (r DNSMappingEntry) ToParam() DNSMappingEntryParam {
 }
 
 type DNSMappingEntryParam struct {
-	Cidr4 []any    `json:"cidr4,omitzero"`
-	Cidr6 []any    `json:"cidr6,omitzero"`
+	Cidr4 []string `json:"cidr4,omitzero"`
+	Cidr6 []string `json:"cidr6,omitzero"`
 	Tags  []string `json:"tags,omitzero"`
 	paramObj
 }
@@ -345,7 +345,6 @@ func (r DNSNetworkMapping) ToParam() DNSNetworkMappingParam {
 }
 
 type DNSNetworkMappingParam struct {
-	ID      param.Opt[int64]       `json:"id,omitzero"`
 	Name    param.Opt[string]      `json:"name,omitzero"`
 	Mapping []DNSMappingEntryParam `json:"mapping,omitzero"`
 	paramObj
