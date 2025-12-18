@@ -163,7 +163,7 @@ type LoadBalancerListenerNewParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Load balancer ID
+	// ID of already existent Load Balancer.
 	LoadBalancerID string `json:"load_balancer_id,required" format:"uuid4"`
 	// Load balancer listener name
 	Name string `json:"name,required"`
@@ -182,6 +182,8 @@ type LoadBalancerListenerNewParams struct {
 	// Limit of the simultaneous connections. If -1 is provided, it is translated to
 	// the default value 100000.
 	ConnectionLimit param.Opt[int64] `json:"connection_limit,omitzero"`
+	// ID of already existent Load Balancer Pool to attach listener to.
+	DefaultPoolID param.Opt[string] `json:"default_pool_id,omitzero" format:"uuid4"`
 	// Add headers X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto to requests.
 	// Only used with HTTP or `TERMINATED_HTTPS` protocols.
 	InsertXForwarded param.Opt[bool] `json:"insert_x_forwarded,omitzero"`
