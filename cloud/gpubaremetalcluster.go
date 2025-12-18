@@ -399,6 +399,8 @@ type GPUBaremetalCluster struct {
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Cluster flavor name
 	Flavor string `json:"flavor,required"`
+	// Image ID
+	ImageID string `json:"image_id,required"`
 	// User type managing the resource
 	//
 	// Any of "k8s", "user".
@@ -427,6 +429,7 @@ type GPUBaremetalCluster struct {
 		ID              respjson.Field
 		CreatedAt       respjson.Field
 		Flavor          respjson.Field
+		ImageID         respjson.Field
 		ManagedBy       respjson.Field
 		Name            respjson.Field
 		ServersCount    respjson.Field
