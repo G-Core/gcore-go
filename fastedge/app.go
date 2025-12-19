@@ -459,6 +459,9 @@ type AppReplaceParamsBody struct {
 }
 
 func (r AppReplaceParamsBody) MarshalJSON() (data []byte, err error) {
-	type shadow AppReplaceParamsBody
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*AppReplaceParamsBody
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
