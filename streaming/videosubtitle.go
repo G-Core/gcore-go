@@ -170,8 +170,11 @@ type VideoSubtitleNewParamsBody struct {
 }
 
 func (r VideoSubtitleNewParamsBody) MarshalJSON() (data []byte, err error) {
-	type shadow VideoSubtitleNewParamsBody
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*VideoSubtitleNewParamsBody
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type VideoSubtitleUpdateParams struct {
