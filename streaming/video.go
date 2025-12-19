@@ -486,8 +486,11 @@ type VideoNewMultipleParamsVideo struct {
 }
 
 func (r VideoNewMultipleParamsVideo) MarshalJSON() (data []byte, err error) {
-	type shadow VideoNewMultipleParamsVideo
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*VideoNewMultipleParamsVideo
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type VideoListNamesParams struct {
