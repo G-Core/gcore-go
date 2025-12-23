@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.26.0 (2025-12-23)
+
+Full Changelog: [v0.25.0...v0.26.0](https://github.com/G-Core/gcore-go/compare/v0.25.0...v0.26.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** move methods to gpu_baremetal_clusters.interfaces.attach()/detach()
+* **cloud:** restructure to be gpu_virtual.clusters
+
+### Features
+
+* **api:** aggregated API specs update ([84c4ada](https://github.com/G-Core/gcore-go/commit/84c4adaa0c8d393d9cd4d2a9cf1c5707e23e3d41))
+* **api:** aggregated API specs update ([d92461c](https://github.com/G-Core/gcore-go/commit/d92461cbd91686ff1c9a0cced20a3183fe052f5d))
+* **cloud:** add k8s cluster pools check quotas method ([80b7d5c](https://github.com/G-Core/gcore-go/commit/80b7d5c2a3762f90b575a7d37628618f2754361f))
+
+
+### Bug Fixes
+
+* **client:** properly marshal embedded structs ([e4ed37f](https://github.com/G-Core/gcore-go/commit/e4ed37ff5d788ae67a3ed1836b0a5543b021a5ff))
+* **cloud:** move methods to gpu_baremetal_clusters.interfaces.attach()/detach() ([5acef4d](https://github.com/G-Core/gcore-go/commit/5acef4d75415b4f3e073ba62b9aaaec754ecf562))
+* **cloud:** restructure to be gpu_virtual.clusters ([b858bb0](https://github.com/G-Core/gcore-go/commit/b858bb0d8347bbef3caa2def461af6f3d81e7fa8))
+
+
+### Chores
+
+* add float64 to valid types for RegisterFieldValidator ([6cf2379](https://github.com/G-Core/gcore-go/commit/6cf237997cf647011a3e2efaee4b6fecaf3cfb03))
+
 ## 0.25.0 (2025-12-12)
 
 Full Changelog: [v0.24.0...v0.25.0](https://github.com/G-Core/gcore-go/compare/v0.24.0...v0.25.0)
