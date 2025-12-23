@@ -26,7 +26,7 @@ func TestGPUVirtualClusterVolumeList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.Volumes.List(
+	_, err := client.Cloud.GPUVirtual.Clusters.Volumes.List(
 		context.TODO(),
 		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUVirtualClusterVolumeListParams{
