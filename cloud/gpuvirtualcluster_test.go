@@ -26,7 +26,7 @@ func TestGPUVirtualClusterNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.New(context.TODO(), cloud.GPUVirtualClusterNewParams{
+	_, err := client.Cloud.GPUVirtual.Clusters.New(context.TODO(), cloud.GPUVirtualClusterNewParams{
 		ProjectID:    gcore.Int(1),
 		RegionID:     gcore.Int(7),
 		Flavor:       "g3-ai-32-192-1500-l40s-48-1",
@@ -90,7 +90,7 @@ func TestGPUVirtualClusterUpdate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.Update(
+	_, err := client.Cloud.GPUVirtual.Clusters.Update(
 		context.TODO(),
 		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUVirtualClusterUpdateParams{
@@ -120,7 +120,7 @@ func TestGPUVirtualClusterListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.List(context.TODO(), cloud.GPUVirtualClusterListParams{
+	_, err := client.Cloud.GPUVirtual.Clusters.List(context.TODO(), cloud.GPUVirtualClusterListParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(7),
 		Limit:     gcore.Int(10),
@@ -147,7 +147,7 @@ func TestGPUVirtualClusterDeleteWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.Delete(
+	_, err := client.Cloud.GPUVirtual.Clusters.Delete(
 		context.TODO(),
 		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUVirtualClusterDeleteParams{
@@ -182,7 +182,7 @@ func TestGPUVirtualClusterAction(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.Action(
+	_, err := client.Cloud.GPUVirtual.Clusters.Action(
 		context.TODO(),
 		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUVirtualClusterActionParams{
@@ -212,7 +212,7 @@ func TestGPUVirtualClusterGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.Get(
+	_, err := client.Cloud.GPUVirtual.Clusters.Get(
 		context.TODO(),
 		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUVirtualClusterGetParams{

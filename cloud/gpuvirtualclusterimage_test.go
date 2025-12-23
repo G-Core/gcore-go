@@ -26,7 +26,7 @@ func TestGPUVirtualClusterImageList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.Images.List(context.TODO(), cloud.GPUVirtualClusterImageListParams{
+	_, err := client.Cloud.GPUVirtual.Clusters.Images.List(context.TODO(), cloud.GPUVirtualClusterImageListParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(7),
 	})
@@ -51,7 +51,7 @@ func TestGPUVirtualClusterImageDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.Images.Delete(
+	_, err := client.Cloud.GPUVirtual.Clusters.Images.Delete(
 		context.TODO(),
 		"8cab6f28-09ca-4201-b3f7-23c7893f4bd6",
 		cloud.GPUVirtualClusterImageDeleteParams{
@@ -80,7 +80,7 @@ func TestGPUVirtualClusterImageGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.Images.Get(
+	_, err := client.Cloud.GPUVirtual.Clusters.Images.Get(
 		context.TODO(),
 		"8cab6f28-09ca-4201-b3f7-23c7893f4bd6",
 		cloud.GPUVirtualClusterImageGetParams{
@@ -109,7 +109,7 @@ func TestGPUVirtualClusterImageUploadWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.Images.Upload(context.TODO(), cloud.GPUVirtualClusterImageUploadParams{
+	_, err := client.Cloud.GPUVirtual.Clusters.Images.Upload(context.TODO(), cloud.GPUVirtualClusterImageUploadParams{
 		ProjectID:      gcore.Int(1),
 		RegionID:       gcore.Int(7),
 		Name:           "ubuntu-23.10-x64",

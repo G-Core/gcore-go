@@ -26,7 +26,7 @@ func TestGPUVirtualClusterFlavorListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.Flavors.List(context.TODO(), cloud.GPUVirtualClusterFlavorListParams{
+	_, err := client.Cloud.GPUVirtual.Clusters.Flavors.List(context.TODO(), cloud.GPUVirtualClusterFlavorListParams{
 		ProjectID:     gcore.Int(1),
 		RegionID:      gcore.Int(7),
 		HideDisabled:  gcore.Bool(true),
