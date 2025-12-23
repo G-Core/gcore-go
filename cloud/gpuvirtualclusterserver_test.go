@@ -27,7 +27,7 @@ func TestGPUVirtualClusterServerListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.Servers.List(
+	_, err := client.Cloud.GPUVirtual.Clusters.Servers.List(
 		context.TODO(),
 		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUVirtualClusterServerListParams{
@@ -65,7 +65,7 @@ func TestGPUVirtualClusterServerDeleteWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUVirtualClusters.Servers.Delete(
+	_, err := client.Cloud.GPUVirtual.Clusters.Servers.Delete(
 		context.TODO(),
 		"f1c1eeb6-1834-48c9-a7b0-daafce64872b",
 		cloud.GPUVirtualClusterServerDeleteParams{
