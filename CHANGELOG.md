@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.27.0 (2025-12-30)
+
+Full Changelog: [v0.26.0...v0.27.0](https://github.com/G-Core/gcore-go/compare/v0.26.0...v0.27.0)
+
+### Features
+
+* **api:** manual updates ([5f8fff8](https://github.com/G-Core/gcore-go/commit/5f8fff89b9a44c4c54444744a5e7aadc40ab1673))
+
 ## 0.26.0 (2025-12-23)
 
 Full Changelog: [v0.25.0...v0.26.0](https://github.com/G-Core/gcore-go/compare/v0.25.0...v0.26.0)
