@@ -40,7 +40,7 @@ func NewSSHKeyService(opts ...option.RequestOption) (r SSHKeyService) {
 }
 
 // To generate a key, omit the `public_key` parameter from the request body
-func (r *SSHKeyService) New(ctx context.Context, params SSHKeyNewParams, opts ...option.RequestOption) (res *SSHKeyCreate, err error) {
+func (r *SSHKeyService) New(ctx context.Context, params SSHKeyNewParams, opts ...option.RequestOption) (res *SSHKeyCreated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -202,7 +202,7 @@ const (
 	SSHKeyStateDeleting SSHKeyState = "DELETING"
 )
 
-type SSHKeyCreate struct {
+type SSHKeyCreated struct {
 	// SSH key ID
 	ID string `json:"id,required" format:"uuid4"`
 	// SSH key creation time
@@ -233,7 +233,7 @@ type SSHKeyCreate struct {
 	// SSH key state
 	//
 	// Any of "ACTIVE", "DELETING".
-	State SSHKeyCreateState `json:"state,required"`
+	State SSHKeyCreatedState `json:"state,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -251,17 +251,17 @@ type SSHKeyCreate struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r SSHKeyCreate) RawJSON() string { return r.JSON.raw }
-func (r *SSHKeyCreate) UnmarshalJSON(data []byte) error {
+func (r SSHKeyCreated) RawJSON() string { return r.JSON.raw }
+func (r *SSHKeyCreated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // SSH key state
-type SSHKeyCreateState string
+type SSHKeyCreatedState string
 
 const (
-	SSHKeyCreateStateActive   SSHKeyCreateState = "ACTIVE"
-	SSHKeyCreateStateDeleting SSHKeyCreateState = "DELETING"
+	SSHKeyCreatedStateActive   SSHKeyCreatedState = "ACTIVE"
+	SSHKeyCreatedStateDeleting SSHKeyCreatedState = "DELETING"
 )
 
 type SSHKeyNewParams struct {

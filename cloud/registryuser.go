@@ -37,7 +37,7 @@ func NewRegistryUserService(opts ...option.RequestOption) (r RegistryUserService
 }
 
 // Create a new user for accessing the container registry.
-func (r *RegistryUserService) New(ctx context.Context, registryID int64, params RegistryUserNewParams, opts ...option.RequestOption) (res *RegistryUserCreate, err error) {
+func (r *RegistryUserService) New(ctx context.Context, registryID int64, params RegistryUserNewParams, opts ...option.RequestOption) (res *RegistryUserCreated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -126,7 +126,7 @@ func (r *RegistryUserService) Delete(ctx context.Context, userID int64, body Reg
 }
 
 // Create multiple users for accessing the container registry in a single request.
-func (r *RegistryUserService) NewMultiple(ctx context.Context, registryID int64, params RegistryUserNewMultipleParams, opts ...option.RequestOption) (res *RegistryUserCreate, err error) {
+func (r *RegistryUserService) NewMultiple(ctx context.Context, registryID int64, params RegistryUserNewMultipleParams, opts ...option.RequestOption) (res *RegistryUserCreated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -201,7 +201,7 @@ func (r *RegistryUser) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RegistryUserCreate struct {
+type RegistryUserCreated struct {
 	// User ID
 	ID int64 `json:"id,required"`
 	// User creation date-time
@@ -231,8 +231,8 @@ type RegistryUserCreate struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RegistryUserCreate) RawJSON() string { return r.JSON.raw }
-func (r *RegistryUserCreate) UnmarshalJSON(data []byte) error {
+func (r RegistryUserCreated) RawJSON() string { return r.JSON.raw }
+func (r *RegistryUserCreated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

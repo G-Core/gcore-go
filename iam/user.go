@@ -38,7 +38,7 @@ func NewUserService(opts ...option.RequestOption) (r UserService) {
 }
 
 // This method updates user's details.
-func (r *UserService) Update(ctx context.Context, userID int64, body UserUpdateParams, opts ...option.RequestOption) (res *UserUpdate, err error) {
+func (r *UserService) Update(ctx context.Context, userID int64, body UserUpdateParams, opts ...option.RequestOption) (res *UserUpdated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/users/%v", userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
@@ -412,7 +412,7 @@ func (r *UserInvite) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UserUpdate struct {
+type UserUpdated struct {
 	// User's ID.
 	ID int64 `json:"id,required"`
 	// Email confirmation:
@@ -427,7 +427,7 @@ type UserUpdate struct {
 	// User's account ID.
 	Client float64 `json:"client,required"`
 	// List of user's clients. User can access to one or more clients.
-	ClientAndRoles []UserUpdateClientAndRole `json:"client_and_roles,required"`
+	ClientAndRoles []UserUpdatedClientAndRole `json:"client_and_roles,required"`
 	// User's company.
 	Company string `json:"company,required"`
 	// Deletion flag. If `true` then user was deleted.
@@ -443,7 +443,7 @@ type UserUpdate struct {
 	// - Engineers
 	// - Purge and Prefetch only (API)
 	// - Purge and Prefetch only (API+Web)
-	Groups []UserUpdateGroup `json:"groups,required"`
+	Groups []UserUpdatedGroup `json:"groups,required"`
 	// User activity flag.
 	IsActive bool `json:"is_active,required"`
 	// User's language.
@@ -451,7 +451,7 @@ type UserUpdate struct {
 	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
-	Lang UserUpdateLang `json:"lang,required"`
+	Lang UserUpdatedLang `json:"lang,required"`
 	// User's name.
 	Name string `json:"name,required"`
 	// User's phone.
@@ -468,7 +468,7 @@ type UserUpdate struct {
 	// User's type.
 	//
 	// Any of "common", "reseller", "seller".
-	UserType UserUpdateUserType `json:"user_type,required"`
+	UserType UserUpdatedUserType `json:"user_type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -494,12 +494,12 @@ type UserUpdate struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r UserUpdate) RawJSON() string { return r.JSON.raw }
-func (r *UserUpdate) UnmarshalJSON(data []byte) error {
+func (r UserUpdated) RawJSON() string { return r.JSON.raw }
+func (r *UserUpdated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UserUpdateClientAndRole struct {
+type UserUpdatedClientAndRole struct {
 	ClientCompanyName string `json:"client_company_name,required"`
 	ClientID          int64  `json:"client_id,required"`
 	// User's ID.
@@ -518,12 +518,12 @@ type UserUpdateClientAndRole struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r UserUpdateClientAndRole) RawJSON() string { return r.JSON.raw }
-func (r *UserUpdateClientAndRole) UnmarshalJSON(data []byte) error {
+func (r UserUpdatedClientAndRole) RawJSON() string { return r.JSON.raw }
+func (r *UserUpdatedClientAndRole) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UserUpdateGroup struct {
+type UserUpdatedGroup struct {
 	// Group's ID: Possible values are:
 	//
 	//   - 1 - Administrators* 2 - Users* 5 - Engineers* 3009 - Purge and Prefetch only
@@ -544,31 +544,31 @@ type UserUpdateGroup struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r UserUpdateGroup) RawJSON() string { return r.JSON.raw }
-func (r *UserUpdateGroup) UnmarshalJSON(data []byte) error {
+func (r UserUpdatedGroup) RawJSON() string { return r.JSON.raw }
+func (r *UserUpdatedGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // User's language.
 //
 // Defines language of the control panel and email messages.
-type UserUpdateLang string
+type UserUpdatedLang string
 
 const (
-	UserUpdateLangDe UserUpdateLang = "de"
-	UserUpdateLangEn UserUpdateLang = "en"
-	UserUpdateLangRu UserUpdateLang = "ru"
-	UserUpdateLangZh UserUpdateLang = "zh"
-	UserUpdateLangAz UserUpdateLang = "az"
+	UserUpdatedLangDe UserUpdatedLang = "de"
+	UserUpdatedLangEn UserUpdatedLang = "en"
+	UserUpdatedLangRu UserUpdatedLang = "ru"
+	UserUpdatedLangZh UserUpdatedLang = "zh"
+	UserUpdatedLangAz UserUpdatedLang = "az"
 )
 
 // User's type.
-type UserUpdateUserType string
+type UserUpdatedUserType string
 
 const (
-	UserUpdateUserTypeCommon   UserUpdateUserType = "common"
-	UserUpdateUserTypeReseller UserUpdateUserType = "reseller"
-	UserUpdateUserTypeSeller   UserUpdateUserType = "seller"
+	UserUpdatedUserTypeCommon   UserUpdatedUserType = "common"
+	UserUpdatedUserTypeReseller UserUpdatedUserType = "reseller"
+	UserUpdatedUserTypeSeller   UserUpdatedUserType = "seller"
 )
 
 type UserUpdateParams struct {
