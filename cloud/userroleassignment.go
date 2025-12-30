@@ -47,7 +47,7 @@ func (r *UserRoleAssignmentService) New(ctx context.Context, body UserRoleAssign
 }
 
 // Modify an existing role assignment for a user.
-func (r *UserRoleAssignmentService) Update(ctx context.Context, assignmentID int64, body UserRoleAssignmentUpdateParams, opts ...option.RequestOption) (res *RoleAssignmentUpdateDelete, err error) {
+func (r *UserRoleAssignmentService) Update(ctx context.Context, assignmentID int64, body UserRoleAssignmentUpdateParams, opts ...option.RequestOption) (res *RoleAssignmentUpdatedDeleted, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cloud/v1/users/assignments/%v", assignmentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
@@ -78,7 +78,7 @@ func (r *UserRoleAssignmentService) ListAutoPaging(ctx context.Context, query Us
 }
 
 // Delete an existing role assignment.
-func (r *UserRoleAssignmentService) Delete(ctx context.Context, assignmentID int64, opts ...option.RequestOption) (res *RoleAssignmentUpdateDelete, err error) {
+func (r *UserRoleAssignmentService) Delete(ctx context.Context, assignmentID int64, opts ...option.RequestOption) (res *RoleAssignmentUpdatedDeleted, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cloud/v1/users/assignments/%v", assignmentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
@@ -136,7 +136,7 @@ const (
 	RoleAssignmentRoleUser                    RoleAssignmentRole = "User"
 )
 
-type RoleAssignmentUpdateDelete struct {
+type RoleAssignmentUpdatedDeleted struct {
 	// Assignment ID
 	AssignmentID int64 `json:"assignment_id,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -148,8 +148,8 @@ type RoleAssignmentUpdateDelete struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RoleAssignmentUpdateDelete) RawJSON() string { return r.JSON.raw }
-func (r *RoleAssignmentUpdateDelete) UnmarshalJSON(data []byte) error {
+func (r RoleAssignmentUpdatedDeleted) RawJSON() string { return r.JSON.raw }
+func (r *RoleAssignmentUpdatedDeleted) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

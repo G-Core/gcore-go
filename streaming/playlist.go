@@ -111,7 +111,7 @@ func NewPlaylistService(opts ...option.RequestOption) (r PlaylistService) {
 //	start_time: "2024-07-01T11:00:00Z"
 //
 // ```
-func (r *PlaylistService) New(ctx context.Context, body PlaylistNewParams, opts ...option.RequestOption) (res *PlaylistCreate, err error) {
+func (r *PlaylistService) New(ctx context.Context, body PlaylistNewParams, opts ...option.RequestOption) (res *PlaylistCreated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/playlists"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -374,7 +374,7 @@ func (r *PlaylistParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PlaylistCreate struct {
+type PlaylistCreated struct {
 	// Playlist ID
 	ID int64 `json:"id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -387,8 +387,8 @@ type PlaylistCreate struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PlaylistCreate) RawJSON() string { return r.JSON.raw }
-func (r *PlaylistCreate) UnmarshalJSON(data []byte) error {
+func (r PlaylistCreated) RawJSON() string { return r.JSON.raw }
+func (r *PlaylistCreated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
