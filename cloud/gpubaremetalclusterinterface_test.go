@@ -27,7 +27,7 @@ func TestGPUBaremetalClusterInterfaceList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Interfaces.List(
+	_, err := client.Cloud.GPUBaremetal.Clusters.Interfaces.List(
 		context.TODO(),
 		"cluster_id",
 		cloud.GPUBaremetalClusterInterfaceListParams{
@@ -56,7 +56,7 @@ func TestGPUBaremetalClusterInterfaceAttachWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Interfaces.Attach(
+	_, err := client.Cloud.GPUBaremetal.Clusters.Interfaces.Attach(
 		context.TODO(),
 		"instance_id",
 		cloud.GPUBaremetalClusterInterfaceAttachParams{
@@ -109,7 +109,7 @@ func TestGPUBaremetalClusterInterfaceDetach(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Interfaces.Detach(
+	_, err := client.Cloud.GPUBaremetal.Clusters.Interfaces.Detach(
 		context.TODO(),
 		"instance_id",
 		cloud.GPUBaremetalClusterInterfaceDetachParams{
