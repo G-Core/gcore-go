@@ -37,7 +37,7 @@ func NewAPITokenService(opts ...option.RequestOption) (r APITokenService) {
 }
 
 // Create an API token in the current account.
-func (r *APITokenService) New(ctx context.Context, clientID int64, body APITokenNewParams, opts ...option.RequestOption) (res *APITokenCreate, err error) {
+func (r *APITokenService) New(ctx context.Context, clientID int64, body APITokenNewParams, opts ...option.RequestOption) (res *APITokenCreated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/clients/%v/tokens", clientID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -172,10 +172,10 @@ func (r *APITokenClientUserRole) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type APITokenCreate struct {
+type APITokenCreated struct {
 	// API token ID.
-	ID         int64                    `json:"id,required"`
-	ClientUser APITokenCreateClientUser `json:"client_user,required"`
+	ID         int64                     `json:"id,required"`
+	ClientUser APITokenCreatedClientUser `json:"client_user,required"`
 	// Date when the API token was issued (ISO 8086/RFC 3339 format), UTC.
 	Created string `json:"created,required"`
 	// Deletion flag. If true, then the API token was deleted.
@@ -213,17 +213,17 @@ type APITokenCreate struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r APITokenCreate) RawJSON() string { return r.JSON.raw }
-func (r *APITokenCreate) UnmarshalJSON(data []byte) error {
+func (r APITokenCreated) RawJSON() string { return r.JSON.raw }
+func (r *APITokenCreated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type APITokenCreateClientUser struct {
+type APITokenCreatedClientUser struct {
 	// Account's ID.
 	ClientID int64 `json:"client_id,required"`
 	// Deletion flag. If true, then the API token was deleted.
-	Deleted bool                         `json:"deleted,required"`
-	Role    APITokenCreateClientUserRole `json:"role,required"`
+	Deleted bool                          `json:"deleted,required"`
+	Role    APITokenCreatedClientUserRole `json:"role,required"`
 	// User's email who issued the API token.
 	UserEmail string `json:"user_email,required"`
 	// User's ID who issued the API token.
@@ -244,12 +244,12 @@ type APITokenCreateClientUser struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r APITokenCreateClientUser) RawJSON() string { return r.JSON.raw }
-func (r *APITokenCreateClientUser) UnmarshalJSON(data []byte) error {
+func (r APITokenCreatedClientUser) RawJSON() string { return r.JSON.raw }
+func (r *APITokenCreatedClientUser) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type APITokenCreateClientUserRole struct {
+type APITokenCreatedClientUserRole struct {
 	// Group's ID: Possible values are:
 	//
 	//   - 1 - Administrators* 2 - Users* 5 - Engineers* 3009 - Purge and Prefetch only
@@ -270,8 +270,8 @@ type APITokenCreateClientUserRole struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r APITokenCreateClientUserRole) RawJSON() string { return r.JSON.raw }
-func (r *APITokenCreateClientUserRole) UnmarshalJSON(data []byte) error {
+func (r APITokenCreatedClientUserRole) RawJSON() string { return r.JSON.raw }
+func (r *APITokenCreatedClientUserRole) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

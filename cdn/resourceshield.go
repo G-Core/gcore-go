@@ -45,7 +45,7 @@ func (r *ResourceShieldService) Get(ctx context.Context, resourceID int64, opts 
 }
 
 // Change origin shielding settings or disabled origin shielding.
-func (r *ResourceShieldService) Replace(ctx context.Context, resourceID int64, body ResourceShieldReplaceParams, opts ...option.RequestOption) (res *OriginShieldingReplace, err error) {
+func (r *ResourceShieldService) Replace(ctx context.Context, resourceID int64, body ResourceShieldReplaceParams, opts ...option.RequestOption) (res *OriginShieldingReplaced, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v/shielding_v2", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
@@ -96,7 +96,7 @@ func (r *OriginShieldingParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OriginShieldingReplace = any
+type OriginShieldingReplaced = any
 
 type ResourceShieldReplaceParams struct {
 	OriginShielding OriginShieldingParam

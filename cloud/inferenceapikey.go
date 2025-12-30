@@ -40,7 +40,7 @@ func NewInferenceAPIKeyService(opts ...option.RequestOption) (r InferenceAPIKeyS
 
 // This endpoint creates a new API key for everywhere inference. It returs api
 // key's actual secret only once after creation.
-func (r *InferenceAPIKeyService) New(ctx context.Context, params InferenceAPIKeyNewParams, opts ...option.RequestOption) (res *InferenceAPIKeyCreate, err error) {
+func (r *InferenceAPIKeyService) New(ctx context.Context, params InferenceAPIKeyNewParams, opts ...option.RequestOption) (res *InferenceAPIKeyCreated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -183,7 +183,7 @@ func (r *InferenceAPIKey) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type InferenceAPIKeyCreate struct {
+type InferenceAPIKeyCreated struct {
 	// Timestamp when the API Key was created.
 	CreatedAt string `json:"created_at,required"`
 	// List of inference deployment names to which this API Key has been attached.
@@ -210,8 +210,8 @@ type InferenceAPIKeyCreate struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InferenceAPIKeyCreate) RawJSON() string { return r.JSON.raw }
-func (r *InferenceAPIKeyCreate) UnmarshalJSON(data []byte) error {
+func (r InferenceAPIKeyCreated) RawJSON() string { return r.JSON.raw }
+func (r *InferenceAPIKeyCreated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
