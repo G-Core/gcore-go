@@ -30,7 +30,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/G-Core/gcore-go@v0.26.0'
+go get -u 'github.com/G-Core/gcore-go@v0.27.0'
 ```
 
 <!-- x-release-please-end -->
