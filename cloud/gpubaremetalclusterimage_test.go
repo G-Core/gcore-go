@@ -26,7 +26,7 @@ func TestGPUBaremetalClusterImageList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Images.List(context.TODO(), cloud.GPUBaremetalClusterImageListParams{
+	_, err := client.Cloud.GPUBaremetal.Clusters.Images.List(context.TODO(), cloud.GPUBaremetalClusterImageListParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(7),
 	})
@@ -51,7 +51,7 @@ func TestGPUBaremetalClusterImageDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Images.Delete(
+	_, err := client.Cloud.GPUBaremetal.Clusters.Images.Delete(
 		context.TODO(),
 		"8cab6f28-09ca-4201-b3f7-23c7893f4bd6",
 		cloud.GPUBaremetalClusterImageDeleteParams{
@@ -80,7 +80,7 @@ func TestGPUBaremetalClusterImageGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Images.Get(
+	_, err := client.Cloud.GPUBaremetal.Clusters.Images.Get(
 		context.TODO(),
 		"8cab6f28-09ca-4201-b3f7-23c7893f4bd6",
 		cloud.GPUBaremetalClusterImageGetParams{
@@ -109,7 +109,7 @@ func TestGPUBaremetalClusterImageUploadWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Images.Upload(context.TODO(), cloud.GPUBaremetalClusterImageUploadParams{
+	_, err := client.Cloud.GPUBaremetal.Clusters.Images.Upload(context.TODO(), cloud.GPUBaremetalClusterImageUploadParams{
 		ProjectID:      gcore.Int(1),
 		RegionID:       gcore.Int(7),
 		Name:           "ubuntu-23.10-x64",

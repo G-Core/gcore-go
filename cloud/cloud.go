@@ -41,19 +41,19 @@ type CloudService struct {
 	Inference      InferenceService
 	// Placement Groups allow you to specific a policy that determines whether Virtual
 	// Machines will be hosted on the same physical server or on different ones.
-	PlacementGroups      PlacementGroupService
-	Baremetal            BaremetalService
-	Registries           RegistryService
-	FileShares           FileShareService
-	BillingReservations  BillingReservationService
-	GPUBaremetalClusters GPUBaremetalClusterService
-	GPUVirtual           GPUVirtualService
-	Instances            InstanceService
-	K8S                  K8SService
-	AuditLogs            AuditLogService
-	CostReports          CostReportService
-	UsageReports         UsageReportService
-	Databases            DatabaseService
+	PlacementGroups     PlacementGroupService
+	Baremetal           BaremetalService
+	Registries          RegistryService
+	FileShares          FileShareService
+	BillingReservations BillingReservationService
+	GPUBaremetal        GPUBaremetalService
+	GPUVirtual          GPUVirtualService
+	Instances           InstanceService
+	K8S                 K8SService
+	AuditLogs           AuditLogService
+	CostReports         CostReportService
+	UsageReports        UsageReportService
+	Databases           DatabaseService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -82,7 +82,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.Registries = NewRegistryService(opts...)
 	r.FileShares = NewFileShareService(opts...)
 	r.BillingReservations = NewBillingReservationService(opts...)
-	r.GPUBaremetalClusters = NewGPUBaremetalClusterService(opts...)
+	r.GPUBaremetal = NewGPUBaremetalService(opts...)
 	r.GPUVirtual = NewGPUVirtualService(opts...)
 	r.Instances = NewInstanceService(opts...)
 	r.K8S = NewK8SService(opts...)

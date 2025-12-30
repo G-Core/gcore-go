@@ -27,7 +27,7 @@ func TestGPUBaremetalClusterServerListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Servers.List(
+	_, err := client.Cloud.GPUBaremetal.Clusters.Servers.List(
 		context.TODO(),
 		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUBaremetalClusterServerListParams{
@@ -65,7 +65,7 @@ func TestGPUBaremetalClusterServerDeleteWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Servers.Delete(
+	_, err := client.Cloud.GPUBaremetal.Clusters.Servers.Delete(
 		context.TODO(),
 		"instance_id",
 		cloud.GPUBaremetalClusterServerDeleteParams{
@@ -96,7 +96,7 @@ func TestGPUBaremetalClusterServerGetConsole(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Servers.GetConsole(
+	_, err := client.Cloud.GPUBaremetal.Clusters.Servers.GetConsole(
 		context.TODO(),
 		"instance_id",
 		cloud.GPUBaremetalClusterServerGetConsoleParams{
@@ -125,7 +125,7 @@ func TestGPUBaremetalClusterServerPowercycle(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Servers.Powercycle(
+	_, err := client.Cloud.GPUBaremetal.Clusters.Servers.Powercycle(
 		context.TODO(),
 		"instance_id",
 		cloud.GPUBaremetalClusterServerPowercycleParams{
@@ -154,7 +154,7 @@ func TestGPUBaremetalClusterServerReboot(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Servers.Reboot(
+	_, err := client.Cloud.GPUBaremetal.Clusters.Servers.Reboot(
 		context.TODO(),
 		"instance_id",
 		cloud.GPUBaremetalClusterServerRebootParams{
