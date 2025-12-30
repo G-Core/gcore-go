@@ -26,7 +26,7 @@ func TestGPUBaremetalClusterFlavorListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.GPUBaremetalClusters.Flavors.List(context.TODO(), cloud.GPUBaremetalClusterFlavorListParams{
+	_, err := client.Cloud.GPUBaremetal.Clusters.Flavors.List(context.TODO(), cloud.GPUBaremetalClusterFlavorListParams{
 		ProjectID:     gcore.Int(1),
 		RegionID:      gcore.Int(7),
 		HideDisabled:  gcore.Bool(true),
