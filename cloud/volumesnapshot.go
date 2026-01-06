@@ -25,6 +25,7 @@ import (
 // the [NewVolumeSnapshotService] method instead.
 type VolumeSnapshotService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewVolumeSnapshotService generates a new service that applies the given options
@@ -33,6 +34,7 @@ type VolumeSnapshotService struct {
 func NewVolumeSnapshotService(opts ...option.RequestOption) (r VolumeSnapshotService) {
 	r = VolumeSnapshotService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -56,6 +58,41 @@ func (r *VolumeSnapshotService) New(ctx context.Context, params VolumeSnapshotNe
 	path := fmt.Sprintf("cloud/v1/snapshots/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a new snapshot from a volume and polls for completion
+func (r *VolumeSnapshotService) NewAndPoll(ctx context.Context, params VolumeSnapshotNewParams, opts ...option.RequestOption) (v *Snapshot, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams VolumeSnapshotGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Snapshots) != 1 {
+		return nil, errors.New("expected exactly one snapshot to be created in a task")
+	}
+	resourceID := task.CreatedResources.Snapshots[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
 // Rename snapshot or update tags.
@@ -108,6 +145,23 @@ func (r *VolumeSnapshotService) Delete(ctx context.Context, snapshotID string, b
 	path := fmt.Sprintf("cloud/v1/snapshots/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, snapshotID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
+}
+
+// DeleteAndPoll deletes a specific snapshot and polls for completion of the first task. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
+func (r *VolumeSnapshotService) DeleteAndPoll(ctx context.Context, snapshotID string, body VolumeSnapshotDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, snapshotID, body, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }
 
 // Get detailed information about a specific snapshot.
