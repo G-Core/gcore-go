@@ -246,11 +246,12 @@ type ZoneListResponseZone struct {
 	// describe dnssec status true means dnssec is enabled for the zone false means
 	// dnssec is disabled for the zone
 	DnssecEnabled bool `json:"dnssec_enabled"`
+	Enabled       bool `json:"enabled"`
 	// number of seconds after which secondary name servers should stop answering
 	// request for this zone
 	Expiry int64 `json:"expiry"`
 	// arbitrarily data of zone in json format
-	Meta any `json:"meta"`
+	Meta map[string]any `json:"meta"`
 	// name of DNS zone
 	Name string `json:"name"`
 	// Time To Live of cache
@@ -277,6 +278,7 @@ type ZoneListResponseZone struct {
 		ClientID      respjson.Field
 		Contact       respjson.Field
 		DnssecEnabled respjson.Field
+		Enabled       respjson.Field
 		Expiry        respjson.Field
 		Meta          respjson.Field
 		Name          respjson.Field
@@ -414,52 +416,34 @@ func (r *ZoneExportResponse) UnmarshalJSON(data []byte) error {
 
 // Complete zone info with all records included
 type ZoneGetResponse struct {
-	// OutputZone
-	Zone ZoneGetResponseZone `json:"Zone"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Zone        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ZoneGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *ZoneGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// OutputZone
-type ZoneGetResponseZone struct {
 	// ID of zone. This field usually is omitted in response and available only in case
 	// of getting deleted zones by admin.
-	ID       int64 `json:"id"`
-	ClientID int64 `json:"client_id"`
+	ID int64 `json:"id"`
 	// email address of the administrator responsible for this zone
 	Contact string `json:"contact"`
 	// describe dnssec status true means dnssec is enabled for the zone false means
 	// dnssec is disabled for the zone
 	DnssecEnabled bool `json:"dnssec_enabled"`
+	Enabled       bool `json:"enabled"`
 	// number of seconds after which secondary name servers should stop answering
 	// request for this zone
 	Expiry int64 `json:"expiry"`
 	// arbitrarily data of zone in json format
-	Meta any `json:"meta"`
+	Meta map[string]any `json:"meta"`
 	// name of DNS zone
 	Name string `json:"name"`
 	// Time To Live of cache
 	NxTtl int64 `json:"nx_ttl"`
 	// primary master name server for zone
-	PrimaryServer string                      `json:"primary_server"`
-	Records       []ZoneGetResponseZoneRecord `json:"records"`
+	PrimaryServer string                  `json:"primary_server"`
+	Records       []ZoneGetResponseRecord `json:"records"`
 	// number of seconds after which secondary name servers should query the master for
 	// the SOA record, to detect zone changes.
 	Refresh int64 `json:"refresh"`
 	// number of seconds after which secondary name servers should retry to request the
 	// serial number
-	Retry        int64                           `json:"retry"`
-	RrsetsAmount ZoneGetResponseZoneRrsetsAmount `json:"rrsets_amount"`
+	Retry        int64                       `json:"retry"`
+	RrsetsAmount ZoneGetResponseRrsetsAmount `json:"rrsets_amount"`
 	// Serial number for this zone or Timestamp of zone modification moment. If a
 	// secondary name server slaved to this one observes an increase in this number,
 	// the slave will assume that the zone has been updated and initiate a zone
@@ -469,9 +453,9 @@ type ZoneGetResponseZone struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
-		ClientID      respjson.Field
 		Contact       respjson.Field
 		DnssecEnabled respjson.Field
+		Enabled       respjson.Field
 		Expiry        respjson.Field
 		Meta          respjson.Field
 		Name          respjson.Field
@@ -489,13 +473,13 @@ type ZoneGetResponseZone struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ZoneGetResponseZone) RawJSON() string { return r.JSON.raw }
-func (r *ZoneGetResponseZone) UnmarshalJSON(data []byte) error {
+func (r ZoneGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *ZoneGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Record - readonly short version of rrset
-type ZoneGetResponseZoneRecord struct {
+type ZoneGetResponseRecord struct {
 	Name         string   `json:"name"`
 	ShortAnswers []string `json:"short_answers"`
 	Ttl          int64    `json:"ttl"`
@@ -512,14 +496,14 @@ type ZoneGetResponseZoneRecord struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ZoneGetResponseZoneRecord) RawJSON() string { return r.JSON.raw }
-func (r *ZoneGetResponseZoneRecord) UnmarshalJSON(data []byte) error {
+func (r ZoneGetResponseRecord) RawJSON() string { return r.JSON.raw }
+func (r *ZoneGetResponseRecord) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ZoneGetResponseZoneRrsetsAmount struct {
+type ZoneGetResponseRrsetsAmount struct {
 	// Amount of dynamic RRsets in zone
-	Dynamic ZoneGetResponseZoneRrsetsAmountDynamic `json:"dynamic"`
+	Dynamic ZoneGetResponseRrsetsAmountDynamic `json:"dynamic"`
 	// Amount of static RRsets in zone
 	Static int64 `json:"static"`
 	// Total amount of RRsets in zone
@@ -535,13 +519,13 @@ type ZoneGetResponseZoneRrsetsAmount struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ZoneGetResponseZoneRrsetsAmount) RawJSON() string { return r.JSON.raw }
-func (r *ZoneGetResponseZoneRrsetsAmount) UnmarshalJSON(data []byte) error {
+func (r ZoneGetResponseRrsetsAmount) RawJSON() string { return r.JSON.raw }
+func (r *ZoneGetResponseRrsetsAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Amount of dynamic RRsets in zone
-type ZoneGetResponseZoneRrsetsAmountDynamic struct {
+type ZoneGetResponseRrsetsAmountDynamic struct {
 	// Amount of RRsets with enabled healthchecks
 	Healthcheck int64 `json:"healthcheck"`
 	// Total amount of dynamic RRsets in zone
@@ -556,8 +540,8 @@ type ZoneGetResponseZoneRrsetsAmountDynamic struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ZoneGetResponseZoneRrsetsAmountDynamic) RawJSON() string { return r.JSON.raw }
-func (r *ZoneGetResponseZoneRrsetsAmountDynamic) UnmarshalJSON(data []byte) error {
+func (r ZoneGetResponseRrsetsAmountDynamic) RawJSON() string { return r.JSON.raw }
+func (r *ZoneGetResponseRrsetsAmountDynamic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
