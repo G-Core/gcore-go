@@ -88,6 +88,7 @@ TEST_PATHS=(
 	cloud/databasepostgresclusterusercredential_test.go
 	cloud/databasepostgresconfiguration_test.go
 	cloud/databasepostgrescustomconfiguration_test.go
+	cloud/volumesnapshot_test.go
 	waap/waap_test.go
 	waap/statistic_test.go
 	waap/domain_test.go
