@@ -54,6 +54,7 @@ type CloudService struct {
 	CostReports         CostReportService
 	UsageReports        UsageReportService
 	Databases           DatabaseService
+	VolumeSnapshots     VolumeSnapshotService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -90,6 +91,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.CostReports = NewCostReportService(opts...)
 	r.UsageReports = NewUsageReportService(opts...)
 	r.Databases = NewDatabaseService(opts...)
+	r.VolumeSnapshots = NewVolumeSnapshotService(opts...)
 	return
 }
 
