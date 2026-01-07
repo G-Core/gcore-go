@@ -109,6 +109,17 @@ type LogsUploaderPolicy struct {
 	DateFormat string `json:"date_format"`
 	// Description of the policy.
 	Description string `json:"description"`
+	// When set to true, the service sanitizes string values by escaping characters
+	// that may be unsafe for transport, logging, or downstream processing.
+	//
+	// The following categories of characters are escaped:
+	//
+	// - Control and non-printable characters
+	// - Quotation marks and escape characters
+	// - Characters outside the standard ASCII range
+	//
+	// The resulting output contains only printable ASCII characters.
+	EscapeSpecialCharacters bool `json:"escape_special_characters"`
 	// Field delimiter for logs.
 	FieldDelimiter string `json:"field_delimiter"`
 	// Field separator for logs.
@@ -118,7 +129,15 @@ type LogsUploaderPolicy struct {
 	// Template for log file name.
 	FileNameTemplate string `json:"file_name_template"`
 	// Format type for logs.
-	FormatType string `json:"format_type"`
+	//
+	// Possible values:
+	//
+	//   - **""** - empty, it means it will apply the format configurations from the
+	//     policy.
+	//   - **"json"** - output the logs as json lines.
+	//
+	// Any of "json", "".
+	FormatType LogsUploaderPolicyFormatType `json:"format_type"`
 	// Include empty logs in the upload.
 	IncludeEmptyLogs bool `json:"include_empty_logs"`
 	// Include logs from origin shielding in the upload.
@@ -143,28 +162,29 @@ type LogsUploaderPolicy struct {
 	Updated time.Time `json:"updated" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                     respjson.Field
-		ClientID               respjson.Field
-		Created                respjson.Field
-		DateFormat             respjson.Field
-		Description            respjson.Field
-		FieldDelimiter         respjson.Field
-		FieldSeparator         respjson.Field
-		Fields                 respjson.Field
-		FileNameTemplate       respjson.Field
-		FormatType             respjson.Field
-		IncludeEmptyLogs       respjson.Field
-		IncludeShieldLogs      respjson.Field
-		Name                   respjson.Field
-		RelatedUploaderConfigs respjson.Field
-		RetryIntervalMinutes   respjson.Field
-		RotateIntervalMinutes  respjson.Field
-		RotateThresholdLines   respjson.Field
-		RotateThresholdMB      respjson.Field
-		Tags                   respjson.Field
-		Updated                respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
+		ID                      respjson.Field
+		ClientID                respjson.Field
+		Created                 respjson.Field
+		DateFormat              respjson.Field
+		Description             respjson.Field
+		EscapeSpecialCharacters respjson.Field
+		FieldDelimiter          respjson.Field
+		FieldSeparator          respjson.Field
+		Fields                  respjson.Field
+		FileNameTemplate        respjson.Field
+		FormatType              respjson.Field
+		IncludeEmptyLogs        respjson.Field
+		IncludeShieldLogs       respjson.Field
+		Name                    respjson.Field
+		RelatedUploaderConfigs  respjson.Field
+		RetryIntervalMinutes    respjson.Field
+		RotateIntervalMinutes   respjson.Field
+		RotateThresholdLines    respjson.Field
+		RotateThresholdMB       respjson.Field
+		Tags                    respjson.Field
+		Updated                 respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 
@@ -173,6 +193,20 @@ func (r LogsUploaderPolicy) RawJSON() string { return r.JSON.raw }
 func (r *LogsUploaderPolicy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Format type for logs.
+//
+// Possible values:
+//
+//   - **""** - empty, it means it will apply the format configurations from the
+//     policy.
+//   - **"json"** - output the logs as json lines.
+type LogsUploaderPolicyFormatType string
+
+const (
+	LogsUploaderPolicyFormatTypeJson  LogsUploaderPolicyFormatType = "json"
+	LogsUploaderPolicyFormatTypeEmpty LogsUploaderPolicyFormatType = ""
+)
 
 type LogsUploaderPolicyList []LogsUploaderPolicy
 
@@ -183,14 +217,23 @@ type LogsUploaderPolicyNewParams struct {
 	DateFormat param.Opt[string] `json:"date_format,omitzero"`
 	// Description of the policy.
 	Description param.Opt[string] `json:"description,omitzero"`
+	// When set to true, the service sanitizes string values by escaping characters
+	// that may be unsafe for transport, logging, or downstream processing.
+	//
+	// The following categories of characters are escaped:
+	//
+	// - Control and non-printable characters
+	// - Quotation marks and escape characters
+	// - Characters outside the standard ASCII range
+	//
+	// The resulting output contains only printable ASCII characters.
+	EscapeSpecialCharacters param.Opt[bool] `json:"escape_special_characters,omitzero"`
 	// Field delimiter for logs.
 	FieldDelimiter param.Opt[string] `json:"field_delimiter,omitzero"`
 	// Field separator for logs.
 	FieldSeparator param.Opt[string] `json:"field_separator,omitzero"`
 	// Template for log file name.
 	FileNameTemplate param.Opt[string] `json:"file_name_template,omitzero"`
-	// Format type for logs.
-	FormatType param.Opt[string] `json:"format_type,omitzero"`
 	// Include empty logs in the upload.
 	IncludeEmptyLogs param.Opt[bool] `json:"include_empty_logs,omitzero"`
 	// Include logs from origin shielding in the upload.
@@ -205,6 +248,16 @@ type LogsUploaderPolicyNewParams struct {
 	RotateThresholdLines param.Opt[int64] `json:"rotate_threshold_lines,omitzero"`
 	// List of fields to include in logs.
 	Fields []string `json:"fields,omitzero"`
+	// Format type for logs.
+	//
+	// Possible values:
+	//
+	//   - **""** - empty, it means it will apply the format configurations from the
+	//     policy.
+	//   - **"json"** - output the logs as json lines.
+	//
+	// Any of "json", "".
+	FormatType LogsUploaderPolicyNewParamsFormatType `json:"format_type,omitzero"`
 	// Tags allow for dynamic decoration of logs by adding predefined fields to the log
 	// format. These tags serve as customizable key-value pairs that can be included in
 	// log entries to enhance context and readability.
@@ -220,6 +273,20 @@ func (r *LogsUploaderPolicyNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Format type for logs.
+//
+// Possible values:
+//
+//   - **""** - empty, it means it will apply the format configurations from the
+//     policy.
+//   - **"json"** - output the logs as json lines.
+type LogsUploaderPolicyNewParamsFormatType string
+
+const (
+	LogsUploaderPolicyNewParamsFormatTypeJson  LogsUploaderPolicyNewParamsFormatType = "json"
+	LogsUploaderPolicyNewParamsFormatTypeEmpty LogsUploaderPolicyNewParamsFormatType = ""
+)
+
 type LogsUploaderPolicyUpdateParams struct {
 	// Threshold in MB to rotate logs.
 	RotateThresholdMB param.Opt[int64] `json:"rotate_threshold_mb,omitzero"`
@@ -227,14 +294,23 @@ type LogsUploaderPolicyUpdateParams struct {
 	DateFormat param.Opt[string] `json:"date_format,omitzero"`
 	// Description of the policy.
 	Description param.Opt[string] `json:"description,omitzero"`
+	// When set to true, the service sanitizes string values by escaping characters
+	// that may be unsafe for transport, logging, or downstream processing.
+	//
+	// The following categories of characters are escaped:
+	//
+	// - Control and non-printable characters
+	// - Quotation marks and escape characters
+	// - Characters outside the standard ASCII range
+	//
+	// The resulting output contains only printable ASCII characters.
+	EscapeSpecialCharacters param.Opt[bool] `json:"escape_special_characters,omitzero"`
 	// Field delimiter for logs.
 	FieldDelimiter param.Opt[string] `json:"field_delimiter,omitzero"`
 	// Field separator for logs.
 	FieldSeparator param.Opt[string] `json:"field_separator,omitzero"`
 	// Template for log file name.
 	FileNameTemplate param.Opt[string] `json:"file_name_template,omitzero"`
-	// Format type for logs.
-	FormatType param.Opt[string] `json:"format_type,omitzero"`
 	// Include empty logs in the upload.
 	IncludeEmptyLogs param.Opt[bool] `json:"include_empty_logs,omitzero"`
 	// Include logs from origin shielding in the upload.
@@ -249,6 +325,16 @@ type LogsUploaderPolicyUpdateParams struct {
 	RotateThresholdLines param.Opt[int64] `json:"rotate_threshold_lines,omitzero"`
 	// List of fields to include in logs.
 	Fields []string `json:"fields,omitzero"`
+	// Format type for logs.
+	//
+	// Possible values:
+	//
+	//   - **""** - empty, it means it will apply the format configurations from the
+	//     policy.
+	//   - **"json"** - output the logs as json lines.
+	//
+	// Any of "json", "".
+	FormatType LogsUploaderPolicyUpdateParamsFormatType `json:"format_type,omitzero"`
 	// Tags allow for dynamic decoration of logs by adding predefined fields to the log
 	// format. These tags serve as customizable key-value pairs that can be included in
 	// log entries to enhance context and readability.
@@ -263,6 +349,20 @@ func (r LogsUploaderPolicyUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *LogsUploaderPolicyUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Format type for logs.
+//
+// Possible values:
+//
+//   - **""** - empty, it means it will apply the format configurations from the
+//     policy.
+//   - **"json"** - output the logs as json lines.
+type LogsUploaderPolicyUpdateParamsFormatType string
+
+const (
+	LogsUploaderPolicyUpdateParamsFormatTypeJson  LogsUploaderPolicyUpdateParamsFormatType = "json"
+	LogsUploaderPolicyUpdateParamsFormatTypeEmpty LogsUploaderPolicyUpdateParamsFormatType = ""
+)
 
 type LogsUploaderPolicyListParams struct {
 	// Search by policy name or id.
@@ -288,14 +388,23 @@ type LogsUploaderPolicyReplaceParams struct {
 	DateFormat param.Opt[string] `json:"date_format,omitzero"`
 	// Description of the policy.
 	Description param.Opt[string] `json:"description,omitzero"`
+	// When set to true, the service sanitizes string values by escaping characters
+	// that may be unsafe for transport, logging, or downstream processing.
+	//
+	// The following categories of characters are escaped:
+	//
+	// - Control and non-printable characters
+	// - Quotation marks and escape characters
+	// - Characters outside the standard ASCII range
+	//
+	// The resulting output contains only printable ASCII characters.
+	EscapeSpecialCharacters param.Opt[bool] `json:"escape_special_characters,omitzero"`
 	// Field delimiter for logs.
 	FieldDelimiter param.Opt[string] `json:"field_delimiter,omitzero"`
 	// Field separator for logs.
 	FieldSeparator param.Opt[string] `json:"field_separator,omitzero"`
 	// Template for log file name.
 	FileNameTemplate param.Opt[string] `json:"file_name_template,omitzero"`
-	// Format type for logs.
-	FormatType param.Opt[string] `json:"format_type,omitzero"`
 	// Include empty logs in the upload.
 	IncludeEmptyLogs param.Opt[bool] `json:"include_empty_logs,omitzero"`
 	// Include logs from origin shielding in the upload.
@@ -310,6 +419,16 @@ type LogsUploaderPolicyReplaceParams struct {
 	RotateThresholdLines param.Opt[int64] `json:"rotate_threshold_lines,omitzero"`
 	// List of fields to include in logs.
 	Fields []string `json:"fields,omitzero"`
+	// Format type for logs.
+	//
+	// Possible values:
+	//
+	//   - **""** - empty, it means it will apply the format configurations from the
+	//     policy.
+	//   - **"json"** - output the logs as json lines.
+	//
+	// Any of "json", "".
+	FormatType LogsUploaderPolicyReplaceParamsFormatType `json:"format_type,omitzero"`
 	// Tags allow for dynamic decoration of logs by adding predefined fields to the log
 	// format. These tags serve as customizable key-value pairs that can be included in
 	// log entries to enhance context and readability.
@@ -324,3 +443,17 @@ func (r LogsUploaderPolicyReplaceParams) MarshalJSON() (data []byte, err error) 
 func (r *LogsUploaderPolicyReplaceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Format type for logs.
+//
+// Possible values:
+//
+//   - **""** - empty, it means it will apply the format configurations from the
+//     policy.
+//   - **"json"** - output the logs as json lines.
+type LogsUploaderPolicyReplaceParamsFormatType string
+
+const (
+	LogsUploaderPolicyReplaceParamsFormatTypeJson  LogsUploaderPolicyReplaceParamsFormatType = "json"
+	LogsUploaderPolicyReplaceParamsFormatTypeEmpty LogsUploaderPolicyReplaceParamsFormatType = ""
+)
