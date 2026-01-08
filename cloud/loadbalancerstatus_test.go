@@ -27,8 +27,8 @@ func TestLoadBalancerStatusList(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.LoadBalancers.Statuses.List(context.TODO(), cloud.LoadBalancerStatusListParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(7),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -53,10 +53,10 @@ func TestLoadBalancerStatusGet(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Statuses.Get(
 		context.TODO(),
-		"load_balancer_id",
+		"ac307687-31a4-4a11-a949-6bea1b2878f5",
 		cloud.LoadBalancerStatusGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 		},
 	)
 	if err != nil {

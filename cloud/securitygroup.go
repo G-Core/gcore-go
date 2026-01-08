@@ -287,53 +287,53 @@ type SecurityGroupRule struct {
 	ID string `json:"id,required" format:"uuid4"`
 	// Datetime when the rule was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Rule description
+	Description string `json:"description,required"`
 	// Ingress or egress, which is the direction in which the security group rule is
 	// applied
 	//
 	// Any of "egress", "ingress".
 	Direction SecurityGroupRuleDirection `json:"direction,required"`
+	// Must be IPv4 or IPv6, and addresses represented in CIDR must match the ingress
+	// or egress rules.
+	//
+	// Any of "IPv4", "IPv6".
+	Ethertype SecurityGroupRuleEthertype `json:"ethertype,required"`
+	// The maximum port number in the range that is matched by the security group rule
+	PortRangeMax int64 `json:"port_range_max,required"`
+	// The minimum port number in the range that is matched by the security group rule
+	PortRangeMin int64 `json:"port_range_min,required"`
+	// Protocol
+	//
+	// Any of "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap",
+	// "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts",
+	// "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp".
+	Protocol SecurityGroupRuleProtocol `json:"protocol,required"`
+	// The remote group UUID to associate with this security group rule
+	RemoteGroupID string `json:"remote_group_id,required" format:"uuid4"`
+	// The remote IP prefix that is matched by this security group rule
+	RemoteIPPrefix string `json:"remote_ip_prefix,required" format:"ipvanynetwork"`
 	// The revision number of the resource
 	RevisionNumber int64 `json:"revision_number,required"`
 	// The security group ID to associate with this security group rule
 	SecurityGroupID string `json:"security_group_id,required" format:"uuid4"`
 	// Datetime when the rule was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// Rule description
-	Description string `json:"description,nullable"`
-	// Must be IPv4 or IPv6, and addresses represented in CIDR must match the ingress
-	// or egress rules.
-	//
-	// Any of "IPv4", "IPv6".
-	Ethertype SecurityGroupRuleEthertype `json:"ethertype,nullable"`
-	// The maximum port number in the range that is matched by the security group rule
-	PortRangeMax int64 `json:"port_range_max,nullable"`
-	// The minimum port number in the range that is matched by the security group rule
-	PortRangeMin int64 `json:"port_range_min,nullable"`
-	// Protocol
-	//
-	// Any of "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap",
-	// "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts",
-	// "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp".
-	Protocol SecurityGroupRuleProtocol `json:"protocol,nullable"`
-	// The remote group UUID to associate with this security group rule
-	RemoteGroupID string `json:"remote_group_id,nullable" format:"uuid4"`
-	// The remote IP prefix that is matched by this security group rule
-	RemoteIPPrefix string `json:"remote_ip_prefix,nullable" format:"ipvanynetwork"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
 		CreatedAt       respjson.Field
-		Direction       respjson.Field
-		RevisionNumber  respjson.Field
-		SecurityGroupID respjson.Field
-		UpdatedAt       respjson.Field
 		Description     respjson.Field
+		Direction       respjson.Field
 		Ethertype       respjson.Field
 		PortRangeMax    respjson.Field
 		PortRangeMin    respjson.Field
 		Protocol        respjson.Field
 		RemoteGroupID   respjson.Field
 		RemoteIPPrefix  respjson.Field
+		RevisionNumber  respjson.Field
+		SecurityGroupID respjson.Field
+		UpdatedAt       respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -441,7 +441,12 @@ func (r *SecurityGroupNewParamsSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property Direction is required.
 type SecurityGroupNewParamsSecurityGroupSecurityGroupRule struct {
+	// Ingress or egress, which is the direction in which the security group is applied
+	//
+	// Any of "egress", "ingress".
+	Direction string `json:"direction,omitzero,required"`
 	// The maximum port number in the range that is matched by the security group rule
 	PortRangeMax param.Opt[int64] `json:"port_range_max,omitzero"`
 	// The minimum port number in the range that is matched by the security group rule
@@ -452,10 +457,6 @@ type SecurityGroupNewParamsSecurityGroupSecurityGroupRule struct {
 	Description param.Opt[string] `json:"description,omitzero"`
 	// The remote group UUID to associate with this security group
 	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
-	// Ingress or egress, which is the direction in which the security group is applied
-	//
-	// Any of "egress", "ingress".
-	Direction string `json:"direction,omitzero"`
 	// Ether type
 	//
 	// Any of "IPv4", "IPv6".
@@ -490,8 +491,10 @@ func init() {
 }
 
 type SecurityGroupUpdateParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Name
 	Name param.Opt[string] `json:"name,omitzero"`
 	// List of rules to create or delete
@@ -620,14 +623,18 @@ func (r SecurityGroupListParams) URLQuery() (v url.Values, err error) {
 }
 
 type SecurityGroupDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type SecurityGroupCopyParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Name.
 	Name string `json:"name,required"`
 	paramObj
@@ -642,13 +649,17 @@ func (r *SecurityGroupCopyParams) UnmarshalJSON(data []byte) error {
 }
 
 type SecurityGroupGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type SecurityGroupRevertToDefaultParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }

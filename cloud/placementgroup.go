@@ -61,7 +61,7 @@ func (r *PlacementGroupService) New(ctx context.Context, params PlacementGroupNe
 }
 
 // List placement groups
-func (r *PlacementGroupService) List(ctx context.Context, query PlacementGroupListParams, opts ...option.RequestOption) (res *PlacementGroupList, err error) {
+func (r *PlacementGroupService) List(ctx context.Context, query PlacementGroupListParams, opts ...option.RequestOption) (res *PlacementGroupListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -190,7 +190,7 @@ func (r *PlacementGroupInstance) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PlacementGroupList struct {
+type PlacementGroupListResponse struct {
 	// Number of objects
 	Count int64 `json:"count,required"`
 	// Objects
@@ -205,8 +205,8 @@ type PlacementGroupList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PlacementGroupList) RawJSON() string { return r.JSON.raw }
-func (r *PlacementGroupList) UnmarshalJSON(data []byte) error {
+func (r PlacementGroupListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PlacementGroupListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

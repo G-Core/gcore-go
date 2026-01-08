@@ -91,7 +91,7 @@ type Region struct {
 	AvailableVolumeTypes []string `json:"available_volume_types,required"`
 	// Coordinates of the region
 	Coordinates RegionCoordinates `json:"coordinates,required"`
-	// Country
+	// Two-letter country code, ISO 3166-1 alpha-2
 	Country string `json:"country,required"`
 	// Region creation date and time
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`

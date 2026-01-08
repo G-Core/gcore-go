@@ -94,7 +94,7 @@ func (r *K8SClusterPoolService) Update(ctx context.Context, poolName string, par
 }
 
 // List k8s cluster pools
-func (r *K8SClusterPoolService) List(ctx context.Context, clusterName string, query K8SClusterPoolListParams, opts ...option.RequestOption) (res *K8SClusterPoolList, err error) {
+func (r *K8SClusterPoolService) List(ctx context.Context, clusterName string, query K8SClusterPoolListParams, opts ...option.RequestOption) (res *K8SClusterPoolListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -305,26 +305,6 @@ func (r *K8SClusterPool) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8SClusterPoolList struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []K8SClusterPool `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r K8SClusterPoolList) RawJSON() string { return r.JSON.raw }
-func (r *K8SClusterPoolList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Response schema for K8s cluster quota check.
 //
 // Returns quota fields that are exceeded. Fields are only included when regional
@@ -529,6 +509,26 @@ type K8SClusterPoolQuota struct {
 // Returns the unmodified JSON received from the API
 func (r K8SClusterPoolQuota) RawJSON() string { return r.JSON.raw }
 func (r *K8SClusterPoolQuota) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type K8SClusterPoolListResponse struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []K8SClusterPool `json:"results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r K8SClusterPoolListResponse) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterPoolListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

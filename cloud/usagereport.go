@@ -115,13 +115,13 @@ type UsageReportResourceUnion struct {
 	ScheduleID       string `json:"schedule_id"`
 	SourceVolumeUuid string `json:"source_volume_uuid"`
 	// This field is from variant [UsageReportResourceEgressTraffic].
+	InstanceName string `json:"instance_name"`
+	// This field is from variant [UsageReportResourceEgressTraffic].
 	InstanceType string `json:"instance_type"`
 	PortID       string `json:"port_id"`
 	SizeUnit     string `json:"size_unit"`
 	// This field is from variant [UsageReportResourceEgressTraffic].
-	VmID string `json:"vm_id"`
-	// This field is from variant [UsageReportResourceEgressTraffic].
-	InstanceName string `json:"instance_name"`
+	VmID         string `json:"vm_id"`
 	AttachedToVm string `json:"attached_to_vm"`
 	IPAddress    string `json:"ip_address"`
 	// This field is from variant [UsageReportResourceExternalIP].
@@ -148,11 +148,11 @@ type UsageReportResourceUnion struct {
 		LastSize          respjson.Field
 		ScheduleID        respjson.Field
 		SourceVolumeUuid  respjson.Field
+		InstanceName      respjson.Field
 		InstanceType      respjson.Field
 		PortID            respjson.Field
 		SizeUnit          respjson.Field
 		VmID              respjson.Field
-		InstanceName      respjson.Field
 		AttachedToVm      respjson.Field
 		IPAddress         respjson.Field
 		NetworkID         respjson.Field
@@ -745,6 +745,8 @@ type UsageReportResourceEgressTraffic struct {
 	BillingValueUnit constant.Bytes `json:"billing_value_unit,required"`
 	// First time the resource was seen in the given period
 	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	// Name of the instance
+	InstanceName string `json:"instance_name,required"`
 	// Type of the instance
 	//
 	// Any of "baremetal", "vm".
@@ -766,14 +768,13 @@ type UsageReportResourceEgressTraffic struct {
 	Type constant.EgressTraffic `json:"type,required"`
 	// ID of the bare metal server the traffic is associated with
 	VmID string `json:"vm_id,required" format:"uuid"`
-	// Name of the instance
-	InstanceName string `json:"instance_name,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
 		BillingValue      respjson.Field
 		BillingValueUnit  respjson.Field
 		FirstSeen         respjson.Field
+		InstanceName      respjson.Field
 		InstanceType      respjson.Field
 		LastSeen          respjson.Field
 		PortID            respjson.Field
@@ -784,7 +785,6 @@ type UsageReportResourceEgressTraffic struct {
 		Tags              respjson.Field
 		Type              respjson.Field
 		VmID              respjson.Field
-		InstanceName      respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
@@ -1445,6 +1445,8 @@ func (r *UsageReportResourceSnapshot) UnmarshalJSON(data []byte) error {
 // These properties are common for all individual volumes in all cost and usage
 // reports results (but not in totals)
 type UsageReportResourceVolume struct {
+	// ID of the VM the volume is attached to
+	AttachedToVm string `json:"attached_to_vm,required" format:"uuid"`
 	// Name of the billing metric
 	BillingMetricName string `json:"billing_metric_name,required"`
 	// Value of the billing metric
@@ -1474,10 +1476,9 @@ type UsageReportResourceVolume struct {
 	Uuid string `json:"uuid,required" format:"uuid"`
 	// Type of the volume
 	VolumeType string `json:"volume_type,required"`
-	// ID of the VM the volume is attached to
-	AttachedToVm string `json:"attached_to_vm,nullable" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AttachedToVm      respjson.Field
 		BillingMetricName respjson.Field
 		BillingValue      respjson.Field
 		BillingValueUnit  respjson.Field
@@ -1493,7 +1494,6 @@ type UsageReportResourceVolume struct {
 		Type              respjson.Field
 		Uuid              respjson.Field
 		VolumeType        respjson.Field
-		AttachedToVm      respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`

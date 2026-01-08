@@ -28,8 +28,8 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.LoadBalancers.New(context.TODO(), cloud.LoadBalancerNewParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(7),
 		Flavor:    gcore.String("lb1-1-2"),
 		FloatingIP: cloud.LoadBalancerNewParamsFloatingIPUnion{
 			OfExisting: &cloud.LoadBalancerNewParamsFloatingIPExisting{
@@ -59,8 +59,6 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 					MaxRetriesDown: gcore.Int(3),
 					URLPath:        gcore.String("/"),
 				},
-				ListenerID:     gcore.String("listener_id"),
-				LoadBalancerID: gcore.String("bbb35f84-35cc-4b2f-84c2-a6a29bba68aa"),
 				Members: []cloud.LoadBalancerNewParamsListenerPoolMember{{
 					Address:        "192.168.1.101",
 					ProtocolPort:   8000,
@@ -145,10 +143,10 @@ func TestLoadBalancerUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Update(
 		context.TODO(),
-		"load_balancer_id",
+		"ac307687-31a4-4a11-a949-6bea1b2878f5",
 		cloud.LoadBalancerUpdateParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 			Logging: cloud.LoadBalancerUpdateParamsLogging{
 				DestinationRegionID: gcore.Int(1),
 				Enabled:             gcore.Bool(true),
@@ -186,16 +184,16 @@ func TestLoadBalancerListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.LoadBalancers.List(context.TODO(), cloud.LoadBalancerListParams{
-		ProjectID:        gcore.Int(0),
-		RegionID:         gcore.Int(0),
+		ProjectID:        gcore.Int(1),
+		RegionID:         gcore.Int(7),
 		AssignedFloating: gcore.Bool(true),
-		Limit:            gcore.Int(0),
+		Limit:            gcore.Int(1000),
 		LoggingEnabled:   gcore.Bool(true),
-		Name:             gcore.String("name"),
+		Name:             gcore.String("lb_name"),
 		Offset:           gcore.Int(0),
-		OrderBy:          gcore.String("order_by"),
+		OrderBy:          cloud.LoadBalancerListParamsOrderByNameAsc,
 		ShowStats:        gcore.Bool(true),
-		TagKey:           []string{"string"},
+		TagKey:           []string{"key1", "key2"},
 		TagKeyValue:      gcore.String("tag_key_value"),
 		WithDDOS:         gcore.Bool(true),
 	})
@@ -222,10 +220,10 @@ func TestLoadBalancerDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Delete(
 		context.TODO(),
-		"load_balancer_id",
+		"ac307687-31a4-4a11-a949-6bea1b2878f5",
 		cloud.LoadBalancerDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 		},
 	)
 	if err != nil {
@@ -251,10 +249,10 @@ func TestLoadBalancerFailoverWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Failover(
 		context.TODO(),
-		"load_balancer_id",
+		"ac307687-31a4-4a11-a949-6bea1b2878f5",
 		cloud.LoadBalancerFailoverParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 			Force:     gcore.Bool(true),
 		},
 	)
@@ -281,10 +279,10 @@ func TestLoadBalancerGetWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Get(
 		context.TODO(),
-		"load_balancer_id",
+		"ac307687-31a4-4a11-a949-6bea1b2878f5",
 		cloud.LoadBalancerGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 			ShowStats: gcore.Bool(true),
 			WithDDOS:  gcore.Bool(true),
 		},
@@ -312,10 +310,10 @@ func TestLoadBalancerResize(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Resize(
 		context.TODO(),
-		"load_balancer_id",
+		"ac307687-31a4-4a11-a949-6bea1b2878f5",
 		cloud.LoadBalancerResizeParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 			Flavor:    "lb1-2-4",
 		},
 	)

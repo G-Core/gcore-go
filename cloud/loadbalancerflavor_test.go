@@ -27,8 +27,8 @@ func TestLoadBalancerFlavorListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.LoadBalancers.Flavors.List(context.TODO(), cloud.LoadBalancerFlavorListParams{
-		ProjectID:     gcore.Int(0),
-		RegionID:      gcore.Int(0),
+		ProjectID:     gcore.Int(1),
+		RegionID:      gcore.Int(7),
 		IncludePrices: gcore.Bool(true),
 	})
 	if err != nil {

@@ -28,10 +28,10 @@ func TestLoadBalancerMetricList(t *testing.T) {
 	)
 	_, err := client.Cloud.LoadBalancers.Metrics.List(
 		context.TODO(),
-		"load_balancer_id",
+		"ac307687-31a4-4a11-a949-6bea1b2878f5",
 		cloud.LoadBalancerMetricListParams{
-			ProjectID:    gcore.Int(0),
-			RegionID:     gcore.Int(0),
+			ProjectID:    gcore.Int(1),
+			RegionID:     gcore.Int(7),
 			TimeInterval: 6,
 			TimeUnit:     cloud.InstanceMetricsTimeUnitDay,
 		},
