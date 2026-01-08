@@ -198,7 +198,7 @@ func TestInferenceDeploymentUpdateWithOptionalParams(t *testing.T) {
 			AuthEnabled: gcore.Bool(false),
 			Command:     []string{"nginx", "-g", "daemon off;"},
 			Containers: []cloud.InferenceDeploymentUpdateParamsContainer{{
-				RegionID: gcore.Int(0),
+				RegionID: 1337,
 				Scale: cloud.InferenceDeploymentUpdateParamsContainerScale{
 					Max:             3,
 					Min:             1,

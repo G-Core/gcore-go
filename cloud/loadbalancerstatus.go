@@ -9,9 +9,11 @@ import (
 	"net/http"
 	"slices"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // LoadBalancerStatusService contains methods and other services that help with
@@ -34,7 +36,7 @@ func NewLoadBalancerStatusService(opts ...option.RequestOption) (r LoadBalancerS
 }
 
 // List load balancers statuses
-func (r *LoadBalancerStatusService) List(ctx context.Context, query LoadBalancerStatusListParams, opts ...option.RequestOption) (res *LoadBalancerStatusList, err error) {
+func (r *LoadBalancerStatusService) List(ctx context.Context, query LoadBalancerStatusListParams, opts ...option.RequestOption) (res *LoadBalancerStatusListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -81,14 +83,38 @@ func (r *LoadBalancerStatusService) Get(ctx context.Context, loadBalancerID stri
 	return
 }
 
+type LoadBalancerStatusListResponse struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []LoadBalancerStatus `json:"results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerStatusListResponse) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerStatusListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type LoadBalancerStatusListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerStatusGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }

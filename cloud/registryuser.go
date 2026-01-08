@@ -181,7 +181,7 @@ type RegistryUser struct {
 	// User name
 	Name string `json:"name,required"`
 	// Read-only user
-	ReadOnly bool `json:"read_only"`
+	ReadOnly bool `json:"read_only,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -213,9 +213,9 @@ type RegistryUserCreated struct {
 	// User name
 	Name string `json:"name,required"`
 	// Read-only user
-	ReadOnly bool `json:"read_only"`
+	ReadOnly bool `json:"read_only,required"`
 	// User secret
-	Secret string `json:"secret"`
+	Secret string `json:"secret,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -268,9 +268,9 @@ type RegistryUserRefreshSecretResponse struct {
 	// User name
 	Name string `json:"name,required"`
 	// Read-only user
-	ReadOnly bool `json:"read_only"`
+	ReadOnly bool `json:"read_only,required"`
 	// User secret
-	Secret string `json:"secret"`
+	Secret string `json:"secret,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field

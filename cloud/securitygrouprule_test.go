@@ -28,12 +28,12 @@ func TestSecurityGroupRuleNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.SecurityGroups.Rules.New(
 		context.TODO(),
-		"group_id",
+		"024a29e9-b4b7-4c91-9a46-505be123d9f8",
 		cloud.SecurityGroupRuleNewParams{
-			ProjectID:      gcore.Int(0),
-			RegionID:       gcore.Int(0),
-			Description:    gcore.String("Some description"),
+			ProjectID:      gcore.Int(1),
+			RegionID:       gcore.Int(1),
 			Direction:      cloud.SecurityGroupRuleNewParamsDirectionIngress,
+			Description:    gcore.String("Some description"),
 			Ethertype:      cloud.SecurityGroupRuleNewParamsEthertypeIPv4,
 			PortRangeMax:   gcore.Int(80),
 			PortRangeMin:   gcore.Int(80),
@@ -65,10 +65,10 @@ func TestSecurityGroupRuleDelete(t *testing.T) {
 	)
 	err := client.Cloud.SecurityGroups.Rules.Delete(
 		context.TODO(),
-		"rule_id",
+		"024a29e9-b4b7-4c91-9a46-505be123d9f8",
 		cloud.SecurityGroupRuleDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -94,10 +94,10 @@ func TestSecurityGroupRuleReplaceWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.SecurityGroups.Rules.Replace(
 		context.TODO(),
-		"rule_id",
+		"024a29e9-b4b7-4c91-9a46-505be123d9f8",
 		cloud.SecurityGroupRuleReplaceParams{
-			ProjectID:       gcore.Int(0),
-			RegionID:        gcore.Int(0),
+			ProjectID:       gcore.Int(1),
+			RegionID:        gcore.Int(1),
 			Direction:       cloud.SecurityGroupRuleReplaceParamsDirectionIngress,
 			SecurityGroupID: "00000000-0000-4000-8000-000000000000",
 			Description:     gcore.String("Some description"),

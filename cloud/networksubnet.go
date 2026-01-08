@@ -301,8 +301,6 @@ type NetworkSubnetUpdateParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// True if DHCP should be enabled
-	EnableDhcp param.Opt[bool] `json:"enable_dhcp,omitzero"`
 	// Default GW IPv4 address to advertise in DHCP routes in this subnet. Omit this
 	// field to let the cloud backend allocate it automatically. Set to null if no
 	// gateway must be advertised by this subnet's DHCP (useful when attaching
@@ -310,6 +308,8 @@ type NetworkSubnetUpdateParams struct {
 	GatewayIP param.Opt[string] `json:"gateway_ip,omitzero" format:"ipvanyaddress"`
 	// Name
 	Name param.Opt[string] `json:"name,omitzero"`
+	// True if DHCP should be enabled
+	EnableDhcp param.Opt[bool] `json:"enable_dhcp,omitzero"`
 	// List IP addresses of DNS servers to advertise via DHCP.
 	DNSNameservers []string `json:"dns_nameservers,omitzero" format:"ipvanyaddress"`
 	// List of custom static routes to advertise via DHCP.

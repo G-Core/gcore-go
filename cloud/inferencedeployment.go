@@ -1520,7 +1520,7 @@ func (r *InferenceDeploymentUpdateParams) UnmarshalJSON(data []byte) error {
 // The properties RegionID, Scale are required.
 type InferenceDeploymentUpdateParamsContainer struct {
 	// Region id for the container
-	RegionID param.Opt[int64] `json:"region_id,omitzero,required"`
+	RegionID int64 `json:"region_id,required"`
 	// Scale for the container
 	Scale InferenceDeploymentUpdateParamsContainerScale `json:"scale,omitzero,required"`
 	paramObj

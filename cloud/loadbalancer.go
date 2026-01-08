@@ -647,26 +647,6 @@ const (
 	LoadBalancerFlavorDetailPriceStatusShow  LoadBalancerFlavorDetailPriceStatus = "show"
 )
 
-type LoadBalancerFlavorList struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []LoadBalancerFlavorDetail `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerFlavorList) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerFlavorList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // L7Policy schema
 type LoadBalancerL7Policy struct {
 	// ID
@@ -1076,26 +1056,6 @@ func (r *LoadBalancerMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LoadBalancerMetricsList struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []LoadBalancerMetrics `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerMetricsList) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerMetricsList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type LoadBalancerPool struct {
 	// Pool ID
 	ID string `json:"id,required" format:"uuid4"`
@@ -1465,26 +1425,6 @@ func (r *LoadBalancerStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LoadBalancerStatusList struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []LoadBalancerStatus `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerStatusList) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerStatusList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type Member struct {
 	// Member ID must be provided if an existing member is being updated
 	ID string `json:"id,required" format:"uuid4"`
@@ -1659,8 +1599,10 @@ func (r *SessionPersistence) UnmarshalJSON(data []byte) error {
 }
 
 type LoadBalancerNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Load balancer flavor name
 	Flavor param.Opt[string] `json:"flavor,omitzero"`
 	// Load balancer name. Either `name` or `name_template` should be specified.
@@ -1875,10 +1817,6 @@ type LoadBalancerNewParamsListenerPool struct {
 	CaSecretID param.Opt[string] `json:"ca_secret_id,omitzero" format:"uuid4"`
 	// Secret ID of CA revocation list file
 	CrlSecretID param.Opt[string] `json:"crl_secret_id,omitzero" format:"uuid4"`
-	// Listener ID
-	ListenerID param.Opt[string] `json:"listener_id,omitzero" format:"uuid4"`
-	// Loadbalancer ID
-	LoadBalancerID param.Opt[string] `json:"load_balancer_id,omitzero" format:"uuid4"`
 	// Secret ID for TLS client authentication to the member servers
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
 	// Frontend client inactivity timeout in milliseconds
@@ -2062,8 +2000,10 @@ func (r *LoadBalancerNewParamsLogging) UnmarshalJSON(data []byte) error {
 }
 
 type LoadBalancerUpdateParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Name.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Logging configuration
@@ -2133,30 +2073,35 @@ func (r *LoadBalancerUpdateParamsLogging) UnmarshalJSON(data []byte) error {
 }
 
 type LoadBalancerListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// With or without assigned floating IP
 	AssignedFloating param.Opt[bool] `query:"assigned_floating,omitzero" json:"-"`
-	// Limit the number of returned limit request entities.
+	// Limit of items on a single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// With or without logging
+	// With or without logging enabled
 	LoggingEnabled param.Opt[bool] `query:"logging_enabled,omitzero" json:"-"`
 	// Filter by name
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result.
+	// Offset in results list
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Ordering Load Balancer list result by name, `created_at`, `updated_at`,
-	// `operating_status`, `provisioning_status`, `vip_address`, `vip_ip_family` and
-	// flavor fields of the load balancer and directions (name.asc), default is
-	// "`created_at`.asc"
-	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
 	// Show statistics
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
-	// Filter by tag key-value pairs. Must be a valid JSON string.
+	// Optional. Filter by tag key-value pairs.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Show Advanced DDoS protection profile, if exists
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
-	// Filter by tag keys.
+	// Order by field and direction.
+	//
+	// Any of "created_at.asc", "created_at.desc", "flavor.asc", "flavor.desc",
+	// "name.asc", "name.desc", "operating_status.asc", "operating_status.desc",
+	// "provisioning_status.asc", "provisioning_status.desc", "updated_at.asc",
+	// "updated_at.desc", "vip_address.asc", "vip_address.desc", "vip_ip_family.asc",
+	// "vip_ip_family.desc".
+	OrderBy LoadBalancerListParamsOrderBy `query:"order_by,omitzero" json:"-"`
+	// Optional. Filter by tag keys. ?`tag_key`=key1&`tag_key`=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
 }
@@ -2169,15 +2114,41 @@ func (r LoadBalancerListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Order by field and direction.
+type LoadBalancerListParamsOrderBy string
+
+const (
+	LoadBalancerListParamsOrderByCreatedAtAsc           LoadBalancerListParamsOrderBy = "created_at.asc"
+	LoadBalancerListParamsOrderByCreatedAtDesc          LoadBalancerListParamsOrderBy = "created_at.desc"
+	LoadBalancerListParamsOrderByFlavorAsc              LoadBalancerListParamsOrderBy = "flavor.asc"
+	LoadBalancerListParamsOrderByFlavorDesc             LoadBalancerListParamsOrderBy = "flavor.desc"
+	LoadBalancerListParamsOrderByNameAsc                LoadBalancerListParamsOrderBy = "name.asc"
+	LoadBalancerListParamsOrderByNameDesc               LoadBalancerListParamsOrderBy = "name.desc"
+	LoadBalancerListParamsOrderByOperatingStatusAsc     LoadBalancerListParamsOrderBy = "operating_status.asc"
+	LoadBalancerListParamsOrderByOperatingStatusDesc    LoadBalancerListParamsOrderBy = "operating_status.desc"
+	LoadBalancerListParamsOrderByProvisioningStatusAsc  LoadBalancerListParamsOrderBy = "provisioning_status.asc"
+	LoadBalancerListParamsOrderByProvisioningStatusDesc LoadBalancerListParamsOrderBy = "provisioning_status.desc"
+	LoadBalancerListParamsOrderByUpdatedAtAsc           LoadBalancerListParamsOrderBy = "updated_at.asc"
+	LoadBalancerListParamsOrderByUpdatedAtDesc          LoadBalancerListParamsOrderBy = "updated_at.desc"
+	LoadBalancerListParamsOrderByVipAddressAsc          LoadBalancerListParamsOrderBy = "vip_address.asc"
+	LoadBalancerListParamsOrderByVipAddressDesc         LoadBalancerListParamsOrderBy = "vip_address.desc"
+	LoadBalancerListParamsOrderByVipIPFamilyAsc         LoadBalancerListParamsOrderBy = "vip_ip_family.asc"
+	LoadBalancerListParamsOrderByVipIPFamilyDesc        LoadBalancerListParamsOrderBy = "vip_ip_family.desc"
+)
+
 type LoadBalancerDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerFailoverParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Validate current load balancer status before failover or not.
 	Force param.Opt[bool] `json:"force,omitzero"`
 	paramObj
@@ -2192,11 +2163,13 @@ func (r *LoadBalancerFailoverParams) UnmarshalJSON(data []byte) error {
 }
 
 type LoadBalancerGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Show statistics
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
-	// Show DDoS profile
+	// Show Advanced DDoS protection profile, if exists
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
 	paramObj
 }
@@ -2210,8 +2183,10 @@ func (r LoadBalancerGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type LoadBalancerResizeParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Name of the desired flavor to resize to.
 	Flavor string `json:"flavor,required"`
 	paramObj
