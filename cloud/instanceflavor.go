@@ -4,6 +4,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -40,7 +41,7 @@ func NewInstanceFlavorService(opts ...option.RequestOption) (r InstanceFlavorSer
 // Retrieve a list of available instance flavors in the project and region. When
 // `include_prices` is specified, the list includes pricing information. Trial mode
 // clients see all prices as 0. Contact support for pricing errors.
-func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) (res *InstanceFlavorList, err error) {
+func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) (res *InstanceFlavorListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -61,76 +62,11 @@ func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorL
 	return
 }
 
-// Instances flavor schema
-type InstanceFlavor struct {
-	// Flavor architecture type
-	Architecture string `json:"architecture,required"`
-	// Disabled flavor flag
-	Disabled bool `json:"disabled,required"`
-	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
-	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
-	// Flavor operating system
-	OsType string `json:"os_type,required"`
-	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
-	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus,required"`
-	// Number of available instances of given configuration
-	Capacity int64 `json:"capacity,nullable"`
-	// Currency code. Shown if the `include_prices` query parameter if set to true
-	CurrencyCode string `json:"currency_code,nullable"`
-	// Additional hardware description
-	HardwareDescription map[string]string `json:"hardware_description"`
-	// Price per hour. Shown if the `include_prices` query parameter if set to true
-	PricePerHour float64 `json:"price_per_hour,nullable"`
-	// Price per month. Shown if the `include_prices` query parameter if set to true
-	PricePerMonth float64 `json:"price_per_month,nullable"`
-	// Price status for the UI
-	//
-	// Any of "error", "hide", "show".
-	PriceStatus InstanceFlavorPriceStatus `json:"price_status,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Architecture        respjson.Field
-		Disabled            respjson.Field
-		FlavorID            respjson.Field
-		FlavorName          respjson.Field
-		OsType              respjson.Field
-		Ram                 respjson.Field
-		Vcpus               respjson.Field
-		Capacity            respjson.Field
-		CurrencyCode        respjson.Field
-		HardwareDescription respjson.Field
-		PricePerHour        respjson.Field
-		PricePerMonth       respjson.Field
-		PriceStatus         respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InstanceFlavor) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavor) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Price status for the UI
-type InstanceFlavorPriceStatus string
-
-const (
-	InstanceFlavorPriceStatusError InstanceFlavorPriceStatus = "error"
-	InstanceFlavorPriceStatusHide  InstanceFlavorPriceStatus = "hide"
-	InstanceFlavorPriceStatusShow  InstanceFlavorPriceStatus = "show"
-)
-
-type InstanceFlavorList struct {
+type InstanceFlavorListResponse struct {
 	// Number of objects
 	Count int64 `json:"count,required"`
 	// Objects
-	Results []InstanceFlavor `json:"results,required"`
+	Results []InstanceFlavorListResponseResultUnion `json:"results,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -141,8 +77,164 @@ type InstanceFlavorList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorList) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorList) UnmarshalJSON(data []byte) error {
+func (r InstanceFlavorListResponse) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InstanceFlavorListResponseResultUnion contains all possible properties and
+// values from [InstanceFlavorListResponseResultInstancesFlavorSchemaWithoutPrice],
+// [InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InstanceFlavorListResponseResultUnion struct {
+	Architecture        string `json:"architecture"`
+	Disabled            bool   `json:"disabled"`
+	FlavorID            string `json:"flavor_id"`
+	FlavorName          string `json:"flavor_name"`
+	HardwareDescription string `json:"hardware_description"`
+	OsType              string `json:"os_type"`
+	Ram                 int64  `json:"ram"`
+	Vcpus               int64  `json:"vcpus"`
+	// This field is from variant
+	// [InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice].
+	CurrencyCode string `json:"currency_code"`
+	// This field is from variant
+	// [InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice].
+	PricePerHour float64 `json:"price_per_hour"`
+	// This field is from variant
+	// [InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice].
+	PricePerMonth float64 `json:"price_per_month"`
+	// This field is from variant
+	// [InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice].
+	PriceStatus string `json:"price_status"`
+	JSON        struct {
+		Architecture        respjson.Field
+		Disabled            respjson.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		HardwareDescription respjson.Field
+		OsType              respjson.Field
+		Ram                 respjson.Field
+		Vcpus               respjson.Field
+		CurrencyCode        respjson.Field
+		PricePerHour        respjson.Field
+		PricePerMonth       respjson.Field
+		PriceStatus         respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+func (u InstanceFlavorListResponseResultUnion) AsInstancesFlavorSchemaWithoutPrice() (v InstanceFlavorListResponseResultInstancesFlavorSchemaWithoutPrice) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InstanceFlavorListResponseResultUnion) AsInstancesFlavorSchemaWithPrice() (v InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InstanceFlavorListResponseResultUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *InstanceFlavorListResponseResultUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Instances flavor schema without price information
+type InstanceFlavorListResponseResultInstancesFlavorSchemaWithoutPrice struct {
+	// Flavor architecture type
+	Architecture string `json:"architecture,required"`
+	// Disabled flavor flag
+	Disabled bool `json:"disabled,required"`
+	// Flavor ID is the same as name
+	FlavorID string `json:"flavor_id,required"`
+	// Flavor name
+	FlavorName string `json:"flavor_name,required"`
+	// Additional hardware description
+	HardwareDescription map[string]string `json:"hardware_description,required"`
+	// Flavor operating system
+	OsType string `json:"os_type,required"`
+	// RAM size in MiB
+	Ram int64 `json:"ram,required"`
+	// Virtual CPU count
+	Vcpus int64 `json:"vcpus,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Architecture        respjson.Field
+		Disabled            respjson.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		HardwareDescription respjson.Field
+		OsType              respjson.Field
+		Ram                 respjson.Field
+		Vcpus               respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceFlavorListResponseResultInstancesFlavorSchemaWithoutPrice) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InstanceFlavorListResponseResultInstancesFlavorSchemaWithoutPrice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Instances flavor schema with price information
+type InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice struct {
+	// Flavor architecture type
+	Architecture string `json:"architecture,required"`
+	// Currency code
+	CurrencyCode string `json:"currency_code,required"`
+	// Disabled flavor flag
+	Disabled bool `json:"disabled,required"`
+	// Flavor ID is the same as name
+	FlavorID string `json:"flavor_id,required"`
+	// Flavor name
+	FlavorName string `json:"flavor_name,required"`
+	// Additional hardware description
+	HardwareDescription map[string]string `json:"hardware_description,required"`
+	// Flavor operating system
+	OsType string `json:"os_type,required"`
+	// Price per hour
+	PricePerHour float64 `json:"price_per_hour,required"`
+	// Price per month
+	PricePerMonth float64 `json:"price_per_month,required"`
+	// Price status for the UI
+	//
+	// Any of "error", "hide", "show".
+	PriceStatus string `json:"price_status,required"`
+	// RAM size in MiB
+	Ram int64 `json:"ram,required"`
+	// Virtual CPU count
+	Vcpus int64 `json:"vcpus,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Architecture        respjson.Field
+		CurrencyCode        respjson.Field
+		Disabled            respjson.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		HardwareDescription respjson.Field
+		OsType              respjson.Field
+		PricePerHour        respjson.Field
+		PricePerMonth       respjson.Field
+		PriceStatus         respjson.Field
+		Ram                 respjson.Field
+		Vcpus               respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

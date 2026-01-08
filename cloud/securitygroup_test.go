@@ -33,8 +33,8 @@ func TestSecurityGroupNewWithOptionalParams(t *testing.T) {
 			Name:        "my_security_group",
 			Description: gcore.String("Some description"),
 			SecurityGroupRules: []cloud.SecurityGroupNewParamsSecurityGroupSecurityGroupRule{{
-				Description:    gcore.String("Some description"),
 				Direction:      "ingress",
+				Description:    gcore.String("Some description"),
 				Ethertype:      "IPv4",
 				PortRangeMax:   gcore.Int(80),
 				PortRangeMin:   gcore.Int(80),
@@ -71,10 +71,10 @@ func TestSecurityGroupUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.SecurityGroups.Update(
 		context.TODO(),
-		"group_id",
+		"024a29e9-b4b7-4c91-9a46-505be123d9f8",
 		cloud.SecurityGroupUpdateParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			ChangedRules: []cloud.SecurityGroupUpdateParamsChangedRule{{
 				Action:              "delete",
 				Description:         gcore.String("Some description"),
@@ -145,10 +145,10 @@ func TestSecurityGroupDelete(t *testing.T) {
 	)
 	err := client.Cloud.SecurityGroups.Delete(
 		context.TODO(),
-		"group_id",
+		"024a29e9-b4b7-4c91-9a46-505be123d9f8",
 		cloud.SecurityGroupDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -174,10 +174,10 @@ func TestSecurityGroupCopy(t *testing.T) {
 	)
 	_, err := client.Cloud.SecurityGroups.Copy(
 		context.TODO(),
-		"group_id",
+		"024a29e9-b4b7-4c91-9a46-505be123d9f8",
 		cloud.SecurityGroupCopyParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			Name:      "some_name",
 		},
 	)
@@ -204,10 +204,10 @@ func TestSecurityGroupGet(t *testing.T) {
 	)
 	_, err := client.Cloud.SecurityGroups.Get(
 		context.TODO(),
-		"group_id",
+		"024a29e9-b4b7-4c91-9a46-505be123d9f8",
 		cloud.SecurityGroupGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -233,10 +233,10 @@ func TestSecurityGroupRevertToDefault(t *testing.T) {
 	)
 	_, err := client.Cloud.SecurityGroups.RevertToDefault(
 		context.TODO(),
-		"group_id",
+		"024a29e9-b4b7-4c91-9a46-505be123d9f8",
 		cloud.SecurityGroupRevertToDefaultParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {

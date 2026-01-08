@@ -114,8 +114,14 @@ func (r *SecurityGroupRuleService) Replace(ctx context.Context, ruleID string, p
 }
 
 type SecurityGroupRuleNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Ingress or egress, which is the direction in which the security group is applied
+	//
+	// Any of "egress", "ingress".
+	Direction SecurityGroupRuleNewParamsDirection `json:"direction,omitzero,required"`
 	// The maximum port number in the range that is matched by the security group rule
 	PortRangeMax param.Opt[int64] `json:"port_range_max,omitzero"`
 	// The minimum port number in the range that is matched by the security group rule
@@ -126,10 +132,6 @@ type SecurityGroupRuleNewParams struct {
 	Description param.Opt[string] `json:"description,omitzero"`
 	// The remote group UUID to associate with this security group
 	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
-	// Ingress or egress, which is the direction in which the security group is applied
-	//
-	// Any of "egress", "ingress".
-	Direction SecurityGroupRuleNewParamsDirection `json:"direction,omitzero"`
 	// Ether type
 	//
 	// Any of "IPv4", "IPv6".
@@ -198,14 +200,18 @@ const (
 )
 
 type SecurityGroupRuleDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type SecurityGroupRuleReplaceParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Ingress or egress, which is the direction in which the security group rule is
 	// applied
 	//
