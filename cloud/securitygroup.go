@@ -41,7 +41,9 @@ func NewSecurityGroupService(opts ...option.RequestOption) (r SecurityGroupServi
 	return
 }
 
-// Create a new security group with the specified configuration.
+// **Deprecated** Use `/v2/security_groups/<project_id>/<region_id>` instead.
+//
+// Deprecated: deprecated
 func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -63,7 +65,10 @@ func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewP
 	return
 }
 
-// Update the configuration of an existing security group.
+// **Deprecated** Use `/v2/security_groups/<project_id>/<region_id>/<group_id>`
+// instead.
+//
+// Deprecated: deprecated
 func (r *SecurityGroupService) Update(ctx context.Context, groupID string, params SecurityGroupUpdateParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -604,6 +609,8 @@ type SecurityGroupListParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Limit of items on a single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Filter by name. Must be specified a full name of the security group.
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Offset in results list
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Optional. Filter by tag key-value pairs.

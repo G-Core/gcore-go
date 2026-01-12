@@ -80,15 +80,14 @@ type AuditLogEntry struct {
 	ActionType AuditLogEntryActionType `json:"action_type,required"`
 	// API group
 	//
-	// Any of "ai_cluster", "backup_service", "caas_container", "caas_key",
-	// "caas_pull_secret", "dbaas_postgres", "ddos_profile", "faas_function",
-	// "faas_key", "faas_namespace", "file_shares", "floating_ip", "image",
-	// "inference_at_the_edge", "instance", "instance_isolation", "k8s_cluster",
-	// "k8s_cluster_template", "k8s_pool", "laas", "laas_topic", "lb_health_monitor",
-	// "lb_l7policy", "lb_l7rule", "lblistener", "lbpool", "lbpool_member",
-	// "lifecycle_policy", "lifecycle_policy_volume_member", "loadbalancer", "network",
-	// "port", "project", "quota_limit_request", "registry", "reservation",
-	// "reserved_fixed_ip", "role", "router", "secret", "securitygroup",
+	// Any of "ai_cluster", "caas_container", "caas_key", "caas_pull_secret",
+	// "dbaas_postgres", "ddos_profile", "faas_function", "faas_key", "faas_namespace",
+	// "file_shares", "floating_ip", "image", "inference_at_the_edge", "instance",
+	// "instance_isolation", "k8s_cluster", "k8s_cluster_template", "k8s_pool", "laas",
+	// "laas_topic", "lb_health_monitor", "lb_l7policy", "lb_l7rule", "lblistener",
+	// "lbpool", "lbpool_member", "lifecycle_policy", "lifecycle_policy_volume_member",
+	// "loadbalancer", "network", "port", "project", "quota_limit_request", "registry",
+	// "reservation", "reserved_fixed_ip", "role", "router", "secret", "securitygroup",
 	// "securitygrouprule", "servergroup", "shared_flavor", "shared_image",
 	// "shared_network", "snapshot", "snapshot_schedule", "ssh_key", "subnet", "user",
 	// "vip_ip_addresses", "volume".
@@ -200,7 +199,6 @@ type AuditLogEntryAPIGroup string
 
 const (
 	AuditLogEntryAPIGroupAICluster                   AuditLogEntryAPIGroup = "ai_cluster"
-	AuditLogEntryAPIGroupBackupService               AuditLogEntryAPIGroup = "backup_service"
 	AuditLogEntryAPIGroupCaasContainer               AuditLogEntryAPIGroup = "caas_container"
 	AuditLogEntryAPIGroupCaasKey                     AuditLogEntryAPIGroup = "caas_key"
 	AuditLogEntryAPIGroupCaasPullSecret              AuditLogEntryAPIGroup = "caas_pull_secret"
@@ -354,15 +352,14 @@ type AuditLogListParams struct {
 	ActionType []string `query:"action_type,omitzero" json:"-"`
 	// API group that requested action belongs to. Several options can be specified.
 	//
-	// Any of "ai_cluster", "backup_service", "caas_container", "caas_key",
-	// "caas_pull_secret", "dbaas_postgres", "ddos_profile", "faas_function",
-	// "faas_key", "faas_namespace", "file_shares", "floating_ip", "image",
-	// "inference_at_the_edge", "instance", "instance_isolation", "k8s_cluster",
-	// "k8s_cluster_template", "k8s_pool", "laas", "laas_topic", "lb_health_monitor",
-	// "lb_l7policy", "lb_l7rule", "lblistener", "lbpool", "lbpool_member",
-	// "lifecycle_policy", "lifecycle_policy_volume_member", "loadbalancer", "network",
-	// "port", "project", "quota_limit_request", "registry", "reservation",
-	// "reserved_fixed_ip", "role", "router", "secret", "securitygroup",
+	// Any of "ai_cluster", "caas_container", "caas_key", "caas_pull_secret",
+	// "dbaas_postgres", "ddos_profile", "faas_function", "faas_key", "faas_namespace",
+	// "file_shares", "floating_ip", "image", "inference_at_the_edge", "instance",
+	// "instance_isolation", "k8s_cluster", "k8s_cluster_template", "k8s_pool", "laas",
+	// "laas_topic", "lb_health_monitor", "lb_l7policy", "lb_l7rule", "lblistener",
+	// "lbpool", "lbpool_member", "lifecycle_policy", "lifecycle_policy_volume_member",
+	// "loadbalancer", "network", "port", "project", "quota_limit_request", "registry",
+	// "reservation", "reserved_fixed_ip", "role", "router", "secret", "securitygroup",
 	// "securitygrouprule", "servergroup", "shared_flavor", "shared_image",
 	// "shared_network", "snapshot", "snapshot_schedule", "ssh_key", "subnet", "user",
 	// "vip_ip_addresses", "volume".
