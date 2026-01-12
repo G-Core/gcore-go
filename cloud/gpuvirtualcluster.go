@@ -325,7 +325,8 @@ type GPUVirtualCluster struct {
 	ServersSettings GPUVirtualClusterServersSettings `json:"servers_settings,required"`
 	// Cluster status
 	//
-	// Any of "active", "deleting", "error", "new", "resizing".
+	// Any of "active", "creating", "degraded", "deleting", "error", "new",
+	// "rebooting", "rebuilding", "resizing", "shutoff".
 	Status GPUVirtualClusterStatus `json:"status,required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
@@ -710,11 +711,16 @@ func (r *GPUVirtualClusterServersSettingsVolume) UnmarshalJSON(data []byte) erro
 type GPUVirtualClusterStatus string
 
 const (
-	GPUVirtualClusterStatusActive   GPUVirtualClusterStatus = "active"
-	GPUVirtualClusterStatusDeleting GPUVirtualClusterStatus = "deleting"
-	GPUVirtualClusterStatusError    GPUVirtualClusterStatus = "error"
-	GPUVirtualClusterStatusNew      GPUVirtualClusterStatus = "new"
-	GPUVirtualClusterStatusResizing GPUVirtualClusterStatus = "resizing"
+	GPUVirtualClusterStatusActive     GPUVirtualClusterStatus = "active"
+	GPUVirtualClusterStatusCreating   GPUVirtualClusterStatus = "creating"
+	GPUVirtualClusterStatusDegraded   GPUVirtualClusterStatus = "degraded"
+	GPUVirtualClusterStatusDeleting   GPUVirtualClusterStatus = "deleting"
+	GPUVirtualClusterStatusError      GPUVirtualClusterStatus = "error"
+	GPUVirtualClusterStatusNew        GPUVirtualClusterStatus = "new"
+	GPUVirtualClusterStatusRebooting  GPUVirtualClusterStatus = "rebooting"
+	GPUVirtualClusterStatusRebuilding GPUVirtualClusterStatus = "rebuilding"
+	GPUVirtualClusterStatusResizing   GPUVirtualClusterStatus = "resizing"
+	GPUVirtualClusterStatusShutoff    GPUVirtualClusterStatus = "shutoff"
 )
 
 type GPUVirtualClusterNewParams struct {
