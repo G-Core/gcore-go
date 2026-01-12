@@ -315,7 +315,8 @@ type GPUBaremetalCluster struct {
 	ServersSettings GPUBaremetalClusterServersSettings `json:"servers_settings,required"`
 	// Cluster status
 	//
-	// Any of "active", "deleting", "error", "new", "resizing".
+	// Any of "active", "creating", "degraded", "deleting", "error", "new",
+	// "rebooting", "rebuilding", "resizing", "shutoff".
 	Status GPUBaremetalClusterStatus `json:"status,required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
@@ -668,11 +669,16 @@ func (r *GPUBaremetalClusterServersSettingsSecurityGroup) UnmarshalJSON(data []b
 type GPUBaremetalClusterStatus string
 
 const (
-	GPUBaremetalClusterStatusActive   GPUBaremetalClusterStatus = "active"
-	GPUBaremetalClusterStatusDeleting GPUBaremetalClusterStatus = "deleting"
-	GPUBaremetalClusterStatusError    GPUBaremetalClusterStatus = "error"
-	GPUBaremetalClusterStatusNew      GPUBaremetalClusterStatus = "new"
-	GPUBaremetalClusterStatusResizing GPUBaremetalClusterStatus = "resizing"
+	GPUBaremetalClusterStatusActive     GPUBaremetalClusterStatus = "active"
+	GPUBaremetalClusterStatusCreating   GPUBaremetalClusterStatus = "creating"
+	GPUBaremetalClusterStatusDegraded   GPUBaremetalClusterStatus = "degraded"
+	GPUBaremetalClusterStatusDeleting   GPUBaremetalClusterStatus = "deleting"
+	GPUBaremetalClusterStatusError      GPUBaremetalClusterStatus = "error"
+	GPUBaremetalClusterStatusNew        GPUBaremetalClusterStatus = "new"
+	GPUBaremetalClusterStatusRebooting  GPUBaremetalClusterStatus = "rebooting"
+	GPUBaremetalClusterStatusRebuilding GPUBaremetalClusterStatus = "rebuilding"
+	GPUBaremetalClusterStatusResizing   GPUBaremetalClusterStatus = "resizing"
+	GPUBaremetalClusterStatusShutoff    GPUBaremetalClusterStatus = "shutoff"
 )
 
 type GPUBaremetalClusterNewParams struct {

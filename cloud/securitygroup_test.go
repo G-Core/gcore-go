@@ -118,6 +118,7 @@ func TestSecurityGroupListWithOptionalParams(t *testing.T) {
 		ProjectID:   gcore.Int(1),
 		RegionID:    gcore.Int(1),
 		Limit:       gcore.Int(10),
+		Name:        gcore.String("my_security_group"),
 		Offset:      gcore.Int(0),
 		TagKey:      []string{"key1", "key2"},
 		TagKeyValue: gcore.String("tag_key_value"),
