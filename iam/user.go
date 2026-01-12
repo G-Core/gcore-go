@@ -573,33 +573,21 @@ const (
 
 type UserUpdateParams struct {
 	// User's name.
-	Name param.Opt[string] `json:"name,omitzero"`
+	Name param.Opt[string] `json:"name,omitzero,required"`
 	// User's phone.
-	Phone param.Opt[string] `json:"phone,omitzero"`
-	// User's company.
-	Company param.Opt[string] `json:"company,omitzero"`
-	// User's email address.
-	Email param.Opt[string] `json:"email,omitzero" format:"email"`
+	Phone param.Opt[string] `json:"phone,omitzero,required"`
 	// System field. List of auth types available for the account.
 	//
 	// Any of "password", "sso", "github", "google-oauth2".
-	AuthTypes []string `json:"auth_types,omitzero"`
-	// User's group in the current account.
-	//
-	// IAM supports 5 groups:
-	//
-	// - Users
-	// - Administrators
-	// - Engineers
-	// - Purge and Prefetch only (API)
-	// - Purge and Prefetch only (API+Web)
-	Groups []UserUpdateParamsGroup `json:"groups,omitzero"`
+	AuthTypes []string `json:"auth_types,omitzero,required"`
+	// User's email address.
+	Email string `json:"email,required" format:"email"`
 	// User's language.
 	//
 	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
-	Lang UserUpdateParamsLang `json:"lang,omitzero"`
+	Lang UserUpdateParamsLang `json:"lang,omitzero,required"`
 	paramObj
 }
 
@@ -609,34 +597,6 @@ func (r UserUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *UserUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-type UserUpdateParamsGroup struct {
-	// Group's ID: Possible values are:
-	//
-	//   - 1 - Administrators* 2 - Users* 5 - Engineers* 3009 - Purge and Prefetch only
-	//     (API+Web)* 3022 - Purge and Prefetch only (API)
-	ID param.Opt[int64] `json:"id,omitzero"`
-	// Group's name.
-	//
-	// Any of "Users", "Administrators", "Engineers", "Purge and Prefetch only (API)",
-	// "Purge and Prefetch only (API+Web)".
-	Name string `json:"name,omitzero"`
-	paramObj
-}
-
-func (r UserUpdateParamsGroup) MarshalJSON() (data []byte, err error) {
-	type shadow UserUpdateParamsGroup
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *UserUpdateParamsGroup) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[UserUpdateParamsGroup](
-		"name", "Users", "Administrators", "Engineers", "Purge and Prefetch only (API)", "Purge and Prefetch only (API+Web)",
-	)
 }
 
 // User's language.
