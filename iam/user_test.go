@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestUserUpdateWithOptionalParams(t *testing.T) {
+func TestUserUpdate(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -31,15 +31,10 @@ func TestUserUpdateWithOptionalParams(t *testing.T) {
 		0,
 		iam.UserUpdateParams{
 			AuthTypes: []string{"password"},
-			Company:   gcore.String("company"),
-			Email:     gcore.String("dev@stainless.com"),
-			Groups: []iam.UserUpdateParamsGroup{{
-				ID:   gcore.Int(1),
-				Name: "Administrators",
-			}},
-			Lang:  iam.UserUpdateParamsLangDe,
-			Name:  gcore.String("name"),
-			Phone: gcore.String("phone"),
+			Email:     "dev@stainless.com",
+			Lang:      iam.UserUpdateParamsLangDe,
+			Name:      gcore.String("name"),
+			Phone:     gcore.String("phone"),
 		},
 	)
 	if err != nil {
