@@ -41,7 +41,7 @@ func NewInstanceFlavorService(opts ...option.RequestOption) (r InstanceFlavorSer
 // Retrieve a list of available instance flavors in the project and region. When
 // `include_prices` is specified, the list includes pricing information. Trial mode
 // clients see all prices as 0. Contact support for pricing errors.
-func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) (res *InstanceFlavorListResponse, err error) {
+func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) (res *InstanceFlavorList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -62,32 +62,12 @@ func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorL
 	return
 }
 
-type InstanceFlavorListResponse struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []InstanceFlavorListResponseResultUnion `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InstanceFlavorListResponse) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// InstanceFlavorListResponseResultUnion contains all possible properties and
-// values from [InstanceFlavorListResponseResultInstancesFlavorSchemaWithoutPrice],
-// [InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice].
+// InstanceFlavorDetailedUnion contains all possible properties and values from
+// [InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice],
+// [InstanceFlavorDetailedInstancesFlavorSchemaWithPrice].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
-type InstanceFlavorListResponseResultUnion struct {
+type InstanceFlavorDetailedUnion struct {
 	Architecture        string `json:"architecture"`
 	Disabled            bool   `json:"disabled"`
 	FlavorID            string `json:"flavor_id"`
@@ -97,16 +77,16 @@ type InstanceFlavorListResponseResultUnion struct {
 	Ram                 int64  `json:"ram"`
 	Vcpus               int64  `json:"vcpus"`
 	// This field is from variant
-	// [InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice].
+	// [InstanceFlavorDetailedInstancesFlavorSchemaWithPrice].
 	CurrencyCode string `json:"currency_code"`
 	// This field is from variant
-	// [InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice].
+	// [InstanceFlavorDetailedInstancesFlavorSchemaWithPrice].
 	PricePerHour float64 `json:"price_per_hour"`
 	// This field is from variant
-	// [InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice].
+	// [InstanceFlavorDetailedInstancesFlavorSchemaWithPrice].
 	PricePerMonth float64 `json:"price_per_month"`
 	// This field is from variant
-	// [InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice].
+	// [InstanceFlavorDetailedInstancesFlavorSchemaWithPrice].
 	PriceStatus string `json:"price_status"`
 	JSON        struct {
 		Architecture        respjson.Field
@@ -125,25 +105,25 @@ type InstanceFlavorListResponseResultUnion struct {
 	} `json:"-"`
 }
 
-func (u InstanceFlavorListResponseResultUnion) AsInstancesFlavorSchemaWithoutPrice() (v InstanceFlavorListResponseResultInstancesFlavorSchemaWithoutPrice) {
+func (u InstanceFlavorDetailedUnion) AsInstancesFlavorSchemaWithoutPrice() (v InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InstanceFlavorListResponseResultUnion) AsInstancesFlavorSchemaWithPrice() (v InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice) {
+func (u InstanceFlavorDetailedUnion) AsInstancesFlavorSchemaWithPrice() (v InstanceFlavorDetailedInstancesFlavorSchemaWithPrice) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u InstanceFlavorListResponseResultUnion) RawJSON() string { return u.JSON.raw }
+func (u InstanceFlavorDetailedUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *InstanceFlavorListResponseResultUnion) UnmarshalJSON(data []byte) error {
+func (r *InstanceFlavorDetailedUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Instances flavor schema without price information
-type InstanceFlavorListResponseResultInstancesFlavorSchemaWithoutPrice struct {
+type InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice struct {
 	// Flavor architecture type
 	Architecture string `json:"architecture,required"`
 	// Disabled flavor flag
@@ -176,15 +156,13 @@ type InstanceFlavorListResponseResultInstancesFlavorSchemaWithoutPrice struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorListResponseResultInstancesFlavorSchemaWithoutPrice) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *InstanceFlavorListResponseResultInstancesFlavorSchemaWithoutPrice) UnmarshalJSON(data []byte) error {
+func (r InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Instances flavor schema with price information
-type InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice struct {
+type InstanceFlavorDetailedInstancesFlavorSchemaWithPrice struct {
 	// Flavor architecture type
 	Architecture string `json:"architecture,required"`
 	// Currency code
@@ -231,10 +209,28 @@ type InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice) RawJSON() string {
-	return r.JSON.raw
+func (r InstanceFlavorDetailedInstancesFlavorSchemaWithPrice) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorDetailedInstancesFlavorSchemaWithPrice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
-func (r *InstanceFlavorListResponseResultInstancesFlavorSchemaWithPrice) UnmarshalJSON(data []byte) error {
+
+type InstanceFlavorList struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []InstanceFlavorDetailedUnion `json:"results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceFlavorList) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavorList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
