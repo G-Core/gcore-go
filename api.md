@@ -893,11 +893,12 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceFlavorListResponse">InstanceFlavorListResponse</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceFlavorDetailedUnion">InstanceFlavorDetailedUnion</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceFlavorList">InstanceFlavorList</a>
 
 Methods:
 
-- <code title="get /cloud/v1/flavors/{project_id}/{region_id}">client.Cloud.Instances.Flavors.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceFlavorService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceFlavorListParams">InstanceFlavorListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceFlavorListResponse">InstanceFlavorListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /cloud/v1/flavors/{project_id}/{region_id}">client.Cloud.Instances.Flavors.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceFlavorService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceFlavorListParams">InstanceFlavorListParams</a>) (<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceFlavorList">InstanceFlavorList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ### Interfaces
 

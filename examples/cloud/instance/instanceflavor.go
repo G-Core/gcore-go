@@ -21,7 +21,7 @@ func listFlavors(client *gcore.Client) {
 	fmt.Println("====================")
 }
 
-func printFlavorDetails(flavors []cloud.InstanceFlavor) {
+func printFlavorDetails(flavors []cloud.InstanceFlavorDetailedUnion) {
 	displayCount := 3
 	if len(flavors) < displayCount {
 		displayCount = len(flavors)
