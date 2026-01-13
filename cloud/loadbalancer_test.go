@@ -66,7 +66,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 					Backup:         gcore.Bool(true),
 					InstanceID:     gcore.String("a7e7e8d6-0bf7-4ac9-8170-831b47ee2ba9"),
 					MonitorAddress: gcore.String("monitor_address"),
-					MonitorPort:    gcore.Int(0),
+					MonitorPort:    gcore.Int(1),
 					SubnetID:       gcore.String("32283b0b-b560-4690-810c-f672cbb2e28d"),
 					Weight:         gcore.Int(2),
 				}, {
@@ -76,7 +76,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 					Backup:         gcore.Bool(true),
 					InstanceID:     gcore.String("169942e0-9b53-42df-95ef-1a8b6525c2bd"),
 					MonitorAddress: gcore.String("monitor_address"),
-					MonitorPort:    gcore.Int(0),
+					MonitorPort:    gcore.Int(1),
 					SubnetID:       gcore.String("32283b0b-b560-4690-810c-f672cbb2e28d"),
 					Weight:         gcore.Int(4),
 				}},
