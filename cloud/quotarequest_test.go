@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
@@ -116,9 +117,12 @@ func TestQuotaRequestListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Quotas.Requests.List(context.TODO(), cloud.QuotaRequestListParams{
-		Limit:  gcore.Int(1000),
-		Offset: gcore.Int(0),
-		Status: []string{"done", "in progress"},
+		CreatedFrom: gcore.Time(time.Now()),
+		CreatedTo:   gcore.Time(time.Now()),
+		Limit:       gcore.Int(1000),
+		Offset:      gcore.Int(0),
+		RequestIDs:  []int64{1, 2, 3},
+		Status:      []string{"done", "in progress"},
 	})
 	if err != nil {
 		var apierr *gcore.Error
