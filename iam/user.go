@@ -108,24 +108,26 @@ func (r *UserService) Invite(ctx context.Context, body UserInviteParams, opts ..
 
 type User struct {
 	// User's ID.
-	ID int64 `json:"id"`
+	ID int64 `json:"id,required"`
 	// Email confirmation:
 	//
 	// - `true` – user confirmed the email;
 	// - `false` – user did not confirm the email.
-	Activated bool `json:"activated"`
+	Activated bool `json:"activated,required"`
 	// System field. List of auth types available for the account.
 	//
 	// Any of "password", "sso", "github", "google-oauth2".
-	AuthTypes []string `json:"auth_types"`
+	AuthTypes []string `json:"auth_types,required"`
 	// User's account ID.
-	Client float64 `json:"client"`
+	Client float64 `json:"client,required"`
+	// List of user's clients. User can access to one or more clients.
+	ClientAndRoles []UserClientAndRole `json:"client_and_roles,required"`
 	// User's company.
-	Company string `json:"company"`
+	Company string `json:"company,required"`
 	// Deletion flag. If `true` then user was deleted.
-	Deleted bool `json:"deleted"`
+	Deleted bool `json:"deleted,required"`
 	// User's email address.
-	Email string `json:"email" format:"email"`
+	Email string `json:"email,required" format:"email"`
 	// User's group in the current account.
 	//
 	// IAM supports 5 groups:
@@ -135,55 +137,83 @@ type User struct {
 	// - Engineers
 	// - Purge and Prefetch only (API)
 	// - Purge and Prefetch only (API+Web)
-	Groups []UserGroup `json:"groups"`
+	Groups []UserGroup `json:"groups,required"`
+	// User activity flag.
+	IsActive bool `json:"is_active,required"`
 	// User's language.
 	//
 	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
-	Lang UserLang `json:"lang"`
+	Lang UserLang `json:"lang,required"`
 	// User's name.
-	Name string `json:"name,nullable"`
+	Name string `json:"name,required"`
 	// User's phone.
-	Phone string `json:"phone,nullable"`
+	Phone string `json:"phone,required"`
 	// Services provider ID.
-	Reseller int64 `json:"reseller"`
+	Reseller int64 `json:"reseller,required"`
 	// SSO authentication flag. If `true` then user can login via SAML SSO.
-	SSOAuth bool `json:"sso_auth"`
+	SSOAuth bool `json:"sso_auth,required"`
 	// Two-step verification:
 	//
 	// - `true` – user enabled two-step verification;
 	// - `false` – user disabled two-step verification.
-	TwoFa bool `json:"two_fa"`
+	TwoFa bool `json:"two_fa,required"`
 	// User's type.
 	//
-	// Any of "common".
-	UserType UserUserType `json:"user_type"`
+	// Any of "common", "reseller", "seller".
+	UserType UserUserType `json:"user_type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Activated   respjson.Field
-		AuthTypes   respjson.Field
-		Client      respjson.Field
-		Company     respjson.Field
-		Deleted     respjson.Field
-		Email       respjson.Field
-		Groups      respjson.Field
-		Lang        respjson.Field
-		Name        respjson.Field
-		Phone       respjson.Field
-		Reseller    respjson.Field
-		SSOAuth     respjson.Field
-		TwoFa       respjson.Field
-		UserType    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID             respjson.Field
+		Activated      respjson.Field
+		AuthTypes      respjson.Field
+		Client         respjson.Field
+		ClientAndRoles respjson.Field
+		Company        respjson.Field
+		Deleted        respjson.Field
+		Email          respjson.Field
+		Groups         respjson.Field
+		IsActive       respjson.Field
+		Lang           respjson.Field
+		Name           respjson.Field
+		Phone          respjson.Field
+		Reseller       respjson.Field
+		SSOAuth        respjson.Field
+		TwoFa          respjson.Field
+		UserType       respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r User) RawJSON() string { return r.JSON.raw }
 func (r *User) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UserClientAndRole struct {
+	ClientCompanyName string `json:"client_company_name,required"`
+	ClientID          int64  `json:"client_id,required"`
+	// User's ID.
+	UserID int64 `json:"user_id,required"`
+	// User role in this client.
+	UserRoles []string `json:"user_roles,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ClientCompanyName respjson.Field
+		ClientID          respjson.Field
+		UserID            respjson.Field
+		UserRoles         respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserClientAndRole) RawJSON() string { return r.JSON.raw }
+func (r *UserClientAndRole) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -230,7 +260,9 @@ const (
 type UserUserType string
 
 const (
-	UserUserTypeCommon UserUserType = "common"
+	UserUserTypeCommon   UserUserType = "common"
+	UserUserTypeReseller UserUserType = "reseller"
+	UserUserTypeSeller   UserUserType = "seller"
 )
 
 type UserDetailed struct {
