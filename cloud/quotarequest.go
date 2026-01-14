@@ -803,11 +803,17 @@ func (r *QuotaRequestNewParamsRequestedLimitsRegionalLimit) UnmarshalJSON(data [
 }
 
 type QuotaRequestListParams struct {
+	// Filter limit requests created at or after this datetime (inclusive)
+	CreatedFrom param.Opt[time.Time] `query:"created_from,omitzero" format:"date-time" json:"-"`
+	// Filter limit requests created at or before this datetime (inclusive)
+	CreatedTo param.Opt[time.Time] `query:"created_to,omitzero" format:"date-time" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// List of limit request IDs for filtering
+	RequestIDs []int64 `query:"request_ids,omitzero" json:"-"`
 	// List of limit requests statuses for filtering
 	//
 	// Any of "done", "in progress", "rejected".
