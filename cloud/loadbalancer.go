@@ -430,8 +430,6 @@ type LoadBalancerFlavorDetail struct {
 	FlavorID string `json:"flavor_id,required"`
 	// Flavor name
 	FlavorName string `json:"flavor_name,required"`
-	// Additional hardware description.
-	HardwareDescription LoadBalancerFlavorDetailHardwareDescriptionUnion `json:"hardware_description,required"`
 	// RAM size in MiB
 	Ram int64 `json:"ram,required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
@@ -448,74 +446,22 @@ type LoadBalancerFlavorDetail struct {
 	PriceStatus LoadBalancerFlavorDetailPriceStatus `json:"price_status,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FlavorID            respjson.Field
-		FlavorName          respjson.Field
-		HardwareDescription respjson.Field
-		Ram                 respjson.Field
-		Vcpus               respjson.Field
-		CurrencyCode        respjson.Field
-		PricePerHour        respjson.Field
-		PricePerMonth       respjson.Field
-		PriceStatus         respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		FlavorID      respjson.Field
+		FlavorName    respjson.Field
+		Ram           respjson.Field
+		Vcpus         respjson.Field
+		CurrencyCode  respjson.Field
+		PricePerHour  respjson.Field
+		PricePerMonth respjson.Field
+		PriceStatus   respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r LoadBalancerFlavorDetail) RawJSON() string { return r.JSON.raw }
 func (r *LoadBalancerFlavorDetail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// LoadBalancerFlavorDetailHardwareDescriptionUnion contains all possible
-// properties and values from [FlavorHardwareDescription], [map[string]any].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfLoadBalancerFlavorDetailHardwareDescriptionMapItem]
-type LoadBalancerFlavorDetailHardwareDescriptionUnion struct {
-	// This field will be present if the value is a [any] instead of an object.
-	OfLoadBalancerFlavorDetailHardwareDescriptionMapItem any `json:",inline"`
-	// This field is from variant [FlavorHardwareDescription].
-	CPU string `json:"cpu"`
-	// This field is from variant [FlavorHardwareDescription].
-	Disk string `json:"disk"`
-	// This field is from variant [FlavorHardwareDescription].
-	Ephemeral string `json:"ephemeral"`
-	// This field is from variant [FlavorHardwareDescription].
-	GPU string `json:"gpu"`
-	// This field is from variant [FlavorHardwareDescription].
-	Network string `json:"network"`
-	// This field is from variant [FlavorHardwareDescription].
-	Ram  string `json:"ram"`
-	JSON struct {
-		OfLoadBalancerFlavorDetailHardwareDescriptionMapItem respjson.Field
-		CPU                                                  respjson.Field
-		Disk                                                 respjson.Field
-		Ephemeral                                            respjson.Field
-		GPU                                                  respjson.Field
-		Network                                              respjson.Field
-		Ram                                                  respjson.Field
-		raw                                                  string
-	} `json:"-"`
-}
-
-func (u LoadBalancerFlavorDetailHardwareDescriptionUnion) AsFlavorHardwareDescriptionSchemaHardwareHintsForAFlavor() (v FlavorHardwareDescription) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u LoadBalancerFlavorDetailHardwareDescriptionUnion) AsAnyMap() (v map[string]any) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u LoadBalancerFlavorDetailHardwareDescriptionUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *LoadBalancerFlavorDetailHardwareDescriptionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -559,8 +505,6 @@ type LoadBalancerFlavorListResultUnion struct {
 	Ram        int64  `json:"ram"`
 	Vcpus      int64  `json:"vcpus"`
 	// This field is from variant [LoadBalancerFlavorDetail].
-	HardwareDescription LoadBalancerFlavorDetailHardwareDescriptionUnion `json:"hardware_description"`
-	// This field is from variant [LoadBalancerFlavorDetail].
 	CurrencyCode string `json:"currency_code"`
 	// This field is from variant [LoadBalancerFlavorDetail].
 	PricePerHour float64 `json:"price_per_hour"`
@@ -569,16 +513,15 @@ type LoadBalancerFlavorListResultUnion struct {
 	// This field is from variant [LoadBalancerFlavorDetail].
 	PriceStatus LoadBalancerFlavorDetailPriceStatus `json:"price_status"`
 	JSON        struct {
-		FlavorID            respjson.Field
-		FlavorName          respjson.Field
-		Ram                 respjson.Field
-		Vcpus               respjson.Field
-		HardwareDescription respjson.Field
-		CurrencyCode        respjson.Field
-		PricePerHour        respjson.Field
-		PricePerMonth       respjson.Field
-		PriceStatus         respjson.Field
-		raw                 string
+		FlavorID      respjson.Field
+		FlavorName    respjson.Field
+		Ram           respjson.Field
+		Vcpus         respjson.Field
+		CurrencyCode  respjson.Field
+		PricePerHour  respjson.Field
+		PricePerMonth respjson.Field
+		PriceStatus   respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -920,8 +863,12 @@ type LoadBalancerListenerDetail struct {
 	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData int64 `json:"timeout_client_data,required"`
 	// Backend member connection timeout in milliseconds
+	//
+	// Deprecated: deprecated
 	TimeoutMemberConnect int64 `json:"timeout_member_connect,required"`
 	// Backend member inactivity timeout in milliseconds
+	//
+	// Deprecated: deprecated
 	TimeoutMemberData int64 `json:"timeout_member_data,required"`
 	// Load balancer listener users list
 	UserList []LoadBalancerListenerDetailUserList `json:"user_list,required"`
@@ -1098,6 +1045,8 @@ type LoadBalancerPool struct {
 	// resource is not locked.
 	TaskID string `json:"task_id,required" format:"uuid4"`
 	// Frontend client inactivity timeout in milliseconds
+	//
+	// Deprecated: deprecated
 	TimeoutClientData int64 `json:"timeout_client_data,required"`
 	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect int64 `json:"timeout_member_connect,required"`
@@ -1234,6 +1183,8 @@ type LoadBalancerPoolListResult struct {
 	// resource is not locked.
 	TaskID string `json:"task_id,required" format:"uuid4"`
 	// Frontend client inactivity timeout in milliseconds
+	//
+	// Deprecated: deprecated
 	TimeoutClientData int64 `json:"timeout_client_data,required"`
 	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect int64 `json:"timeout_member_connect,required"`
@@ -1785,9 +1736,15 @@ type LoadBalancerNewParamsListener struct {
 	ProtocolPort int64 `json:"protocol_port,required"`
 	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
-	// Backend member connection timeout in milliseconds
+	// Backend member connection timeout in milliseconds. We are recommending to use
+	// `pool.timeout_member_connect` instead.
+	//
+	// Deprecated: deprecated
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
-	// Backend member inactivity timeout in milliseconds
+	// Backend member inactivity timeout in milliseconds. We are recommending to use
+	// `pool.timeout_member_data` instead.
+	//
+	// Deprecated: deprecated
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
 	// Limit of the simultaneous connections. If -1 is provided, it is translated to
 	// the default value 100000.
@@ -1836,7 +1793,10 @@ type LoadBalancerNewParamsListenerPool struct {
 	CrlSecretID param.Opt[string] `json:"crl_secret_id,omitzero" format:"uuid4"`
 	// Secret ID for TLS client authentication to the member servers
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
-	// Frontend client inactivity timeout in milliseconds
+	// Frontend client inactivity timeout in milliseconds. We are recommending to use
+	// `listener.timeout_client_data` instead.
+	//
+	// Deprecated: deprecated
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
 	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`

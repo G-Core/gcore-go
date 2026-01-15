@@ -204,7 +204,8 @@ type LoadBalancerPoolNewParams struct {
 	LoadBalancerID param.Opt[string] `json:"load_balancer_id,omitzero" format:"uuid4"`
 	// Secret ID for TLS client authentication to the member servers
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
-	// Frontend client inactivity timeout in milliseconds
+	// Frontend client inactivity timeout in milliseconds. We are recommending to use
+	// `listener.timeout_client_data` instead.
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
 	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
@@ -357,7 +358,8 @@ type LoadBalancerPoolUpdateParams struct {
 	CrlSecretID param.Opt[string] `json:"crl_secret_id,omitzero" format:"uuid4"`
 	// Secret ID for TLS client authentication to the member servers
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
-	// Frontend client inactivity timeout in milliseconds
+	// Frontend client inactivity timeout in milliseconds. We are recommending to use
+	// `listener.timeout_client_data` instead.
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
 	// Backend member connection timeout in milliseconds
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
