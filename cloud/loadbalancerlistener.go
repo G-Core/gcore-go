@@ -282,9 +282,11 @@ type LoadBalancerListenerNewParams struct {
 	ProtocolPort int64 `json:"protocol_port,required"`
 	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
-	// Backend member connection timeout in milliseconds
+	// Backend member connection timeout in milliseconds. We are recommending to use
+	// `pool.timeout_member_connect` instead.
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
-	// Backend member inactivity timeout in milliseconds
+	// Backend member inactivity timeout in milliseconds. We are recommending to use
+	// `pool.timeout_member_data` instead.
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
 	// Limit of the simultaneous connections. If -1 is provided, it is translated to
 	// the default value 100000.
@@ -342,9 +344,11 @@ type LoadBalancerListenerUpdateParams struct {
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
 	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
-	// Backend member connection timeout in milliseconds
+	// Backend member connection timeout in milliseconds. We are recommending to use
+	// `pool.timeout_member_connect` instead.
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
-	// Backend member inactivity timeout in milliseconds
+	// Backend member inactivity timeout in milliseconds. We are recommending to use
+	// `pool.timeout_member_data` instead.
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
 	// Limit of simultaneous connections. If -1 is provided, it is translated to the
 	// default value 100000.

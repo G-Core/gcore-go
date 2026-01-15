@@ -597,38 +597,6 @@ func (r *FixedAddressShort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FlavorHardwareDescription struct {
-	// Human-readable CPU description
-	CPU string `json:"cpu,nullable"`
-	// Human-readable disk description
-	Disk string `json:"disk,nullable"`
-	// Human-readable ephemeral disk description
-	Ephemeral string `json:"ephemeral,nullable"`
-	// Human-readable GPU description
-	GPU string `json:"gpu,nullable"`
-	// Human-readable NIC description
-	Network string `json:"network,nullable"`
-	// Human-readable RAM description
-	Ram string `json:"ram,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CPU         respjson.Field
-		Disk        respjson.Field
-		Ephemeral   respjson.Field
-		GPU         respjson.Field
-		Network     respjson.Field
-		Ram         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
-func (r *FlavorHardwareDescription) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Schema for `floating` addresses.
 type FloatingAddress struct {
 	// Address
