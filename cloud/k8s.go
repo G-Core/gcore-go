@@ -40,7 +40,7 @@ func NewK8SService(opts ...option.RequestOption) (r K8SService) {
 }
 
 // List available k8s cluster versions for creation
-func (r *K8SService) ListVersions(ctx context.Context, query K8SListVersionsParams, opts ...option.RequestOption) (res *K8SListVersionsResponse, err error) {
+func (r *K8SService) ListVersions(ctx context.Context, query K8SListVersionsParams, opts ...option.RequestOption) (res *K8SClusterVersionList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -78,7 +78,7 @@ func (r *K8SClusterVersion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8SListVersionsResponse struct {
+type K8SClusterVersionList struct {
 	// Number of objects
 	Count int64 `json:"count,required"`
 	// Objects
@@ -93,8 +93,8 @@ type K8SListVersionsResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8SListVersionsResponse) RawJSON() string { return r.JSON.raw }
-func (r *K8SListVersionsResponse) UnmarshalJSON(data []byte) error {
+func (r K8SClusterVersionList) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterVersionList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

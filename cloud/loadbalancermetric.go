@@ -13,7 +13,6 @@ import (
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
-	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // LoadBalancerMetricService contains methods and other services that help with
@@ -36,7 +35,7 @@ func NewLoadBalancerMetricService(opts ...option.RequestOption) (r LoadBalancerM
 }
 
 // Get load balancer metrics, including cpu, memory and network
-func (r *LoadBalancerMetricService) List(ctx context.Context, loadBalancerID string, params LoadBalancerMetricListParams, opts ...option.RequestOption) (res *LoadBalancerMetricListResponse, err error) {
+func (r *LoadBalancerMetricService) List(ctx context.Context, loadBalancerID string, params LoadBalancerMetricListParams, opts ...option.RequestOption) (res *LoadBalancerMetricsList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -59,26 +58,6 @@ func (r *LoadBalancerMetricService) List(ctx context.Context, loadBalancerID str
 	path := fmt.Sprintf("cloud/v1/loadbalancers/%v/%v/%s/metrics", params.ProjectID.Value, params.RegionID.Value, loadBalancerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
-}
-
-type LoadBalancerMetricListResponse struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []LoadBalancerMetrics `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerMetricListResponse) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerMetricListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type LoadBalancerMetricListParams struct {

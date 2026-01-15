@@ -528,6 +528,103 @@ const (
 	LoadBalancerFlavorDetailPriceStatusShow  LoadBalancerFlavorDetailPriceStatus = "show"
 )
 
+type LoadBalancerFlavorList struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []LoadBalancerFlavorListResultUnion `json:"results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerFlavorList) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerFlavorList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// LoadBalancerFlavorListResultUnion contains all possible properties and values
+// from [LoadBalancerFlavorListResultLbFlavorSerializer],
+// [LoadBalancerFlavorDetail].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type LoadBalancerFlavorListResultUnion struct {
+	FlavorID   string `json:"flavor_id"`
+	FlavorName string `json:"flavor_name"`
+	Ram        int64  `json:"ram"`
+	Vcpus      int64  `json:"vcpus"`
+	// This field is from variant [LoadBalancerFlavorDetail].
+	HardwareDescription LoadBalancerFlavorDetailHardwareDescriptionUnion `json:"hardware_description"`
+	// This field is from variant [LoadBalancerFlavorDetail].
+	CurrencyCode string `json:"currency_code"`
+	// This field is from variant [LoadBalancerFlavorDetail].
+	PricePerHour float64 `json:"price_per_hour"`
+	// This field is from variant [LoadBalancerFlavorDetail].
+	PricePerMonth float64 `json:"price_per_month"`
+	// This field is from variant [LoadBalancerFlavorDetail].
+	PriceStatus LoadBalancerFlavorDetailPriceStatus `json:"price_status"`
+	JSON        struct {
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		Ram                 respjson.Field
+		Vcpus               respjson.Field
+		HardwareDescription respjson.Field
+		CurrencyCode        respjson.Field
+		PricePerHour        respjson.Field
+		PricePerMonth       respjson.Field
+		PriceStatus         respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+func (u LoadBalancerFlavorListResultUnion) AsLbFlavorSerializer() (v LoadBalancerFlavorListResultLbFlavorSerializer) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u LoadBalancerFlavorListResultUnion) AsOptionalPriceSchema() (v LoadBalancerFlavorDetail) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u LoadBalancerFlavorListResultUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *LoadBalancerFlavorListResultUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerFlavorListResultLbFlavorSerializer struct {
+	// Flavor ID is the same as name
+	FlavorID string `json:"flavor_id,required"`
+	// Flavor name
+	FlavorName string `json:"flavor_name,required"`
+	// RAM size in MiB
+	Ram int64 `json:"ram,required"`
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
+	Vcpus int64 `json:"vcpus,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FlavorID    respjson.Field
+		FlavorName  respjson.Field
+		Ram         respjson.Field
+		Vcpus       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerFlavorListResultLbFlavorSerializer) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerFlavorListResultLbFlavorSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type LoadBalancerL7Policy struct {
 	// ID
 	ID string `json:"id,required"`
@@ -936,6 +1033,26 @@ func (r *LoadBalancerMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type LoadBalancerMetricsList struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []LoadBalancerMetrics `json:"results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerMetricsList) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerMetricsList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type LoadBalancerPool struct {
 	// Pool ID
 	ID string `json:"id,required" format:"uuid4"`
@@ -1302,6 +1419,26 @@ type LoadBalancerStatus struct {
 // Returns the unmodified JSON received from the API
 func (r LoadBalancerStatus) RawJSON() string { return r.JSON.raw }
 func (r *LoadBalancerStatus) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerStatusList struct {
+	// Number of objects
+	Count int64 `json:"count,required"`
+	// Objects
+	Results []LoadBalancerStatus `json:"results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerStatusList) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerStatusList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
