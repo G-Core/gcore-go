@@ -157,7 +157,7 @@ func (r *K8SClusterService) UpdateAndPoll(ctx context.Context, clusterName strin
 }
 
 // List k8s clusters
-func (r *K8SClusterService) List(ctx context.Context, query K8SClusterListParams, opts ...option.RequestOption) (res *K8SClusterListResponse, err error) {
+func (r *K8SClusterService) List(ctx context.Context, query K8SClusterListParams, opts ...option.RequestOption) (res *K8SClusterList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -300,7 +300,7 @@ func (r *K8SClusterService) GetKubeconfig(ctx context.Context, clusterName strin
 }
 
 // List available k8s cluster versions for upgrade
-func (r *K8SClusterService) ListVersionsForUpgrade(ctx context.Context, clusterName string, query K8SClusterListVersionsForUpgradeParams, opts ...option.RequestOption) (res *K8SClusterListVersionsForUpgradeResponse, err error) {
+func (r *K8SClusterService) ListVersionsForUpgrade(ctx context.Context, clusterName string, query K8SClusterListVersionsForUpgradeParams, opts ...option.RequestOption) (res *K8SClusterVersionList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -815,7 +815,7 @@ func (r *K8SClusterKubeconfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8SClusterListResponse struct {
+type K8SClusterList struct {
 	// Number of objects
 	Count int64 `json:"count,required"`
 	// Objects
@@ -830,28 +830,8 @@ type K8SClusterListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r K8SClusterListResponse) RawJSON() string { return r.JSON.raw }
-func (r *K8SClusterListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type K8SClusterListVersionsForUpgradeResponse struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []K8SClusterVersion `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r K8SClusterListVersionsForUpgradeResponse) RawJSON() string { return r.JSON.raw }
-func (r *K8SClusterListVersionsForUpgradeResponse) UnmarshalJSON(data []byte) error {
+func (r K8SClusterList) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -36,7 +36,7 @@ func NewReservedFixedIPVipConnectedPortService(opts ...option.RequestOption) (r 
 }
 
 // List all instance ports that share a VIP.
-func (r *ReservedFixedIPVipConnectedPortService) List(ctx context.Context, portID string, query ReservedFixedIPVipConnectedPortListParams, opts ...option.RequestOption) (res *ReservedFixedIPVipConnectedPortListResponse, err error) {
+func (r *ReservedFixedIPVipConnectedPortService) List(ctx context.Context, portID string, query ReservedFixedIPVipConnectedPortListParams, opts ...option.RequestOption) (res *ConnectedPortList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -62,7 +62,7 @@ func (r *ReservedFixedIPVipConnectedPortService) List(ctx context.Context, portI
 }
 
 // Add instance ports to share a VIP.
-func (r *ReservedFixedIPVipConnectedPortService) Add(ctx context.Context, portID string, params ReservedFixedIPVipConnectedPortAddParams, opts ...option.RequestOption) (res *ReservedFixedIPVipConnectedPortAddResponse, err error) {
+func (r *ReservedFixedIPVipConnectedPortService) Add(ctx context.Context, portID string, params ReservedFixedIPVipConnectedPortAddParams, opts ...option.RequestOption) (res *ConnectedPortList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -88,7 +88,7 @@ func (r *ReservedFixedIPVipConnectedPortService) Add(ctx context.Context, portID
 }
 
 // Replace the list of instance ports that share a VIP.
-func (r *ReservedFixedIPVipConnectedPortService) Replace(ctx context.Context, portID string, params ReservedFixedIPVipConnectedPortReplaceParams, opts ...option.RequestOption) (res *ReservedFixedIPVipConnectedPortReplaceResponse, err error) {
+func (r *ReservedFixedIPVipConnectedPortService) Replace(ctx context.Context, portID string, params ReservedFixedIPVipConnectedPortReplaceParams, opts ...option.RequestOption) (res *ConnectedPortList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -142,7 +142,7 @@ func (r *ConnectedPort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReservedFixedIPVipConnectedPortListResponse struct {
+type ConnectedPortList struct {
 	// Number of objects
 	Count int64 `json:"count,required"`
 	// Objects
@@ -157,48 +157,8 @@ type ReservedFixedIPVipConnectedPortListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReservedFixedIPVipConnectedPortListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ReservedFixedIPVipConnectedPortListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReservedFixedIPVipConnectedPortAddResponse struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []ConnectedPort `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReservedFixedIPVipConnectedPortAddResponse) RawJSON() string { return r.JSON.raw }
-func (r *ReservedFixedIPVipConnectedPortAddResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReservedFixedIPVipConnectedPortReplaceResponse struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []ConnectedPort `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReservedFixedIPVipConnectedPortReplaceResponse) RawJSON() string { return r.JSON.raw }
-func (r *ReservedFixedIPVipConnectedPortReplaceResponse) UnmarshalJSON(data []byte) error {
+func (r ConnectedPortList) RawJSON() string { return r.JSON.raw }
+func (r *ConnectedPortList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

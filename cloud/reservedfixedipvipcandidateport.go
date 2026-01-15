@@ -36,7 +36,7 @@ func NewReservedFixedIPVipCandidatePortService(opts ...option.RequestOption) (r 
 }
 
 // List all instance ports that are available for connecting to a VIP.
-func (r *ReservedFixedIPVipCandidatePortService) List(ctx context.Context, portID string, query ReservedFixedIPVipCandidatePortListParams, opts ...option.RequestOption) (res *ReservedFixedIPVipCandidatePortListResponse, err error) {
+func (r *ReservedFixedIPVipCandidatePortService) List(ctx context.Context, portID string, query ReservedFixedIPVipCandidatePortListParams, opts ...option.RequestOption) (res *CandidatePortList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -90,7 +90,7 @@ func (r *CandidatePort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReservedFixedIPVipCandidatePortListResponse struct {
+type CandidatePortList struct {
 	// Number of objects
 	Count int64 `json:"count,required"`
 	// Objects
@@ -105,8 +105,8 @@ type ReservedFixedIPVipCandidatePortListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReservedFixedIPVipCandidatePortListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ReservedFixedIPVipCandidatePortListResponse) UnmarshalJSON(data []byte) error {
+func (r CandidatePortList) RawJSON() string { return r.JSON.raw }
+func (r *CandidatePortList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
