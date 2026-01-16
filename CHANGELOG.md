@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.29.0 (2026-01-16)
+
+Full Changelog: [v0.28.0...v0.29.0](https://github.com/G-Core/gcore-go/compare/v0.28.0...v0.29.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** rename instance flavor model
+
+### Features
+
+* **api:** aggregated API specs update ([829c406](https://github.com/G-Core/gcore-go/commit/829c406aef99ac36dd667639dada8500d0dbd803))
+* **api:** aggregated API specs update ([5350d10](https://github.com/G-Core/gcore-go/commit/5350d10163c171a8a3e697ba1aecae76b0366172))
+* **api:** aggregated API specs update ([13c4492](https://github.com/G-Core/gcore-go/commit/13c4492cbe751c60b87939edf2750b032212fa62))
+* **api:** aggregated API specs update ([16c7802](https://github.com/G-Core/gcore-go/commit/16c78022030fca1b64099515b2571915ba05a94e))
+* **api:** aggregated API specs update ([07744bb](https://github.com/G-Core/gcore-go/commit/07744bb2d3c14169ba90a5c3e71a3a9e8b0f2c8c))
+* **api:** aggregated API specs update ([9b8f671](https://github.com/G-Core/gcore-go/commit/9b8f67124e06e83d649bb2816934ec9a39d29112))
+* **api:** aggregated API specs update ([f4105db](https://github.com/G-Core/gcore-go/commit/f4105db3d1260f731a66b7f80cd33dbb8a49d781))
+* **api:** aggregated API specs update ([f526e50](https://github.com/G-Core/gcore-go/commit/f526e509221674076b2b615cc2b40d80a81c6d86))
+* **api:** aggregated API specs update ([7d99890](https://github.com/G-Core/gcore-go/commit/7d9989033eea0989ecd5334c5bed86d1115f38e7))
+* **api:** aggregated API specs update ([bd91bd3](https://github.com/G-Core/gcore-go/commit/bd91bd3f02b8a689058b1150cd44ef071a4396af))
+* **cloud:** add polling methods to volume snapshot ([0aa60dc](https://github.com/G-Core/gcore-go/commit/0aa60dc8e4df070fd2c5144c5dc963a0be01260c))
+* **cloud:** add support for volume snapshots ([7c7a8fa](https://github.com/G-Core/gcore-go/commit/7c7a8faf4ea08b72fff7ac4df9419dbb40c134df))
+
+
+### Bug Fixes
+
+* **cloud:** extraction of clusterID in NewAndPoll for GPU virtual clusters ([e2cdc36](https://github.com/G-Core/gcore-go/commit/e2cdc3628601d46184f384275b85100a43545f29))
+* **cloud:** rename instance flavor model ([4484199](https://github.com/G-Core/gcore-go/commit/448419907f0f4fd5061e6835656ac3c747923b06))
+* **docs:** add missing pointer prefix to api.md return types ([ca0d973](https://github.com/G-Core/gcore-go/commit/ca0d973156ff4d0952e22213b01dcdbe291d05c4))
+* use correct collection models ([1c0ea66](https://github.com/G-Core/gcore-go/commit/1c0ea661f6c16594adfe40c3b9279f2a7e96c62c))
+
+
+### Chores
+
+* **internal:** update `actions/checkout` version ([317a1f1](https://github.com/G-Core/gcore-go/commit/317a1f136861cc1acb279a18e74749a6a0200942))
+
 ## 0.28.0 (2025-12-30)
 
 Full Changelog: [v0.27.0...v0.28.0](https://github.com/G-Core/gcore-go/compare/v0.27.0...v0.28.0)
