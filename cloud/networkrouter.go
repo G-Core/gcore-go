@@ -102,7 +102,8 @@ func (r *NetworkRouterService) NewAndPoll(ctx context.Context, params NetworkRou
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
-// Update the configuration of an existing router.
+// Update the configuration of an existing router. **Deprecated**: Use PATCH
+// /v2/routers/{`project_id`}/{`region_id`}/{`router_id`}
 func (r *NetworkRouterService) Update(ctx context.Context, routerID string, params NetworkRouterUpdateParams, opts ...option.RequestOption) (res *Router, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -529,6 +530,24 @@ func init() {
 	)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer](
+		"type", "default",
+	)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[NetworkRouterNewParamsInterface](
+		"type", "subnet",
+	)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[NetworkRouterUpdateParamsExternalGatewayInfo](
+		"type", "manual",
+	)
+}
+
 type NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer struct {
 	// Is SNAT enabled. Defaults to true.
 	EnableSnat param.Opt[bool] `json:"enable_snat,omitzero"`
@@ -545,12 +564,6 @@ func (r NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializ
 }
 func (r *NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer](
-		"type", "default",
-	)
 }
 
 // The property SubnetID is required.
@@ -570,12 +583,6 @@ func (r NetworkRouterNewParamsInterface) MarshalJSON() (data []byte, err error) 
 }
 func (r *NetworkRouterNewParamsInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[NetworkRouterNewParamsInterface](
-		"type", "subnet",
-	)
 }
 
 // The properties Destination, Nexthop are required.
@@ -637,12 +644,6 @@ func (r NetworkRouterUpdateParamsExternalGatewayInfo) MarshalJSON() (data []byte
 }
 func (r *NetworkRouterUpdateParamsExternalGatewayInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[NetworkRouterUpdateParamsExternalGatewayInfo](
-		"type", "manual",
-	)
 }
 
 // The properties Destination, Nexthop are required.
