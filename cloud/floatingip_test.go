@@ -149,10 +149,10 @@ func TestFloatingIPAssignWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.FloatingIPs.Assign(
 		context.TODO(),
-		"floating_ip_id",
+		"c64e5db1-5f1f-43ec-a8d9-5090df85b82d",
 		cloud.FloatingIPAssignParams{
-			ProjectID:      gcore.Int(0),
-			RegionID:       gcore.Int(0),
+			ProjectID:      gcore.Int(1),
+			RegionID:       gcore.Int(1),
 			PortID:         "ee2402d0-f0cd-4503-9b75-69be1d11c5f1",
 			FixedIPAddress: gcore.String("192.168.10.15"),
 		},
@@ -209,10 +209,10 @@ func TestFloatingIPUnassign(t *testing.T) {
 	)
 	_, err := client.Cloud.FloatingIPs.Unassign(
 		context.TODO(),
-		"floating_ip_id",
+		"c64e5db1-5f1f-43ec-a8d9-5090df85b82d",
 		cloud.FloatingIPUnassignParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
