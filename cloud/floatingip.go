@@ -66,7 +66,10 @@ func (r *FloatingIPService) New(ctx context.Context, params FloatingIPNewParams,
 	return
 }
 
-// Update floating IP
+// **Deprecated**: Use PATCH
+// /v2/floatingips/{`project_id`}/{`region_id`}/{`floating_ip_id`} instead
+//
+// Deprecated: deprecated
 func (r *FloatingIPService) Update(ctx context.Context, floatingIPID string, params FloatingIPUpdateParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -156,6 +159,11 @@ func (r *FloatingIPService) Delete(ctx context.Context, floatingIPID string, bod
 }
 
 // Assign floating IP to instance or loadbalancer
+//
+// **Deprecated**: Use PATCH
+// /v2/floatingips/{`project_id`}/{`region_id`}/{`floating_ip_id`} instead
+//
+// Deprecated: deprecated
 func (r *FloatingIPService) Assign(ctx context.Context, floatingIPID string, params FloatingIPAssignParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -207,7 +215,10 @@ func (r *FloatingIPService) Get(ctx context.Context, floatingIPID string, query 
 	return
 }
 
-// Unassign floating IP
+// **Deprecated**: Use PATCH
+// /v2/floatingips/{`project_id`}/{`region_id`}/{`floating_ip_id`} instead
+//
+// Deprecated: deprecated
 func (r *FloatingIPService) Unassign(ctx context.Context, floatingIPID string, body FloatingIPUnassignParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -606,8 +617,10 @@ type FloatingIPDeleteParams struct {
 }
 
 type FloatingIPAssignParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Port ID
 	PortID string `json:"port_id,required" format:"uuid4"`
 	// Fixed IP address
@@ -632,7 +645,9 @@ type FloatingIPGetParams struct {
 }
 
 type FloatingIPUnassignParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
