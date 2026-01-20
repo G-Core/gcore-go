@@ -60,8 +60,10 @@ func TestFloatingIPUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"c64e5db1-5f1f-43ec-a8d9-5090df85b82d",
 		cloud.FloatingIPUpdateParams{
-			ProjectID: gcore.Int(1),
-			RegionID:  gcore.Int(1),
+			ProjectID:      gcore.Int(1),
+			RegionID:       gcore.Int(1),
+			FixedIPAddress: gcore.String("192.168.10.15"),
+			PortID:         gcore.String("ee2402d0-f0cd-4503-9b75-69be1d11c5f1"),
 			Tags: cloud.TagUpdateMap{
 				"foo": "my-tag-value",
 			},
