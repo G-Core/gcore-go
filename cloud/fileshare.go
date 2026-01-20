@@ -68,13 +68,14 @@ func (r *FileShareService) New(ctx context.Context, params FileShareNewParams, o
 
 // NewAndPoll creates a new file share and polls for completion
 func (r *FileShareService) NewAndPoll(ctx context.Context, params FileShareNewParams, opts ...option.RequestOption) (v *FileShare, err error) {
-	resource, err := r.New(ctx, params, opts...)
+	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.New(ctx, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -88,7 +89,12 @@ func (r *FileShareService) NewAndPoll(ctx context.Context, params FileShareNewPa
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -98,7 +104,9 @@ func (r *FileShareService) NewAndPoll(ctx context.Context, params FileShareNewPa
 	}
 	resourceID := task.CreatedResources.FileShares[0]
 
-	return r.Get(ctx, resourceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // Rename file share, update tags or set share specific properties
@@ -128,7 +136,9 @@ func (r *FileShareService) Update(ctx context.Context, fileShareID string, param
 }
 
 func (r *FileShareService) UpdateAndPoll(ctx context.Context, fileShareID string, params FileShareUpdateParams, opts ...option.RequestOption) (res *FileShare, err error) {
-	resource, err := r.Update(ctx, fileShareID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Update returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Update(ctx, fileShareID, params, actionOpts...)
 	if err != nil {
 		return
 	}
@@ -148,12 +158,19 @@ func (r *FileShareService) UpdateAndPoll(ctx context.Context, fileShareID string
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.Get(ctx, fileShareID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, fileShareID, getParams, getOpts...)
 }
 
 // List file shares
@@ -222,17 +239,23 @@ func (r *FileShareService) Delete(ctx context.Context, fileShareID string, body 
 // DeleteAndPoll deletes a file share and polls for completion of the first task. Use the [TaskService.Poll] method if you
 // need to poll for all tasks.
 func (r *FileShareService) DeleteAndPoll(ctx context.Context, fileShareID string, body FileShareDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, fileShareID, body, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, fileShareID, body, actionOpts...)
 	if err != nil {
 		return err
 	}
 
-	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 
@@ -291,7 +314,9 @@ func (r *FileShareService) Resize(ctx context.Context, fileShareID string, param
 // ResizeAndPoll resizes a file share and polls for completion of the first task. Use the [TaskService.Poll] method if you
 // need to poll for all tasks.
 func (r *FileShareService) ResizeAndPoll(ctx context.Context, fileShareID string, params FileShareResizeParams, opts ...option.RequestOption) (v *FileShare, err error) {
-	resource, err := r.Resize(ctx, fileShareID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Resize returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Resize(ctx, fileShareID, params, actionOpts...)
 	if err != nil {
 		return
 	}
@@ -311,12 +336,19 @@ func (r *FileShareService) ResizeAndPoll(ctx context.Context, fileShareID string
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.Get(ctx, fileShareID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, fileShareID, getParams, getOpts...)
 }
 
 type FileShare struct {
