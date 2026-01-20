@@ -49,8 +49,8 @@ func main() {
 	listAllFloatingIPs(&client)
 	getFloatingIPByID(&client, floatingIP.ID)
 	updateFloatingIP(&client, floatingIP.ID)
-	assignFloatingIP(&client, floatingIP.ID, portID)
-	unassignFloatingIP(&client, floatingIP.ID)
+	updateAndAssignFloatingIP(&client, floatingIP.ID, portID)
+	updateAndUnassignFloatingIP(&client, floatingIP.ID)
 	deleteFloatingIP(&client, floatingIP.ID)
 }
 
@@ -108,35 +108,6 @@ func getFloatingIPByID(client *gcore.Client, floatingIPID string) {
 	fmt.Println("==============================")
 }
 
-func assignFloatingIP(client *gcore.Client, floatingIPID string, portID string) {
-	fmt.Println("\n=== ASSIGN FLOATING IP ===")
-
-	params := cloud.FloatingIPAssignParams{
-		PortID: portID,
-	}
-
-	floatingIP, err := client.Cloud.FloatingIPs.Assign(context.Background(), floatingIPID, params)
-	if err != nil {
-		log.Fatalf("Error assigning floating IP: %v", err)
-	}
-
-	fmt.Printf("Assigned Floating IP: ID=%s, PortID=%v, FixedIPAddress=%v\n",
-		floatingIP.ID, floatingIP.PortID, floatingIP.FixedIPAddress)
-	fmt.Println("===========================")
-}
-
-func unassignFloatingIP(client *gcore.Client, floatingIPID string) {
-	fmt.Println("\n=== UNASSIGN FLOATING IP ===")
-
-	floatingIP, err := client.Cloud.FloatingIPs.Unassign(context.Background(), floatingIPID, cloud.FloatingIPUnassignParams{})
-	if err != nil {
-		log.Fatalf("Error unassigning floating IP: %v", err)
-	}
-
-	fmt.Printf("Unassigned Floating IP: ID=%s\n", floatingIP.ID)
-	fmt.Println("=============================")
-}
-
 func deleteFloatingIP(client *gcore.Client, floatingIPID string) {
 	fmt.Println("\n=== DELETE FLOATING IP ===")
 
@@ -150,17 +121,51 @@ func deleteFloatingIP(client *gcore.Client, floatingIPID string) {
 }
 
 func updateFloatingIP(client *gcore.Client, floatingIPID string) {
-	fmt.Println("\n=== UPDATE FLOATING IP ===")
+	fmt.Println("\n=== UPDATE FLOATING IP (TAGS ONLY) ===")
 
 	params := cloud.FloatingIPUpdateParams{
 		Tags: map[string]string{"env": "prod"},
 	}
-	floatingIP, err := client.Cloud.FloatingIPs.Update(context.Background(), floatingIPID, params)
+	floatingIP, err := client.Cloud.FloatingIPs.UpdateAndPoll(context.Background(), floatingIPID, params)
 	if err != nil {
 		log.Fatalf("Error updating floating IP: %v", err)
 	}
 
 	fmt.Printf("Updated Floating IP: ID=%s, Status=%s, FloatingIPAddress=%s\n",
 		floatingIP.ID, floatingIP.Status, floatingIP.FloatingIPAddress)
+	fmt.Println("===========================")
+}
+
+func updateAndAssignFloatingIP(client *gcore.Client, floatingIPID string, portID string) {
+	fmt.Println("\n=== UPDATE AND ASSIGN FLOATING IP (v2 API) ===")
+
+	params := cloud.FloatingIPUpdateParams{
+		PortID: param.Opt[string]{Value: portID},
+		Tags:   map[string]string{"status": "assigned"},
+	}
+	floatingIP, err := client.Cloud.FloatingIPs.UpdateAndPoll(context.Background(), floatingIPID, params)
+	if err != nil {
+		log.Fatalf("Error updating and assigning floating IP: %v", err)
+	}
+
+	fmt.Printf("Assigned Floating IP: ID=%s, PortID=%v, FixedIPAddress=%v, Status=%s\n",
+		floatingIP.ID, floatingIP.PortID, floatingIP.FixedIPAddress, floatingIP.Status)
+	fmt.Println("===========================")
+}
+
+func updateAndUnassignFloatingIP(client *gcore.Client, floatingIPID string) {
+	fmt.Println("\n=== UPDATE AND UNASSIGN FLOATING IP (v2 API) ===")
+
+	// Setting PortID to null unassigns the floating IP
+	params := cloud.FloatingIPUpdateParams{
+		PortID: param.Null[string](),
+		Tags:   map[string]string{"status": "unassigned"},
+	}
+	floatingIP, err := client.Cloud.FloatingIPs.UpdateAndPoll(context.Background(), floatingIPID, params)
+	if err != nil {
+		log.Fatalf("Error updating and unassigning floating IP: %v", err)
+	}
+
+	fmt.Printf("Unassigned Floating IP: ID=%s, Status=%s\n", floatingIP.ID, floatingIP.Status)
 	fmt.Println("===========================")
 }
