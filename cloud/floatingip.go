@@ -66,11 +66,50 @@ func (r *FloatingIPService) New(ctx context.Context, params FloatingIPNewParams,
 	return
 }
 
-// **Deprecated**: Use PATCH
-// /v2/floatingips/{`project_id`}/{`region_id`}/{`floating_ip_id`} instead
+// This endpoint updates the association and tags of an existing Floating IP. The
+// behavior depends on the current association state and the provided fields:
 //
-// Deprecated: deprecated
-func (r *FloatingIPService) Update(ctx context.Context, floatingIPID string, params FloatingIPUpdateParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
+// Parameters:
+//
+// `port_id`: The unique identifier of the network interface (port) to which the
+// Floating IP should be assigned. This ID can be retrieved from the "Get instance"
+// or "List network interfaces" endpoints.
+//
+// `fixed_ip_address`: The private IP address assigned to the network interface.
+// This must be one of the IP addresses currently assigned to the specified port.
+// You can retrieve available fixed IP addresses from the "Get instance" or "List
+// network interfaces" endpoints.
+//
+// When the Floating IP has no port associated (`port_id` is null):
+//
+//   - Patch with both `port_id` and `fixed_ip_address`: Assign the Floating IP to
+//     the specified port and the provided `fixed_ip_address`, if that
+//     `fixed_ip_address` exists on the port and is not yet used by another Floating
+//     IP.
+//   - Patch with `port_id` only (`fixed_ip_address` omitted): Assign the Floating IP
+//     to the specified port using the first available IPv4 fixed IP of that port.
+//
+// When the Floating IP is already associated with a port:
+//
+//   - Patch with both `port_id` and `fixed_ip_address`: Re-assign the Floating IP to
+//     the specified port and address if all validations pass.
+//   - Patch with `port_id` only (`fixed_ip_address` omitted): Re-assign the Floating
+//     IP to the specified port using the first available IPv4 fixed IP of that port.
+//   - Patch with `port_id` = null: Unassign the Floating IP from its current port.
+//
+// Tags:
+//
+//   - You can update tags alongside association changes. Tags are provided as a list
+//     of key-value pairs.
+//
+// Idempotency and task creation:
+//
+//   - No worker task is created if the requested state is already actual, i.e., the
+//     requested `port_id` equals the current `port_id` and/or the requested
+//     `fixed_ip_address` equals the current `fixed_ip_address`, and the tags already
+//     match the current tags. In such cases, the endpoint returns an empty tasks
+//     list.
+func (r *FloatingIPService) Update(ctx context.Context, floatingIPID string, params FloatingIPUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -90,7 +129,7 @@ func (r *FloatingIPService) Update(ctx context.Context, floatingIPID string, par
 		err = errors.New("missing required floating_ip_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/floatingips/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, floatingIPID)
+	path := fmt.Sprintf("cloud/v2/floatingips/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, floatingIPID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
 }
@@ -540,6 +579,10 @@ type FloatingIPUpdateParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Fixed IP address
+	FixedIPAddress param.Opt[string] `json:"fixed_ip_address,omitzero" format:"ipv4"`
+	// Port ID
+	PortID param.Opt[string] `json:"port_id,omitzero" format:"uuid4"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
