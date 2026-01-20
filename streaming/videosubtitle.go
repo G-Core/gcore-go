@@ -52,7 +52,7 @@ func NewVideoSubtitleService(opts ...option.RequestOption) (r VideoSubtitleServi
 //
 // Language is 3-letter language code according to ISO-639-2 (bibliographic code).
 // Specify language you need, or just look at our list in the attribute
-// "`audio_language`" of section
+// "audio_language" of section
 // ["AI Speech Recognition"](/docs/api-reference/streaming/ai/create-ai-asr-task).
 //
 // You can add multiple subtitles in the same language, language uniqueness is not

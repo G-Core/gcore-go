@@ -200,7 +200,7 @@ func (r *BillingReservations) UnmarshalJSON(data []byte) error {
 }
 
 type BillingReservationListParams struct {
-	// Metric name for the resource (e.g., 'bm1-hf-`medium_min`')
+	// Metric name for the resource (e.g., 'bm1-hf-medium_min')
 	MetricName param.Opt[string] `query:"metric_name,omitzero" json:"-"`
 	// Region for reservation
 	RegionID param.Opt[int64] `query:"region_id,omitzero" json:"-"`

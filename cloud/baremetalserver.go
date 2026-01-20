@@ -495,12 +495,12 @@ type BaremetalServerNewParams struct {
 	// When only 'password' is provided, it is set as the password for the default user
 	// of the image. For Windows instances, 'username' cannot be specified. Use the
 	// 'password' field to set the password for the 'Admin' user on Windows. Use the
-	// '`user_data`' field to provide a script to create new users on Windows. The
-	// password of the Admin user cannot be updated via '`user_data`'.
+	// 'user_data' field to provide a script to create new users on Windows. The
+	// password of the Admin user cannot be updated via 'user_data'.
 	Password param.Opt[string] `json:"password,omitzero"`
-	// String in base64 format. For Linux instances, '`user_data`' is ignored when
+	// String in base64 format. For Linux instances, 'user_data' is ignored when
 	// 'password' field is provided. For Windows instances, Admin user password is set
-	// by 'password' field and cannot be updated via '`user_data`'. Examples of the
+	// by 'password' field and cannot be updated via 'user_data'. Examples of the
 	// `user_data`: https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	// For Linux instances, 'username' and 'password' are used to create a new user.
@@ -1173,7 +1173,7 @@ type BaremetalServerNewParamsDDOSProfileField struct {
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
 	// Human-readable name of the DDoS protection field being configured
 	FieldName param.Opt[string] `json:"field_name,omitzero"`
-	// Basic type value. Only one of 'value' or '`field_value`' must be specified.
+	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	//
 	// Deprecated: deprecated
 	Value      param.Opt[string] `json:"value,omitzero"`

@@ -282,8 +282,8 @@ func (r *AITaskService) Get(ctx context.Context, taskID string, opts ...option.R
 //
 // Parameter sections:
 //
-//   - "`language_support`" – AI Translation: check if a language pair is supported
-//     or not for AI translation.
+//   - "language_support" – AI Translation: check if a language pair is supported or
+//     not for AI translation.
 //   - this list will expand as new AI methods are added.
 //
 // **`language_support`**
@@ -291,7 +291,7 @@ func (r *AITaskService) Get(ctx context.Context, taskID string, opts ...option.R
 // There are many languages available for transcription. But not all languages can
 // be automatically translated to and from with good quality. In order to determine
 // the availability of translation from the audio language to the desired subtitle
-// language, you can use this type of "`language_support`".
+// language, you can use this type of "language_support".
 //
 // AI models are constantly improving, so this method can be used for dynamic
 // determination.
@@ -321,7 +321,7 @@ func (r *AITaskService) GetAISettings(ctx context.Context, query AITaskGetAISett
 }
 
 type AIContentmoderationHardnudity struct {
-	// AI content moderation with "`hard_nudity`" algorithm
+	// AI content moderation with "hard_nudity" algorithm
 	//
 	// Any of "hard_nudity", "sport", "nsfw", "soft_nudity".
 	Category AIContentmoderationHardnudityCategory `json:"category,required"`
@@ -369,7 +369,7 @@ func (r *AIContentmoderationHardnudity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// AI content moderation with "`hard_nudity`" algorithm
+// AI content moderation with "hard_nudity" algorithm
 type AIContentmoderationHardnudityCategory string
 
 const (
@@ -459,7 +459,7 @@ const (
 )
 
 type AIContentmoderationSoftnudity struct {
-	// AI content moderation with "`soft_nudity`" algorithm
+	// AI content moderation with "soft_nudity" algorithm
 	//
 	// Any of "soft_nudity", "sport", "nsfw", "hard_nudity".
 	Category AIContentmoderationSoftnudityCategory `json:"category,required"`
@@ -510,7 +510,7 @@ func (r *AIContentmoderationSoftnudity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// AI content moderation with "`soft_nudity`" algorithm
+// AI content moderation with "soft_nudity" algorithm
 type AIContentmoderationSoftnudityCategory string
 
 const (
@@ -858,7 +858,7 @@ type AITaskTaskDataAITranscribe struct {
 	// processing.
 	ClientUserID string `json:"client_user_id"`
 	// Indicates which language it is clearly necessary to translate into. If this is
-	// not set, the original language will be used from attribute "`audio_language`".
+	// not set, the original language will be used from attribute "audio_language".
 	//
 	// Please note that:
 	//
@@ -1543,7 +1543,7 @@ type AITaskNewParams struct {
 	// processing.
 	ClientUserID param.Opt[string] `json:"client_user_id,omitzero"`
 	// Indicates which language it is clearly necessary to translate into. If this is
-	// not set, the original language will be used from attribute "`audio_language`".
+	// not set, the original language will be used from attribute "audio_language".
 	//
 	// Please note that:
 	//
@@ -1615,8 +1615,7 @@ type AITaskListParams struct {
 	// Which field to use when ordering the results: `task_id`, status, and
 	// `task_name`. Sorting is done in ascending (ASC) order.
 	//
-	// If parameter is omitted then "`started_at` DESC" is used for ordering by
-	// default.
+	// If parameter is omitted then "started_at DESC" is used for ordering by default.
 	//
 	// Any of "task_id", "status", "task_name", "started_at".
 	Ordering AITaskListParamsOrdering `query:"ordering,omitzero" json:"-"`
@@ -1644,8 +1643,7 @@ func (r AITaskListParams) URLQuery() (v url.Values, err error) {
 // Which field to use when ordering the results: `task_id`, status, and
 // `task_name`. Sorting is done in ascending (ASC) order.
 //
-// If parameter is omitted then "`started_at` DESC" is used for ordering by
-// default.
+// If parameter is omitted then "started_at DESC" is used for ordering by default.
 type AITaskListParamsOrdering string
 
 const (

@@ -3940,7 +3940,7 @@ func init() {
 }
 
 type UsageReportGetParamsTagsCondition struct {
-	// The name of the tag to filter (e.g., '`os_version`').
+	// The name of the tag to filter (e.g., 'os_version').
 	Key param.Opt[string] `json:"key,omitzero"`
 	// Determines how strictly the tag value must match the specified value. If true,
 	// the tag value must exactly match the given value. If false, a less strict match

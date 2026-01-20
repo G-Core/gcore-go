@@ -191,7 +191,7 @@ type Playlist struct {
 	// A URL to a master playlist HLS (master-cmaf.m3u8) with CMAF-based chunks. Chunks
 	// are in fMP4 container.
 	//
-	// It is possible to use the same suffix-options as described in the "`hls_url`"
+	// It is possible to use the same suffix-options as described in the "hls_url"
 	// attribute.
 	//
 	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
@@ -309,7 +309,7 @@ type PlaylistParam struct {
 	// A URL to a master playlist HLS (master-cmaf.m3u8) with CMAF-based chunks. Chunks
 	// are in fMP4 container.
 	//
-	// It is possible to use the same suffix-options as described in the "`hls_url`"
+	// It is possible to use the same suffix-options as described in the "hls_url"
 	// attribute.
 	//
 	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
@@ -475,16 +475,16 @@ type PlaylistVideo struct {
 	// ID of the directory where the video should be uploaded. (beta)
 	DirectoryID int64 `json:"directory_id"`
 	// Authorization HTTP request header. Will be used as credentials to authenticate a
-	// request to download a file (specified in "`origin_url`" parameter) on an
-	// external server.
+	// request to download a file (specified in "origin_url" parameter) on an external
+	// server.
 	//
 	// Syntax: `Authorization: <auth-scheme> <authorization-parameters>`
 	//
 	// Examples:
 	//
-	//   - "`origin_http_headers`": "Authorization: Basic ..."
-	//   - "`origin_http_headers`": "Authorization: Bearer ..."
-	//   - "`origin_http_headers`": "Authorization: APIKey ..." Example of usage when
+	//   - "origin_http_headers": "Authorization: Basic ..."
+	//   - "origin_http_headers": "Authorization: Bearer ..."
+	//   - "origin_http_headers": "Authorization: APIKey ..." Example of usage when
 	//     downloading a file from Google Drive:
 	//
 	// ```
@@ -507,7 +507,7 @@ type PlaylistVideo struct {
 	// After uploading the video, the system will automatically create several
 	// screenshots (they will be stored in "screenshots" attribute) from which you can
 	// select an default screenshot. This "poster" field is for uploading your own
-	// image. Also use attribute "`screenshot_id`" to select poster as a default
+	// image. Also use attribute "screenshot_id" to select poster as a default
 	// screnshot.
 	//
 	// Attribute accepts single image as base64-encoded string
