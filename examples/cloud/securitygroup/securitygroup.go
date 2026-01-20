@@ -54,11 +54,9 @@ func main() {
 func createSecurityGroup(client *gcore.Client) string {
 	fmt.Println("\n=== CREATE SECURITY GROUP ===")
 
-	sg, err := client.Cloud.SecurityGroups.New(context.Background(), cloud.SecurityGroupNewParams{
-		SecurityGroup: cloud.SecurityGroupNewParamsSecurityGroup{
-			Name:        "gcore-go-example",
-			Description: gcore.String("gcore-go-example security group"),
-		},
+	sg, err := client.Cloud.SecurityGroups.NewAndPoll(context.Background(), cloud.SecurityGroupNewParams{
+		Name:        "gcore-go-example",
+		Description: gcore.String("gcore-go-example security group"),
 	})
 	if err != nil {
 		log.Fatalf("Error creating security group: %v", err)
@@ -100,7 +98,7 @@ func getSecurityGroup(client *gcore.Client, groupID string) {
 func updateSecurityGroup(client *gcore.Client, groupID string) {
 	fmt.Println("\n=== UPDATE SECURITY GROUP ===")
 
-	sg, err := client.Cloud.SecurityGroups.Update(context.Background(), groupID, cloud.SecurityGroupUpdateParams{
+	sg, err := client.Cloud.SecurityGroups.UpdateAndPoll(context.Background(), groupID, cloud.SecurityGroupUpdateParams{
 		Name: gcore.String("gcore-go-example-updated"),
 	})
 	if err != nil {
