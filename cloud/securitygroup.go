@@ -41,10 +41,10 @@ func NewSecurityGroupService(opts ...option.RequestOption) (r SecurityGroupServi
 	return
 }
 
-// **Deprecated** Use `/v2/security_groups/<project_id>/<region_id>` instead.
-//
-// Deprecated: deprecated
-func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
+// Creates a new security group with the specified configuration. If no egress
+// rules are provided, default set of egress rules will be applied If rules are
+// explicitly set to empty, no rules will be created.
+func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -60,16 +60,31 @@ func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewP
 		err = errors.New("missing required region_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/securitygroups/%v/%v", params.ProjectID.Value, params.RegionID.Value)
+	path := fmt.Sprintf("cloud/v2/security_groups/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
-// **Deprecated** Use `/v2/security_groups/<project_id>/<region_id>/<group_id>`
-// instead.
+// Updates the specified security group with the provided changes.
 //
-// Deprecated: deprecated
-func (r *SecurityGroupService) Update(ctx context.Context, groupID string, params SecurityGroupUpdateParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
+// **Behavior:**
+//
+//   - Simple fields (name, description) will be updated if provided
+//   - Undefined fields will remain unchanged
+//   - If no change is detected for a specific field compared to the current security
+//     group state, that field will be skipped
+//   - If no changes are detected at all across all fields, no task will be created
+//     and an empty task list will be returned
+//
+// **Important - Security Group Rules:**
+//
+//   - Rules must be specified completely as the desired final state
+//   - The system compares the provided rules against the current state
+//   - Rules that exist in the request but not in the current state will be added
+//   - Rules that exist in the current state but not in the request will be removed
+//   - To keep existing rules, they must be included in the request alongside any new
+//     rules
+func (r *SecurityGroupService) Update(ctx context.Context, groupID string, params SecurityGroupUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -89,7 +104,7 @@ func (r *SecurityGroupService) Update(ctx context.Context, groupID string, param
 		err = errors.New("missing required group_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/securitygroups/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, groupID)
+	path := fmt.Sprintf("cloud/v2/security_groups/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
 }
@@ -403,10 +418,19 @@ type SecurityGroupNewParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	// Security group
-	SecurityGroup SecurityGroupNewParamsSecurityGroup `json:"security_group,omitzero,required"`
-	// List of instances
-	Instances []string `json:"instances,omitzero"`
+	// Security group name
+	Name string `json:"name,required"`
+	// Security group description
+	Description param.Opt[string] `json:"description,omitzero"`
+	// Security group rules
+	Rules []SecurityGroupNewParamsRule `json:"rules,omitzero"`
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Both tag keys and values have a maximum
+	// length of 255 characters. Some tags are read-only and cannot be modified by the
+	// user. Tags are also integrated with cost reports, allowing cost data to be
+	// filtered based on tag keys or values.
+	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -418,36 +442,8 @@ func (r *SecurityGroupNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Security group
-//
-// The property Name is required.
-type SecurityGroupNewParamsSecurityGroup struct {
-	// Security group name
-	Name string `json:"name,required"`
-	// Security group description
-	Description param.Opt[string] `json:"description,omitzero"`
-	// Security group rules
-	SecurityGroupRules []SecurityGroupNewParamsSecurityGroupSecurityGroupRule `json:"security_group_rules,omitzero"`
-	// Key-value tags to associate with the resource. A tag is a key-value pair that
-	// can be associated with a resource, enabling efficient filtering and grouping for
-	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Some tags are read-only and cannot be modified by the
-	// user. Tags are also integrated with cost reports, allowing cost data to be
-	// filtered based on tag keys or values.
-	Tags map[string]string `json:"tags,omitzero"`
-	paramObj
-}
-
-func (r SecurityGroupNewParamsSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow SecurityGroupNewParamsSecurityGroup
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *SecurityGroupNewParamsSecurityGroup) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // The property Direction is required.
-type SecurityGroupNewParamsSecurityGroupSecurityGroupRule struct {
+type SecurityGroupNewParamsRule struct {
 	// Ingress or egress, which is the direction in which the security group is applied
 	//
 	// Any of "egress", "ingress".
@@ -475,22 +471,22 @@ type SecurityGroupNewParamsSecurityGroupSecurityGroupRule struct {
 	paramObj
 }
 
-func (r SecurityGroupNewParamsSecurityGroupSecurityGroupRule) MarshalJSON() (data []byte, err error) {
-	type shadow SecurityGroupNewParamsSecurityGroupSecurityGroupRule
+func (r SecurityGroupNewParamsRule) MarshalJSON() (data []byte, err error) {
+	type shadow SecurityGroupNewParamsRule
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *SecurityGroupNewParamsSecurityGroupSecurityGroupRule) UnmarshalJSON(data []byte) error {
+func (r *SecurityGroupNewParamsRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[SecurityGroupNewParamsSecurityGroupSecurityGroupRule](
+	apijson.RegisterFieldValidator[SecurityGroupNewParamsRule](
 		"direction", "egress", "ingress",
 	)
-	apijson.RegisterFieldValidator[SecurityGroupNewParamsSecurityGroupSecurityGroupRule](
+	apijson.RegisterFieldValidator[SecurityGroupNewParamsRule](
 		"ethertype", "IPv4", "IPv6",
 	)
-	apijson.RegisterFieldValidator[SecurityGroupNewParamsSecurityGroupSecurityGroupRule](
+	apijson.RegisterFieldValidator[SecurityGroupNewParamsRule](
 		"protocol", "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp",
 	)
 }
@@ -500,10 +496,12 @@ type SecurityGroupUpdateParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Security group description
+	Description param.Opt[string] `json:"description,omitzero"`
 	// Name
 	Name param.Opt[string] `json:"name,omitzero"`
-	// List of rules to create or delete
-	ChangedRules []SecurityGroupUpdateParamsChangedRule `json:"changed_rules,omitzero"`
+	// Security group rules
+	Rules []SecurityGroupUpdateParamsRule `json:"rules,omitzero"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
@@ -542,34 +540,27 @@ func (r *SecurityGroupUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The property Action is required.
-type SecurityGroupUpdateParamsChangedRule struct {
-	// Action for a rule
-	//
-	// Any of "create", "delete".
-	Action string `json:"action,omitzero,required"`
-	// The remote group UUID to associate with this security group rule
-	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
-	// The remote IP prefix that is matched by this security group rule
-	RemoteIPPrefix param.Opt[string] `json:"remote_ip_prefix,omitzero" format:"ipvanynetwork"`
-	// UUID of rule to be deleted. Required for action 'delete' only
-	SecurityGroupRuleID param.Opt[string] `json:"security_group_rule_id,omitzero" format:"uuid4"`
+type SecurityGroupUpdateParamsRule struct {
 	// Security grpup rule description
 	Description param.Opt[string] `json:"description,omitzero"`
 	// The maximum port number in the range that is matched by the security group rule
 	PortRangeMax param.Opt[int64] `json:"port_range_max,omitzero"`
 	// The minimum port number in the range that is matched by the security group rule
 	PortRangeMin param.Opt[int64] `json:"port_range_min,omitzero"`
-	// Must be IPv4 or IPv6, and addresses represented in CIDR must match the ingress
-	// or egress rules.
-	//
-	// Any of "IPv4", "IPv6".
-	Ethertype string `json:"ethertype,omitzero"`
+	// The remote group UUID to associate with this security group rule
+	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
+	// The remote IP prefix that is matched by this security group rule
+	RemoteIPPrefix param.Opt[string] `json:"remote_ip_prefix,omitzero" format:"ipvanynetwork"`
 	// Ingress or egress, which is the direction in which the security group rule is
 	// applied
 	//
 	// Any of "egress", "ingress".
 	Direction string `json:"direction,omitzero"`
+	// Must be IPv4 or IPv6, and addresses represented in CIDR must match the ingress
+	// or egress rules.
+	//
+	// Any of "IPv4", "IPv6".
+	Ethertype string `json:"ethertype,omitzero"`
 	// Protocol
 	//
 	// Any of "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap",
@@ -579,25 +570,22 @@ type SecurityGroupUpdateParamsChangedRule struct {
 	paramObj
 }
 
-func (r SecurityGroupUpdateParamsChangedRule) MarshalJSON() (data []byte, err error) {
-	type shadow SecurityGroupUpdateParamsChangedRule
+func (r SecurityGroupUpdateParamsRule) MarshalJSON() (data []byte, err error) {
+	type shadow SecurityGroupUpdateParamsRule
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *SecurityGroupUpdateParamsChangedRule) UnmarshalJSON(data []byte) error {
+func (r *SecurityGroupUpdateParamsRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsChangedRule](
-		"action", "create", "delete",
-	)
-	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsChangedRule](
+	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
 		"direction", "egress", "ingress",
 	)
-	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsChangedRule](
+	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
 		"ethertype", "IPv4", "IPv6",
 	)
-	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsChangedRule](
+	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
 		"protocol", "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp",
 	)
 }

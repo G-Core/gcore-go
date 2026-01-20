@@ -27,26 +27,23 @@ func TestSecurityGroupNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.SecurityGroups.New(context.TODO(), cloud.SecurityGroupNewParams{
-		ProjectID: gcore.Int(1),
-		RegionID:  gcore.Int(1),
-		SecurityGroup: cloud.SecurityGroupNewParamsSecurityGroup{
-			Name:        "my_security_group",
-			Description: gcore.String("Some description"),
-			SecurityGroupRules: []cloud.SecurityGroupNewParamsSecurityGroupSecurityGroupRule{{
-				Direction:      "ingress",
-				Description:    gcore.String("Some description"),
-				Ethertype:      "IPv4",
-				PortRangeMax:   gcore.Int(80),
-				PortRangeMin:   gcore.Int(80),
-				Protocol:       "tcp",
-				RemoteGroupID:  gcore.String("00000000-0000-4000-8000-000000000000"),
-				RemoteIPPrefix: gcore.String("10.0.0.0/8"),
-			}},
-			Tags: map[string]string{
-				"my-tag": "my-tag-value",
-			},
+		ProjectID:   gcore.Int(1),
+		RegionID:    gcore.Int(1),
+		Name:        "my_security_group",
+		Description: gcore.String("My security group description"),
+		Rules: []cloud.SecurityGroupNewParamsRule{{
+			Direction:      "ingress",
+			Description:    gcore.String("Some description"),
+			Ethertype:      "IPv4",
+			PortRangeMax:   gcore.Int(80),
+			PortRangeMin:   gcore.Int(80),
+			Protocol:       "tcp",
+			RemoteGroupID:  gcore.String("00000000-0000-4000-8000-000000000000"),
+			RemoteIPPrefix: gcore.String("10.0.0.0/8"),
+		}},
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
 		},
-		Instances: []string{"00000000-0000-4000-8000-000000000000"},
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -71,23 +68,22 @@ func TestSecurityGroupUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.SecurityGroups.Update(
 		context.TODO(),
-		"024a29e9-b4b7-4c91-9a46-505be123d9f8",
+		"00000000-0000-4000-8000-000000000000",
 		cloud.SecurityGroupUpdateParams{
-			ProjectID: gcore.Int(1),
-			RegionID:  gcore.Int(1),
-			ChangedRules: []cloud.SecurityGroupUpdateParamsChangedRule{{
-				Action:              "delete",
-				Description:         gcore.String("Some description"),
-				Direction:           "egress",
-				Ethertype:           "IPv4",
-				PortRangeMax:        gcore.Int(80),
-				PortRangeMin:        gcore.Int(80),
-				Protocol:            "tcp",
-				RemoteGroupID:       gcore.String("00000000-0000-4000-8000-000000000000"),
-				RemoteIPPrefix:      gcore.String("10.0.0.0/8"),
-				SecurityGroupRuleID: gcore.String("00000000-0000-4000-8000-000000000000"),
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(1),
+			Description: gcore.String("Some description"),
+			Name:        gcore.String("some_name"),
+			Rules: []cloud.SecurityGroupUpdateParamsRule{{
+				Description:    gcore.String("Some description"),
+				Direction:      "egress",
+				Ethertype:      "IPv4",
+				PortRangeMax:   gcore.Int(80),
+				PortRangeMin:   gcore.Int(80),
+				Protocol:       "tcp",
+				RemoteGroupID:  gcore.String("00000000-0000-4000-8000-000000000000"),
+				RemoteIPPrefix: gcore.String("10.0.0.0/8"),
 			}},
-			Name: gcore.String("some_name"),
 			Tags: cloud.TagUpdateMap{
 				"foo": "my-tag-value",
 			},
