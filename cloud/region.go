@@ -87,7 +87,7 @@ type Region struct {
 	//
 	// Any of "core", "edge".
 	AccessLevel RegionAccessLevel `json:"access_level,required"`
-	// List of available volume types, 'standard', '`ssd_hiiops`', 'cold'].
+	// List of available volume types, 'standard', 'ssd_hiiops', 'cold'].
 	AvailableVolumeTypes []string `json:"available_volume_types,required"`
 	// Coordinates of the region
 	Coordinates RegionCoordinates `json:"coordinates,required"`

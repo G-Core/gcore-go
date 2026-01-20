@@ -58,7 +58,7 @@ func (r *CostReportService) GetAggregated(ctx context.Context, body CostReportGe
 
 // Retrieve a detailed cost report totals for a specified month, which includes
 // both commit and pay-as-you-go (overcommit) prices. Additionally, it provides the
-// spent billing units (e.g., hours or GB) for resources. The "`time_to`" parameter
+// spent billing units (e.g., hours or GB) for resources. The "time_to" parameter
 // represents all days in the specified month.
 //
 // Data from the past hour may not reflect the full set of statistics. For the most
@@ -6033,7 +6033,7 @@ func init() {
 }
 
 type CostReportGetAggregatedParamsTagsCondition struct {
-	// The name of the tag to filter (e.g., '`os_version`').
+	// The name of the tag to filter (e.g., 'os_version').
 	Key param.Opt[string] `json:"key,omitzero"`
 	// Determines how strictly the tag value must match the specified value. If true,
 	// the tag value must exactly match the given value. If false, a less strict match
@@ -7130,7 +7130,7 @@ func init() {
 }
 
 type CostReportGetAggregatedMonthlyParamsTagsCondition struct {
-	// The name of the tag to filter (e.g., '`os_version`').
+	// The name of the tag to filter (e.g., 'os_version').
 	Key param.Opt[string] `json:"key,omitzero"`
 	// Determines how strictly the tag value must match the specified value. If true,
 	// the tag value must exactly match the given value. If false, a less strict match
@@ -8288,7 +8288,7 @@ func init() {
 }
 
 type CostReportGetDetailedParamsTagsCondition struct {
-	// The name of the tag to filter (e.g., '`os_version`').
+	// The name of the tag to filter (e.g., 'os_version').
 	Key param.Opt[string] `json:"key,omitzero"`
 	// Determines how strictly the tag value must match the specified value. If true,
 	// the tag value must exactly match the given value. If false, a less strict match

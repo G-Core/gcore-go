@@ -55,7 +55,6 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 //     execution file will be uploaded and will be sent to transcoding automatically,
 //     you don't have to do anything else. Use extra field `origin_http_headers` if
 //     authorization is required on the external server.
-//
 //   - **Direct upload from a local device** – If you need to upload video directly
 //     from your local device or from a mobile app, then use this method. Keep
 //     `origin_url` empty and use TUS protocol ([tus.io](https://tus.io)) to upload
@@ -120,7 +119,7 @@ func (r *VideoService) New(ctx context.Context, body VideoNewParams, opts ...opt
 //
 // It's allowed to update only those public parameters that are described in POST
 // method to create a new “video” entity. So it's not possible to change calculated
-// parameters like "id", "duration", "`hls_url`", etc.
+// parameters like "id", "duration", "hls_url", etc.
 //
 // Examples of changing:
 //
@@ -129,9 +128,9 @@ func (r *VideoService) New(ctx context.Context, body VideoNewParams, opts ...opt
 //
 // Please note that some parameters are used on initial step (before transcoding)
 // only, so after transcoding there is no use in changing their values. For
-// example, "`origin_url`" parameter is used for downloading an original file from
-// a source and never used after transcoding; or "priority" parameter is used to
-// set priority of processing and never used after transcoding.
+// example, "origin_url" parameter is used for downloading an original file from a
+// source and never used after transcoding; or "priority" parameter is used to set
+// priority of processing and never used after transcoding.
 func (r *VideoService) Update(ctx context.Context, videoID int64, body VideoUpdateParams, opts ...option.RequestOption) (res *Video, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/videos/%v", videoID)
@@ -411,7 +410,7 @@ type VideoListParams struct {
 	// IDs of the videos to find. You can specify one or more identifiers separated by
 	// commas. Example, ?id=1,101,1001
 	ID param.Opt[string] `query:"id,omitzero" json:"-"`
-	// Find videos where "`client_user_id`" meta field is equal to the search value
+	// Find videos where "client_user_id" meta field is equal to the search value
 	ClientUserID param.Opt[int64] `query:"client_user_id,omitzero" json:"-"`
 	// Restriction to return only the specified attributes, instead of the entire
 	// dataset. Specify, if you need to get short response. The following fields are
@@ -439,7 +438,7 @@ type VideoListParams struct {
 	// - ready
 	// - error
 	Status param.Opt[string] `query:"status,omitzero" json:"-"`
-	// Find videos recorded from a specific stream, so for which "`stream_id`" field is
+	// Find videos recorded from a specific stream, so for which "stream_id" field is
 	// equal to the search value
 	StreamID param.Opt[int64] `query:"stream_id,omitzero" json:"-"`
 	paramObj

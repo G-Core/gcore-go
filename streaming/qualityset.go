@@ -95,13 +95,13 @@ func (r *QualitySetService) List(ctx context.Context, opts ...option.RequestOpti
 // Live transcoding management:
 //
 //   - You can specify quality set explicitly in POST /streams method, look at
-//     attribute "`quality_set_id`".
+//     attribute "quality_set_id".
 //   - Otherwise these default values will be used by the system by default.
 //
 // VOD transcoding management:
 //
 //   - You can specify quality set explicitly in POST /videos method, look at
-//     attribute "`quality_set_id`".
+//     attribute "quality_set_id".
 //   - Otherwise these default values will be used by the system by default.
 func (r *QualitySetService) SetDefault(ctx context.Context, body QualitySetSetDefaultParams, opts ...option.RequestOption) (res *QualitySets, err error) {
 	opts = slices.Concat(r.Options, opts)

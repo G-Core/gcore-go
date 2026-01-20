@@ -395,7 +395,7 @@ type DDOSProfileField struct {
 	FieldName string `json:"field_name,required"`
 	// Data type classification of the field (e.g., string, integer, array)
 	FieldType string `json:"field_type,required"`
-	// Complex value. Only one of 'value' or '`field_value`' must be specified.
+	// Complex value. Only one of 'value' or 'field_value' must be specified.
 	FieldValue any `json:"field_value,required"`
 	// Human-readable name of the protection field
 	Name string `json:"name,required"`
@@ -403,7 +403,7 @@ type DDOSProfileField struct {
 	Required bool `json:"required,required"`
 	// JSON schema defining validation rules and constraints for the field value
 	ValidationSchema any `json:"validation_schema,required"`
-	// Basic type value. Only one of 'value' or '`field_value`' must be specified.
+	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	Value string `json:"value,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

@@ -374,8 +374,8 @@ type AuditLogListParams struct {
 	RegionID []int64 `query:"region_id,omitzero" json:"-"`
 	// Resource ID. Several options can be specified.
 	ResourceID []string `query:"resource_id,omitzero" json:"-"`
-	// (DEPRECATED Use '`order_by`' instead) Sorting by timestamp. Oldest first, or
-	// most recent first
+	// (DEPRECATED Use 'order_by' instead) Sorting by timestamp. Oldest first, or most
+	// recent first
 	//
 	// Any of "asc", "desc".
 	Sorting AuditLogListParamsSorting `query:"sorting,omitzero" json:"-"`
@@ -404,8 +404,8 @@ const (
 	AuditLogListParamsOrderByDesc AuditLogListParamsOrderBy = "desc"
 )
 
-// (DEPRECATED Use '`order_by`' instead) Sorting by timestamp. Oldest first, or
-// most recent first
+// (DEPRECATED Use 'order_by' instead) Sorting by timestamp. Oldest first, or most
+// recent first
 type AuditLogListParamsSorting string
 
 const (

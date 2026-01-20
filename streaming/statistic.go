@@ -1121,9 +1121,9 @@ type StatisticGetLiveUniqueViewersParams struct {
 	From string `query:"from,required" json:"-"`
 	// End of time frame. Format is date time in ISO 8601
 	To string `query:"to,required" json:"-"`
-	// Filter by "`client_user_id`"
+	// Filter by "client_user_id"
 	ClientUserID param.Opt[int64] `query:"client_user_id,omitzero" json:"-"`
-	// Filter by "`stream_id`"
+	// Filter by "stream_id"
 	StreamID param.Opt[int64] `query:"stream_id,omitzero" json:"-"`
 	// Specifies the time interval for grouping data
 	//
@@ -1156,7 +1156,7 @@ type StatisticGetLiveWatchTimeCdnParams struct {
 	// Start of the time period for counting minutes of watching. Format is date time
 	// in ISO 8601.
 	From string `query:"from,required" json:"-"`
-	// Filter by field "`client_user_id`"
+	// Filter by field "client_user_id"
 	ClientUserID param.Opt[int64] `query:"client_user_id,omitzero" json:"-"`
 	// Filter by `stream_id`
 	StreamID param.Opt[int64] `query:"stream_id,omitzero" json:"-"`
@@ -1192,7 +1192,7 @@ const (
 )
 
 type StatisticGetLiveWatchTimeTotalCdnParams struct {
-	// Filter by field "`client_user_id`"
+	// Filter by field "client_user_id"
 	ClientUserID param.Opt[int64] `query:"client_user_id,omitzero" json:"-"`
 	// Start of the time period for counting minutes of watching. Format is date time
 	// in ISO 8601. If omitted, the earliest start time for viewing is taken
@@ -1681,7 +1681,7 @@ type StatisticGetVodWatchTimeCdnParams struct {
 	// Start of the time period for counting minutes of watching. Format is date time
 	// in ISO 8601.
 	From string `query:"from,required" json:"-"`
-	// Filter by field "`client_user_id`"
+	// Filter by field "client_user_id"
 	ClientUserID param.Opt[int64] `query:"client_user_id,omitzero" json:"-"`
 	// Filter by video's slug
 	Slug param.Opt[string] `query:"slug,omitzero" json:"-"`
@@ -1717,7 +1717,7 @@ const (
 )
 
 type StatisticGetVodWatchTimeTotalCdnParams struct {
-	// Filter by field "`client_user_id`"
+	// Filter by field "client_user_id"
 	ClientUserID param.Opt[int64] `query:"client_user_id,omitzero" json:"-"`
 	// Start of the time period for counting minutes of watching. Format is date time
 	// in ISO 8601. If omitted, the earliest start time for viewing is taken

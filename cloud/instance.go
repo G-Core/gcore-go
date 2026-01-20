@@ -531,8 +531,8 @@ type InstanceNewParams struct {
 	// When only 'password' is provided, it is set as the password for the default user
 	// of the image. For Windows instances, 'username' cannot be specified. Use the
 	// 'password' field to set the password for the 'Admin' user on Windows. Use the
-	// '`user_data`' field to provide a script to create new users on Windows. The
-	// password of the Admin user cannot be updated via '`user_data`'.
+	// 'user_data' field to provide a script to create new users on Windows. The
+	// password of the Admin user cannot be updated via 'user_data'.
 	Password param.Opt[string] `json:"password,omitzero"`
 	// Placement group ID for instance placement policy.
 	//
@@ -544,9 +544,9 @@ type InstanceNewParams struct {
 	//   - `soft-anti-affinity`: Tries to place instances on different hosts but allows
 	//     sharing if needed.
 	ServergroupID param.Opt[string] `json:"servergroup_id,omitzero" format:"uuid4"`
-	// String in base64 format. For Linux instances, '`user_data`' is ignored when
+	// String in base64 format. For Linux instances, 'user_data' is ignored when
 	// 'password' field is provided. For Windows instances, Admin user password is set
-	// by 'password' field and cannot be updated via '`user_data`'. Examples of the
+	// by 'password' field and cannot be updated via 'user_data'. Examples of the
 	// `user_data`: https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	// For Linux instances, 'username' and 'password' are used to create a new user.
@@ -1757,20 +1757,15 @@ type InstanceUpdateParams struct {
 	//   - **Add/update tags:**
 	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
 	//     updates existing ones.
-	//
-	// - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
-	//
+	//   - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
 	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
 	//     tags are preserved).
-	//
 	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
 	//     specified tags.
-	//
 	//   - **Mixed operations:**
 	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
-	//     adds/updates 'environment' and '`cost_center`' while removing
-	//     '`deprecated_tag`', preserving other existing tags.
-	//
+	//     adds/updates 'environment' and 'cost_center' while removing 'deprecated_tag',
+	//     preserving other existing tags.
 	//   - **Replace all:** first delete existing tags with null values, then add new
 	//     ones in the same request.
 	Tags TagUpdateMap `json:"tags,omitzero"`
