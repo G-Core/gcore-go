@@ -29,6 +29,7 @@ import (
 type SecurityGroupService struct {
 	Options []option.RequestOption
 	Rules   SecurityGroupRuleService
+	tasks   TaskService
 }
 
 // NewSecurityGroupService generates a new service that applies the given options
@@ -38,6 +39,7 @@ func NewSecurityGroupService(opts ...option.RequestOption) (r SecurityGroupServi
 	r = SecurityGroupService{}
 	r.Options = opts
 	r.Rules = NewSecurityGroupRuleService(opts...)
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -63,6 +65,42 @@ func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewP
 	path := fmt.Sprintf("cloud/v2/security_groups/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
+}
+
+// NewAndPoll creates a security group and polls for completion of the first task. Use the [TaskService.Poll] method if
+// you need to poll for all tasks.
+func (r *SecurityGroupService) NewAndPoll(ctx context.Context, params SecurityGroupNewParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
+	resource, err := r.New(ctx, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams SecurityGroupGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) != 1 {
+		return nil, errors.New("expected exactly one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.SecurityGroups) != 1 {
+		return nil, errors.New("expected exactly one security group to be created in a task")
+	}
+	resourceID := task.CreatedResources.SecurityGroups[0]
+
+	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
 // Updates the specified security group with the provided changes.
@@ -107,6 +145,37 @@ func (r *SecurityGroupService) Update(ctx context.Context, groupID string, param
 	path := fmt.Sprintf("cloud/v2/security_groups/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
+}
+
+// UpdateAndPoll updates a security group and polls for completion of the first task. Use the [TaskService.Poll] method if
+// you need to poll for all tasks.
+func (r *SecurityGroupService) UpdateAndPoll(ctx context.Context, groupID string, params SecurityGroupUpdateParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
+	resource, err := r.Update(ctx, groupID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams SecurityGroupGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Get(ctx, groupID, getParams, opts...)
 }
 
 // List all security groups in the specified project and region.
