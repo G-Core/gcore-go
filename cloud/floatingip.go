@@ -171,6 +171,37 @@ func (r *FloatingIPService) Update(ctx context.Context, floatingIPID string, par
 	return
 }
 
+// UpdateAndPoll updates a floating IP and polls for completion of the first task. Use the [TaskService.Poll] method if
+// you need to poll for all tasks.
+func (r *FloatingIPService) UpdateAndPoll(ctx context.Context, floatingIPID string, params FloatingIPUpdateParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
+	resource, err := r.Update(ctx, floatingIPID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams FloatingIPGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Get(ctx, floatingIPID, getParams, opts...)
+}
+
 // List floating IPs
 func (r *FloatingIPService) List(ctx context.Context, params FloatingIPListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[FloatingIPDetailed], err error) {
 	var raw *http.Response
