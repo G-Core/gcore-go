@@ -72,16 +72,16 @@ type CreateVideoParam struct {
 	// ID of the directory where the video should be uploaded. (beta)
 	DirectoryID param.Opt[int64] `json:"directory_id,omitzero"`
 	// Authorization HTTP request header. Will be used as credentials to authenticate a
-	// request to download a file (specified in "`origin_url`" parameter) on an
-	// external server.
+	// request to download a file (specified in "origin_url" parameter) on an external
+	// server.
 	//
 	// Syntax: `Authorization: <auth-scheme> <authorization-parameters>`
 	//
 	// Examples:
 	//
-	//   - "`origin_http_headers`": "Authorization: Basic ..."
-	//   - "`origin_http_headers`": "Authorization: Bearer ..."
-	//   - "`origin_http_headers`": "Authorization: APIKey ..." Example of usage when
+	//   - "origin_http_headers": "Authorization: Basic ..."
+	//   - "origin_http_headers": "Authorization: Bearer ..."
+	//   - "origin_http_headers": "Authorization: APIKey ..." Example of usage when
 	//     downloading a file from Google Drive:
 	//
 	// ```
@@ -104,7 +104,7 @@ type CreateVideoParam struct {
 	// After uploading the video, the system will automatically create several
 	// screenshots (they will be stored in "screenshots" attribute) from which you can
 	// select an default screenshot. This "poster" field is for uploading your own
-	// image. Also use attribute "`screenshot_id`" to select poster as a default
+	// image. Also use attribute "screenshot_id" to select poster as a default
 	// screnshot.
 	//
 	// Attribute accepts single image as base64-encoded string
@@ -373,7 +373,7 @@ type Video struct {
 	//     return just 1 video codec in a manifest. Read the Product Documentation for
 	//     details.
 	//
-	// Read more what is ABR soft-limiting in the "`hls_url`" field above.
+	// Read more what is ABR soft-limiting in the "hls_url" field above.
 	//
 	// Caution. Solely master.mpd is officially documented and intended for your use.
 	// Any additional internal manifests, sub-manifests, parameters, chunk names, file
@@ -383,9 +383,9 @@ type Video struct {
 	DashURL string `json:"dash_url"`
 	// Additional text field for video description
 	Description string `json:"description"`
-	// Video duration in milliseconds. May differ from "`origin_video_duration`" value
-	// if the video was uploaded with clipping through the parameters
-	// "`clip_start_seconds`" and "`clip_duration_seconds`"
+	// Video duration in milliseconds. May differ from "origin_video_duration" value if
+	// the video was uploaded with clipping through the parameters "clip_start_seconds"
+	// and "clip_duration_seconds"
 	Duration int64 `json:"duration"`
 	// Video processing error text will be saved here if "status: error"
 	Error string `json:"error"`
@@ -393,7 +393,7 @@ type Video struct {
 	// are in fMP4 container. It's a code-agnostic container, which allows to use any
 	// like H264, H265, AV1, etc.
 	//
-	// It is possible to use the same suffix-options as described in the "`hls_url`"
+	// It is possible to use the same suffix-options as described in the "hls_url"
 	// attribute.
 	//
 	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
@@ -498,7 +498,7 @@ type Video struct {
 	// URL to the original non-transcoded stream recording with original quality, saved
 	// in MP4 format. File is created immediately after the completion of the stream
 	// recording. The stream from which the recording was made is reflected in
-	// "`stream_id`" field.
+	// "stream_id" field.
 	//
 	// Can be used for internal operations when a recording needs to be received faster
 	// than the transcoded versions are ready. But this version is not intended for
@@ -607,8 +607,7 @@ type Video struct {
 	StreamID int64 `json:"stream_id"`
 	// Number of video views through the built-in HTML video player of the Streaming
 	// Platform only. This attribute does not count views from other external players
-	// and native OS players, so here may be less number of views than in
-	// "`cdn_views`".
+	// and native OS players, so here may be less number of views than in "cdn_views".
 	Views int64 `json:"views"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

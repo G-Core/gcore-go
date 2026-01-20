@@ -130,10 +130,10 @@ type WaapAdvancedRule struct {
 	// The "access" phase is responsible for modifying the request before it is sent to
 	// the origin server.
 	//
-	// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+	// The "header_filter" phase is responsible for modifying the HTTP headers of a
 	// response before they are sent back to the client.
 	//
-	// The "`body_filter`" phase is responsible for modifying the body of a response
+	// The "body_filter" phase is responsible for modifying the body of a response
 	// before it is sent back to the client.
 	//
 	// Any of "access", "header_filter", "body_filter".
@@ -243,10 +243,10 @@ func (r *WaapAdvancedRuleActionTag) UnmarshalJSON(data []byte) error {
 // The "access" phase is responsible for modifying the request before it is sent to
 // the origin server.
 //
-// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+// The "header_filter" phase is responsible for modifying the HTTP headers of a
 // response before they are sent back to the client.
 //
-// The "`body_filter`" phase is responsible for modifying the body of a response
+// The "body_filter" phase is responsible for modifying the body of a response
 // before it is sent back to the client.
 type WaapAdvancedRulePhase string
 
@@ -278,10 +278,10 @@ type DomainAdvancedRuleNewParams struct {
 	// The "access" phase is responsible for modifying the request before it is sent to
 	// the origin server.
 	//
-	// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+	// The "header_filter" phase is responsible for modifying the HTTP headers of a
 	// response before they are sent back to the client.
 	//
-	// The "`body_filter`" phase is responsible for modifying the body of a response
+	// The "body_filter" phase is responsible for modifying the body of a response
 	// before it is sent back to the client.
 	//
 	// Any of "access", "header_filter", "body_filter".
@@ -375,10 +375,10 @@ func (r *DomainAdvancedRuleNewParamsActionTag) UnmarshalJSON(data []byte) error 
 // The "access" phase is responsible for modifying the request before it is sent to
 // the origin server.
 //
-// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+// The "header_filter" phase is responsible for modifying the HTTP headers of a
 // response before they are sent back to the client.
 //
-// The "`body_filter`" phase is responsible for modifying the body of a response
+// The "body_filter" phase is responsible for modifying the body of a response
 // before it is sent back to the client.
 type DomainAdvancedRuleNewParamsPhase string
 
@@ -411,10 +411,10 @@ type DomainAdvancedRuleUpdateParams struct {
 	// The "access" phase is responsible for modifying the request before it is sent to
 	// the origin server.
 	//
-	// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+	// The "header_filter" phase is responsible for modifying the HTTP headers of a
 	// response before they are sent back to the client.
 	//
-	// The "`body_filter`" phase is responsible for modifying the body of a response
+	// The "body_filter" phase is responsible for modifying the body of a response
 	// before it is sent back to the client.
 	//
 	// Any of "access", "header_filter", "body_filter".
@@ -507,10 +507,10 @@ func (r *DomainAdvancedRuleUpdateParamsActionTag) UnmarshalJSON(data []byte) err
 // The "access" phase is responsible for modifying the request before it is sent to
 // the origin server.
 //
-// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+// The "header_filter" phase is responsible for modifying the HTTP headers of a
 // response before they are sent back to the client.
 //
-// The "`body_filter`" phase is responsible for modifying the body of a response
+// The "body_filter" phase is responsible for modifying the body of a response
 // before it is sent back to the client.
 type DomainAdvancedRuleUpdateParamsPhase string
 
@@ -545,10 +545,10 @@ type DomainAdvancedRuleListParams struct {
 	// The "access" phase is responsible for modifying the request before it is sent to
 	// the origin server.
 	//
-	// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+	// The "header_filter" phase is responsible for modifying the HTTP headers of a
 	// response before they are sent back to the client.
 	//
-	// The "`body_filter`" phase is responsible for modifying the body of a response
+	// The "body_filter" phase is responsible for modifying the body of a response
 	// before it is sent back to the client.
 	//
 	// Any of "access", "header_filter", "body_filter".
@@ -600,10 +600,10 @@ const (
 // The "access" phase is responsible for modifying the request before it is sent to
 // the origin server.
 //
-// The "`header_filter`" phase is responsible for modifying the HTTP headers of a
+// The "header_filter" phase is responsible for modifying the HTTP headers of a
 // response before they are sent back to the client.
 //
-// The "`body_filter`" phase is responsible for modifying the body of a response
+// The "body_filter" phase is responsible for modifying the body of a response
 // before it is sent back to the client.
 type DomainAdvancedRuleListParamsPhase string
 

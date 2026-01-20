@@ -327,8 +327,8 @@ type OriginGroupsAwsSignatureV4Auth struct {
 	//
 	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
 	//     underscores.
-	//   - If "`s3_type`": amazon, length should be 40 characters.
-	//   - If "`s3_type`": other, length should be from 16 to 255 characters.
+	//   - If "s3_type": amazon, length should be 40 characters.
+	//   - If "s3_type": other, length should be from 16 to 255 characters.
 	S3SecretAccessKey string `json:"s3_secret_access_key,required"`
 	// Storage type compatible with S3.
 	//
@@ -339,11 +339,11 @@ type OriginGroupsAwsSignatureV4Auth struct {
 	S3Type string `json:"s3_type,required"`
 	// S3 storage region.
 	//
-	// The parameter is required, if "`s3_type`": amazon.
+	// The parameter is required, if "s3_type": amazon.
 	S3Region string `json:"s3_region"`
 	// S3 storage hostname.
 	//
-	// The parameter is required, if "`s3_type`": other.
+	// The parameter is required, if "s3_type": other.
 	S3StorageHostname string `json:"s3_storage_hostname"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -539,8 +539,8 @@ type OriginGroupNewParamsBodyAwsSignatureV4Auth struct {
 	//
 	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
 	//     underscores.
-	//   - If "`s3_type`": amazon, length should be 40 characters.
-	//   - If "`s3_type`": other, length should be from 16 to 255 characters.
+	//   - If "s3_type": amazon, length should be 40 characters.
+	//   - If "s3_type": other, length should be from 16 to 255 characters.
 	S3SecretAccessKey string `json:"s3_secret_access_key,required"`
 	// Storage type compatible with S3.
 	//
@@ -551,11 +551,11 @@ type OriginGroupNewParamsBodyAwsSignatureV4Auth struct {
 	S3Type string `json:"s3_type,required"`
 	// S3 storage region.
 	//
-	// The parameter is required, if "`s3_type`": amazon.
+	// The parameter is required, if "s3_type": amazon.
 	S3Region param.Opt[string] `json:"s3_region,omitzero"`
 	// S3 storage hostname.
 	//
-	// The parameter is required, if "`s3_type`": other.
+	// The parameter is required, if "s3_type": other.
 	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
 	paramObj
 }
@@ -744,8 +744,8 @@ type OriginGroupUpdateParamsBodyAwsSignatureV4Auth struct {
 	//
 	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
 	//     underscores.
-	//   - If "`s3_type`": amazon, length should be 40 characters.
-	//   - If "`s3_type`": other, length should be from 16 to 255 characters.
+	//   - If "s3_type": amazon, length should be 40 characters.
+	//   - If "s3_type": other, length should be from 16 to 255 characters.
 	S3SecretAccessKey string `json:"s3_secret_access_key,required"`
 	// Storage type compatible with S3.
 	//
@@ -756,11 +756,11 @@ type OriginGroupUpdateParamsBodyAwsSignatureV4Auth struct {
 	S3Type string `json:"s3_type,required"`
 	// S3 storage region.
 	//
-	// The parameter is required, if "`s3_type`": amazon.
+	// The parameter is required, if "s3_type": amazon.
 	S3Region param.Opt[string] `json:"s3_region,omitzero"`
 	// S3 storage hostname.
 	//
-	// The parameter is required, if "`s3_type`": other.
+	// The parameter is required, if "s3_type": other.
 	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
 	paramObj
 }
@@ -973,8 +973,8 @@ type OriginGroupReplaceParamsBodyAwsSignatureV4Auth struct {
 	//
 	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
 	//     underscores.
-	//   - If "`s3_type`": amazon, length should be 40 characters.
-	//   - If "`s3_type`": other, length should be from 16 to 255 characters.
+	//   - If "s3_type": amazon, length should be 40 characters.
+	//   - If "s3_type": other, length should be from 16 to 255 characters.
 	S3SecretAccessKey string `json:"s3_secret_access_key,required"`
 	// Storage type compatible with S3.
 	//
@@ -985,11 +985,11 @@ type OriginGroupReplaceParamsBodyAwsSignatureV4Auth struct {
 	S3Type string `json:"s3_type,required"`
 	// S3 storage region.
 	//
-	// The parameter is required, if "`s3_type`": amazon.
+	// The parameter is required, if "s3_type": amazon.
 	S3Region param.Opt[string] `json:"s3_region,omitzero"`
 	// S3 storage hostname.
 	//
-	// The parameter is required, if "`s3_type`": other.
+	// The parameter is required, if "s3_type": other.
 	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
 	paramObj
 }

@@ -925,11 +925,11 @@ type CdnResourceOptionsCors struct {
 	//
 	//   - **Adds \* as the Access-Control-Allow-Origin header value** - Content will be
 	//     uploaded for requests from any domain. `"value": ["*"]`
-	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value if the
+	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
 	//     `"value": ["domain.com", "second.dom.com"]`
-	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value** -
+	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
 	//     header in the response. `"value": ["$http_origin"]`
@@ -1688,9 +1688,9 @@ type CdnResourceOptionsIPAddressACL struct {
 	//
 	// Possible values:
 	//
-	//   - **allow** - Allow access to all IPs except IPs specified in
-	//     "`excepted_values`" field.
-	//   - **deny** - Deny access to all IPs except IPs specified in "`excepted_values`"
+	//   - **allow** - Allow access to all IPs except IPs specified in "excepted_values"
+	//     field.
+	//   - **deny** - Deny access to all IPs except IPs specified in "excepted_values"
 	//     field.
 	//
 	// Any of "allow", "deny".
@@ -3392,11 +3392,11 @@ type ResourceNewParamsOptionsCors struct {
 	//
 	//   - **Adds \* as the Access-Control-Allow-Origin header value** - Content will be
 	//     uploaded for requests from any domain. `"value": ["*"]`
-	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value if the
+	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
 	//     `"value": ["domain.com", "second.dom.com"]`
-	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value** -
+	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
 	//     header in the response. `"value": ["$http_origin"]`
@@ -4094,9 +4094,9 @@ type ResourceNewParamsOptionsIPAddressACL struct {
 	//
 	// Possible values:
 	//
-	//   - **allow** - Allow access to all IPs except IPs specified in
-	//     "`excepted_values`" field.
-	//   - **deny** - Deny access to all IPs except IPs specified in "`excepted_values`"
+	//   - **allow** - Allow access to all IPs except IPs specified in "excepted_values"
+	//     field.
+	//   - **deny** - Deny access to all IPs except IPs specified in "excepted_values"
 	//     field.
 	//
 	// Any of "allow", "deny".
@@ -5728,11 +5728,11 @@ type ResourceUpdateParamsOptionsCors struct {
 	//
 	//   - **Adds \* as the Access-Control-Allow-Origin header value** - Content will be
 	//     uploaded for requests from any domain. `"value": ["*"]`
-	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value if the
+	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
 	//     `"value": ["domain.com", "second.dom.com"]`
-	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value** -
+	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
 	//     header in the response. `"value": ["$http_origin"]`
@@ -6430,9 +6430,9 @@ type ResourceUpdateParamsOptionsIPAddressACL struct {
 	//
 	// Possible values:
 	//
-	//   - **allow** - Allow access to all IPs except IPs specified in
-	//     "`excepted_values`" field.
-	//   - **deny** - Deny access to all IPs except IPs specified in "`excepted_values`"
+	//   - **allow** - Allow access to all IPs except IPs specified in "excepted_values"
+	//     field.
+	//   - **deny** - Deny access to all IPs except IPs specified in "excepted_values"
 	//     field.
 	//
 	// Any of "allow", "deny".
@@ -7671,14 +7671,14 @@ type ResourcePurgeParamsBodyPurgeByURL struct {
 	//     the CDN cache, purge by URL will delete only the first slice (with bytes=0…
 	//     .)
 	//  3. "ignoreQueryString" is used. Don’t specify parameters in the purge request.
-	//  4. "`query_params_blacklist`" is used. Only files with the listed in the option
+	//  4. "query_params_blacklist" is used. Only files with the listed in the option
 	//     parameters will be cached as different objects. Files with other parameters
 	//     will be cached as one object. In this case, specify the listed parameters in
 	//     the Purge request. Don't specify other parameters.
-	//  5. "`query_params_whitelist`" is used. Files with listed in the option
-	//     parameters will be cached as one object. Files with other parameters will be
-	//     cached as different objects. In this case, specify other parameters (if any)
-	//     besides the ones listed in the purge request.
+	//  5. "query_params_whitelist" is used. Files with listed in the option parameters
+	//     will be cached as one object. Files with other parameters will be cached as
+	//     different objects. In this case, specify other parameters (if any) besides
+	//     the ones listed in the purge request.
 	URLs []string `json:"urls,omitzero"`
 	paramObj
 }
@@ -8284,11 +8284,11 @@ type ResourceReplaceParamsOptionsCors struct {
 	//
 	//   - **Adds \* as the Access-Control-Allow-Origin header value** - Content will be
 	//     uploaded for requests from any domain. `"value": ["*"]`
-	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value if the
+	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
 	//     `"value": ["domain.com", "second.dom.com"]`
-	//   - **Adds "$`http_origin`" as the Access-Control-Allow-Origin header value** -
+	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
 	//     header in the response. `"value": ["$http_origin"]`
@@ -8986,9 +8986,9 @@ type ResourceReplaceParamsOptionsIPAddressACL struct {
 	//
 	// Possible values:
 	//
-	//   - **allow** - Allow access to all IPs except IPs specified in
-	//     "`excepted_values`" field.
-	//   - **deny** - Deny access to all IPs except IPs specified in "`excepted_values`"
+	//   - **allow** - Allow access to all IPs except IPs specified in "excepted_values"
+	//     field.
+	//   - **deny** - Deny access to all IPs except IPs specified in "excepted_values"
 	//     field.
 	//
 	// Any of "allow", "deny".

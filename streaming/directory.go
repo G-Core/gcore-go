@@ -43,7 +43,7 @@ func (r *DirectoryService) New(ctx context.Context, body DirectoryNewParams, opt
 	return
 }
 
-// Change a directory name or move to another "`parent_id`".
+// Change a directory name or move to another "parent_id".
 func (r *DirectoryService) Update(ctx context.Context, directoryID int64, body DirectoryUpdateParams, opts ...option.RequestOption) (res *DirectoryBase, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/directories/%v", directoryID)

@@ -1098,7 +1098,7 @@ func (r *GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP
 type GPUBaremetalClusterNewParamsServersSettingsCredentials struct {
 	// Used to set the password for the specified 'username' on Linux instances. If
 	// 'username' is not provided, the password is applied to the default user of the
-	// image. Mutually exclusive with '`user_data`' - only one can be specified.
+	// image. Mutually exclusive with 'user_data' - only one can be specified.
 	Password param.Opt[string] `json:"password,omitzero" format:"password"`
 	// Specifies the name of the SSH keypair, created via the
 	// [/v1/`ssh_keys` endpoint](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
@@ -1219,20 +1219,15 @@ type GPUBaremetalClusterActionParams struct {
 	//   - **Add/update tags:**
 	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
 	//     updates existing ones.
-	//
-	// - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
-	//
+	//   - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
 	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
 	//     tags are preserved).
-	//
 	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
 	//     specified tags.
-	//
 	//   - **Mixed operations:**
 	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
-	//     adds/updates 'environment' and '`cost_center`' while removing
-	//     '`deprecated_tag`', preserving other existing tags.
-	//
+	//     adds/updates 'environment' and 'cost_center' while removing 'deprecated_tag',
+	//     preserving other existing tags.
 	//   - **Replace all:** first delete existing tags with null values, then add new
 	//     ones in the same request.
 	Tags TagUpdateMap `json:"tags,omitzero,required"`
