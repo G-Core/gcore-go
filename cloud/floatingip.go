@@ -70,13 +70,14 @@ func (r *FloatingIPService) New(ctx context.Context, params FloatingIPNewParams,
 
 // NewAndPoll creates a floating IP and waits for the operation to complete.
 func (r *FloatingIPService) NewAndPoll(ctx context.Context, params FloatingIPNewParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
-	resource, err := r.New(ctx, params, opts...)
+	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.New(ctx, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -90,17 +91,24 @@ func (r *FloatingIPService) NewAndPoll(ctx context.Context, params FloatingIPNew
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
 
 	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Floatingips) != 1 {
-		return nil, errors.New("expected exactly one network to be created in a task")
+		return nil, errors.New("expected exactly one floating IP to be created in a task")
 	}
 	resourceID := task.CreatedResources.Floatingips[0]
 
-	return r.Get(ctx, resourceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // This endpoint updates the association and tags of an existing Floating IP. The
@@ -174,7 +182,9 @@ func (r *FloatingIPService) Update(ctx context.Context, floatingIPID string, par
 // UpdateAndPoll updates a floating IP and polls for completion of the first task. Use the [TaskService.Poll] method if
 // you need to poll for all tasks.
 func (r *FloatingIPService) UpdateAndPoll(ctx context.Context, floatingIPID string, params FloatingIPUpdateParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
-	resource, err := r.Update(ctx, floatingIPID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Update returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Update(ctx, floatingIPID, params, actionOpts...)
 	if err != nil {
 		return
 	}
@@ -194,12 +204,19 @@ func (r *FloatingIPService) UpdateAndPoll(ctx context.Context, floatingIPID stri
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.Get(ctx, floatingIPID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, floatingIPID, getParams, getOpts...)
 }
 
 // List floating IPs
@@ -268,7 +285,9 @@ func (r *FloatingIPService) Delete(ctx context.Context, floatingIPID string, bod
 // DeleteAndPoll deletes a floating IP and polls for completion of the first task. Use the
 // [TaskService.Poll] method if you need to poll for all tasks.
 func (r *FloatingIPService) DeleteAndPoll(ctx context.Context, floatingIPID string, body FloatingIPDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, floatingIPID, body, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, floatingIPID, body, actionOpts...)
 	if err != nil {
 		return err
 	}
@@ -277,7 +296,12 @@ func (r *FloatingIPService) DeleteAndPoll(ctx context.Context, floatingIPID stri
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 
