@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.30.0 (2026-01-22)
+
+Full Changelog: [v0.29.0...v0.30.0](https://github.com/G-Core/gcore-go/compare/v0.29.0...v0.30.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** use create and update v2 endpoints for security groups
+* **cloud:** use v2 endpoint for floating IPs updates
+
+### Features
+
+* **api:** aggregated API specs update ([cbbe4ca](https://github.com/G-Core/gcore-go/commit/cbbe4ca8ecc7c17f5032811d36377b614af19637))
+* **api:** aggregated API specs update ([58d174c](https://github.com/G-Core/gcore-go/commit/58d174cb4ee02c819cf74bdd5da372fb42f4115a))
+* **api:** aggregated API specs update ([78a097d](https://github.com/G-Core/gcore-go/commit/78a097d45e77b21e996e7e4d11e02bbf8fdc061e))
+* **cloud:** add polling methods for security groups ([a95ce62](https://github.com/G-Core/gcore-go/commit/a95ce622dd1123f80b4645b29250e36c92b89780))
+* **cloud:** add UpdateAndPoll method for floating IPs ([c71ea15](https://github.com/G-Core/gcore-go/commit/c71ea15b2e53f1a013bf492e1583518c5ee3528a))
+* **cloud:** use create and update v2 endpoints for security groups ([25f9183](https://github.com/G-Core/gcore-go/commit/25f9183d766cf402b7049337778bf78ad6fe32b2))
+* **cloud:** use v2 endpoint for floating IPs updates ([b20c495](https://github.com/G-Core/gcore-go/commit/b20c4950ccceb246b9f73b75d8db9ee8d606d99c))
+
+
+### Bug Fixes
+
+* **cloud:** filter options correctly in file share polling methods ([5a0b54e](https://github.com/G-Core/gcore-go/commit/5a0b54ed77f919b80d98d1b9705b87381bcc0851))
+* **cloud:** filter options correctly in floating IP polling methods ([3d9d77f](https://github.com/G-Core/gcore-go/commit/3d9d77fa782194f22fcb32386a8823018f9c6d91))
+
 ## 0.29.0 (2026-01-16)
 
 Full Changelog: [v0.28.0...v0.29.0](https://github.com/G-Core/gcore-go/compare/v0.28.0...v0.29.0)
