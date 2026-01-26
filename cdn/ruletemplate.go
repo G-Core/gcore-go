@@ -296,8 +296,9 @@ type RuleTemplateOptions struct {
 	// Controls access to the CDN resource content for specific IP addresses.
 	//
 	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
-	// you have to independently monitor their relevance. We recommend you use a script
-	// for automatically update IP ACL.
+	// you have to independently monitor their relevance.
+	//
+	// We recommend you use a script for automatically update IP ACL.
 	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
 	IPAddressACL RuleTemplateOptionsIPAddressACL `json:"ip_address_acl,nullable"`
 	// Allows to control the download speed per connection.
@@ -1376,8 +1377,9 @@ func (r *RuleTemplateOptionsImageStack) UnmarshalJSON(data []byte) error {
 // Controls access to the CDN resource content for specific IP addresses.
 //
 // If you want to use IPs from our CDN servers IP list for IP ACL configuration,
-// you have to independently monitor their relevance. We recommend you use a script
-// for automatically update IP ACL.
+// you have to independently monitor their relevance.
+//
+// We recommend you use a script for automatically update IP ACL.
 // [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
 type RuleTemplateOptionsIPAddressACL struct {
 	// Controls the option state.
@@ -2290,6 +2292,9 @@ type RuleTemplateOptionsUserAgentACL struct {
 	// - **allow** - List of User-Agents for which access is prohibited.
 	// - **deny** - List of User-Agents for which access is allowed.
 	//
+	// You can provide exact User-Agent strings or regular expressions. Regular
+	// expressions must start with `~` (case-sensitive) or `~*` (case-insensitive).
+	//
 	// Use an empty string `""` to allow/deny access when the User-Agent header is
 	// empty.
 	ExceptedValues []string `json:"excepted_values,required" format:"user_agent"`
@@ -2579,8 +2584,9 @@ type RuleTemplateNewParamsOptions struct {
 	// Controls access to the CDN resource content for specific IP addresses.
 	//
 	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
-	// you have to independently monitor their relevance. We recommend you use a script
-	// for automatically update IP ACL.
+	// you have to independently monitor their relevance.
+	//
+	// We recommend you use a script for automatically update IP ACL.
 	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
 	IPAddressACL RuleTemplateNewParamsOptionsIPAddressACL `json:"ip_address_acl,omitzero"`
 	// Allows to control the download speed per connection.
@@ -3540,8 +3546,9 @@ func (r *RuleTemplateNewParamsOptionsImageStack) UnmarshalJSON(data []byte) erro
 // Controls access to the CDN resource content for specific IP addresses.
 //
 // If you want to use IPs from our CDN servers IP list for IP ACL configuration,
-// you have to independently monitor their relevance. We recommend you use a script
-// for automatically update IP ACL.
+// you have to independently monitor their relevance.
+//
+// We recommend you use a script for automatically update IP ACL.
 // [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
 //
 // The properties Enabled, ExceptedValues, PolicyType are required.
@@ -4440,6 +4447,9 @@ type RuleTemplateNewParamsOptionsUserAgentACL struct {
 	// - **allow** - List of User-Agents for which access is prohibited.
 	// - **deny** - List of User-Agents for which access is allowed.
 	//
+	// You can provide exact User-Agent strings or regular expressions. Regular
+	// expressions must start with `~` (case-sensitive) or `~*` (case-insensitive).
+	//
 	// Use an empty string `""` to allow/deny access when the User-Agent header is
 	// empty.
 	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"user_agent"`
@@ -4724,8 +4734,9 @@ type RuleTemplateUpdateParamsOptions struct {
 	// Controls access to the CDN resource content for specific IP addresses.
 	//
 	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
-	// you have to independently monitor their relevance. We recommend you use a script
-	// for automatically update IP ACL.
+	// you have to independently monitor their relevance.
+	//
+	// We recommend you use a script for automatically update IP ACL.
 	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
 	IPAddressACL RuleTemplateUpdateParamsOptionsIPAddressACL `json:"ip_address_acl,omitzero"`
 	// Allows to control the download speed per connection.
@@ -5685,8 +5696,9 @@ func (r *RuleTemplateUpdateParamsOptionsImageStack) UnmarshalJSON(data []byte) e
 // Controls access to the CDN resource content for specific IP addresses.
 //
 // If you want to use IPs from our CDN servers IP list for IP ACL configuration,
-// you have to independently monitor their relevance. We recommend you use a script
-// for automatically update IP ACL.
+// you have to independently monitor their relevance.
+//
+// We recommend you use a script for automatically update IP ACL.
 // [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
 //
 // The properties Enabled, ExceptedValues, PolicyType are required.
@@ -6585,6 +6597,9 @@ type RuleTemplateUpdateParamsOptionsUserAgentACL struct {
 	// - **allow** - List of User-Agents for which access is prohibited.
 	// - **deny** - List of User-Agents for which access is allowed.
 	//
+	// You can provide exact User-Agent strings or regular expressions. Regular
+	// expressions must start with `~` (case-sensitive) or `~*` (case-insensitive).
+	//
 	// Use an empty string `""` to allow/deny access when the User-Agent header is
 	// empty.
 	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"user_agent"`
@@ -6869,8 +6884,9 @@ type RuleTemplateReplaceParamsOptions struct {
 	// Controls access to the CDN resource content for specific IP addresses.
 	//
 	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
-	// you have to independently monitor their relevance. We recommend you use a script
-	// for automatically update IP ACL.
+	// you have to independently monitor their relevance.
+	//
+	// We recommend you use a script for automatically update IP ACL.
 	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
 	IPAddressACL RuleTemplateReplaceParamsOptionsIPAddressACL `json:"ip_address_acl,omitzero"`
 	// Allows to control the download speed per connection.
@@ -7830,8 +7846,9 @@ func (r *RuleTemplateReplaceParamsOptionsImageStack) UnmarshalJSON(data []byte) 
 // Controls access to the CDN resource content for specific IP addresses.
 //
 // If you want to use IPs from our CDN servers IP list for IP ACL configuration,
-// you have to independently monitor their relevance. We recommend you use a script
-// for automatically update IP ACL.
+// you have to independently monitor their relevance.
+//
+// We recommend you use a script for automatically update IP ACL.
 // [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
 //
 // The properties Enabled, ExceptedValues, PolicyType are required.
@@ -8729,6 +8746,9 @@ type RuleTemplateReplaceParamsOptionsUserAgentACL struct {
 	//
 	// - **allow** - List of User-Agents for which access is prohibited.
 	// - **deny** - List of User-Agents for which access is allowed.
+	//
+	// You can provide exact User-Agent strings or regular expressions. Regular
+	// expressions must start with `~` (case-sensitive) or `~*` (case-insensitive).
 	//
 	// Use an empty string `""` to allow/deny access when the User-Agent header is
 	// empty.

@@ -274,7 +274,7 @@ func TestRuleTemplateNewWithOptionalParams(t *testing.T) {
 			},
 			UserAgentACL: cdn.RuleTemplateNewParamsOptionsUserAgentACL{
 				Enabled:        true,
-				ExceptedValues: []string{"UserAgent Value", ""},
+				ExceptedValues: []string{"UserAgent Value", "~*.*bot.*", ""},
 				PolicyType:     "allow",
 			},
 			Waap: cdn.RuleTemplateNewParamsOptionsWaap{
@@ -559,7 +559,7 @@ func TestRuleTemplateUpdateWithOptionalParams(t *testing.T) {
 				},
 				UserAgentACL: cdn.RuleTemplateUpdateParamsOptionsUserAgentACL{
 					Enabled:        true,
-					ExceptedValues: []string{"UserAgent Value", ""},
+					ExceptedValues: []string{"UserAgent Value", "~*.*bot.*", ""},
 					PolicyType:     "allow",
 				},
 				Waap: cdn.RuleTemplateUpdateParamsOptionsWaap{
@@ -915,7 +915,7 @@ func TestRuleTemplateReplaceWithOptionalParams(t *testing.T) {
 				},
 				UserAgentACL: cdn.RuleTemplateReplaceParamsOptionsUserAgentACL{
 					Enabled:        true,
-					ExceptedValues: []string{"UserAgent Value", ""},
+					ExceptedValues: []string{"UserAgent Value", "~*.*bot.*", ""},
 					PolicyType:     "allow",
 				},
 				Waap: cdn.RuleTemplateReplaceParamsOptionsWaap{
