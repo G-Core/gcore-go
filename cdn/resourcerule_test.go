@@ -279,7 +279,7 @@ func TestResourceRuleNewWithOptionalParams(t *testing.T) {
 				},
 				UserAgentACL: cdn.ResourceRuleNewParamsOptionsUserAgentACL{
 					Enabled:        true,
-					ExceptedValues: []string{"UserAgent Value", ""},
+					ExceptedValues: []string{"UserAgent Value", "~*.*bot.*", ""},
 					PolicyType:     "allow",
 				},
 				Waap: cdn.ResourceRuleNewParamsOptionsWaap{
@@ -568,7 +568,7 @@ func TestResourceRuleUpdateWithOptionalParams(t *testing.T) {
 				},
 				UserAgentACL: cdn.ResourceRuleUpdateParamsOptionsUserAgentACL{
 					Enabled:        true,
-					ExceptedValues: []string{"UserAgent Value", ""},
+					ExceptedValues: []string{"UserAgent Value", "~*.*bot.*", ""},
 					PolicyType:     "allow",
 				},
 				Waap: cdn.ResourceRuleUpdateParamsOptionsWaap{
@@ -939,7 +939,7 @@ func TestResourceRuleReplaceWithOptionalParams(t *testing.T) {
 				},
 				UserAgentACL: cdn.ResourceRuleReplaceParamsOptionsUserAgentACL{
 					Enabled:        true,
-					ExceptedValues: []string{"UserAgent Value", ""},
+					ExceptedValues: []string{"UserAgent Value", "~*.*bot.*", ""},
 					PolicyType:     "allow",
 				},
 				Waap: cdn.ResourceRuleReplaceParamsOptionsWaap{
