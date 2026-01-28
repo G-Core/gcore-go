@@ -724,7 +724,9 @@ type VideoConvertedVideo struct {
 	// **Default MP4 file name structure**
 	//
 	// Link to the file {filename} contains information about the encoding method using
-	// format: `<quality_version>_<codec>_<bitrate>_<height>.mp4`
+	// format:
+	//
+	// `<quality_version>_<codec>_<bitrate>_<height>.mp4`
 	//
 	//   - `<quality_version>` – Internal quality identifier and file version. Please do
 	//     not use it, can be changed at any time without any notice.
