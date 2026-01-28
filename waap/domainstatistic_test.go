@@ -96,7 +96,7 @@ func TestDomainStatisticGetEventsAggregatedWithOptionalParams(t *testing.T) {
 		1,
 		waap.DomainStatisticGetEventsAggregatedParams{
 			Start:       "2024-04-13T00:00:00+01:00",
-			Action:      []string{"block", "captcha"},
+			Action:      []string{"allow", "block"},
 			End:         gcore.String("2024-04-14T12:00:00Z"),
 			IP:          []string{"string", "string"},
 			ReferenceID: []string{"string", "string"},
