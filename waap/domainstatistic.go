@@ -107,7 +107,11 @@ func (r *DomainStatisticService) GetRequestDetails(ctx context.Context, requestI
 	return
 }
 
-// Retrieve a domain's requests data.
+// Retrieve a domain's requests data. Deprecated. Use
+// [GET /v1/analytics/requests](/docs/api-reference/waap/analytics/get-request-log-data)
+// instead.
+//
+// Deprecated: deprecated
 func (r *DomainStatisticService) GetRequestsSeries(ctx context.Context, domainID int64, query DomainStatisticGetRequestsSeriesParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapRequestSummary], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -125,7 +129,11 @@ func (r *DomainStatisticService) GetRequestsSeries(ctx context.Context, domainID
 	return res, nil
 }
 
-// Retrieve a domain's requests data.
+// Retrieve a domain's requests data. Deprecated. Use
+// [GET /v1/analytics/requests](/docs/api-reference/waap/analytics/get-request-log-data)
+// instead.
+//
+// Deprecated: deprecated
 func (r *DomainStatisticService) GetRequestsSeriesAutoPaging(ctx context.Context, domainID int64, query DomainStatisticGetRequestsSeriesParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapRequestSummary] {
 	return pagination.NewOffsetPageAutoPager(r.GetRequestsSeries(ctx, domainID, query, opts...))
 }
@@ -1052,7 +1060,7 @@ type DomainStatisticGetEventsAggregatedParams struct {
 	End param.Opt[string] `query:"end,omitzero" json:"-"`
 	// A list of action names to filter on.
 	//
-	// Any of "block", "captcha", "handshake", "monitor".
+	// Any of "allow", "block", "captcha", "handshake".
 	Action []string `query:"action,omitzero" json:"-"`
 	// A list of IPs to filter event statistics.
 	IP []string `query:"ip,omitzero" format:"ipvanyaddress" json:"-"`
