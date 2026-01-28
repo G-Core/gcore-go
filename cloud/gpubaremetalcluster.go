@@ -295,7 +295,8 @@ func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID strin
 	return
 }
 
-// NewAndPoll creates a new GPU bare metal cluster and polls for completion
+// NewAndPoll creates a new GPU bare metal cluster and polls for completion. Use the [TaskService.Poll] method if you
+// need to poll for all tasks.
 func (r *GPUBaremetalClusterService) NewAndPoll(ctx context.Context, params GPUBaremetalClusterNewParams, opts ...option.RequestOption) (v *GPUBaremetalCluster, err error) {
 	resource, err := r.New(ctx, params, opts...)
 	if err != nil {
@@ -322,12 +323,20 @@ func (r *GPUBaremetalClusterService) NewAndPoll(ctx context.Context, params GPUB
 		return
 	}
 
-	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.AIClusters) != 1 {
-		return nil, errors.New("expected exactly one GPU bare metal cluster to be created in a task")
+	// TODO: extract cluster ID from task created_resources when it becomes available, currently the API is not providing it
+	if !task.JSON.Data.Valid() {
+		return nil, errors.New("expected task data to be present")
 	}
-	resourceID := task.CreatedResources.AIClusters[0]
+	dataMap, ok := task.Data.(map[string]any)
+	if !ok {
+		return nil, errors.New("expected task data to be a map")
+	}
+	clusterID, ok := dataMap["cluster_id"].(string)
+	if !ok || clusterID == "" {
+		return nil, errors.New("expected cluster_id to be present in task data")
+	}
 
-	return r.Get(ctx, resourceID, getParams, opts...)
+	return r.Get(ctx, clusterID, getParams, opts...)
 }
 
 // RebuildAndPoll rebuilds a GPU bare metal cluster and polls for completion of the first task. Use the
