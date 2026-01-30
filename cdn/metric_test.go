@@ -26,7 +26,7 @@ func TestMetricListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Metrics.List(context.TODO(), cdn.MetricListParams{
+	_, err := client.CDN.Metrics.List(context.TODO(), cdn.MetricListParams{
 		From:    "2021-06-14T00:00:00Z",
 		Metrics: []string{"edge_status_2xx", "edge_status_3xx", "edge_status_4xx", "edge_status_5xx"},
 		To:      "2021-06-15T00:00:00Z",

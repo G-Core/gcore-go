@@ -30,7 +30,7 @@ func TestLogListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Logs.List(context.TODO(), cdn.LogListParams{
+	_, err := client.CDN.Logs.List(context.TODO(), cdn.LogListParams{
 		From:             "from",
 		To:               "to",
 		CacheStatusEq:    gcore.String("cache_status__eq"),
@@ -103,7 +103,7 @@ func TestLogDownloadWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	resp, err := client.Cdn.Logs.Download(context.TODO(), cdn.LogDownloadParams{
+	resp, err := client.CDN.Logs.Download(context.TODO(), cdn.LogDownloadParams{
 		Format:           "format",
 		From:             "from",
 		To:               "to",

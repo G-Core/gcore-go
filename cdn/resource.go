@@ -41,7 +41,7 @@ func NewResourceService(opts ...option.RequestOption) (r ResourceService) {
 }
 
 // Create CDN resource
-func (r *ResourceService) New(ctx context.Context, body ResourceNewParams, opts ...option.RequestOption) (res *CdnResource, err error) {
+func (r *ResourceService) New(ctx context.Context, body ResourceNewParams, opts ...option.RequestOption) (res *CDNResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/resources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -49,7 +49,7 @@ func (r *ResourceService) New(ctx context.Context, body ResourceNewParams, opts 
 }
 
 // Change CDN resource
-func (r *ResourceService) Update(ctx context.Context, resourceID int64, body ResourceUpdateParams, opts ...option.RequestOption) (res *CdnResource, err error) {
+func (r *ResourceService) Update(ctx context.Context, resourceID int64, body ResourceUpdateParams, opts ...option.RequestOption) (res *CDNResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
@@ -57,7 +57,7 @@ func (r *ResourceService) Update(ctx context.Context, resourceID int64, body Res
 }
 
 // Get information about all CDN resources in your account.
-func (r *ResourceService) List(ctx context.Context, query ResourceListParams, opts ...option.RequestOption) (res *CdnResourceList, err error) {
+func (r *ResourceService) List(ctx context.Context, query ResourceListParams, opts ...option.RequestOption) (res *CDNResourceList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/resources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -84,7 +84,7 @@ func (r *ResourceService) Delete(ctx context.Context, resourceID int64, opts ...
 }
 
 // Get CDN resource details
-func (r *ResourceService) Get(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *CdnResource, err error) {
+func (r *ResourceService) Get(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *CDNResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -136,14 +136,14 @@ func (r *ResourceService) Purge(ctx context.Context, resourceID int64, body Reso
 }
 
 // Change CDN resource
-func (r *ResourceService) Replace(ctx context.Context, resourceID int64, body ResourceReplaceParams, opts ...option.RequestOption) (res *CdnResource, err error) {
+func (r *ResourceService) Replace(ctx context.Context, resourceID int64, body ResourceReplaceParams, opts ...option.RequestOption) (res *CDNResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
 
-type CdnResource struct {
+type CDNResource struct {
 	// CDN resource ID.
 	ID int64 `json:"id"`
 	// Enables or disables a CDN resource.
@@ -214,7 +214,7 @@ type CdnResource struct {
 	//
 	// In case of `null` value the option is not added to the CDN resource. Option may
 	// inherit its value from the global account settings.
-	Options CdnResourceOptions `json:"options"`
+	Options CDNResourceOptions `json:"options"`
 	// Origin group ID with which the CDN resource is associated.
 	//
 	// You can use either the `origin` or `originGroup` parameter in the request.
@@ -233,7 +233,7 @@ type CdnResource struct {
 	// If protocol is not specified, HTTP is used to connect to an origin server.
 	//
 	// Any of "HTTP", "HTTPS", "MATCH".
-	OriginProtocol CdnResourceOriginProtocol `json:"originProtocol"`
+	OriginProtocol CDNResourceOriginProtocol `json:"originProtocol"`
 	// Defines whether the CDN resource has a preset applied.
 	//
 	// Possible values:
@@ -318,7 +318,7 @@ type CdnResource struct {
 	//   - **deleted** - CDN resource is deleted.
 	//
 	// Any of "active", "suspended", "processed", "deleted".
-	Status CdnResourceStatus `json:"status"`
+	Status CDNResourceStatus `json:"status"`
 	// Date when the CDN resource was suspended automatically if there is no traffic on
 	// it for 90 days.
 	//
@@ -393,8 +393,8 @@ type CdnResource struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResource) RawJSON() string { return r.JSON.raw }
-func (r *CdnResource) UnmarshalJSON(data []byte) error {
+func (r CDNResource) RawJSON() string { return r.JSON.raw }
+func (r *CDNResource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -402,12 +402,12 @@ func (r *CdnResource) UnmarshalJSON(data []byte) error {
 //
 // In case of `null` value the option is not added to the CDN resource. Option may
 // inherit its value from the global account settings.
-type CdnResourceOptions struct {
+type CDNResourceOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
-	AllowedHTTPMethods CdnResourceOptionsAllowedHTTPMethods `json:"allowedHttpMethods,nullable"`
+	AllowedHTTPMethods CDNResourceOptionsAllowedHTTPMethods `json:"allowedHttpMethods,nullable"`
 	// Allows to prevent online services from overloading and ensure your business
 	// workflow running smoothly.
-	BotProtection CdnResourceOptionsBotProtection `json:"bot_protection,nullable"`
+	BotProtection CDNResourceOptionsBotProtection `json:"bot_protection,nullable"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -423,45 +423,45 @@ type CdnResourceOptions struct {
 	//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
 	//     resource and want to enable `brotli_compression` in a rule, you must specify
 	//     `fetch_compressed:false` in the rule.
-	BrotliCompression CdnResourceOptionsBrotliCompression `json:"brotli_compression,nullable"`
+	BrotliCompression CDNResourceOptionsBrotliCompression `json:"brotli_compression,nullable"`
 	// Cache expiration time for users browsers in seconds.
 	//
 	// Cache expiration time is applied to the following response codes: 200, 201, 204,
 	// 206, 301, 302, 303, 304, 307, 308.
 	//
 	// Responses with other codes will not be cached.
-	BrowserCacheSettings CdnResourceOptionsBrowserCacheSettings `json:"browser_cache_settings,nullable"`
+	BrowserCacheSettings CDNResourceOptionsBrowserCacheSettings `json:"browser_cache_settings,nullable"`
 	// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
 	//
 	// HTTP Headers that must be included in the response.
 	//
 	// Deprecated: deprecated
-	CacheHTTPHeaders CdnResourceOptionsCacheHTTPHeaders `json:"cache_http_headers,nullable"`
+	CacheHTTPHeaders CDNResourceOptionsCacheHTTPHeaders `json:"cache_http_headers,nullable"`
 	// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
 	//
 	// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
 	// to a response to a browser.
-	Cors CdnResourceOptionsCors `json:"cors,nullable"`
+	Cors CDNResourceOptionsCors `json:"cors,nullable"`
 	// Enables control access to content for specified countries.
-	CountryACL CdnResourceOptionsCountryACL `json:"country_acl,nullable"`
+	CountryACL CDNResourceOptionsCountryACL `json:"country_acl,nullable"`
 	// **Legacy option**. Use the `edge_cache_settings` option instead.
 	//
 	// Allows the complete disabling of content caching.
 	//
 	// Deprecated: deprecated
-	DisableCache CdnResourceOptionsDisableCache `json:"disable_cache,nullable"`
+	DisableCache CDNResourceOptionsDisableCache `json:"disable_cache,nullable"`
 	// Allows 206 responses regardless of the settings of an origin source.
-	DisableProxyForceRanges CdnResourceOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges,nullable"`
+	DisableProxyForceRanges CDNResourceOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges,nullable"`
 	// Cache expiration time for CDN servers.
 	//
 	// `value` and `default` fields cannot be used simultaneously.
-	EdgeCacheSettings CdnResourceOptionsEdgeCacheSettings `json:"edge_cache_settings,nullable"`
+	EdgeCacheSettings CDNResourceOptionsEdgeCacheSettings `json:"edge_cache_settings,nullable"`
 	// Allows to configure FastEdge app to be called on different request/response
 	// phases.
 	//
 	// Note: At least one of `on_request_headers`, `on_request_body`,
 	// `on_response_headers`, or `on_response_body` must be specified.
-	Fastedge CdnResourceOptionsFastedge `json:"fastedge,nullable"`
+	Fastedge CDNResourceOptionsFastedge `json:"fastedge,nullable"`
 	// Makes the CDN request compressed content from the origin.
 	//
 	// The origin server should support compression. CDN servers will not decompress
@@ -475,20 +475,20 @@ type CdnResourceOptions struct {
 	//     you enable it in CDN resource and want to use `gzipON` and
 	//     `brotli_compression` in a rule, you have to specify
 	//     `"fetch_compressed": false` in the rule.
-	FetchCompressed CdnResourceOptionsFetchCompressed `json:"fetch_compressed,nullable"`
+	FetchCompressed CDNResourceOptionsFetchCompressed `json:"fetch_compressed,nullable"`
 	// Enables redirection from origin. If the origin server returns a redirect, the
 	// option allows the CDN to pull the requested content from the origin server that
 	// was returned in the redirect.
-	FollowOriginRedirect CdnResourceOptionsFollowOriginRedirect `json:"follow_origin_redirect,nullable"`
+	FollowOriginRedirect CDNResourceOptionsFollowOriginRedirect `json:"follow_origin_redirect,nullable"`
 	// Applies custom HTTP response codes for CDN content.
 	//
 	// The following codes are reserved by our system and cannot be specified in this
 	// option: 408, 444, 477, 494, 495, 496, 497, 499.
-	ForceReturn CdnResourceOptionsForceReturn `json:"force_return,nullable"`
+	ForceReturn CDNResourceOptionsForceReturn `json:"force_return,nullable"`
 	// Forwards the Host header from a end-user request to an origin server.
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	ForwardHostHeader CdnResourceOptionsForwardHostHeader `json:"forward_host_header,nullable"`
+	ForwardHostHeader CDNResourceOptionsForwardHostHeader `json:"forward_host_header,nullable"`
 	// Compresses content with gzip on the CDN end. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -499,30 +499,30 @@ type CdnResourceOptions struct {
 	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
 	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
-	GzipOn CdnResourceOptionsGzipOn `json:"gzipOn,nullable"`
+	GzipOn CDNResourceOptionsGzipOn `json:"gzipOn,nullable"`
 	// Sets the Host header that CDN servers use when request content from an origin
 	// server. Your server must be able to process requests with the chosen header.
 	//
 	// If the option is `null`, the Host Header value is equal to first CNAME.
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	HostHeader CdnResourceOptionsHostHeader `json:"hostHeader,nullable"`
+	HostHeader CDNResourceOptionsHostHeader `json:"hostHeader,nullable"`
 	// Enables HTTP/3 protocol for content delivery.
 	//
 	// `http3_enabled` option works only with `"sslEnabled": true`.
-	Http3Enabled CdnResourceOptionsHttp3Enabled `json:"http3_enabled,nullable"`
+	Http3Enabled CDNResourceOptionsHttp3Enabled `json:"http3_enabled,nullable"`
 	// Defines whether the files with the Set-Cookies header are cached as one file or
 	// as different ones.
-	IgnoreCookie CdnResourceOptionsIgnoreCookie `json:"ignore_cookie,nullable"`
+	IgnoreCookie CDNResourceOptionsIgnoreCookie `json:"ignore_cookie,nullable"`
 	// How a file with different query strings is cached: either as one object (option
 	// is enabled) or as different objects (option is disabled.)
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	IgnoreQueryString CdnResourceOptionsIgnoreQueryString `json:"ignoreQueryString,nullable"`
+	IgnoreQueryString CDNResourceOptionsIgnoreQueryString `json:"ignoreQueryString,nullable"`
 	// Transforms JPG and PNG images (for example, resize or crop) and automatically
 	// converts them to WebP or AVIF format.
-	ImageStack CdnResourceOptionsImageStack `json:"image_stack,nullable"`
+	ImageStack CDNResourceOptionsImageStack `json:"image_stack,nullable"`
 	// Controls access to the CDN resource content for specific IP addresses.
 	//
 	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
@@ -530,9 +530,9 @@ type CdnResourceOptions struct {
 	//
 	// We recommend you use a script for automatically update IP ACL.
 	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
-	IPAddressACL CdnResourceOptionsIPAddressACL `json:"ip_address_acl,nullable"`
+	IPAddressACL CDNResourceOptionsIPAddressACL `json:"ip_address_acl,nullable"`
 	// Allows to control the download speed per connection.
-	LimitBandwidth CdnResourceOptionsLimitBandwidth `json:"limit_bandwidth,nullable"`
+	LimitBandwidth CDNResourceOptionsLimitBandwidth `json:"limit_bandwidth,nullable"`
 	// Allows you to modify your cache key. If omitted, the default value is
 	// `$request_uri`.
 	//
@@ -545,29 +545,29 @@ type CdnResourceOptions struct {
 	// **Warning**: Enabling and changing this option can invalidate your current cache
 	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
 	// not work.
-	ProxyCacheKey CdnResourceOptionsProxyCacheKey `json:"proxy_cache_key,nullable"`
+	ProxyCacheKey CDNResourceOptionsProxyCacheKey `json:"proxy_cache_key,nullable"`
 	// Caching for POST requests along with default GET and HEAD.
-	ProxyCacheMethodsSet CdnResourceOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set,nullable"`
+	ProxyCacheMethodsSet CDNResourceOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set,nullable"`
 	// The time limit for establishing a connection with the origin.
-	ProxyConnectTimeout CdnResourceOptionsProxyConnectTimeout `json:"proxy_connect_timeout,nullable"`
+	ProxyConnectTimeout CDNResourceOptionsProxyConnectTimeout `json:"proxy_connect_timeout,nullable"`
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
 	// **Note:** When used with a WebSocket connection, this option supports values
 	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
-	ProxyReadTimeout CdnResourceOptionsProxyReadTimeout `json:"proxy_read_timeout,nullable"`
+	ProxyReadTimeout CDNResourceOptionsProxyReadTimeout `json:"proxy_read_timeout,nullable"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	QueryParamsBlacklist CdnResourceOptionsQueryParamsBlacklist `json:"query_params_blacklist,nullable"`
+	QueryParamsBlacklist CDNResourceOptionsQueryParamsBlacklist `json:"query_params_blacklist,nullable"`
 	// Files with the specified query parameters are cached as different objects, files
 	// with other parameters are cached as one object.
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	QueryParamsWhitelist CdnResourceOptionsQueryParamsWhitelist `json:"query_params_whitelist,nullable"`
+	QueryParamsWhitelist CDNResourceOptionsQueryParamsWhitelist `json:"query_params_whitelist,nullable"`
 	// The Query String Forwarding feature allows for the seamless transfer of
 	// parameters embedded in playlist files to the corresponding media chunk files.
 	// This functionality ensures that specific attributes, such as authentication
@@ -575,31 +575,31 @@ type CdnResourceOptions struct {
 	// manifest to the individual media segments. This is particularly useful for
 	// maintaining continuity in security, analytics, and any other parameter-based
 	// operations across the entire media delivery workflow.
-	QueryStringForwarding CdnResourceOptionsQueryStringForwarding `json:"query_string_forwarding,nullable"`
+	QueryStringForwarding CDNResourceOptionsQueryStringForwarding `json:"query_string_forwarding,nullable"`
 	// Enables redirect from HTTP to HTTPS.
 	//
 	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 	// simultaneously.
-	RedirectHTTPToHTTPS CdnResourceOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https,nullable"`
+	RedirectHTTPToHTTPS CDNResourceOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https,nullable"`
 	// Enables redirect from HTTPS to HTTP.
 	//
 	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 	// simultaneously.
-	RedirectHTTPSToHTTP CdnResourceOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,nullable"`
+	RedirectHTTPSToHTTP CDNResourceOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,nullable"`
 	// Controls access to the CDN resource content for specified domain names.
-	ReferrerACL CdnResourceOptionsReferrerACL `json:"referrer_acl,nullable"`
+	ReferrerACL CDNResourceOptionsReferrerACL `json:"referrer_acl,nullable"`
 	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter CdnResourceOptionsRequestLimiter `json:"request_limiter,nullable"`
+	RequestLimiter CDNResourceOptionsRequestLimiter `json:"request_limiter,nullable"`
 	// Hides HTTP headers from an origin server in the CDN response.
-	ResponseHeadersHidingPolicy CdnResourceOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,nullable"`
+	ResponseHeadersHidingPolicy CDNResourceOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,nullable"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
 	// to the
 	// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
 	// configuration.
-	Rewrite CdnResourceOptionsRewrite `json:"rewrite,nullable"`
+	Rewrite CDNResourceOptionsRewrite `json:"rewrite,nullable"`
 	// Configures access with tokenized URLs. This makes impossible to access content
 	// without a valid (unexpired) token.
-	SecureKey CdnResourceOptionsSecureKey `json:"secure_key,nullable"`
+	SecureKey CDNResourceOptionsSecureKey `json:"secure_key,nullable"`
 	// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
 	// part.) This reduces time to first byte.
 	//
@@ -611,7 +611,7 @@ type CdnResourceOptions struct {
 	//  1. Origin must support HTTP Range requests.
 	//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
 	//     options enabled.
-	Slice CdnResourceOptionsSlice `json:"slice,nullable"`
+	Slice CDNResourceOptionsSlice `json:"slice,nullable"`
 	// The hostname that is added to SNI requests from CDN servers to the origin server
 	// via HTTPS.
 	//
@@ -621,46 +621,46 @@ type CdnResourceOptions struct {
 	// the connection.
 	//
 	// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
-	Sni CdnResourceOptionsSni `json:"sni,nullable"`
+	Sni CDNResourceOptionsSni `json:"sni,nullable"`
 	// Serves stale cached content in case of origin unavailability.
-	Stale CdnResourceOptionsStale `json:"stale,nullable"`
+	Stale CDNResourceOptionsStale `json:"stale,nullable"`
 	// Custom HTTP Headers that a CDN server adds to a response.
-	StaticResponseHeaders CdnResourceOptionsStaticResponseHeaders `json:"static_response_headers,nullable"`
+	StaticResponseHeaders CDNResourceOptionsStaticResponseHeaders `json:"static_response_headers,nullable"`
 	// **Legacy option**. Use the `static_response_headers` option instead.
 	//
 	// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
 	// Headers can be specified. May contain a header with multiple values.
 	//
 	// Deprecated: deprecated
-	StaticHeaders CdnResourceOptionsStaticHeaders `json:"staticHeaders,nullable"`
+	StaticHeaders CDNResourceOptionsStaticHeaders `json:"staticHeaders,nullable"`
 	// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
 	// Headers can be specified.
-	StaticRequestHeaders CdnResourceOptionsStaticRequestHeaders `json:"staticRequestHeaders,nullable"`
+	StaticRequestHeaders CDNResourceOptionsStaticRequestHeaders `json:"staticRequestHeaders,nullable"`
 	// List of SSL/TLS protocol versions allowed for HTTPS connections from end users
 	// to the domain.
 	//
 	// When the option is disabled, all protocols versions are allowed.
-	TlsVersions CdnResourceOptionsTlsVersions `json:"tls_versions,nullable"`
+	TlsVersions CDNResourceOptionsTlsVersions `json:"tls_versions,nullable"`
 	// Let's Encrypt certificate chain.
 	//
 	// The specified chain will be used during the next Let's Encrypt certificate issue
 	// or renewal.
-	UseDefaultLeChain CdnResourceOptionsUseDefaultLeChain `json:"use_default_le_chain,nullable"`
+	UseDefaultLeChain CDNResourceOptionsUseDefaultLeChain `json:"use_default_le_chain,nullable"`
 	// DNS-01 challenge to issue a Let's Encrypt certificate for the resource.
 	//
 	// DNS service should be activated to enable this option.
-	UseDns01LeChallenge CdnResourceOptionsUseDns01LeChallenge `json:"use_dns01_le_challenge,nullable"`
+	UseDns01LeChallenge CDNResourceOptionsUseDns01LeChallenge `json:"use_dns01_le_challenge,nullable"`
 	// RSA Let's Encrypt certificate type for the CDN resource.
 	//
 	// The specified value will be used during the next Let's Encrypt certificate issue
 	// or renewal.
-	UseRsaLeCert CdnResourceOptionsUseRsaLeCert `json:"use_rsa_le_cert,nullable"`
+	UseRsaLeCert CDNResourceOptionsUseRsaLeCert `json:"use_rsa_le_cert,nullable"`
 	// Controls access to the content for specified User-Agents.
-	UserAgentACL CdnResourceOptionsUserAgentACL `json:"user_agent_acl,nullable"`
+	UserAgentACL CDNResourceOptionsUserAgentACL `json:"user_agent_acl,nullable"`
 	// Allows to enable WAAP (Web Application and API Protection).
-	Waap CdnResourceOptionsWaap `json:"waap,nullable"`
+	Waap CDNResourceOptionsWaap `json:"waap,nullable"`
 	// Enables or disables WebSockets connections to an origin server.
-	Websockets CdnResourceOptionsWebsockets `json:"websockets,nullable"`
+	Websockets CDNResourceOptionsWebsockets `json:"websockets,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedHTTPMethods          respjson.Field
@@ -719,13 +719,13 @@ type CdnResourceOptions struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptions) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptions) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptions) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // HTTP methods allowed for content requests from the CDN.
-type CdnResourceOptionsAllowedHTTPMethods struct {
+type CDNResourceOptionsAllowedHTTPMethods struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -745,16 +745,16 @@ type CdnResourceOptionsAllowedHTTPMethods struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsAllowedHTTPMethods) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsAllowedHTTPMethods) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to prevent online services from overloading and ensure your business
 // workflow running smoothly.
-type CdnResourceOptionsBotProtection struct {
+type CDNResourceOptionsBotProtection struct {
 	// Controls the bot challenge module state.
-	BotChallenge CdnResourceOptionsBotProtectionBotChallenge `json:"bot_challenge,required"`
+	BotChallenge CDNResourceOptionsBotProtectionBotChallenge `json:"bot_challenge,required"`
 	// Controls the option state.
 	//
 	// Possible values:
@@ -772,13 +772,13 @@ type CdnResourceOptionsBotProtection struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsBotProtection) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsBotProtection) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsBotProtection) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsBotProtection) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Controls the bot challenge module state.
-type CdnResourceOptionsBotProtectionBotChallenge struct {
+type CDNResourceOptionsBotProtectionBotChallenge struct {
 	// Possible values:
 	//
 	// - **true** - Bot challenge is enabled.
@@ -793,8 +793,8 @@ type CdnResourceOptionsBotProtectionBotChallenge struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsBotProtectionBotChallenge) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsBotProtectionBotChallenge) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -813,7 +813,7 @@ func (r *CdnResourceOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte)
 //     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
 //     resource and want to enable `brotli_compression` in a rule, you must specify
 //     `fetch_compressed:false` in the rule.
-type CdnResourceOptionsBrotliCompression struct {
+type CDNResourceOptionsBrotliCompression struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -841,8 +841,8 @@ type CdnResourceOptionsBrotliCompression struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsBrotliCompression) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsBrotliCompression) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsBrotliCompression) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsBrotliCompression) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -852,7 +852,7 @@ func (r *CdnResourceOptionsBrotliCompression) UnmarshalJSON(data []byte) error {
 // 206, 301, 302, 303, 304, 307, 308.
 //
 // Responses with other codes will not be cached.
-type CdnResourceOptionsBrowserCacheSettings struct {
+type CDNResourceOptionsBrowserCacheSettings struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -874,8 +874,8 @@ type CdnResourceOptionsBrowserCacheSettings struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsBrowserCacheSettings) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsBrowserCacheSettings) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsBrowserCacheSettings) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsBrowserCacheSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -884,7 +884,7 @@ func (r *CdnResourceOptionsBrowserCacheSettings) UnmarshalJSON(data []byte) erro
 // HTTP Headers that must be included in the response.
 //
 // Deprecated: deprecated
-type CdnResourceOptionsCacheHTTPHeaders struct {
+type CDNResourceOptionsCacheHTTPHeaders struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -903,8 +903,8 @@ type CdnResourceOptionsCacheHTTPHeaders struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsCacheHTTPHeaders) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsCacheHTTPHeaders) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -912,7 +912,7 @@ func (r *CdnResourceOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte) error {
 //
 // CORS header support allows the CDN to add the Access-Control-Allow-Origin header
 // to a response to a browser.
-type CdnResourceOptionsCors struct {
+type CDNResourceOptionsCors struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -955,13 +955,13 @@ type CdnResourceOptionsCors struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsCors) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsCors) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsCors) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsCors) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Enables control access to content for specified countries.
-type CdnResourceOptionsCountryACL struct {
+type CDNResourceOptionsCountryACL struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -998,8 +998,8 @@ type CdnResourceOptionsCountryACL struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsCountryACL) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsCountryACL) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsCountryACL) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsCountryACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1008,7 +1008,7 @@ func (r *CdnResourceOptionsCountryACL) UnmarshalJSON(data []byte) error {
 // Allows the complete disabling of content caching.
 //
 // Deprecated: deprecated
-type CdnResourceOptionsDisableCache struct {
+type CDNResourceOptionsDisableCache struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1031,13 +1031,13 @@ type CdnResourceOptionsDisableCache struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsDisableCache) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsDisableCache) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsDisableCache) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsDisableCache) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows 206 responses regardless of the settings of an origin source.
-type CdnResourceOptionsDisableProxyForceRanges struct {
+type CDNResourceOptionsDisableProxyForceRanges struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1060,15 +1060,15 @@ type CdnResourceOptionsDisableProxyForceRanges struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsDisableProxyForceRanges) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsDisableProxyForceRanges) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsDisableProxyForceRanges) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsDisableProxyForceRanges) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Cache expiration time for CDN servers.
 //
 // `value` and `default` fields cannot be used simultaneously.
-type CdnResourceOptionsEdgeCacheSettings struct {
+type CDNResourceOptionsEdgeCacheSettings struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1114,8 +1114,8 @@ type CdnResourceOptionsEdgeCacheSettings struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsEdgeCacheSettings) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsEdgeCacheSettings) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1124,7 +1124,7 @@ func (r *CdnResourceOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error {
 //
 // Note: At least one of `on_request_headers`, `on_request_body`,
 // `on_response_headers`, or `on_response_body` must be specified.
-type CdnResourceOptionsFastedge struct {
+type CDNResourceOptionsFastedge struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1134,16 +1134,16 @@ type CdnResourceOptionsFastedge struct {
 	Enabled bool `json:"enabled,required"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// body as soon as CDN receives incoming HTTP request.
-	OnRequestBody CdnResourceOptionsFastedgeOnRequestBody `json:"on_request_body"`
+	OnRequestBody CDNResourceOptionsFastedgeOnRequestBody `json:"on_request_body"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// headers as soon as CDN receives incoming HTTP request.
-	OnRequestHeaders CdnResourceOptionsFastedgeOnRequestHeaders `json:"on_request_headers"`
+	OnRequestHeaders CDNResourceOptionsFastedgeOnRequestHeaders `json:"on_request_headers"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// body before CDN sends the HTTP response.
-	OnResponseBody CdnResourceOptionsFastedgeOnResponseBody `json:"on_response_body"`
+	OnResponseBody CDNResourceOptionsFastedgeOnResponseBody `json:"on_response_body"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// headers before CDN sends the HTTP response.
-	OnResponseHeaders CdnResourceOptionsFastedgeOnResponseHeaders `json:"on_response_headers"`
+	OnResponseHeaders CDNResourceOptionsFastedgeOnResponseHeaders `json:"on_response_headers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled           respjson.Field
@@ -1157,14 +1157,14 @@ type CdnResourceOptionsFastedge struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsFastedge) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsFastedge) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsFastedge) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsFastedge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to configure FastEdge application that will be called to handle request
 // body as soon as CDN receives incoming HTTP request.
-type CdnResourceOptionsFastedgeOnRequestBody struct {
+type CDNResourceOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
@@ -1189,14 +1189,14 @@ type CdnResourceOptionsFastedgeOnRequestBody struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsFastedgeOnRequestBody) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsFastedgeOnRequestBody) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to configure FastEdge application that will be called to handle request
 // headers as soon as CDN receives incoming HTTP request.
-type CdnResourceOptionsFastedgeOnRequestHeaders struct {
+type CDNResourceOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
@@ -1221,14 +1221,14 @@ type CdnResourceOptionsFastedgeOnRequestHeaders struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsFastedgeOnRequestHeaders) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsFastedgeOnRequestHeaders) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to configure FastEdge application that will be called to handle response
 // body before CDN sends the HTTP response.
-type CdnResourceOptionsFastedgeOnResponseBody struct {
+type CDNResourceOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
@@ -1253,14 +1253,14 @@ type CdnResourceOptionsFastedgeOnResponseBody struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsFastedgeOnResponseBody) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsFastedgeOnResponseBody) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to configure FastEdge application that will be called to handle response
 // headers before CDN sends the HTTP response.
-type CdnResourceOptionsFastedgeOnResponseHeaders struct {
+type CDNResourceOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
@@ -1285,8 +1285,8 @@ type CdnResourceOptionsFastedgeOnResponseHeaders struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsFastedgeOnResponseHeaders) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsFastedgeOnResponseHeaders) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1303,7 +1303,7 @@ func (r *CdnResourceOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []byte)
 //     you enable it in CDN resource and want to use `gzipON` and
 //     `brotli_compression` in a rule, you have to specify
 //     `"fetch_compressed": false` in the rule.
-type CdnResourceOptionsFetchCompressed struct {
+type CDNResourceOptionsFetchCompressed struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1326,15 +1326,15 @@ type CdnResourceOptionsFetchCompressed struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsFetchCompressed) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsFetchCompressed) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsFetchCompressed) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsFetchCompressed) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Enables redirection from origin. If the origin server returns a redirect, the
 // option allows the CDN to pull the requested content from the origin server that
 // was returned in the redirect.
-type CdnResourceOptionsFollowOriginRedirect struct {
+type CDNResourceOptionsFollowOriginRedirect struct {
 	// Redirect status code that the origin server returns.
 	//
 	// To serve up to date content to end users, you will need to purge the cache after
@@ -1359,8 +1359,8 @@ type CdnResourceOptionsFollowOriginRedirect struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsFollowOriginRedirect) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsFollowOriginRedirect) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1368,7 +1368,7 @@ func (r *CdnResourceOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) erro
 //
 // The following codes are reserved by our system and cannot be specified in this
 // option: 408, 444, 477, 494, 495, 496, 497, 499.
-type CdnResourceOptionsForceReturn struct {
+type CDNResourceOptionsForceReturn struct {
 	// URL for redirection or text.
 	Body string `json:"body,required"`
 	// Status code value.
@@ -1382,7 +1382,7 @@ type CdnResourceOptionsForceReturn struct {
 	Enabled bool `json:"enabled,required"`
 	// Controls the time at which a custom HTTP response code should be applied. By
 	// default, a custom HTTP response code is applied at any time.
-	TimeInterval CdnResourceOptionsForceReturnTimeInterval `json:"time_interval,nullable"`
+	TimeInterval CDNResourceOptionsForceReturnTimeInterval `json:"time_interval,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Body         respjson.Field
@@ -1395,14 +1395,14 @@ type CdnResourceOptionsForceReturn struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsForceReturn) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsForceReturn) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsForceReturn) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsForceReturn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Controls the time at which a custom HTTP response code should be applied. By
 // default, a custom HTTP response code is applied at any time.
-type CdnResourceOptionsForceReturnTimeInterval struct {
+type CDNResourceOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
 	EndTime string `json:"end_time,required"`
@@ -1422,15 +1422,15 @@ type CdnResourceOptionsForceReturnTimeInterval struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsForceReturnTimeInterval) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsForceReturnTimeInterval) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsForceReturnTimeInterval) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsForceReturnTimeInterval) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Forwards the Host header from a end-user request to an origin server.
 //
 // `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-type CdnResourceOptionsForwardHostHeader struct {
+type CDNResourceOptionsForwardHostHeader struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1453,8 +1453,8 @@ type CdnResourceOptionsForwardHostHeader struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsForwardHostHeader) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsForwardHostHeader) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1468,7 +1468,7 @@ func (r *CdnResourceOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
 //  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 //     rules. If you enable `fetch_compressed` in CDN resource and want to enable
 //     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
-type CdnResourceOptionsGzipOn struct {
+type CDNResourceOptionsGzipOn struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1491,8 +1491,8 @@ type CdnResourceOptionsGzipOn struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsGzipOn) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsGzipOn) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsGzipOn) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsGzipOn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1502,7 +1502,7 @@ func (r *CdnResourceOptionsGzipOn) UnmarshalJSON(data []byte) error {
 // If the option is `null`, the Host Header value is equal to first CNAME.
 //
 // `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-type CdnResourceOptionsHostHeader struct {
+type CDNResourceOptionsHostHeader struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1522,15 +1522,15 @@ type CdnResourceOptionsHostHeader struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsHostHeader) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsHostHeader) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsHostHeader) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsHostHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Enables HTTP/3 protocol for content delivery.
 //
 // `http3_enabled` option works only with `"sslEnabled": true`.
-type CdnResourceOptionsHttp3Enabled struct {
+type CDNResourceOptionsHttp3Enabled struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1553,14 +1553,14 @@ type CdnResourceOptionsHttp3Enabled struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsHttp3Enabled) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsHttp3Enabled) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsHttp3Enabled) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsHttp3Enabled) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Defines whether the files with the Set-Cookies header are cached as one file or
 // as different ones.
-type CdnResourceOptionsIgnoreCookie struct {
+type CDNResourceOptionsIgnoreCookie struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1584,8 +1584,8 @@ type CdnResourceOptionsIgnoreCookie struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsIgnoreCookie) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsIgnoreCookie) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsIgnoreCookie) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsIgnoreCookie) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1594,7 +1594,7 @@ func (r *CdnResourceOptionsIgnoreCookie) UnmarshalJSON(data []byte) error {
 //
 // `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 // options cannot be enabled simultaneously.
-type CdnResourceOptionsIgnoreQueryString struct {
+type CDNResourceOptionsIgnoreQueryString struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1617,14 +1617,14 @@ type CdnResourceOptionsIgnoreQueryString struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsIgnoreQueryString) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsIgnoreQueryString) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsIgnoreQueryString) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsIgnoreQueryString) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Transforms JPG and PNG images (for example, resize or crop) and automatically
 // converts them to WebP or AVIF format.
-type CdnResourceOptionsImageStack struct {
+type CDNResourceOptionsImageStack struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1654,8 +1654,8 @@ type CdnResourceOptionsImageStack struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsImageStack) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsImageStack) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsImageStack) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsImageStack) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1666,7 +1666,7 @@ func (r *CdnResourceOptionsImageStack) UnmarshalJSON(data []byte) error {
 //
 // We recommend you use a script for automatically update IP ACL.
 // [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
-type CdnResourceOptionsIPAddressACL struct {
+type CDNResourceOptionsIPAddressACL struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1708,13 +1708,13 @@ type CdnResourceOptionsIPAddressACL struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsIPAddressACL) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsIPAddressACL) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsIPAddressACL) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsIPAddressACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to control the download speed per connection.
-type CdnResourceOptionsLimitBandwidth struct {
+type CDNResourceOptionsLimitBandwidth struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1756,8 +1756,8 @@ type CdnResourceOptionsLimitBandwidth struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsLimitBandwidth) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsLimitBandwidth) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsLimitBandwidth) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsLimitBandwidth) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1773,7 +1773,7 @@ func (r *CdnResourceOptionsLimitBandwidth) UnmarshalJSON(data []byte) error {
 // **Warning**: Enabling and changing this option can invalidate your current cache
 // and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
 // not work.
-type CdnResourceOptionsProxyCacheKey struct {
+type CDNResourceOptionsProxyCacheKey struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1793,13 +1793,13 @@ type CdnResourceOptionsProxyCacheKey struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsProxyCacheKey) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsProxyCacheKey) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsProxyCacheKey) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsProxyCacheKey) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Caching for POST requests along with default GET and HEAD.
-type CdnResourceOptionsProxyCacheMethodsSet struct {
+type CDNResourceOptionsProxyCacheMethodsSet struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1822,13 +1822,13 @@ type CdnResourceOptionsProxyCacheMethodsSet struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsProxyCacheMethodsSet) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsProxyCacheMethodsSet) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsProxyCacheMethodsSet) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsProxyCacheMethodsSet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The time limit for establishing a connection with the origin.
-type CdnResourceOptionsProxyConnectTimeout struct {
+type CDNResourceOptionsProxyConnectTimeout struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1850,8 +1850,8 @@ type CdnResourceOptionsProxyConnectTimeout struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsProxyConnectTimeout) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsProxyConnectTimeout) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1860,7 +1860,7 @@ func (r *CdnResourceOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) error
 //
 // **Note:** When used with a WebSocket connection, this option supports values
 // only in the range 1–20 seconds (instead of the usual 1–30 seconds).
-type CdnResourceOptionsProxyReadTimeout struct {
+type CDNResourceOptionsProxyReadTimeout struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1882,8 +1882,8 @@ type CdnResourceOptionsProxyReadTimeout struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsProxyReadTimeout) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsProxyReadTimeout) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsProxyReadTimeout) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsProxyReadTimeout) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1892,7 +1892,7 @@ func (r *CdnResourceOptionsProxyReadTimeout) UnmarshalJSON(data []byte) error {
 //
 // `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 // options cannot be enabled simultaneously.
-type CdnResourceOptionsQueryParamsBlacklist struct {
+type CDNResourceOptionsQueryParamsBlacklist struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1912,8 +1912,8 @@ type CdnResourceOptionsQueryParamsBlacklist struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsQueryParamsBlacklist) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsQueryParamsBlacklist) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsQueryParamsBlacklist) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsQueryParamsBlacklist) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1922,7 +1922,7 @@ func (r *CdnResourceOptionsQueryParamsBlacklist) UnmarshalJSON(data []byte) erro
 //
 // `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 // options cannot be enabled simultaneously.
-type CdnResourceOptionsQueryParamsWhitelist struct {
+type CDNResourceOptionsQueryParamsWhitelist struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1942,8 +1942,8 @@ type CdnResourceOptionsQueryParamsWhitelist struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsQueryParamsWhitelist) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsQueryParamsWhitelist) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsQueryParamsWhitelist) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsQueryParamsWhitelist) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1954,7 +1954,7 @@ func (r *CdnResourceOptionsQueryParamsWhitelist) UnmarshalJSON(data []byte) erro
 // manifest to the individual media segments. This is particularly useful for
 // maintaining continuity in security, analytics, and any other parameter-based
 // operations across the entire media delivery workflow.
-type CdnResourceOptionsQueryStringForwarding struct {
+type CDNResourceOptionsQueryStringForwarding struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2001,8 +2001,8 @@ type CdnResourceOptionsQueryStringForwarding struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsQueryStringForwarding) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsQueryStringForwarding) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsQueryStringForwarding) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsQueryStringForwarding) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2010,7 +2010,7 @@ func (r *CdnResourceOptionsQueryStringForwarding) UnmarshalJSON(data []byte) err
 //
 // `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 // simultaneously.
-type CdnResourceOptionsRedirectHTTPToHTTPS struct {
+type CDNResourceOptionsRedirectHTTPToHTTPS struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2033,8 +2033,8 @@ type CdnResourceOptionsRedirectHTTPToHTTPS struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsRedirectHTTPToHTTPS) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsRedirectHTTPToHTTPS) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2042,7 +2042,7 @@ func (r *CdnResourceOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []byte) error
 //
 // `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 // simultaneously.
-type CdnResourceOptionsRedirectHTTPSToHTTP struct {
+type CDNResourceOptionsRedirectHTTPSToHTTP struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2065,13 +2065,13 @@ type CdnResourceOptionsRedirectHTTPSToHTTP struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsRedirectHTTPSToHTTP) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsRedirectHTTPSToHTTP) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsRedirectHTTPSToHTTP) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsRedirectHTTPSToHTTP) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Controls access to the CDN resource content for specified domain names.
-type CdnResourceOptionsReferrerACL struct {
+type CDNResourceOptionsReferrerACL struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2114,13 +2114,13 @@ type CdnResourceOptionsReferrerACL struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsReferrerACL) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsReferrerACL) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsReferrerACL) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsReferrerACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Option allows to limit the amount of HTTP requests.
-type CdnResourceOptionsRequestLimiter struct {
+type CDNResourceOptionsRequestLimiter struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2157,13 +2157,13 @@ type CdnResourceOptionsRequestLimiter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsRequestLimiter) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsRequestLimiter) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Hides HTTP headers from an origin server in the CDN response.
-type CdnResourceOptionsResponseHeadersHidingPolicy struct {
+type CDNResourceOptionsResponseHeadersHidingPolicy struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2208,8 +2208,8 @@ type CdnResourceOptionsResponseHeadersHidingPolicy struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsResponseHeadersHidingPolicy) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsResponseHeadersHidingPolicy) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsResponseHeadersHidingPolicy) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsResponseHeadersHidingPolicy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2217,7 +2217,7 @@ func (r *CdnResourceOptionsResponseHeadersHidingPolicy) UnmarshalJSON(data []byt
 // to the
 // [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
 // configuration.
-type CdnResourceOptionsRewrite struct {
+type CDNResourceOptionsRewrite struct {
 	// Path for the Rewrite option.
 	//
 	// Example:
@@ -2255,14 +2255,14 @@ type CdnResourceOptionsRewrite struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsRewrite) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsRewrite) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsRewrite) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsRewrite) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Configures access with tokenized URLs. This makes impossible to access content
 // without a valid (unexpired) token.
-type CdnResourceOptionsSecureKey struct {
+type CDNResourceOptionsSecureKey struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2292,8 +2292,8 @@ type CdnResourceOptionsSecureKey struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsSecureKey) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsSecureKey) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsSecureKey) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsSecureKey) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2308,7 +2308,7 @@ func (r *CdnResourceOptionsSecureKey) UnmarshalJSON(data []byte) error {
 //  1. Origin must support HTTP Range requests.
 //  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
 //     options enabled.
-type CdnResourceOptionsSlice struct {
+type CDNResourceOptionsSlice struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2331,8 +2331,8 @@ type CdnResourceOptionsSlice struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsSlice) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsSlice) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsSlice) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsSlice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2345,7 +2345,7 @@ func (r *CdnResourceOptionsSlice) UnmarshalJSON(data []byte) error {
 // the connection.
 //
 // The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
-type CdnResourceOptionsSni struct {
+type CDNResourceOptionsSni struct {
 	// Custom SNI hostname.
 	//
 	// It is required if `sni_type` is set to custom.
@@ -2384,13 +2384,13 @@ type CdnResourceOptionsSni struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsSni) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsSni) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsSni) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsSni) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Serves stale cached content in case of origin unavailability.
-type CdnResourceOptionsStale struct {
+type CDNResourceOptionsStale struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2413,13 +2413,13 @@ type CdnResourceOptionsStale struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsStale) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsStale) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsStale) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsStale) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Custom HTTP Headers that a CDN server adds to a response.
-type CdnResourceOptionsStaticResponseHeaders struct {
+type CDNResourceOptionsStaticResponseHeaders struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2427,7 +2427,7 @@ type CdnResourceOptionsStaticResponseHeaders struct {
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
 	Enabled bool                                           `json:"enabled,required"`
-	Value   []CdnResourceOptionsStaticResponseHeadersValue `json:"value,required"`
+	Value   []CDNResourceOptionsStaticResponseHeadersValue `json:"value,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2438,12 +2438,12 @@ type CdnResourceOptionsStaticResponseHeaders struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsStaticResponseHeaders) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsStaticResponseHeaders) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsStaticResponseHeaders) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsStaticResponseHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CdnResourceOptionsStaticResponseHeadersValue struct {
+type CDNResourceOptionsStaticResponseHeadersValue struct {
 	// HTTP Header name.
 	//
 	// Restrictions:
@@ -2482,8 +2482,8 @@ type CdnResourceOptionsStaticResponseHeadersValue struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsStaticResponseHeadersValue) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsStaticResponseHeadersValue) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsStaticResponseHeadersValue) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsStaticResponseHeadersValue) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2493,7 +2493,7 @@ func (r *CdnResourceOptionsStaticResponseHeadersValue) UnmarshalJSON(data []byte
 // Headers can be specified. May contain a header with multiple values.
 //
 // Deprecated: deprecated
-type CdnResourceOptionsStaticHeaders struct {
+type CDNResourceOptionsStaticHeaders struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2521,14 +2521,14 @@ type CdnResourceOptionsStaticHeaders struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsStaticHeaders) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsStaticHeaders) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsStaticHeaders) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsStaticHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
 // Headers can be specified.
-type CdnResourceOptionsStaticRequestHeaders struct {
+type CDNResourceOptionsStaticRequestHeaders struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2556,8 +2556,8 @@ type CdnResourceOptionsStaticRequestHeaders struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsStaticRequestHeaders) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsStaticRequestHeaders) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsStaticRequestHeaders) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsStaticRequestHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2565,7 +2565,7 @@ func (r *CdnResourceOptionsStaticRequestHeaders) UnmarshalJSON(data []byte) erro
 // to the domain.
 //
 // When the option is disabled, all protocols versions are allowed.
-type CdnResourceOptionsTlsVersions struct {
+type CDNResourceOptionsTlsVersions struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2587,8 +2587,8 @@ type CdnResourceOptionsTlsVersions struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsTlsVersions) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsTlsVersions) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsTlsVersions) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsTlsVersions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2596,7 +2596,7 @@ func (r *CdnResourceOptionsTlsVersions) UnmarshalJSON(data []byte) error {
 //
 // The specified chain will be used during the next Let's Encrypt certificate issue
 // or renewal.
-type CdnResourceOptionsUseDefaultLeChain struct {
+type CDNResourceOptionsUseDefaultLeChain struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2620,15 +2620,15 @@ type CdnResourceOptionsUseDefaultLeChain struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsUseDefaultLeChain) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsUseDefaultLeChain) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsUseDefaultLeChain) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsUseDefaultLeChain) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // DNS-01 challenge to issue a Let's Encrypt certificate for the resource.
 //
 // DNS service should be activated to enable this option.
-type CdnResourceOptionsUseDns01LeChallenge struct {
+type CDNResourceOptionsUseDns01LeChallenge struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2651,8 +2651,8 @@ type CdnResourceOptionsUseDns01LeChallenge struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsUseDns01LeChallenge) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsUseDns01LeChallenge) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsUseDns01LeChallenge) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsUseDns01LeChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2660,7 +2660,7 @@ func (r *CdnResourceOptionsUseDns01LeChallenge) UnmarshalJSON(data []byte) error
 //
 // The specified value will be used during the next Let's Encrypt certificate issue
 // or renewal.
-type CdnResourceOptionsUseRsaLeCert struct {
+type CDNResourceOptionsUseRsaLeCert struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2683,13 +2683,13 @@ type CdnResourceOptionsUseRsaLeCert struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsUseRsaLeCert) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsUseRsaLeCert) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsUseRsaLeCert) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsUseRsaLeCert) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Controls access to the content for specified User-Agents.
-type CdnResourceOptionsUserAgentACL struct {
+type CDNResourceOptionsUserAgentACL struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2732,13 +2732,13 @@ type CdnResourceOptionsUserAgentACL struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsUserAgentACL) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsUserAgentACL) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsUserAgentACL) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsUserAgentACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to enable WAAP (Web Application and API Protection).
-type CdnResourceOptionsWaap struct {
+type CDNResourceOptionsWaap struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2761,13 +2761,13 @@ type CdnResourceOptionsWaap struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsWaap) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsWaap) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsWaap) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsWaap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Enables or disables WebSockets connections to an origin server.
-type CdnResourceOptionsWebsockets struct {
+type CDNResourceOptionsWebsockets struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2790,8 +2790,8 @@ type CdnResourceOptionsWebsockets struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnResourceOptionsWebsockets) RawJSON() string { return r.JSON.raw }
-func (r *CdnResourceOptionsWebsockets) UnmarshalJSON(data []byte) error {
+func (r CDNResourceOptionsWebsockets) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsWebsockets) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2805,12 +2805,12 @@ func (r *CdnResourceOptionsWebsockets) UnmarshalJSON(data []byte) error {
 //     origin source should be available for the CDN both through HTTP and HTTPS).
 //
 // If protocol is not specified, HTTP is used to connect to an origin server.
-type CdnResourceOriginProtocol string
+type CDNResourceOriginProtocol string
 
 const (
-	CdnResourceOriginProtocolHTTP  CdnResourceOriginProtocol = "HTTP"
-	CdnResourceOriginProtocolHTTPS CdnResourceOriginProtocol = "HTTPS"
-	CdnResourceOriginProtocolMatch CdnResourceOriginProtocol = "MATCH"
+	CDNResourceOriginProtocolHTTP  CDNResourceOriginProtocol = "HTTP"
+	CDNResourceOriginProtocolHTTPS CDNResourceOriginProtocol = "HTTPS"
+	CDNResourceOriginProtocolMatch CDNResourceOriginProtocol = "MATCH"
 )
 
 // CDN resource status.
@@ -2823,16 +2823,16 @@ const (
 //     processed. It will take about fifteen minutes to propagate it to all
 //     locations.
 //   - **deleted** - CDN resource is deleted.
-type CdnResourceStatus string
+type CDNResourceStatus string
 
 const (
-	CdnResourceStatusActive    CdnResourceStatus = "active"
-	CdnResourceStatusSuspended CdnResourceStatus = "suspended"
-	CdnResourceStatusProcessed CdnResourceStatus = "processed"
-	CdnResourceStatusDeleted   CdnResourceStatus = "deleted"
+	CDNResourceStatusActive    CDNResourceStatus = "active"
+	CDNResourceStatusSuspended CDNResourceStatus = "suspended"
+	CDNResourceStatusProcessed CDNResourceStatus = "processed"
+	CDNResourceStatusDeleted   CDNResourceStatus = "deleted"
 )
 
-type CdnResourceList []CdnResource
+type CDNResourceList []CDNResource
 
 type ResourceNewParams struct {
 	// Delivery domains that will be used for content delivery through a CDN.

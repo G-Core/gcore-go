@@ -38,7 +38,7 @@ func NewAuditLogService(opts ...option.RequestOption) (r AuditLogService) {
 }
 
 // Get information about all CDN activity logs records.
-func (r *AuditLogService) List(ctx context.Context, query AuditLogListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[CdnAuditLogEntry], err error) {
+func (r *AuditLogService) List(ctx context.Context, query AuditLogListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[CDNAuditLogEntry], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -56,23 +56,23 @@ func (r *AuditLogService) List(ctx context.Context, query AuditLogListParams, op
 }
 
 // Get information about all CDN activity logs records.
-func (r *AuditLogService) ListAutoPaging(ctx context.Context, query AuditLogListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[CdnAuditLogEntry] {
+func (r *AuditLogService) ListAutoPaging(ctx context.Context, query AuditLogListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[CDNAuditLogEntry] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Get information about CDN activity logs record.
-func (r *AuditLogService) Get(ctx context.Context, logID int64, opts ...option.RequestOption) (res *CdnAuditLogEntry, err error) {
+func (r *AuditLogService) Get(ctx context.Context, logID int64, opts ...option.RequestOption) (res *CDNAuditLogEntry, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/activity_log/requests/%v", logID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
-type CdnAuditLogEntry struct {
+type CDNAuditLogEntry struct {
 	// Activity logs record ID.
 	ID int64 `json:"id"`
 	// State of a requested object before and after the request.
-	Actions []CdnAuditLogEntryAction `json:"actions"`
+	Actions []CDNAuditLogEntryAction `json:"actions"`
 	// ID of the client who made the request.
 	ClientID int64 `json:"client_id"`
 	// Request body.
@@ -116,12 +116,12 @@ type CdnAuditLogEntry struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnAuditLogEntry) RawJSON() string { return r.JSON.raw }
-func (r *CdnAuditLogEntry) UnmarshalJSON(data []byte) error {
+func (r CDNAuditLogEntry) RawJSON() string { return r.JSON.raw }
+func (r *CDNAuditLogEntry) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CdnAuditLogEntryAction struct {
+type CDNAuditLogEntryAction struct {
 	// Type of change.
 	//
 	// Possible values:
@@ -145,8 +145,8 @@ type CdnAuditLogEntryAction struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnAuditLogEntryAction) RawJSON() string { return r.JSON.raw }
-func (r *CdnAuditLogEntryAction) UnmarshalJSON(data []byte) error {
+func (r CDNAuditLogEntryAction) RawJSON() string { return r.JSON.raw }
+func (r *CDNAuditLogEntryAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

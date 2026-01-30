@@ -26,7 +26,7 @@ func TestCertificateNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.Certificates.New(context.TODO(), cdn.CertificateNewParams{
+	err := client.CDN.Certificates.New(context.TODO(), cdn.CertificateNewParams{
 		OfOwnCertificate: &cdn.CertificateNewParamsBodyOwnCertificate{
 			Name:           "New certificate",
 			SslCertificate: "-----BEGIN CERTIFICATE-----\nMIIFWzCCBEOgAwIBAgISBK6qoNitg//89H/YJamujpWlMA0GCSqGSIb3DQEBCwUA\nMEoxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MSMwIQYDVQQD\nExpMZXQncyBFbmNyeXB0IEF1dGhvcml0eSBYMzAeFw0xODExMTMxMjQwMDJaFw0x\nOTAyMTExMjQwMDJaMBwxGjAYBgNVBAMTEWNkbjIudG50LWNsdWIuY29tMIIBIjAN\nBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzaHExDEXNSf6ELS0WUR7qq8gs9cc\nxx99sM2zs3Jld0twPmuldkVNe5xte/Hj03r4SesfOBczR7pn+t60YujPvUQDN8lx\nWYpvRuetOneyf4gNPatwzR/W1GWGlahet1xPVYGrttqL4gCJeShIXvU4aCyzW941\nPt0wCs+bg9u+59fXFkigWrWJPkwbR7bJ14XTStYynMbYLfCg+VPeGWj3d8wOhQcf\nAD86o8TLTbVfK2BDXwS5S8Dgf5u8g+WvmVHYDIkYKCxcLj0jP61Y7uHoFbSg41oN\nA9yPOa+0cYxA7U702V2WjxbfIeATYtNLZvH17lk+DYlQl8q3MLwguqZdgwIDAQAB\niIqI2xquGONtHFDOKJvy1O2qYTVRtNRVZqhc1ol+mw==\n-----END CERTIFICATE-----\n-----BEGIN CERTIFICATE-----\nMIIEkjCCA3qgAwIBAgIQCgFBQgAAAVOFc2oLheynCDANBgkqhkiG9w0BAQsFADA/\nMSQwIgYDVQQKExtEaWdpdGFsIFNpZ25hdHVyZSBUcnVzdCBDby4xFzAVBgNVBAMT\nDkRTVCBSb290IENBIFgzMB4XDTE2MDMxNzE2NDA0NloXDTIxMDMxNzE2NDA0Nlow\nSjELMAkGA1UEBhMCVVMxFjAUBgNVBAoTDUxldCdzIEVuY3J5cHQxIzAhBgNVBAMT\nGkxldCdzIEVuY3J5cHQgQXV0aG9yaXR5IFgzMIIBIjANBgkqhkiG9w0BAQEFAAOC\nAQ8AMIIBCgKCAQEAnNMM8FrlLke3cl03g7NoYzDq1zUmGSXhvb418XCSL7e4S0EF\nq6meNQhY7LEqxGiHC6PjdeTm86dicbp5gWAf15Gan/PQeGdxyGkOlZHP/uaZ6WA8\nSMx+yk13EiSdRxta67nsHjcAHJyse6cF6s5K671B5TaYucv9bTyWaN8jKkKQDIZ0\nKOqkqm57TH2H3eDJAkSnh6/DNFu0Qg==\n-----END CERTIFICATE-----\n",
@@ -55,7 +55,7 @@ func TestCertificateListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Certificates.List(context.TODO(), cdn.CertificateListParams{
+	_, err := client.CDN.Certificates.List(context.TODO(), cdn.CertificateListParams{
 		Automated:           gcore.Bool(true),
 		ResourceID:          gcore.Int(0),
 		ValidityNotAfterLte: gcore.String("validity_not_after_lte"),
@@ -81,7 +81,7 @@ func TestCertificateDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.Certificates.Delete(context.TODO(), 0)
+	err := client.CDN.Certificates.Delete(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -103,7 +103,7 @@ func TestCertificateForceRetry(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.Certificates.ForceRetry(context.TODO(), 0)
+	err := client.CDN.Certificates.ForceRetry(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -125,7 +125,7 @@ func TestCertificateGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Certificates.Get(context.TODO(), 0)
+	_, err := client.CDN.Certificates.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -147,7 +147,7 @@ func TestCertificateGetStatusWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Certificates.GetStatus(
+	_, err := client.CDN.Certificates.GetStatus(
 		context.TODO(),
 		0,
 		cdn.CertificateGetStatusParams{
@@ -175,7 +175,7 @@ func TestCertificateRenew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.Certificates.Renew(context.TODO(), 0)
+	err := client.CDN.Certificates.Renew(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -197,7 +197,7 @@ func TestCertificateReplaceWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Certificates.Replace(
+	_, err := client.CDN.Certificates.Replace(
 		context.TODO(),
 		0,
 		cdn.CertificateReplaceParams{

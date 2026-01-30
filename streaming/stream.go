@@ -465,7 +465,7 @@ type Stream struct {
 	BroadcastIDs []int64 `json:"broadcast_ids"`
 	// ID of custom CDN resource from which the content will be delivered (only if you
 	// know what you do)
-	CdnID int64 `json:"cdn_id"`
+	CDNID int64 `json:"cdn_id"`
 	// Custom meta field designed to store your own extra information about a video
 	// entity: video source, video id, parameters, etc. We do not use this field in any
 	// way when processing the stream. You can store any data in any format (string,
@@ -845,7 +845,7 @@ type Stream struct {
 		BackupPushURL       respjson.Field
 		BackupPushURLSrt    respjson.Field
 		BroadcastIDs        respjson.Field
-		CdnID               respjson.Field
+		CDNID               respjson.Field
 		ClientEntityData    respjson.Field
 		ClientUserID        respjson.Field
 		CreatedAt           respjson.Field
@@ -1122,7 +1122,7 @@ type StreamNewParams struct {
 	AutoRecord param.Opt[bool] `json:"auto_record,omitzero"`
 	// ID of custom CDN resource from which the content will be delivered (only if you
 	// know what you do)
-	CdnID param.Opt[int64] `json:"cdn_id,omitzero"`
+	CDNID param.Opt[int64] `json:"cdn_id,omitzero"`
 	// Custom meta field designed to store your own extra information about a video
 	// entity: video source, video id, parameters, etc. We do not use this field in any
 	// way when processing the stream. You can store any data in any format (string,
@@ -1298,7 +1298,7 @@ type StreamUpdateParamsStream struct {
 	AutoRecord param.Opt[bool] `json:"auto_record,omitzero"`
 	// ID of custom CDN resource from which the content will be delivered (only if you
 	// know what you do)
-	CdnID param.Opt[int64] `json:"cdn_id,omitzero"`
+	CDNID param.Opt[int64] `json:"cdn_id,omitzero"`
 	// Custom meta field designed to store your own extra information about a video
 	// entity: video source, video id, parameters, etc. We do not use this field in any
 	// way when processing the stream. You can store any data in any format (string,

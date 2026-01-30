@@ -27,7 +27,7 @@ func TestResourceRuleNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Resources.Rules.New(
+	_, err := client.CDN.Resources.Rules.New(
 		context.TODO(),
 		0,
 		cdn.ResourceRuleNewParams{
@@ -317,7 +317,7 @@ func TestResourceRuleUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Resources.Rules.Update(
+	_, err := client.CDN.Resources.Rules.Update(
 		context.TODO(),
 		0,
 		cdn.ResourceRuleUpdateParams{
@@ -608,7 +608,7 @@ func TestResourceRuleList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Resources.Rules.List(context.TODO(), 0)
+	_, err := client.CDN.Resources.Rules.List(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -630,7 +630,7 @@ func TestResourceRuleDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.Resources.Rules.Delete(
+	err := client.CDN.Resources.Rules.Delete(
 		context.TODO(),
 		0,
 		cdn.ResourceRuleDeleteParams{
@@ -658,7 +658,7 @@ func TestResourceRuleGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Resources.Rules.Get(
+	_, err := client.CDN.Resources.Rules.Get(
 		context.TODO(),
 		0,
 		cdn.ResourceRuleGetParams{
@@ -686,7 +686,7 @@ func TestResourceRuleReplaceWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Resources.Rules.Replace(
+	_, err := client.CDN.Resources.Rules.Replace(
 		context.TODO(),
 		0,
 		cdn.ResourceRuleReplaceParams{

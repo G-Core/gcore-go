@@ -26,7 +26,7 @@ func TestIPRangeListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.IPRanges.List(context.TODO(), cdn.IPRangeListParams{
+	_, err := client.CDN.IPRanges.List(context.TODO(), cdn.IPRangeListParams{
 		Format: cdn.IPRangeListParamsFormatJson,
 		Accept: cdn.IPRangeListParamsAcceptApplicationJson,
 	})
@@ -51,7 +51,7 @@ func TestIPRangeListIPsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.IPRanges.ListIPs(context.TODO(), cdn.IPRangeListIPsParams{
+	_, err := client.CDN.IPRanges.ListIPs(context.TODO(), cdn.IPRangeListIPsParams{
 		Format: cdn.IPRangeListIPsParamsFormatJson,
 		Accept: cdn.IPRangeListIPsParamsAcceptApplicationJson,
 	})

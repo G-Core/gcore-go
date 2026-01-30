@@ -26,7 +26,7 @@ func TestStatisticGetLogsUsageAggregatedWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Statistics.GetLogsUsageAggregated(context.TODO(), cdn.StatisticGetLogsUsageAggregatedParams{
+	_, err := client.CDN.Statistics.GetLogsUsageAggregated(context.TODO(), cdn.StatisticGetLogsUsageAggregatedParams{
 		From:     "from",
 		To:       "to",
 		Flat:     gcore.Bool(true),
@@ -54,7 +54,7 @@ func TestStatisticGetLogsUsageSeriesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Statistics.GetLogsUsageSeries(context.TODO(), cdn.StatisticGetLogsUsageSeriesParams{
+	_, err := client.CDN.Statistics.GetLogsUsageSeries(context.TODO(), cdn.StatisticGetLogsUsageSeriesParams{
 		From:     "from",
 		To:       "to",
 		Resource: gcore.Int(0),
@@ -80,7 +80,7 @@ func TestStatisticGetResourceUsageAggregatedWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Statistics.GetResourceUsageAggregated(context.TODO(), cdn.StatisticGetResourceUsageAggregatedParams{
+	_, err := client.CDN.Statistics.GetResourceUsageAggregated(context.TODO(), cdn.StatisticGetResourceUsageAggregatedParams{
 		From:      "from",
 		Metrics:   "metrics",
 		Service:   "service",
@@ -112,7 +112,7 @@ func TestStatisticGetResourceUsageSeriesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Statistics.GetResourceUsageSeries(context.TODO(), cdn.StatisticGetResourceUsageSeriesParams{
+	_, err := client.CDN.Statistics.GetResourceUsageSeries(context.TODO(), cdn.StatisticGetResourceUsageSeriesParams{
 		From:        "from",
 		Granularity: "granularity",
 		Metrics:     "metrics",
@@ -144,7 +144,7 @@ func TestStatisticGetShieldUsageAggregatedWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Statistics.GetShieldUsageAggregated(context.TODO(), cdn.StatisticGetShieldUsageAggregatedParams{
+	_, err := client.CDN.Statistics.GetShieldUsageAggregated(context.TODO(), cdn.StatisticGetShieldUsageAggregatedParams{
 		From:     "from",
 		To:       "to",
 		Flat:     gcore.Bool(true),
@@ -172,7 +172,7 @@ func TestStatisticGetShieldUsageSeriesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Statistics.GetShieldUsageSeries(context.TODO(), cdn.StatisticGetShieldUsageSeriesParams{
+	_, err := client.CDN.Statistics.GetShieldUsageSeries(context.TODO(), cdn.StatisticGetShieldUsageSeriesParams{
 		From:     "from",
 		To:       "to",
 		Resource: gcore.Int(0),

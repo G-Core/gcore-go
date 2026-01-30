@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestCdnGetAccountLimits(t *testing.T) {
+func TestCDNGetAccountLimits(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,7 +26,7 @@ func TestCdnGetAccountLimits(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.GetAccountLimits(context.TODO())
+	_, err := client.CDN.GetAccountLimits(context.TODO())
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -36,7 +36,7 @@ func TestCdnGetAccountLimits(t *testing.T) {
 	}
 }
 
-func TestCdnGetAccountOverview(t *testing.T) {
+func TestCDNGetAccountOverview(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -48,7 +48,7 @@ func TestCdnGetAccountOverview(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.GetAccountOverview(context.TODO())
+	_, err := client.CDN.GetAccountOverview(context.TODO())
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -58,7 +58,7 @@ func TestCdnGetAccountOverview(t *testing.T) {
 	}
 }
 
-func TestCdnGetAvailableFeatures(t *testing.T) {
+func TestCDNGetAvailableFeatures(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -70,7 +70,7 @@ func TestCdnGetAvailableFeatures(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.GetAvailableFeatures(context.TODO())
+	_, err := client.CDN.GetAvailableFeatures(context.TODO())
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -80,7 +80,7 @@ func TestCdnGetAvailableFeatures(t *testing.T) {
 	}
 }
 
-func TestCdnListAlibabaRegions(t *testing.T) {
+func TestCDNListAlibabaRegions(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -92,7 +92,7 @@ func TestCdnListAlibabaRegions(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.ListAlibabaRegions(context.TODO())
+	_, err := client.CDN.ListAlibabaRegions(context.TODO())
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -102,7 +102,7 @@ func TestCdnListAlibabaRegions(t *testing.T) {
 	}
 }
 
-func TestCdnListAwsRegions(t *testing.T) {
+func TestCDNListAwsRegions(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -114,7 +114,7 @@ func TestCdnListAwsRegions(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.ListAwsRegions(context.TODO())
+	_, err := client.CDN.ListAwsRegions(context.TODO())
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -124,7 +124,7 @@ func TestCdnListAwsRegions(t *testing.T) {
 	}
 }
 
-func TestCdnListPurgeStatusesWithOptionalParams(t *testing.T) {
+func TestCDNListPurgeStatusesWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -136,7 +136,7 @@ func TestCdnListPurgeStatusesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.ListPurgeStatuses(context.TODO(), cdn.CdnListPurgeStatusesParams{
+	_, err := client.CDN.ListPurgeStatuses(context.TODO(), cdn.CDNListPurgeStatusesParams{
 		Cname:       gcore.String("cname"),
 		FromCreated: gcore.String("from_created"),
 		Limit:       gcore.Int(100),
@@ -154,7 +154,7 @@ func TestCdnListPurgeStatusesWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCdnUpdateAccountWithOptionalParams(t *testing.T) {
+func TestCDNUpdateAccountWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -166,7 +166,7 @@ func TestCdnUpdateAccountWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.UpdateAccount(context.TODO(), cdn.CdnUpdateAccountParams{
+	_, err := client.CDN.UpdateAccount(context.TODO(), cdn.CDNUpdateAccountParams{
 		UtilizationLevel: gcore.Int(1111),
 	})
 	if err != nil {

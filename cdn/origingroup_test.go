@@ -26,7 +26,7 @@ func TestOriginGroupNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.OriginGroups.New(context.TODO(), cdn.OriginGroupNewParams{
+	_, err := client.CDN.OriginGroups.New(context.TODO(), cdn.OriginGroupNewParams{
 		OfNoneAuth: &cdn.OriginGroupNewParamsBodyNoneAuth{
 			Name: "YourOriginGroup",
 			Sources: []cdn.OriginGroupNewParamsBodyNoneAuthSource{{
@@ -64,7 +64,7 @@ func TestOriginGroupUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.OriginGroups.Update(
+	_, err := client.CDN.OriginGroups.Update(
 		context.TODO(),
 		0,
 		cdn.OriginGroupUpdateParams{
@@ -103,7 +103,7 @@ func TestOriginGroupListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.OriginGroups.List(context.TODO(), cdn.OriginGroupListParams{
+	_, err := client.CDN.OriginGroups.List(context.TODO(), cdn.OriginGroupListParams{
 		HasRelatedResources: gcore.Bool(true),
 		Name:                gcore.String("name"),
 		Sources:             gcore.String("sources"),
@@ -129,7 +129,7 @@ func TestOriginGroupDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.OriginGroups.Delete(context.TODO(), 0)
+	err := client.CDN.OriginGroups.Delete(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -151,7 +151,7 @@ func TestOriginGroupGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.OriginGroups.Get(context.TODO(), 0)
+	_, err := client.CDN.OriginGroups.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -173,7 +173,7 @@ func TestOriginGroupReplaceWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.OriginGroups.Replace(
+	_, err := client.CDN.OriginGroups.Replace(
 		context.TODO(),
 		0,
 		cdn.OriginGroupReplaceParams{

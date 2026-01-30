@@ -26,7 +26,7 @@ func TestRuleTemplateNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.RuleTemplates.New(context.TODO(), cdn.RuleTemplateNewParams{
+	_, err := client.CDN.RuleTemplates.New(context.TODO(), cdn.RuleTemplateNewParams{
 		Rule:     "/folder/images/*.png",
 		RuleType: 0,
 		Name:     gcore.String("All images template"),
@@ -310,7 +310,7 @@ func TestRuleTemplateUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.RuleTemplates.Update(
+	_, err := client.CDN.RuleTemplates.Update(
 		context.TODO(),
 		0,
 		cdn.RuleTemplateUpdateParams{
@@ -598,7 +598,7 @@ func TestRuleTemplateList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.RuleTemplates.List(context.TODO())
+	_, err := client.CDN.RuleTemplates.List(context.TODO())
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -620,7 +620,7 @@ func TestRuleTemplateDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.RuleTemplates.Delete(context.TODO(), 0)
+	err := client.CDN.RuleTemplates.Delete(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -642,7 +642,7 @@ func TestRuleTemplateGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.RuleTemplates.Get(context.TODO(), 0)
+	_, err := client.CDN.RuleTemplates.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -664,7 +664,7 @@ func TestRuleTemplateReplaceWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.RuleTemplates.Replace(
+	_, err := client.CDN.RuleTemplates.Replace(
 		context.TODO(),
 		0,
 		cdn.RuleTemplateReplaceParams{
