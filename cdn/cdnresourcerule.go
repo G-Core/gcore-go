@@ -6,408 +6,216 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"net/url"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
-	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
-// ResourceService contains methods and other services that help with interacting
-// with the gcore API.
+// CDNResourceRuleService contains methods and other services that help with
+// interacting with the gcore API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewResourceService] method instead.
-type ResourceService struct {
+// the [NewCDNResourceRuleService] method instead.
+type CDNResourceRuleService struct {
 	Options []option.RequestOption
-	Shield  ResourceShieldService
-	Rules   ResourceRuleService
 }
 
-// NewResourceService generates a new service that applies the given options to
-// each request. These options are applied after the parent client's options (if
+// NewCDNResourceRuleService generates a new service that applies the given options
+// to each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewResourceService(opts ...option.RequestOption) (r ResourceService) {
-	r = ResourceService{}
+func NewCDNResourceRuleService(opts ...option.RequestOption) (r CDNResourceRuleService) {
+	r = CDNResourceRuleService{}
 	r.Options = opts
-	r.Shield = NewResourceShieldService(opts...)
-	r.Rules = NewResourceRuleService(opts...)
 	return
 }
 
-// Create CDN resource
-func (r *ResourceService) New(ctx context.Context, body ResourceNewParams, opts ...option.RequestOption) (res *CDNResource, err error) {
+// Create rule
+func (r *CDNResourceRuleService) New(ctx context.Context, resourceID int64, body CDNResourceRuleNewParams, opts ...option.RequestOption) (res *CDNResourceRule, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "cdn/resources"
+	path := fmt.Sprintf("cdn/resources/%v/rules", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
-// Change CDN resource
-func (r *ResourceService) Update(ctx context.Context, resourceID int64, body ResourceUpdateParams, opts ...option.RequestOption) (res *CDNResource, err error) {
+// Change rule
+func (r *CDNResourceRuleService) Update(ctx context.Context, ruleID int64, params CDNResourceRuleUpdateParams, opts ...option.RequestOption) (res *CDNResourceRule, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("cdn/resources/%v", resourceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	path := fmt.Sprintf("cdn/resources/%v/rules/%v", params.ResourceID, ruleID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
 }
 
-// Get information about all CDN resources in your account.
-func (r *ResourceService) List(ctx context.Context, query ResourceListParams, opts ...option.RequestOption) (res *CDNResourceList, err error) {
+// Get rules list
+func (r *CDNResourceRuleService) List(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *[]CDNResourceRule, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "cdn/resources"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("cdn/resources/%v/rules", resourceID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
-// Delete the CDN resource from the system permanently.
+// Delete the rule from the system permanently.
 //
 // Notes:
 //
 //   - **Deactivation Requirement**: Set the `active` attribute to `false` before
 //     deletion.
-//   - **Statistics Availability**: Statistics will be available for **365 days**
-//     after deletion through the
-//     [statistics endpoints](/docs/api-reference/cdn/cdn-statistics/cdn-resource-statistics).
-//   - **Irreversibility**: This action is irreversible. Once deleted, the CDN
-//     resource cannot be recovered.
-func (r *ResourceService) Delete(ctx context.Context, resourceID int64, opts ...option.RequestOption) (err error) {
+//   - **Irreversibility**: This action is irreversible. Once deleted, the rule
+//     cannot be recovered.
+func (r *CDNResourceRuleService) Delete(ctx context.Context, ruleID int64, body CDNResourceRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("cdn/resources/%v", resourceID)
+	path := fmt.Sprintf("cdn/resources/%v/rules/%v", body.ResourceID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
-// Get CDN resource details
-func (r *ResourceService) Get(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *CDNResource, err error) {
+// Get rule details
+func (r *CDNResourceRuleService) Get(ctx context.Context, ruleID int64, query CDNResourceRuleGetParams, opts ...option.RequestOption) (res *CDNResourceRule, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("cdn/resources/%v", resourceID)
+	path := fmt.Sprintf("cdn/resources/%v/rules/%v", query.ResourceID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
-// Pre-populate files to a CDN cache before users requests. Prefetch is recommended
-// only for files that **more than 200 MB** and **less than 5 GB**.
-//
-// You can make one prefetch request for a CDN resource per minute. One request for
-// prefetch may content only up to 100 paths to files.
-//
-// The time of procedure depends on the number and size of the files.
-//
-// If you need to update files stored in the CDN, first purge these files and then
-// prefetch.
-func (r *ResourceService) Prefetch(ctx context.Context, resourceID int64, body ResourcePrefetchParams, opts ...option.RequestOption) (err error) {
+// Change rule
+func (r *CDNResourceRuleService) Replace(ctx context.Context, ruleID int64, params CDNResourceRuleReplaceParams, opts ...option.RequestOption) (res *CDNResourceRule, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("cdn/resources/%v/prefetch", resourceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	path := fmt.Sprintf("cdn/resources/%v/rules/%v", params.ResourceID, ruleID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return
 }
 
-// Check whether a Let's Encrypt certificate can be issued for the CDN resource.
-func (r *ResourceService) PrevalidateSslLeCertificate(ctx context.Context, resourceID int64, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("cdn/resources/%v/ssl/le/pre-validate", resourceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
-}
-
-// Delete cache from CDN servers. This is necessary to update CDN content.
-//
-// We have different limits for different purge types:
-//
-//   - **Purge all cache** - One purge request for a CDN resource per minute.
-//   - **Purge by URL** - Two purge requests for a CDN resource per minute. One purge
-//     request is limited to 100 URLs.
-//   - **Purge by pattern** - One purge request for a CDN resource per minute. One
-//     purge request is limited to 10 patterns.
-func (r *ResourceService) Purge(ctx context.Context, resourceID int64, body ResourcePurgeParams, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("cdn/resources/%v/purge", resourceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
-}
-
-// Change CDN resource
-func (r *ResourceService) Replace(ctx context.Context, resourceID int64, body ResourceReplaceParams, opts ...option.RequestOption) (res *CDNResource, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("cdn/resources/%v", resourceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
-}
-
-type CDNResource struct {
-	// CDN resource ID.
+type CDNResourceRule struct {
+	// Rule ID.
 	ID int64 `json:"id"`
-	// Enables or disables a CDN resource.
+	// Enables or disables a rule.
 	//
 	// Possible values:
 	//
-	// - **true** - CDN resource is active. Content is being delivered.
-	// - **false** - CDN resource is deactivated. Content is not being delivered.
+	// - **true** - Rule is active, rule settings are applied.
+	// - **false** - Rule is inactive, rule settings are not applied.
 	Active bool `json:"active"`
-	// Defines whether the CDN resource can be used for purge by URLs feature.
-	//
-	// It's available only in case the CDN resource has enabled `ignore_vary_header`
-	// option.
-	CanPurgeByURLs bool `json:"can_purge_by_urls"`
-	// ID of an account to which the CDN resource belongs.
-	Client int64 `json:"client"`
-	// Delivery domains that will be used for content delivery through a CDN.
-	//
-	// Delivery domains should be added to your DNS settings.
-	Cname string `json:"cname"`
-	// Date of CDN resource creation.
-	Created string `json:"created"`
-	// Defines whether CDN resource has been deleted.
+	// Defines whether the rule has been deleted.
 	//
 	// Possible values:
 	//
-	// - **true** - CDN resource is deleted.
-	// - **false** - CDN resource is not deleted.
+	// - **true** - Rule has been deleted.
+	// - **false** - Rule has not been deleted.
 	Deleted bool `json:"deleted"`
-	// Optional comment describing the CDN resource.
-	Description string `json:"description"`
-	// Enables or disables a CDN resource change by a user.
+	// Rule name.
+	Name string `json:"name"`
+	// List of options that can be configured for the rule.
 	//
-	// Possible values:
+	// In case of `null` value the option is not added to the rule. Option inherits its
+	// value from the CDN resource settings.
+	Options CDNResourceRuleOptions `json:"options"`
+	// ID of the origin group to which the rule is applied.
 	//
-	//   - **true** - CDN resource is enabled and can be changed. Content can be
-	//     delivered.
-	//   - **false** - CDN resource is disabled and cannot be changed. Content can not be
-	//     delivered.
-	Enabled bool `json:"enabled"`
-	// Defines whether the CDN resource has a custom configuration.
-	//
-	// Possible values:
-	//
-	//   - **true** - CDN resource has a custom configuration. You cannot change resource
-	//     settings, except for the SSL certificate. To change other settings, contact
-	//     technical support.
-	//   - **false** - CDN resource has a regular configuration. You can change CDN
-	//     resource settings.
-	FullCustomEnabled bool `json:"full_custom_enabled"`
-	// Defines whether a CDN resource has a cache zone shared with other CDN resources.
-	//
-	// Possible values:
-	//
-	//   - **true** - CDN resource is main and has a shared caching zone with other CDN
-	//     resources, which are called reserve.
-	//   - **false** - CDN resource is reserve and it has a shared caching zone with the
-	//     main CDN resource. You cannot change some options, create rules, set up origin
-	//     shielding and use the reserve resource for Streaming.
-	//   - **null** - CDN resource does not have a shared cache zone.
-	//
-	// The main CDN resource is specified in the `primary_resource` field. It cannot be
-	// suspended unless all related reserve CDN resources are suspended.
-	IsPrimary bool `json:"is_primary,nullable"`
-	// CDN resource name.
-	Name string `json:"name,nullable"`
-	// List of options that can be configured for the CDN resource.
-	//
-	// In case of `null` value the option is not added to the CDN resource. Option may
-	// inherit its value from the global account settings.
-	Options CDNResourceOptions `json:"options"`
-	// Origin group ID with which the CDN resource is associated.
-	//
-	// You can use either the `origin` or `originGroup` parameter in the request.
-	OriginGroup int64 `json:"originGroup"`
-	// Origin group name.
-	OriginGroupName string `json:"originGroup_name"`
+	// If the origin group is not specified, the rule is applied to the origin group
+	// that the CDN resource is associated with.
+	OriginGroup int64 `json:"originGroup,nullable"`
 	// Protocol used by CDN servers to request content from an origin source.
 	//
 	// Possible values:
 	//
-	//   - **HTTPS** - CDN servers will connect to the origin via HTTPS.
-	//   - **HTTP** - CDN servers will connect to the origin via HTTP.
-	//   - **MATCH** - connection protocol will be chosen automatically (content on the
-	//     origin source should be available for the CDN both through HTTP and HTTPS).
+	//   - **HTTPS** - CDN servers connect to origin via HTTPS protocol.
+	//   - **HTTP** - CDN servers connect to origin via HTTP protocol.
+	//   - **MATCH** - Connection protocol is chosen automatically; in this case, content
+	//     on origin source should be available for the CDN both through HTTP and HTTPS
+	//     protocols.
 	//
-	// If protocol is not specified, HTTP is used to connect to an origin server.
-	//
-	// Any of "HTTP", "HTTPS", "MATCH".
-	OriginProtocol CDNResourceOriginProtocol `json:"originProtocol"`
-	// Defines whether the CDN resource has a preset applied.
+	// Any of "HTTPS", "HTTP", "MATCH".
+	OriginProtocol CDNResourceRuleOriginProtocol `json:"originProtocol"`
+	// Sets a protocol other than the one specified in the CDN resource settings to
+	// connect to the origin.
 	//
 	// Possible values:
 	//
-	//   - **true** - CDN resource has a preset applied. CDN resource options included in
-	//     the preset cannot be edited.
-	//   - **false** - CDN resource does not have a preset applied.
+	//   - **HTTPS** - CDN servers connect to origin via HTTPS protocol.
+	//   - **HTTP** - CDN servers connect to origin via HTTP protocol.
+	//   - **MATCH** - Connection protocol is chosen automatically; in this case, content
+	//     on origin source should be available for the CDN both through HTTP and HTTPS
+	//     protocols.
+	//   - **null** - `originProtocol` setting is inherited from the CDN resource
+	//     settings.
+	//
+	// Any of "HTTPS", "HTTP", "MATCH".
+	OverrideOriginProtocol CDNResourceRuleOverrideOriginProtocol `json:"overrideOriginProtocol,nullable"`
+	// Defines whether the rule has an applied preset.
+	//
+	// Possible values:
+	//
+	// - **true** - Rule has a preset applied.
+	// - **false** - Rule does not have a preset applied.
+	//
+	// If a preset is applied to the rule, the options included in the preset cannot be
+	// edited for the rule.
 	PresetApplied bool `json:"preset_applied"`
-	// ID of the main CDN resource which has a shared caching zone with a reserve CDN
-	// resource.
+	// ID of the rule with which the current rule is synchronized within the CDN
+	// resource shared cache zone feature.
+	PrimaryRule int64 `json:"primary_rule,nullable"`
+	// Path to the file or folder for which the rule will be applied.
 	//
-	// If the parameter is not empty, then the current CDN resource is the reserve. You
-	// cannot change some options, create rules, set up origin shielding, or use the
-	// reserve CDN resource for Streaming.
-	PrimaryResource int64 `json:"primary_resource,nullable"`
-	// ID of the trusted CA certificate used to verify an origin.
+	// The rule is applied if the requested URI matches the rule path.
 	//
-	// It can be used only with `"proxy_ssl_enabled": true`.
-	ProxySslCa int64 `json:"proxy_ssl_ca,nullable"`
-	// ID of the SSL certificate used to verify an origin.
-	//
-	// It can be used only with `"proxy_ssl_enabled": true`.
-	ProxySslData int64 `json:"proxy_ssl_data,nullable"`
-	// Enables or disables SSL certificate validation of the origin server before
-	// completing any connection.
+	// We add a leading forward slash to any rule path. Specify a path without a
+	// forward slash.
+	Rule string `json:"rule"`
+	// Rule type.
 	//
 	// Possible values:
 	//
-	// - **true** - Origin SSL certificate validation is enabled.
-	// - **false** - Origin SSL certificate validation is disabled.
-	ProxySslEnabled bool `json:"proxy_ssl_enabled"`
-	// Rules configured for the CDN resource.
-	Rules []any `json:"rules"`
-	// Additional delivery domains (CNAMEs) that will be used to deliver content via
-	// the CDN.
+	//   - **Type 0** - Regular expression. Must start with '^/' or '/'.
+	//   - **Type 1** - Regular expression. Note that for this rule type we automatically
+	//     add / to each rule pattern before your regular expression. This type is
+	//     **legacy**, please use Type 0.
+	RuleType int64 `json:"ruleType"`
+	// Rule execution order: from lowest (1) to highest.
 	//
-	// Up to ten additional CNAMEs are possible.
-	SecondaryHostnames []string `json:"secondaryHostnames" format:"domain"`
-	// Name of the origin shielding location data center.
-	//
-	// Parameter returns **null** if origin shielding is disabled.
-	ShieldDc string `json:"shield_dc,nullable"`
-	// Defines whether origin shield is active and working for the CDN resource.
-	//
-	// Possible values:
-	//
-	// - **true** - Origin shield is active.
-	// - **false** - Origin shield is not active.
-	ShieldEnabled bool `json:"shield_enabled"`
-	// Defines whether the origin shield with a dynamic location is enabled for the CDN
-	// resource.
-	//
-	// To manage origin shielding, you must contact customer support.
-	ShieldRoutingMap int64 `json:"shield_routing_map,nullable"`
-	// Defines whether origin shielding feature is enabled for the resource.
-	//
-	// Possible values:
-	//
-	// - **true** - Origin shielding is enabled.
-	// - **false** - Origin shielding is disabled.
-	Shielded bool `json:"shielded"`
-	// ID of the SSL certificate linked to the CDN resource.
-	//
-	// Can be used only with `"sslEnabled": true`.
-	SslData int64 `json:"sslData,nullable"`
-	// Defines whether the HTTPS protocol enabled for content delivery.
-	//
-	// Possible values:
-	//
-	// - **true** - HTTPS is enabled.
-	// - **false** - HTTPS is disabled.
-	SslEnabled bool `json:"sslEnabled"`
-	// CDN resource status.
-	//
-	// Possible values:
-	//
-	//   - **active** - CDN resource is active. Content is available to users.
-	//   - **suspended** - CDN resource is suspended. Content is not available to users.
-	//   - **processed** - CDN resource has recently been created and is currently being
-	//     processed. It will take about fifteen minutes to propagate it to all
-	//     locations.
-	//   - **deleted** - CDN resource is deleted.
-	//
-	// Any of "active", "suspended", "processed", "deleted".
-	Status CDNResourceStatus `json:"status"`
-	// Date when the CDN resource was suspended automatically if there is no traffic on
-	// it for 90 days.
-	//
-	// Not specified if the resource was not stopped due to lack of traffic.
-	SuspendDate string `json:"suspend_date,nullable"`
-	// Defines whether the CDN resource has been automatically suspended because there
-	// was no traffic on it for 90 days.
-	//
-	// Possible values:
-	//
-	// - **true** - CDN resource is currently automatically suspended.
-	// - **false** - CDN resource is not automatically suspended.
-	//
-	// You can enable CDN resource using the `active` field. If there is no traffic on
-	// the CDN resource within seven days following activation, it will be suspended
-	// again.
-	//
-	// To avoid CDN resource suspension due to no traffic, contact technical support.
-	Suspended bool `json:"suspended"`
-	// Date of the last CDN resource update.
-	Updated string `json:"updated"`
-	// Defines whether the CDN resource is integrated with the Streaming Platform.
-	//
-	// Possible values:
-	//
-	//   - **true** - CDN resource is configured for Streaming Platform. Changing
-	//     resource settings can affect its operation.
-	//   - **false** - CDN resource is not configured for Streaming Platform.
-	VpEnabled bool `json:"vp_enabled"`
-	// The ID of the associated WAAP domain.
-	WaapDomainID string `json:"waap_domain_id,nullable"`
+	// If requested URI matches multiple rules, the one higher in the order of the
+	// rules will be applied.
+	Weight int64 `json:"weight"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		Active             respjson.Field
-		CanPurgeByURLs     respjson.Field
-		Client             respjson.Field
-		Cname              respjson.Field
-		Created            respjson.Field
-		Deleted            respjson.Field
-		Description        respjson.Field
-		Enabled            respjson.Field
-		FullCustomEnabled  respjson.Field
-		IsPrimary          respjson.Field
-		Name               respjson.Field
-		Options            respjson.Field
-		OriginGroup        respjson.Field
-		OriginGroupName    respjson.Field
-		OriginProtocol     respjson.Field
-		PresetApplied      respjson.Field
-		PrimaryResource    respjson.Field
-		ProxySslCa         respjson.Field
-		ProxySslData       respjson.Field
-		ProxySslEnabled    respjson.Field
-		Rules              respjson.Field
-		SecondaryHostnames respjson.Field
-		ShieldDc           respjson.Field
-		ShieldEnabled      respjson.Field
-		ShieldRoutingMap   respjson.Field
-		Shielded           respjson.Field
-		SslData            respjson.Field
-		SslEnabled         respjson.Field
-		Status             respjson.Field
-		SuspendDate        respjson.Field
-		Suspended          respjson.Field
-		Updated            respjson.Field
-		VpEnabled          respjson.Field
-		WaapDomainID       respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		Active                 respjson.Field
+		Deleted                respjson.Field
+		Name                   respjson.Field
+		Options                respjson.Field
+		OriginGroup            respjson.Field
+		OriginProtocol         respjson.Field
+		OverrideOriginProtocol respjson.Field
+		PresetApplied          respjson.Field
+		PrimaryRule            respjson.Field
+		Rule                   respjson.Field
+		RuleType               respjson.Field
+		Weight                 respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResource) RawJSON() string { return r.JSON.raw }
-func (r *CDNResource) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRule) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// List of options that can be configured for the CDN resource.
+// List of options that can be configured for the rule.
 //
-// In case of `null` value the option is not added to the CDN resource. Option may
-// inherit its value from the global account settings.
-type CDNResourceOptions struct {
+// In case of `null` value the option is not added to the rule. Option inherits its
+// value from the CDN resource settings.
+type CDNResourceRuleOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
-	AllowedHTTPMethods CDNResourceOptionsAllowedHTTPMethods `json:"allowedHttpMethods,nullable"`
+	AllowedHTTPMethods CDNResourceRuleOptionsAllowedHTTPMethods `json:"allowedHttpMethods,nullable"`
 	// Allows to prevent online services from overloading and ensure your business
 	// workflow running smoothly.
-	BotProtection CDNResourceOptionsBotProtection `json:"bot_protection,nullable"`
+	BotProtection CDNResourceRuleOptionsBotProtection `json:"bot_protection,nullable"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -423,45 +231,45 @@ type CDNResourceOptions struct {
 	//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
 	//     resource and want to enable `brotli_compression` in a rule, you must specify
 	//     `fetch_compressed:false` in the rule.
-	BrotliCompression CDNResourceOptionsBrotliCompression `json:"brotli_compression,nullable"`
+	BrotliCompression CDNResourceRuleOptionsBrotliCompression `json:"brotli_compression,nullable"`
 	// Cache expiration time for users browsers in seconds.
 	//
 	// Cache expiration time is applied to the following response codes: 200, 201, 204,
 	// 206, 301, 302, 303, 304, 307, 308.
 	//
 	// Responses with other codes will not be cached.
-	BrowserCacheSettings CDNResourceOptionsBrowserCacheSettings `json:"browser_cache_settings,nullable"`
+	BrowserCacheSettings CDNResourceRuleOptionsBrowserCacheSettings `json:"browser_cache_settings,nullable"`
 	// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
 	//
 	// HTTP Headers that must be included in the response.
 	//
 	// Deprecated: deprecated
-	CacheHTTPHeaders CDNResourceOptionsCacheHTTPHeaders `json:"cache_http_headers,nullable"`
+	CacheHTTPHeaders CDNResourceRuleOptionsCacheHTTPHeaders `json:"cache_http_headers,nullable"`
 	// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
 	//
 	// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
 	// to a response to a browser.
-	Cors CDNResourceOptionsCors `json:"cors,nullable"`
+	Cors CDNResourceRuleOptionsCors `json:"cors,nullable"`
 	// Enables control access to content for specified countries.
-	CountryACL CDNResourceOptionsCountryACL `json:"country_acl,nullable"`
+	CountryACL CDNResourceRuleOptionsCountryACL `json:"country_acl,nullable"`
 	// **Legacy option**. Use the `edge_cache_settings` option instead.
 	//
 	// Allows the complete disabling of content caching.
 	//
 	// Deprecated: deprecated
-	DisableCache CDNResourceOptionsDisableCache `json:"disable_cache,nullable"`
+	DisableCache CDNResourceRuleOptionsDisableCache `json:"disable_cache,nullable"`
 	// Allows 206 responses regardless of the settings of an origin source.
-	DisableProxyForceRanges CDNResourceOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges,nullable"`
+	DisableProxyForceRanges CDNResourceRuleOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges,nullable"`
 	// Cache expiration time for CDN servers.
 	//
 	// `value` and `default` fields cannot be used simultaneously.
-	EdgeCacheSettings CDNResourceOptionsEdgeCacheSettings `json:"edge_cache_settings,nullable"`
+	EdgeCacheSettings CDNResourceRuleOptionsEdgeCacheSettings `json:"edge_cache_settings,nullable"`
 	// Allows to configure FastEdge app to be called on different request/response
 	// phases.
 	//
 	// Note: At least one of `on_request_headers`, `on_request_body`,
 	// `on_response_headers`, or `on_response_body` must be specified.
-	Fastedge CDNResourceOptionsFastedge `json:"fastedge,nullable"`
+	Fastedge CDNResourceRuleOptionsFastedge `json:"fastedge,nullable"`
 	// Makes the CDN request compressed content from the origin.
 	//
 	// The origin server should support compression. CDN servers will not decompress
@@ -475,20 +283,20 @@ type CDNResourceOptions struct {
 	//     you enable it in CDN resource and want to use `gzipON` and
 	//     `brotli_compression` in a rule, you have to specify
 	//     `"fetch_compressed": false` in the rule.
-	FetchCompressed CDNResourceOptionsFetchCompressed `json:"fetch_compressed,nullable"`
+	FetchCompressed CDNResourceRuleOptionsFetchCompressed `json:"fetch_compressed,nullable"`
 	// Enables redirection from origin. If the origin server returns a redirect, the
 	// option allows the CDN to pull the requested content from the origin server that
 	// was returned in the redirect.
-	FollowOriginRedirect CDNResourceOptionsFollowOriginRedirect `json:"follow_origin_redirect,nullable"`
+	FollowOriginRedirect CDNResourceRuleOptionsFollowOriginRedirect `json:"follow_origin_redirect,nullable"`
 	// Applies custom HTTP response codes for CDN content.
 	//
 	// The following codes are reserved by our system and cannot be specified in this
 	// option: 408, 444, 477, 494, 495, 496, 497, 499.
-	ForceReturn CDNResourceOptionsForceReturn `json:"force_return,nullable"`
+	ForceReturn CDNResourceRuleOptionsForceReturn `json:"force_return,nullable"`
 	// Forwards the Host header from a end-user request to an origin server.
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	ForwardHostHeader CDNResourceOptionsForwardHostHeader `json:"forward_host_header,nullable"`
+	ForwardHostHeader CDNResourceRuleOptionsForwardHostHeader `json:"forward_host_header,nullable"`
 	// Compresses content with gzip on the CDN end. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -499,30 +307,26 @@ type CDNResourceOptions struct {
 	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
 	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
-	GzipOn CDNResourceOptionsGzipOn `json:"gzipOn,nullable"`
+	GzipOn CDNResourceRuleOptionsGzipOn `json:"gzipOn,nullable"`
 	// Sets the Host header that CDN servers use when request content from an origin
 	// server. Your server must be able to process requests with the chosen header.
 	//
 	// If the option is `null`, the Host Header value is equal to first CNAME.
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	HostHeader CDNResourceOptionsHostHeader `json:"hostHeader,nullable"`
-	// Enables HTTP/3 protocol for content delivery.
-	//
-	// `http3_enabled` option works only with `"sslEnabled": true`.
-	Http3Enabled CDNResourceOptionsHttp3Enabled `json:"http3_enabled,nullable"`
+	HostHeader CDNResourceRuleOptionsHostHeader `json:"hostHeader,nullable"`
 	// Defines whether the files with the Set-Cookies header are cached as one file or
 	// as different ones.
-	IgnoreCookie CDNResourceOptionsIgnoreCookie `json:"ignore_cookie,nullable"`
+	IgnoreCookie CDNResourceRuleOptionsIgnoreCookie `json:"ignore_cookie,nullable"`
 	// How a file with different query strings is cached: either as one object (option
 	// is enabled) or as different objects (option is disabled.)
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	IgnoreQueryString CDNResourceOptionsIgnoreQueryString `json:"ignoreQueryString,nullable"`
+	IgnoreQueryString CDNResourceRuleOptionsIgnoreQueryString `json:"ignoreQueryString,nullable"`
 	// Transforms JPG and PNG images (for example, resize or crop) and automatically
 	// converts them to WebP or AVIF format.
-	ImageStack CDNResourceOptionsImageStack `json:"image_stack,nullable"`
+	ImageStack CDNResourceRuleOptionsImageStack `json:"image_stack,nullable"`
 	// Controls access to the CDN resource content for specific IP addresses.
 	//
 	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
@@ -530,9 +334,9 @@ type CDNResourceOptions struct {
 	//
 	// We recommend you use a script for automatically update IP ACL.
 	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
-	IPAddressACL CDNResourceOptionsIPAddressACL `json:"ip_address_acl,nullable"`
+	IPAddressACL CDNResourceRuleOptionsIPAddressACL `json:"ip_address_acl,nullable"`
 	// Allows to control the download speed per connection.
-	LimitBandwidth CDNResourceOptionsLimitBandwidth `json:"limit_bandwidth,nullable"`
+	LimitBandwidth CDNResourceRuleOptionsLimitBandwidth `json:"limit_bandwidth,nullable"`
 	// Allows you to modify your cache key. If omitted, the default value is
 	// `$request_uri`.
 	//
@@ -545,29 +349,29 @@ type CDNResourceOptions struct {
 	// **Warning**: Enabling and changing this option can invalidate your current cache
 	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
 	// not work.
-	ProxyCacheKey CDNResourceOptionsProxyCacheKey `json:"proxy_cache_key,nullable"`
+	ProxyCacheKey CDNResourceRuleOptionsProxyCacheKey `json:"proxy_cache_key,nullable"`
 	// Caching for POST requests along with default GET and HEAD.
-	ProxyCacheMethodsSet CDNResourceOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set,nullable"`
+	ProxyCacheMethodsSet CDNResourceRuleOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set,nullable"`
 	// The time limit for establishing a connection with the origin.
-	ProxyConnectTimeout CDNResourceOptionsProxyConnectTimeout `json:"proxy_connect_timeout,nullable"`
+	ProxyConnectTimeout CDNResourceRuleOptionsProxyConnectTimeout `json:"proxy_connect_timeout,nullable"`
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
 	// **Note:** When used with a WebSocket connection, this option supports values
 	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
-	ProxyReadTimeout CDNResourceOptionsProxyReadTimeout `json:"proxy_read_timeout,nullable"`
+	ProxyReadTimeout CDNResourceRuleOptionsProxyReadTimeout `json:"proxy_read_timeout,nullable"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	QueryParamsBlacklist CDNResourceOptionsQueryParamsBlacklist `json:"query_params_blacklist,nullable"`
+	QueryParamsBlacklist CDNResourceRuleOptionsQueryParamsBlacklist `json:"query_params_blacklist,nullable"`
 	// Files with the specified query parameters are cached as different objects, files
 	// with other parameters are cached as one object.
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	QueryParamsWhitelist CDNResourceOptionsQueryParamsWhitelist `json:"query_params_whitelist,nullable"`
+	QueryParamsWhitelist CDNResourceRuleOptionsQueryParamsWhitelist `json:"query_params_whitelist,nullable"`
 	// The Query String Forwarding feature allows for the seamless transfer of
 	// parameters embedded in playlist files to the corresponding media chunk files.
 	// This functionality ensures that specific attributes, such as authentication
@@ -575,31 +379,31 @@ type CDNResourceOptions struct {
 	// manifest to the individual media segments. This is particularly useful for
 	// maintaining continuity in security, analytics, and any other parameter-based
 	// operations across the entire media delivery workflow.
-	QueryStringForwarding CDNResourceOptionsQueryStringForwarding `json:"query_string_forwarding,nullable"`
+	QueryStringForwarding CDNResourceRuleOptionsQueryStringForwarding `json:"query_string_forwarding,nullable"`
 	// Enables redirect from HTTP to HTTPS.
 	//
 	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 	// simultaneously.
-	RedirectHTTPToHTTPS CDNResourceOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https,nullable"`
+	RedirectHTTPToHTTPS CDNResourceRuleOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https,nullable"`
 	// Enables redirect from HTTPS to HTTP.
 	//
 	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 	// simultaneously.
-	RedirectHTTPSToHTTP CDNResourceOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,nullable"`
+	RedirectHTTPSToHTTP CDNResourceRuleOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,nullable"`
 	// Controls access to the CDN resource content for specified domain names.
-	ReferrerACL CDNResourceOptionsReferrerACL `json:"referrer_acl,nullable"`
+	ReferrerACL CDNResourceRuleOptionsReferrerACL `json:"referrer_acl,nullable"`
 	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter CDNResourceOptionsRequestLimiter `json:"request_limiter,nullable"`
+	RequestLimiter CDNResourceRuleOptionsRequestLimiter `json:"request_limiter,nullable"`
 	// Hides HTTP headers from an origin server in the CDN response.
-	ResponseHeadersHidingPolicy CDNResourceOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,nullable"`
+	ResponseHeadersHidingPolicy CDNResourceRuleOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,nullable"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
 	// to the
 	// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
 	// configuration.
-	Rewrite CDNResourceOptionsRewrite `json:"rewrite,nullable"`
+	Rewrite CDNResourceRuleOptionsRewrite `json:"rewrite,nullable"`
 	// Configures access with tokenized URLs. This makes impossible to access content
 	// without a valid (unexpired) token.
-	SecureKey CDNResourceOptionsSecureKey `json:"secure_key,nullable"`
+	SecureKey CDNResourceRuleOptionsSecureKey `json:"secure_key,nullable"`
 	// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
 	// part.) This reduces time to first byte.
 	//
@@ -611,7 +415,7 @@ type CDNResourceOptions struct {
 	//  1. Origin must support HTTP Range requests.
 	//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
 	//     options enabled.
-	Slice CDNResourceOptionsSlice `json:"slice,nullable"`
+	Slice CDNResourceRuleOptionsSlice `json:"slice,nullable"`
 	// The hostname that is added to SNI requests from CDN servers to the origin server
 	// via HTTPS.
 	//
@@ -621,46 +425,27 @@ type CDNResourceOptions struct {
 	// the connection.
 	//
 	// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
-	Sni CDNResourceOptionsSni `json:"sni,nullable"`
+	Sni CDNResourceRuleOptionsSni `json:"sni,nullable"`
 	// Serves stale cached content in case of origin unavailability.
-	Stale CDNResourceOptionsStale `json:"stale,nullable"`
+	Stale CDNResourceRuleOptionsStale `json:"stale,nullable"`
 	// Custom HTTP Headers that a CDN server adds to a response.
-	StaticResponseHeaders CDNResourceOptionsStaticResponseHeaders `json:"static_response_headers,nullable"`
+	StaticResponseHeaders CDNResourceRuleOptionsStaticResponseHeaders `json:"static_response_headers,nullable"`
 	// **Legacy option**. Use the `static_response_headers` option instead.
 	//
 	// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
 	// Headers can be specified. May contain a header with multiple values.
 	//
 	// Deprecated: deprecated
-	StaticHeaders CDNResourceOptionsStaticHeaders `json:"staticHeaders,nullable"`
+	StaticHeaders CDNResourceRuleOptionsStaticHeaders `json:"staticHeaders,nullable"`
 	// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
 	// Headers can be specified.
-	StaticRequestHeaders CDNResourceOptionsStaticRequestHeaders `json:"staticRequestHeaders,nullable"`
-	// List of SSL/TLS protocol versions allowed for HTTPS connections from end users
-	// to the domain.
-	//
-	// When the option is disabled, all protocols versions are allowed.
-	TlsVersions CDNResourceOptionsTlsVersions `json:"tls_versions,nullable"`
-	// Let's Encrypt certificate chain.
-	//
-	// The specified chain will be used during the next Let's Encrypt certificate issue
-	// or renewal.
-	UseDefaultLeChain CDNResourceOptionsUseDefaultLeChain `json:"use_default_le_chain,nullable"`
-	// DNS-01 challenge to issue a Let's Encrypt certificate for the resource.
-	//
-	// DNS service should be activated to enable this option.
-	UseDns01LeChallenge CDNResourceOptionsUseDns01LeChallenge `json:"use_dns01_le_challenge,nullable"`
-	// RSA Let's Encrypt certificate type for the CDN resource.
-	//
-	// The specified value will be used during the next Let's Encrypt certificate issue
-	// or renewal.
-	UseRsaLeCert CDNResourceOptionsUseRsaLeCert `json:"use_rsa_le_cert,nullable"`
+	StaticRequestHeaders CDNResourceRuleOptionsStaticRequestHeaders `json:"staticRequestHeaders,nullable"`
 	// Controls access to the content for specified User-Agents.
-	UserAgentACL CDNResourceOptionsUserAgentACL `json:"user_agent_acl,nullable"`
+	UserAgentACL CDNResourceRuleOptionsUserAgentACL `json:"user_agent_acl,nullable"`
 	// Allows to enable WAAP (Web Application and API Protection).
-	Waap CDNResourceOptionsWaap `json:"waap,nullable"`
+	Waap CDNResourceRuleOptionsWaap `json:"waap,nullable"`
 	// Enables or disables WebSockets connections to an origin server.
-	Websockets CDNResourceOptionsWebsockets `json:"websockets,nullable"`
+	Websockets CDNResourceRuleOptionsWebsockets `json:"websockets,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedHTTPMethods          respjson.Field
@@ -680,7 +465,6 @@ type CDNResourceOptions struct {
 		ForwardHostHeader           respjson.Field
 		GzipOn                      respjson.Field
 		HostHeader                  respjson.Field
-		Http3Enabled                respjson.Field
 		IgnoreCookie                respjson.Field
 		IgnoreQueryString           respjson.Field
 		ImageStack                  respjson.Field
@@ -706,10 +490,6 @@ type CDNResourceOptions struct {
 		StaticResponseHeaders       respjson.Field
 		StaticHeaders               respjson.Field
 		StaticRequestHeaders        respjson.Field
-		TlsVersions                 respjson.Field
-		UseDefaultLeChain           respjson.Field
-		UseDns01LeChallenge         respjson.Field
-		UseRsaLeCert                respjson.Field
 		UserAgentACL                respjson.Field
 		Waap                        respjson.Field
 		Websockets                  respjson.Field
@@ -719,13 +499,13 @@ type CDNResourceOptions struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptions) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptions) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptions) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // HTTP methods allowed for content requests from the CDN.
-type CDNResourceOptionsAllowedHTTPMethods struct {
+type CDNResourceRuleOptionsAllowedHTTPMethods struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -745,16 +525,16 @@ type CDNResourceOptionsAllowedHTTPMethods struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsAllowedHTTPMethods) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsAllowedHTTPMethods) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to prevent online services from overloading and ensure your business
 // workflow running smoothly.
-type CDNResourceOptionsBotProtection struct {
+type CDNResourceRuleOptionsBotProtection struct {
 	// Controls the bot challenge module state.
-	BotChallenge CDNResourceOptionsBotProtectionBotChallenge `json:"bot_challenge,required"`
+	BotChallenge CDNResourceRuleOptionsBotProtectionBotChallenge `json:"bot_challenge,required"`
 	// Controls the option state.
 	//
 	// Possible values:
@@ -772,13 +552,13 @@ type CDNResourceOptionsBotProtection struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsBotProtection) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsBotProtection) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsBotProtection) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsBotProtection) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Controls the bot challenge module state.
-type CDNResourceOptionsBotProtectionBotChallenge struct {
+type CDNResourceRuleOptionsBotProtectionBotChallenge struct {
 	// Possible values:
 	//
 	// - **true** - Bot challenge is enabled.
@@ -793,8 +573,8 @@ type CDNResourceOptionsBotProtectionBotChallenge struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsBotProtectionBotChallenge) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsBotProtectionBotChallenge) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -813,7 +593,7 @@ func (r *CDNResourceOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte)
 //     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
 //     resource and want to enable `brotli_compression` in a rule, you must specify
 //     `fetch_compressed:false` in the rule.
-type CDNResourceOptionsBrotliCompression struct {
+type CDNResourceRuleOptionsBrotliCompression struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -841,8 +621,8 @@ type CDNResourceOptionsBrotliCompression struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsBrotliCompression) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsBrotliCompression) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsBrotliCompression) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsBrotliCompression) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -852,7 +632,7 @@ func (r *CDNResourceOptionsBrotliCompression) UnmarshalJSON(data []byte) error {
 // 206, 301, 302, 303, 304, 307, 308.
 //
 // Responses with other codes will not be cached.
-type CDNResourceOptionsBrowserCacheSettings struct {
+type CDNResourceRuleOptionsBrowserCacheSettings struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -874,8 +654,8 @@ type CDNResourceOptionsBrowserCacheSettings struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsBrowserCacheSettings) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsBrowserCacheSettings) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsBrowserCacheSettings) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsBrowserCacheSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -884,7 +664,7 @@ func (r *CDNResourceOptionsBrowserCacheSettings) UnmarshalJSON(data []byte) erro
 // HTTP Headers that must be included in the response.
 //
 // Deprecated: deprecated
-type CDNResourceOptionsCacheHTTPHeaders struct {
+type CDNResourceRuleOptionsCacheHTTPHeaders struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -903,8 +683,8 @@ type CDNResourceOptionsCacheHTTPHeaders struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsCacheHTTPHeaders) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsCacheHTTPHeaders) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -912,7 +692,7 @@ func (r *CDNResourceOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte) error {
 //
 // CORS header support allows the CDN to add the Access-Control-Allow-Origin header
 // to a response to a browser.
-type CDNResourceOptionsCors struct {
+type CDNResourceRuleOptionsCors struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -955,13 +735,13 @@ type CDNResourceOptionsCors struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsCors) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsCors) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsCors) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsCors) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Enables control access to content for specified countries.
-type CDNResourceOptionsCountryACL struct {
+type CDNResourceRuleOptionsCountryACL struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -998,8 +778,8 @@ type CDNResourceOptionsCountryACL struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsCountryACL) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsCountryACL) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsCountryACL) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsCountryACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1008,7 +788,7 @@ func (r *CDNResourceOptionsCountryACL) UnmarshalJSON(data []byte) error {
 // Allows the complete disabling of content caching.
 //
 // Deprecated: deprecated
-type CDNResourceOptionsDisableCache struct {
+type CDNResourceRuleOptionsDisableCache struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1031,13 +811,13 @@ type CDNResourceOptionsDisableCache struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsDisableCache) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsDisableCache) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsDisableCache) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsDisableCache) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows 206 responses regardless of the settings of an origin source.
-type CDNResourceOptionsDisableProxyForceRanges struct {
+type CDNResourceRuleOptionsDisableProxyForceRanges struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1060,15 +840,15 @@ type CDNResourceOptionsDisableProxyForceRanges struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsDisableProxyForceRanges) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsDisableProxyForceRanges) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsDisableProxyForceRanges) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsDisableProxyForceRanges) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Cache expiration time for CDN servers.
 //
 // `value` and `default` fields cannot be used simultaneously.
-type CDNResourceOptionsEdgeCacheSettings struct {
+type CDNResourceRuleOptionsEdgeCacheSettings struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1114,8 +894,8 @@ type CDNResourceOptionsEdgeCacheSettings struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsEdgeCacheSettings) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsEdgeCacheSettings) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1124,7 +904,7 @@ func (r *CDNResourceOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error {
 //
 // Note: At least one of `on_request_headers`, `on_request_body`,
 // `on_response_headers`, or `on_response_body` must be specified.
-type CDNResourceOptionsFastedge struct {
+type CDNResourceRuleOptionsFastedge struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1134,16 +914,16 @@ type CDNResourceOptionsFastedge struct {
 	Enabled bool `json:"enabled,required"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// body as soon as CDN receives incoming HTTP request.
-	OnRequestBody CDNResourceOptionsFastedgeOnRequestBody `json:"on_request_body"`
+	OnRequestBody CDNResourceRuleOptionsFastedgeOnRequestBody `json:"on_request_body"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// headers as soon as CDN receives incoming HTTP request.
-	OnRequestHeaders CDNResourceOptionsFastedgeOnRequestHeaders `json:"on_request_headers"`
+	OnRequestHeaders CDNResourceRuleOptionsFastedgeOnRequestHeaders `json:"on_request_headers"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// body before CDN sends the HTTP response.
-	OnResponseBody CDNResourceOptionsFastedgeOnResponseBody `json:"on_response_body"`
+	OnResponseBody CDNResourceRuleOptionsFastedgeOnResponseBody `json:"on_response_body"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// headers before CDN sends the HTTP response.
-	OnResponseHeaders CDNResourceOptionsFastedgeOnResponseHeaders `json:"on_response_headers"`
+	OnResponseHeaders CDNResourceRuleOptionsFastedgeOnResponseHeaders `json:"on_response_headers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled           respjson.Field
@@ -1157,14 +937,14 @@ type CDNResourceOptionsFastedge struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsFastedge) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsFastedge) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsFastedge) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsFastedge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to configure FastEdge application that will be called to handle request
 // body as soon as CDN receives incoming HTTP request.
-type CDNResourceOptionsFastedgeOnRequestBody struct {
+type CDNResourceRuleOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
@@ -1189,14 +969,14 @@ type CDNResourceOptionsFastedgeOnRequestBody struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsFastedgeOnRequestBody) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsFastedgeOnRequestBody) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to configure FastEdge application that will be called to handle request
 // headers as soon as CDN receives incoming HTTP request.
-type CDNResourceOptionsFastedgeOnRequestHeaders struct {
+type CDNResourceRuleOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
@@ -1221,14 +1001,14 @@ type CDNResourceOptionsFastedgeOnRequestHeaders struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsFastedgeOnRequestHeaders) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsFastedgeOnRequestHeaders) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to configure FastEdge application that will be called to handle response
 // body before CDN sends the HTTP response.
-type CDNResourceOptionsFastedgeOnResponseBody struct {
+type CDNResourceRuleOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
@@ -1253,14 +1033,14 @@ type CDNResourceOptionsFastedgeOnResponseBody struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsFastedgeOnResponseBody) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsFastedgeOnResponseBody) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to configure FastEdge application that will be called to handle response
 // headers before CDN sends the HTTP response.
-type CDNResourceOptionsFastedgeOnResponseHeaders struct {
+type CDNResourceRuleOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
@@ -1285,8 +1065,8 @@ type CDNResourceOptionsFastedgeOnResponseHeaders struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsFastedgeOnResponseHeaders) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsFastedgeOnResponseHeaders) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1303,7 +1083,7 @@ func (r *CDNResourceOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []byte)
 //     you enable it in CDN resource and want to use `gzipON` and
 //     `brotli_compression` in a rule, you have to specify
 //     `"fetch_compressed": false` in the rule.
-type CDNResourceOptionsFetchCompressed struct {
+type CDNResourceRuleOptionsFetchCompressed struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1326,15 +1106,15 @@ type CDNResourceOptionsFetchCompressed struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsFetchCompressed) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsFetchCompressed) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsFetchCompressed) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsFetchCompressed) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Enables redirection from origin. If the origin server returns a redirect, the
 // option allows the CDN to pull the requested content from the origin server that
 // was returned in the redirect.
-type CDNResourceOptionsFollowOriginRedirect struct {
+type CDNResourceRuleOptionsFollowOriginRedirect struct {
 	// Redirect status code that the origin server returns.
 	//
 	// To serve up to date content to end users, you will need to purge the cache after
@@ -1359,8 +1139,8 @@ type CDNResourceOptionsFollowOriginRedirect struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsFollowOriginRedirect) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsFollowOriginRedirect) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1368,7 +1148,7 @@ func (r *CDNResourceOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) erro
 //
 // The following codes are reserved by our system and cannot be specified in this
 // option: 408, 444, 477, 494, 495, 496, 497, 499.
-type CDNResourceOptionsForceReturn struct {
+type CDNResourceRuleOptionsForceReturn struct {
 	// URL for redirection or text.
 	Body string `json:"body,required"`
 	// Status code value.
@@ -1382,7 +1162,7 @@ type CDNResourceOptionsForceReturn struct {
 	Enabled bool `json:"enabled,required"`
 	// Controls the time at which a custom HTTP response code should be applied. By
 	// default, a custom HTTP response code is applied at any time.
-	TimeInterval CDNResourceOptionsForceReturnTimeInterval `json:"time_interval,nullable"`
+	TimeInterval CDNResourceRuleOptionsForceReturnTimeInterval `json:"time_interval,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Body         respjson.Field
@@ -1395,14 +1175,14 @@ type CDNResourceOptionsForceReturn struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsForceReturn) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsForceReturn) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsForceReturn) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsForceReturn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Controls the time at which a custom HTTP response code should be applied. By
 // default, a custom HTTP response code is applied at any time.
-type CDNResourceOptionsForceReturnTimeInterval struct {
+type CDNResourceRuleOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
 	EndTime string `json:"end_time,required"`
@@ -1422,15 +1202,15 @@ type CDNResourceOptionsForceReturnTimeInterval struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsForceReturnTimeInterval) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsForceReturnTimeInterval) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsForceReturnTimeInterval) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsForceReturnTimeInterval) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Forwards the Host header from a end-user request to an origin server.
 //
 // `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-type CDNResourceOptionsForwardHostHeader struct {
+type CDNResourceRuleOptionsForwardHostHeader struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1453,8 +1233,8 @@ type CDNResourceOptionsForwardHostHeader struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsForwardHostHeader) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsForwardHostHeader) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1468,7 +1248,7 @@ func (r *CDNResourceOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
 //  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 //     rules. If you enable `fetch_compressed` in CDN resource and want to enable
 //     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
-type CDNResourceOptionsGzipOn struct {
+type CDNResourceRuleOptionsGzipOn struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1491,8 +1271,8 @@ type CDNResourceOptionsGzipOn struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsGzipOn) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsGzipOn) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsGzipOn) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsGzipOn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1502,7 +1282,7 @@ func (r *CDNResourceOptionsGzipOn) UnmarshalJSON(data []byte) error {
 // If the option is `null`, the Host Header value is equal to first CNAME.
 //
 // `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-type CDNResourceOptionsHostHeader struct {
+type CDNResourceRuleOptionsHostHeader struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1522,45 +1302,14 @@ type CDNResourceOptionsHostHeader struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsHostHeader) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsHostHeader) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables HTTP/3 protocol for content delivery.
-//
-// `http3_enabled` option works only with `"sslEnabled": true`.
-type CDNResourceOptionsHttp3Enabled struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsHttp3Enabled) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsHttp3Enabled) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsHostHeader) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsHostHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Defines whether the files with the Set-Cookies header are cached as one file or
 // as different ones.
-type CDNResourceOptionsIgnoreCookie struct {
+type CDNResourceRuleOptionsIgnoreCookie struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1584,8 +1333,8 @@ type CDNResourceOptionsIgnoreCookie struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsIgnoreCookie) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsIgnoreCookie) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsIgnoreCookie) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsIgnoreCookie) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1594,7 +1343,7 @@ func (r *CDNResourceOptionsIgnoreCookie) UnmarshalJSON(data []byte) error {
 //
 // `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 // options cannot be enabled simultaneously.
-type CDNResourceOptionsIgnoreQueryString struct {
+type CDNResourceRuleOptionsIgnoreQueryString struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1617,14 +1366,14 @@ type CDNResourceOptionsIgnoreQueryString struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsIgnoreQueryString) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsIgnoreQueryString) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsIgnoreQueryString) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsIgnoreQueryString) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Transforms JPG and PNG images (for example, resize or crop) and automatically
 // converts them to WebP or AVIF format.
-type CDNResourceOptionsImageStack struct {
+type CDNResourceRuleOptionsImageStack struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1654,8 +1403,8 @@ type CDNResourceOptionsImageStack struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsImageStack) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsImageStack) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsImageStack) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsImageStack) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1666,7 +1415,7 @@ func (r *CDNResourceOptionsImageStack) UnmarshalJSON(data []byte) error {
 //
 // We recommend you use a script for automatically update IP ACL.
 // [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
-type CDNResourceOptionsIPAddressACL struct {
+type CDNResourceRuleOptionsIPAddressACL struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1708,13 +1457,13 @@ type CDNResourceOptionsIPAddressACL struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsIPAddressACL) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsIPAddressACL) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsIPAddressACL) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsIPAddressACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to control the download speed per connection.
-type CDNResourceOptionsLimitBandwidth struct {
+type CDNResourceRuleOptionsLimitBandwidth struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1756,8 +1505,8 @@ type CDNResourceOptionsLimitBandwidth struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsLimitBandwidth) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsLimitBandwidth) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsLimitBandwidth) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsLimitBandwidth) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1773,7 +1522,7 @@ func (r *CDNResourceOptionsLimitBandwidth) UnmarshalJSON(data []byte) error {
 // **Warning**: Enabling and changing this option can invalidate your current cache
 // and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
 // not work.
-type CDNResourceOptionsProxyCacheKey struct {
+type CDNResourceRuleOptionsProxyCacheKey struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1793,13 +1542,13 @@ type CDNResourceOptionsProxyCacheKey struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsProxyCacheKey) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsProxyCacheKey) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsProxyCacheKey) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsProxyCacheKey) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Caching for POST requests along with default GET and HEAD.
-type CDNResourceOptionsProxyCacheMethodsSet struct {
+type CDNResourceRuleOptionsProxyCacheMethodsSet struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1822,13 +1571,13 @@ type CDNResourceOptionsProxyCacheMethodsSet struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsProxyCacheMethodsSet) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsProxyCacheMethodsSet) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsProxyCacheMethodsSet) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsProxyCacheMethodsSet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The time limit for establishing a connection with the origin.
-type CDNResourceOptionsProxyConnectTimeout struct {
+type CDNResourceRuleOptionsProxyConnectTimeout struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1850,8 +1599,8 @@ type CDNResourceOptionsProxyConnectTimeout struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsProxyConnectTimeout) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsProxyConnectTimeout) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1860,7 +1609,7 @@ func (r *CDNResourceOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) error
 //
 // **Note:** When used with a WebSocket connection, this option supports values
 // only in the range 1–20 seconds (instead of the usual 1–30 seconds).
-type CDNResourceOptionsProxyReadTimeout struct {
+type CDNResourceRuleOptionsProxyReadTimeout struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1882,8 +1631,8 @@ type CDNResourceOptionsProxyReadTimeout struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsProxyReadTimeout) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsProxyReadTimeout) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsProxyReadTimeout) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsProxyReadTimeout) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1892,7 +1641,7 @@ func (r *CDNResourceOptionsProxyReadTimeout) UnmarshalJSON(data []byte) error {
 //
 // `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 // options cannot be enabled simultaneously.
-type CDNResourceOptionsQueryParamsBlacklist struct {
+type CDNResourceRuleOptionsQueryParamsBlacklist struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1912,8 +1661,8 @@ type CDNResourceOptionsQueryParamsBlacklist struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsQueryParamsBlacklist) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsQueryParamsBlacklist) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsQueryParamsBlacklist) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsQueryParamsBlacklist) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1922,7 +1671,7 @@ func (r *CDNResourceOptionsQueryParamsBlacklist) UnmarshalJSON(data []byte) erro
 //
 // `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 // options cannot be enabled simultaneously.
-type CDNResourceOptionsQueryParamsWhitelist struct {
+type CDNResourceRuleOptionsQueryParamsWhitelist struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -1942,8 +1691,8 @@ type CDNResourceOptionsQueryParamsWhitelist struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsQueryParamsWhitelist) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsQueryParamsWhitelist) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsQueryParamsWhitelist) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsQueryParamsWhitelist) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1954,7 +1703,7 @@ func (r *CDNResourceOptionsQueryParamsWhitelist) UnmarshalJSON(data []byte) erro
 // manifest to the individual media segments. This is particularly useful for
 // maintaining continuity in security, analytics, and any other parameter-based
 // operations across the entire media delivery workflow.
-type CDNResourceOptionsQueryStringForwarding struct {
+type CDNResourceRuleOptionsQueryStringForwarding struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2001,8 +1750,8 @@ type CDNResourceOptionsQueryStringForwarding struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsQueryStringForwarding) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsQueryStringForwarding) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsQueryStringForwarding) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsQueryStringForwarding) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2010,7 +1759,7 @@ func (r *CDNResourceOptionsQueryStringForwarding) UnmarshalJSON(data []byte) err
 //
 // `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 // simultaneously.
-type CDNResourceOptionsRedirectHTTPToHTTPS struct {
+type CDNResourceRuleOptionsRedirectHTTPToHTTPS struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2033,8 +1782,8 @@ type CDNResourceOptionsRedirectHTTPToHTTPS struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsRedirectHTTPToHTTPS) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsRedirectHTTPToHTTPS) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2042,7 +1791,7 @@ func (r *CDNResourceOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []byte) error
 //
 // `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 // simultaneously.
-type CDNResourceOptionsRedirectHTTPSToHTTP struct {
+type CDNResourceRuleOptionsRedirectHTTPSToHTTP struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2065,13 +1814,13 @@ type CDNResourceOptionsRedirectHTTPSToHTTP struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsRedirectHTTPSToHTTP) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsRedirectHTTPSToHTTP) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsRedirectHTTPSToHTTP) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsRedirectHTTPSToHTTP) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Controls access to the CDN resource content for specified domain names.
-type CDNResourceOptionsReferrerACL struct {
+type CDNResourceRuleOptionsReferrerACL struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2114,13 +1863,13 @@ type CDNResourceOptionsReferrerACL struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsReferrerACL) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsReferrerACL) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsReferrerACL) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsReferrerACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Option allows to limit the amount of HTTP requests.
-type CDNResourceOptionsRequestLimiter struct {
+type CDNResourceRuleOptionsRequestLimiter struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2157,13 +1906,13 @@ type CDNResourceOptionsRequestLimiter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsRequestLimiter) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsRequestLimiter) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Hides HTTP headers from an origin server in the CDN response.
-type CDNResourceOptionsResponseHeadersHidingPolicy struct {
+type CDNResourceRuleOptionsResponseHeadersHidingPolicy struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2208,8 +1957,8 @@ type CDNResourceOptionsResponseHeadersHidingPolicy struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsResponseHeadersHidingPolicy) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsResponseHeadersHidingPolicy) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsResponseHeadersHidingPolicy) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsResponseHeadersHidingPolicy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2217,7 +1966,7 @@ func (r *CDNResourceOptionsResponseHeadersHidingPolicy) UnmarshalJSON(data []byt
 // to the
 // [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
 // configuration.
-type CDNResourceOptionsRewrite struct {
+type CDNResourceRuleOptionsRewrite struct {
 	// Path for the Rewrite option.
 	//
 	// Example:
@@ -2255,14 +2004,14 @@ type CDNResourceOptionsRewrite struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsRewrite) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsRewrite) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsRewrite) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsRewrite) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Configures access with tokenized URLs. This makes impossible to access content
 // without a valid (unexpired) token.
-type CDNResourceOptionsSecureKey struct {
+type CDNResourceRuleOptionsSecureKey struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2292,8 +2041,8 @@ type CDNResourceOptionsSecureKey struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsSecureKey) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsSecureKey) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsSecureKey) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsSecureKey) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2308,7 +2057,7 @@ func (r *CDNResourceOptionsSecureKey) UnmarshalJSON(data []byte) error {
 //  1. Origin must support HTTP Range requests.
 //  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
 //     options enabled.
-type CDNResourceOptionsSlice struct {
+type CDNResourceRuleOptionsSlice struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2331,8 +2080,8 @@ type CDNResourceOptionsSlice struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsSlice) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsSlice) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsSlice) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsSlice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2345,7 +2094,7 @@ func (r *CDNResourceOptionsSlice) UnmarshalJSON(data []byte) error {
 // the connection.
 //
 // The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
-type CDNResourceOptionsSni struct {
+type CDNResourceRuleOptionsSni struct {
 	// Custom SNI hostname.
 	//
 	// It is required if `sni_type` is set to custom.
@@ -2384,13 +2133,13 @@ type CDNResourceOptionsSni struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsSni) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsSni) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsSni) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsSni) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Serves stale cached content in case of origin unavailability.
-type CDNResourceOptionsStale struct {
+type CDNResourceRuleOptionsStale struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2413,21 +2162,21 @@ type CDNResourceOptionsStale struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsStale) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsStale) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsStale) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsStale) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Custom HTTP Headers that a CDN server adds to a response.
-type CDNResourceOptionsStaticResponseHeaders struct {
+type CDNResourceRuleOptionsStaticResponseHeaders struct {
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool                                           `json:"enabled,required"`
-	Value   []CDNResourceOptionsStaticResponseHeadersValue `json:"value,required"`
+	Enabled bool                                               `json:"enabled,required"`
+	Value   []CDNResourceRuleOptionsStaticResponseHeadersValue `json:"value,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2438,12 +2187,12 @@ type CDNResourceOptionsStaticResponseHeaders struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsStaticResponseHeaders) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsStaticResponseHeaders) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsStaticResponseHeaders) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsStaticResponseHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CDNResourceOptionsStaticResponseHeadersValue struct {
+type CDNResourceRuleOptionsStaticResponseHeadersValue struct {
 	// HTTP Header name.
 	//
 	// Restrictions:
@@ -2482,8 +2231,8 @@ type CDNResourceOptionsStaticResponseHeadersValue struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsStaticResponseHeadersValue) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsStaticResponseHeadersValue) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsStaticResponseHeadersValue) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsStaticResponseHeadersValue) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2493,7 +2242,7 @@ func (r *CDNResourceOptionsStaticResponseHeadersValue) UnmarshalJSON(data []byte
 // Headers can be specified. May contain a header with multiple values.
 //
 // Deprecated: deprecated
-type CDNResourceOptionsStaticHeaders struct {
+type CDNResourceRuleOptionsStaticHeaders struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2521,14 +2270,14 @@ type CDNResourceOptionsStaticHeaders struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsStaticHeaders) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsStaticHeaders) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsStaticHeaders) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsStaticHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
 // Headers can be specified.
-type CDNResourceOptionsStaticRequestHeaders struct {
+type CDNResourceRuleOptionsStaticRequestHeaders struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2556,140 +2305,13 @@ type CDNResourceOptionsStaticRequestHeaders struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsStaticRequestHeaders) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsStaticRequestHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// List of SSL/TLS protocol versions allowed for HTTPS connections from end users
-// to the domain.
-//
-// When the option is disabled, all protocols versions are allowed.
-type CDNResourceOptionsTlsVersions struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of SSL/TLS protocol versions (case sensitive).
-	//
-	// Any of "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3".
-	Value []string `json:"value,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsTlsVersions) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsTlsVersions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Let's Encrypt certificate chain.
-//
-// The specified chain will be used during the next Let's Encrypt certificate issue
-// or renewal.
-type CDNResourceOptionsUseDefaultLeChain struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	//   - **true** - Default Let's Encrypt certificate chain. This is a deprecated
-	//     version, use it only for compatibilities with Android devices 7.1.1 or lower.
-	//   - **false** - Alternative Let's Encrypt certificate chain.
-	Value bool `json:"value,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsUseDefaultLeChain) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsUseDefaultLeChain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// DNS-01 challenge to issue a Let's Encrypt certificate for the resource.
-//
-// DNS service should be activated to enable this option.
-type CDNResourceOptionsUseDns01LeChallenge struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - DNS-01 challenge is used to issue Let's Encrypt certificate.
-	// - **false** - HTTP-01 challenge is used to issue Let's Encrypt certificate.
-	Value bool `json:"value,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsUseDns01LeChallenge) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsUseDns01LeChallenge) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// RSA Let's Encrypt certificate type for the CDN resource.
-//
-// The specified value will be used during the next Let's Encrypt certificate issue
-// or renewal.
-type CDNResourceOptionsUseRsaLeCert struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - RSA Let's Encrypt certificate.
-	// - **false** - ECDSA Let's Encrypt certificate.
-	Value bool `json:"value,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsUseRsaLeCert) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsUseRsaLeCert) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsStaticRequestHeaders) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsStaticRequestHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Controls access to the content for specified User-Agents.
-type CDNResourceOptionsUserAgentACL struct {
+type CDNResourceRuleOptionsUserAgentACL struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2732,13 +2354,13 @@ type CDNResourceOptionsUserAgentACL struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsUserAgentACL) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsUserAgentACL) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsUserAgentACL) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsUserAgentACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows to enable WAAP (Web Application and API Protection).
-type CDNResourceOptionsWaap struct {
+type CDNResourceRuleOptionsWaap struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2761,13 +2383,13 @@ type CDNResourceOptionsWaap struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsWaap) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsWaap) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsWaap) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsWaap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Enables or disables WebSockets connections to an origin server.
-type CDNResourceOptionsWebsockets struct {
+type CDNResourceRuleOptionsWebsockets struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -2790,8 +2412,8 @@ type CDNResourceOptionsWebsockets struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsWebsockets) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsWebsockets) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleOptionsWebsockets) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsWebsockets) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2799,5052 +2421,116 @@ func (r *CDNResourceOptionsWebsockets) UnmarshalJSON(data []byte) error {
 //
 // Possible values:
 //
-//   - **HTTPS** - CDN servers will connect to the origin via HTTPS.
-//   - **HTTP** - CDN servers will connect to the origin via HTTP.
-//   - **MATCH** - connection protocol will be chosen automatically (content on the
-//     origin source should be available for the CDN both through HTTP and HTTPS).
-//
-// If protocol is not specified, HTTP is used to connect to an origin server.
-type CDNResourceOriginProtocol string
+//   - **HTTPS** - CDN servers connect to origin via HTTPS protocol.
+//   - **HTTP** - CDN servers connect to origin via HTTP protocol.
+//   - **MATCH** - Connection protocol is chosen automatically; in this case, content
+//     on origin source should be available for the CDN both through HTTP and HTTPS
+//     protocols.
+type CDNResourceRuleOriginProtocol string
 
 const (
-	CDNResourceOriginProtocolHTTP  CDNResourceOriginProtocol = "HTTP"
-	CDNResourceOriginProtocolHTTPS CDNResourceOriginProtocol = "HTTPS"
-	CDNResourceOriginProtocolMatch CDNResourceOriginProtocol = "MATCH"
+	CDNResourceRuleOriginProtocolHTTPS CDNResourceRuleOriginProtocol = "HTTPS"
+	CDNResourceRuleOriginProtocolHTTP  CDNResourceRuleOriginProtocol = "HTTP"
+	CDNResourceRuleOriginProtocolMatch CDNResourceRuleOriginProtocol = "MATCH"
 )
 
-// CDN resource status.
+// Sets a protocol other than the one specified in the CDN resource settings to
+// connect to the origin.
 //
 // Possible values:
 //
-//   - **active** - CDN resource is active. Content is available to users.
-//   - **suspended** - CDN resource is suspended. Content is not available to users.
-//   - **processed** - CDN resource has recently been created and is currently being
-//     processed. It will take about fifteen minutes to propagate it to all
-//     locations.
-//   - **deleted** - CDN resource is deleted.
-type CDNResourceStatus string
+//   - **HTTPS** - CDN servers connect to origin via HTTPS protocol.
+//   - **HTTP** - CDN servers connect to origin via HTTP protocol.
+//   - **MATCH** - Connection protocol is chosen automatically; in this case, content
+//     on origin source should be available for the CDN both through HTTP and HTTPS
+//     protocols.
+//   - **null** - `originProtocol` setting is inherited from the CDN resource
+//     settings.
+type CDNResourceRuleOverrideOriginProtocol string
 
 const (
-	CDNResourceStatusActive    CDNResourceStatus = "active"
-	CDNResourceStatusSuspended CDNResourceStatus = "suspended"
-	CDNResourceStatusProcessed CDNResourceStatus = "processed"
-	CDNResourceStatusDeleted   CDNResourceStatus = "deleted"
+	CDNResourceRuleOverrideOriginProtocolHTTPS CDNResourceRuleOverrideOriginProtocol = "HTTPS"
+	CDNResourceRuleOverrideOriginProtocolHTTP  CDNResourceRuleOverrideOriginProtocol = "HTTP"
+	CDNResourceRuleOverrideOriginProtocolMatch CDNResourceRuleOverrideOriginProtocol = "MATCH"
 )
 
-type CDNResourceList []CDNResource
-
-type ResourceNewParams struct {
-	// Delivery domains that will be used for content delivery through a CDN.
-	//
-	// Delivery domains should be added to your DNS settings.
-	Cname string `json:"cname,required"`
-	// IP address or domain name of the origin and the port, if custom port is used.
-	//
-	// You can use either the `origin` or `originGroup` parameter in the request.
-	Origin string `json:"origin,required"`
-	// Origin group ID with which the CDN resource is associated.
-	//
-	// You can use either the `origin` or `originGroup` parameter in the request.
-	OriginGroup int64 `json:"originGroup,required"`
-	// CDN resource name.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// ID of the main CDN resource which has a shared caching zone with a reserve CDN
-	// resource.
-	//
-	// If the parameter is not empty, then the current CDN resource is the reserve. You
-	// cannot change some options, create rules, set up origin shielding, or use the
-	// reserve CDN resource for Streaming.
-	PrimaryResource param.Opt[int64] `json:"primary_resource,omitzero"`
-	// ID of the trusted CA certificate used to verify an origin.
-	//
-	// It can be used only with `"proxy_ssl_enabled": true`.
-	ProxySslCa param.Opt[int64] `json:"proxy_ssl_ca,omitzero"`
-	// ID of the SSL certificate used to verify an origin.
-	//
-	// It can be used only with `"proxy_ssl_enabled": true`.
-	ProxySslData param.Opt[int64] `json:"proxy_ssl_data,omitzero"`
-	// ID of the SSL certificate linked to the CDN resource.
-	//
-	// Can be used only with `"sslEnabled": true`.
-	SslData param.Opt[int64] `json:"sslData,omitzero"`
-	// Enables or disables a CDN resource.
-	//
-	// Possible values:
-	//
-	// - **true** - CDN resource is active. Content is being delivered.
-	// - **false** - CDN resource is deactivated. Content is not being delivered.
-	Active param.Opt[bool] `json:"active,omitzero"`
-	// Optional comment describing the CDN resource.
-	Description param.Opt[string] `json:"description,omitzero"`
-	// Enables or disables SSL certificate validation of the origin server before
-	// completing any connection.
-	//
-	// Possible values:
-	//
-	// - **true** - Origin SSL certificate validation is enabled.
-	// - **false** - Origin SSL certificate validation is disabled.
-	ProxySslEnabled param.Opt[bool] `json:"proxy_ssl_enabled,omitzero"`
-	// Defines whether the HTTPS protocol enabled for content delivery.
-	//
-	// Possible values:
-	//
-	// - **true** - HTTPS is enabled.
-	// - **false** - HTTPS is disabled.
-	SslEnabled param.Opt[bool] `json:"sslEnabled,omitzero"`
-	// Defines whether the associated WAAP Domain is identified as an API Domain.
-	//
-	// Possible values:
-	//
-	// - **true** - The associated WAAP Domain is designated as an API Domain.
-	// - **false** - The associated WAAP Domain is not designated as an API Domain.
-	WaapAPIDomainEnabled param.Opt[bool] `json:"waap_api_domain_enabled,omitzero"`
-	// List of options that can be configured for the CDN resource.
-	//
-	// In case of `null` value the option is not added to the CDN resource. Option may
-	// inherit its value from the global account settings.
-	Options ResourceNewParamsOptions `json:"options,omitzero"`
-	// Protocol used by CDN servers to request content from an origin source.
-	//
-	// Possible values:
-	//
-	//   - **HTTPS** - CDN servers will connect to the origin via HTTPS.
-	//   - **HTTP** - CDN servers will connect to the origin via HTTP.
-	//   - **MATCH** - connection protocol will be chosen automatically (content on the
-	//     origin source should be available for the CDN both through HTTP and HTTPS).
-	//
-	// If protocol is not specified, HTTP is used to connect to an origin server.
-	//
-	// Any of "HTTP", "HTTPS", "MATCH".
-	OriginProtocol ResourceNewParamsOriginProtocol `json:"originProtocol,omitzero"`
-	// Additional delivery domains (CNAMEs) that will be used to deliver content via
-	// the CDN.
-	//
-	// Up to ten additional CNAMEs are possible.
-	SecondaryHostnames []string `json:"secondaryHostnames,omitzero" format:"domain"`
-	paramObj
-}
-
-func (r ResourceNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// List of options that can be configured for the CDN resource.
-//
-// In case of `null` value the option is not added to the CDN resource. Option may
-// inherit its value from the global account settings.
-type ResourceNewParamsOptions struct {
-	// HTTP methods allowed for content requests from the CDN.
-	AllowedHTTPMethods ResourceNewParamsOptionsAllowedHTTPMethods `json:"allowedHttpMethods,omitzero"`
-	// Allows to prevent online services from overloading and ensure your business
-	// workflow running smoothly.
-	BotProtection ResourceNewParamsOptionsBotProtection `json:"bot_protection,omitzero"`
-	// Compresses content with Brotli on the CDN side. CDN servers will request only
-	// uncompressed content from the origin.
-	//
-	// Notes:
-	//
-	//  1. CDN only supports "Brotli compression" when the "origin shielding" feature is
-	//     activated.
-	//  2. If a precache server is not active for a CDN resource, no compression occurs,
-	//     even if the option is enabled.
-	//  3. `brotli_compression` is not supported with `fetch_compressed` or `slice`
-	//     options enabled.
-	//  4. `fetch_compressed` option in CDN resource settings overrides
-	//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
-	//     resource and want to enable `brotli_compression` in a rule, you must specify
-	//     `fetch_compressed:false` in the rule.
-	BrotliCompression ResourceNewParamsOptionsBrotliCompression `json:"brotli_compression,omitzero"`
-	// Cache expiration time for users browsers in seconds.
-	//
-	// Cache expiration time is applied to the following response codes: 200, 201, 204,
-	// 206, 301, 302, 303, 304, 307, 308.
-	//
-	// Responses with other codes will not be cached.
-	BrowserCacheSettings ResourceNewParamsOptionsBrowserCacheSettings `json:"browser_cache_settings,omitzero"`
-	// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
-	//
-	// HTTP Headers that must be included in the response.
-	//
-	// Deprecated: deprecated
-	CacheHTTPHeaders ResourceNewParamsOptionsCacheHTTPHeaders `json:"cache_http_headers,omitzero"`
-	// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
-	//
-	// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
-	// to a response to a browser.
-	Cors ResourceNewParamsOptionsCors `json:"cors,omitzero"`
-	// Enables control access to content for specified countries.
-	CountryACL ResourceNewParamsOptionsCountryACL `json:"country_acl,omitzero"`
-	// **Legacy option**. Use the `edge_cache_settings` option instead.
-	//
-	// Allows the complete disabling of content caching.
-	//
-	// Deprecated: deprecated
-	DisableCache ResourceNewParamsOptionsDisableCache `json:"disable_cache,omitzero"`
-	// Allows 206 responses regardless of the settings of an origin source.
-	DisableProxyForceRanges ResourceNewParamsOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges,omitzero"`
-	// Cache expiration time for CDN servers.
-	//
-	// `value` and `default` fields cannot be used simultaneously.
-	EdgeCacheSettings ResourceNewParamsOptionsEdgeCacheSettings `json:"edge_cache_settings,omitzero"`
-	// Allows to configure FastEdge app to be called on different request/response
-	// phases.
-	//
-	// Note: At least one of `on_request_headers`, `on_request_body`,
-	// `on_response_headers`, or `on_response_body` must be specified.
-	Fastedge ResourceNewParamsOptionsFastedge `json:"fastedge,omitzero"`
-	// Makes the CDN request compressed content from the origin.
-	//
-	// The origin server should support compression. CDN servers will not decompress
-	// your content even if a user browser does not accept compression.
-	//
-	// Notes:
-	//
-	//  1. `fetch_compressed` is not supported with `gzipON` or `brotli_compression` or
-	//     `slice` options enabled.
-	//  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
-	//     you enable it in CDN resource and want to use `gzipON` and
-	//     `brotli_compression` in a rule, you have to specify
-	//     `"fetch_compressed": false` in the rule.
-	FetchCompressed ResourceNewParamsOptionsFetchCompressed `json:"fetch_compressed,omitzero"`
-	// Enables redirection from origin. If the origin server returns a redirect, the
-	// option allows the CDN to pull the requested content from the origin server that
-	// was returned in the redirect.
-	FollowOriginRedirect ResourceNewParamsOptionsFollowOriginRedirect `json:"follow_origin_redirect,omitzero"`
-	// Applies custom HTTP response codes for CDN content.
-	//
-	// The following codes are reserved by our system and cannot be specified in this
-	// option: 408, 444, 477, 494, 495, 496, 497, 499.
-	ForceReturn ResourceNewParamsOptionsForceReturn `json:"force_return,omitzero"`
-	// Forwards the Host header from a end-user request to an origin server.
-	//
-	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	ForwardHostHeader ResourceNewParamsOptionsForwardHostHeader `json:"forward_host_header,omitzero"`
-	// Compresses content with gzip on the CDN end. CDN servers will request only
-	// uncompressed content from the origin.
-	//
-	// Notes:
-	//
-	//  1. Compression with gzip is not supported with `fetch_compressed` or `slice`
-	//     options enabled.
-	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
-	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
-	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
-	GzipOn ResourceNewParamsOptionsGzipOn `json:"gzipOn,omitzero"`
-	// Sets the Host header that CDN servers use when request content from an origin
-	// server. Your server must be able to process requests with the chosen header.
-	//
-	// If the option is `null`, the Host Header value is equal to first CNAME.
-	//
-	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	HostHeader ResourceNewParamsOptionsHostHeader `json:"hostHeader,omitzero"`
-	// Enables HTTP/3 protocol for content delivery.
-	//
-	// `http3_enabled` option works only with `"sslEnabled": true`.
-	Http3Enabled ResourceNewParamsOptionsHttp3Enabled `json:"http3_enabled,omitzero"`
-	// Defines whether the files with the Set-Cookies header are cached as one file or
-	// as different ones.
-	IgnoreCookie ResourceNewParamsOptionsIgnoreCookie `json:"ignore_cookie,omitzero"`
-	// How a file with different query strings is cached: either as one object (option
-	// is enabled) or as different objects (option is disabled.)
-	//
-	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
-	// options cannot be enabled simultaneously.
-	IgnoreQueryString ResourceNewParamsOptionsIgnoreQueryString `json:"ignoreQueryString,omitzero"`
-	// Transforms JPG and PNG images (for example, resize or crop) and automatically
-	// converts them to WebP or AVIF format.
-	ImageStack ResourceNewParamsOptionsImageStack `json:"image_stack,omitzero"`
-	// Controls access to the CDN resource content for specific IP addresses.
-	//
-	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
-	// you have to independently monitor their relevance.
-	//
-	// We recommend you use a script for automatically update IP ACL.
-	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
-	IPAddressACL ResourceNewParamsOptionsIPAddressACL `json:"ip_address_acl,omitzero"`
-	// Allows to control the download speed per connection.
-	LimitBandwidth ResourceNewParamsOptionsLimitBandwidth `json:"limit_bandwidth,omitzero"`
-	// Allows you to modify your cache key. If omitted, the default value is
-	// `$request_uri`.
-	//
-	// Combine the specified variables to create a key for caching.
-	//
-	// - **$`request_uri`**
-	// - **$scheme**
-	// - **$uri**
-	//
-	// **Warning**: Enabling and changing this option can invalidate your current cache
-	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
-	// not work.
-	ProxyCacheKey ResourceNewParamsOptionsProxyCacheKey `json:"proxy_cache_key,omitzero"`
-	// Caching for POST requests along with default GET and HEAD.
-	ProxyCacheMethodsSet ResourceNewParamsOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set,omitzero"`
-	// The time limit for establishing a connection with the origin.
-	ProxyConnectTimeout ResourceNewParamsOptionsProxyConnectTimeout `json:"proxy_connect_timeout,omitzero"`
-	// The time limit for receiving a partial response from the origin. If no response
-	// is received within this time, the connection will be closed.
-	//
-	// **Note:** When used with a WebSocket connection, this option supports values
-	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
-	ProxyReadTimeout ResourceNewParamsOptionsProxyReadTimeout `json:"proxy_read_timeout,omitzero"`
-	// Files with the specified query parameters are cached as one object, files with
-	// other parameters are cached as different objects.
-	//
-	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
-	// options cannot be enabled simultaneously.
-	QueryParamsBlacklist ResourceNewParamsOptionsQueryParamsBlacklist `json:"query_params_blacklist,omitzero"`
-	// Files with the specified query parameters are cached as different objects, files
-	// with other parameters are cached as one object.
-	//
-	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
-	// options cannot be enabled simultaneously.
-	QueryParamsWhitelist ResourceNewParamsOptionsQueryParamsWhitelist `json:"query_params_whitelist,omitzero"`
-	// The Query String Forwarding feature allows for the seamless transfer of
-	// parameters embedded in playlist files to the corresponding media chunk files.
-	// This functionality ensures that specific attributes, such as authentication
-	// tokens or tracking information, are consistently passed along from the playlist
-	// manifest to the individual media segments. This is particularly useful for
-	// maintaining continuity in security, analytics, and any other parameter-based
-	// operations across the entire media delivery workflow.
-	QueryStringForwarding ResourceNewParamsOptionsQueryStringForwarding `json:"query_string_forwarding,omitzero"`
-	// Enables redirect from HTTP to HTTPS.
-	//
-	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
-	// simultaneously.
-	RedirectHTTPToHTTPS ResourceNewParamsOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https,omitzero"`
-	// Enables redirect from HTTPS to HTTP.
-	//
-	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
-	// simultaneously.
-	RedirectHTTPSToHTTP ResourceNewParamsOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,omitzero"`
-	// Controls access to the CDN resource content for specified domain names.
-	ReferrerACL ResourceNewParamsOptionsReferrerACL `json:"referrer_acl,omitzero"`
-	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter ResourceNewParamsOptionsRequestLimiter `json:"request_limiter,omitzero"`
-	// Hides HTTP headers from an origin server in the CDN response.
-	ResponseHeadersHidingPolicy ResourceNewParamsOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,omitzero"`
-	// Changes and redirects requests from the CDN to the origin. It operates according
-	// to the
-	// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
-	// configuration.
-	Rewrite ResourceNewParamsOptionsRewrite `json:"rewrite,omitzero"`
-	// Configures access with tokenized URLs. This makes impossible to access content
-	// without a valid (unexpired) token.
-	SecureKey ResourceNewParamsOptionsSecureKey `json:"secure_key,omitzero"`
-	// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
-	// part.) This reduces time to first byte.
-	//
-	// The option is based on the
-	// [Slice](https://nginx.org/en/docs/http/ngx_http_slice_module.html) module.
-	//
-	// Notes:
-	//
-	//  1. Origin must support HTTP Range requests.
-	//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
-	//     options enabled.
-	Slice ResourceNewParamsOptionsSlice `json:"slice,omitzero"`
-	// The hostname that is added to SNI requests from CDN servers to the origin server
-	// via HTTPS.
-	//
-	// SNI is generally only required if your origin uses shared hosting or does not
-	// have a dedicated IP address. If the origin server presents multiple
-	// certificates, SNI allows the origin server to know which certificate to use for
-	// the connection.
-	//
-	// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
-	Sni ResourceNewParamsOptionsSni `json:"sni,omitzero"`
-	// Serves stale cached content in case of origin unavailability.
-	Stale ResourceNewParamsOptionsStale `json:"stale,omitzero"`
-	// Custom HTTP Headers that a CDN server adds to a response.
-	StaticResponseHeaders ResourceNewParamsOptionsStaticResponseHeaders `json:"static_response_headers,omitzero"`
-	// **Legacy option**. Use the `static_response_headers` option instead.
-	//
-	// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
-	// Headers can be specified. May contain a header with multiple values.
-	//
-	// Deprecated: deprecated
-	StaticHeaders ResourceNewParamsOptionsStaticHeaders `json:"staticHeaders,omitzero"`
-	// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
-	// Headers can be specified.
-	StaticRequestHeaders ResourceNewParamsOptionsStaticRequestHeaders `json:"staticRequestHeaders,omitzero"`
-	// List of SSL/TLS protocol versions allowed for HTTPS connections from end users
-	// to the domain.
-	//
-	// When the option is disabled, all protocols versions are allowed.
-	TlsVersions ResourceNewParamsOptionsTlsVersions `json:"tls_versions,omitzero"`
-	// Let's Encrypt certificate chain.
-	//
-	// The specified chain will be used during the next Let's Encrypt certificate issue
-	// or renewal.
-	UseDefaultLeChain ResourceNewParamsOptionsUseDefaultLeChain `json:"use_default_le_chain,omitzero"`
-	// DNS-01 challenge to issue a Let's Encrypt certificate for the resource.
-	//
-	// DNS service should be activated to enable this option.
-	UseDns01LeChallenge ResourceNewParamsOptionsUseDns01LeChallenge `json:"use_dns01_le_challenge,omitzero"`
-	// RSA Let's Encrypt certificate type for the CDN resource.
-	//
-	// The specified value will be used during the next Let's Encrypt certificate issue
-	// or renewal.
-	UseRsaLeCert ResourceNewParamsOptionsUseRsaLeCert `json:"use_rsa_le_cert,omitzero"`
-	// Controls access to the content for specified User-Agents.
-	UserAgentACL ResourceNewParamsOptionsUserAgentACL `json:"user_agent_acl,omitzero"`
-	// Allows to enable WAAP (Web Application and API Protection).
-	Waap ResourceNewParamsOptionsWaap `json:"waap,omitzero"`
-	// Enables or disables WebSockets connections to an origin server.
-	Websockets ResourceNewParamsOptionsWebsockets `json:"websockets,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptions) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptions
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// HTTP methods allowed for content requests from the CDN.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsAllowedHTTPMethods struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Any of "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsAllowedHTTPMethods) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsAllowedHTTPMethods
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to prevent online services from overloading and ensure your business
-// workflow running smoothly.
-//
-// The properties BotChallenge, Enabled are required.
-type ResourceNewParamsOptionsBotProtection struct {
-	// Controls the bot challenge module state.
-	BotChallenge ResourceNewParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero,required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsBotProtection) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsBotProtection
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsBotProtection) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls the bot challenge module state.
-type ResourceNewParamsOptionsBotProtectionBotChallenge struct {
-	// Possible values:
-	//
-	// - **true** - Bot challenge is enabled.
-	// - **false** - Bot challenge is disabled.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsBotProtectionBotChallenge) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsBotProtectionBotChallenge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Compresses content with Brotli on the CDN side. CDN servers will request only
-// uncompressed content from the origin.
-//
-// Notes:
-//
-//  1. CDN only supports "Brotli compression" when the "origin shielding" feature is
-//     activated.
-//  2. If a precache server is not active for a CDN resource, no compression occurs,
-//     even if the option is enabled.
-//  3. `brotli_compression` is not supported with `fetch_compressed` or `slice`
-//     options enabled.
-//  4. `fetch_compressed` option in CDN resource settings overrides
-//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
-//     resource and want to enable `brotli_compression` in a rule, you must specify
-//     `fetch_compressed:false` in the rule.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsBrotliCompression struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Allows to select the content types you want to compress.
-	//
-	// `text/html` is a mandatory content type.
-	//
-	// Any of "application/javascript", "application/json",
-	// "application/vnd.ms-fontobject", "application/wasm", "application/x-font-ttf",
-	// "application/x-javascript", "application/xml", "application/xml+rss",
-	// "image/svg+xml", "image/x-icon", "text/css", "text/html", "text/javascript",
-	// "text/plain", "text/xml".
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsBrotliCompression) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsBrotliCompression
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsBrotliCompression) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Cache expiration time for users browsers in seconds.
-//
-// Cache expiration time is applied to the following response codes: 200, 201, 204,
-// 206, 301, 302, 303, 304, 307, 308.
-//
-// Responses with other codes will not be cached.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsBrowserCacheSettings struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Set the cache expiration time to '0s' to disable caching.
-	//
-	// The maximum duration is any equivalent to `1y`.
-	Value string `json:"value,required" format:"nginx time"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsBrowserCacheSettings) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsBrowserCacheSettings
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsBrowserCacheSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
-//
-// HTTP Headers that must be included in the response.
-//
-// Deprecated: deprecated
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsCacheHTTPHeaders struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool     `json:"enabled,required"`
-	Value   []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsCacheHTTPHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsCacheHTTPHeaders
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
-//
-// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
-// to a response to a browser.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsCors struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Value of the Access-Control-Allow-Origin header.
-	//
-	// Possible values:
-	//
-	//   - **Adds \* as the Access-Control-Allow-Origin header value** - Content will be
-	//     uploaded for requests from any domain. `"value": ["*"]`
-	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
-	//     origin matches one of the listed domains** - Content will be uploaded only for
-	//     requests from the domains specified in the field.
-	//     `"value": ["domain.com", "second.dom.com"]`
-	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
-	//     Content will be uploaded for requests from any domain, and the domain from
-	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
-	//     header in the response. `"value": ["$http_origin"]`
-	Value []string `json:"value,omitzero,required"`
-	// Defines whether the Access-Control-Allow-Origin header should be added to a
-	// response from CDN regardless of response code.
-	//
-	// Possible values:
-	//
-	//   - **true** - Header will be added to a response regardless of response code.
-	//   - **false** - Header will only be added to responses with codes: 200, 201, 204,
-	//     206, 301, 302, 303, 304, 307, 308.
-	Always param.Opt[bool] `json:"always,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsCors) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsCors
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsCors) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables control access to content for specified countries.
-//
-// The properties Enabled, ExceptedValues, PolicyType are required.
-type ResourceNewParamsOptionsCountryACL struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of countries according to ISO-3166-1.
-	//
-	// The meaning of the parameter depends on `policy_type` value:
-	//
-	// - **allow** - List of countries for which access is prohibited.
-	// - **deny** - List of countries for which access is allowed.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"country-code"`
-	// Defines the type of CDN resource access policy.
-	//
-	// Possible values:
-	//
-	//   - **allow** - Access is allowed for all the countries except for those specified
-	//     in `excepted_values` field.
-	//   - **deny** - Access is denied for all the countries except for those specified
-	//     in `excepted_values` field.
-	//
-	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsCountryACL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsCountryACL
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsCountryACL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceNewParamsOptionsCountryACL](
-		"policy_type", "allow", "deny",
-	)
-}
-
-// **Legacy option**. Use the `edge_cache_settings` option instead.
-//
-// Allows the complete disabling of content caching.
-//
-// Deprecated: deprecated
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsDisableCache struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - content caching is disabled.
-	// - **false** - content caching is enabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsDisableCache) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsDisableCache
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsDisableCache) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows 206 responses regardless of the settings of an origin source.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsDisableProxyForceRanges struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsDisableProxyForceRanges) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsDisableProxyForceRanges
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsDisableProxyForceRanges) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Cache expiration time for CDN servers.
-//
-// `value` and `default` fields cannot be used simultaneously.
-//
-// The property Enabled is required.
-type ResourceNewParamsOptionsEdgeCacheSettings struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Enables content caching according to the origin cache settings.
-	//
-	// The value is applied to the following response codes 200, 201, 204, 206, 301,
-	// 302, 303, 304, 307, 308, if an origin server does not have caching HTTP headers.
-	//
-	// Responses with other codes will not be cached.
-	//
-	// The maximum duration is any equivalent to `1y`.
-	Default param.Opt[string] `json:"default,omitzero" format:"nginx time"`
-	// Caching time.
-	//
-	// The value is applied to the following response codes: 200, 206, 301, 302.
-	// Responses with codes 4xx, 5xx will not be cached.
-	//
-	// Use `0s` to disable caching.
-	//
-	// The maximum duration is any equivalent to `1y`.
-	Value param.Opt[string] `json:"value,omitzero" format:"nginx time"`
-	// A MAP object representing the caching time in seconds for a response with a
-	// specific response code.
-	//
-	// These settings have a higher priority than the `value` field.
-	//
-	// - Use `any` key to specify caching time for all response codes.
-	// - Use `0s` value to disable caching for a specific response code.
-	CustomValues map[string]string `json:"custom_values,omitzero" format:"nginx time"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsEdgeCacheSettings) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsEdgeCacheSettings
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to configure FastEdge app to be called on different request/response
-// phases.
-//
-// Note: At least one of `on_request_headers`, `on_request_body`,
-// `on_response_headers`, or `on_response_body` must be specified.
-//
-// The property Enabled is required.
-type ResourceNewParamsOptionsFastedge struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Allows to configure FastEdge application that will be called to handle request
-	// body as soon as CDN receives incoming HTTP request.
-	OnRequestBody ResourceNewParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
-	// Allows to configure FastEdge application that will be called to handle request
-	// headers as soon as CDN receives incoming HTTP request.
-	OnRequestHeaders ResourceNewParamsOptionsFastedgeOnRequestHeaders `json:"on_request_headers,omitzero"`
-	// Allows to configure FastEdge application that will be called to handle response
-	// body before CDN sends the HTTP response.
-	OnResponseBody ResourceNewParamsOptionsFastedgeOnResponseBody `json:"on_response_body,omitzero"`
-	// Allows to configure FastEdge application that will be called to handle response
-	// headers before CDN sends the HTTP response.
-	OnResponseHeaders ResourceNewParamsOptionsFastedgeOnResponseHeaders `json:"on_response_headers,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsFastedge) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsFastedge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsFastedge) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to configure FastEdge application that will be called to handle request
-// body as soon as CDN receives incoming HTTP request.
-//
-// The property AppID is required.
-type ResourceNewParamsOptionsFastedgeOnRequestBody struct {
-	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Determines if the request should be executed at the edge nodes.
-	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
-	// Determines if the request should be executed at the shield nodes.
-	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
-	// Determines if the request execution should be interrupted when an error occurs.
-	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsFastedgeOnRequestBody) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsFastedgeOnRequestBody
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to configure FastEdge application that will be called to handle request
-// headers as soon as CDN receives incoming HTTP request.
-//
-// The property AppID is required.
-type ResourceNewParamsOptionsFastedgeOnRequestHeaders struct {
-	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Determines if the request should be executed at the edge nodes.
-	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
-	// Determines if the request should be executed at the shield nodes.
-	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
-	// Determines if the request execution should be interrupted when an error occurs.
-	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsFastedgeOnRequestHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsFastedgeOnRequestHeaders
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to configure FastEdge application that will be called to handle response
-// body before CDN sends the HTTP response.
-//
-// The property AppID is required.
-type ResourceNewParamsOptionsFastedgeOnResponseBody struct {
-	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Determines if the request should be executed at the edge nodes.
-	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
-	// Determines if the request should be executed at the shield nodes.
-	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
-	// Determines if the request execution should be interrupted when an error occurs.
-	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsFastedgeOnResponseBody) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsFastedgeOnResponseBody
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to configure FastEdge application that will be called to handle response
-// headers before CDN sends the HTTP response.
-//
-// The property AppID is required.
-type ResourceNewParamsOptionsFastedgeOnResponseHeaders struct {
-	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Determines if the request should be executed at the edge nodes.
-	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
-	// Determines if the request should be executed at the shield nodes.
-	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
-	// Determines if the request execution should be interrupted when an error occurs.
-	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsFastedgeOnResponseHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsFastedgeOnResponseHeaders
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Makes the CDN request compressed content from the origin.
-//
-// The origin server should support compression. CDN servers will not decompress
-// your content even if a user browser does not accept compression.
-//
-// Notes:
-//
-//  1. `fetch_compressed` is not supported with `gzipON` or `brotli_compression` or
-//     `slice` options enabled.
-//  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
-//     you enable it in CDN resource and want to use `gzipON` and
-//     `brotli_compression` in a rule, you have to specify
-//     `"fetch_compressed": false` in the rule.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsFetchCompressed struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsFetchCompressed) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsFetchCompressed
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsFetchCompressed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables redirection from origin. If the origin server returns a redirect, the
-// option allows the CDN to pull the requested content from the origin server that
-// was returned in the redirect.
-//
-// The properties Codes, Enabled are required.
-type ResourceNewParamsOptionsFollowOriginRedirect struct {
-	// Redirect status code that the origin server returns.
-	//
-	// To serve up to date content to end users, you will need to purge the cache after
-	// managing the option.
-	//
-	// Any of 301, 302, 303, 307, 308.
-	Codes []int64 `json:"codes,omitzero,required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsFollowOriginRedirect) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsFollowOriginRedirect
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Applies custom HTTP response codes for CDN content.
-//
-// The following codes are reserved by our system and cannot be specified in this
-// option: 408, 444, 477, 494, 495, 496, 497, 499.
-//
-// The properties Body, Code, Enabled are required.
-type ResourceNewParamsOptionsForceReturn struct {
-	// URL for redirection or text.
-	Body string `json:"body,required"`
-	// Status code value.
-	Code int64 `json:"code,required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Controls the time at which a custom HTTP response code should be applied. By
-	// default, a custom HTTP response code is applied at any time.
-	TimeInterval ResourceNewParamsOptionsForceReturnTimeInterval `json:"time_interval,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsForceReturn) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsForceReturn
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsForceReturn) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls the time at which a custom HTTP response code should be applied. By
-// default, a custom HTTP response code is applied at any time.
-//
-// The properties EndTime, StartTime are required.
-type ResourceNewParamsOptionsForceReturnTimeInterval struct {
-	// Time until which a custom HTTP response code should be applied. Indicated in
-	// 24-hour format.
-	EndTime string `json:"end_time,required"`
-	// Time from which a custom HTTP response code should be applied. Indicated in
-	// 24-hour format.
-	StartTime string `json:"start_time,required"`
-	// Time zone used to calculate time.
-	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsForceReturnTimeInterval) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsForceReturnTimeInterval
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsForceReturnTimeInterval) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Forwards the Host header from a end-user request to an origin server.
-//
-// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsForwardHostHeader struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsForwardHostHeader) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsForwardHostHeader
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Compresses content with gzip on the CDN end. CDN servers will request only
-// uncompressed content from the origin.
-//
-// Notes:
-//
-//  1. Compression with gzip is not supported with `fetch_compressed` or `slice`
-//     options enabled.
-//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
-//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
-//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsGzipOn struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsGzipOn) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsGzipOn
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsGzipOn) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Sets the Host header that CDN servers use when request content from an origin
-// server. Your server must be able to process requests with the chosen header.
-//
-// If the option is `null`, the Host Header value is equal to first CNAME.
-//
-// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsHostHeader struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Host Header value.
-	Value string `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsHostHeader) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsHostHeader
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsHostHeader) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables HTTP/3 protocol for content delivery.
-//
-// `http3_enabled` option works only with `"sslEnabled": true`.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsHttp3Enabled struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsHttp3Enabled) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsHttp3Enabled
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsHttp3Enabled) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Defines whether the files with the Set-Cookies header are cached as one file or
-// as different ones.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsIgnoreCookie struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	//   - **true** - Option is enabled, files with cookies are cached as one file.
-	//   - **false** - Option is disabled, files with cookies are cached as different
-	//     files.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsIgnoreCookie) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsIgnoreCookie
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsIgnoreCookie) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// How a file with different query strings is cached: either as one object (option
-// is enabled) or as different objects (option is disabled.)
-//
-// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
-// options cannot be enabled simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsIgnoreQueryString struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsIgnoreQueryString) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsIgnoreQueryString
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsIgnoreQueryString) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Transforms JPG and PNG images (for example, resize or crop) and automatically
-// converts them to WebP or AVIF format.
-//
-// The property Enabled is required.
-type ResourceNewParamsOptionsImageStack struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Enables or disables automatic conversion of JPEG and PNG images to AVI format.
-	AvifEnabled param.Opt[bool] `json:"avif_enabled,omitzero"`
-	// Enables or disables compression without quality loss for PNG format.
-	PngLossless param.Opt[bool] `json:"png_lossless,omitzero"`
-	// Defines quality settings for JPG and PNG images. The higher the value, the
-	// better the image quality, and the larger the file size after conversion.
-	Quality param.Opt[int64] `json:"quality,omitzero"`
-	// Enables or disables automatic conversion of JPEG and PNG images to WebP format.
-	WebpEnabled param.Opt[bool] `json:"webp_enabled,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsImageStack) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsImageStack
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsImageStack) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls access to the CDN resource content for specific IP addresses.
-//
-// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
-// you have to independently monitor their relevance.
-//
-// We recommend you use a script for automatically update IP ACL.
-// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
-//
-// The properties Enabled, ExceptedValues, PolicyType are required.
-type ResourceNewParamsOptionsIPAddressACL struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of IP addresses with a subnet mask.
-	//
-	// The meaning of the parameter depends on `policy_type` value:
-	//
-	// - **allow** - List of IP addresses for which access is prohibited.
-	// - **deny** - List of IP addresses for which access is allowed.
-	//
-	// Examples:
-	//
-	// - `192.168.3.2/32`
-	// - `2a03:d000:2980:7::8/128`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"ipv4net or ipv6net"`
-	// IP access policy type.
-	//
-	// Possible values:
-	//
-	//   - **allow** - Allow access to all IPs except IPs specified in "excepted_values"
-	//     field.
-	//   - **deny** - Deny access to all IPs except IPs specified in "excepted_values"
-	//     field.
-	//
-	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsIPAddressACL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsIPAddressACL
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsIPAddressACL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceNewParamsOptionsIPAddressACL](
-		"policy_type", "allow", "deny",
-	)
-}
-
-// Allows to control the download speed per connection.
-//
-// The properties Enabled, LimitType are required.
-type ResourceNewParamsOptionsLimitBandwidth struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Method of controlling the download speed per connection.
-	//
-	// Possible values:
-	//
-	//   - **static** - Use speed and buffer fields to set the download speed limit.
-	//   - **dynamic** - Use query strings **speed** and **buffer** to set the download
-	//     speed limit.
-	//
-	// # For example, when requesting content at the link
-	//
-	// ```
-	// http://cdn.example.com/video.mp4?speed=50k&buffer=500k
-	// ```
-	//
-	// the download speed will be limited to 50kB/s after 500 kB.
-	//
-	// Any of "static", "dynamic".
-	LimitType string `json:"limit_type,omitzero,required"`
-	// Amount of downloaded data after which the user will be rate limited.
-	Buffer param.Opt[int64] `json:"buffer,omitzero"`
-	// Maximum download speed per connection.
-	Speed param.Opt[int64] `json:"speed,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsLimitBandwidth) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsLimitBandwidth
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsLimitBandwidth) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceNewParamsOptionsLimitBandwidth](
-		"limit_type", "static", "dynamic",
-	)
-}
-
-// Allows you to modify your cache key. If omitted, the default value is
-// `$request_uri`.
-//
-// Combine the specified variables to create a key for caching.
-//
-// - **$`request_uri`**
-// - **$scheme**
-// - **$uri**
-//
-// **Warning**: Enabling and changing this option can invalidate your current cache
-// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
-// not work.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsProxyCacheKey struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Key for caching.
-	Value string `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsProxyCacheKey) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsProxyCacheKey
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsProxyCacheKey) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Caching for POST requests along with default GET and HEAD.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsProxyCacheMethodsSet struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsProxyCacheMethodsSet) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsProxyCacheMethodsSet
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsProxyCacheMethodsSet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The time limit for establishing a connection with the origin.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsProxyConnectTimeout struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Timeout value in seconds.
-	//
-	// Supported range: **1s - 5s**.
-	Value string `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsProxyConnectTimeout) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsProxyConnectTimeout
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The time limit for receiving a partial response from the origin. If no response
-// is received within this time, the connection will be closed.
-//
-// **Note:** When used with a WebSocket connection, this option supports values
-// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsProxyReadTimeout struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Timeout value in seconds.
-	//
-	// Supported range: **1s - 30s**.
-	Value string `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsProxyReadTimeout) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsProxyReadTimeout
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsProxyReadTimeout) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Files with the specified query parameters are cached as one object, files with
-// other parameters are cached as different objects.
-//
-// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
-// options cannot be enabled simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsQueryParamsBlacklist struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsQueryParamsBlacklist) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsQueryParamsBlacklist
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsQueryParamsBlacklist) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Files with the specified query parameters are cached as different objects, files
-// with other parameters are cached as one object.
-//
-// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
-// options cannot be enabled simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsQueryParamsWhitelist struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsQueryParamsWhitelist) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsQueryParamsWhitelist
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsQueryParamsWhitelist) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The Query String Forwarding feature allows for the seamless transfer of
-// parameters embedded in playlist files to the corresponding media chunk files.
-// This functionality ensures that specific attributes, such as authentication
-// tokens or tracking information, are consistently passed along from the playlist
-// manifest to the individual media segments. This is particularly useful for
-// maintaining continuity in security, analytics, and any other parameter-based
-// operations across the entire media delivery workflow.
-//
-// The properties Enabled, ForwardFromFileTypes, ForwardToFileTypes are required.
-type ResourceNewParamsOptionsQueryStringForwarding struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// The `forward_from_files_types` field specifies the types of playlist files from
-	// which parameters will be extracted and forwarded. This typically includes
-	// formats that list multiple media chunk references, such as HLS and DASH
-	// playlists. Parameters associated with these playlist files (like query strings
-	// or headers) will be propagated to the chunks they reference.
-	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero,required"`
-	// The field specifies the types of media chunk files to which parameters,
-	// extracted from playlist files, will be forwarded. These refer to the actual
-	// segments of media content that are delivered to viewers. Ensuring the correct
-	// parameters are forwarded to these files is crucial for maintaining the integrity
-	// of the streaming session.
-	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
-	// The `forward_except_keys` field provides a mechanism to exclude specific
-	// parameters from being forwarded from playlist files to media chunk files. By
-	// listing certain keys in this field, you can ensure that these parameters are
-	// omitted during the forwarding process. This is particularly useful for
-	// preventing sensitive or irrelevant information from being included in requests
-	// for media chunks, thereby enhancing security and optimizing performance.
-	ForwardExceptKeys []string `json:"forward_except_keys,omitzero"`
-	// The `forward_only_keys` field allows for granular control over which specific
-	// parameters are forwarded from playlist files to media chunk files. By specifying
-	// certain keys, only those parameters will be propagated, ensuring that only
-	// relevant information is passed along. This is particularly useful for security
-	// and performance optimization, as it prevents unnecessary or sensitive data from
-	// being included in requests for media chunks.
-	ForwardOnlyKeys []string `json:"forward_only_keys,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsQueryStringForwarding) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsQueryStringForwarding
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsQueryStringForwarding) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables redirect from HTTP to HTTPS.
-//
-// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
-// simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsRedirectHTTPToHTTPS struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsRedirectHTTPToHTTPS) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsRedirectHTTPToHTTPS
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables redirect from HTTPS to HTTP.
-//
-// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
-// simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsRedirectHTTPSToHTTP struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsRedirectHTTPSToHTTP) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsRedirectHTTPSToHTTP
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsRedirectHTTPSToHTTP) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls access to the CDN resource content for specified domain names.
-//
-// The properties Enabled, ExceptedValues, PolicyType are required.
-type ResourceNewParamsOptionsReferrerACL struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of domain names or wildcard domains (without protocol: `http://` or
-	// `https://`.)
-	//
-	// The meaning of the parameter depends on `policy_type` value:
-	//
-	// - **allow** - List of domain names for which access is prohibited.
-	// - **deny** - List of IP domain names for which access is allowed.
-	//
-	// Examples:
-	//
-	// - `example.com`
-	// - `*.example.com`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
-	// Policy type.
-	//
-	// Possible values:
-	//
-	//   - **allow** - Allow access to all domain names except the domain names specified
-	//     in `excepted_values` field.
-	//   - **deny** - Deny access to all domain names except the domain names specified
-	//     in `excepted_values` field.
-	//
-	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsReferrerACL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsReferrerACL
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsReferrerACL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceNewParamsOptionsReferrerACL](
-		"policy_type", "allow", "deny",
-	)
-}
-
-// Option allows to limit the amount of HTTP requests.
-//
-// The properties Enabled, Rate are required.
-type ResourceNewParamsOptionsRequestLimiter struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Maximum request rate.
-	Rate int64 `json:"rate,required"`
-	// Units of measurement for the `rate` field.
-	//
-	// Possible values:
-	//
-	// - **r/s** - Requests per second.
-	// - **r/m** - Requests per minute.
-	//
-	// If the rate is less than one request per second, it is specified in request per
-	// minute (r/m.)
-	//
-	// Any of "r/s", "r/m".
-	RateUnit string `json:"rate_unit,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsRequestLimiter) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsRequestLimiter
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceNewParamsOptionsRequestLimiter](
-		"rate_unit", "r/s", "r/m",
-	)
-}
-
-// Hides HTTP headers from an origin server in the CDN response.
-//
-// The properties Enabled, Excepted, Mode are required.
-type ResourceNewParamsOptionsResponseHeadersHidingPolicy struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of HTTP headers.
-	//
-	// Parameter meaning depends on the value of the `mode` field:
-	//
-	//   - **show** - List of HTTP headers to hide from response.
-	//   - **hide** - List of HTTP headers to include in response. Other HTTP headers
-	//     will be hidden.
-	//
-	// The following headers are required and cannot be hidden from response:
-	//
-	// - `Connection`
-	// - `Content-Length`
-	// - `Content-Type`
-	// - `Date`
-	// - `Server`
-	Excepted []string `json:"excepted,omitzero,required" format:"http_header"`
-	// How HTTP headers are hidden from the response.
-	//
-	// Possible values:
-	//
-	//   - **show** - Hide only HTTP headers listed in the `excepted` field.
-	//   - **hide** - Hide all HTTP headers except headers listed in the "excepted"
-	//     field.
-	//
-	// Any of "hide", "show".
-	Mode string `json:"mode,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsResponseHeadersHidingPolicy) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsResponseHeadersHidingPolicy
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsResponseHeadersHidingPolicy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceNewParamsOptionsResponseHeadersHidingPolicy](
-		"mode", "hide", "show",
-	)
-}
-
-// Changes and redirects requests from the CDN to the origin. It operates according
-// to the
-// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
-// configuration.
-//
-// The properties Body, Enabled are required.
-type ResourceNewParamsOptionsRewrite struct {
-	// Path for the Rewrite option.
-	//
-	// Example:
-	//
-	// - `/(.*) /media/$1`
-	Body string `json:"body,required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Flag for the Rewrite option.
-	//
-	// Possible values:
-	//
-	//   - **last** - Stop processing the current set of `ngx_http_rewrite_module`
-	//     directives and start a search for a new location matching changed URI.
-	//   - **break** - Stop processing the current set of the Rewrite option.
-	//   - **redirect** - Return a temporary redirect with the 302 code; used when a
-	//     replacement string does not start with `http://`, `https://`, or `$scheme`.
-	//   - **permanent** - Return a permanent redirect with the 301 code.
-	//
-	// Any of "break", "last", "redirect", "permanent".
-	Flag string `json:"flag,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsRewrite) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsRewrite
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsRewrite) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceNewParamsOptionsRewrite](
-		"flag", "break", "last", "redirect", "permanent",
-	)
-}
-
-// Configures access with tokenized URLs. This makes impossible to access content
-// without a valid (unexpired) token.
-//
-// The properties Enabled, Key are required.
-type ResourceNewParamsOptionsSecureKey struct {
-	// Key generated on your side that will be used for URL signing.
-	Key param.Opt[string] `json:"key,omitzero,required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Type of URL signing.
-	//
-	// Possible types:
-	//
-	// - **Type 0** - Includes end user IP to secure token generation.
-	// - **Type 2** - Excludes end user IP from secure token generation.
-	//
-	// Any of 0, 2.
-	Type int64 `json:"type,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsSecureKey) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsSecureKey
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsSecureKey) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceNewParamsOptionsSecureKey](
-		"type", 0, 2,
-	)
-}
-
-// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
-// part.) This reduces time to first byte.
-//
-// The option is based on the
-// [Slice](https://nginx.org/en/docs/http/ngx_http_slice_module.html) module.
-//
-// Notes:
-//
-//  1. Origin must support HTTP Range requests.
-//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
-//     options enabled.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsSlice struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsSlice) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsSlice
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsSlice) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The hostname that is added to SNI requests from CDN servers to the origin server
-// via HTTPS.
-//
-// SNI is generally only required if your origin uses shared hosting or does not
-// have a dedicated IP address. If the origin server presents multiple
-// certificates, SNI allows the origin server to know which certificate to use for
-// the connection.
-//
-// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
-//
-// The properties CustomHostname, Enabled are required.
-type ResourceNewParamsOptionsSni struct {
-	// Custom SNI hostname.
-	//
-	// It is required if `sni_type` is set to custom.
-	CustomHostname string `json:"custom_hostname,required" format:"domain"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// SNI (Server Name Indication) type.
-	//
-	// Possible values:
-	//
-	//   - **dynamic** - SNI hostname depends on `hostHeader` and `forward_host_header`
-	//     options. It has several possible combinations:
-	//   - If the `hostHeader` option is enabled and specified, SNI hostname matches the
-	//     Host header.
-	//   - If the `forward_host_header` option is enabled and has true value, SNI
-	//     hostname matches the Host header used in the request made to a CDN.
-	//   - If the `hostHeader` and `forward_host_header` options are disabled, SNI
-	//     hostname matches the primary CNAME.
-	//   - **custom** - custom SNI hostname is in use.
-	//
-	// Any of "dynamic", "custom".
-	SniType string `json:"sni_type,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsSni) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsSni
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsSni) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceNewParamsOptionsSni](
-		"sni_type", "dynamic", "custom",
-	)
-}
-
-// Serves stale cached content in case of origin unavailability.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsStale struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Defines list of errors for which "Always online" option is applied.
-	//
-	// Any of "error", "http_403", "http_404", "http_429", "http_500", "http_502",
-	// "http_503", "http_504", "invalid_header", "timeout", "updating".
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsStale) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsStale
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsStale) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Custom HTTP Headers that a CDN server adds to a response.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsStaticResponseHeaders struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool                                                 `json:"enabled,required"`
-	Value   []ResourceNewParamsOptionsStaticResponseHeadersValue `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsStaticResponseHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsStaticResponseHeaders
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsStaticResponseHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Name, Value are required.
-type ResourceNewParamsOptionsStaticResponseHeadersValue struct {
-	// HTTP Header name.
-	//
-	// Restrictions:
-	//
-	// - Maximum 128 symbols.
-	// - Latin letters (A-Z, a-z,) numbers (0-9,) dashes, and underscores only.
+type CDNResourceRuleNewParams struct {
+	// Rule name.
 	Name string `json:"name,required"`
-	// Header value.
+	// Path to the file or folder for which the rule will be applied.
 	//
-	// Restrictions:
+	// The rule is applied if the requested URI matches the rule path.
 	//
-	//   - Maximum 512 symbols.
-	//   - Letters (a-z), numbers (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+
-	//     /|\";:?.,><{}[]).
-	//   - Must start with a letter, number, asterisk or {.
-	//   - Multiple values can be added.
-	Value []string `json:"value,omitzero,required"`
-	// Defines whether the header will be added to a response from CDN regardless of
-	// response code.
+	// We add a leading forward slash to any rule path. Specify a path without a
+	// forward slash.
+	Rule string `json:"rule,required"`
+	// Rule type.
 	//
 	// Possible values:
 	//
-	//   - **true** - Header will be added to a response from CDN regardless of response
-	//     code.
-	//   - **false** - Header will be added only to the following response codes: 200,
-	//     201, 204, 206, 301, 302, 303, 304, 307, 308.
-	Always param.Opt[bool] `json:"always,omitzero"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsStaticResponseHeadersValue) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsStaticResponseHeadersValue
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsStaticResponseHeadersValue) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// **Legacy option**. Use the `static_response_headers` option instead.
-//
-// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
-// Headers can be specified. May contain a header with multiple values.
-//
-// Deprecated: deprecated
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsStaticHeaders struct {
-	// Controls the option state.
+	//   - **Type 0** - Regular expression. Must start with '^/' or '/'.
+	//   - **Type 1** - Regular expression. Note that for this rule type we automatically
+	//     add / to each rule pattern before your regular expression. This type is
+	//     **legacy**, please use Type 0.
+	RuleType int64 `json:"ruleType,required"`
+	// ID of the origin group to which the rule is applied.
 	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// A MAP for static headers in a format of `header_name: header_value`.
-	//
-	// Restrictions:
-	//
-	//   - **Header name** - Maximum 128 symbols, may contain Latin letters (A-Z, a-z),
-	//     numbers (0-9), dashes, and underscores.
-	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
-	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
-	//     with a letter, number, asterisk or {.
-	Value any `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsStaticHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsStaticHeaders
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsStaticHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
-// Headers can be specified.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsStaticRequestHeaders struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// A MAP for static headers in a format of `header_name: header_value`.
-	//
-	// Restrictions:
-	//
-	//   - **Header name** - Maximum 255 symbols, may contain Latin letters (A-Z, a-z),
-	//     numbers (0-9), dashes, and underscores.
-	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
-	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
-	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsStaticRequestHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsStaticRequestHeaders
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsStaticRequestHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// List of SSL/TLS protocol versions allowed for HTTPS connections from end users
-// to the domain.
-//
-// When the option is disabled, all protocols versions are allowed.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsTlsVersions struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of SSL/TLS protocol versions (case sensitive).
-	//
-	// Any of "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3".
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsTlsVersions) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsTlsVersions
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsTlsVersions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Let's Encrypt certificate chain.
-//
-// The specified chain will be used during the next Let's Encrypt certificate issue
-// or renewal.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsUseDefaultLeChain struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	//   - **true** - Default Let's Encrypt certificate chain. This is a deprecated
-	//     version, use it only for compatibilities with Android devices 7.1.1 or lower.
-	//   - **false** - Alternative Let's Encrypt certificate chain.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsUseDefaultLeChain) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsUseDefaultLeChain
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsUseDefaultLeChain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// DNS-01 challenge to issue a Let's Encrypt certificate for the resource.
-//
-// DNS service should be activated to enable this option.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsUseDns01LeChallenge struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - DNS-01 challenge is used to issue Let's Encrypt certificate.
-	// - **false** - HTTP-01 challenge is used to issue Let's Encrypt certificate.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsUseDns01LeChallenge) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsUseDns01LeChallenge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsUseDns01LeChallenge) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// RSA Let's Encrypt certificate type for the CDN resource.
-//
-// The specified value will be used during the next Let's Encrypt certificate issue
-// or renewal.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsUseRsaLeCert struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - RSA Let's Encrypt certificate.
-	// - **false** - ECDSA Let's Encrypt certificate.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsUseRsaLeCert) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsUseRsaLeCert
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsUseRsaLeCert) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls access to the content for specified User-Agents.
-//
-// The properties Enabled, ExceptedValues, PolicyType are required.
-type ResourceNewParamsOptionsUserAgentACL struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of User-Agents that will be allowed/denied.
-	//
-	// The meaning of the parameter depends on `policy_type`:
-	//
-	// - **allow** - List of User-Agents for which access is prohibited.
-	// - **deny** - List of User-Agents for which access is allowed.
-	//
-	// You can provide exact User-Agent strings or regular expressions. Regular
-	// expressions must start with `~` (case-sensitive) or `~*` (case-insensitive).
-	//
-	// Use an empty string `""` to allow/deny access when the User-Agent header is
-	// empty.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"user_agent"`
-	// User-Agents policy type.
-	//
-	// Possible values:
-	//
-	//   - **allow** - Allow access for all User-Agents except specified in
-	//     `excepted_values` field.
-	//   - **deny** - Deny access for all User-Agents except specified in
-	//     `excepted_values` field.
-	//
-	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsUserAgentACL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsUserAgentACL
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsUserAgentACL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceNewParamsOptionsUserAgentACL](
-		"policy_type", "allow", "deny",
-	)
-}
-
-// Allows to enable WAAP (Web Application and API Protection).
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsWaap struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsWaap) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsWaap
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsWaap) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables or disables WebSockets connections to an origin server.
-//
-// The properties Enabled, Value are required.
-type ResourceNewParamsOptionsWebsockets struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceNewParamsOptionsWebsockets) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceNewParamsOptionsWebsockets
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceNewParamsOptionsWebsockets) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Protocol used by CDN servers to request content from an origin source.
-//
-// Possible values:
-//
-//   - **HTTPS** - CDN servers will connect to the origin via HTTPS.
-//   - **HTTP** - CDN servers will connect to the origin via HTTP.
-//   - **MATCH** - connection protocol will be chosen automatically (content on the
-//     origin source should be available for the CDN both through HTTP and HTTPS).
-//
-// If protocol is not specified, HTTP is used to connect to an origin server.
-type ResourceNewParamsOriginProtocol string
-
-const (
-	ResourceNewParamsOriginProtocolHTTP  ResourceNewParamsOriginProtocol = "HTTP"
-	ResourceNewParamsOriginProtocolHTTPS ResourceNewParamsOriginProtocol = "HTTPS"
-	ResourceNewParamsOriginProtocolMatch ResourceNewParamsOriginProtocol = "MATCH"
-)
-
-type ResourceUpdateParams struct {
-	// CDN resource name.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// ID of the trusted CA certificate used to verify an origin.
-	//
-	// It can be used only with `"proxy_ssl_enabled": true`.
-	ProxySslCa param.Opt[int64] `json:"proxy_ssl_ca,omitzero"`
-	// ID of the SSL certificate used to verify an origin.
-	//
-	// It can be used only with `"proxy_ssl_enabled": true`.
-	ProxySslData param.Opt[int64] `json:"proxy_ssl_data,omitzero"`
-	// ID of the SSL certificate linked to the CDN resource.
-	//
-	// Can be used only with `"sslEnabled": true`.
-	SslData param.Opt[int64] `json:"sslData,omitzero"`
-	// Enables or disables a CDN resource.
-	//
-	// Possible values:
-	//
-	// - **true** - CDN resource is active. Content is being delivered.
-	// - **false** - CDN resource is deactivated. Content is not being delivered.
-	Active param.Opt[bool] `json:"active,omitzero"`
-	// Optional comment describing the CDN resource.
-	Description param.Opt[string] `json:"description,omitzero"`
-	// Origin group ID with which the CDN resource is associated.
-	//
-	// You can use either the `origin` or `originGroup` parameter in the request.
+	// If the origin group is not specified, the rule is applied to the origin group
+	// that the CDN resource is associated with.
 	OriginGroup param.Opt[int64] `json:"originGroup,omitzero"`
-	// Enables or disables SSL certificate validation of the origin server before
-	// completing any connection.
+	// Enables or disables a rule.
 	//
 	// Possible values:
 	//
-	// - **true** - Origin SSL certificate validation is enabled.
-	// - **false** - Origin SSL certificate validation is disabled.
-	ProxySslEnabled param.Opt[bool] `json:"proxy_ssl_enabled,omitzero"`
-	// Defines whether the HTTPS protocol enabled for content delivery.
-	//
-	// Possible values:
-	//
-	// - **true** - HTTPS is enabled.
-	// - **false** - HTTPS is disabled.
-	SslEnabled param.Opt[bool] `json:"sslEnabled,omitzero"`
-	// List of options that can be configured for the CDN resource.
-	//
-	// In case of `null` value the option is not added to the CDN resource. Option may
-	// inherit its value from the global account settings.
-	Options ResourceUpdateParamsOptions `json:"options,omitzero"`
-	// Protocol used by CDN servers to request content from an origin source.
-	//
-	// Possible values:
-	//
-	//   - **HTTPS** - CDN servers will connect to the origin via HTTPS.
-	//   - **HTTP** - CDN servers will connect to the origin via HTTP.
-	//   - **MATCH** - connection protocol will be chosen automatically (content on the
-	//     origin source should be available for the CDN both through HTTP and HTTPS).
-	//
-	// If protocol is not specified, HTTP is used to connect to an origin server.
-	//
-	// Any of "HTTP", "HTTPS", "MATCH".
-	OriginProtocol ResourceUpdateParamsOriginProtocol `json:"originProtocol,omitzero"`
-	// Additional delivery domains (CNAMEs) that will be used to deliver content via
-	// the CDN.
-	//
-	// Up to ten additional CNAMEs are possible.
-	SecondaryHostnames []string `json:"secondaryHostnames,omitzero" format:"domain"`
-	paramObj
-}
-
-func (r ResourceUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// List of options that can be configured for the CDN resource.
-//
-// In case of `null` value the option is not added to the CDN resource. Option may
-// inherit its value from the global account settings.
-type ResourceUpdateParamsOptions struct {
-	// HTTP methods allowed for content requests from the CDN.
-	AllowedHTTPMethods ResourceUpdateParamsOptionsAllowedHTTPMethods `json:"allowedHttpMethods,omitzero"`
-	// Allows to prevent online services from overloading and ensure your business
-	// workflow running smoothly.
-	BotProtection ResourceUpdateParamsOptionsBotProtection `json:"bot_protection,omitzero"`
-	// Compresses content with Brotli on the CDN side. CDN servers will request only
-	// uncompressed content from the origin.
-	//
-	// Notes:
-	//
-	//  1. CDN only supports "Brotli compression" when the "origin shielding" feature is
-	//     activated.
-	//  2. If a precache server is not active for a CDN resource, no compression occurs,
-	//     even if the option is enabled.
-	//  3. `brotli_compression` is not supported with `fetch_compressed` or `slice`
-	//     options enabled.
-	//  4. `fetch_compressed` option in CDN resource settings overrides
-	//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
-	//     resource and want to enable `brotli_compression` in a rule, you must specify
-	//     `fetch_compressed:false` in the rule.
-	BrotliCompression ResourceUpdateParamsOptionsBrotliCompression `json:"brotli_compression,omitzero"`
-	// Cache expiration time for users browsers in seconds.
-	//
-	// Cache expiration time is applied to the following response codes: 200, 201, 204,
-	// 206, 301, 302, 303, 304, 307, 308.
-	//
-	// Responses with other codes will not be cached.
-	BrowserCacheSettings ResourceUpdateParamsOptionsBrowserCacheSettings `json:"browser_cache_settings,omitzero"`
-	// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
-	//
-	// HTTP Headers that must be included in the response.
-	//
-	// Deprecated: deprecated
-	CacheHTTPHeaders ResourceUpdateParamsOptionsCacheHTTPHeaders `json:"cache_http_headers,omitzero"`
-	// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
-	//
-	// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
-	// to a response to a browser.
-	Cors ResourceUpdateParamsOptionsCors `json:"cors,omitzero"`
-	// Enables control access to content for specified countries.
-	CountryACL ResourceUpdateParamsOptionsCountryACL `json:"country_acl,omitzero"`
-	// **Legacy option**. Use the `edge_cache_settings` option instead.
-	//
-	// Allows the complete disabling of content caching.
-	//
-	// Deprecated: deprecated
-	DisableCache ResourceUpdateParamsOptionsDisableCache `json:"disable_cache,omitzero"`
-	// Allows 206 responses regardless of the settings of an origin source.
-	DisableProxyForceRanges ResourceUpdateParamsOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges,omitzero"`
-	// Cache expiration time for CDN servers.
-	//
-	// `value` and `default` fields cannot be used simultaneously.
-	EdgeCacheSettings ResourceUpdateParamsOptionsEdgeCacheSettings `json:"edge_cache_settings,omitzero"`
-	// Allows to configure FastEdge app to be called on different request/response
-	// phases.
-	//
-	// Note: At least one of `on_request_headers`, `on_request_body`,
-	// `on_response_headers`, or `on_response_body` must be specified.
-	Fastedge ResourceUpdateParamsOptionsFastedge `json:"fastedge,omitzero"`
-	// Makes the CDN request compressed content from the origin.
-	//
-	// The origin server should support compression. CDN servers will not decompress
-	// your content even if a user browser does not accept compression.
-	//
-	// Notes:
-	//
-	//  1. `fetch_compressed` is not supported with `gzipON` or `brotli_compression` or
-	//     `slice` options enabled.
-	//  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
-	//     you enable it in CDN resource and want to use `gzipON` and
-	//     `brotli_compression` in a rule, you have to specify
-	//     `"fetch_compressed": false` in the rule.
-	FetchCompressed ResourceUpdateParamsOptionsFetchCompressed `json:"fetch_compressed,omitzero"`
-	// Enables redirection from origin. If the origin server returns a redirect, the
-	// option allows the CDN to pull the requested content from the origin server that
-	// was returned in the redirect.
-	FollowOriginRedirect ResourceUpdateParamsOptionsFollowOriginRedirect `json:"follow_origin_redirect,omitzero"`
-	// Applies custom HTTP response codes for CDN content.
-	//
-	// The following codes are reserved by our system and cannot be specified in this
-	// option: 408, 444, 477, 494, 495, 496, 497, 499.
-	ForceReturn ResourceUpdateParamsOptionsForceReturn `json:"force_return,omitzero"`
-	// Forwards the Host header from a end-user request to an origin server.
-	//
-	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	ForwardHostHeader ResourceUpdateParamsOptionsForwardHostHeader `json:"forward_host_header,omitzero"`
-	// Compresses content with gzip on the CDN end. CDN servers will request only
-	// uncompressed content from the origin.
-	//
-	// Notes:
-	//
-	//  1. Compression with gzip is not supported with `fetch_compressed` or `slice`
-	//     options enabled.
-	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
-	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
-	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
-	GzipOn ResourceUpdateParamsOptionsGzipOn `json:"gzipOn,omitzero"`
-	// Sets the Host header that CDN servers use when request content from an origin
-	// server. Your server must be able to process requests with the chosen header.
-	//
-	// If the option is `null`, the Host Header value is equal to first CNAME.
-	//
-	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	HostHeader ResourceUpdateParamsOptionsHostHeader `json:"hostHeader,omitzero"`
-	// Enables HTTP/3 protocol for content delivery.
-	//
-	// `http3_enabled` option works only with `"sslEnabled": true`.
-	Http3Enabled ResourceUpdateParamsOptionsHttp3Enabled `json:"http3_enabled,omitzero"`
-	// Defines whether the files with the Set-Cookies header are cached as one file or
-	// as different ones.
-	IgnoreCookie ResourceUpdateParamsOptionsIgnoreCookie `json:"ignore_cookie,omitzero"`
-	// How a file with different query strings is cached: either as one object (option
-	// is enabled) or as different objects (option is disabled.)
-	//
-	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
-	// options cannot be enabled simultaneously.
-	IgnoreQueryString ResourceUpdateParamsOptionsIgnoreQueryString `json:"ignoreQueryString,omitzero"`
-	// Transforms JPG and PNG images (for example, resize or crop) and automatically
-	// converts them to WebP or AVIF format.
-	ImageStack ResourceUpdateParamsOptionsImageStack `json:"image_stack,omitzero"`
-	// Controls access to the CDN resource content for specific IP addresses.
-	//
-	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
-	// you have to independently monitor their relevance.
-	//
-	// We recommend you use a script for automatically update IP ACL.
-	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
-	IPAddressACL ResourceUpdateParamsOptionsIPAddressACL `json:"ip_address_acl,omitzero"`
-	// Allows to control the download speed per connection.
-	LimitBandwidth ResourceUpdateParamsOptionsLimitBandwidth `json:"limit_bandwidth,omitzero"`
-	// Allows you to modify your cache key. If omitted, the default value is
-	// `$request_uri`.
-	//
-	// Combine the specified variables to create a key for caching.
-	//
-	// - **$`request_uri`**
-	// - **$scheme**
-	// - **$uri**
-	//
-	// **Warning**: Enabling and changing this option can invalidate your current cache
-	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
-	// not work.
-	ProxyCacheKey ResourceUpdateParamsOptionsProxyCacheKey `json:"proxy_cache_key,omitzero"`
-	// Caching for POST requests along with default GET and HEAD.
-	ProxyCacheMethodsSet ResourceUpdateParamsOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set,omitzero"`
-	// The time limit for establishing a connection with the origin.
-	ProxyConnectTimeout ResourceUpdateParamsOptionsProxyConnectTimeout `json:"proxy_connect_timeout,omitzero"`
-	// The time limit for receiving a partial response from the origin. If no response
-	// is received within this time, the connection will be closed.
-	//
-	// **Note:** When used with a WebSocket connection, this option supports values
-	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
-	ProxyReadTimeout ResourceUpdateParamsOptionsProxyReadTimeout `json:"proxy_read_timeout,omitzero"`
-	// Files with the specified query parameters are cached as one object, files with
-	// other parameters are cached as different objects.
-	//
-	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
-	// options cannot be enabled simultaneously.
-	QueryParamsBlacklist ResourceUpdateParamsOptionsQueryParamsBlacklist `json:"query_params_blacklist,omitzero"`
-	// Files with the specified query parameters are cached as different objects, files
-	// with other parameters are cached as one object.
-	//
-	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
-	// options cannot be enabled simultaneously.
-	QueryParamsWhitelist ResourceUpdateParamsOptionsQueryParamsWhitelist `json:"query_params_whitelist,omitzero"`
-	// The Query String Forwarding feature allows for the seamless transfer of
-	// parameters embedded in playlist files to the corresponding media chunk files.
-	// This functionality ensures that specific attributes, such as authentication
-	// tokens or tracking information, are consistently passed along from the playlist
-	// manifest to the individual media segments. This is particularly useful for
-	// maintaining continuity in security, analytics, and any other parameter-based
-	// operations across the entire media delivery workflow.
-	QueryStringForwarding ResourceUpdateParamsOptionsQueryStringForwarding `json:"query_string_forwarding,omitzero"`
-	// Enables redirect from HTTP to HTTPS.
-	//
-	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
-	// simultaneously.
-	RedirectHTTPToHTTPS ResourceUpdateParamsOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https,omitzero"`
-	// Enables redirect from HTTPS to HTTP.
-	//
-	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
-	// simultaneously.
-	RedirectHTTPSToHTTP ResourceUpdateParamsOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,omitzero"`
-	// Controls access to the CDN resource content for specified domain names.
-	ReferrerACL ResourceUpdateParamsOptionsReferrerACL `json:"referrer_acl,omitzero"`
-	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter ResourceUpdateParamsOptionsRequestLimiter `json:"request_limiter,omitzero"`
-	// Hides HTTP headers from an origin server in the CDN response.
-	ResponseHeadersHidingPolicy ResourceUpdateParamsOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,omitzero"`
-	// Changes and redirects requests from the CDN to the origin. It operates according
-	// to the
-	// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
-	// configuration.
-	Rewrite ResourceUpdateParamsOptionsRewrite `json:"rewrite,omitzero"`
-	// Configures access with tokenized URLs. This makes impossible to access content
-	// without a valid (unexpired) token.
-	SecureKey ResourceUpdateParamsOptionsSecureKey `json:"secure_key,omitzero"`
-	// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
-	// part.) This reduces time to first byte.
-	//
-	// The option is based on the
-	// [Slice](https://nginx.org/en/docs/http/ngx_http_slice_module.html) module.
-	//
-	// Notes:
-	//
-	//  1. Origin must support HTTP Range requests.
-	//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
-	//     options enabled.
-	Slice ResourceUpdateParamsOptionsSlice `json:"slice,omitzero"`
-	// The hostname that is added to SNI requests from CDN servers to the origin server
-	// via HTTPS.
-	//
-	// SNI is generally only required if your origin uses shared hosting or does not
-	// have a dedicated IP address. If the origin server presents multiple
-	// certificates, SNI allows the origin server to know which certificate to use for
-	// the connection.
-	//
-	// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
-	Sni ResourceUpdateParamsOptionsSni `json:"sni,omitzero"`
-	// Serves stale cached content in case of origin unavailability.
-	Stale ResourceUpdateParamsOptionsStale `json:"stale,omitzero"`
-	// Custom HTTP Headers that a CDN server adds to a response.
-	StaticResponseHeaders ResourceUpdateParamsOptionsStaticResponseHeaders `json:"static_response_headers,omitzero"`
-	// **Legacy option**. Use the `static_response_headers` option instead.
-	//
-	// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
-	// Headers can be specified. May contain a header with multiple values.
-	//
-	// Deprecated: deprecated
-	StaticHeaders ResourceUpdateParamsOptionsStaticHeaders `json:"staticHeaders,omitzero"`
-	// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
-	// Headers can be specified.
-	StaticRequestHeaders ResourceUpdateParamsOptionsStaticRequestHeaders `json:"staticRequestHeaders,omitzero"`
-	// List of SSL/TLS protocol versions allowed for HTTPS connections from end users
-	// to the domain.
-	//
-	// When the option is disabled, all protocols versions are allowed.
-	TlsVersions ResourceUpdateParamsOptionsTlsVersions `json:"tls_versions,omitzero"`
-	// Let's Encrypt certificate chain.
-	//
-	// The specified chain will be used during the next Let's Encrypt certificate issue
-	// or renewal.
-	UseDefaultLeChain ResourceUpdateParamsOptionsUseDefaultLeChain `json:"use_default_le_chain,omitzero"`
-	// DNS-01 challenge to issue a Let's Encrypt certificate for the resource.
-	//
-	// DNS service should be activated to enable this option.
-	UseDns01LeChallenge ResourceUpdateParamsOptionsUseDns01LeChallenge `json:"use_dns01_le_challenge,omitzero"`
-	// RSA Let's Encrypt certificate type for the CDN resource.
-	//
-	// The specified value will be used during the next Let's Encrypt certificate issue
-	// or renewal.
-	UseRsaLeCert ResourceUpdateParamsOptionsUseRsaLeCert `json:"use_rsa_le_cert,omitzero"`
-	// Controls access to the content for specified User-Agents.
-	UserAgentACL ResourceUpdateParamsOptionsUserAgentACL `json:"user_agent_acl,omitzero"`
-	// Allows to enable WAAP (Web Application and API Protection).
-	Waap ResourceUpdateParamsOptionsWaap `json:"waap,omitzero"`
-	// Enables or disables WebSockets connections to an origin server.
-	Websockets ResourceUpdateParamsOptionsWebsockets `json:"websockets,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptions) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptions
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// HTTP methods allowed for content requests from the CDN.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsAllowedHTTPMethods struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Any of "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsAllowedHTTPMethods) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsAllowedHTTPMethods
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to prevent online services from overloading and ensure your business
-// workflow running smoothly.
-//
-// The properties BotChallenge, Enabled are required.
-type ResourceUpdateParamsOptionsBotProtection struct {
-	// Controls the bot challenge module state.
-	BotChallenge ResourceUpdateParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero,required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsBotProtection) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsBotProtection
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsBotProtection) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls the bot challenge module state.
-type ResourceUpdateParamsOptionsBotProtectionBotChallenge struct {
-	// Possible values:
-	//
-	// - **true** - Bot challenge is enabled.
-	// - **false** - Bot challenge is disabled.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsBotProtectionBotChallenge) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsBotProtectionBotChallenge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Compresses content with Brotli on the CDN side. CDN servers will request only
-// uncompressed content from the origin.
-//
-// Notes:
-//
-//  1. CDN only supports "Brotli compression" when the "origin shielding" feature is
-//     activated.
-//  2. If a precache server is not active for a CDN resource, no compression occurs,
-//     even if the option is enabled.
-//  3. `brotli_compression` is not supported with `fetch_compressed` or `slice`
-//     options enabled.
-//  4. `fetch_compressed` option in CDN resource settings overrides
-//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
-//     resource and want to enable `brotli_compression` in a rule, you must specify
-//     `fetch_compressed:false` in the rule.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsBrotliCompression struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Allows to select the content types you want to compress.
-	//
-	// `text/html` is a mandatory content type.
-	//
-	// Any of "application/javascript", "application/json",
-	// "application/vnd.ms-fontobject", "application/wasm", "application/x-font-ttf",
-	// "application/x-javascript", "application/xml", "application/xml+rss",
-	// "image/svg+xml", "image/x-icon", "text/css", "text/html", "text/javascript",
-	// "text/plain", "text/xml".
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsBrotliCompression) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsBrotliCompression
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsBrotliCompression) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Cache expiration time for users browsers in seconds.
-//
-// Cache expiration time is applied to the following response codes: 200, 201, 204,
-// 206, 301, 302, 303, 304, 307, 308.
-//
-// Responses with other codes will not be cached.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsBrowserCacheSettings struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Set the cache expiration time to '0s' to disable caching.
-	//
-	// The maximum duration is any equivalent to `1y`.
-	Value string `json:"value,required" format:"nginx time"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsBrowserCacheSettings) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsBrowserCacheSettings
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsBrowserCacheSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
-//
-// HTTP Headers that must be included in the response.
-//
-// Deprecated: deprecated
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsCacheHTTPHeaders struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool     `json:"enabled,required"`
-	Value   []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsCacheHTTPHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsCacheHTTPHeaders
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
-//
-// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
-// to a response to a browser.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsCors struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Value of the Access-Control-Allow-Origin header.
-	//
-	// Possible values:
-	//
-	//   - **Adds \* as the Access-Control-Allow-Origin header value** - Content will be
-	//     uploaded for requests from any domain. `"value": ["*"]`
-	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
-	//     origin matches one of the listed domains** - Content will be uploaded only for
-	//     requests from the domains specified in the field.
-	//     `"value": ["domain.com", "second.dom.com"]`
-	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
-	//     Content will be uploaded for requests from any domain, and the domain from
-	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
-	//     header in the response. `"value": ["$http_origin"]`
-	Value []string `json:"value,omitzero,required"`
-	// Defines whether the Access-Control-Allow-Origin header should be added to a
-	// response from CDN regardless of response code.
-	//
-	// Possible values:
-	//
-	//   - **true** - Header will be added to a response regardless of response code.
-	//   - **false** - Header will only be added to responses with codes: 200, 201, 204,
-	//     206, 301, 302, 303, 304, 307, 308.
-	Always param.Opt[bool] `json:"always,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsCors) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsCors
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsCors) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables control access to content for specified countries.
-//
-// The properties Enabled, ExceptedValues, PolicyType are required.
-type ResourceUpdateParamsOptionsCountryACL struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of countries according to ISO-3166-1.
-	//
-	// The meaning of the parameter depends on `policy_type` value:
-	//
-	// - **allow** - List of countries for which access is prohibited.
-	// - **deny** - List of countries for which access is allowed.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"country-code"`
-	// Defines the type of CDN resource access policy.
-	//
-	// Possible values:
-	//
-	//   - **allow** - Access is allowed for all the countries except for those specified
-	//     in `excepted_values` field.
-	//   - **deny** - Access is denied for all the countries except for those specified
-	//     in `excepted_values` field.
-	//
-	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsCountryACL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsCountryACL
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsCountryACL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceUpdateParamsOptionsCountryACL](
-		"policy_type", "allow", "deny",
-	)
-}
-
-// **Legacy option**. Use the `edge_cache_settings` option instead.
-//
-// Allows the complete disabling of content caching.
-//
-// Deprecated: deprecated
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsDisableCache struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - content caching is disabled.
-	// - **false** - content caching is enabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsDisableCache) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsDisableCache
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsDisableCache) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows 206 responses regardless of the settings of an origin source.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsDisableProxyForceRanges struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsDisableProxyForceRanges) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsDisableProxyForceRanges
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsDisableProxyForceRanges) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Cache expiration time for CDN servers.
-//
-// `value` and `default` fields cannot be used simultaneously.
-//
-// The property Enabled is required.
-type ResourceUpdateParamsOptionsEdgeCacheSettings struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Enables content caching according to the origin cache settings.
-	//
-	// The value is applied to the following response codes 200, 201, 204, 206, 301,
-	// 302, 303, 304, 307, 308, if an origin server does not have caching HTTP headers.
-	//
-	// Responses with other codes will not be cached.
-	//
-	// The maximum duration is any equivalent to `1y`.
-	Default param.Opt[string] `json:"default,omitzero" format:"nginx time"`
-	// Caching time.
-	//
-	// The value is applied to the following response codes: 200, 206, 301, 302.
-	// Responses with codes 4xx, 5xx will not be cached.
-	//
-	// Use `0s` to disable caching.
-	//
-	// The maximum duration is any equivalent to `1y`.
-	Value param.Opt[string] `json:"value,omitzero" format:"nginx time"`
-	// A MAP object representing the caching time in seconds for a response with a
-	// specific response code.
-	//
-	// These settings have a higher priority than the `value` field.
-	//
-	// - Use `any` key to specify caching time for all response codes.
-	// - Use `0s` value to disable caching for a specific response code.
-	CustomValues map[string]string `json:"custom_values,omitzero" format:"nginx time"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsEdgeCacheSettings) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsEdgeCacheSettings
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to configure FastEdge app to be called on different request/response
-// phases.
-//
-// Note: At least one of `on_request_headers`, `on_request_body`,
-// `on_response_headers`, or `on_response_body` must be specified.
-//
-// The property Enabled is required.
-type ResourceUpdateParamsOptionsFastedge struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Allows to configure FastEdge application that will be called to handle request
-	// body as soon as CDN receives incoming HTTP request.
-	OnRequestBody ResourceUpdateParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
-	// Allows to configure FastEdge application that will be called to handle request
-	// headers as soon as CDN receives incoming HTTP request.
-	OnRequestHeaders ResourceUpdateParamsOptionsFastedgeOnRequestHeaders `json:"on_request_headers,omitzero"`
-	// Allows to configure FastEdge application that will be called to handle response
-	// body before CDN sends the HTTP response.
-	OnResponseBody ResourceUpdateParamsOptionsFastedgeOnResponseBody `json:"on_response_body,omitzero"`
-	// Allows to configure FastEdge application that will be called to handle response
-	// headers before CDN sends the HTTP response.
-	OnResponseHeaders ResourceUpdateParamsOptionsFastedgeOnResponseHeaders `json:"on_response_headers,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsFastedge) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsFastedge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsFastedge) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to configure FastEdge application that will be called to handle request
-// body as soon as CDN receives incoming HTTP request.
-//
-// The property AppID is required.
-type ResourceUpdateParamsOptionsFastedgeOnRequestBody struct {
-	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Determines if the request should be executed at the edge nodes.
-	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
-	// Determines if the request should be executed at the shield nodes.
-	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
-	// Determines if the request execution should be interrupted when an error occurs.
-	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsFastedgeOnRequestBody) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsFastedgeOnRequestBody
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to configure FastEdge application that will be called to handle request
-// headers as soon as CDN receives incoming HTTP request.
-//
-// The property AppID is required.
-type ResourceUpdateParamsOptionsFastedgeOnRequestHeaders struct {
-	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Determines if the request should be executed at the edge nodes.
-	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
-	// Determines if the request should be executed at the shield nodes.
-	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
-	// Determines if the request execution should be interrupted when an error occurs.
-	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsFastedgeOnRequestHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsFastedgeOnRequestHeaders
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to configure FastEdge application that will be called to handle response
-// body before CDN sends the HTTP response.
-//
-// The property AppID is required.
-type ResourceUpdateParamsOptionsFastedgeOnResponseBody struct {
-	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Determines if the request should be executed at the edge nodes.
-	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
-	// Determines if the request should be executed at the shield nodes.
-	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
-	// Determines if the request execution should be interrupted when an error occurs.
-	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsFastedgeOnResponseBody) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsFastedgeOnResponseBody
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to configure FastEdge application that will be called to handle response
-// headers before CDN sends the HTTP response.
-//
-// The property AppID is required.
-type ResourceUpdateParamsOptionsFastedgeOnResponseHeaders struct {
-	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Determines if the request should be executed at the edge nodes.
-	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
-	// Determines if the request should be executed at the shield nodes.
-	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
-	// Determines if the request execution should be interrupted when an error occurs.
-	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsFastedgeOnResponseHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsFastedgeOnResponseHeaders
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Makes the CDN request compressed content from the origin.
-//
-// The origin server should support compression. CDN servers will not decompress
-// your content even if a user browser does not accept compression.
-//
-// Notes:
-//
-//  1. `fetch_compressed` is not supported with `gzipON` or `brotli_compression` or
-//     `slice` options enabled.
-//  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
-//     you enable it in CDN resource and want to use `gzipON` and
-//     `brotli_compression` in a rule, you have to specify
-//     `"fetch_compressed": false` in the rule.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsFetchCompressed struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsFetchCompressed) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsFetchCompressed
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsFetchCompressed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables redirection from origin. If the origin server returns a redirect, the
-// option allows the CDN to pull the requested content from the origin server that
-// was returned in the redirect.
-//
-// The properties Codes, Enabled are required.
-type ResourceUpdateParamsOptionsFollowOriginRedirect struct {
-	// Redirect status code that the origin server returns.
-	//
-	// To serve up to date content to end users, you will need to purge the cache after
-	// managing the option.
-	//
-	// Any of 301, 302, 303, 307, 308.
-	Codes []int64 `json:"codes,omitzero,required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsFollowOriginRedirect) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsFollowOriginRedirect
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Applies custom HTTP response codes for CDN content.
-//
-// The following codes are reserved by our system and cannot be specified in this
-// option: 408, 444, 477, 494, 495, 496, 497, 499.
-//
-// The properties Body, Code, Enabled are required.
-type ResourceUpdateParamsOptionsForceReturn struct {
-	// URL for redirection or text.
-	Body string `json:"body,required"`
-	// Status code value.
-	Code int64 `json:"code,required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Controls the time at which a custom HTTP response code should be applied. By
-	// default, a custom HTTP response code is applied at any time.
-	TimeInterval ResourceUpdateParamsOptionsForceReturnTimeInterval `json:"time_interval,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsForceReturn) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsForceReturn
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsForceReturn) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls the time at which a custom HTTP response code should be applied. By
-// default, a custom HTTP response code is applied at any time.
-//
-// The properties EndTime, StartTime are required.
-type ResourceUpdateParamsOptionsForceReturnTimeInterval struct {
-	// Time until which a custom HTTP response code should be applied. Indicated in
-	// 24-hour format.
-	EndTime string `json:"end_time,required"`
-	// Time from which a custom HTTP response code should be applied. Indicated in
-	// 24-hour format.
-	StartTime string `json:"start_time,required"`
-	// Time zone used to calculate time.
-	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsForceReturnTimeInterval) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsForceReturnTimeInterval
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsForceReturnTimeInterval) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Forwards the Host header from a end-user request to an origin server.
-//
-// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsForwardHostHeader struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsForwardHostHeader) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsForwardHostHeader
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Compresses content with gzip on the CDN end. CDN servers will request only
-// uncompressed content from the origin.
-//
-// Notes:
-//
-//  1. Compression with gzip is not supported with `fetch_compressed` or `slice`
-//     options enabled.
-//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
-//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
-//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsGzipOn struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsGzipOn) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsGzipOn
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsGzipOn) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Sets the Host header that CDN servers use when request content from an origin
-// server. Your server must be able to process requests with the chosen header.
-//
-// If the option is `null`, the Host Header value is equal to first CNAME.
-//
-// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsHostHeader struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Host Header value.
-	Value string `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsHostHeader) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsHostHeader
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsHostHeader) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables HTTP/3 protocol for content delivery.
-//
-// `http3_enabled` option works only with `"sslEnabled": true`.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsHttp3Enabled struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsHttp3Enabled) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsHttp3Enabled
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsHttp3Enabled) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Defines whether the files with the Set-Cookies header are cached as one file or
-// as different ones.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsIgnoreCookie struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	//   - **true** - Option is enabled, files with cookies are cached as one file.
-	//   - **false** - Option is disabled, files with cookies are cached as different
-	//     files.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsIgnoreCookie) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsIgnoreCookie
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsIgnoreCookie) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// How a file with different query strings is cached: either as one object (option
-// is enabled) or as different objects (option is disabled.)
-//
-// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
-// options cannot be enabled simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsIgnoreQueryString struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsIgnoreQueryString) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsIgnoreQueryString
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsIgnoreQueryString) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Transforms JPG and PNG images (for example, resize or crop) and automatically
-// converts them to WebP or AVIF format.
-//
-// The property Enabled is required.
-type ResourceUpdateParamsOptionsImageStack struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Enables or disables automatic conversion of JPEG and PNG images to AVI format.
-	AvifEnabled param.Opt[bool] `json:"avif_enabled,omitzero"`
-	// Enables or disables compression without quality loss for PNG format.
-	PngLossless param.Opt[bool] `json:"png_lossless,omitzero"`
-	// Defines quality settings for JPG and PNG images. The higher the value, the
-	// better the image quality, and the larger the file size after conversion.
-	Quality param.Opt[int64] `json:"quality,omitzero"`
-	// Enables or disables automatic conversion of JPEG and PNG images to WebP format.
-	WebpEnabled param.Opt[bool] `json:"webp_enabled,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsImageStack) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsImageStack
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsImageStack) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls access to the CDN resource content for specific IP addresses.
-//
-// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
-// you have to independently monitor their relevance.
-//
-// We recommend you use a script for automatically update IP ACL.
-// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
-//
-// The properties Enabled, ExceptedValues, PolicyType are required.
-type ResourceUpdateParamsOptionsIPAddressACL struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of IP addresses with a subnet mask.
-	//
-	// The meaning of the parameter depends on `policy_type` value:
-	//
-	// - **allow** - List of IP addresses for which access is prohibited.
-	// - **deny** - List of IP addresses for which access is allowed.
-	//
-	// Examples:
-	//
-	// - `192.168.3.2/32`
-	// - `2a03:d000:2980:7::8/128`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"ipv4net or ipv6net"`
-	// IP access policy type.
-	//
-	// Possible values:
-	//
-	//   - **allow** - Allow access to all IPs except IPs specified in "excepted_values"
-	//     field.
-	//   - **deny** - Deny access to all IPs except IPs specified in "excepted_values"
-	//     field.
-	//
-	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsIPAddressACL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsIPAddressACL
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsIPAddressACL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceUpdateParamsOptionsIPAddressACL](
-		"policy_type", "allow", "deny",
-	)
-}
-
-// Allows to control the download speed per connection.
-//
-// The properties Enabled, LimitType are required.
-type ResourceUpdateParamsOptionsLimitBandwidth struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Method of controlling the download speed per connection.
-	//
-	// Possible values:
-	//
-	//   - **static** - Use speed and buffer fields to set the download speed limit.
-	//   - **dynamic** - Use query strings **speed** and **buffer** to set the download
-	//     speed limit.
-	//
-	// # For example, when requesting content at the link
-	//
-	// ```
-	// http://cdn.example.com/video.mp4?speed=50k&buffer=500k
-	// ```
-	//
-	// the download speed will be limited to 50kB/s after 500 kB.
-	//
-	// Any of "static", "dynamic".
-	LimitType string `json:"limit_type,omitzero,required"`
-	// Amount of downloaded data after which the user will be rate limited.
-	Buffer param.Opt[int64] `json:"buffer,omitzero"`
-	// Maximum download speed per connection.
-	Speed param.Opt[int64] `json:"speed,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsLimitBandwidth) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsLimitBandwidth
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsLimitBandwidth) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceUpdateParamsOptionsLimitBandwidth](
-		"limit_type", "static", "dynamic",
-	)
-}
-
-// Allows you to modify your cache key. If omitted, the default value is
-// `$request_uri`.
-//
-// Combine the specified variables to create a key for caching.
-//
-// - **$`request_uri`**
-// - **$scheme**
-// - **$uri**
-//
-// **Warning**: Enabling and changing this option can invalidate your current cache
-// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
-// not work.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsProxyCacheKey struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Key for caching.
-	Value string `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsProxyCacheKey) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsProxyCacheKey
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsProxyCacheKey) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Caching for POST requests along with default GET and HEAD.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsProxyCacheMethodsSet struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsProxyCacheMethodsSet) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsProxyCacheMethodsSet
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsProxyCacheMethodsSet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The time limit for establishing a connection with the origin.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsProxyConnectTimeout struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Timeout value in seconds.
-	//
-	// Supported range: **1s - 5s**.
-	Value string `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsProxyConnectTimeout) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsProxyConnectTimeout
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The time limit for receiving a partial response from the origin. If no response
-// is received within this time, the connection will be closed.
-//
-// **Note:** When used with a WebSocket connection, this option supports values
-// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsProxyReadTimeout struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Timeout value in seconds.
-	//
-	// Supported range: **1s - 30s**.
-	Value string `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsProxyReadTimeout) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsProxyReadTimeout
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsProxyReadTimeout) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Files with the specified query parameters are cached as one object, files with
-// other parameters are cached as different objects.
-//
-// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
-// options cannot be enabled simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsQueryParamsBlacklist struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsQueryParamsBlacklist) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsQueryParamsBlacklist
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsQueryParamsBlacklist) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Files with the specified query parameters are cached as different objects, files
-// with other parameters are cached as one object.
-//
-// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
-// options cannot be enabled simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsQueryParamsWhitelist struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsQueryParamsWhitelist) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsQueryParamsWhitelist
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsQueryParamsWhitelist) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The Query String Forwarding feature allows for the seamless transfer of
-// parameters embedded in playlist files to the corresponding media chunk files.
-// This functionality ensures that specific attributes, such as authentication
-// tokens or tracking information, are consistently passed along from the playlist
-// manifest to the individual media segments. This is particularly useful for
-// maintaining continuity in security, analytics, and any other parameter-based
-// operations across the entire media delivery workflow.
-//
-// The properties Enabled, ForwardFromFileTypes, ForwardToFileTypes are required.
-type ResourceUpdateParamsOptionsQueryStringForwarding struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// The `forward_from_files_types` field specifies the types of playlist files from
-	// which parameters will be extracted and forwarded. This typically includes
-	// formats that list multiple media chunk references, such as HLS and DASH
-	// playlists. Parameters associated with these playlist files (like query strings
-	// or headers) will be propagated to the chunks they reference.
-	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero,required"`
-	// The field specifies the types of media chunk files to which parameters,
-	// extracted from playlist files, will be forwarded. These refer to the actual
-	// segments of media content that are delivered to viewers. Ensuring the correct
-	// parameters are forwarded to these files is crucial for maintaining the integrity
-	// of the streaming session.
-	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
-	// The `forward_except_keys` field provides a mechanism to exclude specific
-	// parameters from being forwarded from playlist files to media chunk files. By
-	// listing certain keys in this field, you can ensure that these parameters are
-	// omitted during the forwarding process. This is particularly useful for
-	// preventing sensitive or irrelevant information from being included in requests
-	// for media chunks, thereby enhancing security and optimizing performance.
-	ForwardExceptKeys []string `json:"forward_except_keys,omitzero"`
-	// The `forward_only_keys` field allows for granular control over which specific
-	// parameters are forwarded from playlist files to media chunk files. By specifying
-	// certain keys, only those parameters will be propagated, ensuring that only
-	// relevant information is passed along. This is particularly useful for security
-	// and performance optimization, as it prevents unnecessary or sensitive data from
-	// being included in requests for media chunks.
-	ForwardOnlyKeys []string `json:"forward_only_keys,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsQueryStringForwarding) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsQueryStringForwarding
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsQueryStringForwarding) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables redirect from HTTP to HTTPS.
-//
-// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
-// simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsRedirectHTTPToHTTPS struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsRedirectHTTPToHTTPS) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsRedirectHTTPToHTTPS
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables redirect from HTTPS to HTTP.
-//
-// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
-// simultaneously.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsRedirectHTTPSToHTTP struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsRedirectHTTPSToHTTP) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsRedirectHTTPSToHTTP
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsRedirectHTTPSToHTTP) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls access to the CDN resource content for specified domain names.
-//
-// The properties Enabled, ExceptedValues, PolicyType are required.
-type ResourceUpdateParamsOptionsReferrerACL struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of domain names or wildcard domains (without protocol: `http://` or
-	// `https://`.)
-	//
-	// The meaning of the parameter depends on `policy_type` value:
-	//
-	// - **allow** - List of domain names for which access is prohibited.
-	// - **deny** - List of IP domain names for which access is allowed.
-	//
-	// Examples:
-	//
-	// - `example.com`
-	// - `*.example.com`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
-	// Policy type.
-	//
-	// Possible values:
-	//
-	//   - **allow** - Allow access to all domain names except the domain names specified
-	//     in `excepted_values` field.
-	//   - **deny** - Deny access to all domain names except the domain names specified
-	//     in `excepted_values` field.
-	//
-	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsReferrerACL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsReferrerACL
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsReferrerACL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceUpdateParamsOptionsReferrerACL](
-		"policy_type", "allow", "deny",
-	)
-}
-
-// Option allows to limit the amount of HTTP requests.
-//
-// The properties Enabled, Rate are required.
-type ResourceUpdateParamsOptionsRequestLimiter struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Maximum request rate.
-	Rate int64 `json:"rate,required"`
-	// Units of measurement for the `rate` field.
-	//
-	// Possible values:
-	//
-	// - **r/s** - Requests per second.
-	// - **r/m** - Requests per minute.
-	//
-	// If the rate is less than one request per second, it is specified in request per
-	// minute (r/m.)
-	//
-	// Any of "r/s", "r/m".
-	RateUnit string `json:"rate_unit,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsRequestLimiter) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsRequestLimiter
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceUpdateParamsOptionsRequestLimiter](
-		"rate_unit", "r/s", "r/m",
-	)
-}
-
-// Hides HTTP headers from an origin server in the CDN response.
-//
-// The properties Enabled, Excepted, Mode are required.
-type ResourceUpdateParamsOptionsResponseHeadersHidingPolicy struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of HTTP headers.
-	//
-	// Parameter meaning depends on the value of the `mode` field:
-	//
-	//   - **show** - List of HTTP headers to hide from response.
-	//   - **hide** - List of HTTP headers to include in response. Other HTTP headers
-	//     will be hidden.
-	//
-	// The following headers are required and cannot be hidden from response:
-	//
-	// - `Connection`
-	// - `Content-Length`
-	// - `Content-Type`
-	// - `Date`
-	// - `Server`
-	Excepted []string `json:"excepted,omitzero,required" format:"http_header"`
-	// How HTTP headers are hidden from the response.
-	//
-	// Possible values:
-	//
-	//   - **show** - Hide only HTTP headers listed in the `excepted` field.
-	//   - **hide** - Hide all HTTP headers except headers listed in the "excepted"
-	//     field.
-	//
-	// Any of "hide", "show".
-	Mode string `json:"mode,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsResponseHeadersHidingPolicy) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsResponseHeadersHidingPolicy
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsResponseHeadersHidingPolicy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceUpdateParamsOptionsResponseHeadersHidingPolicy](
-		"mode", "hide", "show",
-	)
-}
-
-// Changes and redirects requests from the CDN to the origin. It operates according
-// to the
-// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
-// configuration.
-//
-// The properties Body, Enabled are required.
-type ResourceUpdateParamsOptionsRewrite struct {
-	// Path for the Rewrite option.
-	//
-	// Example:
-	//
-	// - `/(.*) /media/$1`
-	Body string `json:"body,required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Flag for the Rewrite option.
-	//
-	// Possible values:
-	//
-	//   - **last** - Stop processing the current set of `ngx_http_rewrite_module`
-	//     directives and start a search for a new location matching changed URI.
-	//   - **break** - Stop processing the current set of the Rewrite option.
-	//   - **redirect** - Return a temporary redirect with the 302 code; used when a
-	//     replacement string does not start with `http://`, `https://`, or `$scheme`.
-	//   - **permanent** - Return a permanent redirect with the 301 code.
-	//
-	// Any of "break", "last", "redirect", "permanent".
-	Flag string `json:"flag,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsRewrite) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsRewrite
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsRewrite) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceUpdateParamsOptionsRewrite](
-		"flag", "break", "last", "redirect", "permanent",
-	)
-}
-
-// Configures access with tokenized URLs. This makes impossible to access content
-// without a valid (unexpired) token.
-//
-// The properties Enabled, Key are required.
-type ResourceUpdateParamsOptionsSecureKey struct {
-	// Key generated on your side that will be used for URL signing.
-	Key param.Opt[string] `json:"key,omitzero,required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Type of URL signing.
-	//
-	// Possible types:
-	//
-	// - **Type 0** - Includes end user IP to secure token generation.
-	// - **Type 2** - Excludes end user IP from secure token generation.
-	//
-	// Any of 0, 2.
-	Type int64 `json:"type,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsSecureKey) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsSecureKey
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsSecureKey) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceUpdateParamsOptionsSecureKey](
-		"type", 0, 2,
-	)
-}
-
-// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
-// part.) This reduces time to first byte.
-//
-// The option is based on the
-// [Slice](https://nginx.org/en/docs/http/ngx_http_slice_module.html) module.
-//
-// Notes:
-//
-//  1. Origin must support HTTP Range requests.
-//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
-//     options enabled.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsSlice struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsSlice) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsSlice
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsSlice) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The hostname that is added to SNI requests from CDN servers to the origin server
-// via HTTPS.
-//
-// SNI is generally only required if your origin uses shared hosting or does not
-// have a dedicated IP address. If the origin server presents multiple
-// certificates, SNI allows the origin server to know which certificate to use for
-// the connection.
-//
-// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
-//
-// The properties CustomHostname, Enabled are required.
-type ResourceUpdateParamsOptionsSni struct {
-	// Custom SNI hostname.
-	//
-	// It is required if `sni_type` is set to custom.
-	CustomHostname string `json:"custom_hostname,required" format:"domain"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// SNI (Server Name Indication) type.
-	//
-	// Possible values:
-	//
-	//   - **dynamic** - SNI hostname depends on `hostHeader` and `forward_host_header`
-	//     options. It has several possible combinations:
-	//   - If the `hostHeader` option is enabled and specified, SNI hostname matches the
-	//     Host header.
-	//   - If the `forward_host_header` option is enabled and has true value, SNI
-	//     hostname matches the Host header used in the request made to a CDN.
-	//   - If the `hostHeader` and `forward_host_header` options are disabled, SNI
-	//     hostname matches the primary CNAME.
-	//   - **custom** - custom SNI hostname is in use.
-	//
-	// Any of "dynamic", "custom".
-	SniType string `json:"sni_type,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsSni) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsSni
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsSni) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceUpdateParamsOptionsSni](
-		"sni_type", "dynamic", "custom",
-	)
-}
-
-// Serves stale cached content in case of origin unavailability.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsStale struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Defines list of errors for which "Always online" option is applied.
-	//
-	// Any of "error", "http_403", "http_404", "http_429", "http_500", "http_502",
-	// "http_503", "http_504", "invalid_header", "timeout", "updating".
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsStale) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsStale
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsStale) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Custom HTTP Headers that a CDN server adds to a response.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsStaticResponseHeaders struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool                                                    `json:"enabled,required"`
-	Value   []ResourceUpdateParamsOptionsStaticResponseHeadersValue `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsStaticResponseHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsStaticResponseHeaders
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsStaticResponseHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Name, Value are required.
-type ResourceUpdateParamsOptionsStaticResponseHeadersValue struct {
-	// HTTP Header name.
-	//
-	// Restrictions:
-	//
-	// - Maximum 128 symbols.
-	// - Latin letters (A-Z, a-z,) numbers (0-9,) dashes, and underscores only.
-	Name string `json:"name,required"`
-	// Header value.
-	//
-	// Restrictions:
-	//
-	//   - Maximum 512 symbols.
-	//   - Letters (a-z), numbers (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+
-	//     /|\";:?.,><{}[]).
-	//   - Must start with a letter, number, asterisk or {.
-	//   - Multiple values can be added.
-	Value []string `json:"value,omitzero,required"`
-	// Defines whether the header will be added to a response from CDN regardless of
-	// response code.
-	//
-	// Possible values:
-	//
-	//   - **true** - Header will be added to a response from CDN regardless of response
-	//     code.
-	//   - **false** - Header will be added only to the following response codes: 200,
-	//     201, 204, 206, 301, 302, 303, 304, 307, 308.
-	Always param.Opt[bool] `json:"always,omitzero"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsStaticResponseHeadersValue) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsStaticResponseHeadersValue
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsStaticResponseHeadersValue) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// **Legacy option**. Use the `static_response_headers` option instead.
-//
-// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
-// Headers can be specified. May contain a header with multiple values.
-//
-// Deprecated: deprecated
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsStaticHeaders struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// A MAP for static headers in a format of `header_name: header_value`.
-	//
-	// Restrictions:
-	//
-	//   - **Header name** - Maximum 128 symbols, may contain Latin letters (A-Z, a-z),
-	//     numbers (0-9), dashes, and underscores.
-	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
-	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
-	//     with a letter, number, asterisk or {.
-	Value any `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsStaticHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsStaticHeaders
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsStaticHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
-// Headers can be specified.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsStaticRequestHeaders struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// A MAP for static headers in a format of `header_name: header_value`.
-	//
-	// Restrictions:
-	//
-	//   - **Header name** - Maximum 255 symbols, may contain Latin letters (A-Z, a-z),
-	//     numbers (0-9), dashes, and underscores.
-	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
-	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
-	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsStaticRequestHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsStaticRequestHeaders
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsStaticRequestHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// List of SSL/TLS protocol versions allowed for HTTPS connections from end users
-// to the domain.
-//
-// When the option is disabled, all protocols versions are allowed.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsTlsVersions struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of SSL/TLS protocol versions (case sensitive).
-	//
-	// Any of "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3".
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsTlsVersions) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsTlsVersions
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsTlsVersions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Let's Encrypt certificate chain.
-//
-// The specified chain will be used during the next Let's Encrypt certificate issue
-// or renewal.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsUseDefaultLeChain struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	//   - **true** - Default Let's Encrypt certificate chain. This is a deprecated
-	//     version, use it only for compatibilities with Android devices 7.1.1 or lower.
-	//   - **false** - Alternative Let's Encrypt certificate chain.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsUseDefaultLeChain) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsUseDefaultLeChain
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsUseDefaultLeChain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// DNS-01 challenge to issue a Let's Encrypt certificate for the resource.
-//
-// DNS service should be activated to enable this option.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsUseDns01LeChallenge struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - DNS-01 challenge is used to issue Let's Encrypt certificate.
-	// - **false** - HTTP-01 challenge is used to issue Let's Encrypt certificate.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsUseDns01LeChallenge) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsUseDns01LeChallenge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsUseDns01LeChallenge) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// RSA Let's Encrypt certificate type for the CDN resource.
-//
-// The specified value will be used during the next Let's Encrypt certificate issue
-// or renewal.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsUseRsaLeCert struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - RSA Let's Encrypt certificate.
-	// - **false** - ECDSA Let's Encrypt certificate.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsUseRsaLeCert) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsUseRsaLeCert
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsUseRsaLeCert) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls access to the content for specified User-Agents.
-//
-// The properties Enabled, ExceptedValues, PolicyType are required.
-type ResourceUpdateParamsOptionsUserAgentACL struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of User-Agents that will be allowed/denied.
-	//
-	// The meaning of the parameter depends on `policy_type`:
-	//
-	// - **allow** - List of User-Agents for which access is prohibited.
-	// - **deny** - List of User-Agents for which access is allowed.
-	//
-	// You can provide exact User-Agent strings or regular expressions. Regular
-	// expressions must start with `~` (case-sensitive) or `~*` (case-insensitive).
-	//
-	// Use an empty string `""` to allow/deny access when the User-Agent header is
-	// empty.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"user_agent"`
-	// User-Agents policy type.
-	//
-	// Possible values:
-	//
-	//   - **allow** - Allow access for all User-Agents except specified in
-	//     `excepted_values` field.
-	//   - **deny** - Deny access for all User-Agents except specified in
-	//     `excepted_values` field.
-	//
-	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsUserAgentACL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsUserAgentACL
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsUserAgentACL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ResourceUpdateParamsOptionsUserAgentACL](
-		"policy_type", "allow", "deny",
-	)
-}
-
-// Allows to enable WAAP (Web Application and API Protection).
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsWaap struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsWaap) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsWaap
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsWaap) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables or disables WebSockets connections to an origin server.
-//
-// The properties Enabled, Value are required.
-type ResourceUpdateParamsOptionsWebsockets struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceUpdateParamsOptionsWebsockets) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceUpdateParamsOptionsWebsockets
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceUpdateParamsOptionsWebsockets) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Protocol used by CDN servers to request content from an origin source.
-//
-// Possible values:
-//
-//   - **HTTPS** - CDN servers will connect to the origin via HTTPS.
-//   - **HTTP** - CDN servers will connect to the origin via HTTP.
-//   - **MATCH** - connection protocol will be chosen automatically (content on the
-//     origin source should be available for the CDN both through HTTP and HTTPS).
-//
-// If protocol is not specified, HTTP is used to connect to an origin server.
-type ResourceUpdateParamsOriginProtocol string
-
-const (
-	ResourceUpdateParamsOriginProtocolHTTP  ResourceUpdateParamsOriginProtocol = "HTTP"
-	ResourceUpdateParamsOriginProtocolHTTPS ResourceUpdateParamsOriginProtocol = "HTTPS"
-	ResourceUpdateParamsOriginProtocolMatch ResourceUpdateParamsOriginProtocol = "MATCH"
-)
-
-type ResourceListParams struct {
-	// Delivery domain (CNAME) of the CDN resource.
-	Cname param.Opt[string] `query:"cname,omitzero" json:"-"`
-	// Defines whether a CDN resource has been deleted.
-	//
-	// Possible values:
-	//
-	// - **true** - CDN resource has been deleted.
-	// - **false** - CDN resource has not been deleted.
-	Deleted param.Opt[bool] `query:"deleted,omitzero" json:"-"`
-	// Enables or disables a CDN resource change by a user.
-	//
-	// Possible values:
-	//
-	// - **true** - CDN resource is enabled.
-	// - **false** - CDN resource is disabled.
-	Enabled param.Opt[bool] `query:"enabled,omitzero" json:"-"`
-	// Most recent date of CDN resource creation for which CDN resources should be
-	// returned (ISO 8601/RFC 3339 format, UTC.)
-	MaxCreated param.Opt[string] `query:"max_created,omitzero" json:"-"`
-	// Earliest date of CDN resource creation for which CDN resources should be
-	// returned (ISO 8601/RFC 3339 format, UTC.)
-	MinCreated param.Opt[string] `query:"min_created,omitzero" json:"-"`
-	// Origin group ID.
-	OriginGroup param.Opt[int64] `query:"originGroup,omitzero" json:"-"`
-	// Rule name or pattern.
-	Rules param.Opt[string] `query:"rules,omitzero" json:"-"`
-	// Additional delivery domains (CNAMEs) of the CDN resource.
-	SecondaryHostnames param.Opt[string] `query:"secondaryHostnames,omitzero" json:"-"`
-	// Name of the origin shielding data center location.
-	ShieldDc param.Opt[string] `query:"shield_dc,omitzero" json:"-"`
-	// Defines whether origin shielding is enabled for the CDN resource.
-	//
-	// Possible values:
-	//
-	// - **true** - Origin shielding is enabled for the CDN resource.
-	// - **false** - Origin shielding is disabled for the CDN resource.
-	Shielded param.Opt[bool] `query:"shielded,omitzero" json:"-"`
-	// SSL certificate ID.
-	SslData param.Opt[int64] `query:"sslData,omitzero" json:"-"`
-	// SSL certificates IDs.
-	//
-	// Example:
-	//
-	// - ?`sslData_in`=1643,1644,1652
-	SslDataIn param.Opt[int64] `query:"sslData_in,omitzero" json:"-"`
-	// Defines whether the HTTPS protocol is enabled for content delivery.
-	//
-	// Possible values:
-	//
-	// - **true** - HTTPS protocol is enabled for CDN resource.
-	// - **false** - HTTPS protocol is disabled for CDN resource.
-	SslEnabled param.Opt[bool] `query:"sslEnabled,omitzero" json:"-"`
-	// Defines whether the CDN resource was automatically suspended by the system.
-	//
-	// Possible values:
-	//
-	//   - **true** - CDN resource is selected for automatic suspension in the next 7
-	//     days.
-	//   - **false** - CDN resource is not selected for automatic suspension.
-	Suspend param.Opt[bool] `query:"suspend,omitzero" json:"-"`
-	// Defines whether the CDN resource is integrated with the Streaming platform.
-	//
-	// Possible values:
-	//
-	// - **true** - CDN resource is used for Streaming platform.
-	// - **false** - CDN resource is not used for Streaming platform.
-	VpEnabled param.Opt[bool] `query:"vp_enabled,omitzero" json:"-"`
-	// CDN resource status.
-	//
-	// Any of "active", "processed", "suspended", "deleted".
-	Status ResourceListParamsStatus `query:"status,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [ResourceListParams]'s query parameters as `url.Values`.
-func (r ResourceListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
-	})
-}
-
-// CDN resource status.
-type ResourceListParamsStatus string
-
-const (
-	ResourceListParamsStatusActive    ResourceListParamsStatus = "active"
-	ResourceListParamsStatusProcessed ResourceListParamsStatus = "processed"
-	ResourceListParamsStatusSuspended ResourceListParamsStatus = "suspended"
-	ResourceListParamsStatusDeleted   ResourceListParamsStatus = "deleted"
-)
-
-type ResourcePrefetchParams struct {
-	// Paths to files that should be pre-populated to the CDN.
-	//
-	// Paths to the files should be specified without a domain name.
-	Paths []string `json:"paths,omitzero,required"`
-	paramObj
-}
-
-func (r ResourcePrefetchParams) MarshalJSON() (data []byte, err error) {
-	type shadow ResourcePrefetchParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourcePrefetchParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ResourcePurgeParams struct {
-
-	//
-	// Request body variants
-	//
-
-	// This field is a request body variant, only one variant field can be set.
-	OfPurgeByURL *ResourcePurgeParamsBodyPurgeByURL `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
-	OfPurgeByPattern *ResourcePurgeParamsBodyPurgeByPattern `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
-	OfPurgeAllCache *ResourcePurgeParamsBodyPurgeAllCache `json:",inline"`
-
-	paramObj
-}
-
-func (u ResourcePurgeParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfPurgeByURL, u.OfPurgeByPattern, u.OfPurgeAllCache)
-}
-func (r *ResourcePurgeParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ResourcePurgeParamsBodyPurgeByURL struct {
-	// **Purge by URL** clears the cache of a specific files. This purge type is
-	// recommended.
-	//
-	// Specify file URLs including query strings. URLs should start with / without a
-	// domain name.
-	//
-	// Purge by URL depends on the following CDN options:
-	//
-	//  1. "vary response header" is used. If your origin serves variants of the same
-	//     content depending on the Vary HTTP response header, purge by URL will delete
-	//     only one version of the file.
-	//  2. "slice" is used. If you update several files in the origin without clearing
-	//     the CDN cache, purge by URL will delete only the first slice (with bytes=0…
-	//     .)
-	//  3. "ignoreQueryString" is used. Don’t specify parameters in the purge request.
-	//  4. "query_params_blacklist" is used. Only files with the listed in the option
-	//     parameters will be cached as different objects. Files with other parameters
-	//     will be cached as one object. In this case, specify the listed parameters in
-	//     the Purge request. Don't specify other parameters.
-	//  5. "query_params_whitelist" is used. Files with listed in the option parameters
-	//     will be cached as one object. Files with other parameters will be cached as
-	//     different objects. In this case, specify other parameters (if any) besides
-	//     the ones listed in the purge request.
-	URLs []string `json:"urls,omitzero"`
-	paramObj
-}
-
-func (r ResourcePurgeParamsBodyPurgeByURL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourcePurgeParamsBodyPurgeByURL
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourcePurgeParamsBodyPurgeByURL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ResourcePurgeParamsBodyPurgeByPattern struct {
-	// **Purge by pattern** clears the cache that matches the pattern.
-	//
-	// Use _ operator, which replaces any number of symbols in your path. It's
-	// important to note that wildcard usage (_) is permitted only at the end of a
-	// pattern.
-	//
-	// Query string added to any patterns will be ignored, and purge request will be
-	// processed as if there weren't any parameters.
-	//
-	// Purge by pattern is recursive. Both /path and /path* will result in recursive
-	// purging, meaning all content under the specified path will be affected. As such,
-	// using the pattern /path* is functionally equivalent to simply using /path.
-	Paths []string `json:"paths,omitzero"`
-	paramObj
-}
-
-func (r ResourcePurgeParamsBodyPurgeByPattern) MarshalJSON() (data []byte, err error) {
-	type shadow ResourcePurgeParamsBodyPurgeByPattern
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourcePurgeParamsBodyPurgeByPattern) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ResourcePurgeParamsBodyPurgeAllCache struct {
-	// **Purge all cache** clears the entire cache for the CDN resource.
-	//
-	// Specify an empty array to purge all content for the resource.
-	//
-	// When you purge all assets, CDN servers request content from your origin server
-	// and cause a high load. Therefore, we recommend to use purge by URL for large
-	// content quantities.
-	Paths []string `json:"paths,omitzero"`
-	paramObj
-}
-
-func (r ResourcePurgeParamsBodyPurgeAllCache) MarshalJSON() (data []byte, err error) {
-	type shadow ResourcePurgeParamsBodyPurgeAllCache
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourcePurgeParamsBodyPurgeAllCache) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ResourceReplaceParams struct {
-	// Origin group ID with which the CDN resource is associated.
-	//
-	// You can use either the `origin` or `originGroup` parameter in the request.
-	OriginGroup int64 `json:"originGroup,required"`
-	// CDN resource name.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// ID of the trusted CA certificate used to verify an origin.
-	//
-	// It can be used only with `"proxy_ssl_enabled": true`.
-	ProxySslCa param.Opt[int64] `json:"proxy_ssl_ca,omitzero"`
-	// ID of the SSL certificate used to verify an origin.
-	//
-	// It can be used only with `"proxy_ssl_enabled": true`.
-	ProxySslData param.Opt[int64] `json:"proxy_ssl_data,omitzero"`
-	// ID of the SSL certificate linked to the CDN resource.
-	//
-	// Can be used only with `"sslEnabled": true`.
-	SslData param.Opt[int64] `json:"sslData,omitzero"`
-	// Enables or disables a CDN resource.
-	//
-	// Possible values:
-	//
-	// - **true** - CDN resource is active. Content is being delivered.
-	// - **false** - CDN resource is deactivated. Content is not being delivered.
+	// - **true** - Rule is active, rule settings are applied.
+	// - **false** - Rule is inactive, rule settings are not applied.
 	Active param.Opt[bool] `json:"active,omitzero"`
-	// Optional comment describing the CDN resource.
-	Description param.Opt[string] `json:"description,omitzero"`
-	// Enables or disables SSL certificate validation of the origin server before
-	// completing any connection.
+	// Rule execution order: from lowest (1) to highest.
+	//
+	// If requested URI matches multiple rules, the one higher in the order of the
+	// rules will be applied.
+	Weight param.Opt[int64] `json:"weight,omitzero"`
+	// Sets a protocol other than the one specified in the CDN resource settings to
+	// connect to the origin.
 	//
 	// Possible values:
 	//
-	// - **true** - Origin SSL certificate validation is enabled.
-	// - **false** - Origin SSL certificate validation is disabled.
-	ProxySslEnabled param.Opt[bool] `json:"proxy_ssl_enabled,omitzero"`
-	// Defines whether the HTTPS protocol enabled for content delivery.
+	//   - **HTTPS** - CDN servers connect to origin via HTTPS protocol.
+	//   - **HTTP** - CDN servers connect to origin via HTTP protocol.
+	//   - **MATCH** - Connection protocol is chosen automatically; in this case, content
+	//     on origin source should be available for the CDN both through HTTP and HTTPS
+	//     protocols.
+	//   - **null** - `originProtocol` setting is inherited from the CDN resource
+	//     settings.
 	//
-	// Possible values:
+	// Any of "HTTPS", "HTTP", "MATCH".
+	OverrideOriginProtocol CDNResourceRuleNewParamsOverrideOriginProtocol `json:"overrideOriginProtocol,omitzero"`
+	// List of options that can be configured for the rule.
 	//
-	// - **true** - HTTPS is enabled.
-	// - **false** - HTTPS is disabled.
-	SslEnabled param.Opt[bool] `json:"sslEnabled,omitzero"`
-	// Defines whether the associated WAAP Domain is identified as an API Domain.
-	//
-	// Possible values:
-	//
-	// - **true** - The associated WAAP Domain is designated as an API Domain.
-	// - **false** - The associated WAAP Domain is not designated as an API Domain.
-	WaapAPIDomainEnabled param.Opt[bool] `json:"waap_api_domain_enabled,omitzero"`
-	// List of options that can be configured for the CDN resource.
-	//
-	// In case of `null` value the option is not added to the CDN resource. Option may
-	// inherit its value from the global account settings.
-	Options ResourceReplaceParamsOptions `json:"options,omitzero"`
-	// Protocol used by CDN servers to request content from an origin source.
-	//
-	// Possible values:
-	//
-	//   - **HTTPS** - CDN servers will connect to the origin via HTTPS.
-	//   - **HTTP** - CDN servers will connect to the origin via HTTP.
-	//   - **MATCH** - connection protocol will be chosen automatically (content on the
-	//     origin source should be available for the CDN both through HTTP and HTTPS).
-	//
-	// If protocol is not specified, HTTP is used to connect to an origin server.
-	//
-	// Any of "HTTP", "HTTPS", "MATCH".
-	OriginProtocol ResourceReplaceParamsOriginProtocol `json:"originProtocol,omitzero"`
-	// Additional delivery domains (CNAMEs) that will be used to deliver content via
-	// the CDN.
-	//
-	// Up to ten additional CNAMEs are possible.
-	SecondaryHostnames []string `json:"secondaryHostnames,omitzero" format:"domain"`
+	// In case of `null` value the option is not added to the rule. Option inherits its
+	// value from the CDN resource settings.
+	Options CDNResourceRuleNewParamsOptions `json:"options,omitzero"`
 	paramObj
 }
 
-func (r ResourceReplaceParams) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParams
+func (r CDNResourceRuleNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParams) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// List of options that can be configured for the CDN resource.
+// List of options that can be configured for the rule.
 //
-// In case of `null` value the option is not added to the CDN resource. Option may
-// inherit its value from the global account settings.
-type ResourceReplaceParamsOptions struct {
+// In case of `null` value the option is not added to the rule. Option inherits its
+// value from the CDN resource settings.
+type CDNResourceRuleNewParamsOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
-	AllowedHTTPMethods ResourceReplaceParamsOptionsAllowedHTTPMethods `json:"allowedHttpMethods,omitzero"`
+	AllowedHTTPMethods CDNResourceRuleNewParamsOptionsAllowedHTTPMethods `json:"allowedHttpMethods,omitzero"`
 	// Allows to prevent online services from overloading and ensure your business
 	// workflow running smoothly.
-	BotProtection ResourceReplaceParamsOptionsBotProtection `json:"bot_protection,omitzero"`
+	BotProtection CDNResourceRuleNewParamsOptionsBotProtection `json:"bot_protection,omitzero"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -7860,45 +2546,45 @@ type ResourceReplaceParamsOptions struct {
 	//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
 	//     resource and want to enable `brotli_compression` in a rule, you must specify
 	//     `fetch_compressed:false` in the rule.
-	BrotliCompression ResourceReplaceParamsOptionsBrotliCompression `json:"brotli_compression,omitzero"`
+	BrotliCompression CDNResourceRuleNewParamsOptionsBrotliCompression `json:"brotli_compression,omitzero"`
 	// Cache expiration time for users browsers in seconds.
 	//
 	// Cache expiration time is applied to the following response codes: 200, 201, 204,
 	// 206, 301, 302, 303, 304, 307, 308.
 	//
 	// Responses with other codes will not be cached.
-	BrowserCacheSettings ResourceReplaceParamsOptionsBrowserCacheSettings `json:"browser_cache_settings,omitzero"`
+	BrowserCacheSettings CDNResourceRuleNewParamsOptionsBrowserCacheSettings `json:"browser_cache_settings,omitzero"`
 	// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
 	//
 	// HTTP Headers that must be included in the response.
 	//
 	// Deprecated: deprecated
-	CacheHTTPHeaders ResourceReplaceParamsOptionsCacheHTTPHeaders `json:"cache_http_headers,omitzero"`
+	CacheHTTPHeaders CDNResourceRuleNewParamsOptionsCacheHTTPHeaders `json:"cache_http_headers,omitzero"`
 	// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
 	//
 	// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
 	// to a response to a browser.
-	Cors ResourceReplaceParamsOptionsCors `json:"cors,omitzero"`
+	Cors CDNResourceRuleNewParamsOptionsCors `json:"cors,omitzero"`
 	// Enables control access to content for specified countries.
-	CountryACL ResourceReplaceParamsOptionsCountryACL `json:"country_acl,omitzero"`
+	CountryACL CDNResourceRuleNewParamsOptionsCountryACL `json:"country_acl,omitzero"`
 	// **Legacy option**. Use the `edge_cache_settings` option instead.
 	//
 	// Allows the complete disabling of content caching.
 	//
 	// Deprecated: deprecated
-	DisableCache ResourceReplaceParamsOptionsDisableCache `json:"disable_cache,omitzero"`
+	DisableCache CDNResourceRuleNewParamsOptionsDisableCache `json:"disable_cache,omitzero"`
 	// Allows 206 responses regardless of the settings of an origin source.
-	DisableProxyForceRanges ResourceReplaceParamsOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges,omitzero"`
+	DisableProxyForceRanges CDNResourceRuleNewParamsOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges,omitzero"`
 	// Cache expiration time for CDN servers.
 	//
 	// `value` and `default` fields cannot be used simultaneously.
-	EdgeCacheSettings ResourceReplaceParamsOptionsEdgeCacheSettings `json:"edge_cache_settings,omitzero"`
+	EdgeCacheSettings CDNResourceRuleNewParamsOptionsEdgeCacheSettings `json:"edge_cache_settings,omitzero"`
 	// Allows to configure FastEdge app to be called on different request/response
 	// phases.
 	//
 	// Note: At least one of `on_request_headers`, `on_request_body`,
 	// `on_response_headers`, or `on_response_body` must be specified.
-	Fastedge ResourceReplaceParamsOptionsFastedge `json:"fastedge,omitzero"`
+	Fastedge CDNResourceRuleNewParamsOptionsFastedge `json:"fastedge,omitzero"`
 	// Makes the CDN request compressed content from the origin.
 	//
 	// The origin server should support compression. CDN servers will not decompress
@@ -7912,20 +2598,20 @@ type ResourceReplaceParamsOptions struct {
 	//     you enable it in CDN resource and want to use `gzipON` and
 	//     `brotli_compression` in a rule, you have to specify
 	//     `"fetch_compressed": false` in the rule.
-	FetchCompressed ResourceReplaceParamsOptionsFetchCompressed `json:"fetch_compressed,omitzero"`
+	FetchCompressed CDNResourceRuleNewParamsOptionsFetchCompressed `json:"fetch_compressed,omitzero"`
 	// Enables redirection from origin. If the origin server returns a redirect, the
 	// option allows the CDN to pull the requested content from the origin server that
 	// was returned in the redirect.
-	FollowOriginRedirect ResourceReplaceParamsOptionsFollowOriginRedirect `json:"follow_origin_redirect,omitzero"`
+	FollowOriginRedirect CDNResourceRuleNewParamsOptionsFollowOriginRedirect `json:"follow_origin_redirect,omitzero"`
 	// Applies custom HTTP response codes for CDN content.
 	//
 	// The following codes are reserved by our system and cannot be specified in this
 	// option: 408, 444, 477, 494, 495, 496, 497, 499.
-	ForceReturn ResourceReplaceParamsOptionsForceReturn `json:"force_return,omitzero"`
+	ForceReturn CDNResourceRuleNewParamsOptionsForceReturn `json:"force_return,omitzero"`
 	// Forwards the Host header from a end-user request to an origin server.
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	ForwardHostHeader ResourceReplaceParamsOptionsForwardHostHeader `json:"forward_host_header,omitzero"`
+	ForwardHostHeader CDNResourceRuleNewParamsOptionsForwardHostHeader `json:"forward_host_header,omitzero"`
 	// Compresses content with gzip on the CDN end. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -7936,30 +2622,26 @@ type ResourceReplaceParamsOptions struct {
 	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
 	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
-	GzipOn ResourceReplaceParamsOptionsGzipOn `json:"gzipOn,omitzero"`
+	GzipOn CDNResourceRuleNewParamsOptionsGzipOn `json:"gzipOn,omitzero"`
 	// Sets the Host header that CDN servers use when request content from an origin
 	// server. Your server must be able to process requests with the chosen header.
 	//
 	// If the option is `null`, the Host Header value is equal to first CNAME.
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	HostHeader ResourceReplaceParamsOptionsHostHeader `json:"hostHeader,omitzero"`
-	// Enables HTTP/3 protocol for content delivery.
-	//
-	// `http3_enabled` option works only with `"sslEnabled": true`.
-	Http3Enabled ResourceReplaceParamsOptionsHttp3Enabled `json:"http3_enabled,omitzero"`
+	HostHeader CDNResourceRuleNewParamsOptionsHostHeader `json:"hostHeader,omitzero"`
 	// Defines whether the files with the Set-Cookies header are cached as one file or
 	// as different ones.
-	IgnoreCookie ResourceReplaceParamsOptionsIgnoreCookie `json:"ignore_cookie,omitzero"`
+	IgnoreCookie CDNResourceRuleNewParamsOptionsIgnoreCookie `json:"ignore_cookie,omitzero"`
 	// How a file with different query strings is cached: either as one object (option
 	// is enabled) or as different objects (option is disabled.)
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	IgnoreQueryString ResourceReplaceParamsOptionsIgnoreQueryString `json:"ignoreQueryString,omitzero"`
+	IgnoreQueryString CDNResourceRuleNewParamsOptionsIgnoreQueryString `json:"ignoreQueryString,omitzero"`
 	// Transforms JPG and PNG images (for example, resize or crop) and automatically
 	// converts them to WebP or AVIF format.
-	ImageStack ResourceReplaceParamsOptionsImageStack `json:"image_stack,omitzero"`
+	ImageStack CDNResourceRuleNewParamsOptionsImageStack `json:"image_stack,omitzero"`
 	// Controls access to the CDN resource content for specific IP addresses.
 	//
 	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
@@ -7967,9 +2649,9 @@ type ResourceReplaceParamsOptions struct {
 	//
 	// We recommend you use a script for automatically update IP ACL.
 	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
-	IPAddressACL ResourceReplaceParamsOptionsIPAddressACL `json:"ip_address_acl,omitzero"`
+	IPAddressACL CDNResourceRuleNewParamsOptionsIPAddressACL `json:"ip_address_acl,omitzero"`
 	// Allows to control the download speed per connection.
-	LimitBandwidth ResourceReplaceParamsOptionsLimitBandwidth `json:"limit_bandwidth,omitzero"`
+	LimitBandwidth CDNResourceRuleNewParamsOptionsLimitBandwidth `json:"limit_bandwidth,omitzero"`
 	// Allows you to modify your cache key. If omitted, the default value is
 	// `$request_uri`.
 	//
@@ -7982,29 +2664,29 @@ type ResourceReplaceParamsOptions struct {
 	// **Warning**: Enabling and changing this option can invalidate your current cache
 	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
 	// not work.
-	ProxyCacheKey ResourceReplaceParamsOptionsProxyCacheKey `json:"proxy_cache_key,omitzero"`
+	ProxyCacheKey CDNResourceRuleNewParamsOptionsProxyCacheKey `json:"proxy_cache_key,omitzero"`
 	// Caching for POST requests along with default GET and HEAD.
-	ProxyCacheMethodsSet ResourceReplaceParamsOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set,omitzero"`
+	ProxyCacheMethodsSet CDNResourceRuleNewParamsOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set,omitzero"`
 	// The time limit for establishing a connection with the origin.
-	ProxyConnectTimeout ResourceReplaceParamsOptionsProxyConnectTimeout `json:"proxy_connect_timeout,omitzero"`
+	ProxyConnectTimeout CDNResourceRuleNewParamsOptionsProxyConnectTimeout `json:"proxy_connect_timeout,omitzero"`
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
 	// **Note:** When used with a WebSocket connection, this option supports values
 	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
-	ProxyReadTimeout ResourceReplaceParamsOptionsProxyReadTimeout `json:"proxy_read_timeout,omitzero"`
+	ProxyReadTimeout CDNResourceRuleNewParamsOptionsProxyReadTimeout `json:"proxy_read_timeout,omitzero"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	QueryParamsBlacklist ResourceReplaceParamsOptionsQueryParamsBlacklist `json:"query_params_blacklist,omitzero"`
+	QueryParamsBlacklist CDNResourceRuleNewParamsOptionsQueryParamsBlacklist `json:"query_params_blacklist,omitzero"`
 	// Files with the specified query parameters are cached as different objects, files
 	// with other parameters are cached as one object.
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	QueryParamsWhitelist ResourceReplaceParamsOptionsQueryParamsWhitelist `json:"query_params_whitelist,omitzero"`
+	QueryParamsWhitelist CDNResourceRuleNewParamsOptionsQueryParamsWhitelist `json:"query_params_whitelist,omitzero"`
 	// The Query String Forwarding feature allows for the seamless transfer of
 	// parameters embedded in playlist files to the corresponding media chunk files.
 	// This functionality ensures that specific attributes, such as authentication
@@ -8012,31 +2694,31 @@ type ResourceReplaceParamsOptions struct {
 	// manifest to the individual media segments. This is particularly useful for
 	// maintaining continuity in security, analytics, and any other parameter-based
 	// operations across the entire media delivery workflow.
-	QueryStringForwarding ResourceReplaceParamsOptionsQueryStringForwarding `json:"query_string_forwarding,omitzero"`
+	QueryStringForwarding CDNResourceRuleNewParamsOptionsQueryStringForwarding `json:"query_string_forwarding,omitzero"`
 	// Enables redirect from HTTP to HTTPS.
 	//
 	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 	// simultaneously.
-	RedirectHTTPToHTTPS ResourceReplaceParamsOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https,omitzero"`
+	RedirectHTTPToHTTPS CDNResourceRuleNewParamsOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https,omitzero"`
 	// Enables redirect from HTTPS to HTTP.
 	//
 	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 	// simultaneously.
-	RedirectHTTPSToHTTP ResourceReplaceParamsOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,omitzero"`
+	RedirectHTTPSToHTTP CDNResourceRuleNewParamsOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,omitzero"`
 	// Controls access to the CDN resource content for specified domain names.
-	ReferrerACL ResourceReplaceParamsOptionsReferrerACL `json:"referrer_acl,omitzero"`
+	ReferrerACL CDNResourceRuleNewParamsOptionsReferrerACL `json:"referrer_acl,omitzero"`
 	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter ResourceReplaceParamsOptionsRequestLimiter `json:"request_limiter,omitzero"`
+	RequestLimiter CDNResourceRuleNewParamsOptionsRequestLimiter `json:"request_limiter,omitzero"`
 	// Hides HTTP headers from an origin server in the CDN response.
-	ResponseHeadersHidingPolicy ResourceReplaceParamsOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,omitzero"`
+	ResponseHeadersHidingPolicy CDNResourceRuleNewParamsOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,omitzero"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
 	// to the
 	// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
 	// configuration.
-	Rewrite ResourceReplaceParamsOptionsRewrite `json:"rewrite,omitzero"`
+	Rewrite CDNResourceRuleNewParamsOptionsRewrite `json:"rewrite,omitzero"`
 	// Configures access with tokenized URLs. This makes impossible to access content
 	// without a valid (unexpired) token.
-	SecureKey ResourceReplaceParamsOptionsSecureKey `json:"secure_key,omitzero"`
+	SecureKey CDNResourceRuleNewParamsOptionsSecureKey `json:"secure_key,omitzero"`
 	// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
 	// part.) This reduces time to first byte.
 	//
@@ -8048,7 +2730,7 @@ type ResourceReplaceParamsOptions struct {
 	//  1. Origin must support HTTP Range requests.
 	//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
 	//     options enabled.
-	Slice ResourceReplaceParamsOptionsSlice `json:"slice,omitzero"`
+	Slice CDNResourceRuleNewParamsOptionsSlice `json:"slice,omitzero"`
 	// The hostname that is added to SNI requests from CDN servers to the origin server
 	// via HTTPS.
 	//
@@ -8058,61 +2740,42 @@ type ResourceReplaceParamsOptions struct {
 	// the connection.
 	//
 	// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
-	Sni ResourceReplaceParamsOptionsSni `json:"sni,omitzero"`
+	Sni CDNResourceRuleNewParamsOptionsSni `json:"sni,omitzero"`
 	// Serves stale cached content in case of origin unavailability.
-	Stale ResourceReplaceParamsOptionsStale `json:"stale,omitzero"`
+	Stale CDNResourceRuleNewParamsOptionsStale `json:"stale,omitzero"`
 	// Custom HTTP Headers that a CDN server adds to a response.
-	StaticResponseHeaders ResourceReplaceParamsOptionsStaticResponseHeaders `json:"static_response_headers,omitzero"`
+	StaticResponseHeaders CDNResourceRuleNewParamsOptionsStaticResponseHeaders `json:"static_response_headers,omitzero"`
 	// **Legacy option**. Use the `static_response_headers` option instead.
 	//
 	// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
 	// Headers can be specified. May contain a header with multiple values.
 	//
 	// Deprecated: deprecated
-	StaticHeaders ResourceReplaceParamsOptionsStaticHeaders `json:"staticHeaders,omitzero"`
+	StaticHeaders CDNResourceRuleNewParamsOptionsStaticHeaders `json:"staticHeaders,omitzero"`
 	// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
 	// Headers can be specified.
-	StaticRequestHeaders ResourceReplaceParamsOptionsStaticRequestHeaders `json:"staticRequestHeaders,omitzero"`
-	// List of SSL/TLS protocol versions allowed for HTTPS connections from end users
-	// to the domain.
-	//
-	// When the option is disabled, all protocols versions are allowed.
-	TlsVersions ResourceReplaceParamsOptionsTlsVersions `json:"tls_versions,omitzero"`
-	// Let's Encrypt certificate chain.
-	//
-	// The specified chain will be used during the next Let's Encrypt certificate issue
-	// or renewal.
-	UseDefaultLeChain ResourceReplaceParamsOptionsUseDefaultLeChain `json:"use_default_le_chain,omitzero"`
-	// DNS-01 challenge to issue a Let's Encrypt certificate for the resource.
-	//
-	// DNS service should be activated to enable this option.
-	UseDns01LeChallenge ResourceReplaceParamsOptionsUseDns01LeChallenge `json:"use_dns01_le_challenge,omitzero"`
-	// RSA Let's Encrypt certificate type for the CDN resource.
-	//
-	// The specified value will be used during the next Let's Encrypt certificate issue
-	// or renewal.
-	UseRsaLeCert ResourceReplaceParamsOptionsUseRsaLeCert `json:"use_rsa_le_cert,omitzero"`
+	StaticRequestHeaders CDNResourceRuleNewParamsOptionsStaticRequestHeaders `json:"staticRequestHeaders,omitzero"`
 	// Controls access to the content for specified User-Agents.
-	UserAgentACL ResourceReplaceParamsOptionsUserAgentACL `json:"user_agent_acl,omitzero"`
+	UserAgentACL CDNResourceRuleNewParamsOptionsUserAgentACL `json:"user_agent_acl,omitzero"`
 	// Allows to enable WAAP (Web Application and API Protection).
-	Waap ResourceReplaceParamsOptionsWaap `json:"waap,omitzero"`
+	Waap CDNResourceRuleNewParamsOptionsWaap `json:"waap,omitzero"`
 	// Enables or disables WebSockets connections to an origin server.
-	Websockets ResourceReplaceParamsOptionsWebsockets `json:"websockets,omitzero"`
+	Websockets CDNResourceRuleNewParamsOptionsWebsockets `json:"websockets,omitzero"`
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptions) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptions
+func (r CDNResourceRuleNewParamsOptions) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptions
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptions) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // HTTP methods allowed for content requests from the CDN.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsAllowedHTTPMethods struct {
+type CDNResourceRuleNewParamsOptionsAllowedHTTPMethods struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8125,11 +2788,11 @@ type ResourceReplaceParamsOptionsAllowedHTTPMethods struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsAllowedHTTPMethods) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsAllowedHTTPMethods
+func (r CDNResourceRuleNewParamsOptionsAllowedHTTPMethods) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsAllowedHTTPMethods
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8137,9 +2800,9 @@ func (r *ResourceReplaceParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []by
 // workflow running smoothly.
 //
 // The properties BotChallenge, Enabled are required.
-type ResourceReplaceParamsOptionsBotProtection struct {
+type CDNResourceRuleNewParamsOptionsBotProtection struct {
 	// Controls the bot challenge module state.
-	BotChallenge ResourceReplaceParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero,required"`
+	BotChallenge CDNResourceRuleNewParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero,required"`
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8150,16 +2813,16 @@ type ResourceReplaceParamsOptionsBotProtection struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsBotProtection) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsBotProtection
+func (r CDNResourceRuleNewParamsOptionsBotProtection) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsBotProtection
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsBotProtection) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsBotProtection) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Controls the bot challenge module state.
-type ResourceReplaceParamsOptionsBotProtectionBotChallenge struct {
+type CDNResourceRuleNewParamsOptionsBotProtectionBotChallenge struct {
 	// Possible values:
 	//
 	// - **true** - Bot challenge is enabled.
@@ -8168,11 +2831,11 @@ type ResourceReplaceParamsOptionsBotProtectionBotChallenge struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsBotProtectionBotChallenge) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsBotProtectionBotChallenge
+func (r CDNResourceRuleNewParamsOptionsBotProtectionBotChallenge) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsBotProtectionBotChallenge
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8193,7 +2856,7 @@ func (r *ResourceReplaceParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(da
 //     `fetch_compressed:false` in the rule.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsBrotliCompression struct {
+type CDNResourceRuleNewParamsOptionsBrotliCompression struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8214,11 +2877,11 @@ type ResourceReplaceParamsOptionsBrotliCompression struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsBrotliCompression) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsBrotliCompression
+func (r CDNResourceRuleNewParamsOptionsBrotliCompression) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsBrotliCompression
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsBrotliCompression) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsBrotliCompression) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8230,7 +2893,7 @@ func (r *ResourceReplaceParamsOptionsBrotliCompression) UnmarshalJSON(data []byt
 // Responses with other codes will not be cached.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsBrowserCacheSettings struct {
+type CDNResourceRuleNewParamsOptionsBrowserCacheSettings struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8245,11 +2908,11 @@ type ResourceReplaceParamsOptionsBrowserCacheSettings struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsBrowserCacheSettings) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsBrowserCacheSettings
+func (r CDNResourceRuleNewParamsOptionsBrowserCacheSettings) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsBrowserCacheSettings
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsBrowserCacheSettings) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsBrowserCacheSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8260,7 +2923,7 @@ func (r *ResourceReplaceParamsOptionsBrowserCacheSettings) UnmarshalJSON(data []
 // Deprecated: deprecated
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsCacheHTTPHeaders struct {
+type CDNResourceRuleNewParamsOptionsCacheHTTPHeaders struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8272,11 +2935,11 @@ type ResourceReplaceParamsOptionsCacheHTTPHeaders struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsCacheHTTPHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsCacheHTTPHeaders
+func (r CDNResourceRuleNewParamsOptionsCacheHTTPHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsCacheHTTPHeaders
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8286,7 +2949,7 @@ func (r *ResourceReplaceParamsOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte
 // to a response to a browser.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsCors struct {
+type CDNResourceRuleNewParamsOptionsCors struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8321,18 +2984,18 @@ type ResourceReplaceParamsOptionsCors struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsCors) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsCors
+func (r CDNResourceRuleNewParamsOptionsCors) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsCors
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsCors) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsCors) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Enables control access to content for specified countries.
 //
 // The properties Enabled, ExceptedValues, PolicyType are required.
-type ResourceReplaceParamsOptionsCountryACL struct {
+type CDNResourceRuleNewParamsOptionsCountryACL struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8361,16 +3024,16 @@ type ResourceReplaceParamsOptionsCountryACL struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsCountryACL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsCountryACL
+func (r CDNResourceRuleNewParamsOptionsCountryACL) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsCountryACL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsCountryACL) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsCountryACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ResourceReplaceParamsOptionsCountryACL](
+	apijson.RegisterFieldValidator[CDNResourceRuleNewParamsOptionsCountryACL](
 		"policy_type", "allow", "deny",
 	)
 }
@@ -8382,7 +3045,7 @@ func init() {
 // Deprecated: deprecated
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsDisableCache struct {
+type CDNResourceRuleNewParamsOptionsDisableCache struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8398,18 +3061,18 @@ type ResourceReplaceParamsOptionsDisableCache struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsDisableCache) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsDisableCache
+func (r CDNResourceRuleNewParamsOptionsDisableCache) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsDisableCache
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsDisableCache) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsDisableCache) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Allows 206 responses regardless of the settings of an origin source.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsDisableProxyForceRanges struct {
+type CDNResourceRuleNewParamsOptionsDisableProxyForceRanges struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8425,11 +3088,11 @@ type ResourceReplaceParamsOptionsDisableProxyForceRanges struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsDisableProxyForceRanges) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsDisableProxyForceRanges
+func (r CDNResourceRuleNewParamsOptionsDisableProxyForceRanges) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsDisableProxyForceRanges
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsDisableProxyForceRanges) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsDisableProxyForceRanges) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8438,7 +3101,7 @@ func (r *ResourceReplaceParamsOptionsDisableProxyForceRanges) UnmarshalJSON(data
 // `value` and `default` fields cannot be used simultaneously.
 //
 // The property Enabled is required.
-type ResourceReplaceParamsOptionsEdgeCacheSettings struct {
+type CDNResourceRuleNewParamsOptionsEdgeCacheSettings struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8475,11 +3138,11 @@ type ResourceReplaceParamsOptionsEdgeCacheSettings struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsEdgeCacheSettings) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsEdgeCacheSettings
+func (r CDNResourceRuleNewParamsOptionsEdgeCacheSettings) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsEdgeCacheSettings
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8490,7 +3153,7 @@ func (r *ResourceReplaceParamsOptionsEdgeCacheSettings) UnmarshalJSON(data []byt
 // `on_response_headers`, or `on_response_body` must be specified.
 //
 // The property Enabled is required.
-type ResourceReplaceParamsOptionsFastedge struct {
+type CDNResourceRuleNewParamsOptionsFastedge struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8500,24 +3163,24 @@ type ResourceReplaceParamsOptionsFastedge struct {
 	Enabled bool `json:"enabled,required"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// body as soon as CDN receives incoming HTTP request.
-	OnRequestBody ResourceReplaceParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
+	OnRequestBody CDNResourceRuleNewParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// headers as soon as CDN receives incoming HTTP request.
-	OnRequestHeaders ResourceReplaceParamsOptionsFastedgeOnRequestHeaders `json:"on_request_headers,omitzero"`
+	OnRequestHeaders CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeaders `json:"on_request_headers,omitzero"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// body before CDN sends the HTTP response.
-	OnResponseBody ResourceReplaceParamsOptionsFastedgeOnResponseBody `json:"on_response_body,omitzero"`
+	OnResponseBody CDNResourceRuleNewParamsOptionsFastedgeOnResponseBody `json:"on_response_body,omitzero"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// headers before CDN sends the HTTP response.
-	OnResponseHeaders ResourceReplaceParamsOptionsFastedgeOnResponseHeaders `json:"on_response_headers,omitzero"`
+	OnResponseHeaders CDNResourceRuleNewParamsOptionsFastedgeOnResponseHeaders `json:"on_response_headers,omitzero"`
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsFastedge) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsFastedge
+func (r CDNResourceRuleNewParamsOptionsFastedge) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsFastedge
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsFastedge) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsFastedge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8525,7 +3188,7 @@ func (r *ResourceReplaceParamsOptionsFastedge) UnmarshalJSON(data []byte) error 
 // body as soon as CDN receives incoming HTTP request.
 //
 // The property AppID is required.
-type ResourceReplaceParamsOptionsFastedgeOnRequestBody struct {
+type CDNResourceRuleNewParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
@@ -8540,11 +3203,11 @@ type ResourceReplaceParamsOptionsFastedgeOnRequestBody struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsFastedgeOnRequestBody) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsFastedgeOnRequestBody
+func (r CDNResourceRuleNewParamsOptionsFastedgeOnRequestBody) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsFastedgeOnRequestBody
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8552,7 +3215,7 @@ func (r *ResourceReplaceParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(data [
 // headers as soon as CDN receives incoming HTTP request.
 //
 // The property AppID is required.
-type ResourceReplaceParamsOptionsFastedgeOnRequestHeaders struct {
+type CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
@@ -8567,11 +3230,11 @@ type ResourceReplaceParamsOptionsFastedgeOnRequestHeaders struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsFastedgeOnRequestHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsFastedgeOnRequestHeaders
+func (r CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeaders
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8579,7 +3242,7 @@ func (r *ResourceReplaceParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(dat
 // body before CDN sends the HTTP response.
 //
 // The property AppID is required.
-type ResourceReplaceParamsOptionsFastedgeOnResponseBody struct {
+type CDNResourceRuleNewParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
@@ -8594,11 +3257,11 @@ type ResourceReplaceParamsOptionsFastedgeOnResponseBody struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsFastedgeOnResponseBody) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsFastedgeOnResponseBody
+func (r CDNResourceRuleNewParamsOptionsFastedgeOnResponseBody) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsFastedgeOnResponseBody
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8606,7 +3269,7 @@ func (r *ResourceReplaceParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(data 
 // headers before CDN sends the HTTP response.
 //
 // The property AppID is required.
-type ResourceReplaceParamsOptionsFastedgeOnResponseHeaders struct {
+type CDNResourceRuleNewParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
@@ -8621,11 +3284,11 @@ type ResourceReplaceParamsOptionsFastedgeOnResponseHeaders struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsFastedgeOnResponseHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsFastedgeOnResponseHeaders
+func (r CDNResourceRuleNewParamsOptionsFastedgeOnResponseHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsFastedgeOnResponseHeaders
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8644,7 +3307,7 @@ func (r *ResourceReplaceParamsOptionsFastedgeOnResponseHeaders) UnmarshalJSON(da
 //     `"fetch_compressed": false` in the rule.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsFetchCompressed struct {
+type CDNResourceRuleNewParamsOptionsFetchCompressed struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8660,11 +3323,11 @@ type ResourceReplaceParamsOptionsFetchCompressed struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsFetchCompressed) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsFetchCompressed
+func (r CDNResourceRuleNewParamsOptionsFetchCompressed) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsFetchCompressed
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsFetchCompressed) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsFetchCompressed) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8673,7 +3336,7 @@ func (r *ResourceReplaceParamsOptionsFetchCompressed) UnmarshalJSON(data []byte)
 // was returned in the redirect.
 //
 // The properties Codes, Enabled are required.
-type ResourceReplaceParamsOptionsFollowOriginRedirect struct {
+type CDNResourceRuleNewParamsOptionsFollowOriginRedirect struct {
 	// Redirect status code that the origin server returns.
 	//
 	// To serve up to date content to end users, you will need to purge the cache after
@@ -8691,11 +3354,11 @@ type ResourceReplaceParamsOptionsFollowOriginRedirect struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsFollowOriginRedirect) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsFollowOriginRedirect
+func (r CDNResourceRuleNewParamsOptionsFollowOriginRedirect) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsFollowOriginRedirect
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8705,7 +3368,7 @@ func (r *ResourceReplaceParamsOptionsFollowOriginRedirect) UnmarshalJSON(data []
 // option: 408, 444, 477, 494, 495, 496, 497, 499.
 //
 // The properties Body, Code, Enabled are required.
-type ResourceReplaceParamsOptionsForceReturn struct {
+type CDNResourceRuleNewParamsOptionsForceReturn struct {
 	// URL for redirection or text.
 	Body string `json:"body,required"`
 	// Status code value.
@@ -8719,15 +3382,15 @@ type ResourceReplaceParamsOptionsForceReturn struct {
 	Enabled bool `json:"enabled,required"`
 	// Controls the time at which a custom HTTP response code should be applied. By
 	// default, a custom HTTP response code is applied at any time.
-	TimeInterval ResourceReplaceParamsOptionsForceReturnTimeInterval `json:"time_interval,omitzero"`
+	TimeInterval CDNResourceRuleNewParamsOptionsForceReturnTimeInterval `json:"time_interval,omitzero"`
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsForceReturn) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsForceReturn
+func (r CDNResourceRuleNewParamsOptionsForceReturn) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsForceReturn
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsForceReturn) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsForceReturn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8735,7 +3398,7 @@ func (r *ResourceReplaceParamsOptionsForceReturn) UnmarshalJSON(data []byte) err
 // default, a custom HTTP response code is applied at any time.
 //
 // The properties EndTime, StartTime are required.
-type ResourceReplaceParamsOptionsForceReturnTimeInterval struct {
+type CDNResourceRuleNewParamsOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
 	EndTime string `json:"end_time,required"`
@@ -8747,11 +3410,11 @@ type ResourceReplaceParamsOptionsForceReturnTimeInterval struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsForceReturnTimeInterval) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsForceReturnTimeInterval
+func (r CDNResourceRuleNewParamsOptionsForceReturnTimeInterval) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsForceReturnTimeInterval
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsForceReturnTimeInterval) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsForceReturnTimeInterval) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8760,7 +3423,7 @@ func (r *ResourceReplaceParamsOptionsForceReturnTimeInterval) UnmarshalJSON(data
 // `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsForwardHostHeader struct {
+type CDNResourceRuleNewParamsOptionsForwardHostHeader struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8776,11 +3439,11 @@ type ResourceReplaceParamsOptionsForwardHostHeader struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsForwardHostHeader) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsForwardHostHeader
+func (r CDNResourceRuleNewParamsOptionsForwardHostHeader) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsForwardHostHeader
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8796,7 +3459,7 @@ func (r *ResourceReplaceParamsOptionsForwardHostHeader) UnmarshalJSON(data []byt
 //     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsGzipOn struct {
+type CDNResourceRuleNewParamsOptionsGzipOn struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8812,11 +3475,11 @@ type ResourceReplaceParamsOptionsGzipOn struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsGzipOn) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsGzipOn
+func (r CDNResourceRuleNewParamsOptionsGzipOn) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsGzipOn
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsGzipOn) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsGzipOn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8828,7 +3491,7 @@ func (r *ResourceReplaceParamsOptionsGzipOn) UnmarshalJSON(data []byte) error {
 // `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsHostHeader struct {
+type CDNResourceRuleNewParamsOptionsHostHeader struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8841,40 +3504,11 @@ type ResourceReplaceParamsOptionsHostHeader struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsHostHeader) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsHostHeader
+func (r CDNResourceRuleNewParamsOptionsHostHeader) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsHostHeader
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsHostHeader) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enables HTTP/3 protocol for content delivery.
-//
-// `http3_enabled` option works only with `"sslEnabled": true`.
-//
-// The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsHttp3Enabled struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceReplaceParamsOptionsHttp3Enabled) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsHttp3Enabled
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceReplaceParamsOptionsHttp3Enabled) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsHostHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8882,7 +3516,7 @@ func (r *ResourceReplaceParamsOptionsHttp3Enabled) UnmarshalJSON(data []byte) er
 // as different ones.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsIgnoreCookie struct {
+type CDNResourceRuleNewParamsOptionsIgnoreCookie struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8899,11 +3533,11 @@ type ResourceReplaceParamsOptionsIgnoreCookie struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsIgnoreCookie) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsIgnoreCookie
+func (r CDNResourceRuleNewParamsOptionsIgnoreCookie) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsIgnoreCookie
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsIgnoreCookie) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsIgnoreCookie) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8914,7 +3548,7 @@ func (r *ResourceReplaceParamsOptionsIgnoreCookie) UnmarshalJSON(data []byte) er
 // options cannot be enabled simultaneously.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsIgnoreQueryString struct {
+type CDNResourceRuleNewParamsOptionsIgnoreQueryString struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8930,11 +3564,11 @@ type ResourceReplaceParamsOptionsIgnoreQueryString struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsIgnoreQueryString) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsIgnoreQueryString
+func (r CDNResourceRuleNewParamsOptionsIgnoreQueryString) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsIgnoreQueryString
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsIgnoreQueryString) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsIgnoreQueryString) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8942,7 +3576,7 @@ func (r *ResourceReplaceParamsOptionsIgnoreQueryString) UnmarshalJSON(data []byt
 // converts them to WebP or AVIF format.
 //
 // The property Enabled is required.
-type ResourceReplaceParamsOptionsImageStack struct {
+type CDNResourceRuleNewParamsOptionsImageStack struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -8962,11 +3596,11 @@ type ResourceReplaceParamsOptionsImageStack struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsImageStack) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsImageStack
+func (r CDNResourceRuleNewParamsOptionsImageStack) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsImageStack
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsImageStack) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsImageStack) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8979,7 +3613,7 @@ func (r *ResourceReplaceParamsOptionsImageStack) UnmarshalJSON(data []byte) erro
 // [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
 //
 // The properties Enabled, ExceptedValues, PolicyType are required.
-type ResourceReplaceParamsOptionsIPAddressACL struct {
+type CDNResourceRuleNewParamsOptionsIPAddressACL struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9013,16 +3647,16 @@ type ResourceReplaceParamsOptionsIPAddressACL struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsIPAddressACL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsIPAddressACL
+func (r CDNResourceRuleNewParamsOptionsIPAddressACL) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsIPAddressACL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsIPAddressACL) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsIPAddressACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ResourceReplaceParamsOptionsIPAddressACL](
+	apijson.RegisterFieldValidator[CDNResourceRuleNewParamsOptionsIPAddressACL](
 		"policy_type", "allow", "deny",
 	)
 }
@@ -9030,7 +3664,7 @@ func init() {
 // Allows to control the download speed per connection.
 //
 // The properties Enabled, LimitType are required.
-type ResourceReplaceParamsOptionsLimitBandwidth struct {
+type CDNResourceRuleNewParamsOptionsLimitBandwidth struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9063,16 +3697,16 @@ type ResourceReplaceParamsOptionsLimitBandwidth struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsLimitBandwidth) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsLimitBandwidth
+func (r CDNResourceRuleNewParamsOptionsLimitBandwidth) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsLimitBandwidth
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsLimitBandwidth) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsLimitBandwidth) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ResourceReplaceParamsOptionsLimitBandwidth](
+	apijson.RegisterFieldValidator[CDNResourceRuleNewParamsOptionsLimitBandwidth](
 		"limit_type", "static", "dynamic",
 	)
 }
@@ -9091,7 +3725,7 @@ func init() {
 // not work.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsProxyCacheKey struct {
+type CDNResourceRuleNewParamsOptionsProxyCacheKey struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9104,18 +3738,18 @@ type ResourceReplaceParamsOptionsProxyCacheKey struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsProxyCacheKey) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsProxyCacheKey
+func (r CDNResourceRuleNewParamsOptionsProxyCacheKey) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsProxyCacheKey
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsProxyCacheKey) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsProxyCacheKey) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Caching for POST requests along with default GET and HEAD.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsProxyCacheMethodsSet struct {
+type CDNResourceRuleNewParamsOptionsProxyCacheMethodsSet struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9131,18 +3765,18 @@ type ResourceReplaceParamsOptionsProxyCacheMethodsSet struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsProxyCacheMethodsSet) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsProxyCacheMethodsSet
+func (r CDNResourceRuleNewParamsOptionsProxyCacheMethodsSet) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsProxyCacheMethodsSet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsProxyCacheMethodsSet) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsProxyCacheMethodsSet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The time limit for establishing a connection with the origin.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsProxyConnectTimeout struct {
+type CDNResourceRuleNewParamsOptionsProxyConnectTimeout struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9157,11 +3791,11 @@ type ResourceReplaceParamsOptionsProxyConnectTimeout struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsProxyConnectTimeout) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsProxyConnectTimeout
+func (r CDNResourceRuleNewParamsOptionsProxyConnectTimeout) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsProxyConnectTimeout
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -9172,7 +3806,7 @@ func (r *ResourceReplaceParamsOptionsProxyConnectTimeout) UnmarshalJSON(data []b
 // only in the range 1–20 seconds (instead of the usual 1–30 seconds).
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsProxyReadTimeout struct {
+type CDNResourceRuleNewParamsOptionsProxyReadTimeout struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9187,11 +3821,11 @@ type ResourceReplaceParamsOptionsProxyReadTimeout struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsProxyReadTimeout) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsProxyReadTimeout
+func (r CDNResourceRuleNewParamsOptionsProxyReadTimeout) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsProxyReadTimeout
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsProxyReadTimeout) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsProxyReadTimeout) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -9202,7 +3836,7 @@ func (r *ResourceReplaceParamsOptionsProxyReadTimeout) UnmarshalJSON(data []byte
 // options cannot be enabled simultaneously.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsQueryParamsBlacklist struct {
+type CDNResourceRuleNewParamsOptionsQueryParamsBlacklist struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9215,11 +3849,11 @@ type ResourceReplaceParamsOptionsQueryParamsBlacklist struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsQueryParamsBlacklist) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsQueryParamsBlacklist
+func (r CDNResourceRuleNewParamsOptionsQueryParamsBlacklist) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsQueryParamsBlacklist
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsQueryParamsBlacklist) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsQueryParamsBlacklist) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -9230,7 +3864,7 @@ func (r *ResourceReplaceParamsOptionsQueryParamsBlacklist) UnmarshalJSON(data []
 // options cannot be enabled simultaneously.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsQueryParamsWhitelist struct {
+type CDNResourceRuleNewParamsOptionsQueryParamsWhitelist struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9243,11 +3877,11 @@ type ResourceReplaceParamsOptionsQueryParamsWhitelist struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsQueryParamsWhitelist) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsQueryParamsWhitelist
+func (r CDNResourceRuleNewParamsOptionsQueryParamsWhitelist) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsQueryParamsWhitelist
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsQueryParamsWhitelist) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsQueryParamsWhitelist) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -9260,7 +3894,7 @@ func (r *ResourceReplaceParamsOptionsQueryParamsWhitelist) UnmarshalJSON(data []
 // operations across the entire media delivery workflow.
 //
 // The properties Enabled, ForwardFromFileTypes, ForwardToFileTypes are required.
-type ResourceReplaceParamsOptionsQueryStringForwarding struct {
+type CDNResourceRuleNewParamsOptionsQueryStringForwarding struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9297,11 +3931,11 @@ type ResourceReplaceParamsOptionsQueryStringForwarding struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsQueryStringForwarding) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsQueryStringForwarding
+func (r CDNResourceRuleNewParamsOptionsQueryStringForwarding) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsQueryStringForwarding
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsQueryStringForwarding) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsQueryStringForwarding) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -9311,7 +3945,7 @@ func (r *ResourceReplaceParamsOptionsQueryStringForwarding) UnmarshalJSON(data [
 // simultaneously.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsRedirectHTTPToHTTPS struct {
+type CDNResourceRuleNewParamsOptionsRedirectHTTPToHTTPS struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9327,11 +3961,11 @@ type ResourceReplaceParamsOptionsRedirectHTTPToHTTPS struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsRedirectHTTPToHTTPS) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsRedirectHTTPToHTTPS
+func (r CDNResourceRuleNewParamsOptionsRedirectHTTPToHTTPS) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsRedirectHTTPToHTTPS
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -9341,7 +3975,7 @@ func (r *ResourceReplaceParamsOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []b
 // simultaneously.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsRedirectHTTPSToHTTP struct {
+type CDNResourceRuleNewParamsOptionsRedirectHTTPSToHTTP struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9357,18 +3991,18 @@ type ResourceReplaceParamsOptionsRedirectHTTPSToHTTP struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsRedirectHTTPSToHTTP) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsRedirectHTTPSToHTTP
+func (r CDNResourceRuleNewParamsOptionsRedirectHTTPSToHTTP) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsRedirectHTTPSToHTTP
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsRedirectHTTPSToHTTP) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsRedirectHTTPSToHTTP) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Controls access to the CDN resource content for specified domain names.
 //
 // The properties Enabled, ExceptedValues, PolicyType are required.
-type ResourceReplaceParamsOptionsReferrerACL struct {
+type CDNResourceRuleNewParamsOptionsReferrerACL struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9403,16 +4037,16 @@ type ResourceReplaceParamsOptionsReferrerACL struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsReferrerACL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsReferrerACL
+func (r CDNResourceRuleNewParamsOptionsReferrerACL) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsReferrerACL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsReferrerACL) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsReferrerACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ResourceReplaceParamsOptionsReferrerACL](
+	apijson.RegisterFieldValidator[CDNResourceRuleNewParamsOptionsReferrerACL](
 		"policy_type", "allow", "deny",
 	)
 }
@@ -9420,7 +4054,7 @@ func init() {
 // Option allows to limit the amount of HTTP requests.
 //
 // The properties Enabled, Rate are required.
-type ResourceReplaceParamsOptionsRequestLimiter struct {
+type CDNResourceRuleNewParamsOptionsRequestLimiter struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9445,16 +4079,16 @@ type ResourceReplaceParamsOptionsRequestLimiter struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsRequestLimiter) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsRequestLimiter
+func (r CDNResourceRuleNewParamsOptionsRequestLimiter) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsRequestLimiter
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ResourceReplaceParamsOptionsRequestLimiter](
+	apijson.RegisterFieldValidator[CDNResourceRuleNewParamsOptionsRequestLimiter](
 		"rate_unit", "r/s", "r/m",
 	)
 }
@@ -9462,7 +4096,7 @@ func init() {
 // Hides HTTP headers from an origin server in the CDN response.
 //
 // The properties Enabled, Excepted, Mode are required.
-type ResourceReplaceParamsOptionsResponseHeadersHidingPolicy struct {
+type CDNResourceRuleNewParamsOptionsResponseHeadersHidingPolicy struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9499,16 +4133,16 @@ type ResourceReplaceParamsOptionsResponseHeadersHidingPolicy struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsResponseHeadersHidingPolicy) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsResponseHeadersHidingPolicy
+func (r CDNResourceRuleNewParamsOptionsResponseHeadersHidingPolicy) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsResponseHeadersHidingPolicy
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsResponseHeadersHidingPolicy) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsResponseHeadersHidingPolicy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ResourceReplaceParamsOptionsResponseHeadersHidingPolicy](
+	apijson.RegisterFieldValidator[CDNResourceRuleNewParamsOptionsResponseHeadersHidingPolicy](
 		"mode", "hide", "show",
 	)
 }
@@ -9519,7 +4153,7 @@ func init() {
 // configuration.
 //
 // The properties Body, Enabled are required.
-type ResourceReplaceParamsOptionsRewrite struct {
+type CDNResourceRuleNewParamsOptionsRewrite struct {
 	// Path for the Rewrite option.
 	//
 	// Example:
@@ -9549,16 +4183,16 @@ type ResourceReplaceParamsOptionsRewrite struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsRewrite) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsRewrite
+func (r CDNResourceRuleNewParamsOptionsRewrite) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsRewrite
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsRewrite) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsRewrite) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ResourceReplaceParamsOptionsRewrite](
+	apijson.RegisterFieldValidator[CDNResourceRuleNewParamsOptionsRewrite](
 		"flag", "break", "last", "redirect", "permanent",
 	)
 }
@@ -9567,7 +4201,7 @@ func init() {
 // without a valid (unexpired) token.
 //
 // The properties Enabled, Key are required.
-type ResourceReplaceParamsOptionsSecureKey struct {
+type CDNResourceRuleNewParamsOptionsSecureKey struct {
 	// Key generated on your side that will be used for URL signing.
 	Key param.Opt[string] `json:"key,omitzero,required"`
 	// Controls the option state.
@@ -9589,16 +4223,16 @@ type ResourceReplaceParamsOptionsSecureKey struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsSecureKey) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsSecureKey
+func (r CDNResourceRuleNewParamsOptionsSecureKey) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsSecureKey
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsSecureKey) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsSecureKey) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ResourceReplaceParamsOptionsSecureKey](
+	apijson.RegisterFieldValidator[CDNResourceRuleNewParamsOptionsSecureKey](
 		"type", 0, 2,
 	)
 }
@@ -9616,7 +4250,7 @@ func init() {
 //     options enabled.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsSlice struct {
+type CDNResourceRuleNewParamsOptionsSlice struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9632,11 +4266,11 @@ type ResourceReplaceParamsOptionsSlice struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsSlice) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsSlice
+func (r CDNResourceRuleNewParamsOptionsSlice) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsSlice
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsSlice) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsSlice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -9651,7 +4285,7 @@ func (r *ResourceReplaceParamsOptionsSlice) UnmarshalJSON(data []byte) error {
 // The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
 //
 // The properties CustomHostname, Enabled are required.
-type ResourceReplaceParamsOptionsSni struct {
+type CDNResourceRuleNewParamsOptionsSni struct {
 	// Custom SNI hostname.
 	//
 	// It is required if `sni_type` is set to custom.
@@ -9682,16 +4316,16 @@ type ResourceReplaceParamsOptionsSni struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsSni) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsSni
+func (r CDNResourceRuleNewParamsOptionsSni) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsSni
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsSni) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsSni) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ResourceReplaceParamsOptionsSni](
+	apijson.RegisterFieldValidator[CDNResourceRuleNewParamsOptionsSni](
 		"sni_type", "dynamic", "custom",
 	)
 }
@@ -9699,7 +4333,7 @@ func init() {
 // Serves stale cached content in case of origin unavailability.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsStale struct {
+type CDNResourceRuleNewParamsOptionsStale struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9715,39 +4349,39 @@ type ResourceReplaceParamsOptionsStale struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsStale) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsStale
+func (r CDNResourceRuleNewParamsOptionsStale) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsStale
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsStale) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsStale) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Custom HTTP Headers that a CDN server adds to a response.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsStaticResponseHeaders struct {
+type CDNResourceRuleNewParamsOptionsStaticResponseHeaders struct {
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool                                                     `json:"enabled,required"`
-	Value   []ResourceReplaceParamsOptionsStaticResponseHeadersValue `json:"value,omitzero,required"`
+	Enabled bool                                                        `json:"enabled,required"`
+	Value   []CDNResourceRuleNewParamsOptionsStaticResponseHeadersValue `json:"value,omitzero,required"`
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsStaticResponseHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsStaticResponseHeaders
+func (r CDNResourceRuleNewParamsOptionsStaticResponseHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsStaticResponseHeaders
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsStaticResponseHeaders) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsStaticResponseHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Name, Value are required.
-type ResourceReplaceParamsOptionsStaticResponseHeadersValue struct {
+type CDNResourceRuleNewParamsOptionsStaticResponseHeadersValue struct {
 	// HTTP Header name.
 	//
 	// Restrictions:
@@ -9778,11 +4412,11 @@ type ResourceReplaceParamsOptionsStaticResponseHeadersValue struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsStaticResponseHeadersValue) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsStaticResponseHeadersValue
+func (r CDNResourceRuleNewParamsOptionsStaticResponseHeadersValue) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsStaticResponseHeadersValue
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsStaticResponseHeadersValue) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsStaticResponseHeadersValue) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -9794,7 +4428,7 @@ func (r *ResourceReplaceParamsOptionsStaticResponseHeadersValue) UnmarshalJSON(d
 // Deprecated: deprecated
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsStaticHeaders struct {
+type CDNResourceRuleNewParamsOptionsStaticHeaders struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9815,11 +4449,11 @@ type ResourceReplaceParamsOptionsStaticHeaders struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsStaticHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsStaticHeaders
+func (r CDNResourceRuleNewParamsOptionsStaticHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsStaticHeaders
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsStaticHeaders) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsStaticHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -9827,7 +4461,7 @@ func (r *ResourceReplaceParamsOptionsStaticHeaders) UnmarshalJSON(data []byte) e
 // Headers can be specified.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsStaticRequestHeaders struct {
+type CDNResourceRuleNewParamsOptionsStaticRequestHeaders struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -9848,137 +4482,18 @@ type ResourceReplaceParamsOptionsStaticRequestHeaders struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsStaticRequestHeaders) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsStaticRequestHeaders
+func (r CDNResourceRuleNewParamsOptionsStaticRequestHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsStaticRequestHeaders
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsStaticRequestHeaders) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// List of SSL/TLS protocol versions allowed for HTTPS connections from end users
-// to the domain.
-//
-// When the option is disabled, all protocols versions are allowed.
-//
-// The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsTlsVersions struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// List of SSL/TLS protocol versions (case sensitive).
-	//
-	// Any of "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3".
-	Value []string `json:"value,omitzero,required"`
-	paramObj
-}
-
-func (r ResourceReplaceParamsOptionsTlsVersions) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsTlsVersions
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceReplaceParamsOptionsTlsVersions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Let's Encrypt certificate chain.
-//
-// The specified chain will be used during the next Let's Encrypt certificate issue
-// or renewal.
-//
-// The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsUseDefaultLeChain struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	//   - **true** - Default Let's Encrypt certificate chain. This is a deprecated
-	//     version, use it only for compatibilities with Android devices 7.1.1 or lower.
-	//   - **false** - Alternative Let's Encrypt certificate chain.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceReplaceParamsOptionsUseDefaultLeChain) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsUseDefaultLeChain
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceReplaceParamsOptionsUseDefaultLeChain) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// DNS-01 challenge to issue a Let's Encrypt certificate for the resource.
-//
-// DNS service should be activated to enable this option.
-//
-// The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsUseDns01LeChallenge struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - DNS-01 challenge is used to issue Let's Encrypt certificate.
-	// - **false** - HTTP-01 challenge is used to issue Let's Encrypt certificate.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceReplaceParamsOptionsUseDns01LeChallenge) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsUseDns01LeChallenge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceReplaceParamsOptionsUseDns01LeChallenge) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// RSA Let's Encrypt certificate type for the CDN resource.
-//
-// The specified value will be used during the next Let's Encrypt certificate issue
-// or renewal.
-//
-// The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsUseRsaLeCert struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
-	// Possible values:
-	//
-	// - **true** - RSA Let's Encrypt certificate.
-	// - **false** - ECDSA Let's Encrypt certificate.
-	Value bool `json:"value,required"`
-	paramObj
-}
-
-func (r ResourceReplaceParamsOptionsUseRsaLeCert) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsUseRsaLeCert
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResourceReplaceParamsOptionsUseRsaLeCert) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsStaticRequestHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Controls access to the content for specified User-Agents.
 //
 // The properties Enabled, ExceptedValues, PolicyType are required.
-type ResourceReplaceParamsOptionsUserAgentACL struct {
+type CDNResourceRuleNewParamsOptionsUserAgentACL struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -10013,16 +4528,16 @@ type ResourceReplaceParamsOptionsUserAgentACL struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsUserAgentACL) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsUserAgentACL
+func (r CDNResourceRuleNewParamsOptionsUserAgentACL) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsUserAgentACL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsUserAgentACL) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsUserAgentACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ResourceReplaceParamsOptionsUserAgentACL](
+	apijson.RegisterFieldValidator[CDNResourceRuleNewParamsOptionsUserAgentACL](
 		"policy_type", "allow", "deny",
 	)
 }
@@ -10030,7 +4545,7 @@ func init() {
 // Allows to enable WAAP (Web Application and API Protection).
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsWaap struct {
+type CDNResourceRuleNewParamsOptionsWaap struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -10046,18 +4561,18 @@ type ResourceReplaceParamsOptionsWaap struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsWaap) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsWaap
+func (r CDNResourceRuleNewParamsOptionsWaap) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsWaap
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsWaap) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsWaap) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Enables or disables WebSockets connections to an origin server.
 //
 // The properties Enabled, Value are required.
-type ResourceReplaceParamsOptionsWebsockets struct {
+type CDNResourceRuleNewParamsOptionsWebsockets struct {
 	// Controls the option state.
 	//
 	// Possible values:
@@ -10073,28 +4588,4366 @@ type ResourceReplaceParamsOptionsWebsockets struct {
 	paramObj
 }
 
-func (r ResourceReplaceParamsOptionsWebsockets) MarshalJSON() (data []byte, err error) {
-	type shadow ResourceReplaceParamsOptionsWebsockets
+func (r CDNResourceRuleNewParamsOptionsWebsockets) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsWebsockets
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ResourceReplaceParamsOptionsWebsockets) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceRuleNewParamsOptionsWebsockets) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Protocol used by CDN servers to request content from an origin source.
+// Sets a protocol other than the one specified in the CDN resource settings to
+// connect to the origin.
 //
 // Possible values:
 //
-//   - **HTTPS** - CDN servers will connect to the origin via HTTPS.
-//   - **HTTP** - CDN servers will connect to the origin via HTTP.
-//   - **MATCH** - connection protocol will be chosen automatically (content on the
-//     origin source should be available for the CDN both through HTTP and HTTPS).
-//
-// If protocol is not specified, HTTP is used to connect to an origin server.
-type ResourceReplaceParamsOriginProtocol string
+//   - **HTTPS** - CDN servers connect to origin via HTTPS protocol.
+//   - **HTTP** - CDN servers connect to origin via HTTP protocol.
+//   - **MATCH** - Connection protocol is chosen automatically; in this case, content
+//     on origin source should be available for the CDN both through HTTP and HTTPS
+//     protocols.
+//   - **null** - `originProtocol` setting is inherited from the CDN resource
+//     settings.
+type CDNResourceRuleNewParamsOverrideOriginProtocol string
 
 const (
-	ResourceReplaceParamsOriginProtocolHTTP  ResourceReplaceParamsOriginProtocol = "HTTP"
-	ResourceReplaceParamsOriginProtocolHTTPS ResourceReplaceParamsOriginProtocol = "HTTPS"
-	ResourceReplaceParamsOriginProtocolMatch ResourceReplaceParamsOriginProtocol = "MATCH"
+	CDNResourceRuleNewParamsOverrideOriginProtocolHTTPS CDNResourceRuleNewParamsOverrideOriginProtocol = "HTTPS"
+	CDNResourceRuleNewParamsOverrideOriginProtocolHTTP  CDNResourceRuleNewParamsOverrideOriginProtocol = "HTTP"
+	CDNResourceRuleNewParamsOverrideOriginProtocolMatch CDNResourceRuleNewParamsOverrideOriginProtocol = "MATCH"
+)
+
+type CDNResourceRuleUpdateParams struct {
+	ResourceID int64 `path:"resource_id,required" json:"-"`
+	// ID of the origin group to which the rule is applied.
+	//
+	// If the origin group is not specified, the rule is applied to the origin group
+	// that the CDN resource is associated with.
+	OriginGroup param.Opt[int64] `json:"originGroup,omitzero"`
+	// Enables or disables a rule.
+	//
+	// Possible values:
+	//
+	// - **true** - Rule is active, rule settings are applied.
+	// - **false** - Rule is inactive, rule settings are not applied.
+	Active param.Opt[bool] `json:"active,omitzero"`
+	// Rule name.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Path to the file or folder for which the rule will be applied.
+	//
+	// The rule is applied if the requested URI matches the rule path.
+	//
+	// We add a leading forward slash to any rule path. Specify a path without a
+	// forward slash.
+	Rule param.Opt[string] `json:"rule,omitzero"`
+	// Rule type.
+	//
+	// Possible values:
+	//
+	//   - **Type 0** - Regular expression. Must start with '^/' or '/'.
+	//   - **Type 1** - Regular expression. Note that for this rule type we automatically
+	//     add / to each rule pattern before your regular expression. This type is
+	//     **legacy**, please use Type 0.
+	RuleType param.Opt[int64] `json:"ruleType,omitzero"`
+	// Rule execution order: from lowest (1) to highest.
+	//
+	// If requested URI matches multiple rules, the one higher in the order of the
+	// rules will be applied.
+	Weight param.Opt[int64] `json:"weight,omitzero"`
+	// Sets a protocol other than the one specified in the CDN resource settings to
+	// connect to the origin.
+	//
+	// Possible values:
+	//
+	//   - **HTTPS** - CDN servers connect to origin via HTTPS protocol.
+	//   - **HTTP** - CDN servers connect to origin via HTTP protocol.
+	//   - **MATCH** - Connection protocol is chosen automatically; in this case, content
+	//     on origin source should be available for the CDN both through HTTP and HTTPS
+	//     protocols.
+	//   - **null** - `originProtocol` setting is inherited from the CDN resource
+	//     settings.
+	//
+	// Any of "HTTPS", "HTTP", "MATCH".
+	OverrideOriginProtocol CDNResourceRuleUpdateParamsOverrideOriginProtocol `json:"overrideOriginProtocol,omitzero"`
+	// List of options that can be configured for the rule.
+	//
+	// In case of `null` value the option is not added to the rule. Option inherits its
+	// value from the CDN resource settings.
+	Options CDNResourceRuleUpdateParamsOptions `json:"options,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// List of options that can be configured for the rule.
+//
+// In case of `null` value the option is not added to the rule. Option inherits its
+// value from the CDN resource settings.
+type CDNResourceRuleUpdateParamsOptions struct {
+	// HTTP methods allowed for content requests from the CDN.
+	AllowedHTTPMethods CDNResourceRuleUpdateParamsOptionsAllowedHTTPMethods `json:"allowedHttpMethods,omitzero"`
+	// Allows to prevent online services from overloading and ensure your business
+	// workflow running smoothly.
+	BotProtection CDNResourceRuleUpdateParamsOptionsBotProtection `json:"bot_protection,omitzero"`
+	// Compresses content with Brotli on the CDN side. CDN servers will request only
+	// uncompressed content from the origin.
+	//
+	// Notes:
+	//
+	//  1. CDN only supports "Brotli compression" when the "origin shielding" feature is
+	//     activated.
+	//  2. If a precache server is not active for a CDN resource, no compression occurs,
+	//     even if the option is enabled.
+	//  3. `brotli_compression` is not supported with `fetch_compressed` or `slice`
+	//     options enabled.
+	//  4. `fetch_compressed` option in CDN resource settings overrides
+	//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
+	//     resource and want to enable `brotli_compression` in a rule, you must specify
+	//     `fetch_compressed:false` in the rule.
+	BrotliCompression CDNResourceRuleUpdateParamsOptionsBrotliCompression `json:"brotli_compression,omitzero"`
+	// Cache expiration time for users browsers in seconds.
+	//
+	// Cache expiration time is applied to the following response codes: 200, 201, 204,
+	// 206, 301, 302, 303, 304, 307, 308.
+	//
+	// Responses with other codes will not be cached.
+	BrowserCacheSettings CDNResourceRuleUpdateParamsOptionsBrowserCacheSettings `json:"browser_cache_settings,omitzero"`
+	// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
+	//
+	// HTTP Headers that must be included in the response.
+	//
+	// Deprecated: deprecated
+	CacheHTTPHeaders CDNResourceRuleUpdateParamsOptionsCacheHTTPHeaders `json:"cache_http_headers,omitzero"`
+	// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
+	//
+	// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
+	// to a response to a browser.
+	Cors CDNResourceRuleUpdateParamsOptionsCors `json:"cors,omitzero"`
+	// Enables control access to content for specified countries.
+	CountryACL CDNResourceRuleUpdateParamsOptionsCountryACL `json:"country_acl,omitzero"`
+	// **Legacy option**. Use the `edge_cache_settings` option instead.
+	//
+	// Allows the complete disabling of content caching.
+	//
+	// Deprecated: deprecated
+	DisableCache CDNResourceRuleUpdateParamsOptionsDisableCache `json:"disable_cache,omitzero"`
+	// Allows 206 responses regardless of the settings of an origin source.
+	DisableProxyForceRanges CDNResourceRuleUpdateParamsOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges,omitzero"`
+	// Cache expiration time for CDN servers.
+	//
+	// `value` and `default` fields cannot be used simultaneously.
+	EdgeCacheSettings CDNResourceRuleUpdateParamsOptionsEdgeCacheSettings `json:"edge_cache_settings,omitzero"`
+	// Allows to configure FastEdge app to be called on different request/response
+	// phases.
+	//
+	// Note: At least one of `on_request_headers`, `on_request_body`,
+	// `on_response_headers`, or `on_response_body` must be specified.
+	Fastedge CDNResourceRuleUpdateParamsOptionsFastedge `json:"fastedge,omitzero"`
+	// Makes the CDN request compressed content from the origin.
+	//
+	// The origin server should support compression. CDN servers will not decompress
+	// your content even if a user browser does not accept compression.
+	//
+	// Notes:
+	//
+	//  1. `fetch_compressed` is not supported with `gzipON` or `brotli_compression` or
+	//     `slice` options enabled.
+	//  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
+	//     you enable it in CDN resource and want to use `gzipON` and
+	//     `brotli_compression` in a rule, you have to specify
+	//     `"fetch_compressed": false` in the rule.
+	FetchCompressed CDNResourceRuleUpdateParamsOptionsFetchCompressed `json:"fetch_compressed,omitzero"`
+	// Enables redirection from origin. If the origin server returns a redirect, the
+	// option allows the CDN to pull the requested content from the origin server that
+	// was returned in the redirect.
+	FollowOriginRedirect CDNResourceRuleUpdateParamsOptionsFollowOriginRedirect `json:"follow_origin_redirect,omitzero"`
+	// Applies custom HTTP response codes for CDN content.
+	//
+	// The following codes are reserved by our system and cannot be specified in this
+	// option: 408, 444, 477, 494, 495, 496, 497, 499.
+	ForceReturn CDNResourceRuleUpdateParamsOptionsForceReturn `json:"force_return,omitzero"`
+	// Forwards the Host header from a end-user request to an origin server.
+	//
+	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
+	ForwardHostHeader CDNResourceRuleUpdateParamsOptionsForwardHostHeader `json:"forward_host_header,omitzero"`
+	// Compresses content with gzip on the CDN end. CDN servers will request only
+	// uncompressed content from the origin.
+	//
+	// Notes:
+	//
+	//  1. Compression with gzip is not supported with `fetch_compressed` or `slice`
+	//     options enabled.
+	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
+	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
+	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
+	GzipOn CDNResourceRuleUpdateParamsOptionsGzipOn `json:"gzipOn,omitzero"`
+	// Sets the Host header that CDN servers use when request content from an origin
+	// server. Your server must be able to process requests with the chosen header.
+	//
+	// If the option is `null`, the Host Header value is equal to first CNAME.
+	//
+	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
+	HostHeader CDNResourceRuleUpdateParamsOptionsHostHeader `json:"hostHeader,omitzero"`
+	// Defines whether the files with the Set-Cookies header are cached as one file or
+	// as different ones.
+	IgnoreCookie CDNResourceRuleUpdateParamsOptionsIgnoreCookie `json:"ignore_cookie,omitzero"`
+	// How a file with different query strings is cached: either as one object (option
+	// is enabled) or as different objects (option is disabled.)
+	//
+	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
+	// options cannot be enabled simultaneously.
+	IgnoreQueryString CDNResourceRuleUpdateParamsOptionsIgnoreQueryString `json:"ignoreQueryString,omitzero"`
+	// Transforms JPG and PNG images (for example, resize or crop) and automatically
+	// converts them to WebP or AVIF format.
+	ImageStack CDNResourceRuleUpdateParamsOptionsImageStack `json:"image_stack,omitzero"`
+	// Controls access to the CDN resource content for specific IP addresses.
+	//
+	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
+	// you have to independently monitor their relevance.
+	//
+	// We recommend you use a script for automatically update IP ACL.
+	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
+	IPAddressACL CDNResourceRuleUpdateParamsOptionsIPAddressACL `json:"ip_address_acl,omitzero"`
+	// Allows to control the download speed per connection.
+	LimitBandwidth CDNResourceRuleUpdateParamsOptionsLimitBandwidth `json:"limit_bandwidth,omitzero"`
+	// Allows you to modify your cache key. If omitted, the default value is
+	// `$request_uri`.
+	//
+	// Combine the specified variables to create a key for caching.
+	//
+	// - **$`request_uri`**
+	// - **$scheme**
+	// - **$uri**
+	//
+	// **Warning**: Enabling and changing this option can invalidate your current cache
+	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
+	// not work.
+	ProxyCacheKey CDNResourceRuleUpdateParamsOptionsProxyCacheKey `json:"proxy_cache_key,omitzero"`
+	// Caching for POST requests along with default GET and HEAD.
+	ProxyCacheMethodsSet CDNResourceRuleUpdateParamsOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set,omitzero"`
+	// The time limit for establishing a connection with the origin.
+	ProxyConnectTimeout CDNResourceRuleUpdateParamsOptionsProxyConnectTimeout `json:"proxy_connect_timeout,omitzero"`
+	// The time limit for receiving a partial response from the origin. If no response
+	// is received within this time, the connection will be closed.
+	//
+	// **Note:** When used with a WebSocket connection, this option supports values
+	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+	ProxyReadTimeout CDNResourceRuleUpdateParamsOptionsProxyReadTimeout `json:"proxy_read_timeout,omitzero"`
+	// Files with the specified query parameters are cached as one object, files with
+	// other parameters are cached as different objects.
+	//
+	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
+	// options cannot be enabled simultaneously.
+	QueryParamsBlacklist CDNResourceRuleUpdateParamsOptionsQueryParamsBlacklist `json:"query_params_blacklist,omitzero"`
+	// Files with the specified query parameters are cached as different objects, files
+	// with other parameters are cached as one object.
+	//
+	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
+	// options cannot be enabled simultaneously.
+	QueryParamsWhitelist CDNResourceRuleUpdateParamsOptionsQueryParamsWhitelist `json:"query_params_whitelist,omitzero"`
+	// The Query String Forwarding feature allows for the seamless transfer of
+	// parameters embedded in playlist files to the corresponding media chunk files.
+	// This functionality ensures that specific attributes, such as authentication
+	// tokens or tracking information, are consistently passed along from the playlist
+	// manifest to the individual media segments. This is particularly useful for
+	// maintaining continuity in security, analytics, and any other parameter-based
+	// operations across the entire media delivery workflow.
+	QueryStringForwarding CDNResourceRuleUpdateParamsOptionsQueryStringForwarding `json:"query_string_forwarding,omitzero"`
+	// Enables redirect from HTTP to HTTPS.
+	//
+	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
+	// simultaneously.
+	RedirectHTTPToHTTPS CDNResourceRuleUpdateParamsOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https,omitzero"`
+	// Enables redirect from HTTPS to HTTP.
+	//
+	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
+	// simultaneously.
+	RedirectHTTPSToHTTP CDNResourceRuleUpdateParamsOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,omitzero"`
+	// Controls access to the CDN resource content for specified domain names.
+	ReferrerACL CDNResourceRuleUpdateParamsOptionsReferrerACL `json:"referrer_acl,omitzero"`
+	// Option allows to limit the amount of HTTP requests.
+	RequestLimiter CDNResourceRuleUpdateParamsOptionsRequestLimiter `json:"request_limiter,omitzero"`
+	// Hides HTTP headers from an origin server in the CDN response.
+	ResponseHeadersHidingPolicy CDNResourceRuleUpdateParamsOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,omitzero"`
+	// Changes and redirects requests from the CDN to the origin. It operates according
+	// to the
+	// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
+	// configuration.
+	Rewrite CDNResourceRuleUpdateParamsOptionsRewrite `json:"rewrite,omitzero"`
+	// Configures access with tokenized URLs. This makes impossible to access content
+	// without a valid (unexpired) token.
+	SecureKey CDNResourceRuleUpdateParamsOptionsSecureKey `json:"secure_key,omitzero"`
+	// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
+	// part.) This reduces time to first byte.
+	//
+	// The option is based on the
+	// [Slice](https://nginx.org/en/docs/http/ngx_http_slice_module.html) module.
+	//
+	// Notes:
+	//
+	//  1. Origin must support HTTP Range requests.
+	//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
+	//     options enabled.
+	Slice CDNResourceRuleUpdateParamsOptionsSlice `json:"slice,omitzero"`
+	// The hostname that is added to SNI requests from CDN servers to the origin server
+	// via HTTPS.
+	//
+	// SNI is generally only required if your origin uses shared hosting or does not
+	// have a dedicated IP address. If the origin server presents multiple
+	// certificates, SNI allows the origin server to know which certificate to use for
+	// the connection.
+	//
+	// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
+	Sni CDNResourceRuleUpdateParamsOptionsSni `json:"sni,omitzero"`
+	// Serves stale cached content in case of origin unavailability.
+	Stale CDNResourceRuleUpdateParamsOptionsStale `json:"stale,omitzero"`
+	// Custom HTTP Headers that a CDN server adds to a response.
+	StaticResponseHeaders CDNResourceRuleUpdateParamsOptionsStaticResponseHeaders `json:"static_response_headers,omitzero"`
+	// **Legacy option**. Use the `static_response_headers` option instead.
+	//
+	// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
+	// Headers can be specified. May contain a header with multiple values.
+	//
+	// Deprecated: deprecated
+	StaticHeaders CDNResourceRuleUpdateParamsOptionsStaticHeaders `json:"staticHeaders,omitzero"`
+	// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
+	// Headers can be specified.
+	StaticRequestHeaders CDNResourceRuleUpdateParamsOptionsStaticRequestHeaders `json:"staticRequestHeaders,omitzero"`
+	// Controls access to the content for specified User-Agents.
+	UserAgentACL CDNResourceRuleUpdateParamsOptionsUserAgentACL `json:"user_agent_acl,omitzero"`
+	// Allows to enable WAAP (Web Application and API Protection).
+	Waap CDNResourceRuleUpdateParamsOptionsWaap `json:"waap,omitzero"`
+	// Enables or disables WebSockets connections to an origin server.
+	Websockets CDNResourceRuleUpdateParamsOptionsWebsockets `json:"websockets,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptions) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptions
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptions) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// HTTP methods allowed for content requests from the CDN.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsAllowedHTTPMethods struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Any of "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
+	Value []string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsAllowedHTTPMethods) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsAllowedHTTPMethods
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to prevent online services from overloading and ensure your business
+// workflow running smoothly.
+//
+// The properties BotChallenge, Enabled are required.
+type CDNResourceRuleUpdateParamsOptionsBotProtection struct {
+	// Controls the bot challenge module state.
+	BotChallenge CDNResourceRuleUpdateParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero,required"`
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsBotProtection) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsBotProtection
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsBotProtection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls the bot challenge module state.
+type CDNResourceRuleUpdateParamsOptionsBotProtectionBotChallenge struct {
+	// Possible values:
+	//
+	// - **true** - Bot challenge is enabled.
+	// - **false** - Bot challenge is disabled.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsBotProtectionBotChallenge) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsBotProtectionBotChallenge
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Compresses content with Brotli on the CDN side. CDN servers will request only
+// uncompressed content from the origin.
+//
+// Notes:
+//
+//  1. CDN only supports "Brotli compression" when the "origin shielding" feature is
+//     activated.
+//  2. If a precache server is not active for a CDN resource, no compression occurs,
+//     even if the option is enabled.
+//  3. `brotli_compression` is not supported with `fetch_compressed` or `slice`
+//     options enabled.
+//  4. `fetch_compressed` option in CDN resource settings overrides
+//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
+//     resource and want to enable `brotli_compression` in a rule, you must specify
+//     `fetch_compressed:false` in the rule.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsBrotliCompression struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Allows to select the content types you want to compress.
+	//
+	// `text/html` is a mandatory content type.
+	//
+	// Any of "application/javascript", "application/json",
+	// "application/vnd.ms-fontobject", "application/wasm", "application/x-font-ttf",
+	// "application/x-javascript", "application/xml", "application/xml+rss",
+	// "image/svg+xml", "image/x-icon", "text/css", "text/html", "text/javascript",
+	// "text/plain", "text/xml".
+	Value []string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsBrotliCompression) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsBrotliCompression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsBrotliCompression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Cache expiration time for users browsers in seconds.
+//
+// Cache expiration time is applied to the following response codes: 200, 201, 204,
+// 206, 301, 302, 303, 304, 307, 308.
+//
+// Responses with other codes will not be cached.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsBrowserCacheSettings struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Set the cache expiration time to '0s' to disable caching.
+	//
+	// The maximum duration is any equivalent to `1y`.
+	Value string `json:"value,required" format:"nginx time"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsBrowserCacheSettings) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsBrowserCacheSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsBrowserCacheSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
+//
+// HTTP Headers that must be included in the response.
+//
+// Deprecated: deprecated
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsCacheHTTPHeaders struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool     `json:"enabled,required"`
+	Value   []string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsCacheHTTPHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsCacheHTTPHeaders
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
+//
+// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
+// to a response to a browser.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsCors struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Value of the Access-Control-Allow-Origin header.
+	//
+	// Possible values:
+	//
+	//   - **Adds \* as the Access-Control-Allow-Origin header value** - Content will be
+	//     uploaded for requests from any domain. `"value": ["*"]`
+	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
+	//     origin matches one of the listed domains** - Content will be uploaded only for
+	//     requests from the domains specified in the field.
+	//     `"value": ["domain.com", "second.dom.com"]`
+	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
+	//     Content will be uploaded for requests from any domain, and the domain from
+	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
+	//     header in the response. `"value": ["$http_origin"]`
+	Value []string `json:"value,omitzero,required"`
+	// Defines whether the Access-Control-Allow-Origin header should be added to a
+	// response from CDN regardless of response code.
+	//
+	// Possible values:
+	//
+	//   - **true** - Header will be added to a response regardless of response code.
+	//   - **false** - Header will only be added to responses with codes: 200, 201, 204,
+	//     206, 301, 302, 303, 304, 307, 308.
+	Always param.Opt[bool] `json:"always,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsCors) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsCors
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsCors) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables control access to content for specified countries.
+//
+// The properties Enabled, ExceptedValues, PolicyType are required.
+type CDNResourceRuleUpdateParamsOptionsCountryACL struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of countries according to ISO-3166-1.
+	//
+	// The meaning of the parameter depends on `policy_type` value:
+	//
+	// - **allow** - List of countries for which access is prohibited.
+	// - **deny** - List of countries for which access is allowed.
+	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"country-code"`
+	// Defines the type of CDN resource access policy.
+	//
+	// Possible values:
+	//
+	//   - **allow** - Access is allowed for all the countries except for those specified
+	//     in `excepted_values` field.
+	//   - **deny** - Access is denied for all the countries except for those specified
+	//     in `excepted_values` field.
+	//
+	// Any of "allow", "deny".
+	PolicyType string `json:"policy_type,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsCountryACL) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsCountryACL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsCountryACL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleUpdateParamsOptionsCountryACL](
+		"policy_type", "allow", "deny",
+	)
+}
+
+// **Legacy option**. Use the `edge_cache_settings` option instead.
+//
+// Allows the complete disabling of content caching.
+//
+// Deprecated: deprecated
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsDisableCache struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - content caching is disabled.
+	// - **false** - content caching is enabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsDisableCache) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsDisableCache
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsDisableCache) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows 206 responses regardless of the settings of an origin source.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsDisableProxyForceRanges struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsDisableProxyForceRanges) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsDisableProxyForceRanges
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsDisableProxyForceRanges) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Cache expiration time for CDN servers.
+//
+// `value` and `default` fields cannot be used simultaneously.
+//
+// The property Enabled is required.
+type CDNResourceRuleUpdateParamsOptionsEdgeCacheSettings struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Enables content caching according to the origin cache settings.
+	//
+	// The value is applied to the following response codes 200, 201, 204, 206, 301,
+	// 302, 303, 304, 307, 308, if an origin server does not have caching HTTP headers.
+	//
+	// Responses with other codes will not be cached.
+	//
+	// The maximum duration is any equivalent to `1y`.
+	Default param.Opt[string] `json:"default,omitzero" format:"nginx time"`
+	// Caching time.
+	//
+	// The value is applied to the following response codes: 200, 206, 301, 302.
+	// Responses with codes 4xx, 5xx will not be cached.
+	//
+	// Use `0s` to disable caching.
+	//
+	// The maximum duration is any equivalent to `1y`.
+	Value param.Opt[string] `json:"value,omitzero" format:"nginx time"`
+	// A MAP object representing the caching time in seconds for a response with a
+	// specific response code.
+	//
+	// These settings have a higher priority than the `value` field.
+	//
+	// - Use `any` key to specify caching time for all response codes.
+	// - Use `0s` value to disable caching for a specific response code.
+	CustomValues map[string]string `json:"custom_values,omitzero" format:"nginx time"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsEdgeCacheSettings) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsEdgeCacheSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge app to be called on different request/response
+// phases.
+//
+// Note: At least one of `on_request_headers`, `on_request_body`,
+// `on_response_headers`, or `on_response_body` must be specified.
+//
+// The property Enabled is required.
+type CDNResourceRuleUpdateParamsOptionsFastedge struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Allows to configure FastEdge application that will be called to handle request
+	// body as soon as CDN receives incoming HTTP request.
+	OnRequestBody CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
+	// Allows to configure FastEdge application that will be called to handle request
+	// headers as soon as CDN receives incoming HTTP request.
+	OnRequestHeaders CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders `json:"on_request_headers,omitzero"`
+	// Allows to configure FastEdge application that will be called to handle response
+	// body before CDN sends the HTTP response.
+	OnResponseBody CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseBody `json:"on_response_body,omitzero"`
+	// Allows to configure FastEdge application that will be called to handle response
+	// headers before CDN sends the HTTP response.
+	OnResponseHeaders CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseHeaders `json:"on_response_headers,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsFastedge) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsFastedge
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsFastedge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge application that will be called to handle request
+// body as soon as CDN receives incoming HTTP request.
+//
+// The property AppID is required.
+type CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestBody struct {
+	// The ID of the application in FastEdge.
+	AppID string `json:"app_id,required"`
+	// Determines if the FastEdge application should be called whenever HTTP request
+	// headers are received.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Determines if the request should be executed at the edge nodes.
+	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
+	// Determines if the request should be executed at the shield nodes.
+	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
+	// Determines if the request execution should be interrupted when an error occurs.
+	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestBody) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestBody
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge application that will be called to handle request
+// headers as soon as CDN receives incoming HTTP request.
+//
+// The property AppID is required.
+type CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders struct {
+	// The ID of the application in FastEdge.
+	AppID string `json:"app_id,required"`
+	// Determines if the FastEdge application should be called whenever HTTP request
+	// headers are received.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Determines if the request should be executed at the edge nodes.
+	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
+	// Determines if the request should be executed at the shield nodes.
+	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
+	// Determines if the request execution should be interrupted when an error occurs.
+	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge application that will be called to handle response
+// body before CDN sends the HTTP response.
+//
+// The property AppID is required.
+type CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseBody struct {
+	// The ID of the application in FastEdge.
+	AppID string `json:"app_id,required"`
+	// Determines if the FastEdge application should be called whenever HTTP request
+	// headers are received.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Determines if the request should be executed at the edge nodes.
+	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
+	// Determines if the request should be executed at the shield nodes.
+	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
+	// Determines if the request execution should be interrupted when an error occurs.
+	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseBody) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseBody
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge application that will be called to handle response
+// headers before CDN sends the HTTP response.
+//
+// The property AppID is required.
+type CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseHeaders struct {
+	// The ID of the application in FastEdge.
+	AppID string `json:"app_id,required"`
+	// Determines if the FastEdge application should be called whenever HTTP request
+	// headers are received.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Determines if the request should be executed at the edge nodes.
+	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
+	// Determines if the request should be executed at the shield nodes.
+	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
+	// Determines if the request execution should be interrupted when an error occurs.
+	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseHeaders
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Makes the CDN request compressed content from the origin.
+//
+// The origin server should support compression. CDN servers will not decompress
+// your content even if a user browser does not accept compression.
+//
+// Notes:
+//
+//  1. `fetch_compressed` is not supported with `gzipON` or `brotli_compression` or
+//     `slice` options enabled.
+//  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
+//     you enable it in CDN resource and want to use `gzipON` and
+//     `brotli_compression` in a rule, you have to specify
+//     `"fetch_compressed": false` in the rule.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsFetchCompressed struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsFetchCompressed) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsFetchCompressed
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsFetchCompressed) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables redirection from origin. If the origin server returns a redirect, the
+// option allows the CDN to pull the requested content from the origin server that
+// was returned in the redirect.
+//
+// The properties Codes, Enabled are required.
+type CDNResourceRuleUpdateParamsOptionsFollowOriginRedirect struct {
+	// Redirect status code that the origin server returns.
+	//
+	// To serve up to date content to end users, you will need to purge the cache after
+	// managing the option.
+	//
+	// Any of 301, 302, 303, 307, 308.
+	Codes []int64 `json:"codes,omitzero,required"`
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsFollowOriginRedirect) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsFollowOriginRedirect
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Applies custom HTTP response codes for CDN content.
+//
+// The following codes are reserved by our system and cannot be specified in this
+// option: 408, 444, 477, 494, 495, 496, 497, 499.
+//
+// The properties Body, Code, Enabled are required.
+type CDNResourceRuleUpdateParamsOptionsForceReturn struct {
+	// URL for redirection or text.
+	Body string `json:"body,required"`
+	// Status code value.
+	Code int64 `json:"code,required"`
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Controls the time at which a custom HTTP response code should be applied. By
+	// default, a custom HTTP response code is applied at any time.
+	TimeInterval CDNResourceRuleUpdateParamsOptionsForceReturnTimeInterval `json:"time_interval,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsForceReturn) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsForceReturn
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsForceReturn) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls the time at which a custom HTTP response code should be applied. By
+// default, a custom HTTP response code is applied at any time.
+//
+// The properties EndTime, StartTime are required.
+type CDNResourceRuleUpdateParamsOptionsForceReturnTimeInterval struct {
+	// Time until which a custom HTTP response code should be applied. Indicated in
+	// 24-hour format.
+	EndTime string `json:"end_time,required"`
+	// Time from which a custom HTTP response code should be applied. Indicated in
+	// 24-hour format.
+	StartTime string `json:"start_time,required"`
+	// Time zone used to calculate time.
+	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsForceReturnTimeInterval) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsForceReturnTimeInterval
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsForceReturnTimeInterval) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Forwards the Host header from a end-user request to an origin server.
+//
+// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsForwardHostHeader struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsForwardHostHeader) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsForwardHostHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Compresses content with gzip on the CDN end. CDN servers will request only
+// uncompressed content from the origin.
+//
+// Notes:
+//
+//  1. Compression with gzip is not supported with `fetch_compressed` or `slice`
+//     options enabled.
+//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
+//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
+//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsGzipOn struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsGzipOn) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsGzipOn
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsGzipOn) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Sets the Host header that CDN servers use when request content from an origin
+// server. Your server must be able to process requests with the chosen header.
+//
+// If the option is `null`, the Host Header value is equal to first CNAME.
+//
+// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsHostHeader struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Host Header value.
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsHostHeader) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsHostHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsHostHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Defines whether the files with the Set-Cookies header are cached as one file or
+// as different ones.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsIgnoreCookie struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	//   - **true** - Option is enabled, files with cookies are cached as one file.
+	//   - **false** - Option is disabled, files with cookies are cached as different
+	//     files.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsIgnoreCookie) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsIgnoreCookie
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsIgnoreCookie) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// How a file with different query strings is cached: either as one object (option
+// is enabled) or as different objects (option is disabled.)
+//
+// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
+// options cannot be enabled simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsIgnoreQueryString struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsIgnoreQueryString) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsIgnoreQueryString
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsIgnoreQueryString) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Transforms JPG and PNG images (for example, resize or crop) and automatically
+// converts them to WebP or AVIF format.
+//
+// The property Enabled is required.
+type CDNResourceRuleUpdateParamsOptionsImageStack struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Enables or disables automatic conversion of JPEG and PNG images to AVI format.
+	AvifEnabled param.Opt[bool] `json:"avif_enabled,omitzero"`
+	// Enables or disables compression without quality loss for PNG format.
+	PngLossless param.Opt[bool] `json:"png_lossless,omitzero"`
+	// Defines quality settings for JPG and PNG images. The higher the value, the
+	// better the image quality, and the larger the file size after conversion.
+	Quality param.Opt[int64] `json:"quality,omitzero"`
+	// Enables or disables automatic conversion of JPEG and PNG images to WebP format.
+	WebpEnabled param.Opt[bool] `json:"webp_enabled,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsImageStack) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsImageStack
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsImageStack) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls access to the CDN resource content for specific IP addresses.
+//
+// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
+// you have to independently monitor their relevance.
+//
+// We recommend you use a script for automatically update IP ACL.
+// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
+//
+// The properties Enabled, ExceptedValues, PolicyType are required.
+type CDNResourceRuleUpdateParamsOptionsIPAddressACL struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of IP addresses with a subnet mask.
+	//
+	// The meaning of the parameter depends on `policy_type` value:
+	//
+	// - **allow** - List of IP addresses for which access is prohibited.
+	// - **deny** - List of IP addresses for which access is allowed.
+	//
+	// Examples:
+	//
+	// - `192.168.3.2/32`
+	// - `2a03:d000:2980:7::8/128`
+	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"ipv4net or ipv6net"`
+	// IP access policy type.
+	//
+	// Possible values:
+	//
+	//   - **allow** - Allow access to all IPs except IPs specified in "excepted_values"
+	//     field.
+	//   - **deny** - Deny access to all IPs except IPs specified in "excepted_values"
+	//     field.
+	//
+	// Any of "allow", "deny".
+	PolicyType string `json:"policy_type,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsIPAddressACL) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsIPAddressACL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsIPAddressACL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleUpdateParamsOptionsIPAddressACL](
+		"policy_type", "allow", "deny",
+	)
+}
+
+// Allows to control the download speed per connection.
+//
+// The properties Enabled, LimitType are required.
+type CDNResourceRuleUpdateParamsOptionsLimitBandwidth struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Method of controlling the download speed per connection.
+	//
+	// Possible values:
+	//
+	//   - **static** - Use speed and buffer fields to set the download speed limit.
+	//   - **dynamic** - Use query strings **speed** and **buffer** to set the download
+	//     speed limit.
+	//
+	// # For example, when requesting content at the link
+	//
+	// ```
+	// http://cdn.example.com/video.mp4?speed=50k&buffer=500k
+	// ```
+	//
+	// the download speed will be limited to 50kB/s after 500 kB.
+	//
+	// Any of "static", "dynamic".
+	LimitType string `json:"limit_type,omitzero,required"`
+	// Amount of downloaded data after which the user will be rate limited.
+	Buffer param.Opt[int64] `json:"buffer,omitzero"`
+	// Maximum download speed per connection.
+	Speed param.Opt[int64] `json:"speed,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsLimitBandwidth) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsLimitBandwidth
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsLimitBandwidth) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleUpdateParamsOptionsLimitBandwidth](
+		"limit_type", "static", "dynamic",
+	)
+}
+
+// Allows you to modify your cache key. If omitted, the default value is
+// `$request_uri`.
+//
+// Combine the specified variables to create a key for caching.
+//
+// - **$`request_uri`**
+// - **$scheme**
+// - **$uri**
+//
+// **Warning**: Enabling and changing this option can invalidate your current cache
+// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
+// not work.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsProxyCacheKey struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Key for caching.
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsProxyCacheKey) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsProxyCacheKey
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsProxyCacheKey) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Caching for POST requests along with default GET and HEAD.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsProxyCacheMethodsSet struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsProxyCacheMethodsSet) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsProxyCacheMethodsSet
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsProxyCacheMethodsSet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The time limit for establishing a connection with the origin.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsProxyConnectTimeout struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Timeout value in seconds.
+	//
+	// Supported range: **1s - 5s**.
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsProxyConnectTimeout) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsProxyConnectTimeout
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The time limit for receiving a partial response from the origin. If no response
+// is received within this time, the connection will be closed.
+//
+// **Note:** When used with a WebSocket connection, this option supports values
+// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsProxyReadTimeout struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Timeout value in seconds.
+	//
+	// Supported range: **1s - 30s**.
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsProxyReadTimeout) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsProxyReadTimeout
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsProxyReadTimeout) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Files with the specified query parameters are cached as one object, files with
+// other parameters are cached as different objects.
+//
+// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
+// options cannot be enabled simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsQueryParamsBlacklist struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of query parameters.
+	Value []string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsQueryParamsBlacklist) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsQueryParamsBlacklist
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsQueryParamsBlacklist) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Files with the specified query parameters are cached as different objects, files
+// with other parameters are cached as one object.
+//
+// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
+// options cannot be enabled simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsQueryParamsWhitelist struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of query parameters.
+	Value []string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsQueryParamsWhitelist) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsQueryParamsWhitelist
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsQueryParamsWhitelist) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The Query String Forwarding feature allows for the seamless transfer of
+// parameters embedded in playlist files to the corresponding media chunk files.
+// This functionality ensures that specific attributes, such as authentication
+// tokens or tracking information, are consistently passed along from the playlist
+// manifest to the individual media segments. This is particularly useful for
+// maintaining continuity in security, analytics, and any other parameter-based
+// operations across the entire media delivery workflow.
+//
+// The properties Enabled, ForwardFromFileTypes, ForwardToFileTypes are required.
+type CDNResourceRuleUpdateParamsOptionsQueryStringForwarding struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// The `forward_from_files_types` field specifies the types of playlist files from
+	// which parameters will be extracted and forwarded. This typically includes
+	// formats that list multiple media chunk references, such as HLS and DASH
+	// playlists. Parameters associated with these playlist files (like query strings
+	// or headers) will be propagated to the chunks they reference.
+	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero,required"`
+	// The field specifies the types of media chunk files to which parameters,
+	// extracted from playlist files, will be forwarded. These refer to the actual
+	// segments of media content that are delivered to viewers. Ensuring the correct
+	// parameters are forwarded to these files is crucial for maintaining the integrity
+	// of the streaming session.
+	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
+	// The `forward_except_keys` field provides a mechanism to exclude specific
+	// parameters from being forwarded from playlist files to media chunk files. By
+	// listing certain keys in this field, you can ensure that these parameters are
+	// omitted during the forwarding process. This is particularly useful for
+	// preventing sensitive or irrelevant information from being included in requests
+	// for media chunks, thereby enhancing security and optimizing performance.
+	ForwardExceptKeys []string `json:"forward_except_keys,omitzero"`
+	// The `forward_only_keys` field allows for granular control over which specific
+	// parameters are forwarded from playlist files to media chunk files. By specifying
+	// certain keys, only those parameters will be propagated, ensuring that only
+	// relevant information is passed along. This is particularly useful for security
+	// and performance optimization, as it prevents unnecessary or sensitive data from
+	// being included in requests for media chunks.
+	ForwardOnlyKeys []string `json:"forward_only_keys,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsQueryStringForwarding) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsQueryStringForwarding
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsQueryStringForwarding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables redirect from HTTP to HTTPS.
+//
+// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
+// simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsRedirectHTTPToHTTPS struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsRedirectHTTPToHTTPS) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsRedirectHTTPToHTTPS
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables redirect from HTTPS to HTTP.
+//
+// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
+// simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsRedirectHTTPSToHTTP struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsRedirectHTTPSToHTTP) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsRedirectHTTPSToHTTP
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsRedirectHTTPSToHTTP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls access to the CDN resource content for specified domain names.
+//
+// The properties Enabled, ExceptedValues, PolicyType are required.
+type CDNResourceRuleUpdateParamsOptionsReferrerACL struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of domain names or wildcard domains (without protocol: `http://` or
+	// `https://`.)
+	//
+	// The meaning of the parameter depends on `policy_type` value:
+	//
+	// - **allow** - List of domain names for which access is prohibited.
+	// - **deny** - List of IP domain names for which access is allowed.
+	//
+	// Examples:
+	//
+	// - `example.com`
+	// - `*.example.com`
+	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
+	// Policy type.
+	//
+	// Possible values:
+	//
+	//   - **allow** - Allow access to all domain names except the domain names specified
+	//     in `excepted_values` field.
+	//   - **deny** - Deny access to all domain names except the domain names specified
+	//     in `excepted_values` field.
+	//
+	// Any of "allow", "deny".
+	PolicyType string `json:"policy_type,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsReferrerACL) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsReferrerACL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsReferrerACL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleUpdateParamsOptionsReferrerACL](
+		"policy_type", "allow", "deny",
+	)
+}
+
+// Option allows to limit the amount of HTTP requests.
+//
+// The properties Enabled, Rate are required.
+type CDNResourceRuleUpdateParamsOptionsRequestLimiter struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Maximum request rate.
+	Rate int64 `json:"rate,required"`
+	// Units of measurement for the `rate` field.
+	//
+	// Possible values:
+	//
+	// - **r/s** - Requests per second.
+	// - **r/m** - Requests per minute.
+	//
+	// If the rate is less than one request per second, it is specified in request per
+	// minute (r/m.)
+	//
+	// Any of "r/s", "r/m".
+	RateUnit string `json:"rate_unit,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsRequestLimiter) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsRequestLimiter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleUpdateParamsOptionsRequestLimiter](
+		"rate_unit", "r/s", "r/m",
+	)
+}
+
+// Hides HTTP headers from an origin server in the CDN response.
+//
+// The properties Enabled, Excepted, Mode are required.
+type CDNResourceRuleUpdateParamsOptionsResponseHeadersHidingPolicy struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of HTTP headers.
+	//
+	// Parameter meaning depends on the value of the `mode` field:
+	//
+	//   - **show** - List of HTTP headers to hide from response.
+	//   - **hide** - List of HTTP headers to include in response. Other HTTP headers
+	//     will be hidden.
+	//
+	// The following headers are required and cannot be hidden from response:
+	//
+	// - `Connection`
+	// - `Content-Length`
+	// - `Content-Type`
+	// - `Date`
+	// - `Server`
+	Excepted []string `json:"excepted,omitzero,required" format:"http_header"`
+	// How HTTP headers are hidden from the response.
+	//
+	// Possible values:
+	//
+	//   - **show** - Hide only HTTP headers listed in the `excepted` field.
+	//   - **hide** - Hide all HTTP headers except headers listed in the "excepted"
+	//     field.
+	//
+	// Any of "hide", "show".
+	Mode string `json:"mode,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsResponseHeadersHidingPolicy) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsResponseHeadersHidingPolicy
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsResponseHeadersHidingPolicy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleUpdateParamsOptionsResponseHeadersHidingPolicy](
+		"mode", "hide", "show",
+	)
+}
+
+// Changes and redirects requests from the CDN to the origin. It operates according
+// to the
+// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
+// configuration.
+//
+// The properties Body, Enabled are required.
+type CDNResourceRuleUpdateParamsOptionsRewrite struct {
+	// Path for the Rewrite option.
+	//
+	// Example:
+	//
+	// - `/(.*) /media/$1`
+	Body string `json:"body,required"`
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Flag for the Rewrite option.
+	//
+	// Possible values:
+	//
+	//   - **last** - Stop processing the current set of `ngx_http_rewrite_module`
+	//     directives and start a search for a new location matching changed URI.
+	//   - **break** - Stop processing the current set of the Rewrite option.
+	//   - **redirect** - Return a temporary redirect with the 302 code; used when a
+	//     replacement string does not start with `http://`, `https://`, or `$scheme`.
+	//   - **permanent** - Return a permanent redirect with the 301 code.
+	//
+	// Any of "break", "last", "redirect", "permanent".
+	Flag string `json:"flag,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsRewrite) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsRewrite
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsRewrite) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleUpdateParamsOptionsRewrite](
+		"flag", "break", "last", "redirect", "permanent",
+	)
+}
+
+// Configures access with tokenized URLs. This makes impossible to access content
+// without a valid (unexpired) token.
+//
+// The properties Enabled, Key are required.
+type CDNResourceRuleUpdateParamsOptionsSecureKey struct {
+	// Key generated on your side that will be used for URL signing.
+	Key param.Opt[string] `json:"key,omitzero,required"`
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Type of URL signing.
+	//
+	// Possible types:
+	//
+	// - **Type 0** - Includes end user IP to secure token generation.
+	// - **Type 2** - Excludes end user IP from secure token generation.
+	//
+	// Any of 0, 2.
+	Type int64 `json:"type,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsSecureKey) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsSecureKey
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsSecureKey) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleUpdateParamsOptionsSecureKey](
+		"type", 0, 2,
+	)
+}
+
+// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
+// part.) This reduces time to first byte.
+//
+// The option is based on the
+// [Slice](https://nginx.org/en/docs/http/ngx_http_slice_module.html) module.
+//
+// Notes:
+//
+//  1. Origin must support HTTP Range requests.
+//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
+//     options enabled.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsSlice struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsSlice) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsSlice
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsSlice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The hostname that is added to SNI requests from CDN servers to the origin server
+// via HTTPS.
+//
+// SNI is generally only required if your origin uses shared hosting or does not
+// have a dedicated IP address. If the origin server presents multiple
+// certificates, SNI allows the origin server to know which certificate to use for
+// the connection.
+//
+// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
+//
+// The properties CustomHostname, Enabled are required.
+type CDNResourceRuleUpdateParamsOptionsSni struct {
+	// Custom SNI hostname.
+	//
+	// It is required if `sni_type` is set to custom.
+	CustomHostname string `json:"custom_hostname,required" format:"domain"`
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// SNI (Server Name Indication) type.
+	//
+	// Possible values:
+	//
+	//   - **dynamic** - SNI hostname depends on `hostHeader` and `forward_host_header`
+	//     options. It has several possible combinations:
+	//   - If the `hostHeader` option is enabled and specified, SNI hostname matches the
+	//     Host header.
+	//   - If the `forward_host_header` option is enabled and has true value, SNI
+	//     hostname matches the Host header used in the request made to a CDN.
+	//   - If the `hostHeader` and `forward_host_header` options are disabled, SNI
+	//     hostname matches the primary CNAME.
+	//   - **custom** - custom SNI hostname is in use.
+	//
+	// Any of "dynamic", "custom".
+	SniType string `json:"sni_type,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsSni) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsSni
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsSni) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleUpdateParamsOptionsSni](
+		"sni_type", "dynamic", "custom",
+	)
+}
+
+// Serves stale cached content in case of origin unavailability.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsStale struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Defines list of errors for which "Always online" option is applied.
+	//
+	// Any of "error", "http_403", "http_404", "http_429", "http_500", "http_502",
+	// "http_503", "http_504", "invalid_header", "timeout", "updating".
+	Value []string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsStale) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsStale
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsStale) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Custom HTTP Headers that a CDN server adds to a response.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsStaticResponseHeaders struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool                                                           `json:"enabled,required"`
+	Value   []CDNResourceRuleUpdateParamsOptionsStaticResponseHeadersValue `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsStaticResponseHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsStaticResponseHeaders
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsStaticResponseHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Name, Value are required.
+type CDNResourceRuleUpdateParamsOptionsStaticResponseHeadersValue struct {
+	// HTTP Header name.
+	//
+	// Restrictions:
+	//
+	// - Maximum 128 symbols.
+	// - Latin letters (A-Z, a-z,) numbers (0-9,) dashes, and underscores only.
+	Name string `json:"name,required"`
+	// Header value.
+	//
+	// Restrictions:
+	//
+	//   - Maximum 512 symbols.
+	//   - Letters (a-z), numbers (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+
+	//     /|\";:?.,><{}[]).
+	//   - Must start with a letter, number, asterisk or {.
+	//   - Multiple values can be added.
+	Value []string `json:"value,omitzero,required"`
+	// Defines whether the header will be added to a response from CDN regardless of
+	// response code.
+	//
+	// Possible values:
+	//
+	//   - **true** - Header will be added to a response from CDN regardless of response
+	//     code.
+	//   - **false** - Header will be added only to the following response codes: 200,
+	//     201, 204, 206, 301, 302, 303, 304, 307, 308.
+	Always param.Opt[bool] `json:"always,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsStaticResponseHeadersValue) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsStaticResponseHeadersValue
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsStaticResponseHeadersValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// **Legacy option**. Use the `static_response_headers` option instead.
+//
+// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
+// Headers can be specified. May contain a header with multiple values.
+//
+// Deprecated: deprecated
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsStaticHeaders struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// A MAP for static headers in a format of `header_name: header_value`.
+	//
+	// Restrictions:
+	//
+	//   - **Header name** - Maximum 128 symbols, may contain Latin letters (A-Z, a-z),
+	//     numbers (0-9), dashes, and underscores.
+	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
+	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
+	//     with a letter, number, asterisk or {.
+	Value any `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsStaticHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsStaticHeaders
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsStaticHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
+// Headers can be specified.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsStaticRequestHeaders struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// A MAP for static headers in a format of `header_name: header_value`.
+	//
+	// Restrictions:
+	//
+	//   - **Header name** - Maximum 255 symbols, may contain Latin letters (A-Z, a-z),
+	//     numbers (0-9), dashes, and underscores.
+	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
+	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
+	//     with a letter, number, asterisk or {.
+	Value map[string]string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsStaticRequestHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsStaticRequestHeaders
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsStaticRequestHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls access to the content for specified User-Agents.
+//
+// The properties Enabled, ExceptedValues, PolicyType are required.
+type CDNResourceRuleUpdateParamsOptionsUserAgentACL struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of User-Agents that will be allowed/denied.
+	//
+	// The meaning of the parameter depends on `policy_type`:
+	//
+	// - **allow** - List of User-Agents for which access is prohibited.
+	// - **deny** - List of User-Agents for which access is allowed.
+	//
+	// You can provide exact User-Agent strings or regular expressions. Regular
+	// expressions must start with `~` (case-sensitive) or `~*` (case-insensitive).
+	//
+	// Use an empty string `""` to allow/deny access when the User-Agent header is
+	// empty.
+	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"user_agent"`
+	// User-Agents policy type.
+	//
+	// Possible values:
+	//
+	//   - **allow** - Allow access for all User-Agents except specified in
+	//     `excepted_values` field.
+	//   - **deny** - Deny access for all User-Agents except specified in
+	//     `excepted_values` field.
+	//
+	// Any of "allow", "deny".
+	PolicyType string `json:"policy_type,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsUserAgentACL) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsUserAgentACL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsUserAgentACL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleUpdateParamsOptionsUserAgentACL](
+		"policy_type", "allow", "deny",
+	)
+}
+
+// Allows to enable WAAP (Web Application and API Protection).
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsWaap struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsWaap) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsWaap
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsWaap) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables or disables WebSockets connections to an origin server.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleUpdateParamsOptionsWebsockets struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsWebsockets) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsWebsockets
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsWebsockets) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Sets a protocol other than the one specified in the CDN resource settings to
+// connect to the origin.
+//
+// Possible values:
+//
+//   - **HTTPS** - CDN servers connect to origin via HTTPS protocol.
+//   - **HTTP** - CDN servers connect to origin via HTTP protocol.
+//   - **MATCH** - Connection protocol is chosen automatically; in this case, content
+//     on origin source should be available for the CDN both through HTTP and HTTPS
+//     protocols.
+//   - **null** - `originProtocol` setting is inherited from the CDN resource
+//     settings.
+type CDNResourceRuleUpdateParamsOverrideOriginProtocol string
+
+const (
+	CDNResourceRuleUpdateParamsOverrideOriginProtocolHTTPS CDNResourceRuleUpdateParamsOverrideOriginProtocol = "HTTPS"
+	CDNResourceRuleUpdateParamsOverrideOriginProtocolHTTP  CDNResourceRuleUpdateParamsOverrideOriginProtocol = "HTTP"
+	CDNResourceRuleUpdateParamsOverrideOriginProtocolMatch CDNResourceRuleUpdateParamsOverrideOriginProtocol = "MATCH"
+)
+
+type CDNResourceRuleDeleteParams struct {
+	ResourceID int64 `path:"resource_id,required" json:"-"`
+	paramObj
+}
+
+type CDNResourceRuleGetParams struct {
+	ResourceID int64 `path:"resource_id,required" json:"-"`
+	paramObj
+}
+
+type CDNResourceRuleReplaceParams struct {
+	ResourceID int64 `path:"resource_id,required" json:"-"`
+	// Path to the file or folder for which the rule will be applied.
+	//
+	// The rule is applied if the requested URI matches the rule path.
+	//
+	// We add a leading forward slash to any rule path. Specify a path without a
+	// forward slash.
+	Rule string `json:"rule,required"`
+	// Rule type.
+	//
+	// Possible values:
+	//
+	//   - **Type 0** - Regular expression. Must start with '^/' or '/'.
+	//   - **Type 1** - Regular expression. Note that for this rule type we automatically
+	//     add / to each rule pattern before your regular expression. This type is
+	//     **legacy**, please use Type 0.
+	RuleType int64 `json:"ruleType,required"`
+	// ID of the origin group to which the rule is applied.
+	//
+	// If the origin group is not specified, the rule is applied to the origin group
+	// that the CDN resource is associated with.
+	OriginGroup param.Opt[int64] `json:"originGroup,omitzero"`
+	// Enables or disables a rule.
+	//
+	// Possible values:
+	//
+	// - **true** - Rule is active, rule settings are applied.
+	// - **false** - Rule is inactive, rule settings are not applied.
+	Active param.Opt[bool] `json:"active,omitzero"`
+	// Rule name.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Rule execution order: from lowest (1) to highest.
+	//
+	// If requested URI matches multiple rules, the one higher in the order of the
+	// rules will be applied.
+	Weight param.Opt[int64] `json:"weight,omitzero"`
+	// Sets a protocol other than the one specified in the CDN resource settings to
+	// connect to the origin.
+	//
+	// Possible values:
+	//
+	//   - **HTTPS** - CDN servers connect to origin via HTTPS protocol.
+	//   - **HTTP** - CDN servers connect to origin via HTTP protocol.
+	//   - **MATCH** - Connection protocol is chosen automatically; in this case, content
+	//     on origin source should be available for the CDN both through HTTP and HTTPS
+	//     protocols.
+	//   - **null** - `originProtocol` setting is inherited from the CDN resource
+	//     settings.
+	//
+	// Any of "HTTPS", "HTTP", "MATCH".
+	OverrideOriginProtocol CDNResourceRuleReplaceParamsOverrideOriginProtocol `json:"overrideOriginProtocol,omitzero"`
+	// List of options that can be configured for the rule.
+	//
+	// In case of `null` value the option is not added to the rule. Option inherits its
+	// value from the CDN resource settings.
+	Options CDNResourceRuleReplaceParamsOptions `json:"options,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParams) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// List of options that can be configured for the rule.
+//
+// In case of `null` value the option is not added to the rule. Option inherits its
+// value from the CDN resource settings.
+type CDNResourceRuleReplaceParamsOptions struct {
+	// HTTP methods allowed for content requests from the CDN.
+	AllowedHTTPMethods CDNResourceRuleReplaceParamsOptionsAllowedHTTPMethods `json:"allowedHttpMethods,omitzero"`
+	// Allows to prevent online services from overloading and ensure your business
+	// workflow running smoothly.
+	BotProtection CDNResourceRuleReplaceParamsOptionsBotProtection `json:"bot_protection,omitzero"`
+	// Compresses content with Brotli on the CDN side. CDN servers will request only
+	// uncompressed content from the origin.
+	//
+	// Notes:
+	//
+	//  1. CDN only supports "Brotli compression" when the "origin shielding" feature is
+	//     activated.
+	//  2. If a precache server is not active for a CDN resource, no compression occurs,
+	//     even if the option is enabled.
+	//  3. `brotli_compression` is not supported with `fetch_compressed` or `slice`
+	//     options enabled.
+	//  4. `fetch_compressed` option in CDN resource settings overrides
+	//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
+	//     resource and want to enable `brotli_compression` in a rule, you must specify
+	//     `fetch_compressed:false` in the rule.
+	BrotliCompression CDNResourceRuleReplaceParamsOptionsBrotliCompression `json:"brotli_compression,omitzero"`
+	// Cache expiration time for users browsers in seconds.
+	//
+	// Cache expiration time is applied to the following response codes: 200, 201, 204,
+	// 206, 301, 302, 303, 304, 307, 308.
+	//
+	// Responses with other codes will not be cached.
+	BrowserCacheSettings CDNResourceRuleReplaceParamsOptionsBrowserCacheSettings `json:"browser_cache_settings,omitzero"`
+	// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
+	//
+	// HTTP Headers that must be included in the response.
+	//
+	// Deprecated: deprecated
+	CacheHTTPHeaders CDNResourceRuleReplaceParamsOptionsCacheHTTPHeaders `json:"cache_http_headers,omitzero"`
+	// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
+	//
+	// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
+	// to a response to a browser.
+	Cors CDNResourceRuleReplaceParamsOptionsCors `json:"cors,omitzero"`
+	// Enables control access to content for specified countries.
+	CountryACL CDNResourceRuleReplaceParamsOptionsCountryACL `json:"country_acl,omitzero"`
+	// **Legacy option**. Use the `edge_cache_settings` option instead.
+	//
+	// Allows the complete disabling of content caching.
+	//
+	// Deprecated: deprecated
+	DisableCache CDNResourceRuleReplaceParamsOptionsDisableCache `json:"disable_cache,omitzero"`
+	// Allows 206 responses regardless of the settings of an origin source.
+	DisableProxyForceRanges CDNResourceRuleReplaceParamsOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges,omitzero"`
+	// Cache expiration time for CDN servers.
+	//
+	// `value` and `default` fields cannot be used simultaneously.
+	EdgeCacheSettings CDNResourceRuleReplaceParamsOptionsEdgeCacheSettings `json:"edge_cache_settings,omitzero"`
+	// Allows to configure FastEdge app to be called on different request/response
+	// phases.
+	//
+	// Note: At least one of `on_request_headers`, `on_request_body`,
+	// `on_response_headers`, or `on_response_body` must be specified.
+	Fastedge CDNResourceRuleReplaceParamsOptionsFastedge `json:"fastedge,omitzero"`
+	// Makes the CDN request compressed content from the origin.
+	//
+	// The origin server should support compression. CDN servers will not decompress
+	// your content even if a user browser does not accept compression.
+	//
+	// Notes:
+	//
+	//  1. `fetch_compressed` is not supported with `gzipON` or `brotli_compression` or
+	//     `slice` options enabled.
+	//  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
+	//     you enable it in CDN resource and want to use `gzipON` and
+	//     `brotli_compression` in a rule, you have to specify
+	//     `"fetch_compressed": false` in the rule.
+	FetchCompressed CDNResourceRuleReplaceParamsOptionsFetchCompressed `json:"fetch_compressed,omitzero"`
+	// Enables redirection from origin. If the origin server returns a redirect, the
+	// option allows the CDN to pull the requested content from the origin server that
+	// was returned in the redirect.
+	FollowOriginRedirect CDNResourceRuleReplaceParamsOptionsFollowOriginRedirect `json:"follow_origin_redirect,omitzero"`
+	// Applies custom HTTP response codes for CDN content.
+	//
+	// The following codes are reserved by our system and cannot be specified in this
+	// option: 408, 444, 477, 494, 495, 496, 497, 499.
+	ForceReturn CDNResourceRuleReplaceParamsOptionsForceReturn `json:"force_return,omitzero"`
+	// Forwards the Host header from a end-user request to an origin server.
+	//
+	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
+	ForwardHostHeader CDNResourceRuleReplaceParamsOptionsForwardHostHeader `json:"forward_host_header,omitzero"`
+	// Compresses content with gzip on the CDN end. CDN servers will request only
+	// uncompressed content from the origin.
+	//
+	// Notes:
+	//
+	//  1. Compression with gzip is not supported with `fetch_compressed` or `slice`
+	//     options enabled.
+	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
+	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
+	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
+	GzipOn CDNResourceRuleReplaceParamsOptionsGzipOn `json:"gzipOn,omitzero"`
+	// Sets the Host header that CDN servers use when request content from an origin
+	// server. Your server must be able to process requests with the chosen header.
+	//
+	// If the option is `null`, the Host Header value is equal to first CNAME.
+	//
+	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
+	HostHeader CDNResourceRuleReplaceParamsOptionsHostHeader `json:"hostHeader,omitzero"`
+	// Defines whether the files with the Set-Cookies header are cached as one file or
+	// as different ones.
+	IgnoreCookie CDNResourceRuleReplaceParamsOptionsIgnoreCookie `json:"ignore_cookie,omitzero"`
+	// How a file with different query strings is cached: either as one object (option
+	// is enabled) or as different objects (option is disabled.)
+	//
+	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
+	// options cannot be enabled simultaneously.
+	IgnoreQueryString CDNResourceRuleReplaceParamsOptionsIgnoreQueryString `json:"ignoreQueryString,omitzero"`
+	// Transforms JPG and PNG images (for example, resize or crop) and automatically
+	// converts them to WebP or AVIF format.
+	ImageStack CDNResourceRuleReplaceParamsOptionsImageStack `json:"image_stack,omitzero"`
+	// Controls access to the CDN resource content for specific IP addresses.
+	//
+	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
+	// you have to independently monitor their relevance.
+	//
+	// We recommend you use a script for automatically update IP ACL.
+	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
+	IPAddressACL CDNResourceRuleReplaceParamsOptionsIPAddressACL `json:"ip_address_acl,omitzero"`
+	// Allows to control the download speed per connection.
+	LimitBandwidth CDNResourceRuleReplaceParamsOptionsLimitBandwidth `json:"limit_bandwidth,omitzero"`
+	// Allows you to modify your cache key. If omitted, the default value is
+	// `$request_uri`.
+	//
+	// Combine the specified variables to create a key for caching.
+	//
+	// - **$`request_uri`**
+	// - **$scheme**
+	// - **$uri**
+	//
+	// **Warning**: Enabling and changing this option can invalidate your current cache
+	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
+	// not work.
+	ProxyCacheKey CDNResourceRuleReplaceParamsOptionsProxyCacheKey `json:"proxy_cache_key,omitzero"`
+	// Caching for POST requests along with default GET and HEAD.
+	ProxyCacheMethodsSet CDNResourceRuleReplaceParamsOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set,omitzero"`
+	// The time limit for establishing a connection with the origin.
+	ProxyConnectTimeout CDNResourceRuleReplaceParamsOptionsProxyConnectTimeout `json:"proxy_connect_timeout,omitzero"`
+	// The time limit for receiving a partial response from the origin. If no response
+	// is received within this time, the connection will be closed.
+	//
+	// **Note:** When used with a WebSocket connection, this option supports values
+	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+	ProxyReadTimeout CDNResourceRuleReplaceParamsOptionsProxyReadTimeout `json:"proxy_read_timeout,omitzero"`
+	// Files with the specified query parameters are cached as one object, files with
+	// other parameters are cached as different objects.
+	//
+	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
+	// options cannot be enabled simultaneously.
+	QueryParamsBlacklist CDNResourceRuleReplaceParamsOptionsQueryParamsBlacklist `json:"query_params_blacklist,omitzero"`
+	// Files with the specified query parameters are cached as different objects, files
+	// with other parameters are cached as one object.
+	//
+	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
+	// options cannot be enabled simultaneously.
+	QueryParamsWhitelist CDNResourceRuleReplaceParamsOptionsQueryParamsWhitelist `json:"query_params_whitelist,omitzero"`
+	// The Query String Forwarding feature allows for the seamless transfer of
+	// parameters embedded in playlist files to the corresponding media chunk files.
+	// This functionality ensures that specific attributes, such as authentication
+	// tokens or tracking information, are consistently passed along from the playlist
+	// manifest to the individual media segments. This is particularly useful for
+	// maintaining continuity in security, analytics, and any other parameter-based
+	// operations across the entire media delivery workflow.
+	QueryStringForwarding CDNResourceRuleReplaceParamsOptionsQueryStringForwarding `json:"query_string_forwarding,omitzero"`
+	// Enables redirect from HTTP to HTTPS.
+	//
+	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
+	// simultaneously.
+	RedirectHTTPToHTTPS CDNResourceRuleReplaceParamsOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https,omitzero"`
+	// Enables redirect from HTTPS to HTTP.
+	//
+	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
+	// simultaneously.
+	RedirectHTTPSToHTTP CDNResourceRuleReplaceParamsOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,omitzero"`
+	// Controls access to the CDN resource content for specified domain names.
+	ReferrerACL CDNResourceRuleReplaceParamsOptionsReferrerACL `json:"referrer_acl,omitzero"`
+	// Option allows to limit the amount of HTTP requests.
+	RequestLimiter CDNResourceRuleReplaceParamsOptionsRequestLimiter `json:"request_limiter,omitzero"`
+	// Hides HTTP headers from an origin server in the CDN response.
+	ResponseHeadersHidingPolicy CDNResourceRuleReplaceParamsOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,omitzero"`
+	// Changes and redirects requests from the CDN to the origin. It operates according
+	// to the
+	// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
+	// configuration.
+	Rewrite CDNResourceRuleReplaceParamsOptionsRewrite `json:"rewrite,omitzero"`
+	// Configures access with tokenized URLs. This makes impossible to access content
+	// without a valid (unexpired) token.
+	SecureKey CDNResourceRuleReplaceParamsOptionsSecureKey `json:"secure_key,omitzero"`
+	// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
+	// part.) This reduces time to first byte.
+	//
+	// The option is based on the
+	// [Slice](https://nginx.org/en/docs/http/ngx_http_slice_module.html) module.
+	//
+	// Notes:
+	//
+	//  1. Origin must support HTTP Range requests.
+	//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
+	//     options enabled.
+	Slice CDNResourceRuleReplaceParamsOptionsSlice `json:"slice,omitzero"`
+	// The hostname that is added to SNI requests from CDN servers to the origin server
+	// via HTTPS.
+	//
+	// SNI is generally only required if your origin uses shared hosting or does not
+	// have a dedicated IP address. If the origin server presents multiple
+	// certificates, SNI allows the origin server to know which certificate to use for
+	// the connection.
+	//
+	// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
+	Sni CDNResourceRuleReplaceParamsOptionsSni `json:"sni,omitzero"`
+	// Serves stale cached content in case of origin unavailability.
+	Stale CDNResourceRuleReplaceParamsOptionsStale `json:"stale,omitzero"`
+	// Custom HTTP Headers that a CDN server adds to a response.
+	StaticResponseHeaders CDNResourceRuleReplaceParamsOptionsStaticResponseHeaders `json:"static_response_headers,omitzero"`
+	// **Legacy option**. Use the `static_response_headers` option instead.
+	//
+	// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
+	// Headers can be specified. May contain a header with multiple values.
+	//
+	// Deprecated: deprecated
+	StaticHeaders CDNResourceRuleReplaceParamsOptionsStaticHeaders `json:"staticHeaders,omitzero"`
+	// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
+	// Headers can be specified.
+	StaticRequestHeaders CDNResourceRuleReplaceParamsOptionsStaticRequestHeaders `json:"staticRequestHeaders,omitzero"`
+	// Controls access to the content for specified User-Agents.
+	UserAgentACL CDNResourceRuleReplaceParamsOptionsUserAgentACL `json:"user_agent_acl,omitzero"`
+	// Allows to enable WAAP (Web Application and API Protection).
+	Waap CDNResourceRuleReplaceParamsOptionsWaap `json:"waap,omitzero"`
+	// Enables or disables WebSockets connections to an origin server.
+	Websockets CDNResourceRuleReplaceParamsOptionsWebsockets `json:"websockets,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptions) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptions
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptions) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// HTTP methods allowed for content requests from the CDN.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsAllowedHTTPMethods struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Any of "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
+	Value []string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsAllowedHTTPMethods) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsAllowedHTTPMethods
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to prevent online services from overloading and ensure your business
+// workflow running smoothly.
+//
+// The properties BotChallenge, Enabled are required.
+type CDNResourceRuleReplaceParamsOptionsBotProtection struct {
+	// Controls the bot challenge module state.
+	BotChallenge CDNResourceRuleReplaceParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero,required"`
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsBotProtection) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsBotProtection
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsBotProtection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls the bot challenge module state.
+type CDNResourceRuleReplaceParamsOptionsBotProtectionBotChallenge struct {
+	// Possible values:
+	//
+	// - **true** - Bot challenge is enabled.
+	// - **false** - Bot challenge is disabled.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsBotProtectionBotChallenge) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsBotProtectionBotChallenge
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Compresses content with Brotli on the CDN side. CDN servers will request only
+// uncompressed content from the origin.
+//
+// Notes:
+//
+//  1. CDN only supports "Brotli compression" when the "origin shielding" feature is
+//     activated.
+//  2. If a precache server is not active for a CDN resource, no compression occurs,
+//     even if the option is enabled.
+//  3. `brotli_compression` is not supported with `fetch_compressed` or `slice`
+//     options enabled.
+//  4. `fetch_compressed` option in CDN resource settings overrides
+//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
+//     resource and want to enable `brotli_compression` in a rule, you must specify
+//     `fetch_compressed:false` in the rule.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsBrotliCompression struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Allows to select the content types you want to compress.
+	//
+	// `text/html` is a mandatory content type.
+	//
+	// Any of "application/javascript", "application/json",
+	// "application/vnd.ms-fontobject", "application/wasm", "application/x-font-ttf",
+	// "application/x-javascript", "application/xml", "application/xml+rss",
+	// "image/svg+xml", "image/x-icon", "text/css", "text/html", "text/javascript",
+	// "text/plain", "text/xml".
+	Value []string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsBrotliCompression) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsBrotliCompression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsBrotliCompression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Cache expiration time for users browsers in seconds.
+//
+// Cache expiration time is applied to the following response codes: 200, 201, 204,
+// 206, 301, 302, 303, 304, 307, 308.
+//
+// Responses with other codes will not be cached.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsBrowserCacheSettings struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Set the cache expiration time to '0s' to disable caching.
+	//
+	// The maximum duration is any equivalent to `1y`.
+	Value string `json:"value,required" format:"nginx time"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsBrowserCacheSettings) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsBrowserCacheSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsBrowserCacheSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
+//
+// HTTP Headers that must be included in the response.
+//
+// Deprecated: deprecated
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsCacheHTTPHeaders struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool     `json:"enabled,required"`
+	Value   []string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsCacheHTTPHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsCacheHTTPHeaders
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsCacheHTTPHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
+//
+// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
+// to a response to a browser.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsCors struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Value of the Access-Control-Allow-Origin header.
+	//
+	// Possible values:
+	//
+	//   - **Adds \* as the Access-Control-Allow-Origin header value** - Content will be
+	//     uploaded for requests from any domain. `"value": ["*"]`
+	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
+	//     origin matches one of the listed domains** - Content will be uploaded only for
+	//     requests from the domains specified in the field.
+	//     `"value": ["domain.com", "second.dom.com"]`
+	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
+	//     Content will be uploaded for requests from any domain, and the domain from
+	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
+	//     header in the response. `"value": ["$http_origin"]`
+	Value []string `json:"value,omitzero,required"`
+	// Defines whether the Access-Control-Allow-Origin header should be added to a
+	// response from CDN regardless of response code.
+	//
+	// Possible values:
+	//
+	//   - **true** - Header will be added to a response regardless of response code.
+	//   - **false** - Header will only be added to responses with codes: 200, 201, 204,
+	//     206, 301, 302, 303, 304, 307, 308.
+	Always param.Opt[bool] `json:"always,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsCors) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsCors
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsCors) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables control access to content for specified countries.
+//
+// The properties Enabled, ExceptedValues, PolicyType are required.
+type CDNResourceRuleReplaceParamsOptionsCountryACL struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of countries according to ISO-3166-1.
+	//
+	// The meaning of the parameter depends on `policy_type` value:
+	//
+	// - **allow** - List of countries for which access is prohibited.
+	// - **deny** - List of countries for which access is allowed.
+	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"country-code"`
+	// Defines the type of CDN resource access policy.
+	//
+	// Possible values:
+	//
+	//   - **allow** - Access is allowed for all the countries except for those specified
+	//     in `excepted_values` field.
+	//   - **deny** - Access is denied for all the countries except for those specified
+	//     in `excepted_values` field.
+	//
+	// Any of "allow", "deny".
+	PolicyType string `json:"policy_type,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsCountryACL) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsCountryACL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsCountryACL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleReplaceParamsOptionsCountryACL](
+		"policy_type", "allow", "deny",
+	)
+}
+
+// **Legacy option**. Use the `edge_cache_settings` option instead.
+//
+// Allows the complete disabling of content caching.
+//
+// Deprecated: deprecated
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsDisableCache struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - content caching is disabled.
+	// - **false** - content caching is enabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsDisableCache) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsDisableCache
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsDisableCache) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows 206 responses regardless of the settings of an origin source.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsDisableProxyForceRanges struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsDisableProxyForceRanges) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsDisableProxyForceRanges
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsDisableProxyForceRanges) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Cache expiration time for CDN servers.
+//
+// `value` and `default` fields cannot be used simultaneously.
+//
+// The property Enabled is required.
+type CDNResourceRuleReplaceParamsOptionsEdgeCacheSettings struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Enables content caching according to the origin cache settings.
+	//
+	// The value is applied to the following response codes 200, 201, 204, 206, 301,
+	// 302, 303, 304, 307, 308, if an origin server does not have caching HTTP headers.
+	//
+	// Responses with other codes will not be cached.
+	//
+	// The maximum duration is any equivalent to `1y`.
+	Default param.Opt[string] `json:"default,omitzero" format:"nginx time"`
+	// Caching time.
+	//
+	// The value is applied to the following response codes: 200, 206, 301, 302.
+	// Responses with codes 4xx, 5xx will not be cached.
+	//
+	// Use `0s` to disable caching.
+	//
+	// The maximum duration is any equivalent to `1y`.
+	Value param.Opt[string] `json:"value,omitzero" format:"nginx time"`
+	// A MAP object representing the caching time in seconds for a response with a
+	// specific response code.
+	//
+	// These settings have a higher priority than the `value` field.
+	//
+	// - Use `any` key to specify caching time for all response codes.
+	// - Use `0s` value to disable caching for a specific response code.
+	CustomValues map[string]string `json:"custom_values,omitzero" format:"nginx time"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsEdgeCacheSettings) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsEdgeCacheSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge app to be called on different request/response
+// phases.
+//
+// Note: At least one of `on_request_headers`, `on_request_body`,
+// `on_response_headers`, or `on_response_body` must be specified.
+//
+// The property Enabled is required.
+type CDNResourceRuleReplaceParamsOptionsFastedge struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Allows to configure FastEdge application that will be called to handle request
+	// body as soon as CDN receives incoming HTTP request.
+	OnRequestBody CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
+	// Allows to configure FastEdge application that will be called to handle request
+	// headers as soon as CDN receives incoming HTTP request.
+	OnRequestHeaders CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders `json:"on_request_headers,omitzero"`
+	// Allows to configure FastEdge application that will be called to handle response
+	// body before CDN sends the HTTP response.
+	OnResponseBody CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseBody `json:"on_response_body,omitzero"`
+	// Allows to configure FastEdge application that will be called to handle response
+	// headers before CDN sends the HTTP response.
+	OnResponseHeaders CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseHeaders `json:"on_response_headers,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsFastedge) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsFastedge
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsFastedge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge application that will be called to handle request
+// body as soon as CDN receives incoming HTTP request.
+//
+// The property AppID is required.
+type CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestBody struct {
+	// The ID of the application in FastEdge.
+	AppID string `json:"app_id,required"`
+	// Determines if the FastEdge application should be called whenever HTTP request
+	// headers are received.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Determines if the request should be executed at the edge nodes.
+	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
+	// Determines if the request should be executed at the shield nodes.
+	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
+	// Determines if the request execution should be interrupted when an error occurs.
+	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestBody) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestBody
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge application that will be called to handle request
+// headers as soon as CDN receives incoming HTTP request.
+//
+// The property AppID is required.
+type CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders struct {
+	// The ID of the application in FastEdge.
+	AppID string `json:"app_id,required"`
+	// Determines if the FastEdge application should be called whenever HTTP request
+	// headers are received.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Determines if the request should be executed at the edge nodes.
+	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
+	// Determines if the request should be executed at the shield nodes.
+	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
+	// Determines if the request execution should be interrupted when an error occurs.
+	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge application that will be called to handle response
+// body before CDN sends the HTTP response.
+//
+// The property AppID is required.
+type CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseBody struct {
+	// The ID of the application in FastEdge.
+	AppID string `json:"app_id,required"`
+	// Determines if the FastEdge application should be called whenever HTTP request
+	// headers are received.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Determines if the request should be executed at the edge nodes.
+	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
+	// Determines if the request should be executed at the shield nodes.
+	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
+	// Determines if the request execution should be interrupted when an error occurs.
+	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseBody) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseBody
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge application that will be called to handle response
+// headers before CDN sends the HTTP response.
+//
+// The property AppID is required.
+type CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseHeaders struct {
+	// The ID of the application in FastEdge.
+	AppID string `json:"app_id,required"`
+	// Determines if the FastEdge application should be called whenever HTTP request
+	// headers are received.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Determines if the request should be executed at the edge nodes.
+	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
+	// Determines if the request should be executed at the shield nodes.
+	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
+	// Determines if the request execution should be interrupted when an error occurs.
+	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseHeaders
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Makes the CDN request compressed content from the origin.
+//
+// The origin server should support compression. CDN servers will not decompress
+// your content even if a user browser does not accept compression.
+//
+// Notes:
+//
+//  1. `fetch_compressed` is not supported with `gzipON` or `brotli_compression` or
+//     `slice` options enabled.
+//  2. `fetch_compressed` overrides `gzipON` and `brotli_compression` in rule. If
+//     you enable it in CDN resource and want to use `gzipON` and
+//     `brotli_compression` in a rule, you have to specify
+//     `"fetch_compressed": false` in the rule.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsFetchCompressed struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsFetchCompressed) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsFetchCompressed
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsFetchCompressed) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables redirection from origin. If the origin server returns a redirect, the
+// option allows the CDN to pull the requested content from the origin server that
+// was returned in the redirect.
+//
+// The properties Codes, Enabled are required.
+type CDNResourceRuleReplaceParamsOptionsFollowOriginRedirect struct {
+	// Redirect status code that the origin server returns.
+	//
+	// To serve up to date content to end users, you will need to purge the cache after
+	// managing the option.
+	//
+	// Any of 301, 302, 303, 307, 308.
+	Codes []int64 `json:"codes,omitzero,required"`
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsFollowOriginRedirect) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsFollowOriginRedirect
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Applies custom HTTP response codes for CDN content.
+//
+// The following codes are reserved by our system and cannot be specified in this
+// option: 408, 444, 477, 494, 495, 496, 497, 499.
+//
+// The properties Body, Code, Enabled are required.
+type CDNResourceRuleReplaceParamsOptionsForceReturn struct {
+	// URL for redirection or text.
+	Body string `json:"body,required"`
+	// Status code value.
+	Code int64 `json:"code,required"`
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Controls the time at which a custom HTTP response code should be applied. By
+	// default, a custom HTTP response code is applied at any time.
+	TimeInterval CDNResourceRuleReplaceParamsOptionsForceReturnTimeInterval `json:"time_interval,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsForceReturn) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsForceReturn
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsForceReturn) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls the time at which a custom HTTP response code should be applied. By
+// default, a custom HTTP response code is applied at any time.
+//
+// The properties EndTime, StartTime are required.
+type CDNResourceRuleReplaceParamsOptionsForceReturnTimeInterval struct {
+	// Time until which a custom HTTP response code should be applied. Indicated in
+	// 24-hour format.
+	EndTime string `json:"end_time,required"`
+	// Time from which a custom HTTP response code should be applied. Indicated in
+	// 24-hour format.
+	StartTime string `json:"start_time,required"`
+	// Time zone used to calculate time.
+	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsForceReturnTimeInterval) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsForceReturnTimeInterval
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsForceReturnTimeInterval) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Forwards the Host header from a end-user request to an origin server.
+//
+// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsForwardHostHeader struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsForwardHostHeader) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsForwardHostHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Compresses content with gzip on the CDN end. CDN servers will request only
+// uncompressed content from the origin.
+//
+// Notes:
+//
+//  1. Compression with gzip is not supported with `fetch_compressed` or `slice`
+//     options enabled.
+//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
+//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
+//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsGzipOn struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsGzipOn) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsGzipOn
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsGzipOn) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Sets the Host header that CDN servers use when request content from an origin
+// server. Your server must be able to process requests with the chosen header.
+//
+// If the option is `null`, the Host Header value is equal to first CNAME.
+//
+// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsHostHeader struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Host Header value.
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsHostHeader) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsHostHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsHostHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Defines whether the files with the Set-Cookies header are cached as one file or
+// as different ones.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsIgnoreCookie struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	//   - **true** - Option is enabled, files with cookies are cached as one file.
+	//   - **false** - Option is disabled, files with cookies are cached as different
+	//     files.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsIgnoreCookie) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsIgnoreCookie
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsIgnoreCookie) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// How a file with different query strings is cached: either as one object (option
+// is enabled) or as different objects (option is disabled.)
+//
+// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
+// options cannot be enabled simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsIgnoreQueryString struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsIgnoreQueryString) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsIgnoreQueryString
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsIgnoreQueryString) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Transforms JPG and PNG images (for example, resize or crop) and automatically
+// converts them to WebP or AVIF format.
+//
+// The property Enabled is required.
+type CDNResourceRuleReplaceParamsOptionsImageStack struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Enables or disables automatic conversion of JPEG and PNG images to AVI format.
+	AvifEnabled param.Opt[bool] `json:"avif_enabled,omitzero"`
+	// Enables or disables compression without quality loss for PNG format.
+	PngLossless param.Opt[bool] `json:"png_lossless,omitzero"`
+	// Defines quality settings for JPG and PNG images. The higher the value, the
+	// better the image quality, and the larger the file size after conversion.
+	Quality param.Opt[int64] `json:"quality,omitzero"`
+	// Enables or disables automatic conversion of JPEG and PNG images to WebP format.
+	WebpEnabled param.Opt[bool] `json:"webp_enabled,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsImageStack) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsImageStack
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsImageStack) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls access to the CDN resource content for specific IP addresses.
+//
+// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
+// you have to independently monitor their relevance.
+//
+// We recommend you use a script for automatically update IP ACL.
+// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
+//
+// The properties Enabled, ExceptedValues, PolicyType are required.
+type CDNResourceRuleReplaceParamsOptionsIPAddressACL struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of IP addresses with a subnet mask.
+	//
+	// The meaning of the parameter depends on `policy_type` value:
+	//
+	// - **allow** - List of IP addresses for which access is prohibited.
+	// - **deny** - List of IP addresses for which access is allowed.
+	//
+	// Examples:
+	//
+	// - `192.168.3.2/32`
+	// - `2a03:d000:2980:7::8/128`
+	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"ipv4net or ipv6net"`
+	// IP access policy type.
+	//
+	// Possible values:
+	//
+	//   - **allow** - Allow access to all IPs except IPs specified in "excepted_values"
+	//     field.
+	//   - **deny** - Deny access to all IPs except IPs specified in "excepted_values"
+	//     field.
+	//
+	// Any of "allow", "deny".
+	PolicyType string `json:"policy_type,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsIPAddressACL) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsIPAddressACL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsIPAddressACL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleReplaceParamsOptionsIPAddressACL](
+		"policy_type", "allow", "deny",
+	)
+}
+
+// Allows to control the download speed per connection.
+//
+// The properties Enabled, LimitType are required.
+type CDNResourceRuleReplaceParamsOptionsLimitBandwidth struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Method of controlling the download speed per connection.
+	//
+	// Possible values:
+	//
+	//   - **static** - Use speed and buffer fields to set the download speed limit.
+	//   - **dynamic** - Use query strings **speed** and **buffer** to set the download
+	//     speed limit.
+	//
+	// # For example, when requesting content at the link
+	//
+	// ```
+	// http://cdn.example.com/video.mp4?speed=50k&buffer=500k
+	// ```
+	//
+	// the download speed will be limited to 50kB/s after 500 kB.
+	//
+	// Any of "static", "dynamic".
+	LimitType string `json:"limit_type,omitzero,required"`
+	// Amount of downloaded data after which the user will be rate limited.
+	Buffer param.Opt[int64] `json:"buffer,omitzero"`
+	// Maximum download speed per connection.
+	Speed param.Opt[int64] `json:"speed,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsLimitBandwidth) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsLimitBandwidth
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsLimitBandwidth) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleReplaceParamsOptionsLimitBandwidth](
+		"limit_type", "static", "dynamic",
+	)
+}
+
+// Allows you to modify your cache key. If omitted, the default value is
+// `$request_uri`.
+//
+// Combine the specified variables to create a key for caching.
+//
+// - **$`request_uri`**
+// - **$scheme**
+// - **$uri**
+//
+// **Warning**: Enabling and changing this option can invalidate your current cache
+// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
+// not work.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsProxyCacheKey struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Key for caching.
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsProxyCacheKey) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsProxyCacheKey
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsProxyCacheKey) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Caching for POST requests along with default GET and HEAD.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsProxyCacheMethodsSet struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsProxyCacheMethodsSet) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsProxyCacheMethodsSet
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsProxyCacheMethodsSet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The time limit for establishing a connection with the origin.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsProxyConnectTimeout struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Timeout value in seconds.
+	//
+	// Supported range: **1s - 5s**.
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsProxyConnectTimeout) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsProxyConnectTimeout
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The time limit for receiving a partial response from the origin. If no response
+// is received within this time, the connection will be closed.
+//
+// **Note:** When used with a WebSocket connection, this option supports values
+// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsProxyReadTimeout struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Timeout value in seconds.
+	//
+	// Supported range: **1s - 30s**.
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsProxyReadTimeout) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsProxyReadTimeout
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsProxyReadTimeout) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Files with the specified query parameters are cached as one object, files with
+// other parameters are cached as different objects.
+//
+// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
+// options cannot be enabled simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsQueryParamsBlacklist struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of query parameters.
+	Value []string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsQueryParamsBlacklist) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsQueryParamsBlacklist
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsQueryParamsBlacklist) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Files with the specified query parameters are cached as different objects, files
+// with other parameters are cached as one object.
+//
+// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
+// options cannot be enabled simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsQueryParamsWhitelist struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of query parameters.
+	Value []string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsQueryParamsWhitelist) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsQueryParamsWhitelist
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsQueryParamsWhitelist) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The Query String Forwarding feature allows for the seamless transfer of
+// parameters embedded in playlist files to the corresponding media chunk files.
+// This functionality ensures that specific attributes, such as authentication
+// tokens or tracking information, are consistently passed along from the playlist
+// manifest to the individual media segments. This is particularly useful for
+// maintaining continuity in security, analytics, and any other parameter-based
+// operations across the entire media delivery workflow.
+//
+// The properties Enabled, ForwardFromFileTypes, ForwardToFileTypes are required.
+type CDNResourceRuleReplaceParamsOptionsQueryStringForwarding struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// The `forward_from_files_types` field specifies the types of playlist files from
+	// which parameters will be extracted and forwarded. This typically includes
+	// formats that list multiple media chunk references, such as HLS and DASH
+	// playlists. Parameters associated with these playlist files (like query strings
+	// or headers) will be propagated to the chunks they reference.
+	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero,required"`
+	// The field specifies the types of media chunk files to which parameters,
+	// extracted from playlist files, will be forwarded. These refer to the actual
+	// segments of media content that are delivered to viewers. Ensuring the correct
+	// parameters are forwarded to these files is crucial for maintaining the integrity
+	// of the streaming session.
+	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
+	// The `forward_except_keys` field provides a mechanism to exclude specific
+	// parameters from being forwarded from playlist files to media chunk files. By
+	// listing certain keys in this field, you can ensure that these parameters are
+	// omitted during the forwarding process. This is particularly useful for
+	// preventing sensitive or irrelevant information from being included in requests
+	// for media chunks, thereby enhancing security and optimizing performance.
+	ForwardExceptKeys []string `json:"forward_except_keys,omitzero"`
+	// The `forward_only_keys` field allows for granular control over which specific
+	// parameters are forwarded from playlist files to media chunk files. By specifying
+	// certain keys, only those parameters will be propagated, ensuring that only
+	// relevant information is passed along. This is particularly useful for security
+	// and performance optimization, as it prevents unnecessary or sensitive data from
+	// being included in requests for media chunks.
+	ForwardOnlyKeys []string `json:"forward_only_keys,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsQueryStringForwarding) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsQueryStringForwarding
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsQueryStringForwarding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables redirect from HTTP to HTTPS.
+//
+// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
+// simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsRedirectHTTPToHTTPS struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsRedirectHTTPToHTTPS) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsRedirectHTTPToHTTPS
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsRedirectHTTPToHTTPS) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables redirect from HTTPS to HTTP.
+//
+// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
+// simultaneously.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsRedirectHTTPSToHTTP struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsRedirectHTTPSToHTTP) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsRedirectHTTPSToHTTP
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsRedirectHTTPSToHTTP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls access to the CDN resource content for specified domain names.
+//
+// The properties Enabled, ExceptedValues, PolicyType are required.
+type CDNResourceRuleReplaceParamsOptionsReferrerACL struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of domain names or wildcard domains (without protocol: `http://` or
+	// `https://`.)
+	//
+	// The meaning of the parameter depends on `policy_type` value:
+	//
+	// - **allow** - List of domain names for which access is prohibited.
+	// - **deny** - List of IP domain names for which access is allowed.
+	//
+	// Examples:
+	//
+	// - `example.com`
+	// - `*.example.com`
+	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
+	// Policy type.
+	//
+	// Possible values:
+	//
+	//   - **allow** - Allow access to all domain names except the domain names specified
+	//     in `excepted_values` field.
+	//   - **deny** - Deny access to all domain names except the domain names specified
+	//     in `excepted_values` field.
+	//
+	// Any of "allow", "deny".
+	PolicyType string `json:"policy_type,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsReferrerACL) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsReferrerACL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsReferrerACL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleReplaceParamsOptionsReferrerACL](
+		"policy_type", "allow", "deny",
+	)
+}
+
+// Option allows to limit the amount of HTTP requests.
+//
+// The properties Enabled, Rate are required.
+type CDNResourceRuleReplaceParamsOptionsRequestLimiter struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Maximum request rate.
+	Rate int64 `json:"rate,required"`
+	// Units of measurement for the `rate` field.
+	//
+	// Possible values:
+	//
+	// - **r/s** - Requests per second.
+	// - **r/m** - Requests per minute.
+	//
+	// If the rate is less than one request per second, it is specified in request per
+	// minute (r/m.)
+	//
+	// Any of "r/s", "r/m".
+	RateUnit string `json:"rate_unit,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsRequestLimiter) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsRequestLimiter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleReplaceParamsOptionsRequestLimiter](
+		"rate_unit", "r/s", "r/m",
+	)
+}
+
+// Hides HTTP headers from an origin server in the CDN response.
+//
+// The properties Enabled, Excepted, Mode are required.
+type CDNResourceRuleReplaceParamsOptionsResponseHeadersHidingPolicy struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of HTTP headers.
+	//
+	// Parameter meaning depends on the value of the `mode` field:
+	//
+	//   - **show** - List of HTTP headers to hide from response.
+	//   - **hide** - List of HTTP headers to include in response. Other HTTP headers
+	//     will be hidden.
+	//
+	// The following headers are required and cannot be hidden from response:
+	//
+	// - `Connection`
+	// - `Content-Length`
+	// - `Content-Type`
+	// - `Date`
+	// - `Server`
+	Excepted []string `json:"excepted,omitzero,required" format:"http_header"`
+	// How HTTP headers are hidden from the response.
+	//
+	// Possible values:
+	//
+	//   - **show** - Hide only HTTP headers listed in the `excepted` field.
+	//   - **hide** - Hide all HTTP headers except headers listed in the "excepted"
+	//     field.
+	//
+	// Any of "hide", "show".
+	Mode string `json:"mode,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsResponseHeadersHidingPolicy) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsResponseHeadersHidingPolicy
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsResponseHeadersHidingPolicy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleReplaceParamsOptionsResponseHeadersHidingPolicy](
+		"mode", "hide", "show",
+	)
+}
+
+// Changes and redirects requests from the CDN to the origin. It operates according
+// to the
+// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
+// configuration.
+//
+// The properties Body, Enabled are required.
+type CDNResourceRuleReplaceParamsOptionsRewrite struct {
+	// Path for the Rewrite option.
+	//
+	// Example:
+	//
+	// - `/(.*) /media/$1`
+	Body string `json:"body,required"`
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Flag for the Rewrite option.
+	//
+	// Possible values:
+	//
+	//   - **last** - Stop processing the current set of `ngx_http_rewrite_module`
+	//     directives and start a search for a new location matching changed URI.
+	//   - **break** - Stop processing the current set of the Rewrite option.
+	//   - **redirect** - Return a temporary redirect with the 302 code; used when a
+	//     replacement string does not start with `http://`, `https://`, or `$scheme`.
+	//   - **permanent** - Return a permanent redirect with the 301 code.
+	//
+	// Any of "break", "last", "redirect", "permanent".
+	Flag string `json:"flag,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsRewrite) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsRewrite
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsRewrite) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleReplaceParamsOptionsRewrite](
+		"flag", "break", "last", "redirect", "permanent",
+	)
+}
+
+// Configures access with tokenized URLs. This makes impossible to access content
+// without a valid (unexpired) token.
+//
+// The properties Enabled, Key are required.
+type CDNResourceRuleReplaceParamsOptionsSecureKey struct {
+	// Key generated on your side that will be used for URL signing.
+	Key param.Opt[string] `json:"key,omitzero,required"`
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Type of URL signing.
+	//
+	// Possible types:
+	//
+	// - **Type 0** - Includes end user IP to secure token generation.
+	// - **Type 2** - Excludes end user IP from secure token generation.
+	//
+	// Any of 0, 2.
+	Type int64 `json:"type,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsSecureKey) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsSecureKey
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsSecureKey) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleReplaceParamsOptionsSecureKey](
+		"type", 0, 2,
+	)
+}
+
+// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
+// part.) This reduces time to first byte.
+//
+// The option is based on the
+// [Slice](https://nginx.org/en/docs/http/ngx_http_slice_module.html) module.
+//
+// Notes:
+//
+//  1. Origin must support HTTP Range requests.
+//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
+//     options enabled.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsSlice struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsSlice) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsSlice
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsSlice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The hostname that is added to SNI requests from CDN servers to the origin server
+// via HTTPS.
+//
+// SNI is generally only required if your origin uses shared hosting or does not
+// have a dedicated IP address. If the origin server presents multiple
+// certificates, SNI allows the origin server to know which certificate to use for
+// the connection.
+//
+// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
+//
+// The properties CustomHostname, Enabled are required.
+type CDNResourceRuleReplaceParamsOptionsSni struct {
+	// Custom SNI hostname.
+	//
+	// It is required if `sni_type` is set to custom.
+	CustomHostname string `json:"custom_hostname,required" format:"domain"`
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// SNI (Server Name Indication) type.
+	//
+	// Possible values:
+	//
+	//   - **dynamic** - SNI hostname depends on `hostHeader` and `forward_host_header`
+	//     options. It has several possible combinations:
+	//   - If the `hostHeader` option is enabled and specified, SNI hostname matches the
+	//     Host header.
+	//   - If the `forward_host_header` option is enabled and has true value, SNI
+	//     hostname matches the Host header used in the request made to a CDN.
+	//   - If the `hostHeader` and `forward_host_header` options are disabled, SNI
+	//     hostname matches the primary CNAME.
+	//   - **custom** - custom SNI hostname is in use.
+	//
+	// Any of "dynamic", "custom".
+	SniType string `json:"sni_type,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsSni) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsSni
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsSni) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleReplaceParamsOptionsSni](
+		"sni_type", "dynamic", "custom",
+	)
+}
+
+// Serves stale cached content in case of origin unavailability.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsStale struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Defines list of errors for which "Always online" option is applied.
+	//
+	// Any of "error", "http_403", "http_404", "http_429", "http_500", "http_502",
+	// "http_503", "http_504", "invalid_header", "timeout", "updating".
+	Value []string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsStale) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsStale
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsStale) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Custom HTTP Headers that a CDN server adds to a response.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsStaticResponseHeaders struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool                                                            `json:"enabled,required"`
+	Value   []CDNResourceRuleReplaceParamsOptionsStaticResponseHeadersValue `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsStaticResponseHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsStaticResponseHeaders
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsStaticResponseHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Name, Value are required.
+type CDNResourceRuleReplaceParamsOptionsStaticResponseHeadersValue struct {
+	// HTTP Header name.
+	//
+	// Restrictions:
+	//
+	// - Maximum 128 symbols.
+	// - Latin letters (A-Z, a-z,) numbers (0-9,) dashes, and underscores only.
+	Name string `json:"name,required"`
+	// Header value.
+	//
+	// Restrictions:
+	//
+	//   - Maximum 512 symbols.
+	//   - Letters (a-z), numbers (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+
+	//     /|\";:?.,><{}[]).
+	//   - Must start with a letter, number, asterisk or {.
+	//   - Multiple values can be added.
+	Value []string `json:"value,omitzero,required"`
+	// Defines whether the header will be added to a response from CDN regardless of
+	// response code.
+	//
+	// Possible values:
+	//
+	//   - **true** - Header will be added to a response from CDN regardless of response
+	//     code.
+	//   - **false** - Header will be added only to the following response codes: 200,
+	//     201, 204, 206, 301, 302, 303, 304, 307, 308.
+	Always param.Opt[bool] `json:"always,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsStaticResponseHeadersValue) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsStaticResponseHeadersValue
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsStaticResponseHeadersValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// **Legacy option**. Use the `static_response_headers` option instead.
+//
+// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
+// Headers can be specified. May contain a header with multiple values.
+//
+// Deprecated: deprecated
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsStaticHeaders struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// A MAP for static headers in a format of `header_name: header_value`.
+	//
+	// Restrictions:
+	//
+	//   - **Header name** - Maximum 128 symbols, may contain Latin letters (A-Z, a-z),
+	//     numbers (0-9), dashes, and underscores.
+	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
+	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
+	//     with a letter, number, asterisk or {.
+	Value any `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsStaticHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsStaticHeaders
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsStaticHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
+// Headers can be specified.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsStaticRequestHeaders struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// A MAP for static headers in a format of `header_name: header_value`.
+	//
+	// Restrictions:
+	//
+	//   - **Header name** - Maximum 255 symbols, may contain Latin letters (A-Z, a-z),
+	//     numbers (0-9), dashes, and underscores.
+	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
+	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
+	//     with a letter, number, asterisk or {.
+	Value map[string]string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsStaticRequestHeaders) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsStaticRequestHeaders
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsStaticRequestHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls access to the content for specified User-Agents.
+//
+// The properties Enabled, ExceptedValues, PolicyType are required.
+type CDNResourceRuleReplaceParamsOptionsUserAgentACL struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// List of User-Agents that will be allowed/denied.
+	//
+	// The meaning of the parameter depends on `policy_type`:
+	//
+	// - **allow** - List of User-Agents for which access is prohibited.
+	// - **deny** - List of User-Agents for which access is allowed.
+	//
+	// You can provide exact User-Agent strings or regular expressions. Regular
+	// expressions must start with `~` (case-sensitive) or `~*` (case-insensitive).
+	//
+	// Use an empty string `""` to allow/deny access when the User-Agent header is
+	// empty.
+	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"user_agent"`
+	// User-Agents policy type.
+	//
+	// Possible values:
+	//
+	//   - **allow** - Allow access for all User-Agents except specified in
+	//     `excepted_values` field.
+	//   - **deny** - Deny access for all User-Agents except specified in
+	//     `excepted_values` field.
+	//
+	// Any of "allow", "deny".
+	PolicyType string `json:"policy_type,omitzero,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsUserAgentACL) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsUserAgentACL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsUserAgentACL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CDNResourceRuleReplaceParamsOptionsUserAgentACL](
+		"policy_type", "allow", "deny",
+	)
+}
+
+// Allows to enable WAAP (Web Application and API Protection).
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsWaap struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsWaap) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsWaap
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsWaap) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables or disables WebSockets connections to an origin server.
+//
+// The properties Enabled, Value are required.
+type CDNResourceRuleReplaceParamsOptionsWebsockets struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsWebsockets) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsWebsockets
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsWebsockets) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Sets a protocol other than the one specified in the CDN resource settings to
+// connect to the origin.
+//
+// Possible values:
+//
+//   - **HTTPS** - CDN servers connect to origin via HTTPS protocol.
+//   - **HTTP** - CDN servers connect to origin via HTTP protocol.
+//   - **MATCH** - Connection protocol is chosen automatically; in this case, content
+//     on origin source should be available for the CDN both through HTTP and HTTPS
+//     protocols.
+//   - **null** - `originProtocol` setting is inherited from the CDN resource
+//     settings.
+type CDNResourceRuleReplaceParamsOverrideOriginProtocol string
+
+const (
+	CDNResourceRuleReplaceParamsOverrideOriginProtocolHTTPS CDNResourceRuleReplaceParamsOverrideOriginProtocol = "HTTPS"
+	CDNResourceRuleReplaceParamsOverrideOriginProtocolHTTP  CDNResourceRuleReplaceParamsOverrideOriginProtocol = "HTTP"
+	CDNResourceRuleReplaceParamsOverrideOriginProtocolMatch CDNResourceRuleReplaceParamsOverrideOriginProtocol = "MATCH"
 )
