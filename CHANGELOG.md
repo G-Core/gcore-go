@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.31.0 (2026-01-30)
+
+Full Changelog: [v0.30.0...v0.31.0](https://github.com/G-Core/gcore-go/compare/v0.30.0...v0.31.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cdn:** rename resource to cdn_resource
+* **api:** change type casing from Cdn* to CDN*
+
+### Features
+
+* **api:** aggregated API specs update ([daa7b60](https://github.com/G-Core/gcore-go/commit/daa7b600e20880d02de7bdc5948d237ce574e8df))
+* **api:** aggregated API specs update ([6131945](https://github.com/G-Core/gcore-go/commit/613194525248799ed0a86a816b87be73e1806473))
+* **api:** manual upload of aggregated API specs ([0564f05](https://github.com/G-Core/gcore-go/commit/0564f0547f0e55ee05c9668046666e5724667815))
+* **api:** refactor(cdn)!: change type casing from Cdn* to CDN* ([c2a9319](https://github.com/G-Core/gcore-go/commit/c2a9319edc8dacfd7e52e3cec5b98907a4c0a979))
+* **client:** add a convenient param.SetJSON helper ([a7dd1da](https://github.com/G-Core/gcore-go/commit/a7dd1da354e0831e54753fe9c7538816c9fe3f7e))
+* **cloud:** add gpu cloud examples ([0cd51b2](https://github.com/G-Core/gcore-go/commit/0cd51b226f413e348da458aef2b78c21ccca318f))
+
+
+### Bug Fixes
+
+* **cloud:** extraction of clusterID in NewAndPoll for GPU baremetal clusters ([be114b2](https://github.com/G-Core/gcore-go/commit/be114b29bc0c1ae55f0d929949970e70f330261d))
+
+
+### Refactors
+
+* **cdn:** rename resource to cdn_resource ([28a5dce](https://github.com/G-Core/gcore-go/commit/28a5dce8c041cb238f115288af43bdc5f1e36c89))
+
 ## 0.30.0 (2026-01-22)
 
 Full Changelog: [v0.29.0...v0.30.0](https://github.com/G-Core/gcore-go/compare/v0.29.0...v0.30.0)
