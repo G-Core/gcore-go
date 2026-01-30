@@ -15,7 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
-func TestResourceNewWithOptionalParams(t *testing.T) {
+func TestCDNResourceNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,55 +27,55 @@ func TestResourceNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CDN.Resources.New(context.TODO(), cdn.ResourceNewParams{
+	_, err := client.CDN.CDNResources.New(context.TODO(), cdn.CDNResourceNewParams{
 		Cname:       "cdn.site.com",
 		Origin:      "example.com",
 		OriginGroup: 132,
 		Active:      gcore.Bool(true),
 		Description: gcore.String("My resource"),
 		Name:        gcore.String("Resource for images"),
-		Options: cdn.ResourceNewParamsOptions{
-			AllowedHTTPMethods: cdn.ResourceNewParamsOptionsAllowedHTTPMethods{
+		Options: cdn.CDNResourceNewParamsOptions{
+			AllowedHTTPMethods: cdn.CDNResourceNewParamsOptionsAllowedHTTPMethods{
 				Enabled: true,
 				Value:   []string{"GET", "POST"},
 			},
-			BotProtection: cdn.ResourceNewParamsOptionsBotProtection{
-				BotChallenge: cdn.ResourceNewParamsOptionsBotProtectionBotChallenge{
+			BotProtection: cdn.CDNResourceNewParamsOptionsBotProtection{
+				BotChallenge: cdn.CDNResourceNewParamsOptionsBotProtectionBotChallenge{
 					Enabled: gcore.Bool(true),
 				},
 				Enabled: true,
 			},
-			BrotliCompression: cdn.ResourceNewParamsOptionsBrotliCompression{
+			BrotliCompression: cdn.CDNResourceNewParamsOptionsBrotliCompression{
 				Enabled: true,
 				Value:   []string{"text/html", "text/plain"},
 			},
-			BrowserCacheSettings: cdn.ResourceNewParamsOptionsBrowserCacheSettings{
+			BrowserCacheSettings: cdn.CDNResourceNewParamsOptionsBrowserCacheSettings{
 				Enabled: true,
 				Value:   "3600s",
 			},
-			CacheHTTPHeaders: cdn.ResourceNewParamsOptionsCacheHTTPHeaders{
+			CacheHTTPHeaders: cdn.CDNResourceNewParamsOptionsCacheHTTPHeaders{
 				Enabled: false,
 				Value:   []string{"vary", "content-length", "last-modified", "connection", "accept-ranges", "content-type", "content-encoding", "etag", "cache-control", "expires", "keep-alive", "server"},
 			},
-			Cors: cdn.ResourceNewParamsOptionsCors{
+			Cors: cdn.CDNResourceNewParamsOptionsCors{
 				Enabled: true,
 				Value:   []string{"domain.com", "domain2.com"},
 				Always:  gcore.Bool(true),
 			},
-			CountryACL: cdn.ResourceNewParamsOptionsCountryACL{
+			CountryACL: cdn.CDNResourceNewParamsOptionsCountryACL{
 				Enabled:        true,
 				ExceptedValues: []string{"GB", "DE"},
 				PolicyType:     "allow",
 			},
-			DisableCache: cdn.ResourceNewParamsOptionsDisableCache{
+			DisableCache: cdn.CDNResourceNewParamsOptionsDisableCache{
 				Enabled: true,
 				Value:   false,
 			},
-			DisableProxyForceRanges: cdn.ResourceNewParamsOptionsDisableProxyForceRanges{
+			DisableProxyForceRanges: cdn.CDNResourceNewParamsOptionsDisableProxyForceRanges{
 				Enabled: true,
 				Value:   true,
 			},
-			EdgeCacheSettings: cdn.ResourceNewParamsOptionsEdgeCacheSettings{
+			EdgeCacheSettings: cdn.CDNResourceNewParamsOptionsEdgeCacheSettings{
 				Enabled: true,
 				CustomValues: map[string]string{
 					"100": "43200s",
@@ -83,30 +83,30 @@ func TestResourceNewWithOptionalParams(t *testing.T) {
 				Default: gcore.String("321669910225"),
 				Value:   gcore.String("43200s"),
 			},
-			Fastedge: cdn.ResourceNewParamsOptionsFastedge{
+			Fastedge: cdn.CDNResourceNewParamsOptionsFastedge{
 				Enabled: true,
-				OnRequestBody: cdn.ResourceNewParamsOptionsFastedgeOnRequestBody{
+				OnRequestBody: cdn.CDNResourceNewParamsOptionsFastedgeOnRequestBody{
 					AppID:            "1001",
 					Enabled:          gcore.Bool(true),
 					ExecuteOnEdge:    gcore.Bool(true),
 					ExecuteOnShield:  gcore.Bool(false),
 					InterruptOnError: gcore.Bool(true),
 				},
-				OnRequestHeaders: cdn.ResourceNewParamsOptionsFastedgeOnRequestHeaders{
+				OnRequestHeaders: cdn.CDNResourceNewParamsOptionsFastedgeOnRequestHeaders{
 					AppID:            "1001",
 					Enabled:          gcore.Bool(true),
 					ExecuteOnEdge:    gcore.Bool(true),
 					ExecuteOnShield:  gcore.Bool(false),
 					InterruptOnError: gcore.Bool(true),
 				},
-				OnResponseBody: cdn.ResourceNewParamsOptionsFastedgeOnResponseBody{
+				OnResponseBody: cdn.CDNResourceNewParamsOptionsFastedgeOnResponseBody{
 					AppID:            "1001",
 					Enabled:          gcore.Bool(true),
 					ExecuteOnEdge:    gcore.Bool(true),
 					ExecuteOnShield:  gcore.Bool(false),
 					InterruptOnError: gcore.Bool(true),
 				},
-				OnResponseHeaders: cdn.ResourceNewParamsOptionsFastedgeOnResponseHeaders{
+				OnResponseHeaders: cdn.CDNResourceNewParamsOptionsFastedgeOnResponseHeaders{
 					AppID:            "1001",
 					Enabled:          gcore.Bool(true),
 					ExecuteOnEdge:    gcore.Bool(true),
@@ -114,146 +114,146 @@ func TestResourceNewWithOptionalParams(t *testing.T) {
 					InterruptOnError: gcore.Bool(true),
 				},
 			},
-			FetchCompressed: cdn.ResourceNewParamsOptionsFetchCompressed{
+			FetchCompressed: cdn.CDNResourceNewParamsOptionsFetchCompressed{
 				Enabled: true,
 				Value:   false,
 			},
-			FollowOriginRedirect: cdn.ResourceNewParamsOptionsFollowOriginRedirect{
+			FollowOriginRedirect: cdn.CDNResourceNewParamsOptionsFollowOriginRedirect{
 				Codes:   []int64{302, 308},
 				Enabled: true,
 			},
-			ForceReturn: cdn.ResourceNewParamsOptionsForceReturn{
+			ForceReturn: cdn.CDNResourceNewParamsOptionsForceReturn{
 				Body:    "http://example.com/redirect_address",
 				Code:    301,
 				Enabled: true,
-				TimeInterval: cdn.ResourceNewParamsOptionsForceReturnTimeInterval{
+				TimeInterval: cdn.CDNResourceNewParamsOptionsForceReturnTimeInterval{
 					EndTime:   "20:00",
 					StartTime: "09:00",
 					TimeZone:  gcore.String("CET"),
 				},
 			},
-			ForwardHostHeader: cdn.ResourceNewParamsOptionsForwardHostHeader{
+			ForwardHostHeader: cdn.CDNResourceNewParamsOptionsForwardHostHeader{
 				Enabled: false,
 				Value:   false,
 			},
-			GzipOn: cdn.ResourceNewParamsOptionsGzipOn{
+			GzipOn: cdn.CDNResourceNewParamsOptionsGzipOn{
 				Enabled: true,
 				Value:   true,
 			},
-			HostHeader: cdn.ResourceNewParamsOptionsHostHeader{
+			HostHeader: cdn.CDNResourceNewParamsOptionsHostHeader{
 				Enabled: true,
 				Value:   "host.com",
 			},
-			Http3Enabled: cdn.ResourceNewParamsOptionsHttp3Enabled{
+			Http3Enabled: cdn.CDNResourceNewParamsOptionsHttp3Enabled{
 				Enabled: true,
 				Value:   true,
 			},
-			IgnoreCookie: cdn.ResourceNewParamsOptionsIgnoreCookie{
+			IgnoreCookie: cdn.CDNResourceNewParamsOptionsIgnoreCookie{
 				Enabled: true,
 				Value:   true,
 			},
-			IgnoreQueryString: cdn.ResourceNewParamsOptionsIgnoreQueryString{
+			IgnoreQueryString: cdn.CDNResourceNewParamsOptionsIgnoreQueryString{
 				Enabled: true,
 				Value:   false,
 			},
-			ImageStack: cdn.ResourceNewParamsOptionsImageStack{
+			ImageStack: cdn.CDNResourceNewParamsOptionsImageStack{
 				Enabled:     true,
 				AvifEnabled: gcore.Bool(true),
 				PngLossless: gcore.Bool(true),
 				Quality:     gcore.Int(80),
 				WebpEnabled: gcore.Bool(false),
 			},
-			IPAddressACL: cdn.ResourceNewParamsOptionsIPAddressACL{
+			IPAddressACL: cdn.CDNResourceNewParamsOptionsIPAddressACL{
 				Enabled:        true,
 				ExceptedValues: []string{"192.168.1.100/32"},
 				PolicyType:     "deny",
 			},
-			LimitBandwidth: cdn.ResourceNewParamsOptionsLimitBandwidth{
+			LimitBandwidth: cdn.CDNResourceNewParamsOptionsLimitBandwidth{
 				Enabled:   true,
 				LimitType: "static",
 				Buffer:    gcore.Int(200),
 				Speed:     gcore.Int(100),
 			},
-			ProxyCacheKey: cdn.ResourceNewParamsOptionsProxyCacheKey{
+			ProxyCacheKey: cdn.CDNResourceNewParamsOptionsProxyCacheKey{
 				Enabled: true,
 				Value:   "$scheme$uri",
 			},
-			ProxyCacheMethodsSet: cdn.ResourceNewParamsOptionsProxyCacheMethodsSet{
+			ProxyCacheMethodsSet: cdn.CDNResourceNewParamsOptionsProxyCacheMethodsSet{
 				Enabled: true,
 				Value:   false,
 			},
-			ProxyConnectTimeout: cdn.ResourceNewParamsOptionsProxyConnectTimeout{
+			ProxyConnectTimeout: cdn.CDNResourceNewParamsOptionsProxyConnectTimeout{
 				Enabled: true,
 				Value:   "4s",
 			},
-			ProxyReadTimeout: cdn.ResourceNewParamsOptionsProxyReadTimeout{
+			ProxyReadTimeout: cdn.CDNResourceNewParamsOptionsProxyReadTimeout{
 				Enabled: true,
 				Value:   "10s",
 			},
-			QueryParamsBlacklist: cdn.ResourceNewParamsOptionsQueryParamsBlacklist{
+			QueryParamsBlacklist: cdn.CDNResourceNewParamsOptionsQueryParamsBlacklist{
 				Enabled: true,
 				Value:   []string{"some", "blacklisted", "query"},
 			},
-			QueryParamsWhitelist: cdn.ResourceNewParamsOptionsQueryParamsWhitelist{
+			QueryParamsWhitelist: cdn.CDNResourceNewParamsOptionsQueryParamsWhitelist{
 				Enabled: true,
 				Value:   []string{"some", "whitelisted", "query"},
 			},
-			QueryStringForwarding: cdn.ResourceNewParamsOptionsQueryStringForwarding{
+			QueryStringForwarding: cdn.CDNResourceNewParamsOptionsQueryStringForwarding{
 				Enabled:              true,
 				ForwardFromFileTypes: []string{"m3u8", "mpd"},
 				ForwardToFileTypes:   []string{"ts", "mp4"},
 				ForwardExceptKeys:    []string{"debug_info"},
 				ForwardOnlyKeys:      []string{"auth_token", "session_id"},
 			},
-			RedirectHTTPToHTTPS: cdn.ResourceNewParamsOptionsRedirectHTTPToHTTPS{
+			RedirectHTTPToHTTPS: cdn.CDNResourceNewParamsOptionsRedirectHTTPToHTTPS{
 				Enabled: true,
 				Value:   true,
 			},
-			RedirectHTTPSToHTTP: cdn.ResourceNewParamsOptionsRedirectHTTPSToHTTP{
+			RedirectHTTPSToHTTP: cdn.CDNResourceNewParamsOptionsRedirectHTTPSToHTTP{
 				Enabled: false,
 				Value:   true,
 			},
-			ReferrerACL: cdn.ResourceNewParamsOptionsReferrerACL{
+			ReferrerACL: cdn.CDNResourceNewParamsOptionsReferrerACL{
 				Enabled:        true,
 				ExceptedValues: []string{"example.com", "*.example.net"},
 				PolicyType:     "deny",
 			},
-			RequestLimiter: cdn.ResourceNewParamsOptionsRequestLimiter{
+			RequestLimiter: cdn.CDNResourceNewParamsOptionsRequestLimiter{
 				Enabled:  true,
 				Rate:     5,
 				RateUnit: "r/s",
 			},
-			ResponseHeadersHidingPolicy: cdn.ResourceNewParamsOptionsResponseHeadersHidingPolicy{
+			ResponseHeadersHidingPolicy: cdn.CDNResourceNewParamsOptionsResponseHeadersHidingPolicy{
 				Enabled:  true,
 				Excepted: []string{"my-header"},
 				Mode:     "hide",
 			},
-			Rewrite: cdn.ResourceNewParamsOptionsRewrite{
+			Rewrite: cdn.CDNResourceNewParamsOptionsRewrite{
 				Body:    "/(.*) /additional_path/$1",
 				Enabled: true,
 				Flag:    "break",
 			},
-			SecureKey: cdn.ResourceNewParamsOptionsSecureKey{
+			SecureKey: cdn.CDNResourceNewParamsOptionsSecureKey{
 				Enabled: true,
 				Key:     gcore.String("secretkey"),
 				Type:    2,
 			},
-			Slice: cdn.ResourceNewParamsOptionsSlice{
+			Slice: cdn.CDNResourceNewParamsOptionsSlice{
 				Enabled: true,
 				Value:   true,
 			},
-			Sni: cdn.ResourceNewParamsOptionsSni{
+			Sni: cdn.CDNResourceNewParamsOptionsSni{
 				CustomHostname: "custom.example.com",
 				Enabled:        true,
 				SniType:        "custom",
 			},
-			Stale: cdn.ResourceNewParamsOptionsStale{
+			Stale: cdn.CDNResourceNewParamsOptionsStale{
 				Enabled: true,
 				Value:   []string{"http_404", "http_500"},
 			},
-			StaticResponseHeaders: cdn.ResourceNewParamsOptionsStaticResponseHeaders{
+			StaticResponseHeaders: cdn.CDNResourceNewParamsOptionsStaticResponseHeaders{
 				Enabled: true,
-				Value: []cdn.ResourceNewParamsOptionsStaticResponseHeadersValue{{
+				Value: []cdn.CDNResourceNewParamsOptionsStaticResponseHeadersValue{{
 					Name:   "X-Example",
 					Value:  []string{"Value_1"},
 					Always: gcore.Bool(true),
@@ -263,7 +263,7 @@ func TestResourceNewWithOptionalParams(t *testing.T) {
 					Always: gcore.Bool(false),
 				}},
 			},
-			StaticHeaders: cdn.ResourceNewParamsOptionsStaticHeaders{
+			StaticHeaders: cdn.CDNResourceNewParamsOptionsStaticHeaders{
 				Enabled: true,
 				Value: map[string]any{
 					"X-Example": "Value_1",
@@ -273,44 +273,44 @@ func TestResourceNewWithOptionalParams(t *testing.T) {
 					},
 				},
 			},
-			StaticRequestHeaders: cdn.ResourceNewParamsOptionsStaticRequestHeaders{
+			StaticRequestHeaders: cdn.CDNResourceNewParamsOptionsStaticRequestHeaders{
 				Enabled: true,
 				Value: map[string]string{
 					"Header-One": "Value 1",
 					"Header-Two": "Value 2",
 				},
 			},
-			TlsVersions: cdn.ResourceNewParamsOptionsTlsVersions{
+			TlsVersions: cdn.CDNResourceNewParamsOptionsTlsVersions{
 				Enabled: true,
 				Value:   []string{"SSLv3", "TLSv1.3"},
 			},
-			UseDefaultLeChain: cdn.ResourceNewParamsOptionsUseDefaultLeChain{
+			UseDefaultLeChain: cdn.CDNResourceNewParamsOptionsUseDefaultLeChain{
 				Enabled: true,
 				Value:   true,
 			},
-			UseDns01LeChallenge: cdn.ResourceNewParamsOptionsUseDns01LeChallenge{
+			UseDns01LeChallenge: cdn.CDNResourceNewParamsOptionsUseDns01LeChallenge{
 				Enabled: true,
 				Value:   true,
 			},
-			UseRsaLeCert: cdn.ResourceNewParamsOptionsUseRsaLeCert{
+			UseRsaLeCert: cdn.CDNResourceNewParamsOptionsUseRsaLeCert{
 				Enabled: true,
 				Value:   true,
 			},
-			UserAgentACL: cdn.ResourceNewParamsOptionsUserAgentACL{
+			UserAgentACL: cdn.CDNResourceNewParamsOptionsUserAgentACL{
 				Enabled:        true,
 				ExceptedValues: []string{"UserAgent Value", "~*.*bot.*", ""},
 				PolicyType:     "allow",
 			},
-			Waap: cdn.ResourceNewParamsOptionsWaap{
+			Waap: cdn.CDNResourceNewParamsOptionsWaap{
 				Enabled: true,
 				Value:   true,
 			},
-			Websockets: cdn.ResourceNewParamsOptionsWebsockets{
+			Websockets: cdn.CDNResourceNewParamsOptionsWebsockets{
 				Enabled: true,
 				Value:   true,
 			},
 		},
-		OriginProtocol:       cdn.ResourceNewParamsOriginProtocolHTTPS,
+		OriginProtocol:       cdn.CDNResourceNewParamsOriginProtocolHTTPS,
 		PrimaryResource:      param.Null[int64](),
 		ProxySslCa:           param.Null[int64](),
 		ProxySslData:         param.Null[int64](),
@@ -329,7 +329,7 @@ func TestResourceNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestResourceUpdateWithOptionalParams(t *testing.T) {
+func TestCDNResourceUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("unexpected prism python test failures")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -342,55 +342,55 @@ func TestResourceUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CDN.Resources.Update(
+	_, err := client.CDN.CDNResources.Update(
 		context.TODO(),
 		0,
-		cdn.ResourceUpdateParams{
+		cdn.CDNResourceUpdateParams{
 			Active:      gcore.Bool(true),
 			Description: gcore.String("My resource"),
 			Name:        gcore.String("Resource for images"),
-			Options: cdn.ResourceUpdateParamsOptions{
-				AllowedHTTPMethods: cdn.ResourceUpdateParamsOptionsAllowedHTTPMethods{
+			Options: cdn.CDNResourceUpdateParamsOptions{
+				AllowedHTTPMethods: cdn.CDNResourceUpdateParamsOptionsAllowedHTTPMethods{
 					Enabled: true,
 					Value:   []string{"GET", "POST"},
 				},
-				BotProtection: cdn.ResourceUpdateParamsOptionsBotProtection{
-					BotChallenge: cdn.ResourceUpdateParamsOptionsBotProtectionBotChallenge{
+				BotProtection: cdn.CDNResourceUpdateParamsOptionsBotProtection{
+					BotChallenge: cdn.CDNResourceUpdateParamsOptionsBotProtectionBotChallenge{
 						Enabled: gcore.Bool(true),
 					},
 					Enabled: true,
 				},
-				BrotliCompression: cdn.ResourceUpdateParamsOptionsBrotliCompression{
+				BrotliCompression: cdn.CDNResourceUpdateParamsOptionsBrotliCompression{
 					Enabled: true,
 					Value:   []string{"text/html", "text/plain"},
 				},
-				BrowserCacheSettings: cdn.ResourceUpdateParamsOptionsBrowserCacheSettings{
+				BrowserCacheSettings: cdn.CDNResourceUpdateParamsOptionsBrowserCacheSettings{
 					Enabled: true,
 					Value:   "3600s",
 				},
-				CacheHTTPHeaders: cdn.ResourceUpdateParamsOptionsCacheHTTPHeaders{
+				CacheHTTPHeaders: cdn.CDNResourceUpdateParamsOptionsCacheHTTPHeaders{
 					Enabled: false,
 					Value:   []string{"vary", "content-length", "last-modified", "connection", "accept-ranges", "content-type", "content-encoding", "etag", "cache-control", "expires", "keep-alive", "server"},
 				},
-				Cors: cdn.ResourceUpdateParamsOptionsCors{
+				Cors: cdn.CDNResourceUpdateParamsOptionsCors{
 					Enabled: true,
 					Value:   []string{"domain.com", "domain2.com"},
 					Always:  gcore.Bool(true),
 				},
-				CountryACL: cdn.ResourceUpdateParamsOptionsCountryACL{
+				CountryACL: cdn.CDNResourceUpdateParamsOptionsCountryACL{
 					Enabled:        true,
 					ExceptedValues: []string{"GB", "DE"},
 					PolicyType:     "allow",
 				},
-				DisableCache: cdn.ResourceUpdateParamsOptionsDisableCache{
+				DisableCache: cdn.CDNResourceUpdateParamsOptionsDisableCache{
 					Enabled: true,
 					Value:   false,
 				},
-				DisableProxyForceRanges: cdn.ResourceUpdateParamsOptionsDisableProxyForceRanges{
+				DisableProxyForceRanges: cdn.CDNResourceUpdateParamsOptionsDisableProxyForceRanges{
 					Enabled: true,
 					Value:   true,
 				},
-				EdgeCacheSettings: cdn.ResourceUpdateParamsOptionsEdgeCacheSettings{
+				EdgeCacheSettings: cdn.CDNResourceUpdateParamsOptionsEdgeCacheSettings{
 					Enabled: true,
 					CustomValues: map[string]string{
 						"100": "43200s",
@@ -398,30 +398,30 @@ func TestResourceUpdateWithOptionalParams(t *testing.T) {
 					Default: gcore.String("321669910225"),
 					Value:   gcore.String("43200s"),
 				},
-				Fastedge: cdn.ResourceUpdateParamsOptionsFastedge{
+				Fastedge: cdn.CDNResourceUpdateParamsOptionsFastedge{
 					Enabled: true,
-					OnRequestBody: cdn.ResourceUpdateParamsOptionsFastedgeOnRequestBody{
+					OnRequestBody: cdn.CDNResourceUpdateParamsOptionsFastedgeOnRequestBody{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
 						ExecuteOnEdge:    gcore.Bool(true),
 						ExecuteOnShield:  gcore.Bool(false),
 						InterruptOnError: gcore.Bool(true),
 					},
-					OnRequestHeaders: cdn.ResourceUpdateParamsOptionsFastedgeOnRequestHeaders{
+					OnRequestHeaders: cdn.CDNResourceUpdateParamsOptionsFastedgeOnRequestHeaders{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
 						ExecuteOnEdge:    gcore.Bool(true),
 						ExecuteOnShield:  gcore.Bool(false),
 						InterruptOnError: gcore.Bool(true),
 					},
-					OnResponseBody: cdn.ResourceUpdateParamsOptionsFastedgeOnResponseBody{
+					OnResponseBody: cdn.CDNResourceUpdateParamsOptionsFastedgeOnResponseBody{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
 						ExecuteOnEdge:    gcore.Bool(true),
 						ExecuteOnShield:  gcore.Bool(false),
 						InterruptOnError: gcore.Bool(true),
 					},
-					OnResponseHeaders: cdn.ResourceUpdateParamsOptionsFastedgeOnResponseHeaders{
+					OnResponseHeaders: cdn.CDNResourceUpdateParamsOptionsFastedgeOnResponseHeaders{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
 						ExecuteOnEdge:    gcore.Bool(true),
@@ -429,146 +429,146 @@ func TestResourceUpdateWithOptionalParams(t *testing.T) {
 						InterruptOnError: gcore.Bool(true),
 					},
 				},
-				FetchCompressed: cdn.ResourceUpdateParamsOptionsFetchCompressed{
+				FetchCompressed: cdn.CDNResourceUpdateParamsOptionsFetchCompressed{
 					Enabled: true,
 					Value:   false,
 				},
-				FollowOriginRedirect: cdn.ResourceUpdateParamsOptionsFollowOriginRedirect{
+				FollowOriginRedirect: cdn.CDNResourceUpdateParamsOptionsFollowOriginRedirect{
 					Codes:   []int64{302, 308},
 					Enabled: true,
 				},
-				ForceReturn: cdn.ResourceUpdateParamsOptionsForceReturn{
+				ForceReturn: cdn.CDNResourceUpdateParamsOptionsForceReturn{
 					Body:    "http://example.com/redirect_address",
 					Code:    301,
 					Enabled: true,
-					TimeInterval: cdn.ResourceUpdateParamsOptionsForceReturnTimeInterval{
+					TimeInterval: cdn.CDNResourceUpdateParamsOptionsForceReturnTimeInterval{
 						EndTime:   "20:00",
 						StartTime: "09:00",
 						TimeZone:  gcore.String("CET"),
 					},
 				},
-				ForwardHostHeader: cdn.ResourceUpdateParamsOptionsForwardHostHeader{
+				ForwardHostHeader: cdn.CDNResourceUpdateParamsOptionsForwardHostHeader{
 					Enabled: false,
 					Value:   false,
 				},
-				GzipOn: cdn.ResourceUpdateParamsOptionsGzipOn{
+				GzipOn: cdn.CDNResourceUpdateParamsOptionsGzipOn{
 					Enabled: true,
 					Value:   true,
 				},
-				HostHeader: cdn.ResourceUpdateParamsOptionsHostHeader{
+				HostHeader: cdn.CDNResourceUpdateParamsOptionsHostHeader{
 					Enabled: true,
 					Value:   "host.com",
 				},
-				Http3Enabled: cdn.ResourceUpdateParamsOptionsHttp3Enabled{
+				Http3Enabled: cdn.CDNResourceUpdateParamsOptionsHttp3Enabled{
 					Enabled: true,
 					Value:   true,
 				},
-				IgnoreCookie: cdn.ResourceUpdateParamsOptionsIgnoreCookie{
+				IgnoreCookie: cdn.CDNResourceUpdateParamsOptionsIgnoreCookie{
 					Enabled: true,
 					Value:   true,
 				},
-				IgnoreQueryString: cdn.ResourceUpdateParamsOptionsIgnoreQueryString{
+				IgnoreQueryString: cdn.CDNResourceUpdateParamsOptionsIgnoreQueryString{
 					Enabled: true,
 					Value:   false,
 				},
-				ImageStack: cdn.ResourceUpdateParamsOptionsImageStack{
+				ImageStack: cdn.CDNResourceUpdateParamsOptionsImageStack{
 					Enabled:     true,
 					AvifEnabled: gcore.Bool(true),
 					PngLossless: gcore.Bool(true),
 					Quality:     gcore.Int(80),
 					WebpEnabled: gcore.Bool(false),
 				},
-				IPAddressACL: cdn.ResourceUpdateParamsOptionsIPAddressACL{
+				IPAddressACL: cdn.CDNResourceUpdateParamsOptionsIPAddressACL{
 					Enabled:        true,
 					ExceptedValues: []string{"192.168.1.100/32"},
 					PolicyType:     "deny",
 				},
-				LimitBandwidth: cdn.ResourceUpdateParamsOptionsLimitBandwidth{
+				LimitBandwidth: cdn.CDNResourceUpdateParamsOptionsLimitBandwidth{
 					Enabled:   true,
 					LimitType: "static",
 					Buffer:    gcore.Int(200),
 					Speed:     gcore.Int(100),
 				},
-				ProxyCacheKey: cdn.ResourceUpdateParamsOptionsProxyCacheKey{
+				ProxyCacheKey: cdn.CDNResourceUpdateParamsOptionsProxyCacheKey{
 					Enabled: true,
 					Value:   "$scheme$uri",
 				},
-				ProxyCacheMethodsSet: cdn.ResourceUpdateParamsOptionsProxyCacheMethodsSet{
+				ProxyCacheMethodsSet: cdn.CDNResourceUpdateParamsOptionsProxyCacheMethodsSet{
 					Enabled: true,
 					Value:   false,
 				},
-				ProxyConnectTimeout: cdn.ResourceUpdateParamsOptionsProxyConnectTimeout{
+				ProxyConnectTimeout: cdn.CDNResourceUpdateParamsOptionsProxyConnectTimeout{
 					Enabled: true,
 					Value:   "4s",
 				},
-				ProxyReadTimeout: cdn.ResourceUpdateParamsOptionsProxyReadTimeout{
+				ProxyReadTimeout: cdn.CDNResourceUpdateParamsOptionsProxyReadTimeout{
 					Enabled: true,
 					Value:   "10s",
 				},
-				QueryParamsBlacklist: cdn.ResourceUpdateParamsOptionsQueryParamsBlacklist{
+				QueryParamsBlacklist: cdn.CDNResourceUpdateParamsOptionsQueryParamsBlacklist{
 					Enabled: true,
 					Value:   []string{"some", "blacklisted", "query"},
 				},
-				QueryParamsWhitelist: cdn.ResourceUpdateParamsOptionsQueryParamsWhitelist{
+				QueryParamsWhitelist: cdn.CDNResourceUpdateParamsOptionsQueryParamsWhitelist{
 					Enabled: true,
 					Value:   []string{"some", "whitelisted", "query"},
 				},
-				QueryStringForwarding: cdn.ResourceUpdateParamsOptionsQueryStringForwarding{
+				QueryStringForwarding: cdn.CDNResourceUpdateParamsOptionsQueryStringForwarding{
 					Enabled:              true,
 					ForwardFromFileTypes: []string{"m3u8", "mpd"},
 					ForwardToFileTypes:   []string{"ts", "mp4"},
 					ForwardExceptKeys:    []string{"debug_info"},
 					ForwardOnlyKeys:      []string{"auth_token", "session_id"},
 				},
-				RedirectHTTPToHTTPS: cdn.ResourceUpdateParamsOptionsRedirectHTTPToHTTPS{
+				RedirectHTTPToHTTPS: cdn.CDNResourceUpdateParamsOptionsRedirectHTTPToHTTPS{
 					Enabled: true,
 					Value:   true,
 				},
-				RedirectHTTPSToHTTP: cdn.ResourceUpdateParamsOptionsRedirectHTTPSToHTTP{
+				RedirectHTTPSToHTTP: cdn.CDNResourceUpdateParamsOptionsRedirectHTTPSToHTTP{
 					Enabled: false,
 					Value:   true,
 				},
-				ReferrerACL: cdn.ResourceUpdateParamsOptionsReferrerACL{
+				ReferrerACL: cdn.CDNResourceUpdateParamsOptionsReferrerACL{
 					Enabled:        true,
 					ExceptedValues: []string{"example.com", "*.example.net"},
 					PolicyType:     "deny",
 				},
-				RequestLimiter: cdn.ResourceUpdateParamsOptionsRequestLimiter{
+				RequestLimiter: cdn.CDNResourceUpdateParamsOptionsRequestLimiter{
 					Enabled:  true,
 					Rate:     5,
 					RateUnit: "r/s",
 				},
-				ResponseHeadersHidingPolicy: cdn.ResourceUpdateParamsOptionsResponseHeadersHidingPolicy{
+				ResponseHeadersHidingPolicy: cdn.CDNResourceUpdateParamsOptionsResponseHeadersHidingPolicy{
 					Enabled:  true,
 					Excepted: []string{"my-header"},
 					Mode:     "hide",
 				},
-				Rewrite: cdn.ResourceUpdateParamsOptionsRewrite{
+				Rewrite: cdn.CDNResourceUpdateParamsOptionsRewrite{
 					Body:    "/(.*) /additional_path/$1",
 					Enabled: true,
 					Flag:    "break",
 				},
-				SecureKey: cdn.ResourceUpdateParamsOptionsSecureKey{
+				SecureKey: cdn.CDNResourceUpdateParamsOptionsSecureKey{
 					Enabled: true,
 					Key:     gcore.String("secretkey"),
 					Type:    2,
 				},
-				Slice: cdn.ResourceUpdateParamsOptionsSlice{
+				Slice: cdn.CDNResourceUpdateParamsOptionsSlice{
 					Enabled: true,
 					Value:   true,
 				},
-				Sni: cdn.ResourceUpdateParamsOptionsSni{
+				Sni: cdn.CDNResourceUpdateParamsOptionsSni{
 					CustomHostname: "custom.example.com",
 					Enabled:        true,
 					SniType:        "custom",
 				},
-				Stale: cdn.ResourceUpdateParamsOptionsStale{
+				Stale: cdn.CDNResourceUpdateParamsOptionsStale{
 					Enabled: true,
 					Value:   []string{"http_404", "http_500"},
 				},
-				StaticResponseHeaders: cdn.ResourceUpdateParamsOptionsStaticResponseHeaders{
+				StaticResponseHeaders: cdn.CDNResourceUpdateParamsOptionsStaticResponseHeaders{
 					Enabled: true,
-					Value: []cdn.ResourceUpdateParamsOptionsStaticResponseHeadersValue{{
+					Value: []cdn.CDNResourceUpdateParamsOptionsStaticResponseHeadersValue{{
 						Name:   "X-Example",
 						Value:  []string{"Value_1"},
 						Always: gcore.Bool(true),
@@ -578,7 +578,7 @@ func TestResourceUpdateWithOptionalParams(t *testing.T) {
 						Always: gcore.Bool(false),
 					}},
 				},
-				StaticHeaders: cdn.ResourceUpdateParamsOptionsStaticHeaders{
+				StaticHeaders: cdn.CDNResourceUpdateParamsOptionsStaticHeaders{
 					Enabled: true,
 					Value: map[string]any{
 						"X-Example": "Value_1",
@@ -588,45 +588,45 @@ func TestResourceUpdateWithOptionalParams(t *testing.T) {
 						},
 					},
 				},
-				StaticRequestHeaders: cdn.ResourceUpdateParamsOptionsStaticRequestHeaders{
+				StaticRequestHeaders: cdn.CDNResourceUpdateParamsOptionsStaticRequestHeaders{
 					Enabled: true,
 					Value: map[string]string{
 						"Header-One": "Value 1",
 						"Header-Two": "Value 2",
 					},
 				},
-				TlsVersions: cdn.ResourceUpdateParamsOptionsTlsVersions{
+				TlsVersions: cdn.CDNResourceUpdateParamsOptionsTlsVersions{
 					Enabled: true,
 					Value:   []string{"SSLv3", "TLSv1.3"},
 				},
-				UseDefaultLeChain: cdn.ResourceUpdateParamsOptionsUseDefaultLeChain{
+				UseDefaultLeChain: cdn.CDNResourceUpdateParamsOptionsUseDefaultLeChain{
 					Enabled: true,
 					Value:   true,
 				},
-				UseDns01LeChallenge: cdn.ResourceUpdateParamsOptionsUseDns01LeChallenge{
+				UseDns01LeChallenge: cdn.CDNResourceUpdateParamsOptionsUseDns01LeChallenge{
 					Enabled: true,
 					Value:   true,
 				},
-				UseRsaLeCert: cdn.ResourceUpdateParamsOptionsUseRsaLeCert{
+				UseRsaLeCert: cdn.CDNResourceUpdateParamsOptionsUseRsaLeCert{
 					Enabled: true,
 					Value:   true,
 				},
-				UserAgentACL: cdn.ResourceUpdateParamsOptionsUserAgentACL{
+				UserAgentACL: cdn.CDNResourceUpdateParamsOptionsUserAgentACL{
 					Enabled:        true,
 					ExceptedValues: []string{"UserAgent Value", "~*.*bot.*", ""},
 					PolicyType:     "allow",
 				},
-				Waap: cdn.ResourceUpdateParamsOptionsWaap{
+				Waap: cdn.CDNResourceUpdateParamsOptionsWaap{
 					Enabled: true,
 					Value:   true,
 				},
-				Websockets: cdn.ResourceUpdateParamsOptionsWebsockets{
+				Websockets: cdn.CDNResourceUpdateParamsOptionsWebsockets{
 					Enabled: true,
 					Value:   true,
 				},
 			},
 			OriginGroup:        gcore.Int(132),
-			OriginProtocol:     cdn.ResourceUpdateParamsOriginProtocolHTTPS,
+			OriginProtocol:     cdn.CDNResourceUpdateParamsOriginProtocolHTTPS,
 			ProxySslCa:         param.Null[int64](),
 			ProxySslData:       param.Null[int64](),
 			ProxySslEnabled:    gcore.Bool(false),
@@ -644,7 +644,7 @@ func TestResourceUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestResourceListWithOptionalParams(t *testing.T) {
+func TestCDNResourceListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -656,7 +656,7 @@ func TestResourceListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CDN.Resources.List(context.TODO(), cdn.ResourceListParams{
+	_, err := client.CDN.CDNResources.List(context.TODO(), cdn.CDNResourceListParams{
 		Cname:              gcore.String("cname"),
 		Deleted:            gcore.Bool(true),
 		Enabled:            gcore.Bool(true),
@@ -670,7 +670,7 @@ func TestResourceListWithOptionalParams(t *testing.T) {
 		SslData:            gcore.Int(0),
 		SslDataIn:          gcore.Int(0),
 		SslEnabled:         gcore.Bool(true),
-		Status:             cdn.ResourceListParamsStatusActive,
+		Status:             cdn.CDNResourceListParamsStatusActive,
 		Suspend:            gcore.Bool(true),
 		VpEnabled:          gcore.Bool(true),
 	})
@@ -683,7 +683,7 @@ func TestResourceListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestResourceDelete(t *testing.T) {
+func TestCDNResourceDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -695,7 +695,7 @@ func TestResourceDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.CDN.Resources.Delete(context.TODO(), 0)
+	err := client.CDN.CDNResources.Delete(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -705,7 +705,7 @@ func TestResourceDelete(t *testing.T) {
 	}
 }
 
-func TestResourceGet(t *testing.T) {
+func TestCDNResourceGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -717,7 +717,7 @@ func TestResourceGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CDN.Resources.Get(context.TODO(), 0)
+	_, err := client.CDN.CDNResources.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -727,7 +727,7 @@ func TestResourceGet(t *testing.T) {
 	}
 }
 
-func TestResourcePrefetch(t *testing.T) {
+func TestCDNResourcePrefetch(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -739,10 +739,10 @@ func TestResourcePrefetch(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.CDN.Resources.Prefetch(
+	err := client.CDN.CDNResources.Prefetch(
 		context.TODO(),
 		0,
-		cdn.ResourcePrefetchParams{
+		cdn.CDNResourcePrefetchParams{
 			Paths: []string{"/test.jpg", "test1.jpg"},
 		},
 	)
@@ -755,7 +755,7 @@ func TestResourcePrefetch(t *testing.T) {
 	}
 }
 
-func TestResourcePrevalidateSslLeCertificate(t *testing.T) {
+func TestCDNResourcePrevalidateSslLeCertificate(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -767,7 +767,7 @@ func TestResourcePrevalidateSslLeCertificate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.CDN.Resources.PrevalidateSslLeCertificate(context.TODO(), 0)
+	err := client.CDN.CDNResources.PrevalidateSslLeCertificate(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -777,7 +777,7 @@ func TestResourcePrevalidateSslLeCertificate(t *testing.T) {
 	}
 }
 
-func TestResourcePurgeWithOptionalParams(t *testing.T) {
+func TestCDNResourcePurgeWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -789,11 +789,11 @@ func TestResourcePurgeWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.CDN.Resources.Purge(
+	err := client.CDN.CDNResources.Purge(
 		context.TODO(),
 		0,
-		cdn.ResourcePurgeParams{
-			OfPurgeByURL: &cdn.ResourcePurgeParamsBodyPurgeByURL{
+		cdn.CDNResourcePurgeParams{
+			OfPurgeByURL: &cdn.CDNResourcePurgeParamsBodyPurgeByURL{
 				URLs: []string{"/some-url.jpg", "/img/example.jpg"},
 			},
 		},
@@ -807,7 +807,7 @@ func TestResourcePurgeWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestResourceReplaceWithOptionalParams(t *testing.T) {
+func TestCDNResourceReplaceWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -819,56 +819,56 @@ func TestResourceReplaceWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CDN.Resources.Replace(
+	_, err := client.CDN.CDNResources.Replace(
 		context.TODO(),
 		0,
-		cdn.ResourceReplaceParams{
+		cdn.CDNResourceReplaceParams{
 			OriginGroup: 132,
 			Active:      gcore.Bool(true),
 			Description: gcore.String("My resource"),
 			Name:        gcore.String("Resource for images"),
-			Options: cdn.ResourceReplaceParamsOptions{
-				AllowedHTTPMethods: cdn.ResourceReplaceParamsOptionsAllowedHTTPMethods{
+			Options: cdn.CDNResourceReplaceParamsOptions{
+				AllowedHTTPMethods: cdn.CDNResourceReplaceParamsOptionsAllowedHTTPMethods{
 					Enabled: true,
 					Value:   []string{"GET", "POST"},
 				},
-				BotProtection: cdn.ResourceReplaceParamsOptionsBotProtection{
-					BotChallenge: cdn.ResourceReplaceParamsOptionsBotProtectionBotChallenge{
+				BotProtection: cdn.CDNResourceReplaceParamsOptionsBotProtection{
+					BotChallenge: cdn.CDNResourceReplaceParamsOptionsBotProtectionBotChallenge{
 						Enabled: gcore.Bool(true),
 					},
 					Enabled: true,
 				},
-				BrotliCompression: cdn.ResourceReplaceParamsOptionsBrotliCompression{
+				BrotliCompression: cdn.CDNResourceReplaceParamsOptionsBrotliCompression{
 					Enabled: true,
 					Value:   []string{"text/html", "text/plain"},
 				},
-				BrowserCacheSettings: cdn.ResourceReplaceParamsOptionsBrowserCacheSettings{
+				BrowserCacheSettings: cdn.CDNResourceReplaceParamsOptionsBrowserCacheSettings{
 					Enabled: true,
 					Value:   "3600s",
 				},
-				CacheHTTPHeaders: cdn.ResourceReplaceParamsOptionsCacheHTTPHeaders{
+				CacheHTTPHeaders: cdn.CDNResourceReplaceParamsOptionsCacheHTTPHeaders{
 					Enabled: false,
 					Value:   []string{"vary", "content-length", "last-modified", "connection", "accept-ranges", "content-type", "content-encoding", "etag", "cache-control", "expires", "keep-alive", "server"},
 				},
-				Cors: cdn.ResourceReplaceParamsOptionsCors{
+				Cors: cdn.CDNResourceReplaceParamsOptionsCors{
 					Enabled: true,
 					Value:   []string{"domain.com", "domain2.com"},
 					Always:  gcore.Bool(true),
 				},
-				CountryACL: cdn.ResourceReplaceParamsOptionsCountryACL{
+				CountryACL: cdn.CDNResourceReplaceParamsOptionsCountryACL{
 					Enabled:        true,
 					ExceptedValues: []string{"GB", "DE"},
 					PolicyType:     "allow",
 				},
-				DisableCache: cdn.ResourceReplaceParamsOptionsDisableCache{
+				DisableCache: cdn.CDNResourceReplaceParamsOptionsDisableCache{
 					Enabled: true,
 					Value:   false,
 				},
-				DisableProxyForceRanges: cdn.ResourceReplaceParamsOptionsDisableProxyForceRanges{
+				DisableProxyForceRanges: cdn.CDNResourceReplaceParamsOptionsDisableProxyForceRanges{
 					Enabled: true,
 					Value:   true,
 				},
-				EdgeCacheSettings: cdn.ResourceReplaceParamsOptionsEdgeCacheSettings{
+				EdgeCacheSettings: cdn.CDNResourceReplaceParamsOptionsEdgeCacheSettings{
 					Enabled: true,
 					CustomValues: map[string]string{
 						"100": "43200s",
@@ -876,30 +876,30 @@ func TestResourceReplaceWithOptionalParams(t *testing.T) {
 					Default: gcore.String("321669910225"),
 					Value:   gcore.String("43200s"),
 				},
-				Fastedge: cdn.ResourceReplaceParamsOptionsFastedge{
+				Fastedge: cdn.CDNResourceReplaceParamsOptionsFastedge{
 					Enabled: true,
-					OnRequestBody: cdn.ResourceReplaceParamsOptionsFastedgeOnRequestBody{
+					OnRequestBody: cdn.CDNResourceReplaceParamsOptionsFastedgeOnRequestBody{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
 						ExecuteOnEdge:    gcore.Bool(true),
 						ExecuteOnShield:  gcore.Bool(false),
 						InterruptOnError: gcore.Bool(true),
 					},
-					OnRequestHeaders: cdn.ResourceReplaceParamsOptionsFastedgeOnRequestHeaders{
+					OnRequestHeaders: cdn.CDNResourceReplaceParamsOptionsFastedgeOnRequestHeaders{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
 						ExecuteOnEdge:    gcore.Bool(true),
 						ExecuteOnShield:  gcore.Bool(false),
 						InterruptOnError: gcore.Bool(true),
 					},
-					OnResponseBody: cdn.ResourceReplaceParamsOptionsFastedgeOnResponseBody{
+					OnResponseBody: cdn.CDNResourceReplaceParamsOptionsFastedgeOnResponseBody{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
 						ExecuteOnEdge:    gcore.Bool(true),
 						ExecuteOnShield:  gcore.Bool(false),
 						InterruptOnError: gcore.Bool(true),
 					},
-					OnResponseHeaders: cdn.ResourceReplaceParamsOptionsFastedgeOnResponseHeaders{
+					OnResponseHeaders: cdn.CDNResourceReplaceParamsOptionsFastedgeOnResponseHeaders{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
 						ExecuteOnEdge:    gcore.Bool(true),
@@ -907,146 +907,146 @@ func TestResourceReplaceWithOptionalParams(t *testing.T) {
 						InterruptOnError: gcore.Bool(true),
 					},
 				},
-				FetchCompressed: cdn.ResourceReplaceParamsOptionsFetchCompressed{
+				FetchCompressed: cdn.CDNResourceReplaceParamsOptionsFetchCompressed{
 					Enabled: true,
 					Value:   false,
 				},
-				FollowOriginRedirect: cdn.ResourceReplaceParamsOptionsFollowOriginRedirect{
+				FollowOriginRedirect: cdn.CDNResourceReplaceParamsOptionsFollowOriginRedirect{
 					Codes:   []int64{302, 308},
 					Enabled: true,
 				},
-				ForceReturn: cdn.ResourceReplaceParamsOptionsForceReturn{
+				ForceReturn: cdn.CDNResourceReplaceParamsOptionsForceReturn{
 					Body:    "http://example.com/redirect_address",
 					Code:    301,
 					Enabled: true,
-					TimeInterval: cdn.ResourceReplaceParamsOptionsForceReturnTimeInterval{
+					TimeInterval: cdn.CDNResourceReplaceParamsOptionsForceReturnTimeInterval{
 						EndTime:   "20:00",
 						StartTime: "09:00",
 						TimeZone:  gcore.String("CET"),
 					},
 				},
-				ForwardHostHeader: cdn.ResourceReplaceParamsOptionsForwardHostHeader{
+				ForwardHostHeader: cdn.CDNResourceReplaceParamsOptionsForwardHostHeader{
 					Enabled: false,
 					Value:   false,
 				},
-				GzipOn: cdn.ResourceReplaceParamsOptionsGzipOn{
+				GzipOn: cdn.CDNResourceReplaceParamsOptionsGzipOn{
 					Enabled: true,
 					Value:   true,
 				},
-				HostHeader: cdn.ResourceReplaceParamsOptionsHostHeader{
+				HostHeader: cdn.CDNResourceReplaceParamsOptionsHostHeader{
 					Enabled: true,
 					Value:   "host.com",
 				},
-				Http3Enabled: cdn.ResourceReplaceParamsOptionsHttp3Enabled{
+				Http3Enabled: cdn.CDNResourceReplaceParamsOptionsHttp3Enabled{
 					Enabled: true,
 					Value:   true,
 				},
-				IgnoreCookie: cdn.ResourceReplaceParamsOptionsIgnoreCookie{
+				IgnoreCookie: cdn.CDNResourceReplaceParamsOptionsIgnoreCookie{
 					Enabled: true,
 					Value:   true,
 				},
-				IgnoreQueryString: cdn.ResourceReplaceParamsOptionsIgnoreQueryString{
+				IgnoreQueryString: cdn.CDNResourceReplaceParamsOptionsIgnoreQueryString{
 					Enabled: true,
 					Value:   false,
 				},
-				ImageStack: cdn.ResourceReplaceParamsOptionsImageStack{
+				ImageStack: cdn.CDNResourceReplaceParamsOptionsImageStack{
 					Enabled:     true,
 					AvifEnabled: gcore.Bool(true),
 					PngLossless: gcore.Bool(true),
 					Quality:     gcore.Int(80),
 					WebpEnabled: gcore.Bool(false),
 				},
-				IPAddressACL: cdn.ResourceReplaceParamsOptionsIPAddressACL{
+				IPAddressACL: cdn.CDNResourceReplaceParamsOptionsIPAddressACL{
 					Enabled:        true,
 					ExceptedValues: []string{"192.168.1.100/32"},
 					PolicyType:     "deny",
 				},
-				LimitBandwidth: cdn.ResourceReplaceParamsOptionsLimitBandwidth{
+				LimitBandwidth: cdn.CDNResourceReplaceParamsOptionsLimitBandwidth{
 					Enabled:   true,
 					LimitType: "static",
 					Buffer:    gcore.Int(200),
 					Speed:     gcore.Int(100),
 				},
-				ProxyCacheKey: cdn.ResourceReplaceParamsOptionsProxyCacheKey{
+				ProxyCacheKey: cdn.CDNResourceReplaceParamsOptionsProxyCacheKey{
 					Enabled: true,
 					Value:   "$scheme$uri",
 				},
-				ProxyCacheMethodsSet: cdn.ResourceReplaceParamsOptionsProxyCacheMethodsSet{
+				ProxyCacheMethodsSet: cdn.CDNResourceReplaceParamsOptionsProxyCacheMethodsSet{
 					Enabled: true,
 					Value:   false,
 				},
-				ProxyConnectTimeout: cdn.ResourceReplaceParamsOptionsProxyConnectTimeout{
+				ProxyConnectTimeout: cdn.CDNResourceReplaceParamsOptionsProxyConnectTimeout{
 					Enabled: true,
 					Value:   "4s",
 				},
-				ProxyReadTimeout: cdn.ResourceReplaceParamsOptionsProxyReadTimeout{
+				ProxyReadTimeout: cdn.CDNResourceReplaceParamsOptionsProxyReadTimeout{
 					Enabled: true,
 					Value:   "10s",
 				},
-				QueryParamsBlacklist: cdn.ResourceReplaceParamsOptionsQueryParamsBlacklist{
+				QueryParamsBlacklist: cdn.CDNResourceReplaceParamsOptionsQueryParamsBlacklist{
 					Enabled: true,
 					Value:   []string{"some", "blacklisted", "query"},
 				},
-				QueryParamsWhitelist: cdn.ResourceReplaceParamsOptionsQueryParamsWhitelist{
+				QueryParamsWhitelist: cdn.CDNResourceReplaceParamsOptionsQueryParamsWhitelist{
 					Enabled: true,
 					Value:   []string{"some", "whitelisted", "query"},
 				},
-				QueryStringForwarding: cdn.ResourceReplaceParamsOptionsQueryStringForwarding{
+				QueryStringForwarding: cdn.CDNResourceReplaceParamsOptionsQueryStringForwarding{
 					Enabled:              true,
 					ForwardFromFileTypes: []string{"m3u8", "mpd"},
 					ForwardToFileTypes:   []string{"ts", "mp4"},
 					ForwardExceptKeys:    []string{"debug_info"},
 					ForwardOnlyKeys:      []string{"auth_token", "session_id"},
 				},
-				RedirectHTTPToHTTPS: cdn.ResourceReplaceParamsOptionsRedirectHTTPToHTTPS{
+				RedirectHTTPToHTTPS: cdn.CDNResourceReplaceParamsOptionsRedirectHTTPToHTTPS{
 					Enabled: true,
 					Value:   true,
 				},
-				RedirectHTTPSToHTTP: cdn.ResourceReplaceParamsOptionsRedirectHTTPSToHTTP{
+				RedirectHTTPSToHTTP: cdn.CDNResourceReplaceParamsOptionsRedirectHTTPSToHTTP{
 					Enabled: false,
 					Value:   true,
 				},
-				ReferrerACL: cdn.ResourceReplaceParamsOptionsReferrerACL{
+				ReferrerACL: cdn.CDNResourceReplaceParamsOptionsReferrerACL{
 					Enabled:        true,
 					ExceptedValues: []string{"example.com", "*.example.net"},
 					PolicyType:     "deny",
 				},
-				RequestLimiter: cdn.ResourceReplaceParamsOptionsRequestLimiter{
+				RequestLimiter: cdn.CDNResourceReplaceParamsOptionsRequestLimiter{
 					Enabled:  true,
 					Rate:     5,
 					RateUnit: "r/s",
 				},
-				ResponseHeadersHidingPolicy: cdn.ResourceReplaceParamsOptionsResponseHeadersHidingPolicy{
+				ResponseHeadersHidingPolicy: cdn.CDNResourceReplaceParamsOptionsResponseHeadersHidingPolicy{
 					Enabled:  true,
 					Excepted: []string{"my-header"},
 					Mode:     "hide",
 				},
-				Rewrite: cdn.ResourceReplaceParamsOptionsRewrite{
+				Rewrite: cdn.CDNResourceReplaceParamsOptionsRewrite{
 					Body:    "/(.*) /additional_path/$1",
 					Enabled: true,
 					Flag:    "break",
 				},
-				SecureKey: cdn.ResourceReplaceParamsOptionsSecureKey{
+				SecureKey: cdn.CDNResourceReplaceParamsOptionsSecureKey{
 					Enabled: true,
 					Key:     gcore.String("secretkey"),
 					Type:    2,
 				},
-				Slice: cdn.ResourceReplaceParamsOptionsSlice{
+				Slice: cdn.CDNResourceReplaceParamsOptionsSlice{
 					Enabled: true,
 					Value:   true,
 				},
-				Sni: cdn.ResourceReplaceParamsOptionsSni{
+				Sni: cdn.CDNResourceReplaceParamsOptionsSni{
 					CustomHostname: "custom.example.com",
 					Enabled:        true,
 					SniType:        "custom",
 				},
-				Stale: cdn.ResourceReplaceParamsOptionsStale{
+				Stale: cdn.CDNResourceReplaceParamsOptionsStale{
 					Enabled: true,
 					Value:   []string{"http_404", "http_500"},
 				},
-				StaticResponseHeaders: cdn.ResourceReplaceParamsOptionsStaticResponseHeaders{
+				StaticResponseHeaders: cdn.CDNResourceReplaceParamsOptionsStaticResponseHeaders{
 					Enabled: true,
-					Value: []cdn.ResourceReplaceParamsOptionsStaticResponseHeadersValue{{
+					Value: []cdn.CDNResourceReplaceParamsOptionsStaticResponseHeadersValue{{
 						Name:   "X-Example",
 						Value:  []string{"Value_1"},
 						Always: gcore.Bool(true),
@@ -1056,7 +1056,7 @@ func TestResourceReplaceWithOptionalParams(t *testing.T) {
 						Always: gcore.Bool(false),
 					}},
 				},
-				StaticHeaders: cdn.ResourceReplaceParamsOptionsStaticHeaders{
+				StaticHeaders: cdn.CDNResourceReplaceParamsOptionsStaticHeaders{
 					Enabled: true,
 					Value: map[string]any{
 						"X-Example": "Value_1",
@@ -1066,44 +1066,44 @@ func TestResourceReplaceWithOptionalParams(t *testing.T) {
 						},
 					},
 				},
-				StaticRequestHeaders: cdn.ResourceReplaceParamsOptionsStaticRequestHeaders{
+				StaticRequestHeaders: cdn.CDNResourceReplaceParamsOptionsStaticRequestHeaders{
 					Enabled: true,
 					Value: map[string]string{
 						"Header-One": "Value 1",
 						"Header-Two": "Value 2",
 					},
 				},
-				TlsVersions: cdn.ResourceReplaceParamsOptionsTlsVersions{
+				TlsVersions: cdn.CDNResourceReplaceParamsOptionsTlsVersions{
 					Enabled: true,
 					Value:   []string{"SSLv3", "TLSv1.3"},
 				},
-				UseDefaultLeChain: cdn.ResourceReplaceParamsOptionsUseDefaultLeChain{
+				UseDefaultLeChain: cdn.CDNResourceReplaceParamsOptionsUseDefaultLeChain{
 					Enabled: true,
 					Value:   true,
 				},
-				UseDns01LeChallenge: cdn.ResourceReplaceParamsOptionsUseDns01LeChallenge{
+				UseDns01LeChallenge: cdn.CDNResourceReplaceParamsOptionsUseDns01LeChallenge{
 					Enabled: true,
 					Value:   true,
 				},
-				UseRsaLeCert: cdn.ResourceReplaceParamsOptionsUseRsaLeCert{
+				UseRsaLeCert: cdn.CDNResourceReplaceParamsOptionsUseRsaLeCert{
 					Enabled: true,
 					Value:   true,
 				},
-				UserAgentACL: cdn.ResourceReplaceParamsOptionsUserAgentACL{
+				UserAgentACL: cdn.CDNResourceReplaceParamsOptionsUserAgentACL{
 					Enabled:        true,
 					ExceptedValues: []string{"UserAgent Value", "~*.*bot.*", ""},
 					PolicyType:     "allow",
 				},
-				Waap: cdn.ResourceReplaceParamsOptionsWaap{
+				Waap: cdn.CDNResourceReplaceParamsOptionsWaap{
 					Enabled: true,
 					Value:   true,
 				},
-				Websockets: cdn.ResourceReplaceParamsOptionsWebsockets{
+				Websockets: cdn.CDNResourceReplaceParamsOptionsWebsockets{
 					Enabled: true,
 					Value:   true,
 				},
 			},
-			OriginProtocol:       cdn.ResourceReplaceParamsOriginProtocolHTTPS,
+			OriginProtocol:       cdn.CDNResourceReplaceParamsOriginProtocolHTTPS,
 			ProxySslCa:           param.Null[int64](),
 			ProxySslData:         param.Null[int64](),
 			ProxySslEnabled:      gcore.Bool(false),

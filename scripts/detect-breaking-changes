@@ -154,9 +154,9 @@ TEST_PATHS=(
 	storage/bucketlifecycle_test.go
 	storage/bucketpolicy_test.go
 	cdn/cdn_test.go
-	cdn/resource_test.go
-	cdn/resourceshield_test.go
-	cdn/resourcerule_test.go
+	cdn/cdnresource_test.go
+	cdn/cdnresourceshield_test.go
+	cdn/cdnresourcerule_test.go
 	cdn/shield_test.go
 	cdn/origingroup_test.go
 	cdn/ruletemplate_test.go

@@ -17,27 +17,27 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
-// ResourceShieldService contains methods and other services that help with
+// CDNResourceShieldService contains methods and other services that help with
 // interacting with the gcore API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewResourceShieldService] method instead.
-type ResourceShieldService struct {
+// the [NewCDNResourceShieldService] method instead.
+type CDNResourceShieldService struct {
 	Options []option.RequestOption
 }
 
-// NewResourceShieldService generates a new service that applies the given options
-// to each request. These options are applied after the parent client's options (if
-// there is one), and before any request-specific options.
-func NewResourceShieldService(opts ...option.RequestOption) (r ResourceShieldService) {
-	r = ResourceShieldService{}
+// NewCDNResourceShieldService generates a new service that applies the given
+// options to each request. These options are applied after the parent client's
+// options (if there is one), and before any request-specific options.
+func NewCDNResourceShieldService(opts ...option.RequestOption) (r CDNResourceShieldService) {
+	r = CDNResourceShieldService{}
 	r.Options = opts
 	return
 }
 
 // Get information about origin shielding.
-func (r *ResourceShieldService) Get(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *OriginShielding, err error) {
+func (r *CDNResourceShieldService) Get(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *OriginShielding, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v/shielding_v2", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -45,7 +45,7 @@ func (r *ResourceShieldService) Get(ctx context.Context, resourceID int64, opts 
 }
 
 // Change origin shielding settings or disabled origin shielding.
-func (r *ResourceShieldService) Replace(ctx context.Context, resourceID int64, body ResourceShieldReplaceParams, opts ...option.RequestOption) (res *OriginShieldingReplaced, err error) {
+func (r *CDNResourceShieldService) Replace(ctx context.Context, resourceID int64, body CDNResourceShieldReplaceParams, opts ...option.RequestOption) (res *OriginShieldingReplaced, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v/shielding_v2", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
@@ -98,14 +98,14 @@ func (r *OriginShieldingParam) UnmarshalJSON(data []byte) error {
 
 type OriginShieldingReplaced = any
 
-type ResourceShieldReplaceParams struct {
+type CDNResourceShieldReplaceParams struct {
 	OriginShielding OriginShieldingParam
 	paramObj
 }
 
-func (r ResourceShieldReplaceParams) MarshalJSON() (data []byte, err error) {
+func (r CDNResourceShieldReplaceParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.OriginShielding)
 }
-func (r *ResourceShieldReplaceParams) UnmarshalJSON(data []byte) error {
+func (r *CDNResourceShieldReplaceParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.OriginShielding)
 }
