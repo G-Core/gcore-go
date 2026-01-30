@@ -25,7 +25,7 @@ func TestShieldList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Shields.List(context.TODO())
+	_, err := client.CDN.Shields.List(context.TODO())
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

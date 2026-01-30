@@ -70,7 +70,7 @@ func TestStatisticGetLiveUniqueViewersWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestStatisticGetLiveWatchTimeCdnWithOptionalParams(t *testing.T) {
+func TestStatisticGetLiveWatchTimeCDNWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -82,10 +82,10 @@ func TestStatisticGetLiveWatchTimeCdnWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Streaming.Statistics.GetLiveWatchTimeCdn(context.TODO(), streaming.StatisticGetLiveWatchTimeCdnParams{
+	_, err := client.Streaming.Statistics.GetLiveWatchTimeCDN(context.TODO(), streaming.StatisticGetLiveWatchTimeCDNParams{
 		From:         "from",
 		ClientUserID: gcore.Int(0),
-		Granularity:  streaming.StatisticGetLiveWatchTimeCdnParamsGranularity1m,
+		Granularity:  streaming.StatisticGetLiveWatchTimeCDNParamsGranularity1m,
 		StreamID:     gcore.Int(0),
 		To:           gcore.String("to"),
 	})
@@ -98,7 +98,7 @@ func TestStatisticGetLiveWatchTimeCdnWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestStatisticGetLiveWatchTimeTotalCdnWithOptionalParams(t *testing.T) {
+func TestStatisticGetLiveWatchTimeTotalCDNWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -110,7 +110,7 @@ func TestStatisticGetLiveWatchTimeTotalCdnWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Streaming.Statistics.GetLiveWatchTimeTotalCdn(context.TODO(), streaming.StatisticGetLiveWatchTimeTotalCdnParams{
+	_, err := client.Streaming.Statistics.GetLiveWatchTimeTotalCDN(context.TODO(), streaming.StatisticGetLiveWatchTimeTotalCDNParams{
 		ClientUserID: gcore.Int(0),
 		From:         gcore.String("from"),
 		StreamID:     gcore.Int(0),
@@ -259,7 +259,7 @@ func TestStatisticGetUniqueViewersWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestStatisticGetUniqueViewersCdnWithOptionalParams(t *testing.T) {
+func TestStatisticGetUniqueViewersCDNWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -271,11 +271,11 @@ func TestStatisticGetUniqueViewersCdnWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Streaming.Statistics.GetUniqueViewersCdn(context.TODO(), streaming.StatisticGetUniqueViewersCdnParams{
+	_, err := client.Streaming.Statistics.GetUniqueViewersCDN(context.TODO(), streaming.StatisticGetUniqueViewersCDNParams{
 		DateFrom: "date_from",
 		DateTo:   "date_to",
 		ID:       gcore.String("id"),
-		Type:     streaming.StatisticGetUniqueViewersCdnParamsTypeLive,
+		Type:     streaming.StatisticGetUniqueViewersCDNParamsTypeLive,
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -544,7 +544,7 @@ func TestStatisticGetVodTranscodingDuration(t *testing.T) {
 	}
 }
 
-func TestStatisticGetVodUniqueViewersCdnWithOptionalParams(t *testing.T) {
+func TestStatisticGetVodUniqueViewersCDNWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -556,11 +556,11 @@ func TestStatisticGetVodUniqueViewersCdnWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Streaming.Statistics.GetVodUniqueViewersCdn(context.TODO(), streaming.StatisticGetVodUniqueViewersCdnParams{
+	_, err := client.Streaming.Statistics.GetVodUniqueViewersCDN(context.TODO(), streaming.StatisticGetVodUniqueViewersCDNParams{
 		From:         "from",
 		To:           "to",
 		ClientUserID: gcore.Int(0),
-		Granularity:  streaming.StatisticGetVodUniqueViewersCdnParamsGranularity1m,
+		Granularity:  streaming.StatisticGetVodUniqueViewersCDNParamsGranularity1m,
 		Slug:         gcore.String("slug"),
 	})
 	if err != nil {
@@ -572,7 +572,7 @@ func TestStatisticGetVodUniqueViewersCdnWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestStatisticGetVodWatchTimeCdnWithOptionalParams(t *testing.T) {
+func TestStatisticGetVodWatchTimeCDNWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -584,10 +584,10 @@ func TestStatisticGetVodWatchTimeCdnWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Streaming.Statistics.GetVodWatchTimeCdn(context.TODO(), streaming.StatisticGetVodWatchTimeCdnParams{
+	_, err := client.Streaming.Statistics.GetVodWatchTimeCDN(context.TODO(), streaming.StatisticGetVodWatchTimeCDNParams{
 		From:         "from",
 		ClientUserID: gcore.Int(0),
-		Granularity:  streaming.StatisticGetVodWatchTimeCdnParamsGranularity1m,
+		Granularity:  streaming.StatisticGetVodWatchTimeCDNParamsGranularity1m,
 		Slug:         gcore.String("slug"),
 		To:           gcore.String("to"),
 	})
@@ -600,7 +600,7 @@ func TestStatisticGetVodWatchTimeCdnWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestStatisticGetVodWatchTimeTotalCdnWithOptionalParams(t *testing.T) {
+func TestStatisticGetVodWatchTimeTotalCDNWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -612,7 +612,7 @@ func TestStatisticGetVodWatchTimeTotalCdnWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Streaming.Statistics.GetVodWatchTimeTotalCdn(context.TODO(), streaming.StatisticGetVodWatchTimeTotalCdnParams{
+	_, err := client.Streaming.Statistics.GetVodWatchTimeTotalCDN(context.TODO(), streaming.StatisticGetVodWatchTimeTotalCDNParams{
 		ClientUserID: gcore.Int(0),
 		From:         gcore.String("from"),
 		Slug:         gcore.String("slug"),

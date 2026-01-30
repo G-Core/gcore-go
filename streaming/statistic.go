@@ -74,7 +74,7 @@ func (r *StatisticService) GetLiveUniqueViewers(ctx context.Context, query Stati
 // Please note that the result for each time interval is in minutes, it is rounded
 // to the nearest upper integer. You cannot use the sum of all intervals as the
 // total watch time value; instead, use the /total method.
-func (r *StatisticService) GetLiveWatchTimeCdn(ctx context.Context, query StatisticGetLiveWatchTimeCdnParams, opts ...option.RequestOption) (res *StreamSeries, err error) {
+func (r *StatisticService) GetLiveWatchTimeCDN(ctx context.Context, query StatisticGetLiveWatchTimeCDNParams, opts ...option.RequestOption) (res *StreamSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/stream/watching_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -86,7 +86,7 @@ func (r *StatisticService) GetLiveWatchTimeCdn(ctx context.Context, query Statis
 //
 // The statistics are taken from the data of CDN and work regardless of which
 // player the views were made with.
-func (r *StatisticService) GetLiveWatchTimeTotalCdn(ctx context.Context, query StatisticGetLiveWatchTimeTotalCdnParams, opts ...option.RequestOption) (res *VodTotalStreamDurationSeries, err error) {
+func (r *StatisticService) GetLiveWatchTimeTotalCDN(ctx context.Context, query StatisticGetLiveWatchTimeTotalCDNParams, opts ...option.RequestOption) (res *VodTotalStreamDurationSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/stream/watching_duration/total"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -194,7 +194,7 @@ func (r *StatisticService) GetUniqueViewers(ctx context.Context, query Statistic
 // your player will be able to count the number of unique views (clicks on the Play
 // button) within the player session (i.e. how many times 1 unique viewer clicked
 // the Play button within a unique player's session).
-func (r *StatisticService) GetUniqueViewersCdn(ctx context.Context, query StatisticGetUniqueViewersCdnParams, opts ...option.RequestOption) (res *UniqueViewersCdn, err error) {
+func (r *StatisticService) GetUniqueViewersCDN(ctx context.Context, query StatisticGetUniqueViewersCDNParams, opts ...option.RequestOption) (res *UniqueViewersCDN, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/cdn/uniqs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -362,7 +362,7 @@ func (r *StatisticService) GetVodTranscodingDuration(ctx context.Context, query 
 // Based on this method, a graph of unique views in the Customer Portal is built.
 //
 // ![Unique viewers via CDN in Customer Portal](https://demo-files.gvideo.io/apidocs/cdn_unique_viewers.png)
-func (r *StatisticService) GetVodUniqueViewersCdn(ctx context.Context, query StatisticGetVodUniqueViewersCdnParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
+func (r *StatisticService) GetVodUniqueViewersCDN(ctx context.Context, query StatisticGetVodUniqueViewersCDNParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/vod/viewers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -378,7 +378,7 @@ func (r *StatisticService) GetVodUniqueViewersCdn(ctx context.Context, query Sta
 // Please note that the result for each time interval is in minutes, it is rounded
 // to the nearest upper integer. You cannot use the sum of all intervals as the
 // total watch time value; instead, use the /total method.
-func (r *StatisticService) GetVodWatchTimeCdn(ctx context.Context, query StatisticGetVodWatchTimeCdnParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
+func (r *StatisticService) GetVodWatchTimeCDN(ctx context.Context, query StatisticGetVodWatchTimeCDNParams, opts ...option.RequestOption) (res *VodStatisticsSeries, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/vod/watching_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -390,7 +390,7 @@ func (r *StatisticService) GetVodWatchTimeCdn(ctx context.Context, query Statist
 //
 // The statistics are taken from the data of CDN and work regardless of which
 // player the views were made with.
-func (r *StatisticService) GetVodWatchTimeTotalCdn(ctx context.Context, query StatisticGetVodWatchTimeTotalCdnParams, opts ...option.RequestOption) (res *[]StatisticGetVodWatchTimeTotalCdnResponse, err error) {
+func (r *StatisticService) GetVodWatchTimeTotalCDN(ctx context.Context, query StatisticGetVodWatchTimeTotalCDNParams, opts ...option.RequestOption) (res *[]StatisticGetVodWatchTimeTotalCDNResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/statistics/vod/watching_duration/total"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -635,8 +635,8 @@ func (r *UniqueViewersData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UniqueViewersCdn struct {
-	Data []UniqueViewersCdnData `json:"data"`
+type UniqueViewersCDN struct {
+	Data []UniqueViewersCDNData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -646,12 +646,12 @@ type UniqueViewersCdn struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r UniqueViewersCdn) RawJSON() string { return r.JSON.raw }
-func (r *UniqueViewersCdn) UnmarshalJSON(data []byte) error {
+func (r UniqueViewersCDN) RawJSON() string { return r.JSON.raw }
+func (r *UniqueViewersCDN) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UniqueViewersCdnData struct {
+type UniqueViewersCDNData struct {
 	Type  string `json:"type,required"`
 	Uniqs int64  `json:"uniqs,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -664,8 +664,8 @@ type UniqueViewersCdnData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r UniqueViewersCdnData) RawJSON() string { return r.JSON.raw }
-func (r *UniqueViewersCdnData) UnmarshalJSON(data []byte) error {
+func (r UniqueViewersCDNData) RawJSON() string { return r.JSON.raw }
+func (r *UniqueViewersCDNData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1060,7 +1060,7 @@ func (r *StatisticGetLiveUniqueViewersResponseMetrics) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type StatisticGetVodWatchTimeTotalCdnResponse struct {
+type StatisticGetVodWatchTimeTotalCDNResponse struct {
 	Client int64 `json:"client,required"`
 	// count of minutes
 	Duration     int64  `json:"duration,required"`
@@ -1078,8 +1078,8 @@ type StatisticGetVodWatchTimeTotalCdnResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StatisticGetVodWatchTimeTotalCdnResponse) RawJSON() string { return r.JSON.raw }
-func (r *StatisticGetVodWatchTimeTotalCdnResponse) UnmarshalJSON(data []byte) error {
+func (r StatisticGetVodWatchTimeTotalCDNResponse) RawJSON() string { return r.JSON.raw }
+func (r *StatisticGetVodWatchTimeTotalCDNResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1152,7 +1152,7 @@ const (
 	StatisticGetLiveUniqueViewersParamsGranularity1d  StatisticGetLiveUniqueViewersParamsGranularity = "1d"
 )
 
-type StatisticGetLiveWatchTimeCdnParams struct {
+type StatisticGetLiveWatchTimeCDNParams struct {
 	// Start of the time period for counting minutes of watching. Format is date time
 	// in ISO 8601.
 	From string `query:"from,required" json:"-"`
@@ -1166,13 +1166,13 @@ type StatisticGetLiveWatchTimeCdnParams struct {
 	// Data is grouped by the specified time interval
 	//
 	// Any of "1m", "5m", "15m", "1h", "1d", "1mo".
-	Granularity StatisticGetLiveWatchTimeCdnParamsGranularity `query:"granularity,omitzero" json:"-"`
+	Granularity StatisticGetLiveWatchTimeCDNParamsGranularity `query:"granularity,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [StatisticGetLiveWatchTimeCdnParams]'s query parameters as
+// URLQuery serializes [StatisticGetLiveWatchTimeCDNParams]'s query parameters as
 // `url.Values`.
-func (r StatisticGetLiveWatchTimeCdnParams) URLQuery() (v url.Values, err error) {
+func (r StatisticGetLiveWatchTimeCDNParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
@@ -1180,18 +1180,18 @@ func (r StatisticGetLiveWatchTimeCdnParams) URLQuery() (v url.Values, err error)
 }
 
 // Data is grouped by the specified time interval
-type StatisticGetLiveWatchTimeCdnParamsGranularity string
+type StatisticGetLiveWatchTimeCDNParamsGranularity string
 
 const (
-	StatisticGetLiveWatchTimeCdnParamsGranularity1m  StatisticGetLiveWatchTimeCdnParamsGranularity = "1m"
-	StatisticGetLiveWatchTimeCdnParamsGranularity5m  StatisticGetLiveWatchTimeCdnParamsGranularity = "5m"
-	StatisticGetLiveWatchTimeCdnParamsGranularity15m StatisticGetLiveWatchTimeCdnParamsGranularity = "15m"
-	StatisticGetLiveWatchTimeCdnParamsGranularity1h  StatisticGetLiveWatchTimeCdnParamsGranularity = "1h"
-	StatisticGetLiveWatchTimeCdnParamsGranularity1d  StatisticGetLiveWatchTimeCdnParamsGranularity = "1d"
-	StatisticGetLiveWatchTimeCdnParamsGranularity1mo StatisticGetLiveWatchTimeCdnParamsGranularity = "1mo"
+	StatisticGetLiveWatchTimeCDNParamsGranularity1m  StatisticGetLiveWatchTimeCDNParamsGranularity = "1m"
+	StatisticGetLiveWatchTimeCDNParamsGranularity5m  StatisticGetLiveWatchTimeCDNParamsGranularity = "5m"
+	StatisticGetLiveWatchTimeCDNParamsGranularity15m StatisticGetLiveWatchTimeCDNParamsGranularity = "15m"
+	StatisticGetLiveWatchTimeCDNParamsGranularity1h  StatisticGetLiveWatchTimeCDNParamsGranularity = "1h"
+	StatisticGetLiveWatchTimeCDNParamsGranularity1d  StatisticGetLiveWatchTimeCDNParamsGranularity = "1d"
+	StatisticGetLiveWatchTimeCDNParamsGranularity1mo StatisticGetLiveWatchTimeCDNParamsGranularity = "1mo"
 )
 
-type StatisticGetLiveWatchTimeTotalCdnParams struct {
+type StatisticGetLiveWatchTimeTotalCDNParams struct {
 	// Filter by field "client_user_id"
 	ClientUserID param.Opt[int64] `query:"client_user_id,omitzero" json:"-"`
 	// Start of the time period for counting minutes of watching. Format is date time
@@ -1205,9 +1205,9 @@ type StatisticGetLiveWatchTimeTotalCdnParams struct {
 	paramObj
 }
 
-// URLQuery serializes [StatisticGetLiveWatchTimeTotalCdnParams]'s query parameters
+// URLQuery serializes [StatisticGetLiveWatchTimeTotalCDNParams]'s query parameters
 // as `url.Values`.
-func (r StatisticGetLiveWatchTimeTotalCdnParams) URLQuery() (v url.Values, err error) {
+func (r StatisticGetLiveWatchTimeTotalCDNParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
@@ -1381,7 +1381,7 @@ const (
 	StatisticGetUniqueViewersParamsTypePlaylist StatisticGetUniqueViewersParamsType = "playlist"
 )
 
-type StatisticGetUniqueViewersCdnParams struct {
+type StatisticGetUniqueViewersCDNParams struct {
 	// Start of time frame. Format is date time in ISO 8601.
 	DateFrom string `query:"date_from,required" json:"-"`
 	// End of time frame. Format is date time in ISO 8601.
@@ -1398,13 +1398,13 @@ type StatisticGetUniqueViewersCdnParams struct {
 	// Filter by entity's type
 	//
 	// Any of "live", "vod", "playlist".
-	Type StatisticGetUniqueViewersCdnParamsType `query:"type,omitzero" json:"-"`
+	Type StatisticGetUniqueViewersCDNParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [StatisticGetUniqueViewersCdnParams]'s query parameters as
+// URLQuery serializes [StatisticGetUniqueViewersCDNParams]'s query parameters as
 // `url.Values`.
-func (r StatisticGetUniqueViewersCdnParams) URLQuery() (v url.Values, err error) {
+func (r StatisticGetUniqueViewersCDNParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
@@ -1412,12 +1412,12 @@ func (r StatisticGetUniqueViewersCdnParams) URLQuery() (v url.Values, err error)
 }
 
 // Filter by entity's type
-type StatisticGetUniqueViewersCdnParamsType string
+type StatisticGetUniqueViewersCDNParamsType string
 
 const (
-	StatisticGetUniqueViewersCdnParamsTypeLive     StatisticGetUniqueViewersCdnParamsType = "live"
-	StatisticGetUniqueViewersCdnParamsTypeVod      StatisticGetUniqueViewersCdnParamsType = "vod"
-	StatisticGetUniqueViewersCdnParamsTypePlaylist StatisticGetUniqueViewersCdnParamsType = "playlist"
+	StatisticGetUniqueViewersCDNParamsTypeLive     StatisticGetUniqueViewersCDNParamsType = "live"
+	StatisticGetUniqueViewersCDNParamsTypeVod      StatisticGetUniqueViewersCDNParamsType = "vod"
+	StatisticGetUniqueViewersCDNParamsTypePlaylist StatisticGetUniqueViewersCDNParamsType = "playlist"
 )
 
 type StatisticGetViewsParams struct {
@@ -1641,7 +1641,7 @@ func (r StatisticGetVodTranscodingDurationParams) URLQuery() (v url.Values, err 
 	})
 }
 
-type StatisticGetVodUniqueViewersCdnParams struct {
+type StatisticGetVodUniqueViewersCDNParams struct {
 	// Start of time frame. Format is date time in ISO 8601
 	From string `query:"from,required" json:"-"`
 	// End of time frame. Format is date time in ISO 8601
@@ -1653,13 +1653,13 @@ type StatisticGetVodUniqueViewersCdnParams struct {
 	// Specifies the time interval for grouping data
 	//
 	// Any of "1m", "5m", "15m", "1h", "1d".
-	Granularity StatisticGetVodUniqueViewersCdnParamsGranularity `query:"granularity,omitzero" json:"-"`
+	Granularity StatisticGetVodUniqueViewersCDNParamsGranularity `query:"granularity,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [StatisticGetVodUniqueViewersCdnParams]'s query parameters
+// URLQuery serializes [StatisticGetVodUniqueViewersCDNParams]'s query parameters
 // as `url.Values`.
-func (r StatisticGetVodUniqueViewersCdnParams) URLQuery() (v url.Values, err error) {
+func (r StatisticGetVodUniqueViewersCDNParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
@@ -1667,17 +1667,17 @@ func (r StatisticGetVodUniqueViewersCdnParams) URLQuery() (v url.Values, err err
 }
 
 // Specifies the time interval for grouping data
-type StatisticGetVodUniqueViewersCdnParamsGranularity string
+type StatisticGetVodUniqueViewersCDNParamsGranularity string
 
 const (
-	StatisticGetVodUniqueViewersCdnParamsGranularity1m  StatisticGetVodUniqueViewersCdnParamsGranularity = "1m"
-	StatisticGetVodUniqueViewersCdnParamsGranularity5m  StatisticGetVodUniqueViewersCdnParamsGranularity = "5m"
-	StatisticGetVodUniqueViewersCdnParamsGranularity15m StatisticGetVodUniqueViewersCdnParamsGranularity = "15m"
-	StatisticGetVodUniqueViewersCdnParamsGranularity1h  StatisticGetVodUniqueViewersCdnParamsGranularity = "1h"
-	StatisticGetVodUniqueViewersCdnParamsGranularity1d  StatisticGetVodUniqueViewersCdnParamsGranularity = "1d"
+	StatisticGetVodUniqueViewersCDNParamsGranularity1m  StatisticGetVodUniqueViewersCDNParamsGranularity = "1m"
+	StatisticGetVodUniqueViewersCDNParamsGranularity5m  StatisticGetVodUniqueViewersCDNParamsGranularity = "5m"
+	StatisticGetVodUniqueViewersCDNParamsGranularity15m StatisticGetVodUniqueViewersCDNParamsGranularity = "15m"
+	StatisticGetVodUniqueViewersCDNParamsGranularity1h  StatisticGetVodUniqueViewersCDNParamsGranularity = "1h"
+	StatisticGetVodUniqueViewersCDNParamsGranularity1d  StatisticGetVodUniqueViewersCDNParamsGranularity = "1d"
 )
 
-type StatisticGetVodWatchTimeCdnParams struct {
+type StatisticGetVodWatchTimeCDNParams struct {
 	// Start of the time period for counting minutes of watching. Format is date time
 	// in ISO 8601.
 	From string `query:"from,required" json:"-"`
@@ -1691,13 +1691,13 @@ type StatisticGetVodWatchTimeCdnParams struct {
 	// Data is grouped by the specified time interval
 	//
 	// Any of "1m", "5m", "15m", "1h", "1d", "1mo".
-	Granularity StatisticGetVodWatchTimeCdnParamsGranularity `query:"granularity,omitzero" json:"-"`
+	Granularity StatisticGetVodWatchTimeCDNParamsGranularity `query:"granularity,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [StatisticGetVodWatchTimeCdnParams]'s query parameters as
+// URLQuery serializes [StatisticGetVodWatchTimeCDNParams]'s query parameters as
 // `url.Values`.
-func (r StatisticGetVodWatchTimeCdnParams) URLQuery() (v url.Values, err error) {
+func (r StatisticGetVodWatchTimeCDNParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
@@ -1705,18 +1705,18 @@ func (r StatisticGetVodWatchTimeCdnParams) URLQuery() (v url.Values, err error) 
 }
 
 // Data is grouped by the specified time interval
-type StatisticGetVodWatchTimeCdnParamsGranularity string
+type StatisticGetVodWatchTimeCDNParamsGranularity string
 
 const (
-	StatisticGetVodWatchTimeCdnParamsGranularity1m  StatisticGetVodWatchTimeCdnParamsGranularity = "1m"
-	StatisticGetVodWatchTimeCdnParamsGranularity5m  StatisticGetVodWatchTimeCdnParamsGranularity = "5m"
-	StatisticGetVodWatchTimeCdnParamsGranularity15m StatisticGetVodWatchTimeCdnParamsGranularity = "15m"
-	StatisticGetVodWatchTimeCdnParamsGranularity1h  StatisticGetVodWatchTimeCdnParamsGranularity = "1h"
-	StatisticGetVodWatchTimeCdnParamsGranularity1d  StatisticGetVodWatchTimeCdnParamsGranularity = "1d"
-	StatisticGetVodWatchTimeCdnParamsGranularity1mo StatisticGetVodWatchTimeCdnParamsGranularity = "1mo"
+	StatisticGetVodWatchTimeCDNParamsGranularity1m  StatisticGetVodWatchTimeCDNParamsGranularity = "1m"
+	StatisticGetVodWatchTimeCDNParamsGranularity5m  StatisticGetVodWatchTimeCDNParamsGranularity = "5m"
+	StatisticGetVodWatchTimeCDNParamsGranularity15m StatisticGetVodWatchTimeCDNParamsGranularity = "15m"
+	StatisticGetVodWatchTimeCDNParamsGranularity1h  StatisticGetVodWatchTimeCDNParamsGranularity = "1h"
+	StatisticGetVodWatchTimeCDNParamsGranularity1d  StatisticGetVodWatchTimeCDNParamsGranularity = "1d"
+	StatisticGetVodWatchTimeCDNParamsGranularity1mo StatisticGetVodWatchTimeCDNParamsGranularity = "1mo"
 )
 
-type StatisticGetVodWatchTimeTotalCdnParams struct {
+type StatisticGetVodWatchTimeTotalCDNParams struct {
 	// Filter by field "client_user_id"
 	ClientUserID param.Opt[int64] `query:"client_user_id,omitzero" json:"-"`
 	// Start of the time period for counting minutes of watching. Format is date time
@@ -1730,9 +1730,9 @@ type StatisticGetVodWatchTimeTotalCdnParams struct {
 	paramObj
 }
 
-// URLQuery serializes [StatisticGetVodWatchTimeTotalCdnParams]'s query parameters
+// URLQuery serializes [StatisticGetVodWatchTimeTotalCDNParams]'s query parameters
 // as `url.Values`.
-func (r StatisticGetVodWatchTimeTotalCdnParams) URLQuery() (v url.Values, err error) {
+func (r StatisticGetVodWatchTimeTotalCDNParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,

@@ -26,7 +26,7 @@ func TestResourceShieldGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Resources.Shield.Get(context.TODO(), 0)
+	_, err := client.CDN.Resources.Shield.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -48,7 +48,7 @@ func TestResourceShieldReplaceWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Resources.Shield.Replace(
+	_, err := client.CDN.Resources.Shield.Replace(
 		context.TODO(),
 		0,
 		cdn.ResourceShieldReplaceParams{

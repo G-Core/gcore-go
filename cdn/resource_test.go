@@ -27,7 +27,7 @@ func TestResourceNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Resources.New(context.TODO(), cdn.ResourceNewParams{
+	_, err := client.CDN.Resources.New(context.TODO(), cdn.ResourceNewParams{
 		Cname:       "cdn.site.com",
 		Origin:      "example.com",
 		OriginGroup: 132,
@@ -342,7 +342,7 @@ func TestResourceUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Resources.Update(
+	_, err := client.CDN.Resources.Update(
 		context.TODO(),
 		0,
 		cdn.ResourceUpdateParams{
@@ -656,7 +656,7 @@ func TestResourceListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Resources.List(context.TODO(), cdn.ResourceListParams{
+	_, err := client.CDN.Resources.List(context.TODO(), cdn.ResourceListParams{
 		Cname:              gcore.String("cname"),
 		Deleted:            gcore.Bool(true),
 		Enabled:            gcore.Bool(true),
@@ -695,7 +695,7 @@ func TestResourceDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.Resources.Delete(context.TODO(), 0)
+	err := client.CDN.Resources.Delete(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -717,7 +717,7 @@ func TestResourceGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Resources.Get(context.TODO(), 0)
+	_, err := client.CDN.Resources.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -739,7 +739,7 @@ func TestResourcePrefetch(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.Resources.Prefetch(
+	err := client.CDN.Resources.Prefetch(
 		context.TODO(),
 		0,
 		cdn.ResourcePrefetchParams{
@@ -767,7 +767,7 @@ func TestResourcePrevalidateSslLeCertificate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.Resources.PrevalidateSslLeCertificate(context.TODO(), 0)
+	err := client.CDN.Resources.PrevalidateSslLeCertificate(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -789,7 +789,7 @@ func TestResourcePurgeWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.Resources.Purge(
+	err := client.CDN.Resources.Purge(
 		context.TODO(),
 		0,
 		cdn.ResourcePurgeParams{
@@ -819,7 +819,7 @@ func TestResourceReplaceWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.Resources.Replace(
+	_, err := client.CDN.Resources.Replace(
 		context.TODO(),
 		0,
 		cdn.ResourceReplaceParams{

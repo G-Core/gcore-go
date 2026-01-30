@@ -239,7 +239,7 @@ type DirectoryGetResponseDirectoryItemUnion struct {
 	// This field is from variant [DirectoryVideo].
 	AdID int64 `json:"ad_id"`
 	// This field is from variant [DirectoryVideo].
-	CdnViews int64 `json:"cdn_views"`
+	CDNViews int64 `json:"cdn_views"`
 	// This field is from variant [DirectoryVideo].
 	ClientID int64 `json:"client_id"`
 	// This field is from variant [DirectoryVideo].
@@ -309,7 +309,7 @@ type DirectoryGetResponseDirectoryItemUnion struct {
 	JSON      struct {
 		ID                  respjson.Field
 		AdID                respjson.Field
-		CdnViews            respjson.Field
+		CDNViews            respjson.Field
 		ClientID            respjson.Field
 		ClientUserID        respjson.Field
 		ConvertedVideos     respjson.Field

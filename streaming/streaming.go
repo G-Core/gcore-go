@@ -338,7 +338,7 @@ type Video struct {
 	AdID int64 `json:"ad_id"`
 	// Total number of video views. It is calculated based on the analysis of all
 	// views, no matter in which player.
-	CdnViews int64 `json:"cdn_views"`
+	CDNViews int64 `json:"cdn_views"`
 	// Client ID
 	ClientID int64 `json:"client_id"`
 	// Custom meta field for storing the Identifier in your system. We do not use this
@@ -613,7 +613,7 @@ type Video struct {
 	JSON struct {
 		ID                  respjson.Field
 		AdID                respjson.Field
-		CdnViews            respjson.Field
+		CDNViews            respjson.Field
 		ClientID            respjson.Field
 		ClientUserID        respjson.Field
 		ConvertedVideos     respjson.Field

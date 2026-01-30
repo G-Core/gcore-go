@@ -650,7 +650,7 @@ func (r *PageStreamingAutoPager[T]) Index() int {
 	return r.run
 }
 
-type OffsetPageCdn[T any] struct {
+type OffsetPageCDN[T any] struct {
 	Items []T `json:",inline"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -663,15 +663,15 @@ type OffsetPageCdn[T any] struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OffsetPageCdn[T]) RawJSON() string { return r.JSON.raw }
-func (r *OffsetPageCdn[T]) UnmarshalJSON(data []byte) error {
+func (r OffsetPageCDN[T]) RawJSON() string { return r.JSON.raw }
+func (r *OffsetPageCDN[T]) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // GetNextPage returns the next page as defined by this pagination style. When
 // there is no next page, this function will return a 'nil' for the page value, but
 // will not return an error
-func (r *OffsetPageCdn[T]) GetNextPage() (res *OffsetPageCdn[T], err error) {
+func (r *OffsetPageCDN[T]) GetNextPage() (res *OffsetPageCDN[T], err error) {
 	if len(r.Items) == 0 {
 		return nil, nil
 	}
@@ -704,16 +704,16 @@ func (r *OffsetPageCdn[T]) GetNextPage() (res *OffsetPageCdn[T], err error) {
 	return res, nil
 }
 
-func (r *OffsetPageCdn[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+func (r *OffsetPageCDN[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
 	if r == nil {
-		r = &OffsetPageCdn[T]{}
+		r = &OffsetPageCDN[T]{}
 	}
 	r.cfg = cfg
 	r.res = res
 }
 
-type OffsetPageCdnAutoPager[T any] struct {
-	page *OffsetPageCdn[T]
+type OffsetPageCDNAutoPager[T any] struct {
+	page *OffsetPageCDN[T]
 	cur  T
 	idx  int
 	run  int
@@ -721,14 +721,14 @@ type OffsetPageCdnAutoPager[T any] struct {
 	paramObj
 }
 
-func NewOffsetPageCdnAutoPager[T any](page *OffsetPageCdn[T], err error) *OffsetPageCdnAutoPager[T] {
-	return &OffsetPageCdnAutoPager[T]{
+func NewOffsetPageCDNAutoPager[T any](page *OffsetPageCDN[T], err error) *OffsetPageCDNAutoPager[T] {
+	return &OffsetPageCDNAutoPager[T]{
 		page: page,
 		err:  err,
 	}
 }
 
-func (r *OffsetPageCdnAutoPager[T]) Next() bool {
+func (r *OffsetPageCDNAutoPager[T]) Next() bool {
 	if r.page == nil || len(r.page.Items) == 0 {
 		return false
 	}
@@ -745,19 +745,19 @@ func (r *OffsetPageCdnAutoPager[T]) Next() bool {
 	return true
 }
 
-func (r *OffsetPageCdnAutoPager[T]) Current() T {
+func (r *OffsetPageCDNAutoPager[T]) Current() T {
 	return r.cur
 }
 
-func (r *OffsetPageCdnAutoPager[T]) Err() error {
+func (r *OffsetPageCDNAutoPager[T]) Err() error {
 	return r.err
 }
 
-func (r *OffsetPageCdnAutoPager[T]) Index() int {
+func (r *OffsetPageCDNAutoPager[T]) Index() int {
 	return r.run
 }
 
-type OffsetPageCdnLogsMeta struct {
+type OffsetPageCDNLogsMeta struct {
 	Count int64 `json:"count"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -768,14 +768,14 @@ type OffsetPageCdnLogsMeta struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OffsetPageCdnLogsMeta) RawJSON() string { return r.JSON.raw }
-func (r *OffsetPageCdnLogsMeta) UnmarshalJSON(data []byte) error {
+func (r OffsetPageCDNLogsMeta) RawJSON() string { return r.JSON.raw }
+func (r *OffsetPageCDNLogsMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OffsetPageCdnLogs[T any] struct {
+type OffsetPageCDNLogs[T any] struct {
 	Data []T                   `json:"data"`
-	Meta OffsetPageCdnLogsMeta `json:"meta"`
+	Meta OffsetPageCDNLogsMeta `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -788,15 +788,15 @@ type OffsetPageCdnLogs[T any] struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OffsetPageCdnLogs[T]) RawJSON() string { return r.JSON.raw }
-func (r *OffsetPageCdnLogs[T]) UnmarshalJSON(data []byte) error {
+func (r OffsetPageCDNLogs[T]) RawJSON() string { return r.JSON.raw }
+func (r *OffsetPageCDNLogs[T]) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // GetNextPage returns the next page as defined by this pagination style. When
 // there is no next page, this function will return a 'nil' for the page value, but
 // will not return an error
-func (r *OffsetPageCdnLogs[T]) GetNextPage() (res *OffsetPageCdnLogs[T], err error) {
+func (r *OffsetPageCDNLogs[T]) GetNextPage() (res *OffsetPageCDNLogs[T], err error) {
 	if len(r.Data) == 0 {
 		return nil, nil
 	}
@@ -829,16 +829,16 @@ func (r *OffsetPageCdnLogs[T]) GetNextPage() (res *OffsetPageCdnLogs[T], err err
 	return res, nil
 }
 
-func (r *OffsetPageCdnLogs[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+func (r *OffsetPageCDNLogs[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
 	if r == nil {
-		r = &OffsetPageCdnLogs[T]{}
+		r = &OffsetPageCDNLogs[T]{}
 	}
 	r.cfg = cfg
 	r.res = res
 }
 
-type OffsetPageCdnLogsAutoPager[T any] struct {
-	page *OffsetPageCdnLogs[T]
+type OffsetPageCDNLogsAutoPager[T any] struct {
+	page *OffsetPageCDNLogs[T]
 	cur  T
 	idx  int
 	run  int
@@ -846,14 +846,14 @@ type OffsetPageCdnLogsAutoPager[T any] struct {
 	paramObj
 }
 
-func NewOffsetPageCdnLogsAutoPager[T any](page *OffsetPageCdnLogs[T], err error) *OffsetPageCdnLogsAutoPager[T] {
-	return &OffsetPageCdnLogsAutoPager[T]{
+func NewOffsetPageCDNLogsAutoPager[T any](page *OffsetPageCDNLogs[T], err error) *OffsetPageCDNLogsAutoPager[T] {
+	return &OffsetPageCDNLogsAutoPager[T]{
 		page: page,
 		err:  err,
 	}
 }
 
-func (r *OffsetPageCdnLogsAutoPager[T]) Next() bool {
+func (r *OffsetPageCDNLogsAutoPager[T]) Next() bool {
 	if r.page == nil || len(r.page.Data) == 0 {
 		return false
 	}
@@ -870,14 +870,14 @@ func (r *OffsetPageCdnLogsAutoPager[T]) Next() bool {
 	return true
 }
 
-func (r *OffsetPageCdnLogsAutoPager[T]) Current() T {
+func (r *OffsetPageCDNLogsAutoPager[T]) Current() T {
 	return r.cur
 }
 
-func (r *OffsetPageCdnLogsAutoPager[T]) Err() error {
+func (r *OffsetPageCDNLogsAutoPager[T]) Err() error {
 	return r.err
 }
 
-func (r *OffsetPageCdnLogsAutoPager[T]) Index() int {
+func (r *OffsetPageCDNLogsAutoPager[T]) Index() int {
 	return r.run
 }

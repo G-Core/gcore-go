@@ -140,7 +140,7 @@ func (r *AccountOverview) UnmarshalJSON(data []byte) error {
 // An object of arrays which contains information about free features available for
 // the requested account.
 type AccountOverviewFreeFeatures struct {
-	Cdn       []AccountOverviewFreeFeaturesCdn       `json:"CDN"`
+	CDN       []AccountOverviewFreeFeaturesCDN       `json:"CDN"`
 	Cloud     []AccountOverviewFreeFeaturesCloud     `json:"CLOUD"`
 	DDOS      []AccountOverviewFreeFeaturesDDOS      `json:"DDOS"`
 	DNS       []AccountOverviewFreeFeaturesDNS       `json:"DNS"`
@@ -148,7 +148,7 @@ type AccountOverviewFreeFeatures struct {
 	Streaming []AccountOverviewFreeFeaturesStreaming `json:"STREAMING"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Cdn         respjson.Field
+		CDN         respjson.Field
 		Cloud       respjson.Field
 		DDOS        respjson.Field
 		DNS         respjson.Field
@@ -166,7 +166,7 @@ func (r *AccountOverviewFreeFeatures) UnmarshalJSON(data []byte) error {
 }
 
 // Feature object.
-type AccountOverviewFreeFeaturesCdn struct {
+type AccountOverviewFreeFeaturesCDN struct {
 	// Date and time when the feature was activated (ISO 8086/RFC 3339 format).
 	CreateDate string `json:"create_date"`
 	// Feature ID.
@@ -192,8 +192,8 @@ type AccountOverviewFreeFeaturesCdn struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOverviewFreeFeaturesCdn) RawJSON() string { return r.JSON.raw }
-func (r *AccountOverviewFreeFeaturesCdn) UnmarshalJSON(data []byte) error {
+func (r AccountOverviewFreeFeaturesCDN) RawJSON() string { return r.JSON.raw }
+func (r *AccountOverviewFreeFeaturesCDN) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -360,7 +360,7 @@ func (r *AccountOverviewFreeFeaturesStreaming) UnmarshalJSON(data []byte) error 
 // An object of arrays which contains information about paid features available for
 // the requested account.
 type AccountOverviewPaidFeatures struct {
-	Cdn       []AccountOverviewPaidFeaturesCdn       `json:"CDN"`
+	CDN       []AccountOverviewPaidFeaturesCDN       `json:"CDN"`
 	Cloud     []AccountOverviewPaidFeaturesCloud     `json:"CLOUD"`
 	DDOS      []AccountOverviewPaidFeaturesDDOS      `json:"DDOS"`
 	DNS       []AccountOverviewPaidFeaturesDNS       `json:"DNS"`
@@ -368,7 +368,7 @@ type AccountOverviewPaidFeatures struct {
 	Streaming []AccountOverviewPaidFeaturesStreaming `json:"STREAMING"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Cdn         respjson.Field
+		CDN         respjson.Field
 		Cloud       respjson.Field
 		DDOS        respjson.Field
 		DNS         respjson.Field
@@ -386,7 +386,7 @@ func (r *AccountOverviewPaidFeatures) UnmarshalJSON(data []byte) error {
 }
 
 // Feature object.
-type AccountOverviewPaidFeaturesCdn struct {
+type AccountOverviewPaidFeaturesCDN struct {
 	// Date and time when the feature was activated (ISO 8086/RFC 3339 format).
 	CreateDate string `json:"create_date"`
 	// Feature ID.
@@ -412,8 +412,8 @@ type AccountOverviewPaidFeaturesCdn struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOverviewPaidFeaturesCdn) RawJSON() string { return r.JSON.raw }
-func (r *AccountOverviewPaidFeaturesCdn) UnmarshalJSON(data []byte) error {
+func (r AccountOverviewPaidFeaturesCDN) RawJSON() string { return r.JSON.raw }
+func (r *AccountOverviewPaidFeaturesCDN) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -580,7 +580,7 @@ func (r *AccountOverviewPaidFeaturesStreaming) UnmarshalJSON(data []byte) error 
 // An object of arrays which contains information about all services available for
 // the requested account.
 type AccountOverviewServiceStatuses struct {
-	Cdn       AccountOverviewServiceStatusesCdn       `json:"CDN"`
+	CDN       AccountOverviewServiceStatusesCDN       `json:"CDN"`
 	Cloud     AccountOverviewServiceStatusesCloud     `json:"CLOUD"`
 	DDOS      AccountOverviewServiceStatusesDDOS      `json:"DDOS"`
 	DNS       AccountOverviewServiceStatusesDNS       `json:"DNS"`
@@ -588,7 +588,7 @@ type AccountOverviewServiceStatuses struct {
 	Streaming AccountOverviewServiceStatusesStreaming `json:"STREAMING"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Cdn         respjson.Field
+		CDN         respjson.Field
 		Cloud       respjson.Field
 		DDOS        respjson.Field
 		DNS         respjson.Field
@@ -605,7 +605,7 @@ func (r *AccountOverviewServiceStatuses) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOverviewServiceStatusesCdn struct {
+type AccountOverviewServiceStatusesCDN struct {
 	// `true` - service is available in the Control Panel.
 	Enabled bool `json:"enabled"`
 	// Status of the service.
@@ -622,8 +622,8 @@ type AccountOverviewServiceStatusesCdn struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOverviewServiceStatusesCdn) RawJSON() string { return r.JSON.raw }
-func (r *AccountOverviewServiceStatusesCdn) UnmarshalJSON(data []byte) error {
+func (r AccountOverviewServiceStatusesCDN) RawJSON() string { return r.JSON.raw }
+func (r *AccountOverviewServiceStatusesCDN) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
