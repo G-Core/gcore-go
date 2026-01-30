@@ -24,7 +24,7 @@ import (
 // the [NewCDNService] method instead.
 type CDNService struct {
 	Options               []option.RequestOption
-	Resources             ResourceService
+	CDNResources          CDNResourceService
 	Shields               ShieldService
 	OriginGroups          OriginGroupService
 	RuleTemplates         RuleTemplateService
@@ -45,7 +45,7 @@ type CDNService struct {
 func NewCDNService(opts ...option.RequestOption) (r CDNService) {
 	r = CDNService{}
 	r.Options = opts
-	r.Resources = NewResourceService(opts...)
+	r.CDNResources = NewCDNResourceService(opts...)
 	r.Shields = NewShieldService(opts...)
 	r.OriginGroups = NewOriginGroupService(opts...)
 	r.RuleTemplates = NewRuleTemplateService(opts...)

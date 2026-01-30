@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestResourceShieldGet(t *testing.T) {
+func TestCDNResourceShieldGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,7 +26,7 @@ func TestResourceShieldGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CDN.Resources.Shield.Get(context.TODO(), 0)
+	_, err := client.CDN.CDNResources.Shield.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -36,7 +36,7 @@ func TestResourceShieldGet(t *testing.T) {
 	}
 }
 
-func TestResourceShieldReplaceWithOptionalParams(t *testing.T) {
+func TestCDNResourceShieldReplaceWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -48,10 +48,10 @@ func TestResourceShieldReplaceWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CDN.Resources.Shield.Replace(
+	_, err := client.CDN.CDNResources.Shield.Replace(
 		context.TODO(),
 		0,
-		cdn.ResourceShieldReplaceParams{
+		cdn.CDNResourceShieldReplaceParams{
 			OriginShielding: cdn.OriginShieldingParam{
 				ShieldingPop: gcore.Int(4),
 			},
