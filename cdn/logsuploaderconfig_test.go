@@ -26,7 +26,7 @@ func TestLogsUploaderConfigNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.LogsUploader.Configs.New(context.TODO(), cdn.LogsUploaderConfigNewParams{
+	_, err := client.CDN.LogsUploader.Configs.New(context.TODO(), cdn.LogsUploaderConfigNewParams{
 		Name:            "name",
 		Policy:          0,
 		Target:          0,
@@ -55,7 +55,7 @@ func TestLogsUploaderConfigUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.LogsUploader.Configs.Update(
+	_, err := client.CDN.LogsUploader.Configs.Update(
 		context.TODO(),
 		0,
 		cdn.LogsUploaderConfigUpdateParams{
@@ -88,7 +88,7 @@ func TestLogsUploaderConfigListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.LogsUploader.Configs.List(context.TODO(), cdn.LogsUploaderConfigListParams{
+	_, err := client.CDN.LogsUploader.Configs.List(context.TODO(), cdn.LogsUploaderConfigListParams{
 		ResourceIDs: []int64{0},
 		Search:      gcore.String("search"),
 	})
@@ -113,7 +113,7 @@ func TestLogsUploaderConfigDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.LogsUploader.Configs.Delete(context.TODO(), 0)
+	err := client.CDN.LogsUploader.Configs.Delete(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -135,7 +135,7 @@ func TestLogsUploaderConfigGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.LogsUploader.Configs.Get(context.TODO(), 0)
+	_, err := client.CDN.LogsUploader.Configs.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -157,7 +157,7 @@ func TestLogsUploaderConfigReplaceWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.LogsUploader.Configs.Replace(
+	_, err := client.CDN.LogsUploader.Configs.Replace(
 		context.TODO(),
 		0,
 		cdn.LogsUploaderConfigReplaceParams{
@@ -190,7 +190,7 @@ func TestLogsUploaderConfigValidate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.LogsUploader.Configs.Validate(context.TODO(), 0)
+	_, err := client.CDN.LogsUploader.Configs.Validate(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

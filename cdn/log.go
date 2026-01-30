@@ -44,7 +44,7 @@ func NewLogService(opts ...option.RequestOption) (r LogService) {
 // To filter the CDN logs by 2xx status codes, use:
 //
 // - &`status__gte`=200&`status__lt`=300
-func (r *LogService) List(ctx context.Context, query LogListParams, opts ...option.RequestOption) (res *pagination.OffsetPageCdnLogs[CdnLogEntryData], err error) {
+func (r *LogService) List(ctx context.Context, query LogListParams, opts ...option.RequestOption) (res *pagination.OffsetPageCDNLogs[CDNLogEntryData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -69,8 +69,8 @@ func (r *LogService) List(ctx context.Context, query LogListParams, opts ...opti
 // To filter the CDN logs by 2xx status codes, use:
 //
 // - &`status__gte`=200&`status__lt`=300
-func (r *LogService) ListAutoPaging(ctx context.Context, query LogListParams, opts ...option.RequestOption) *pagination.OffsetPageCdnLogsAutoPager[CdnLogEntryData] {
-	return pagination.NewOffsetPageCdnLogsAutoPager(r.List(ctx, query, opts...))
+func (r *LogService) ListAutoPaging(ctx context.Context, query LogListParams, opts ...option.RequestOption) *pagination.OffsetPageCDNLogsAutoPager[CDNLogEntryData] {
+	return pagination.NewOffsetPageCDNLogsAutoPager(r.List(ctx, query, opts...))
 }
 
 // Download CDN logs for up to 3 days starting today.
@@ -85,11 +85,11 @@ func (r *LogService) Download(ctx context.Context, query LogDownloadParams, opts
 	return
 }
 
-type CdnLogEntry struct {
+type CDNLogEntry struct {
 	// Contains requested logs.
-	Data []CdnLogEntryData `json:"data"`
+	Data []CDNLogEntryData `json:"data"`
 	// Contains meta-information.
-	Meta CdnLogEntryMeta `json:"meta"`
+	Meta CDNLogEntryMeta `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -100,12 +100,12 @@ type CdnLogEntry struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnLogEntry) RawJSON() string { return r.JSON.raw }
-func (r *CdnLogEntry) UnmarshalJSON(data []byte) error {
+func (r CDNLogEntry) RawJSON() string { return r.JSON.raw }
+func (r *CDNLogEntry) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CdnLogEntryData struct {
+type CDNLogEntryData struct {
 	// Cache status: HIT, MISS, etc.
 	CacheStatus string `json:"cache_status"`
 	// IP address from that the request was received.
@@ -158,13 +158,13 @@ type CdnLogEntryData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnLogEntryData) RawJSON() string { return r.JSON.raw }
-func (r *CdnLogEntryData) UnmarshalJSON(data []byte) error {
+func (r CDNLogEntryData) RawJSON() string { return r.JSON.raw }
+func (r *CDNLogEntryData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Contains meta-information.
-type CdnLogEntryMeta struct {
+type CDNLogEntryMeta struct {
 	// Total number of records which match given parameters.
 	Count int64 `json:"count"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -176,8 +176,8 @@ type CdnLogEntryMeta struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnLogEntryMeta) RawJSON() string { return r.JSON.raw }
-func (r *CdnLogEntryMeta) UnmarshalJSON(data []byte) error {
+func (r CDNLogEntryMeta) RawJSON() string { return r.JSON.raw }
+func (r *CDNLogEntryMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

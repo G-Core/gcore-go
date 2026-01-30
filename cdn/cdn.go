@@ -16,13 +16,13 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
-// CdnService contains methods and other services that help with interacting with
+// CDNService contains methods and other services that help with interacting with
 // the gcore API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewCdnService] method instead.
-type CdnService struct {
+// the [NewCDNService] method instead.
+type CDNService struct {
 	Options               []option.RequestOption
 	Resources             ResourceService
 	Shields               ShieldService
@@ -39,11 +39,11 @@ type CdnService struct {
 	IPRanges              IPRangeService
 }
 
-// NewCdnService generates a new service that applies the given options to each
+// NewCDNService generates a new service that applies the given options to each
 // request. These options are applied after the parent client's options (if there
 // is one), and before any request-specific options.
-func NewCdnService(opts ...option.RequestOption) (r CdnService) {
-	r = CdnService{}
+func NewCDNService(opts ...option.RequestOption) (r CDNService) {
+	r = CDNService{}
 	r.Options = opts
 	r.Resources = NewResourceService(opts...)
 	r.Shields = NewShieldService(opts...)
@@ -62,7 +62,7 @@ func NewCdnService(opts ...option.RequestOption) (r CdnService) {
 }
 
 // Get information about CDN service limits.
-func (r *CdnService) GetAccountLimits(ctx context.Context, opts ...option.RequestOption) (res *CdnAccountLimits, err error) {
+func (r *CDNService) GetAccountLimits(ctx context.Context, opts ...option.RequestOption) (res *CDNAccountLimits, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/clients/me/limits"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -70,7 +70,7 @@ func (r *CdnService) GetAccountLimits(ctx context.Context, opts ...option.Reques
 }
 
 // Get information about CDN service.
-func (r *CdnService) GetAccountOverview(ctx context.Context, opts ...option.RequestOption) (res *CdnAccount, err error) {
+func (r *CDNService) GetAccountOverview(ctx context.Context, opts ...option.RequestOption) (res *CDNAccount, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/clients/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -78,7 +78,7 @@ func (r *CdnService) GetAccountOverview(ctx context.Context, opts ...option.Requ
 }
 
 // Get information about available CDN features.
-func (r *CdnService) GetAvailableFeatures(ctx context.Context, opts ...option.RequestOption) (res *CdnAvailableFeatures, err error) {
+func (r *CDNService) GetAvailableFeatures(ctx context.Context, opts ...option.RequestOption) (res *CDNAvailableFeatures, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/clients/me/features"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -86,7 +86,7 @@ func (r *CdnService) GetAvailableFeatures(ctx context.Context, opts ...option.Re
 }
 
 // Get the list of Alibaba Cloud regions.
-func (r *CdnService) ListAlibabaRegions(ctx context.Context, opts ...option.RequestOption) (res *AlibabaRegions, err error) {
+func (r *CDNService) ListAlibabaRegions(ctx context.Context, opts ...option.RequestOption) (res *AlibabaRegions, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/alibaba_regions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -94,7 +94,7 @@ func (r *CdnService) ListAlibabaRegions(ctx context.Context, opts ...option.Requ
 }
 
 // Get the list of Amazon AWS regions.
-func (r *CdnService) ListAwsRegions(ctx context.Context, opts ...option.RequestOption) (res *AwsRegions, err error) {
+func (r *CDNService) ListAwsRegions(ctx context.Context, opts ...option.RequestOption) (res *AwsRegions, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/aws_regions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -102,7 +102,7 @@ func (r *CdnService) ListAwsRegions(ctx context.Context, opts ...option.RequestO
 }
 
 // Get purges history.
-func (r *CdnService) ListPurgeStatuses(ctx context.Context, query CdnListPurgeStatusesParams, opts ...option.RequestOption) (res *[]PurgeStatus, err error) {
+func (r *CDNService) ListPurgeStatuses(ctx context.Context, query CDNListPurgeStatusesParams, opts ...option.RequestOption) (res *[]PurgeStatus, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/purge_statuses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -110,7 +110,7 @@ func (r *CdnService) ListPurgeStatuses(ctx context.Context, query CdnListPurgeSt
 }
 
 // Change information about CDN service.
-func (r *CdnService) UpdateAccount(ctx context.Context, body CdnUpdateAccountParams, opts ...option.RequestOption) (res *CdnAccount, err error) {
+func (r *CDNService) UpdateAccount(ctx context.Context, body CDNUpdateAccountParams, opts ...option.RequestOption) (res *CDNAccount, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/clients/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
@@ -167,7 +167,7 @@ func (r *AwsRegion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CdnAccount struct {
+type CDNAccount struct {
 	// Account ID.
 	ID int64 `json:"id"`
 	// Defines whether resources will be deactivated automatically by inactivity.
@@ -178,14 +178,14 @@ type CdnAccount struct {
 	// - **false** - Resources will not be deactivated.
 	AutoSuspendEnabled bool `json:"auto_suspend_enabled"`
 	// Limit on the number of rules for each CDN resource.
-	CdnResourcesRulesMaxCount int64 `json:"cdn_resources_rules_max_count"`
+	CDNResourcesRulesMaxCount int64 `json:"cdn_resources_rules_max_count"`
 	// Domain zone to which a CNAME record of your CDN resources should be pointed.
 	Cname string `json:"cname"`
 	// Date of the first synchronization with the Platform (ISO 8601/RFC 3339 format,
 	// UTC.)
 	Created string `json:"created"`
 	// Information about the CDN service status.
-	Service CdnAccountService `json:"service"`
+	Service CDNAccountService `json:"service"`
 	// Date of the last update of information about CDN service (ISO 8601/RFC 3339
 	// format, UTC.)
 	Updated string `json:"updated"`
@@ -204,7 +204,7 @@ type CdnAccount struct {
 	JSON struct {
 		ID                        respjson.Field
 		AutoSuspendEnabled        respjson.Field
-		CdnResourcesRulesMaxCount respjson.Field
+		CDNResourcesRulesMaxCount respjson.Field
 		Cname                     respjson.Field
 		Created                   respjson.Field
 		Service                   respjson.Field
@@ -217,13 +217,13 @@ type CdnAccount struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnAccount) RawJSON() string { return r.JSON.raw }
-func (r *CdnAccount) UnmarshalJSON(data []byte) error {
+func (r CDNAccount) RawJSON() string { return r.JSON.raw }
+func (r *CDNAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Information about the CDN service status.
-type CdnAccountService struct {
+type CDNAccountService struct {
 	// Defines whether the CDN service is activated.
 	//
 	// Possible values:
@@ -257,12 +257,12 @@ type CdnAccountService struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnAccountService) RawJSON() string { return r.JSON.raw }
-func (r *CdnAccountService) UnmarshalJSON(data []byte) error {
+func (r CDNAccountService) RawJSON() string { return r.JSON.raw }
+func (r *CDNAccountService) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CdnAccountLimits struct {
+type CDNAccountLimits struct {
 	// Account ID.
 	ID int64 `json:"id"`
 	// Maximum number of origins that can be added to the origin group on your tariff
@@ -285,18 +285,18 @@ type CdnAccountLimits struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnAccountLimits) RawJSON() string { return r.JSON.raw }
-func (r *CdnAccountLimits) UnmarshalJSON(data []byte) error {
+func (r CDNAccountLimits) RawJSON() string { return r.JSON.raw }
+func (r *CDNAccountLimits) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CdnAvailableFeatures struct {
+type CDNAvailableFeatures struct {
 	// Account ID.
 	ID int64 `json:"id"`
 	// Free features available for your account.
-	FreeFeatures []CdnAvailableFeaturesFreeFeature `json:"free_features"`
+	FreeFeatures []CDNAvailableFeaturesFreeFeature `json:"free_features"`
 	// Paid features available for your account.
-	PaidFeatures []CdnAvailableFeaturesPaidFeature `json:"paid_features"`
+	PaidFeatures []CDNAvailableFeaturesPaidFeature `json:"paid_features"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -308,12 +308,12 @@ type CdnAvailableFeatures struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnAvailableFeatures) RawJSON() string { return r.JSON.raw }
-func (r *CdnAvailableFeatures) UnmarshalJSON(data []byte) error {
+func (r CDNAvailableFeatures) RawJSON() string { return r.JSON.raw }
+func (r *CDNAvailableFeatures) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CdnAvailableFeaturesFreeFeature struct {
+type CDNAvailableFeaturesFreeFeature struct {
 	// Date and time when the feature was activated (ISO 8601/RFC 3339 format, UTC.)
 	CreateDate string `json:"create_date"`
 	// Feature ID.
@@ -334,12 +334,12 @@ type CdnAvailableFeaturesFreeFeature struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnAvailableFeaturesFreeFeature) RawJSON() string { return r.JSON.raw }
-func (r *CdnAvailableFeaturesFreeFeature) UnmarshalJSON(data []byte) error {
+func (r CDNAvailableFeaturesFreeFeature) RawJSON() string { return r.JSON.raw }
+func (r *CDNAvailableFeaturesFreeFeature) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CdnAvailableFeaturesPaidFeature struct {
+type CDNAvailableFeaturesPaidFeature struct {
 	// Date and time when the feature was activated (ISO 8601/RFC 3339 format, UTC.)
 	CreateDate string `json:"create_date"`
 	// Feature ID.
@@ -360,8 +360,8 @@ type CdnAvailableFeaturesPaidFeature struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnAvailableFeaturesPaidFeature) RawJSON() string { return r.JSON.raw }
-func (r *CdnAvailableFeaturesPaidFeature) UnmarshalJSON(data []byte) error {
+func (r CDNAvailableFeaturesPaidFeature) RawJSON() string { return r.JSON.raw }
+func (r *CDNAvailableFeaturesPaidFeature) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -450,7 +450,7 @@ const (
 	PurgeStatusStatusFailed     PurgeStatusStatus = "Failed"
 )
 
-type CdnListPurgeStatusesParams struct {
+type CDNListPurgeStatusesParams struct {
 	// Purges associated with a specific resource CNAME.
 	//
 	// Example:
@@ -497,16 +497,16 @@ type CdnListPurgeStatusesParams struct {
 	paramObj
 }
 
-// URLQuery serializes [CdnListPurgeStatusesParams]'s query parameters as
+// URLQuery serializes [CDNListPurgeStatusesParams]'s query parameters as
 // `url.Values`.
-func (r CdnListPurgeStatusesParams) URLQuery() (v url.Values, err error) {
+func (r CDNListPurgeStatusesParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
 
-type CdnUpdateAccountParams struct {
+type CDNUpdateAccountParams struct {
 	// CDN traffic usage limit in gigabytes.
 	//
 	// When the limit is reached, we will send an email notification.
@@ -514,10 +514,10 @@ type CdnUpdateAccountParams struct {
 	paramObj
 }
 
-func (r CdnUpdateAccountParams) MarshalJSON() (data []byte, err error) {
-	type shadow CdnUpdateAccountParams
+func (r CDNUpdateAccountParams) MarshalJSON() (data []byte, err error) {
+	type shadow CDNUpdateAccountParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *CdnUpdateAccountParams) UnmarshalJSON(data []byte) error {
+func (r *CDNUpdateAccountParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

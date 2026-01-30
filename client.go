@@ -35,7 +35,7 @@ type Client struct {
 	Security  security.SecurityService
 	DNS       dns.DNSService
 	Storage   storage.StorageService
-	Cdn       cdn.CdnService
+	CDN       cdn.CDNService
 }
 
 // DefaultClientOptions read from the environment (GCORE_API_KEY,
@@ -86,7 +86,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Security = security.NewSecurityService(opts...)
 	r.DNS = dns.NewDNSService(opts...)
 	r.Storage = storage.NewStorageService(opts...)
-	r.Cdn = cdn.NewCdnService(opts...)
+	r.CDN = cdn.NewCDNService(opts...)
 
 	return
 }

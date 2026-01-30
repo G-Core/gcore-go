@@ -35,19 +35,19 @@ func NewMetricService(opts ...option.RequestOption) (r MetricService) {
 }
 
 // Get CDN metrics
-func (r *MetricService) List(ctx context.Context, body MetricListParams, opts ...option.RequestOption) (res *CdnMetrics, err error) {
+func (r *MetricService) List(ctx context.Context, body MetricListParams, opts ...option.RequestOption) (res *CDNMetrics, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/advanced/v1/metrics"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
-type CdnMetrics struct {
+type CDNMetrics struct {
 	// If no grouping was requested then "data" holds an array of metric values. If at
 	// least one field is specified in "group_by" then "data" is an object whose
 	// properties are groups, which may include other groups; the last group will hold
 	// array of metrics values.
-	Data CdnMetricsDataUnion `json:"data"`
+	Data CDNMetricsDataUnion `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -57,51 +57,51 @@ type CdnMetrics struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnMetrics) RawJSON() string { return r.JSON.raw }
-func (r *CdnMetrics) UnmarshalJSON(data []byte) error {
+func (r CDNMetrics) RawJSON() string { return r.JSON.raw }
+func (r *CDNMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// CdnMetricsDataUnion contains all possible properties and values from
-// [CdnMetricsValues], [CdnMetricsGroups].
+// CDNMetricsDataUnion contains all possible properties and values from
+// [CDNMetricsValues], [CDNMetricsGroups].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfCdnMetricsValues]
-type CdnMetricsDataUnion struct {
-	// This field will be present if the value is a [CdnMetricsValues] instead of an
+// will be valid: OfCDNMetricsValues]
+type CDNMetricsDataUnion struct {
+	// This field will be present if the value is a [CDNMetricsValues] instead of an
 	// object.
-	OfCdnMetricsValues CdnMetricsValues `json:",inline"`
-	// This field is from variant [CdnMetricsGroups].
-	Group CdnMetricsValues `json:"group"`
+	OfCDNMetricsValues CDNMetricsValues `json:",inline"`
+	// This field is from variant [CDNMetricsGroups].
+	Group CDNMetricsValues `json:"group"`
 	JSON  struct {
-		OfCdnMetricsValues respjson.Field
+		OfCDNMetricsValues respjson.Field
 		Group              respjson.Field
 		raw                string
 	} `json:"-"`
 }
 
-func (u CdnMetricsDataUnion) AsCdnMetricsValues() (v CdnMetricsValues) {
+func (u CDNMetricsDataUnion) AsCDNMetricsValues() (v CDNMetricsValues) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CdnMetricsDataUnion) AsCdnMetricsGroups() (v CdnMetricsGroups) {
+func (u CDNMetricsDataUnion) AsCDNMetricsGroups() (v CDNMetricsGroups) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u CdnMetricsDataUnion) RawJSON() string { return u.JSON.raw }
+func (u CDNMetricsDataUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *CdnMetricsDataUnion) UnmarshalJSON(data []byte) error {
+func (r *CDNMetricsDataUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CdnMetricsGroups struct {
+type CDNMetricsGroups struct {
 	// List of requested metrics sorted by timestamp in ascending order.
-	Group CdnMetricsValues `json:"group"`
+	Group CDNMetricsValues `json:"group"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Group       respjson.Field
@@ -111,14 +111,14 @@ type CdnMetricsGroups struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnMetricsGroups) RawJSON() string { return r.JSON.raw }
-func (r *CdnMetricsGroups) UnmarshalJSON(data []byte) error {
+func (r CDNMetricsGroups) RawJSON() string { return r.JSON.raw }
+func (r *CDNMetricsGroups) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CdnMetricsValues []CdnMetricsValue
+type CDNMetricsValues []CDNMetricsValue
 
-type CdnMetricsValue struct {
+type CDNMetricsValue struct {
 	// Metrics value.
 	Metric float64 `json:"metric"`
 	// Start timestamp of interval.
@@ -133,8 +133,8 @@ type CdnMetricsValue struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CdnMetricsValue) RawJSON() string { return r.JSON.raw }
-func (r *CdnMetricsValue) UnmarshalJSON(data []byte) error {
+func (r CDNMetricsValue) RawJSON() string { return r.JSON.raw }
+func (r *CDNMetricsValue) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

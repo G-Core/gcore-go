@@ -26,7 +26,7 @@ func TestLogsUploaderPolicyNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.LogsUploader.Policies.New(context.TODO(), cdn.LogsUploaderPolicyNewParams{
+	_, err := client.CDN.LogsUploader.Policies.New(context.TODO(), cdn.LogsUploaderPolicyNewParams{
 		DateFormat:              gcore.String("[02/Jan/2006:15:04:05 -0700]"),
 		Description:             gcore.String("New policy"),
 		EscapeSpecialCharacters: gcore.Bool(true),
@@ -65,7 +65,7 @@ func TestLogsUploaderPolicyUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.LogsUploader.Policies.Update(
+	_, err := client.CDN.LogsUploader.Policies.Update(
 		context.TODO(),
 		0,
 		cdn.LogsUploaderPolicyUpdateParams{
@@ -108,7 +108,7 @@ func TestLogsUploaderPolicyListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.LogsUploader.Policies.List(context.TODO(), cdn.LogsUploaderPolicyListParams{
+	_, err := client.CDN.LogsUploader.Policies.List(context.TODO(), cdn.LogsUploaderPolicyListParams{
 		ConfigIDs: []int64{0},
 		Search:    gcore.String("search"),
 	})
@@ -133,7 +133,7 @@ func TestLogsUploaderPolicyDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cdn.LogsUploader.Policies.Delete(context.TODO(), 0)
+	err := client.CDN.LogsUploader.Policies.Delete(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -155,7 +155,7 @@ func TestLogsUploaderPolicyGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.LogsUploader.Policies.Get(context.TODO(), 0)
+	_, err := client.CDN.LogsUploader.Policies.Get(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -177,7 +177,7 @@ func TestLogsUploaderPolicyListFields(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.LogsUploader.Policies.ListFields(context.TODO())
+	_, err := client.CDN.LogsUploader.Policies.ListFields(context.TODO())
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -199,7 +199,7 @@ func TestLogsUploaderPolicyReplaceWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cdn.LogsUploader.Policies.Replace(
+	_, err := client.CDN.LogsUploader.Policies.Replace(
 		context.TODO(),
 		0,
 		cdn.LogsUploaderPolicyReplaceParams{
