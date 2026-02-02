@@ -27,10 +27,11 @@ func TestK8SFlavorListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.K8S.Flavors.List(context.TODO(), cloud.K8SFlavorListParams{
-		ProjectID:     gcore.Int(0),
-		RegionID:      gcore.Int(0),
-		ExcludeGPU:    gcore.Bool(true),
-		IncludePrices: gcore.Bool(true),
+		ProjectID:       gcore.Int(1),
+		RegionID:        gcore.Int(7),
+		ExcludeGPU:      gcore.Bool(false),
+		IncludeCapacity: gcore.Bool(false),
+		IncludePrices:   gcore.Bool(false),
 	})
 	if err != nil {
 		var apierr *gcore.Error

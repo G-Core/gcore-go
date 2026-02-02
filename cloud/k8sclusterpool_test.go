@@ -28,10 +28,10 @@ func TestK8SClusterPoolNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.Pools.New(
 		context.TODO(),
-		"cluster_name",
+		"my-cluster",
 		cloud.K8SClusterPoolNewParams{
-			ProjectID:          gcore.Int(0),
-			RegionID:           gcore.Int(0),
+			ProjectID:          gcore.Int(1),
+			RegionID:           gcore.Int(7),
 			FlavorID:           "g1-standard-1-2",
 			MinNodeCount:       3,
 			Name:               "my-pool",
@@ -78,11 +78,11 @@ func TestK8SClusterPoolUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.Pools.Update(
 		context.TODO(),
-		"pool_name",
+		"my-pool",
 		cloud.K8SClusterPoolUpdateParams{
-			ProjectID:          gcore.Int(0),
-			RegionID:           gcore.Int(0),
-			ClusterName:        "cluster_name",
+			ProjectID:          gcore.Int(1),
+			RegionID:           gcore.Int(7),
+			ClusterName:        "my-cluster",
 			AutoHealingEnabled: gcore.Bool(true),
 			Labels: map[string]string{
 				"my-label": "foo",
@@ -118,10 +118,10 @@ func TestK8SClusterPoolList(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.Pools.List(
 		context.TODO(),
-		"cluster_name",
+		"my-cluster",
 		cloud.K8SClusterPoolListParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 		},
 	)
 	if err != nil {
@@ -147,11 +147,11 @@ func TestK8SClusterPoolDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.Pools.Delete(
 		context.TODO(),
-		"pool_name",
+		"my-pool",
 		cloud.K8SClusterPoolDeleteParams{
-			ProjectID:   gcore.Int(0),
-			RegionID:    gcore.Int(0),
-			ClusterName: "cluster_name",
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(7),
+			ClusterName: "my-cluster",
 		},
 	)
 	if err != nil {
@@ -209,11 +209,11 @@ func TestK8SClusterPoolGet(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.Pools.Get(
 		context.TODO(),
-		"pool_name",
+		"my-pool",
 		cloud.K8SClusterPoolGetParams{
-			ProjectID:   gcore.Int(0),
-			RegionID:    gcore.Int(0),
-			ClusterName: "cluster_name",
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(7),
+			ClusterName: "my-cluster",
 		},
 	)
 	if err != nil {
@@ -239,11 +239,11 @@ func TestK8SClusterPoolResize(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.Pools.Resize(
 		context.TODO(),
-		"pool_name",
+		"my-pool",
 		cloud.K8SClusterPoolResizeParams{
-			ProjectID:   gcore.Int(0),
-			RegionID:    gcore.Int(0),
-			ClusterName: "cluster_name",
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(7),
+			ClusterName: "my-cluster",
 			NodeCount:   2,
 		},
 	)

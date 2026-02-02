@@ -368,7 +368,7 @@ type HealthMonitor struct {
 	ID string `json:"id,required" format:"uuid4"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
-	// process traffic. When null is passed, the value is skipped and defaults to true.
+	// process traffic. Defaults to true.
 	AdminStateUp bool `json:"admin_state_up,required"`
 	// The time, in seconds, between sending probes to members
 	Delay int64 `json:"delay,required"`
@@ -937,6 +937,10 @@ func (r *LoadBalancerL7RuleList) UnmarshalJSON(data []byte) error {
 type LoadBalancerListenerDetail struct {
 	// Load balancer listener ID
 	ID string `json:"id,required" format:"uuid4"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. Defaults to true.
+	AdminStateUp bool `json:"admin_state_up,required"`
 	// Network CIDRs from which service will be accessible
 	AllowedCidrs []string `json:"allowed_cidrs,required" format:"ipvanynetwork"`
 	// Limit of simultaneous connections
@@ -995,6 +999,7 @@ type LoadBalancerListenerDetail struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
+		AdminStateUp         respjson.Field
 		AllowedCidrs         respjson.Field
 		ConnectionLimit      respjson.Field
 		CreatorTaskID        respjson.Field
@@ -1123,6 +1128,10 @@ func (r *LoadBalancerMetricsList) UnmarshalJSON(data []byte) error {
 type LoadBalancerPool struct {
 	// Pool ID
 	ID string `json:"id,required" format:"uuid4"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. Defaults to true.
+	AdminStateUp bool `json:"admin_state_up,required"`
 	// Secret ID of CA certificate bundle
 	CaSecretID string `json:"ca_secret_id,required" format:"uuid4"`
 	// Task that created this entity
@@ -1175,6 +1184,7 @@ type LoadBalancerPool struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
+		AdminStateUp         respjson.Field
 		CaSecretID           respjson.Field
 		CreatorTaskID        respjson.Field
 		CrlSecretID          respjson.Field
@@ -1261,6 +1271,10 @@ func (r *LoadBalancerPoolList) UnmarshalJSON(data []byte) error {
 type LoadBalancerPoolListResult struct {
 	// Pool ID
 	ID string `json:"id,required" format:"uuid4"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. Defaults to true.
+	AdminStateUp bool `json:"admin_state_up,required"`
 	// Secret ID of CA certificate bundle
 	CaSecretID string `json:"ca_secret_id,required" format:"uuid4"`
 	// Task that created this entity
@@ -1313,6 +1327,7 @@ type LoadBalancerPoolListResult struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
+		AdminStateUp         respjson.Field
 		CaSecretID           respjson.Field
 		CreatorTaskID        respjson.Field
 		CrlSecretID          respjson.Field
@@ -1520,7 +1535,7 @@ type Member struct {
 	Address string `json:"address,required" format:"ipvanyaddress"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
-	// process traffic. When null is passed, the value is skipped and defaults to true.
+	// process traffic. Defaults to true.
 	AdminStateUp bool `json:"admin_state_up,required"`
 	// Set to true if the member is a backup member, to which traffic will be sent
 	// exclusively when all non-backup members will be unreachable. It allows to
@@ -1960,6 +1975,10 @@ type LoadBalancerNewParamsListenerPoolHealthmonitor struct {
 	// URL Path. Defaults to '/'. Can only be used together with `HTTP` or `HTTPS`
 	// health monitor type.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. Defaults to true.
+	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Number of failures before the member is switched to ERROR state.
 	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
 	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
@@ -1998,7 +2017,7 @@ type LoadBalancerNewParamsListenerPoolMember struct {
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
-	// process traffic. When null is passed, the value is skipped and defaults to true.
+	// process traffic. Defaults to true.
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Set to true if the member is a backup member, to which traffic will be sent
 	// exclusively when all non-backup members will be unreachable. It allows to
