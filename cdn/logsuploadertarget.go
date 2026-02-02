@@ -159,9 +159,8 @@ type LogsUploaderTargetConfigUnion struct {
 	AccessKeyID string `json:"access_key_id"`
 	BucketName  string `json:"bucket_name"`
 	Directory   string `json:"directory"`
-	// This field is from variant [LogsUploaderTargetConfigS3GcoreConfig].
-	Endpoint string `json:"endpoint"`
-	Region   string `json:"region"`
+	Endpoint    string `json:"endpoint"`
+	Region      string `json:"region"`
 	// This field is from variant [LogsUploaderTargetConfigS3GcoreConfig].
 	UsePathStyle   bool   `json:"use_path_style"`
 	Hostname       string `json:"hostname"`
@@ -304,12 +303,14 @@ type LogsUploaderTargetConfigObject struct {
 	AccessKeyID string `json:"access_key_id"`
 	BucketName  string `json:"bucket_name"`
 	Directory   string `json:"directory,nullable"`
+	Endpoint    string `json:"endpoint,nullable"`
 	Region      string `json:"region,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AccessKeyID respjson.Field
 		BucketName  respjson.Field
 		Directory   respjson.Field
+		Endpoint    respjson.Field
 		Region      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -782,6 +783,8 @@ func (u LogsUploaderTargetNewParamsConfigUnion) GetBucketName() *string {
 func (u LogsUploaderTargetNewParamsConfigUnion) GetEndpoint() *string {
 	if vt := u.OfS3GcoreConfig; vt != nil {
 		return (*string)(&vt.Endpoint)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
 	} else if vt := u.OfS3OtherConfig; vt != nil {
 		return (*string)(&vt.Endpoint)
 	} else if vt := u.OfS3V1Config; vt != nil {
@@ -939,6 +942,7 @@ type LogsUploaderTargetNewParamsConfigS3OssConfig struct {
 	BucketName      string            `json:"bucket_name,required"`
 	SecretAccessKey string            `json:"secret_access_key,required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
+	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
 	Region          param.Opt[string] `json:"region,omitzero"`
 	paramObj
 }
@@ -1422,6 +1426,8 @@ func (u LogsUploaderTargetUpdateParamsConfigUnion) GetBucketName() *string {
 func (u LogsUploaderTargetUpdateParamsConfigUnion) GetEndpoint() *string {
 	if vt := u.OfS3GcoreConfig; vt != nil {
 		return (*string)(&vt.Endpoint)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
 	} else if vt := u.OfS3OtherConfig; vt != nil {
 		return (*string)(&vt.Endpoint)
 	} else if vt := u.OfS3V1Config; vt != nil {
@@ -1579,6 +1585,7 @@ type LogsUploaderTargetUpdateParamsConfigS3OssConfig struct {
 	BucketName      string            `json:"bucket_name,required"`
 	SecretAccessKey string            `json:"secret_access_key,required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
+	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
 	Region          param.Opt[string] `json:"region,omitzero"`
 	paramObj
 }
@@ -2079,6 +2086,8 @@ func (u LogsUploaderTargetReplaceParamsConfigUnion) GetBucketName() *string {
 func (u LogsUploaderTargetReplaceParamsConfigUnion) GetEndpoint() *string {
 	if vt := u.OfS3GcoreConfig; vt != nil {
 		return (*string)(&vt.Endpoint)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
 	} else if vt := u.OfS3OtherConfig; vt != nil {
 		return (*string)(&vt.Endpoint)
 	} else if vt := u.OfS3V1Config; vt != nil {
@@ -2236,6 +2245,7 @@ type LogsUploaderTargetReplaceParamsConfigS3OssConfig struct {
 	BucketName      string            `json:"bucket_name,required"`
 	SecretAccessKey string            `json:"secret_access_key,required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
+	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
 	Region          param.Opt[string] `json:"region,omitzero"`
 	paramObj
 }
