@@ -249,6 +249,10 @@ type LoadBalancerPoolNewParamsHealthmonitor struct {
 	// URL Path. Defaults to '/'. Can only be used together with `HTTP` or `HTTPS`
 	// health monitor type.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. Defaults to true.
+	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Number of failures before the member is switched to ERROR state.
 	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
 	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
@@ -287,7 +291,7 @@ type LoadBalancerPoolNewParamsMember struct {
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
-	// process traffic. When null is passed, the value is skipped and defaults to true.
+	// process traffic. Defaults to true.
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Set to true if the member is a backup member, to which traffic will be sent
 	// exclusively when all non-backup members will be unreachable. It allows to
@@ -365,6 +369,10 @@ type LoadBalancerPoolUpdateParams struct {
 	TimeoutMemberConnect param.Opt[int64] `json:"timeout_member_connect,omitzero"`
 	// Backend member inactivity timeout in milliseconds
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. Defaults to true.
+	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// New pool name
 	Name param.Opt[string] `json:"name,omitzero"`
 	// New pool health monitor settings
@@ -410,6 +418,10 @@ type LoadBalancerPoolUpdateParamsHealthmonitor struct {
 	// URL Path. Defaults to '/'. Can only be used together with `HTTP` or `HTTPS`
 	// health monitor type.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. Defaults to true.
+	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Number of failures before the member is switched to ERROR state.
 	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
 	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
@@ -452,7 +464,7 @@ type LoadBalancerPoolUpdateParamsMember struct {
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
-	// process traffic. When null is passed, the value is skipped and defaults to true.
+	// process traffic. Defaults to true.
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Set to true if the member is a backup member, to which traffic will be sent
 	// exclusively when all non-backup members will be unreachable. It allows to

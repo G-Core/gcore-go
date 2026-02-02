@@ -99,7 +99,9 @@ func (r *K8SClusterVersionList) UnmarshalJSON(data []byte) error {
 }
 
 type K8SListVersionsParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }

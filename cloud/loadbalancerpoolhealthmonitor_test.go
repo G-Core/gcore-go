@@ -36,6 +36,7 @@ func TestLoadBalancerPoolHealthMonitorNewWithOptionalParams(t *testing.T) {
 			MaxRetries:     2,
 			Timeout:        5,
 			Type:           cloud.LbHealthMonitorTypeHTTP,
+			AdminStateUp:   gcore.Bool(true),
 			ExpectedCodes:  gcore.String("200,301,302"),
 			HTTPMethod:     cloud.HTTPMethodConnect,
 			MaxRetriesDown: gcore.Int(2),

@@ -243,6 +243,10 @@ type LoadBalancerListenerUpdateParams struct {
 	// Backend member inactivity timeout in milliseconds. We are recommending to use
 	// `pool.timeout_member_data` instead.
 	TimeoutMemberData param.Opt[int64] `json:"timeout_member_data,omitzero"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. Defaults to true.
+	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Limit of simultaneous connections. If -1 is provided, it is translated to the
 	// default value 100000.
 	ConnectionLimit param.Opt[int64] `json:"connection_limit,omitzero"`

@@ -75,6 +75,7 @@ func TestLoadBalancerListenerUpdateWithOptionalParams(t *testing.T) {
 		cloud.LoadBalancerListenerUpdateParams{
 			ProjectID:            gcore.Int(1),
 			RegionID:             gcore.Int(1),
+			AdminStateUp:         gcore.Bool(true),
 			AllowedCidrs:         []string{"10.0.0.0/8"},
 			ConnectionLimit:      gcore.Int(100000),
 			Name:                 gcore.String("new_listener_name"),
