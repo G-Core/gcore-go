@@ -28,8 +28,8 @@ func TestK8SClusterNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.K8S.Clusters.New(context.TODO(), cloud.K8SClusterNewParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(7),
 		Keypair:   "some_keypair",
 		Name:      "string",
 		Pools: []cloud.K8SClusterNewParamsPool{{
@@ -152,10 +152,10 @@ func TestK8SClusterUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.Update(
 		context.TODO(),
-		"cluster_name",
+		"my-cluster",
 		cloud.K8SClusterUpdateParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 			AddOns: cloud.K8SClusterUpdateParamsAddOns{
 				Slurm: cloud.K8SClusterUpdateParamsAddOnsSlurmUnion{
 					OfK8SClusterSlurmAddonEnableV2Serializer: &cloud.K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer{
@@ -242,8 +242,8 @@ func TestK8SClusterList(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.K8S.Clusters.List(context.TODO(), cloud.K8SClusterListParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(7),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -268,11 +268,11 @@ func TestK8SClusterDeleteWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.Delete(
 		context.TODO(),
-		"cluster_name",
+		"my-cluster",
 		cloud.K8SClusterDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			Volumes:   gcore.String("volumes"),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
+			Volumes:   gcore.String("550e8400-e29b-41d4-a716-446655440000"),
 		},
 	)
 	if err != nil {
@@ -298,10 +298,10 @@ func TestK8SClusterGet(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.Get(
 		context.TODO(),
-		"cluster_name",
+		"my-cluster",
 		cloud.K8SClusterGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 		},
 	)
 	if err != nil {
@@ -327,10 +327,10 @@ func TestK8SClusterGetCertificate(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.GetCertificate(
 		context.TODO(),
-		"cluster_name",
+		"my-cluster",
 		cloud.K8SClusterGetCertificateParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 		},
 	)
 	if err != nil {
@@ -356,10 +356,10 @@ func TestK8SClusterGetKubeconfig(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.GetKubeconfig(
 		context.TODO(),
-		"cluster_name",
+		"my-cluster",
 		cloud.K8SClusterGetKubeconfigParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 		},
 	)
 	if err != nil {
@@ -385,10 +385,10 @@ func TestK8SClusterListVersionsForUpgrade(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.ListVersionsForUpgrade(
 		context.TODO(),
-		"cluster_name",
+		"my-cluster",
 		cloud.K8SClusterListVersionsForUpgradeParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 		},
 	)
 	if err != nil {
@@ -414,10 +414,10 @@ func TestK8SClusterUpgrade(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.Upgrade(
 		context.TODO(),
-		"cluster_name",
+		"my-cluster",
 		cloud.K8SClusterUpgradeParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 			Version:   "v1.28.1",
 		},
 	)
