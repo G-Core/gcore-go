@@ -83,6 +83,24 @@ func (r *CDNResourceService) Delete(ctx context.Context, resourceID int64, opts 
 	return
 }
 
+// DeactivateAndDelete is a utility method that first deactivates the CDN resource
+// by setting the `active` attribute to `false`, then deletes the resource from
+// the system permanently.
+//
+// This method is useful because the Delete operation requires the CDN resource to
+// be deactivated first. DeactivateAndDelete handles both steps in a single call.
+func (r *CDNResourceService) DeactivateAndDelete(ctx context.Context, resourceID int64, opts ...option.RequestOption) (err error) {
+	params := CDNResourceUpdateParams{
+		Active: param.NewOpt(false),
+	}
+	_, err = r.Update(ctx, resourceID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	return r.Delete(ctx, resourceID, opts...)
+}
+
 // Get CDN resource details
 func (r *CDNResourceService) Get(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *CDNResource, err error) {
 	opts = slices.Concat(r.Options, opts)
