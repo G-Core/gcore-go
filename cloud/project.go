@@ -111,7 +111,7 @@ func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, o
 	return
 }
 
-// Get project. Retrieve detailed information about a specific project.
+// Retrieve detailed information about a specific project.
 func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts ...option.RequestOption) (res *Project, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
