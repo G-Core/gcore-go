@@ -92,7 +92,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 				TimeoutMemberConnect: gcore.Int(50000),
 				TimeoutMemberData:    gcore.Int(0),
 			}},
-			SecretID:             gcore.String("f2e734d0-fa2b-42c2-ad33-4c6db5101e00"),
+			SecretID:             "",
 			SniSecretID:          []string{"f2e734d0-fa2b-42c2-ad33-4c6db5101e00", "eb121225-7ded-4ff3-ae1f-599e145dd7cb"},
 			TimeoutClientData:    gcore.Int(50000),
 			TimeoutMemberConnect: gcore.Int(50000),
