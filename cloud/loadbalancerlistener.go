@@ -296,11 +296,13 @@ type LoadBalancerListenerNewParams struct {
 	// Add headers X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto to requests.
 	// Only used with HTTP or `TERMINATED_HTTPS` protocols.
 	InsertXForwarded param.Opt[bool] `json:"insert_x_forwarded,omitzero"`
-	// ID of the secret where PKCS12 file is stored for `TERMINATED_HTTPS` or
-	// PROMETHEUS listener
-	SecretID param.Opt[string] `json:"secret_id,omitzero"`
 	// Network CIDRs from which service will be accessible
 	AllowedCidrs []string `json:"allowed_cidrs,omitzero" format:"ipvanynetwork"`
+	// ID of the secret where PKCS12 file is stored for `TERMINATED_HTTPS` or
+	// PROMETHEUS listener
+	//
+	// Any of "".
+	SecretID LoadBalancerListenerNewParamsSecretID `json:"secret_id,omitzero"`
 	// List of secrets IDs containing PKCS12 format certificate/key bundles for
 	// `TERMINATED_HTTPS` or PROMETHEUS listeners
 	SniSecretID []string `json:"sni_secret_id,omitzero" format:"uuid4"`
@@ -316,6 +318,14 @@ func (r LoadBalancerListenerNewParams) MarshalJSON() (data []byte, err error) {
 func (r *LoadBalancerListenerNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// ID of the secret where PKCS12 file is stored for `TERMINATED_HTTPS` or
+// PROMETHEUS listener
+type LoadBalancerListenerNewParamsSecretID string
+
+const (
+	LoadBalancerListenerNewParamsSecretIDEmpty LoadBalancerListenerNewParamsSecretID = ""
+)
 
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerListenerNewParamsUserList struct {
