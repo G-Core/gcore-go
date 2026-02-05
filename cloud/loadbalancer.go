@@ -1767,13 +1767,15 @@ type LoadBalancerNewParamsListener struct {
 	// Add headers X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto to requests.
 	// Only used with HTTP or `TERMINATED_HTTPS` protocols.
 	InsertXForwarded param.Opt[bool] `json:"insert_x_forwarded,omitzero"`
-	// ID of the secret where PKCS12 file is stored for `TERMINATED_HTTPS` or
-	// PROMETHEUS listener
-	SecretID param.Opt[string] `json:"secret_id,omitzero"`
 	// Network CIDRs from which service will be accessible
 	AllowedCidrs []string `json:"allowed_cidrs,omitzero" format:"ipvanynetwork"`
 	// Member pools
 	Pools []LoadBalancerNewParamsListenerPool `json:"pools,omitzero"`
+	// ID of the secret where PKCS12 file is stored for `TERMINATED_HTTPS` or
+	// PROMETHEUS listener
+	//
+	// Any of "".
+	SecretID string `json:"secret_id,omitzero"`
 	// List of secrets IDs containing PKCS12 format certificate/key bundles for
 	// `TERMINATED_HTTPS` or PROMETHEUS listeners
 	SniSecretID []string `json:"sni_secret_id,omitzero" format:"uuid4"`
@@ -1788,6 +1790,12 @@ func (r LoadBalancerNewParamsListener) MarshalJSON() (data []byte, err error) {
 }
 func (r *LoadBalancerNewParamsListener) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[LoadBalancerNewParamsListener](
+		"secret_id", "",
+	)
 }
 
 // The properties LbAlgorithm, Name, Protocol are required.

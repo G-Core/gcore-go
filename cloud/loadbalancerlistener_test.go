@@ -38,7 +38,7 @@ func TestLoadBalancerListenerNewWithOptionalParams(t *testing.T) {
 		ConnectionLimit:      gcore.Int(100000),
 		DefaultPoolID:        gcore.String("00000000-0000-4000-8000-000000000000"),
 		InsertXForwarded:     gcore.Bool(false),
-		SecretID:             gcore.String("f2e734d0-fa2b-42c2-ad33-4c6db5101e00"),
+		SecretID:             cloud.LoadBalancerListenerNewParamsSecretIDEmpty,
 		SniSecretID:          []string{"f2e734d0-fa2b-42c2-ad33-4c6db5101e00", "eb121225-7ded-4ff3-ae1f-599e145dd7cb"},
 		TimeoutClientData:    gcore.Int(50000),
 		TimeoutMemberConnect: gcore.Int(50000),
