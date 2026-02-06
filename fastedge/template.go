@@ -167,7 +167,7 @@ func (r *TemplateParam) UnmarshalJSON(data []byte) error {
 type TemplateParameterResp struct {
 	// Parameter type
 	//
-	// Any of "string", "number", "date", "time", "secret".
+	// Any of "string", "number", "date", "time", "secret", "store".
 	DataType TemplateParameterDataType `json:"data_type,required"`
 	// Is this field mandatory?
 	Mandatory bool `json:"mandatory,required"`
@@ -210,13 +210,14 @@ const (
 	TemplateParameterDataTypeDate   TemplateParameterDataType = "date"
 	TemplateParameterDataTypeTime   TemplateParameterDataType = "time"
 	TemplateParameterDataTypeSecret TemplateParameterDataType = "secret"
+	TemplateParameterDataTypeStore  TemplateParameterDataType = "store"
 )
 
 // The properties DataType, Mandatory, Name are required.
 type TemplateParameter struct {
 	// Parameter type
 	//
-	// Any of "string", "number", "date", "time", "secret".
+	// Any of "string", "number", "date", "time", "secret", "store".
 	DataType TemplateParameterDataType `json:"data_type,omitzero,required"`
 	// Is this field mandatory?
 	Mandatory bool `json:"mandatory,required"`

@@ -27,8 +27,8 @@ func TestK8SListVersions(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.K8S.ListVersions(context.TODO(), cloud.K8SListVersionsParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(7),
 	})
 	if err != nil {
 		var apierr *gcore.Error

@@ -511,6 +511,8 @@ type K8SClusterAddOnsSlurm struct {
 	//
 	// Each Slurm worker node is backed by a Pod scheduled on one of cluster's GPU
 	// nodes.
+	//
+	// Note: Downscaling (reducing worker count) is not supported.
 	WorkerCount int64 `json:"worker_count,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -789,21 +791,21 @@ type K8SClusterKubeconfig struct {
 	ClusterCaCertificate string `json:"cluster_ca_certificate,required"`
 	// Cluster kubeconfig
 	Config string `json:"config,required"`
+	// Kubeconfig creation date
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Kubeconfig expiration date
+	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
 	// Cluster host
 	Host string `json:"host,required"`
-	// Kubeconfig creation date
-	CreatedAt time.Time `json:"created_at,nullable" format:"date-time"`
-	// Kubeconfig expiration date
-	ExpiresAt time.Time `json:"expires_at,nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClientCertificate    respjson.Field
 		ClientKey            respjson.Field
 		ClusterCaCertificate respjson.Field
 		Config               respjson.Field
-		Host                 respjson.Field
 		CreatedAt            respjson.Field
 		ExpiresAt            respjson.Field
+		Host                 respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
 	} `json:"-"`
@@ -836,8 +838,10 @@ func (r *K8SClusterList) UnmarshalJSON(data []byte) error {
 }
 
 type K8SClusterNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// The keypair of the cluster
 	Keypair string `json:"keypair,required"`
 	// The name of the cluster
@@ -1026,6 +1030,8 @@ type K8SClusterNewParamsAddOnsSlurm struct {
 	//
 	// Each Slurm worker node will be backed by a Pod scheduled on one of cluster's GPU
 	// nodes.
+	//
+	// Note: Downscaling (reducing worker count) is not supported.
 	WorkerCount int64 `json:"worker_count,required"`
 	// The Slurm add-on will be enabled in the cluster.
 	//
@@ -1269,8 +1275,10 @@ func (r *K8SClusterNewParamsLogging) UnmarshalJSON(data []byte) error {
 }
 
 type K8SClusterUpdateParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Authentication settings
 	Authentication K8SClusterUpdateParamsAuthentication `json:"authentication,omitzero"`
 	// Cluster autoscaler configuration.
@@ -1448,6 +1456,8 @@ type K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer str
 	//
 	// Each Slurm worker node will be backed by a Pod scheduled on one of cluster's GPU
 	// nodes.
+	//
+	// Note: Downscaling (reducing worker count) is not supported.
 	WorkerCount int64 `json:"worker_count,required"`
 	// The Slurm add-on will be enabled in the cluster.
 	//
@@ -1685,14 +1695,18 @@ func (r *K8SClusterUpdateParamsLogging) UnmarshalJSON(data []byte) error {
 }
 
 type K8SClusterListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type K8SClusterDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Comma separated list of volume IDs to be deleted with the cluster
 	Volumes param.Opt[string] `query:"volumes,omitzero" json:"-"`
 	paramObj
@@ -1707,32 +1721,42 @@ func (r K8SClusterDeleteParams) URLQuery() (v url.Values, err error) {
 }
 
 type K8SClusterGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type K8SClusterGetCertificateParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type K8SClusterGetKubeconfigParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type K8SClusterListVersionsForUpgradeParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type K8SClusterUpgradeParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Target k8s cluster version
 	Version string `json:"version,required"`
 	paramObj

@@ -618,8 +618,10 @@ func (r *K8SClusterPoolQuota) UnmarshalJSON(data []byte) error {
 }
 
 type K8SClusterPoolNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Flavor ID
 	FlavorID string `json:"flavor_id,required"`
 	// Minimum node count
@@ -683,9 +685,12 @@ const (
 )
 
 type K8SClusterPoolUpdateParams struct {
-	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	ClusterName string           `path:"cluster_name,required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Cluster name
+	ClusterName string `path:"cluster_name,required" json:"-"`
 	// Enable/disable auto healing
 	AutoHealingEnabled param.Opt[bool] `json:"auto_healing_enabled,omitzero"`
 	// Maximum node count
@@ -710,15 +715,20 @@ func (r *K8SClusterPoolUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type K8SClusterPoolListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	paramObj
 }
 
 type K8SClusterPoolDeleteParams struct {
-	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	ClusterName string           `path:"cluster_name,required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Cluster name
+	ClusterName string `path:"cluster_name,required" json:"-"`
 	paramObj
 }
 
@@ -764,16 +774,22 @@ const (
 )
 
 type K8SClusterPoolGetParams struct {
-	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	ClusterName string           `path:"cluster_name,required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Cluster name
+	ClusterName string `path:"cluster_name,required" json:"-"`
 	paramObj
 }
 
 type K8SClusterPoolResizeParams struct {
-	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	ClusterName string           `path:"cluster_name,required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Cluster name
+	ClusterName string `path:"cluster_name,required" json:"-"`
 	// Target node count
 	NodeCount int64 `json:"node_count,required"`
 	paramObj

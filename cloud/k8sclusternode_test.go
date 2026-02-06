@@ -28,11 +28,11 @@ func TestK8SClusterNodeListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.Nodes.List(
 		context.TODO(),
-		"cluster_name",
+		"my-cluster",
 		cloud.K8SClusterNodeListParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			WithDDOS:  gcore.Bool(true),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
+			WithDDOS:  gcore.Bool(false),
 		},
 	)
 	if err != nil {
@@ -58,11 +58,11 @@ func TestK8SClusterNodeDelete(t *testing.T) {
 	)
 	err := client.Cloud.K8S.Clusters.Nodes.Delete(
 		context.TODO(),
-		"instance_id",
+		"550e8400-e29b-41d4-a716-446655440000",
 		cloud.K8SClusterNodeDeleteParams{
-			ProjectID:   gcore.Int(0),
-			RegionID:    gcore.Int(0),
-			ClusterName: "cluster_name",
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(7),
+			ClusterName: "my-cluster",
 		},
 	)
 	if err != nil {

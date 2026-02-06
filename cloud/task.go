@@ -169,9 +169,10 @@ type Task struct {
 	Data any `json:"data"`
 	// Task detailed state that is more specific to task type
 	//
-	// Any of "CLUSTER_CLEAN_UP", "CLUSTER_RESIZE", "CLUSTER_RESUME",
-	// "CLUSTER_SUSPEND", "ERROR", "FINISHED", "IPU_SERVERS", "NETWORK",
-	// "POPLAR_SERVERS", "POST_DEPLOY_SETUP", "VIPU_CONTROLLER".
+	// Any of "CLUSTER_CLEAN_UP", "CLUSTER_REBUILD", "CLUSTER_RESIZE",
+	// "CLUSTER_RESUME", "CLUSTER_SERVER_REBUILD", "CLUSTER_SUSPEND", "ERROR",
+	// "FINISHED", "IPU_SERVERS", "NETWORK", "POPLAR_SERVERS", "POST_DEPLOY_SETUP",
+	// "VIPU_CONTROLLER".
 	DetailedState TaskDetailedState `json:"detailed_state,nullable"`
 	// The error value
 	Error string `json:"error,nullable"`
@@ -358,17 +359,19 @@ func (r *TaskCreatedResources) UnmarshalJSON(data []byte) error {
 type TaskDetailedState string
 
 const (
-	TaskDetailedStateClusterCleanUp  TaskDetailedState = "CLUSTER_CLEAN_UP"
-	TaskDetailedStateClusterResize   TaskDetailedState = "CLUSTER_RESIZE"
-	TaskDetailedStateClusterResume   TaskDetailedState = "CLUSTER_RESUME"
-	TaskDetailedStateClusterSuspend  TaskDetailedState = "CLUSTER_SUSPEND"
-	TaskDetailedStateError           TaskDetailedState = "ERROR"
-	TaskDetailedStateFinished        TaskDetailedState = "FINISHED"
-	TaskDetailedStateIpuServers      TaskDetailedState = "IPU_SERVERS"
-	TaskDetailedStateNetwork         TaskDetailedState = "NETWORK"
-	TaskDetailedStatePoplarServers   TaskDetailedState = "POPLAR_SERVERS"
-	TaskDetailedStatePostDeploySetup TaskDetailedState = "POST_DEPLOY_SETUP"
-	TaskDetailedStateVipuController  TaskDetailedState = "VIPU_CONTROLLER"
+	TaskDetailedStateClusterCleanUp       TaskDetailedState = "CLUSTER_CLEAN_UP"
+	TaskDetailedStateClusterRebuild       TaskDetailedState = "CLUSTER_REBUILD"
+	TaskDetailedStateClusterResize        TaskDetailedState = "CLUSTER_RESIZE"
+	TaskDetailedStateClusterResume        TaskDetailedState = "CLUSTER_RESUME"
+	TaskDetailedStateClusterServerRebuild TaskDetailedState = "CLUSTER_SERVER_REBUILD"
+	TaskDetailedStateClusterSuspend       TaskDetailedState = "CLUSTER_SUSPEND"
+	TaskDetailedStateError                TaskDetailedState = "ERROR"
+	TaskDetailedStateFinished             TaskDetailedState = "FINISHED"
+	TaskDetailedStateIpuServers           TaskDetailedState = "IPU_SERVERS"
+	TaskDetailedStateNetwork              TaskDetailedState = "NETWORK"
+	TaskDetailedStatePoplarServers        TaskDetailedState = "POPLAR_SERVERS"
+	TaskDetailedStatePostDeploySetup      TaskDetailedState = "POST_DEPLOY_SETUP"
+	TaskDetailedStateVipuController       TaskDetailedState = "VIPU_CONTROLLER"
 )
 
 type TaskListParams struct {
@@ -412,7 +415,8 @@ type TaskListParams struct {
 	// 'hard_reboot_gpu_virtual_server', 'hard_reboot_vm', 'patch_caas_container',
 	// 'patch_dbaas_postgres_cluster', 'patch_faas_function', 'patch_faas_namespace',
 	// 'patch_lblistener', 'patch_lbpool', 'put_into_server_group', 'put_l7rule',
-	// 'rebuild_bm', 'rebuild_gpu_baremetal_node', 'remove_from_server_group',
+	// 'rebuild_bm', 'rebuild_gpu_baremetal_cluster', 'rebuild_gpu_baremetal_node',
+	// 'rebuild_gpu_baremetal_server', 'remove_from_server_group',
 	// 'replace_lbmetadata', 'resize_k8s_cluster_v2', 'resize_loadbalancer',
 	// 'resize_vm', 'resume_vm', 'revert_volume', 'soft_reboot_gpu_baremetal_server',
 	// 'soft_reboot_gpu_virtual_cluster', 'soft_reboot_gpu_virtual_server',
@@ -422,9 +426,10 @@ type TaskListParams struct {
 	// 'sync_private_flavors', 'update_ddos_profile', 'update_floating_ip',
 	// 'update_inference_application', 'update_inference_instance',
 	// 'update_k8s_cluster_v2', 'update_l7policy', 'update_lbmetadata',
-	// 'update_port_allowed_address_pairs', 'update_router', 'update_security_group',
-	// 'update_sfs', 'update_tags_gpu_virtual_cluster', 'upgrade_k8s_cluster_v2',
-	// 'upscale_ai_cluster_gpu', 'upscale_gpu_virtual_cluster']
+	// 'update_loadbalancer', 'update_port_allowed_address_pairs', 'update_router',
+	// 'update_security_group', 'update_sfs', 'update_tags_gpu_virtual_cluster',
+	// 'upgrade_k8s_cluster_v2', 'upscale_ai_cluster_gpu',
+	// 'upscale_gpu_virtual_cluster']
 	TaskType param.Opt[string] `query:"task_type,omitzero" json:"-"`
 	// ISO formatted datetime string. Filter the tasks by creation date less than or
 	// equal to `to_timestamp`

@@ -114,6 +114,10 @@ type LoadBalancerPoolHealthMonitorNewParams struct {
 	// URL Path. Defaults to '/'. Can only be used together with `HTTP` or `HTTPS`
 	// health monitor type.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. Defaults to true.
+	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Number of failures before the member is switched to ERROR state.
 	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
 	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor

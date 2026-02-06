@@ -1629,6 +1629,10 @@ func (r *LaasIndexRetentionPolicyParam) UnmarshalJSON(data []byte) error {
 type LoadBalancer struct {
 	// Load balancer ID
 	ID string `json:"id,required" format:"uuid4"`
+	// Administrative state of the resource. When set to true, the resource is enabled
+	// and operational. When set to false, the resource is disabled and will not
+	// process traffic. Defaults to true.
+	AdminStateUp bool `json:"admin_state_up,required"`
 	// Datetime when the load balancer was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Load balancer name
@@ -1694,6 +1698,7 @@ type LoadBalancer struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
+		AdminStateUp          respjson.Field
 		CreatedAt             respjson.Field
 		Name                  respjson.Field
 		OperatingStatus       respjson.Field

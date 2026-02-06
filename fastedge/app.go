@@ -143,8 +143,8 @@ type App struct {
 	// 4 - daily call limit exceeded
 	// 5 - suspended
 	Status int64 `json:"status"`
-	// KV stores for the app
-	Stores map[string]int64 `json:"stores"`
+	// Application edge stores
+	Stores map[string]AppStore `json:"stores"`
 	// Template ID
 	Template int64 `json:"template"`
 	// Template name
@@ -223,6 +223,30 @@ func (r *AppSecret) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Application stores
+type AppStore struct {
+	// The identifier of the store
+	ID int64 `json:"id,required"`
+	// The name of the store
+	Name string `json:"name,required"`
+	// A description of the store
+	Comment string `json:"comment"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		Comment     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AppStore) RawJSON() string { return r.JSON.raw }
+func (r *AppStore) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AppParam struct {
 	// Binary ID
 	Binary param.Opt[int64] `json:"binary,omitzero"`
@@ -252,8 +276,8 @@ type AppParam struct {
 	RspHeaders map[string]string `json:"rsp_headers,omitzero"`
 	// Application secrets
 	Secrets map[string]AppSecretParam `json:"secrets,omitzero"`
-	// KV stores for the app
-	Stores map[string]int64 `json:"stores,omitzero"`
+	// Application edge stores
+	Stores map[string]AppStoreParam `json:"stores,omitzero"`
 	paramObj
 }
 
@@ -279,6 +303,23 @@ func (r AppSecretParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AppSecretParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Application stores
+//
+// The properties ID, Name are required.
+type AppStoreParam struct {
+	// The identifier of the store
+	ID int64 `json:"id,required"`
+	paramObj
+}
+
+func (r AppStoreParam) MarshalJSON() (data []byte, err error) {
+	type shadow AppStoreParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AppStoreParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

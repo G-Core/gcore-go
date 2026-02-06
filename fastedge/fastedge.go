@@ -55,16 +55,10 @@ func (r *FastedgeService) GetAccountOverview(ctx context.Context, opts ...option
 type Client struct {
 	// Actual allowed number of apps
 	AppCount int64 `json:"app_count,required"`
-	// Max allowed number of apps
-	AppLimit int64 `json:"app_limit,required"`
 	// Actual number of calls for all apps during the current day (UTC)
 	DailyConsumption int64 `json:"daily_consumption,required"`
-	// Max allowed calls for all apps during a day (UTC)
-	DailyLimit int64 `json:"daily_limit,required"`
 	// Actual number of calls for all apps during the current hour
 	HourlyConsumption int64 `json:"hourly_consumption,required"`
-	// Max allowed calls for all apps during an hour
-	HourlyLimit int64 `json:"hourly_limit,required"`
 	// Actual number of calls for all apps during the current calendar month (UTC)
 	MonthlyConsumption int64 `json:"monthly_consumption,required"`
 	// List of enabled networks
@@ -83,11 +77,8 @@ type Client struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AppCount           respjson.Field
-		AppLimit           respjson.Field
 		DailyConsumption   respjson.Field
-		DailyLimit         respjson.Field
 		HourlyConsumption  respjson.Field
-		HourlyLimit        respjson.Field
 		MonthlyConsumption respjson.Field
 		Networks           respjson.Field
 		PlanID             respjson.Field

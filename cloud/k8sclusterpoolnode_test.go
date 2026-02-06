@@ -28,12 +28,12 @@ func TestK8SClusterPoolNodeListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.K8S.Clusters.Pools.Nodes.List(
 		context.TODO(),
-		"pool_name",
+		"my-pool",
 		cloud.K8SClusterPoolNodeListParams{
-			ProjectID:   gcore.Int(0),
-			RegionID:    gcore.Int(0),
-			ClusterName: "cluster_name",
-			WithDDOS:    gcore.Bool(true),
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(7),
+			ClusterName: "my-cluster",
+			WithDDOS:    gcore.Bool(false),
 		},
 	)
 	if err != nil {
@@ -59,12 +59,12 @@ func TestK8SClusterPoolNodeDelete(t *testing.T) {
 	)
 	err := client.Cloud.K8S.Clusters.Pools.Nodes.Delete(
 		context.TODO(),
-		"instance_id",
+		"550e8400-e29b-41d4-a716-446655440000",
 		cloud.K8SClusterPoolNodeDeleteParams{
-			ProjectID:   gcore.Int(0),
-			RegionID:    gcore.Int(0),
-			ClusterName: "cluster_name",
-			PoolName:    "pool_name",
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(7),
+			ClusterName: "my-cluster",
+			PoolName:    "my-pool",
 		},
 	)
 	if err != nil {

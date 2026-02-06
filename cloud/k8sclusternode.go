@@ -94,8 +94,10 @@ func (r *K8SClusterNodeService) Delete(ctx context.Context, instanceID string, b
 }
 
 type K8SClusterNodeListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
 	// Include DDoS profile information if set to true. Default is false.
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
 	paramObj
@@ -111,8 +113,11 @@ func (r K8SClusterNodeListParams) URLQuery() (v url.Values, err error) {
 }
 
 type K8SClusterNodeDeleteParams struct {
-	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	ClusterName string           `path:"cluster_name,required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	// Cluster name
+	ClusterName string `path:"cluster_name,required" json:"-"`
 	paramObj
 }
