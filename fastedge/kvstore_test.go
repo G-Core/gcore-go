@@ -28,6 +28,7 @@ func TestKvStoreNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Fastedge.KvStores.New(context.TODO(), fastedge.KvStoreNewParams{
 		KvStore: fastedge.KvStoreParam{
+			Name: "name",
 			Byod: fastedge.KvStoreByodParam{
 				Prefix: "prefix",
 				URL:    "url",
@@ -57,7 +58,9 @@ func TestKvStoreListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Fastedge.KvStores.List(context.TODO(), fastedge.KvStoreListParams{
-		AppID: gcore.Int(0),
+		AppID:  gcore.Int(0),
+		Limit:  gcore.Int(0),
+		Offset: gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -129,6 +132,7 @@ func TestKvStoreReplaceWithOptionalParams(t *testing.T) {
 		0,
 		fastedge.KvStoreReplaceParams{
 			KvStore: fastedge.KvStoreParam{
+				Name: "name",
 				Byod: fastedge.KvStoreByodParam{
 					Prefix: "prefix",
 					URL:    "url",
