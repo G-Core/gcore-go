@@ -107,7 +107,7 @@ type DurationStats struct {
 	Perc75 int64 `json:"perc75,required"`
 	// 90% percentile duration in usec
 	Perc90 int64 `json:"perc90,required"`
-	// Beginning ot reporting slot
+	// Beginning of reporting slot
 	Time time.Time `json:"time,required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

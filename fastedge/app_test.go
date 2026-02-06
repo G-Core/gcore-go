@@ -47,9 +47,10 @@ func TestAppNewWithOptionalParams(t *testing.T) {
 				},
 			},
 			Status: gcore.Int(0),
-			Stores: map[string]int64{
-				"country_allow": 1,
-				"ip_block":      2,
+			Stores: map[string]fastedge.AppStoreParam{
+				"foo": {
+					ID: 0,
+				},
 			},
 			Template: gcore.Int(0),
 		},
@@ -99,9 +100,10 @@ func TestAppUpdateWithOptionalParams(t *testing.T) {
 					},
 				},
 				Status: gcore.Int(0),
-				Stores: map[string]int64{
-					"country_allow": 1,
-					"ip_block":      2,
+				Stores: map[string]fastedge.AppStoreParam{
+					"foo": {
+						ID: 0,
+					},
 				},
 				Template: gcore.Int(0),
 			},
@@ -229,9 +231,10 @@ func TestAppReplaceWithOptionalParams(t *testing.T) {
 						},
 					},
 					Status: gcore.Int(0),
-					Stores: map[string]int64{
-						"country_allow": 1,
-						"ip_block":      2,
+					Stores: map[string]fastedge.AppStoreParam{
+						"foo": {
+							ID: 0,
+						},
 					},
 					Template: gcore.Int(0),
 				},
