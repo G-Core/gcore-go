@@ -138,9 +138,11 @@ func (r *DomainStatisticService) GetRequestsSeriesAutoPaging(ctx context.Context
 	return pagination.NewOffsetPageAutoPager(r.GetRequestsSeries(ctx, domainID, query, opts...))
 }
 
-// Retrieves a comprehensive report on a domain's traffic statistics based on
-// Clickhouse. The report includes details such as API requests, blocked events,
-// error counts, and many more traffic-related metrics.
+// Deprecated. Use
+// [GET /v1/analytics/traffic](/docs/api-reference/waap/analytics/get-traffic-data)
+// instead.
+//
+// Deprecated: deprecated
 func (r *DomainStatisticService) GetTrafficSeries(ctx context.Context, domainID int64, query DomainStatisticGetTrafficSeriesParams, opts ...option.RequestOption) (res *[]WaapTrafficMetrics, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/traffic", domainID)
@@ -628,6 +630,14 @@ type WaapRequestDetails struct {
 	TrafficTypes []string `json:"traffic_types,required"`
 	// User agent
 	UserAgent WaapRequestDetailsUserAgent `json:"user_agent,required"`
+	// The decision made for processing the request through the WAAP.
+	//
+	// Any of "passed", "allowed", "monitored", "blocked", "".
+	Decision WaapRequestDetailsDecision `json:"decision"`
+	// An optional action that may be applied in addition to the primary decision.
+	//
+	// Any of "captcha", "challenge", "".
+	OptionalAction WaapRequestDetailsOptionalAction `json:"optional_action"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -656,6 +666,8 @@ type WaapRequestDetails struct {
 		SessionRequestCount respjson.Field
 		TrafficTypes        respjson.Field
 		UserAgent           respjson.Field
+		Decision            respjson.Field
+		OptionalAction      respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -835,6 +847,26 @@ func (r *WaapRequestDetailsUserAgent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The decision made for processing the request through the WAAP.
+type WaapRequestDetailsDecision string
+
+const (
+	WaapRequestDetailsDecisionPassed    WaapRequestDetailsDecision = "passed"
+	WaapRequestDetailsDecisionAllowed   WaapRequestDetailsDecision = "allowed"
+	WaapRequestDetailsDecisionMonitored WaapRequestDetailsDecision = "monitored"
+	WaapRequestDetailsDecisionBlocked   WaapRequestDetailsDecision = "blocked"
+	WaapRequestDetailsDecisionEmpty     WaapRequestDetailsDecision = ""
+)
+
+// An optional action that may be applied in addition to the primary decision.
+type WaapRequestDetailsOptionalAction string
+
+const (
+	WaapRequestDetailsOptionalActionCaptcha   WaapRequestDetailsOptionalAction = "captcha"
+	WaapRequestDetailsOptionalActionChallenge WaapRequestDetailsOptionalAction = "challenge"
+	WaapRequestDetailsOptionalActionEmpty     WaapRequestDetailsOptionalAction = ""
+)
+
 // Request summary used when displaying a list of requests
 type WaapRequestSummary struct {
 	// Request's unique id
@@ -845,10 +877,20 @@ type WaapRequestSummary struct {
 	ClientIP string `json:"client_ip,required"`
 	// Country code
 	Country string `json:"country,required"`
+	// The decision made for processing the request through the WAAP.
+	//
+	// Any of "passed", "allowed", "monitored", "blocked", "".
+	Decision WaapRequestSummaryDecision `json:"decision,required"`
 	// Domain name
 	Domain string `json:"domain,required"`
+	// Domain ID
+	DomainID int64 `json:"domain_id,required"`
 	// HTTP method
 	Method string `json:"method,required"`
+	// An optional action that may be applied in addition to the primary decision.
+	//
+	// Any of "captcha", "challenge", "".
+	OptionalAction WaapRequestSummaryOptionalAction `json:"optional_action,required"`
 	// Organization
 	Organization string `json:"organization,required"`
 	// Request path
@@ -877,8 +919,11 @@ type WaapRequestSummary struct {
 		Action          respjson.Field
 		ClientIP        respjson.Field
 		Country         respjson.Field
+		Decision        respjson.Field
 		Domain          respjson.Field
+		DomainID        respjson.Field
 		Method          respjson.Field
+		OptionalAction  respjson.Field
 		Organization    respjson.Field
 		Path            respjson.Field
 		ReferenceID     respjson.Field
@@ -900,6 +945,26 @@ func (r WaapRequestSummary) RawJSON() string { return r.JSON.raw }
 func (r *WaapRequestSummary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// The decision made for processing the request through the WAAP.
+type WaapRequestSummaryDecision string
+
+const (
+	WaapRequestSummaryDecisionPassed    WaapRequestSummaryDecision = "passed"
+	WaapRequestSummaryDecisionAllowed   WaapRequestSummaryDecision = "allowed"
+	WaapRequestSummaryDecisionMonitored WaapRequestSummaryDecision = "monitored"
+	WaapRequestSummaryDecisionBlocked   WaapRequestSummaryDecision = "blocked"
+	WaapRequestSummaryDecisionEmpty     WaapRequestSummaryDecision = ""
+)
+
+// An optional action that may be applied in addition to the primary decision.
+type WaapRequestSummaryOptionalAction string
+
+const (
+	WaapRequestSummaryOptionalActionCaptcha   WaapRequestSummaryOptionalAction = "captcha"
+	WaapRequestSummaryOptionalActionChallenge WaapRequestSummaryOptionalAction = "challenge"
+	WaapRequestSummaryOptionalActionEmpty     WaapRequestSummaryOptionalAction = ""
+)
 
 type WaapRequestSummaryResult string
 
