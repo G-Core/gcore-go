@@ -197,10 +197,10 @@ func (r *FloatingIPService) Delete(ctx context.Context, floatingIPID string, bod
 	return
 }
 
-// Assign floating IP to instance or loadbalancer
+// Assign floating IP to instance or loadbalancer.
 //
-// **Deprecated**: Use PATCH
-// /v2/floatingips/{`project_id`}/{`region_id`}/{`floating_ip_id`} instead
+// **Deprecated**: Use
+// `PATCH /v2/floatingips/{project_id}/{region_id}/{floating_ip_id}` instead.
 //
 // Deprecated: deprecated
 func (r *FloatingIPService) Assign(ctx context.Context, floatingIPID string, params FloatingIPAssignParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
@@ -254,8 +254,8 @@ func (r *FloatingIPService) Get(ctx context.Context, floatingIPID string, query 
 	return
 }
 
-// **Deprecated**: Use PATCH
-// /v2/floatingips/{`project_id`}/{`region_id`}/{`floating_ip_id`} instead
+// **Deprecated**: Use
+// `PATCH /v2/floatingips/{project_id}/{region_id}/{floating_ip_id}` instead.
 //
 // Deprecated: deprecated
 func (r *FloatingIPService) Unassign(ctx context.Context, floatingIPID string, body FloatingIPUnassignParams, opts ...option.RequestOption) (res *FloatingIP, err error) {
