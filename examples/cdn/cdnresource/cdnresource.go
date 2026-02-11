@@ -10,6 +10,7 @@ import (
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cdn"
+	"github.com/G-Core/gcore-go/packages/param"
 )
 
 func main() {
@@ -40,7 +41,7 @@ func createCDNResource(client *gcore.Client, originGroupID int64) *cdn.CDNResour
 
 	params := cdn.CDNResourceNewParams{
 		Cname:       cname,
-		OriginGroup: originGroupID,
+		OriginGroup: param.NewOpt(originGroupID),
 		Active:      gcore.Bool(true),
 	}
 
