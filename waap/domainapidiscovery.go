@@ -229,11 +229,11 @@ type DomainAPIDiscoveryListScanResultsParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Number of items to skip
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// The different statuses a task result can have
+	// Filter by the status of the scan
 	//
 	// Any of "SUCCESS", "FAILURE", "IN_PROGRESS".
 	Status DomainAPIDiscoveryListScanResultsParamsStatus `query:"status,omitzero" json:"-"`
-	// The different types of scans that can be performed
+	// Filter by the path of the scan type
 	//
 	// Any of "TRAFFIC_SCAN", "API_DESCRIPTION_FILE_SCAN".
 	Type DomainAPIDiscoveryListScanResultsParamsType `query:"type,omitzero" json:"-"`
@@ -272,7 +272,7 @@ const (
 	DomainAPIDiscoveryListScanResultsParamsOrderingMinusMessage   DomainAPIDiscoveryListScanResultsParamsOrdering = "-message"
 )
 
-// The different statuses a task result can have
+// Filter by the status of the scan
 type DomainAPIDiscoveryListScanResultsParamsStatus string
 
 const (
@@ -281,7 +281,7 @@ const (
 	DomainAPIDiscoveryListScanResultsParamsStatusInProgress DomainAPIDiscoveryListScanResultsParamsStatus = "IN_PROGRESS"
 )
 
-// The different types of scans that can be performed
+// Filter by the path of the scan type
 type DomainAPIDiscoveryListScanResultsParamsType string
 
 const (
