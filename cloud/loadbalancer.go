@@ -80,6 +80,11 @@ func (r *LoadBalancerService) New(ctx context.Context, params LoadBalancerNewPar
 // type and/or modify load balancer tags. The request will only process the fields
 // that are provided in the request body. Any fields that are not included will
 // remain unchanged.
+//
+// Please use PATCH `/v2/loadbalancers/{project_id}/{region_id}/{load_balancer_id}`
+// instead
+//
+// Deprecated: deprecated
 func (r *LoadBalancerService) Update(ctx context.Context, loadBalancerID string, params LoadBalancerUpdateParams, opts ...option.RequestOption) (res *LoadBalancer, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

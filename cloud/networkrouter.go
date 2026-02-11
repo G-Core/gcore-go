@@ -102,8 +102,10 @@ func (r *NetworkRouterService) NewAndPoll(ctx context.Context, params NetworkRou
 	return r.Get(ctx, resourceID, getParams, opts...)
 }
 
-// Update the configuration of an existing router. **Deprecated**: Use PATCH
-// /v2/routers/{`project_id`}/{`region_id`}/{`router_id`}
+// Update the configuration of an existing router. **Deprecated**: Use
+// `PATCH /v2/routers/{project_id}/{region_id}/{router_id}` instead.
+//
+// Deprecated: deprecated
 func (r *NetworkRouterService) Update(ctx context.Context, routerID string, params NetworkRouterUpdateParams, opts ...option.RequestOption) (res *Router, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
