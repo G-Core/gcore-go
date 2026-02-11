@@ -227,15 +227,15 @@ func (r *AppSecret) UnmarshalJSON(data []byte) error {
 type AppStore struct {
 	// The identifier of the store
 	ID int64 `json:"id,required"`
-	// The name of the store
-	Name string `json:"name,required"`
 	// A description of the store
 	Comment string `json:"comment"`
+	// The name of the store
+	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		Name        respjson.Field
 		Comment     respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -308,7 +308,7 @@ func (r *AppSecretParam) UnmarshalJSON(data []byte) error {
 
 // Application stores
 //
-// The properties ID, Name are required.
+// The property ID is required.
 type AppStoreParam struct {
 	// The identifier of the store
 	ID int64 `json:"id,required"`
