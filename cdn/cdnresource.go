@@ -234,8 +234,6 @@ type CDNResource struct {
 	// inherit its value from the global account settings.
 	Options CDNResourceOptions `json:"options"`
 	// Origin group ID with which the CDN resource is associated.
-	//
-	// You can use either the `origin` or `originGroup` parameter in the request.
 	OriginGroup int64 `json:"originGroup"`
 	// Origin group name.
 	OriginGroupName string `json:"originGroup_name"`
@@ -2857,14 +2855,6 @@ type CDNResourceNewParams struct {
 	//
 	// Delivery domains should be added to your DNS settings.
 	Cname string `json:"cname,required"`
-	// IP address or domain name of the origin and the port, if custom port is used.
-	//
-	// You can use either the `origin` or `originGroup` parameter in the request.
-	Origin string `json:"origin,required"`
-	// Origin group ID with which the CDN resource is associated.
-	//
-	// You can use either the `origin` or `originGroup` parameter in the request.
-	OriginGroup int64 `json:"originGroup,required"`
 	// CDN resource name.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// ID of the main CDN resource which has a shared caching zone with a reserve CDN
@@ -2895,6 +2885,16 @@ type CDNResourceNewParams struct {
 	Active param.Opt[bool] `json:"active,omitzero"`
 	// Optional comment describing the CDN resource.
 	Description param.Opt[string] `json:"description,omitzero"`
+	// IP address or domain name of the origin and the port, if custom port is used.
+	//
+	// Exactly one of `origin` or `originGroup` must be provided during resource
+	// creation.
+	Origin param.Opt[string] `json:"origin,omitzero"`
+	// Origin group ID with which the CDN resource is associated.
+	//
+	// Exactly one of `origin` or `originGroup` must be provided during resource
+	// creation.
+	OriginGroup param.Opt[int64] `json:"originGroup,omitzero"`
 	// Enables or disables SSL certificate validation of the origin server before
 	// completing any connection.
 	//
@@ -5240,8 +5240,6 @@ type CDNResourceUpdateParams struct {
 	// Optional comment describing the CDN resource.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Origin group ID with which the CDN resource is associated.
-	//
-	// You can use either the `origin` or `originGroup` parameter in the request.
 	OriginGroup param.Opt[int64] `json:"originGroup,omitzero"`
 	// Enables or disables SSL certificate validation of the origin server before
 	// completing any connection.
@@ -7771,8 +7769,6 @@ func (r *CDNResourcePurgeParamsBodyPurgeAllCache) UnmarshalJSON(data []byte) err
 
 type CDNResourceReplaceParams struct {
 	// Origin group ID with which the CDN resource is associated.
-	//
-	// You can use either the `origin` or `originGroup` parameter in the request.
 	OriginGroup int64 `json:"originGroup,required"`
 	// CDN resource name.
 	Name param.Opt[string] `json:"name,omitzero"`

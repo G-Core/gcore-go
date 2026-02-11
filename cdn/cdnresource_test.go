@@ -29,8 +29,6 @@ func TestCDNResourceNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.CDN.CDNResources.New(context.TODO(), cdn.CDNResourceNewParams{
 		Cname:       "cdn.site.com",
-		Origin:      "example.com",
-		OriginGroup: 132,
 		Active:      gcore.Bool(true),
 		Description: gcore.String("My resource"),
 		Name:        gcore.String("Resource for images"),
@@ -310,6 +308,8 @@ func TestCDNResourceNewWithOptionalParams(t *testing.T) {
 				Value:   true,
 			},
 		},
+		Origin:               gcore.String("example.com"),
+		OriginGroup:          gcore.Int(132),
 		OriginProtocol:       cdn.CDNResourceNewParamsOriginProtocolHTTPS,
 		PrimaryResource:      param.Null[int64](),
 		ProxySslCa:           param.Null[int64](),
