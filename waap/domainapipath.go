@@ -301,17 +301,17 @@ type DomainAPIPathListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Number of items to skip
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// The different HTTP schemes an API path can have
+	// Filter by the HTTP version of the API path
 	//
 	// Any of "HTTP", "HTTPS".
 	HTTPScheme DomainAPIPathListParamsHTTPScheme `query:"http_scheme,omitzero" json:"-"`
 	// Filter by the path ID
 	IDs []string `query:"ids,omitzero" format:"uuid" json:"-"`
-	// The different methods an API path can have
+	// Filter by the API RESTful method
 	//
 	// Any of "GET", "POST", "PUT", "PATCH", "DELETE", "TRACE", "HEAD", "OPTIONS".
 	Method DomainAPIPathListParamsMethod `query:"method,omitzero" json:"-"`
-	// The different sources an API path can have
+	// Filter by the source of the discovered API
 	//
 	// Any of "API_DESCRIPTION_FILE", "TRAFFIC_SCAN", "USER_DEFINED".
 	Source DomainAPIPathListParamsSource `query:"source,omitzero" json:"-"`
@@ -337,7 +337,7 @@ func (r DomainAPIPathListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// The different HTTP schemes an API path can have
+// Filter by the HTTP version of the API path
 type DomainAPIPathListParamsHTTPScheme string
 
 const (
@@ -345,7 +345,7 @@ const (
 	DomainAPIPathListParamsHTTPSchemeHTTPS DomainAPIPathListParamsHTTPScheme = "HTTPS"
 )
 
-// The different methods an API path can have
+// Filter by the API RESTful method
 type DomainAPIPathListParamsMethod string
 
 const (
@@ -383,7 +383,7 @@ const (
 	DomainAPIPathListParamsOrderingMinusSource        DomainAPIPathListParamsOrdering = "-source"
 )
 
-// The different sources an API path can have
+// Filter by the source of the discovered API
 type DomainAPIPathListParamsSource string
 
 const (
