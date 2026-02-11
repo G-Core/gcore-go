@@ -104,7 +104,7 @@ type InsightListTypesParams struct {
 	InsightFrequency param.Opt[int64] `query:"insight_frequency,omitzero" json:"-"`
 	// Filter by the name of the insight type
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
-	// The slug of the insight type
+	// Filter by the slug of the insight type
 	Slug param.Opt[string] `query:"slug,omitzero" json:"-"`
 	// Number of items to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
