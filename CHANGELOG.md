@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.32.0 (2026-02-11)
+
+Full Changelog: [v0.31.0...v0.32.0](https://github.com/G-Core/gcore-go/compare/v0.31.0...v0.32.0)
+
+### Features
+
+* **api:** aggregated API specs update ([43d8e07](https://github.com/G-Core/gcore-go/commit/43d8e0712a09f72c152efb4c143662e2aa19db68))
+* **api:** aggregated API specs update ([2ed4eeb](https://github.com/G-Core/gcore-go/commit/2ed4eeb037a528be15a380244538b4f6455fa2e7))
+* **api:** aggregated API specs update ([6c723d4](https://github.com/G-Core/gcore-go/commit/6c723d4bf0354fe7af93e615a2d4d26f641022c4))
+* **api:** aggregated API specs update ([da2aaac](https://github.com/G-Core/gcore-go/commit/da2aaac9488e86c0812f63cdb520a5dd116e3716))
+* **api:** aggregated API specs update ([825af96](https://github.com/G-Core/gcore-go/commit/825af969066b64eac3ca19abdb0edc803929517c))
+* **api:** aggregated API specs update ([ffe5a60](https://github.com/G-Core/gcore-go/commit/ffe5a60a664070332e7874383d222ce3f88e4d08))
+* **api:** aggregated API specs update ([0d7e3ab](https://github.com/G-Core/gcore-go/commit/0d7e3abfe6a1f6ba93283fa65d426a1582e61eed))
+* **cdn:** add DeactivateAndDelete method to CDNResourceService ([1b71860](https://github.com/G-Core/gcore-go/commit/1b71860348b27ad9b2e829e40e47bef2086fe1cf))
+
+
+### Bug Fixes
+
+* **cdn:** use param.NewOpt for CDN resource OriginGroup field ([#190](https://github.com/G-Core/gcore-go/issues/190)) ([37f2c5d](https://github.com/G-Core/gcore-go/commit/37f2c5dc10804cfeed12f959c1b933f0cae1bf45))
+* **encoder:** correctly serialize NullStruct ([7a17796](https://github.com/G-Core/gcore-go/commit/7a177960b0b0311d93f5ca7816753b30ea29c4b9))
+* **fastedge:** remove readOnly name from app_store required fields ([191b1cc](https://github.com/G-Core/gcore-go/commit/191b1cc0035bef155d41826c89c8a9c71875c233))
+* **types:** correctly define false enum ([c8610c6](https://github.com/G-Core/gcore-go/commit/c8610c69b6ab1321b6e14e0094a17851b30383e8))
+
+
+### Chores
+
+* **api:** minor updates ([3358ac1](https://github.com/G-Core/gcore-go/commit/3358ac1e8f9a0e6e096bcd558f3e38911a2bb0e3))
+
+
+### Documentation
+
+* split `api.md` by standalone resources ([b002df6](https://github.com/G-Core/gcore-go/commit/b002df6ec5f9cb45568832c8fe6c51395e92a959))
+
 ## 0.31.0 (2026-01-30)
 
 Full Changelog: [v0.30.0...v0.31.0](https://github.com/G-Core/gcore-go/compare/v0.30.0...v0.31.0)
