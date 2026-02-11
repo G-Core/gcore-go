@@ -1152,7 +1152,7 @@ type CDNResourceOptionsFastedge struct {
 	// body as soon as CDN receives incoming HTTP request.
 	OnRequestBody CDNResourceOptionsFastedgeOnRequestBody `json:"on_request_body"`
 	// Allows to configure FastEdge application that will be called to handle request
-	// headers as soon as CDN receives incoming HTTP request.
+	// headers as soon as CDN receives incoming HTTP request, **before cache**.
 	OnRequestHeaders CDNResourceOptionsFastedgeOnRequestHeaders `json:"on_request_headers"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// body before CDN sends the HTTP response.
@@ -1211,7 +1211,7 @@ func (r *CDNResourceOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) err
 }
 
 // Allows to configure FastEdge application that will be called to handle request
-// headers as soon as CDN receives incoming HTTP request.
+// headers as soon as CDN receives incoming HTTP request, **before cache**.
 type CDNResourceOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id,required"`
@@ -3618,7 +3618,7 @@ type CDNResourceNewParamsOptionsFastedge struct {
 	// body as soon as CDN receives incoming HTTP request.
 	OnRequestBody CDNResourceNewParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
 	// Allows to configure FastEdge application that will be called to handle request
-	// headers as soon as CDN receives incoming HTTP request.
+	// headers as soon as CDN receives incoming HTTP request, **before cache**.
 	OnRequestHeaders CDNResourceNewParamsOptionsFastedgeOnRequestHeaders `json:"on_request_headers,omitzero"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// body before CDN sends the HTTP response.
@@ -3665,7 +3665,7 @@ func (r *CDNResourceNewParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(data []
 }
 
 // Allows to configure FastEdge application that will be called to handle request
-// headers as soon as CDN receives incoming HTTP request.
+// headers as soon as CDN receives incoming HTTP request, **before cache**.
 //
 // The property AppID is required.
 type CDNResourceNewParamsOptionsFastedgeOnRequestHeaders struct {
@@ -5957,7 +5957,7 @@ type CDNResourceUpdateParamsOptionsFastedge struct {
 	// body as soon as CDN receives incoming HTTP request.
 	OnRequestBody CDNResourceUpdateParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
 	// Allows to configure FastEdge application that will be called to handle request
-	// headers as soon as CDN receives incoming HTTP request.
+	// headers as soon as CDN receives incoming HTTP request, **before cache**.
 	OnRequestHeaders CDNResourceUpdateParamsOptionsFastedgeOnRequestHeaders `json:"on_request_headers,omitzero"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// body before CDN sends the HTTP response.
@@ -6004,7 +6004,7 @@ func (r *CDNResourceUpdateParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(data
 }
 
 // Allows to configure FastEdge application that will be called to handle request
-// headers as soon as CDN receives incoming HTTP request.
+// headers as soon as CDN receives incoming HTTP request, **before cache**.
 //
 // The property AppID is required.
 type CDNResourceUpdateParamsOptionsFastedgeOnRequestHeaders struct {
@@ -8516,7 +8516,7 @@ type CDNResourceReplaceParamsOptionsFastedge struct {
 	// body as soon as CDN receives incoming HTTP request.
 	OnRequestBody CDNResourceReplaceParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
 	// Allows to configure FastEdge application that will be called to handle request
-	// headers as soon as CDN receives incoming HTTP request.
+	// headers as soon as CDN receives incoming HTTP request, **before cache**.
 	OnRequestHeaders CDNResourceReplaceParamsOptionsFastedgeOnRequestHeaders `json:"on_request_headers,omitzero"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// body before CDN sends the HTTP response.
@@ -8563,7 +8563,7 @@ func (r *CDNResourceReplaceParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(dat
 }
 
 // Allows to configure FastEdge application that will be called to handle request
-// headers as soon as CDN receives incoming HTTP request.
+// headers as soon as CDN receives incoming HTTP request, **before cache**.
 //
 // The property AppID is required.
 type CDNResourceReplaceParamsOptionsFastedgeOnRequestHeaders struct {
