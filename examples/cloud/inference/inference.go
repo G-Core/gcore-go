@@ -35,12 +35,6 @@ func main() {
 		log.Fatalf("GCORE_CLOUD_INFERENCE_FLAVOR_NAME environment variable is required")
 	}
 
-	// TODO set model ID before running
-	cloudInferenceModelID := os.Getenv("GCORE_CLOUD_INFERENCE_MODEL_ID")
-	if cloudInferenceModelID == "" {
-		log.Fatalf("GCORE_CLOUD_INFERENCE_MODEL_ID environment variable is required")
-	}
-
 	client := gcore.NewClient(
 		//option.WithAPIKey(apiKey),
 		//option.WithBaseURL(baseURL),
