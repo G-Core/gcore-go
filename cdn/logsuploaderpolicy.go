@@ -142,6 +142,14 @@ type LogsUploaderPolicy struct {
 	IncludeEmptyLogs bool `json:"include_empty_logs"`
 	// Include logs from origin shielding in the upload.
 	IncludeShieldLogs bool `json:"include_shield_logs"`
+	// Sampling rate for logs. A value between 0 and 1 that determines the fraction of
+	// log entries to collect.
+	//
+	//   - **1** - collect all logs (default).
+	//   - **0.5** - collect approximately 50% of logs.
+	//   - **0** - collect no logs (effectively disables logging without removing the
+	//     policy).
+	LogSampleRate float64 `json:"log_sample_rate"`
 	// Name of the policy.
 	Name string `json:"name"`
 	// List of logs uploader configs that use this policy.
@@ -175,6 +183,7 @@ type LogsUploaderPolicy struct {
 		FormatType              respjson.Field
 		IncludeEmptyLogs        respjson.Field
 		IncludeShieldLogs       respjson.Field
+		LogSampleRate           respjson.Field
 		Name                    respjson.Field
 		RelatedUploaderConfigs  respjson.Field
 		RetryIntervalMinutes    respjson.Field
@@ -238,6 +247,14 @@ type LogsUploaderPolicyNewParams struct {
 	IncludeEmptyLogs param.Opt[bool] `json:"include_empty_logs,omitzero"`
 	// Include logs from origin shielding in the upload.
 	IncludeShieldLogs param.Opt[bool] `json:"include_shield_logs,omitzero"`
+	// Sampling rate for logs. A value between 0 and 1 that determines the fraction of
+	// log entries to collect.
+	//
+	//   - **1** - collect all logs (default).
+	//   - **0.5** - collect approximately 50% of logs.
+	//   - **0** - collect no logs (effectively disables logging without removing the
+	//     policy).
+	LogSampleRate param.Opt[float64] `json:"log_sample_rate,omitzero"`
 	// Name of the policy.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Interval in minutes to retry failed uploads.
@@ -315,6 +332,14 @@ type LogsUploaderPolicyUpdateParams struct {
 	IncludeEmptyLogs param.Opt[bool] `json:"include_empty_logs,omitzero"`
 	// Include logs from origin shielding in the upload.
 	IncludeShieldLogs param.Opt[bool] `json:"include_shield_logs,omitzero"`
+	// Sampling rate for logs. A value between 0 and 1 that determines the fraction of
+	// log entries to collect.
+	//
+	//   - **1** - collect all logs (default).
+	//   - **0.5** - collect approximately 50% of logs.
+	//   - **0** - collect no logs (effectively disables logging without removing the
+	//     policy).
+	LogSampleRate param.Opt[float64] `json:"log_sample_rate,omitzero"`
 	// Name of the policy.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Interval in minutes to retry failed uploads.
@@ -409,6 +434,14 @@ type LogsUploaderPolicyReplaceParams struct {
 	IncludeEmptyLogs param.Opt[bool] `json:"include_empty_logs,omitzero"`
 	// Include logs from origin shielding in the upload.
 	IncludeShieldLogs param.Opt[bool] `json:"include_shield_logs,omitzero"`
+	// Sampling rate for logs. A value between 0 and 1 that determines the fraction of
+	// log entries to collect.
+	//
+	//   - **1** - collect all logs (default).
+	//   - **0.5** - collect approximately 50% of logs.
+	//   - **0** - collect no logs (effectively disables logging without removing the
+	//     policy).
+	LogSampleRate param.Opt[float64] `json:"log_sample_rate,omitzero"`
 	// Name of the policy.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Interval in minutes to retry failed uploads.
