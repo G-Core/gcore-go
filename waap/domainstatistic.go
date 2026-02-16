@@ -624,6 +624,8 @@ type WaapRequestDetails struct {
 	RuleName string `json:"rule_name,required"`
 	// The HTTP scheme of the request that generated an event
 	Scheme string `json:"scheme,required"`
+	// The session ID associated with the request.
+	SessionID string `json:"session_id,required"`
 	// The number requests in session
 	SessionRequestCount string `json:"session_request_count,required"`
 	// List of traffic types
@@ -663,6 +665,7 @@ type WaapRequestDetails struct {
 		RuleID              respjson.Field
 		RuleName            respjson.Field
 		Scheme              respjson.Field
+		SessionID           respjson.Field
 		SessionRequestCount respjson.Field
 		TrafficTypes        respjson.Field
 		UserAgent           respjson.Field
@@ -913,6 +916,8 @@ type WaapRequestSummary struct {
 	UserAgent string `json:"user_agent,required"`
 	// Client from parsed User agent header
 	UserAgentClient string `json:"user_agent_client,required"`
+	// The session ID associated with the request.
+	SessionID string `json:"session_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -935,6 +940,7 @@ type WaapRequestSummary struct {
 		TrafficTypes    respjson.Field
 		UserAgent       respjson.Field
 		UserAgentClient respjson.Field
+		SessionID       respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
