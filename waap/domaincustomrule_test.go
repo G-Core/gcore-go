@@ -31,14 +31,22 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 		1,
 		waap.DomainCustomRuleNewParams{
 			Action: waap.DomainCustomRuleNewParamsAction{
-				Allow: map[string]any{},
+				Allow: map[string]any{
+					"foo": "bar",
+				},
 				Block: waap.DomainCustomRuleNewParamsActionBlock{
 					ActionDuration: gcore.String("12h"),
 					StatusCode:     403,
 				},
-				Captcha:   map[string]any{},
-				Handshake: map[string]any{},
-				Monitor:   map[string]any{},
+				Captcha: map[string]any{
+					"foo": "bar",
+				},
+				Handshake: map[string]any{
+					"foo": "bar",
+				},
+				Monitor: map[string]any{
+					"foo": "bar",
+				},
 				Tag: waap.DomainCustomRuleNewParamsActionTag{
 					Tags: []string{"string"},
 				},
@@ -160,14 +168,22 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 		waap.DomainCustomRuleUpdateParams{
 			DomainID: 1,
 			Action: waap.DomainCustomRuleUpdateParamsAction{
-				Allow: map[string]any{},
+				Allow: map[string]any{
+					"foo": "bar",
+				},
 				Block: waap.DomainCustomRuleUpdateParamsActionBlock{
 					ActionDuration: gcore.String("12h"),
 					StatusCode:     403,
 				},
-				Captcha:   map[string]any{},
-				Handshake: map[string]any{},
-				Monitor:   map[string]any{},
+				Captcha: map[string]any{
+					"foo": "bar",
+				},
+				Handshake: map[string]any{
+					"foo": "bar",
+				},
+				Monitor: map[string]any{
+					"foo": "bar",
+				},
 				Tag: waap.DomainCustomRuleUpdateParamsActionTag{
 					Tags: []string{"string"},
 				},

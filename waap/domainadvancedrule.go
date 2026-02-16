@@ -161,17 +161,17 @@ func (r *WaapAdvancedRule) UnmarshalJSON(data []byte) error {
 // The action that the rule takes when triggered. Only one action can be set per
 // rule.
 type WaapAdvancedRuleAction struct {
-	// The WAAP allowed the request
-	Allow any `json:"allow"`
+	// The WAAP allows the request
+	Allow map[string]any `json:"allow"`
 	// WAAP block action behavior could be configured with response status code and
 	// action duration.
 	Block WaapAdvancedRuleActionBlock `json:"block"`
-	// The WAAP presented the user with a captcha
-	Captcha any `json:"captcha"`
-	// The WAAP performed automatic browser validation
-	Handshake any `json:"handshake"`
-	// The WAAP monitored the request but took no action
-	Monitor any `json:"monitor"`
+	// The WAAP presents the user with a captcha
+	Captcha map[string]any `json:"captcha"`
+	// The WAAP performs automatic browser validation
+	Handshake map[string]any `json:"handshake"`
+	// The WAAP monitors the request but takes no action
+	Monitor map[string]any `json:"monitor"`
 	// WAAP tag action gets a list of tags to tag the request scope with
 	Tag WaapAdvancedRuleActionTag `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -300,17 +300,17 @@ func (r *DomainAdvancedRuleNewParams) UnmarshalJSON(data []byte) error {
 // The action that the rule takes when triggered. Only one action can be set per
 // rule.
 type DomainAdvancedRuleNewParamsAction struct {
-	// The WAAP allowed the request
-	Allow any `json:"allow,omitzero"`
+	// The WAAP allows the request
+	Allow map[string]any `json:"allow,omitzero"`
 	// WAAP block action behavior could be configured with response status code and
 	// action duration.
 	Block DomainAdvancedRuleNewParamsActionBlock `json:"block,omitzero"`
-	// The WAAP presented the user with a captcha
-	Captcha any `json:"captcha,omitzero"`
-	// The WAAP performed automatic browser validation
-	Handshake any `json:"handshake,omitzero"`
-	// The WAAP monitored the request but took no action
-	Monitor any `json:"monitor,omitzero"`
+	// The WAAP presents the user with a captcha
+	Captcha map[string]any `json:"captcha,omitzero"`
+	// The WAAP performs automatic browser validation
+	Handshake map[string]any `json:"handshake,omitzero"`
+	// The WAAP monitors the request but takes no action
+	Monitor map[string]any `json:"monitor,omitzero"`
 	// WAAP tag action gets a list of tags to tag the request scope with
 	Tag DomainAdvancedRuleNewParamsActionTag `json:"tag,omitzero"`
 	paramObj
@@ -432,17 +432,17 @@ func (r *DomainAdvancedRuleUpdateParams) UnmarshalJSON(data []byte) error {
 
 // The action that a WAAP rule takes when triggered.
 type DomainAdvancedRuleUpdateParamsAction struct {
-	// The WAAP allowed the request
-	Allow any `json:"allow,omitzero"`
+	// The WAAP allows the request
+	Allow map[string]any `json:"allow,omitzero"`
 	// WAAP block action behavior could be configured with response status code and
 	// action duration.
 	Block DomainAdvancedRuleUpdateParamsActionBlock `json:"block,omitzero"`
-	// The WAAP presented the user with a captcha
-	Captcha any `json:"captcha,omitzero"`
-	// The WAAP performed automatic browser validation
-	Handshake any `json:"handshake,omitzero"`
-	// The WAAP monitored the request but took no action
-	Monitor any `json:"monitor,omitzero"`
+	// The WAAP presents the user with a captcha
+	Captcha map[string]any `json:"captcha,omitzero"`
+	// The WAAP performs automatic browser validation
+	Handshake map[string]any `json:"handshake,omitzero"`
+	// The WAAP monitors the request but takes no action
+	Monitor map[string]any `json:"monitor,omitzero"`
 	// WAAP tag action gets a list of tags to tag the request scope with
 	Tag DomainAdvancedRuleUpdateParamsActionTag `json:"tag,omitzero"`
 	paramObj

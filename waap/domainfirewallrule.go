@@ -148,8 +148,8 @@ func (r *WaapFirewallRule) UnmarshalJSON(data []byte) error {
 
 // The action that the rule takes when triggered
 type WaapFirewallRuleAction struct {
-	// The WAAP allowed the request
-	Allow any `json:"allow,nullable"`
+	// The WAAP allows the request
+	Allow map[string]any `json:"allow,nullable"`
 	// WAAP block action behavior could be configured with response status code and
 	// action duration.
 	Block WaapFirewallRuleActionBlock `json:"block,nullable"`
@@ -286,8 +286,8 @@ func (r *DomainFirewallRuleNewParams) UnmarshalJSON(data []byte) error {
 
 // The action that the rule takes when triggered
 type DomainFirewallRuleNewParamsAction struct {
-	// The WAAP allowed the request
-	Allow any `json:"allow,omitzero"`
+	// The WAAP allows the request
+	Allow map[string]any `json:"allow,omitzero"`
 	// WAAP block action behavior could be configured with response status code and
 	// action duration.
 	Block DomainFirewallRuleNewParamsActionBlock `json:"block,omitzero"`
@@ -415,8 +415,8 @@ func (r *DomainFirewallRuleUpdateParams) UnmarshalJSON(data []byte) error {
 
 // The action that a firewall rule takes when triggered
 type DomainFirewallRuleUpdateParamsAction struct {
-	// The WAAP allowed the request
-	Allow any `json:"allow,omitzero"`
+	// The WAAP allows the request
+	Allow map[string]any `json:"allow,omitzero"`
 	// WAAP block action behavior could be configured with response status code and
 	// action duration.
 	Block DomainFirewallRuleUpdateParamsActionBlock `json:"block,omitzero"`
