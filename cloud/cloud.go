@@ -147,6 +147,8 @@ type BaremetalFlavor struct {
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus BaremetalFlavorPriceStatus `json:"price_status,nullable"`
+	// Number of available instances of given flavor from reservations
+	ReservedCapacity int64 `json:"reserved_capacity,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -163,6 +165,7 @@ type BaremetalFlavor struct {
 		PricePerHour        respjson.Field
 		PricePerMonth       respjson.Field
 		PriceStatus         respjson.Field
+		ReservedCapacity    respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
