@@ -31,14 +31,22 @@ func TestDomainAdvancedRuleNewWithOptionalParams(t *testing.T) {
 		1,
 		waap.DomainAdvancedRuleNewParams{
 			Action: waap.DomainAdvancedRuleNewParamsAction{
-				Allow: map[string]any{},
+				Allow: map[string]any{
+					"foo": "bar",
+				},
 				Block: waap.DomainAdvancedRuleNewParamsActionBlock{
 					ActionDuration: gcore.String("12h"),
 					StatusCode:     403,
 				},
-				Captcha:   map[string]any{},
-				Handshake: map[string]any{},
-				Monitor:   map[string]any{},
+				Captcha: map[string]any{
+					"foo": "bar",
+				},
+				Handshake: map[string]any{
+					"foo": "bar",
+				},
+				Monitor: map[string]any{
+					"foo": "bar",
+				},
 				Tag: waap.DomainAdvancedRuleNewParamsActionTag{
 					Tags: []string{"string"},
 				},
@@ -77,14 +85,22 @@ func TestDomainAdvancedRuleUpdateWithOptionalParams(t *testing.T) {
 		waap.DomainAdvancedRuleUpdateParams{
 			DomainID: 1,
 			Action: waap.DomainAdvancedRuleUpdateParamsAction{
-				Allow: map[string]any{},
+				Allow: map[string]any{
+					"foo": "bar",
+				},
 				Block: waap.DomainAdvancedRuleUpdateParamsActionBlock{
 					ActionDuration: gcore.String("12h"),
 					StatusCode:     403,
 				},
-				Captcha:   map[string]any{},
-				Handshake: map[string]any{},
-				Monitor:   map[string]any{},
+				Captcha: map[string]any{
+					"foo": "bar",
+				},
+				Handshake: map[string]any{
+					"foo": "bar",
+				},
+				Monitor: map[string]any{
+					"foo": "bar",
+				},
 				Tag: waap.DomainAdvancedRuleUpdateParamsActionTag{
 					Tags: []string{"string"},
 				},

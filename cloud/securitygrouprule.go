@@ -35,6 +35,11 @@ func NewSecurityGroupRuleService(opts ...option.RequestOption) (r SecurityGroupR
 }
 
 // Add a new rule to an existing security group.
+//
+// **Deprecated** Use
+// `/v2/security_groups/<project_id>/<region_id>/<group_id>/rules` instead.
+//
+// Deprecated: deprecated
 func (r *SecurityGroupRuleService) New(ctx context.Context, groupID string, params SecurityGroupRuleNewParams, opts ...option.RequestOption) (res *SecurityGroupRule, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -61,6 +66,12 @@ func (r *SecurityGroupRuleService) New(ctx context.Context, groupID string, para
 }
 
 // Delete a specific rule from a security group.
+//
+// **Deprecated** Use
+// `/v2/security_groups/<project_id>/<region_id>/<group_id>/rules/<rule_id>`
+// instead.
+//
+// Deprecated: deprecated
 func (r *SecurityGroupRuleService) Delete(ctx context.Context, ruleID string, body SecurityGroupRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -88,6 +99,13 @@ func (r *SecurityGroupRuleService) Delete(ctx context.Context, ruleID string, bo
 }
 
 // Update the configuration of an existing security group rule.
+//
+// **Deprecated** Use
+// `/v2/security_groups/<project_id>/<region_id>/<group_id>/rules/<rule_id>` to
+// delete and `/v2/security_groups/<project_id>/<region_id>/<group_id>/rules` to
+// create a new rule.
+//
+// Deprecated: deprecated
 func (r *SecurityGroupRuleService) Replace(ctx context.Context, ruleID string, params SecurityGroupRuleReplaceParams, opts ...option.RequestOption) (res *SecurityGroupRule, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
