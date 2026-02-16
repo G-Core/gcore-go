@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.33.0 (2026-02-16)
+
+Full Changelog: [v0.32.0...v0.33.0](https://github.com/G-Core/gcore-go/compare/v0.32.0...v0.33.0)
+
+### Features
+
+* **api:** aggregated API specs update ([ec94486](https://github.com/G-Core/gcore-go/commit/ec944861160ba13e62af9fd6d69cbd02a0c5988d))
+* **api:** aggregated API specs update ([bcc5dd9](https://github.com/G-Core/gcore-go/commit/bcc5dd98f1ec700694a210478b4bc7c09c5e6312))
+* **api:** aggregated API specs update ([65027c3](https://github.com/G-Core/gcore-go/commit/65027c3a3e19a40ffd6aab9de27329e3de266585))
+* **api:** revert(cdn): remove client_config subresource ([#207](https://github.com/G-Core/gcore-go/issues/207)) ([261e920](https://github.com/G-Core/gcore-go/commit/261e92070411f67fbe0f4494ed808e53db4b84c5))
+* **cdn:** add client_config subresource for terraform ([b6a0663](https://github.com/G-Core/gcore-go/commit/b6a06631f9db5e310efbd4bb699448a75655fbd5))
+
+
+### Bug Fixes
+
+* **cloud:** filter opts in inference deployment polling methods ([5e1ec87](https://github.com/G-Core/gcore-go/commit/5e1ec872443703e46251cbfccf595d9887ef1201))
+
 ## 0.32.0 (2026-02-11)
 
 Full Changelog: [v0.31.0...v0.32.0](https://github.com/G-Core/gcore-go/compare/v0.31.0...v0.32.0)
