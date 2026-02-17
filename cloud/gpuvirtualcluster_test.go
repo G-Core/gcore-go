@@ -65,7 +65,7 @@ func TestGPUVirtualClusterNewWithOptionalParams(t *testing.T) {
 			}},
 			UserData: gcore.String("eyJ0ZXN0IjogImRhdGEifQ=="),
 		},
-		Tags: map[string]string{
+		Tags: map[string]any{
 			"my-tag": "my-tag-value",
 		},
 	})
