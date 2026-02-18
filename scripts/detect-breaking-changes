@@ -126,6 +126,7 @@ TEST_PATHS=(
 	streaming/player_test.go
 	streaming/qualityset_test.go
 	streaming/playlist_test.go
+	streaming/playlistvideo_test.go
 	streaming/video_test.go
 	streaming/videosubtitle_test.go
 	streaming/stream_test.go
