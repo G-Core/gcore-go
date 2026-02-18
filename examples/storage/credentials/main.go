@@ -42,13 +42,13 @@ func createS3Storage(client *gcore.Client) int64 {
 
 	params := storage.StorageNewParams{
 		Name:     s3Name,
-		Type:     storage.StorageNewParamsTypeS3,
+		Type:     storage.StorageNewParamsTypeS3Compatible,
 		Location: "s-ed1",
 	}
 
 	newStorage, err := client.Storage.New(context.Background(), params)
 	if err != nil {
-		fmt.Printf("Error creating %s storage: %v\n", storage.StorageNewParamsTypeS3, err)
+		fmt.Printf("Error creating %s storage: %v\n", storage.StorageTypeS3Compatible, err)
 		log.Fatalf("Failed to create S3 storage")
 	}
 
