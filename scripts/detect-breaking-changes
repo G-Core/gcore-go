@@ -130,6 +130,7 @@ TEST_PATHS=(
 	streaming/video_test.go
 	streaming/videosubtitle_test.go
 	streaming/stream_test.go
+	streaming/streamclip_test.go
 	streaming/streamoverlay_test.go
 	streaming/restream_test.go
 	streaming/statistic_test.go
