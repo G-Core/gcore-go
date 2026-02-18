@@ -35,6 +35,13 @@ func NewCredentialService(opts ...option.RequestOption) (r CredentialService) {
 
 // Generates new access credentials for the storage (S3 keys for S3 storage, SFTP
 // password for SFTP storage).
+//
+// Deprecated: Use POST
+// /provisioning/v3/storages/`s3_compatible`/{`storage_id`}/credentials/reset for
+// S3 storage or PATCH /provisioning/v3/storages/sftp/{`storage_id`}/credentials
+// for SFTP storage instead.
+//
+// Deprecated: deprecated
 func (r *CredentialService) Recreate(ctx context.Context, storageID int64, body CredentialRecreateParams, opts ...option.RequestOption) (res *Storage, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/credentials", storageID)
