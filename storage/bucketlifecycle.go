@@ -39,6 +39,12 @@ func NewBucketLifecycleService(opts ...option.RequestOption) (r BucketLifecycleS
 // storage costs and meet compliance requirements. This applies a global lifecycle
 // rule to the entire bucket - all existing and future objects will be subject to
 // the expiration policy.
+//
+// Deprecated: Use PATCH
+// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} with
+// {"lifecycle": {"expiration_days": N}} instead.
+//
+// Deprecated: deprecated
 func (r *BucketLifecycleService) New(ctx context.Context, bucketName string, params BucketLifecycleNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -53,6 +59,12 @@ func (r *BucketLifecycleService) New(ctx context.Context, bucketName string, par
 
 // Removes all lifecycle rules from an S3 bucket, disabling automatic object
 // expiration. Objects will no longer be automatically deleted based on age.
+//
+// Deprecated: Use PATCH
+// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} with
+// {"lifecycle": {"expiration_days": null}} instead.
+//
+// Deprecated: deprecated
 func (r *BucketLifecycleService) Delete(ctx context.Context, bucketName string, body BucketLifecycleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
