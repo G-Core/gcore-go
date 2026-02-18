@@ -269,10 +269,18 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#PublicIPList">PublicIPList</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#PublicNetworkList">PublicNetworkList</a>
 
 Methods:
 
 - <code title="get /cdn/public-net-list">client.CDN.IPRanges.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#IPRangeService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#IPRangeListParams">IPRangeListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#PublicNetworkList">PublicNetworkList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /cdn/public-ip-list">client.CDN.IPRanges.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#IPRangeService.ListIPs">ListIPs</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#IPRangeListIPsParams">IPRangeListIPsParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#PublicIPList">PublicIPList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## IPs
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#PublicIPList">PublicIPList</a>
+
+Methods:
+
+- <code title="get /cdn/public-ip-list">client.CDN.IPs.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#IPService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#IPListParams">IPListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#PublicIPList">PublicIPList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
