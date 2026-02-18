@@ -54,7 +54,7 @@ func TestGPUBaremetalClusterNewWithOptionalParams(t *testing.T) {
 			}},
 			UserData: gcore.String("eyJ0ZXN0IjogImRhdGEifQ=="),
 		},
-		Tags: map[string]any{
+		Tags: map[string]string{
 			"my-tag": "my-tag-value",
 		},
 	})
@@ -147,7 +147,9 @@ func TestGPUBaremetalClusterAction(t *testing.T) {
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(7),
 			Action:    "update_tags",
-			Tags:      map[string]any{},
+			Tags: cloud.TagUpdateMap{
+				"foo": "my-tag-value",
+			},
 		},
 	)
 	if err != nil {

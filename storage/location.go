@@ -37,7 +37,10 @@ func NewLocationService(opts ...option.RequestOption) (r LocationService) {
 }
 
 // Returns available storage locations where you can create storages. Each location
-// represents a geographic region with specific data center facilities.
+// represents a geographic region with specific data center facilities. Deprecated,
+// use GET /provisioning/v3/locations instead.
+//
+// Deprecated: deprecated
 func (r *LocationService) List(ctx context.Context, query LocationListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Location], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -56,7 +59,10 @@ func (r *LocationService) List(ctx context.Context, query LocationListParams, op
 }
 
 // Returns available storage locations where you can create storages. Each location
-// represents a geographic region with specific data center facilities.
+// represents a geographic region with specific data center facilities. Deprecated,
+// use GET /provisioning/v3/locations instead.
+//
+// Deprecated: deprecated
 func (r *LocationService) ListAutoPaging(ctx context.Context, query LocationListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Location] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
@@ -75,7 +81,7 @@ type Location struct {
 	Title string `json:"title,required"`
 	// Storage protocol type supported in this location
 	//
-	// Any of "s3", "sftp".
+	// Any of "s3_compatible", "sftp".
 	Type LocationType `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -107,8 +113,8 @@ const (
 type LocationType string
 
 const (
-	LocationTypeS3   LocationType = "s3"
-	LocationTypeSftp LocationType = "sftp"
+	LocationTypeS3Compatible LocationType = "s3_compatible"
+	LocationTypeSftp         LocationType = "sftp"
 )
 
 type LocationListParams struct {

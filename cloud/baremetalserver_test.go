@@ -60,7 +60,7 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 		NameTemplate: gcore.String("name_template"),
 		Password:     gcore.String("password"),
 		SSHKeyName:   gcore.String("my-ssh-key"),
-		Tags: map[string]any{
+		Tags: map[string]string{
 			"my-tag": "my-tag-value",
 		},
 		UserData: gcore.String("user_data"),

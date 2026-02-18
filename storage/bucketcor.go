@@ -38,6 +38,12 @@ func NewBucketCorService(opts ...option.RequestOption) (r BucketCorService) {
 // Configures Cross-Origin Resource Sharing (CORS) rules for an S3 bucket, allowing
 // web applications from specified domains to access bucket resources directly from
 // browsers.
+//
+// Deprecated: Use PATCH
+// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} with {"cors":
+// {"allowed_origins": [...]}} instead.
+//
+// Deprecated: deprecated
 func (r *BucketCorService) New(ctx context.Context, bucketName string, params BucketCorNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -53,6 +59,12 @@ func (r *BucketCorService) New(ctx context.Context, bucketName string, params Bu
 // Retrieves the current Cross-Origin Resource Sharing (CORS) configuration for an
 // S3 bucket, showing which domains are allowed to access the bucket from web
 // browsers.
+//
+// Deprecated: Use GET
+// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} instead, which
+// returns CORS along with policy and lifecycle configuration.
+//
+// Deprecated: deprecated
 func (r *BucketCorService) Get(ctx context.Context, bucketName string, query BucketCorGetParams, opts ...option.RequestOption) (res *BucketCors, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
