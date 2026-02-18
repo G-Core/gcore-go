@@ -45,7 +45,7 @@ func NewIPRangeService(opts ...option.RequestOption) (r IPRangeService) {
 // This request does not require authorization.
 func (r *IPRangeService) List(ctx context.Context, params IPRangeListParams, opts ...option.RequestOption) (res *PublicNetworkList, err error) {
 	if !param.IsOmitted(params.Accept) {
-		opts = append(opts, option.WithHeader("Accept", fmt.Sprintf("%s", params.Accept)))
+		opts = append(opts, option.WithHeader("Accept", fmt.Sprintf("%v", params.Accept)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/public-net-list"
