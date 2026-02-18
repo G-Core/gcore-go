@@ -36,7 +36,7 @@ func TestAPITokenNewWithOptionalParams(t *testing.T) {
 					Name: "Administrators",
 				},
 			},
-			ExpDate:     gcore.String("2021-01-01 12:00:00+00:00"),
+			ExpDate:     gcore.String("2021-01-01T12:00:00.000000Z"),
 			Name:        "My token",
 			Description: gcore.String("It's my token"),
 		},
