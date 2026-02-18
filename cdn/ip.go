@@ -46,7 +46,7 @@ func NewIPService(opts ...option.RequestOption) (r IPService) {
 // This request does not require authorization.
 func (r *IPService) List(ctx context.Context, params IPListParams, opts ...option.RequestOption) (res *PublicIPList, err error) {
 	if !param.IsOmitted(params.Accept) {
-		opts = append(opts, option.WithHeader("Accept", fmt.Sprintf("%s", params.Accept)))
+		opts = append(opts, option.WithHeader("Accept", fmt.Sprintf("%v", params.Accept)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/public-ip-list"
