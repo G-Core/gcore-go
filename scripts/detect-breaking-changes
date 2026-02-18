@@ -92,6 +92,7 @@ TEST_PATHS=(
 	waap/waap_test.go
 	waap/statistic_test.go
 	waap/domain_test.go
+	waap/domainpolicy_test.go
 	waap/domainsetting_test.go
 	waap/domainapipath_test.go
 	waap/domainapipathgroup_test.go
