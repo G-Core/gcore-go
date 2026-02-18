@@ -27,7 +27,6 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDomainAPISettings">WaapDomainAPISettings</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDomainDDOSSettings">WaapDomainDDOSSettings</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDomainSettingsModel">WaapDomainSettingsModel</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapPolicyMode">WaapPolicyMode</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapRuleSet">WaapRuleSet</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapSummaryDomain">WaapSummaryDomain</a>
 
@@ -38,7 +37,16 @@ Methods:
 - <code title="delete /waap/v1/domains/{domain_id}">client.Waap.Domains.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, domainID <a href="https://pkg.go.dev/builtin#int64">int64</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 - <code title="get /waap/v1/domains/{domain_id}">client.Waap.Domains.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, domainID <a href="https://pkg.go.dev/builtin#int64">int64</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapDetailedDomain">WaapDetailedDomain</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /waap/v1/domains/{domain_id}/rule-sets">client.Waap.Domains.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainService.ListRuleSets">ListRuleSets</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, domainID <a href="https://pkg.go.dev/builtin#int64">int64</a>) (\*[]<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapRuleSet">WaapRuleSet</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="patch /waap/v1/domains/{domain_id}/policies/{policy_id}/toggle">client.Waap.Domains.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainService.TogglePolicy">TogglePolicy</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, policyID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainTogglePolicyParams">DomainTogglePolicyParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapPolicyMode">WaapPolicyMode</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+### Policies
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapPolicyMode">WaapPolicyMode</a>
+
+Methods:
+
+- <code title="patch /waap/v1/domains/{domain_id}/policies/{policy_id}/toggle">client.Waap.Domains.Policies.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainPolicyService.Toggle">Toggle</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, policyID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#DomainPolicyToggleParams">DomainPolicyToggleParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap">waap</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/waap#WaapPolicyMode">WaapPolicyMode</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ### Settings
 
