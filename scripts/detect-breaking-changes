@@ -95,7 +95,9 @@ TEST_PATHS=(
 	waap/domainsetting_test.go
 	waap/domainapipath_test.go
 	waap/domainapipathgroup_test.go
-	waap/domainapidiscovery_test.go
+	waap/domainapidiscoveryscanresult_test.go
+	waap/domainapidiscoveryopenapi_test.go
+	waap/domainapidiscoverysetting_test.go
 	waap/domaininsight_test.go
 	waap/domaininsightsilence_test.go
 	waap/domainstatistic_test.go
