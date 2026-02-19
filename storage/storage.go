@@ -79,11 +79,6 @@ func (r *StorageService) Update(ctx context.Context, storageID int64, body Stora
 // Response format: count: total number of storages matching the filter
 // (independent of pagination) results: the current page of storages according to
 // limit/offset
-//
-// Deprecated: Use GET /v4/`object_storages` for S3 storages or GET
-// /v4/`sftp_storages` for SFTP storages instead.
-//
-// Deprecated: deprecated
 func (r *StorageService) List(ctx context.Context, query StorageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Storage], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -107,11 +102,6 @@ func (r *StorageService) List(ctx context.Context, query StorageListParams, opts
 // Response format: count: total number of storages matching the filter
 // (independent of pagination) results: the current page of storages according to
 // limit/offset
-//
-// Deprecated: Use GET /v4/`object_storages` for S3 storages or GET
-// /v4/`sftp_storages` for SFTP storages instead.
-//
-// Deprecated: deprecated
 func (r *StorageService) ListAutoPaging(ctx context.Context, query StorageListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Storage] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
@@ -132,11 +122,6 @@ func (r *StorageService) Delete(ctx context.Context, storageID int64, opts ...op
 
 // Retrieves detailed information about a specific storage including its
 // configuration, credentials, and current status.
-//
-// Deprecated: Use GET /v4/`object_storages`/{`storage_id`} for S3 storages or GET
-// /v4/`sftp_storages`/{`storage_id`} for SFTP storages instead.
-//
-// Deprecated: deprecated
 func (r *StorageService) Get(ctx context.Context, storageID int64, opts ...option.RequestOption) (res *Storage, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v", storageID)
@@ -164,11 +149,6 @@ func (r *StorageService) LinkSSHKey(ctx context.Context, keyID int64, body Stora
 
 // Restores a previously deleted S3 storage if it was deleted within the last 2
 // weeks. SFTP storages cannot be restored.
-//
-// Deprecated: Use POST
-// /provisioning/v3/storages/`s3_compatible`/{`storage_id`}/restore instead.
-//
-// Deprecated: deprecated
 func (r *StorageService) Restore(ctx context.Context, storageID int64, body StorageRestoreParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
