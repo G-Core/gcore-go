@@ -31,9 +31,9 @@ func TestAPITokenNewWithOptionalParams(t *testing.T) {
 		0,
 		iam.APITokenNewParams{
 			ClientUser: iam.APITokenNewParamsClientUser{
-				Role: iam.APITokenNewParamsClientUserRole{
+				Role: iam.UserGroupParam{
 					ID:   gcore.Int(1),
-					Name: "Administrators",
+					Name: iam.UserGroupNameAdministrators,
 				},
 			},
 			ExpDate:     gcore.String("2021-01-01T12:00:00.000000Z"),
