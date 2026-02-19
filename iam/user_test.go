@@ -30,9 +30,9 @@ func TestUserUpdate(t *testing.T) {
 		context.TODO(),
 		0,
 		iam.UserUpdateParams{
-			AuthTypes: []string{"password"},
+			AuthTypes: []iam.AuthType{iam.AuthTypePassword},
 			Email:     "dev@stainless.com",
-			Lang:      iam.UserUpdateParamsLangDe,
+			Lang:      iam.UserLanguageDe,
 			Name:      gcore.String("name"),
 			Phone:     gcore.String("phone"),
 		},
@@ -136,11 +136,11 @@ func TestUserInviteWithOptionalParams(t *testing.T) {
 	_, err := client.Iam.Users.Invite(context.TODO(), iam.UserInviteParams{
 		ClientID: 0,
 		Email:    "dev@stainless.com",
-		UserRole: iam.UserInviteParamsUserRole{
+		UserRole: iam.UserGroupParam{
 			ID:   gcore.Int(1),
-			Name: "Administrators",
+			Name: iam.UserGroupNameAdministrators,
 		},
-		Lang: iam.UserInviteParamsLangDe,
+		Lang: iam.UserLanguageDe,
 		Name: gcore.String("name"),
 	})
 	if err != nil {

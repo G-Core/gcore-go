@@ -4,12 +4,14 @@ package iam
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
@@ -768,9 +770,7 @@ type AccountOverviewUser struct {
 	// - `false` – user did not confirm the email.
 	Activated bool `json:"activated"`
 	// System field. List of auth types available for the account.
-	//
-	// Any of "password", "sso", "github", "google-oauth2".
-	AuthTypes []string `json:"auth_types"`
+	AuthTypes []AuthType `json:"auth_types"`
 	// User's account ID.
 	Client float64 `json:"client"`
 	// User's company.
@@ -788,13 +788,13 @@ type AccountOverviewUser struct {
 	// - Engineers
 	// - Purge and Prefetch only (API)
 	// - Purge and Prefetch only (API+Web)
-	Groups []AccountOverviewUserGroup `json:"groups"`
+	Groups []UserGroup `json:"groups"`
 	// User's language.
 	//
 	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
-	Lang string `json:"lang"`
+	Lang UserLanguage `json:"lang"`
 	// User's name.
 	Name string `json:"name,nullable"`
 	// User's phone.
@@ -835,7 +835,17 @@ func (r *AccountOverviewUser) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOverviewUserGroup struct {
+// Auth types.
+type AuthType string
+
+const (
+	AuthTypePassword     AuthType = "password"
+	AuthTypeSSO          AuthType = "sso"
+	AuthTypeGitHub       AuthType = "github"
+	AuthTypeGoogleOauth2 AuthType = "google-oauth2"
+)
+
+type UserGroup struct {
 	// Group's ID: Possible values are:
 	//
 	//   - 1 - Administrators* 2 - Users* 5 - Engineers* 3009 - Purge and Prefetch only
@@ -845,7 +855,7 @@ type AccountOverviewUserGroup struct {
 	//
 	// Any of "Users", "Administrators", "Engineers", "Purge and Prefetch only (API)",
 	// "Purge and Prefetch only (API+Web)".
-	Name string `json:"name"`
+	Name UserGroupName `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -856,7 +866,62 @@ type AccountOverviewUserGroup struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOverviewUserGroup) RawJSON() string { return r.JSON.raw }
-func (r *AccountOverviewUserGroup) UnmarshalJSON(data []byte) error {
+func (r UserGroup) RawJSON() string { return r.JSON.raw }
+func (r *UserGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// ToParam converts this UserGroup to a UserGroupParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// UserGroupParam.Overrides()
+func (r UserGroup) ToParam() UserGroupParam {
+	return param.Override[UserGroupParam](json.RawMessage(r.RawJSON()))
+}
+
+// Group's name.
+type UserGroupName string
+
+const (
+	UserGroupNameUsers                      UserGroupName = "Users"
+	UserGroupNameAdministrators             UserGroupName = "Administrators"
+	UserGroupNameEngineers                  UserGroupName = "Engineers"
+	UserGroupNamePurgeAndPrefetchOnlyAPI    UserGroupName = "Purge and Prefetch only (API)"
+	UserGroupNamePurgeAndPrefetchOnlyAPIWeb UserGroupName = "Purge and Prefetch only (API+Web)"
+)
+
+type UserGroupParam struct {
+	// Group's ID: Possible values are:
+	//
+	//   - 1 - Administrators* 2 - Users* 5 - Engineers* 3009 - Purge and Prefetch only
+	//     (API+Web)* 3022 - Purge and Prefetch only (API)
+	ID param.Opt[int64] `json:"id,omitzero"`
+	// Group's name.
+	//
+	// Any of "Users", "Administrators", "Engineers", "Purge and Prefetch only (API)",
+	// "Purge and Prefetch only (API+Web)".
+	Name UserGroupName `json:"name,omitzero"`
+	paramObj
+}
+
+func (r UserGroupParam) MarshalJSON() (data []byte, err error) {
+	type shadow UserGroupParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UserGroupParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// User's language.
+//
+// Defines language of the control panel and email messages.
+type UserLanguage string
+
+const (
+	UserLanguageDe UserLanguage = "de"
+	UserLanguageEn UserLanguage = "en"
+	UserLanguageRu UserLanguage = "ru"
+	UserLanguageZh UserLanguage = "zh"
+	UserLanguageAz UserLanguage = "az"
+)

@@ -173,43 +173,16 @@ func (r *APITokenClientUserRole) UnmarshalJSON(data []byte) error {
 }
 
 type APITokenCreated struct {
-	// API token ID.
-	ID         int64                     `json:"id,required"`
-	ClientUser APITokenCreatedClientUser `json:"client_user,required"`
-	// Date when the API token was issued (ISO 8086/RFC 3339 format), UTC.
-	Created string `json:"created,required"`
-	// Deletion flag. If true, then the API token was deleted.
-	Deleted bool `json:"deleted,required"`
-	// Date when the API token becomes expired (ISO 8086/RFC 3339 format), UTC. If
-	// null, then the API token will never expire.
-	ExpDate string `json:"exp_date,required"`
-	// Expiration flag. If true, then the API token has expired. When an API token
-	// expires it will be automatically deleted.
-	Expired bool `json:"expired,required"`
-	// Date when the API token was last used (ISO 8086/RFC 3339 format), UTC.
-	LastUsage string `json:"last_usage,required"`
-	// API token name.
-	Name string `json:"name,required"`
 	// API token. Copy it, because you will not be able to get it again. We do not
 	// store tokens. All responsibility for token storage and usage is on the issuer.
 	Token string `json:"token"`
-	// API token description.
-	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		ClientUser  respjson.Field
-		Created     respjson.Field
-		Deleted     respjson.Field
-		ExpDate     respjson.Field
-		Expired     respjson.Field
-		LastUsage   respjson.Field
-		Name        respjson.Field
 		Token       respjson.Field
-		Description respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	APIToken
 }
 
 // Returns the unmodified JSON received from the API
@@ -218,163 +191,7 @@ func (r *APITokenCreated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type APITokenCreatedClientUser struct {
-	// Account's ID.
-	ClientID int64 `json:"client_id,required"`
-	// Deletion flag. If true, then the API token was deleted.
-	Deleted bool                          `json:"deleted,required"`
-	Role    APITokenCreatedClientUserRole `json:"role,required"`
-	// User's email who issued the API token.
-	UserEmail string `json:"user_email,required"`
-	// User's ID who issued the API token.
-	UserID int64 `json:"user_id,required"`
-	// User's name who issued the API token.
-	UserName string `json:"user_name,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ClientID    respjson.Field
-		Deleted     respjson.Field
-		Role        respjson.Field
-		UserEmail   respjson.Field
-		UserID      respjson.Field
-		UserName    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r APITokenCreatedClientUser) RawJSON() string { return r.JSON.raw }
-func (r *APITokenCreatedClientUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type APITokenCreatedClientUserRole struct {
-	// Group's ID: Possible values are:
-	//
-	//   - 1 - Administrators* 2 - Users* 5 - Engineers* 3009 - Purge and Prefetch only
-	//     (API+Web)* 3022 - Purge and Prefetch only (API)
-	ID int64 `json:"id"`
-	// Group's name.
-	//
-	// Any of "Users", "Administrators", "Engineers", "Purge and Prefetch only (API)",
-	// "Purge and Prefetch only (API+Web)".
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r APITokenCreatedClientUserRole) RawJSON() string { return r.JSON.raw }
-func (r *APITokenCreatedClientUserRole) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type APITokenList []APITokenListItem
-
-type APITokenListItem struct {
-	// API token ID.
-	ID         int64                      `json:"id,required"`
-	ClientUser APITokenListItemClientUser `json:"client_user,required"`
-	// Date when the API token was issued (ISO 8086/RFC 3339 format), UTC.
-	Created string `json:"created,required"`
-	// Deletion flag. If true, then the API token was deleted.
-	Deleted bool `json:"deleted,required"`
-	// Date when the API token becomes expired (ISO 8086/RFC 3339 format), UTC. If
-	// null, then the API token will never expire.
-	ExpDate string `json:"exp_date,required"`
-	// Expiration flag. If true, then the API token has expired. When an API token
-	// expires it will be automatically deleted.
-	Expired bool `json:"expired,required"`
-	// Date when the API token was last used (ISO 8086/RFC 3339 format), UTC.
-	LastUsage string `json:"last_usage,required"`
-	// API token name.
-	Name string `json:"name,required"`
-	// API token description.
-	Description string `json:"description"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ClientUser  respjson.Field
-		Created     respjson.Field
-		Deleted     respjson.Field
-		ExpDate     respjson.Field
-		Expired     respjson.Field
-		LastUsage   respjson.Field
-		Name        respjson.Field
-		Description respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r APITokenListItem) RawJSON() string { return r.JSON.raw }
-func (r *APITokenListItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type APITokenListItemClientUser struct {
-	// Account's ID.
-	ClientID int64 `json:"client_id,required"`
-	// Deletion flag. If true, then the API token was deleted.
-	Deleted bool                           `json:"deleted,required"`
-	Role    APITokenListItemClientUserRole `json:"role,required"`
-	// User's email who issued the API token.
-	UserEmail string `json:"user_email,required"`
-	// User's ID who issued the API token.
-	UserID int64 `json:"user_id,required"`
-	// User's name who issued the API token.
-	UserName string `json:"user_name,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ClientID    respjson.Field
-		Deleted     respjson.Field
-		Role        respjson.Field
-		UserEmail   respjson.Field
-		UserID      respjson.Field
-		UserName    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r APITokenListItemClientUser) RawJSON() string { return r.JSON.raw }
-func (r *APITokenListItemClientUser) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type APITokenListItemClientUserRole struct {
-	// Group's ID: Possible values are:
-	//
-	//   - 1 - Administrators* 2 - Users* 5 - Engineers* 3009 - Purge and Prefetch only
-	//     (API+Web)* 3022 - Purge and Prefetch only (API)
-	ID int64 `json:"id"`
-	// Group's name.
-	//
-	// Any of "Users", "Administrators", "Engineers", "Purge and Prefetch only (API)",
-	// "Purge and Prefetch only (API+Web)".
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r APITokenListItemClientUserRole) RawJSON() string { return r.JSON.raw }
-func (r *APITokenListItemClientUserRole) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+type APITokenList []APIToken
 
 type APITokenNewParams struct {
 	// Date when the API token becomes expired (ISO 8086/RFC 3339 format), UTC. If
@@ -399,7 +216,7 @@ func (r *APITokenNewParams) UnmarshalJSON(data []byte) error {
 
 // API token role.
 type APITokenNewParamsClientUser struct {
-	Role APITokenNewParamsClientUserRole `json:"role,omitzero"`
+	Role UserGroupParam `json:"role,omitzero"`
 	paramObj
 }
 
@@ -409,34 +226,6 @@ func (r APITokenNewParamsClientUser) MarshalJSON() (data []byte, err error) {
 }
 func (r *APITokenNewParamsClientUser) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-type APITokenNewParamsClientUserRole struct {
-	// Group's ID: Possible values are:
-	//
-	//   - 1 - Administrators* 2 - Users* 5 - Engineers* 3009 - Purge and Prefetch only
-	//     (API+Web)* 3022 - Purge and Prefetch only (API)
-	ID param.Opt[int64] `json:"id,omitzero"`
-	// Group's name.
-	//
-	// Any of "Users", "Administrators", "Engineers", "Purge and Prefetch only (API)",
-	// "Purge and Prefetch only (API+Web)".
-	Name string `json:"name,omitzero"`
-	paramObj
-}
-
-func (r APITokenNewParamsClientUserRole) MarshalJSON() (data []byte, err error) {
-	type shadow APITokenNewParamsClientUserRole
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *APITokenNewParamsClientUserRole) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[APITokenNewParamsClientUserRole](
-		"name", "Users", "Administrators", "Engineers", "Purge and Prefetch only (API)", "Purge and Prefetch only (API+Web)",
-	)
 }
 
 type APITokenListParams struct {
