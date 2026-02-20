@@ -47,6 +47,11 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 
 // Creates a new storage instance (S3 or SFTP) in the specified location and
 // returns the storage details including credentials.
+//
+// Deprecated: Use POST /provisioning/v3/storages/`s3_compatible` for S3 storage or
+// POST /provisioning/v3/storages/sftp for SFTP storage instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ...option.RequestOption) (res *Storage, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/provisioning/v2/storage"
@@ -56,6 +61,11 @@ func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ..
 
 // Updates storage configuration such as expiration date and server alias. Used for
 // SFTP storages.
+//
+// Deprecated: Use PATCH /provisioning/v3/storages/sftp/{`storage_id`} for SFTP
+// storage updates instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) Update(ctx context.Context, storageID int64, body StorageUpdateParams, opts ...option.RequestOption) (res *Storage, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/provisioning/v2/storage/%v", storageID)
@@ -97,6 +107,11 @@ func (r *StorageService) ListAutoPaging(ctx context.Context, query StorageListPa
 }
 
 // Permanently deletes a storage and all its data. This action cannot be undone.
+//
+// Deprecated: Use DELETE /provisioning/v3/storages/`s3_compatible`/{`storage_id`}
+// or DELETE /provisioning/v3/storages/sftp/{`storage_id`} instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) Delete(ctx context.Context, storageID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -117,6 +132,13 @@ func (r *StorageService) Get(ctx context.Context, storageID int64, opts ...optio
 // Associates an SSH public key with an SFTP storage, enabling passwordless
 // authentication. Only works with SFTP storage types - not applicable to
 // S3-compatible storage.
+//
+// Deprecated: Use PATCH /provisioning/v3/storages/sftp/{`storage_id`} with
+// `ssh_key_ids` array or PATCH
+// /provisioning/v3/storages/sftp/{`storage_id`}/credentials with `ssh_key_ids`
+// array instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) LinkSSHKey(ctx context.Context, keyID int64, body StorageLinkSSHKeyParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -138,6 +160,13 @@ func (r *StorageService) Restore(ctx context.Context, storageID int64, body Stor
 // Removes SSH key association from an SFTP storage, disabling passwordless
 // authentication for that key. The key itself remains available for other
 // storages.
+//
+// Deprecated: Use PATCH /provisioning/v3/storages/sftp/{`storage_id`} with
+// `ssh_key_ids` array or PATCH
+// /provisioning/v3/storages/sftp/{`storage_id`}/credentials with `ssh_key_ids`
+// array instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) UnlinkSSHKey(ctx context.Context, keyID int64, body StorageUnlinkSSHKeyParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -168,7 +197,7 @@ type Storage struct {
 	// Storage protocol type - either S3-compatible object storage or SFTP file
 	// transfer
 	//
-	// Any of "sftp", "s3".
+	// Any of "sftp", "s3_compatible".
 	Type StorageType `json:"type,required"`
 	// Whether this storage can be restored if deleted (S3 storages only, within 2
 	// weeks)
@@ -233,8 +262,8 @@ const (
 type StorageType string
 
 const (
-	StorageTypeSftp StorageType = "sftp"
-	StorageTypeS3   StorageType = "s3"
+	StorageTypeSftp         StorageType = "sftp"
+	StorageTypeS3Compatible StorageType = "s3_compatible"
 )
 
 type StorageCredentials struct {
@@ -310,10 +339,10 @@ type StorageNewParams struct {
 	// Unique storage name identifier. Must contain only letters, numbers, dashes, and
 	// underscores. Cannot be empty and must be less than 256 characters.
 	Name string `json:"name,required"`
-	// Storage protocol type. Choose 's3' for S3-compatible object storage with API
-	// access, or `sftp` for SFTP file transfer protocol.
+	// Storage protocol type. Choose 's3_compatible' for S3-compatible object storage
+	// with API access, or `sftp` for SFTP file transfer protocol.
 	//
-	// Any of "sftp", "s3".
+	// Any of "sftp", "s3_compatible".
 	Type StorageNewParamsType `json:"type,omitzero,required"`
 	// Automatically generate a secure password for SFTP storage access. Only
 	// applicable when type is `sftp`. When `true`, a random password will be generated
@@ -334,13 +363,13 @@ func (r *StorageNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Storage protocol type. Choose 's3' for S3-compatible object storage with API
-// access, or `sftp` for SFTP file transfer protocol.
+// Storage protocol type. Choose 's3_compatible' for S3-compatible object storage
+// with API access, or `sftp` for SFTP file transfer protocol.
 type StorageNewParamsType string
 
 const (
-	StorageNewParamsTypeSftp StorageNewParamsType = "sftp"
-	StorageNewParamsTypeS3   StorageNewParamsType = "s3"
+	StorageNewParamsTypeSftp         StorageNewParamsType = "sftp"
+	StorageNewParamsTypeS3Compatible StorageNewParamsType = "s3_compatible"
 )
 
 type StorageUpdateParams struct {
@@ -385,7 +414,7 @@ type StorageListParams struct {
 	Status StorageListParamsStatus `query:"status,omitzero" json:"-"`
 	// Filter by storage type
 	//
-	// Any of "s3", "sftp".
+	// Any of "s3_compatible", "sftp".
 	Type StorageListParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
@@ -420,8 +449,8 @@ const (
 type StorageListParamsType string
 
 const (
-	StorageListParamsTypeS3   StorageListParamsType = "s3"
-	StorageListParamsTypeSftp StorageListParamsType = "sftp"
+	StorageListParamsTypeS3Compatible StorageListParamsType = "s3_compatible"
+	StorageListParamsTypeSftp         StorageListParamsType = "sftp"
 )
 
 type StorageLinkSSHKeyParams struct {

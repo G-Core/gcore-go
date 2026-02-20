@@ -29,7 +29,7 @@ func TestStorageNewWithOptionalParams(t *testing.T) {
 	_, err := client.Storage.New(context.TODO(), storage.StorageNewParams{
 		Location:             "s-region-1",
 		Name:                 "my-storage-prod",
-		Type:                 storage.StorageNewParamsTypeS3,
+		Type:                 storage.StorageNewParamsTypeS3Compatible,
 		GenerateSftpPassword: gcore.Bool(true),
 		SftpPassword:         gcore.String("sftp_password"),
 	})
@@ -93,7 +93,7 @@ func TestStorageListWithOptionalParams(t *testing.T) {
 		OrderDirection: storage.StorageListParamsOrderDirectionAsc,
 		ShowDeleted:    gcore.Bool(true),
 		Status:         storage.StorageListParamsStatusActive,
-		Type:           storage.StorageListParamsTypeS3,
+		Type:           storage.StorageListParamsTypeS3Compatible,
 	})
 	if err != nil {
 		var apierr *gcore.Error

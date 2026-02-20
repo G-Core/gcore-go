@@ -51,7 +51,7 @@ func (r *CDNResourceRuleService) Update(ctx context.Context, ruleID int64, param
 }
 
 // Get rules list
-func (r *CDNResourceRuleService) List(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *[]CDNResourceRule, err error) {
+func (r *CDNResourceRuleService) List(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *CDNResourceRuleList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v/rules", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -2453,6 +2453,8 @@ const (
 	CDNResourceRuleOverrideOriginProtocolHTTP  CDNResourceRuleOverrideOriginProtocol = "HTTP"
 	CDNResourceRuleOverrideOriginProtocolMatch CDNResourceRuleOverrideOriginProtocol = "MATCH"
 )
+
+type CDNResourceRuleList []CDNResourceRule
 
 type CDNResourceRuleNewParams struct {
 	// Rule name.

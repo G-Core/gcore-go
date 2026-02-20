@@ -45,7 +45,7 @@ func main() {
 	userEmail := "john.doe@example.com"
 	userName := "John Doe"
 
-	userRole := iam.UserInviteParamsUserRole{
+	userRole := iam.UserGroupParam{
 		ID:   param.Opt[int64]{Value: 5},
 		Name: "Engineers",
 	}
@@ -56,7 +56,7 @@ func main() {
 		Email:    userEmail,
 		Name:     param.Opt[string]{Value: userName},
 		UserRole: userRole,
-		Lang:     iam.UserInviteParamsLangEn,
+		Lang:     iam.UserLanguageEn,
 	})
 	if err != nil {
 		log.Fatalf("Failed to invite user: %v", err)
@@ -78,7 +78,7 @@ func main() {
 		expDate := time.Now().Add(30 * 24 * time.Hour).Format(time.RFC3339)
 		_, err = client.Iam.APITokens.New(context.TODO(), clientID, iam.APITokenNewParams{
 			ClientUser: iam.APITokenNewParamsClientUser{
-				Role: iam.APITokenNewParamsClientUserRole{
+				Role: iam.UserGroupParam{
 					ID:   param.Opt[int64]{Value: 5},
 					Name: "Engineers",
 				},

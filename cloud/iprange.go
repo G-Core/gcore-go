@@ -47,8 +47,8 @@ func NewIPRangeService(opts ...option.RequestOption) (r IPRangeService) {
 //   - General security controls, audit tooling, or SIEM rules that need to verify
 //     that traffic truly comes from the Cloud.
 //
-// The list is global (covers all regions) and refreshed automatically whenever
-// Gcore allocates new egress IP space. The response is an array of CIDR blocks;
+// The list is global (covers all regions) and refreshed automatically whenever the
+// provider allocates new egress IP space. The response is an array of CIDR blocks;
 // duplicate prefixes are not returned.
 func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption) (res *IPRanges, err error) {
 	opts = slices.Concat(r.Options, opts)

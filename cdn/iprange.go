@@ -45,50 +45,12 @@ func NewIPRangeService(opts ...option.RequestOption) (r IPRangeService) {
 // This request does not require authorization.
 func (r *IPRangeService) List(ctx context.Context, params IPRangeListParams, opts ...option.RequestOption) (res *PublicNetworkList, err error) {
 	if !param.IsOmitted(params.Accept) {
-		opts = append(opts, option.WithHeader("Accept", fmt.Sprintf("%s", params.Accept)))
+		opts = append(opts, option.WithHeader("Accept", fmt.Sprintf("%v", params.Accept)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/public-net-list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
-}
-
-// Get all IP addresses of CDN servers that can be used to pull content from your
-// origin.
-//
-// This list is updated periodically. If you want to use IP from this list to
-// configure IP ACL in your origin, you need to independently monitor its
-// relevance. We recommend using a script to automatically update IP ACL.
-//
-// This request does not require authorization.
-func (r *IPRangeService) ListIPs(ctx context.Context, params IPRangeListIPsParams, opts ...option.RequestOption) (res *PublicIPList, err error) {
-	if !param.IsOmitted(params.Accept) {
-		opts = append(opts, option.WithHeader("Accept", fmt.Sprintf("%s", params.Accept)))
-	}
-	opts = slices.Concat(r.Options, opts)
-	path := "cdn/public-ip-list"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
-}
-
-type PublicIPList struct {
-	// List of IPv4 addresses.
-	Addresses []string `json:"addresses"`
-	// List of IPv6 addresses.
-	AddressesV6 []string `json:"addresses_v6"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Addresses   respjson.Field
-		AddressesV6 respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PublicIPList) RawJSON() string { return r.JSON.raw }
-func (r *PublicIPList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type PublicNetworkList struct {
@@ -144,39 +106,4 @@ type IPRangeListParamsAccept string
 const (
 	IPRangeListParamsAcceptApplicationJson IPRangeListParamsAccept = "application/json"
 	IPRangeListParamsAcceptTextPlain       IPRangeListParamsAccept = "text/plain"
-)
-
-type IPRangeListIPsParams struct {
-	// Optional format override. When set, this takes precedence over the `Accept`
-	// header.
-	//
-	// Any of "json", "plain".
-	Format IPRangeListIPsParamsFormat `query:"format,omitzero" json:"-"`
-	// Any of "application/json", "text/plain".
-	Accept IPRangeListIPsParamsAccept `header:"Accept,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [IPRangeListIPsParams]'s query parameters as `url.Values`.
-func (r IPRangeListIPsParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
-	})
-}
-
-// Optional format override. When set, this takes precedence over the `Accept`
-// header.
-type IPRangeListIPsParamsFormat string
-
-const (
-	IPRangeListIPsParamsFormatJson  IPRangeListIPsParamsFormat = "json"
-	IPRangeListIPsParamsFormatPlain IPRangeListIPsParamsFormat = "plain"
-)
-
-type IPRangeListIPsParamsAccept string
-
-const (
-	IPRangeListIPsParamsAcceptApplicationJson IPRangeListIPsParamsAccept = "application/json"
-	IPRangeListIPsParamsAcceptTextPlain       IPRangeListIPsParamsAccept = "text/plain"
 )

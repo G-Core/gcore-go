@@ -28,6 +28,7 @@ import (
 // the [NewPlaylistService] method instead.
 type PlaylistService struct {
 	Options []option.RequestOption
+	Videos  PlaylistVideoService
 }
 
 // NewPlaylistService generates a new service that applies the given options to
@@ -36,6 +37,7 @@ type PlaylistService struct {
 func NewPlaylistService(opts ...option.RequestOption) (r PlaylistService) {
 	r = PlaylistService{}
 	r.Options = opts
+	r.Videos = NewPlaylistVideoService(opts...)
 	return
 }
 
@@ -162,14 +164,6 @@ func (r *PlaylistService) Delete(ctx context.Context, playlistID int64, opts ...
 func (r *PlaylistService) Get(ctx context.Context, playlistID int64, opts ...option.RequestOption) (res *Playlist, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/playlists/%v", playlistID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Shows ordered array of playlist videos
-func (r *PlaylistService) ListVideos(ctx context.Context, playlistID int64, opts ...option.RequestOption) (res *[]PlaylistVideo, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("streaming/playlists/%v/videos", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }

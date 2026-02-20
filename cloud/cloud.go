@@ -2290,11 +2290,13 @@ func (r *Subnet) UnmarshalJSON(data []byte) error {
 // with cost reports, allowing cost data to be filtered based on tag keys or
 // values.
 type Tag struct {
-	// Tag key. The maximum size for a key is 255 characters.
+	// Tag key. Maximum 255 characters. Cannot contain spaces, tabs, newlines, empty
+	// string or '=' character.
 	Key string `json:"key,required"`
 	// If true, the tag is read-only and cannot be modified by the user
 	ReadOnly bool `json:"read_only,required"`
-	// Tag value. The maximum size for a value is 255 characters.
+	// Tag value. Maximum 255 characters. Cannot contain spaces, tabs, newlines, empty
+	// string or '=' character.
 	Value string `json:"value,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2311,8 +2313,6 @@ func (r Tag) RawJSON() string { return r.JSON.raw }
 func (r *Tag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type TagUpdateMap map[string]string
 
 type TaskIDList struct {
 	// List of task IDs representing asynchronous operations. Use these IDs to monitor

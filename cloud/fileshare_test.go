@@ -40,7 +40,7 @@ func TestFileShareNewWithOptionalParams(t *testing.T) {
 				AccessMode: "ro",
 				IPAddress:  "10.0.0.1",
 			}},
-			Tags: map[string]string{
+			Tags: map[string]any{
 				"my-tag": "my-tag-value",
 			},
 			TypeName:   "standard",
@@ -80,9 +80,7 @@ func TestFileShareUpdateWithOptionalParams(t *testing.T) {
 				PathLength:        "LCD",
 				RootSquash:        gcore.Bool(true),
 			},
-			Tags: cloud.TagUpdateMap{
-				"foo": "my-tag-value",
-			},
+			Tags: map[string]any{},
 		},
 	)
 	if err != nil {

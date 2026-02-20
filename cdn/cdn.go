@@ -37,6 +37,7 @@ type CDNService struct {
 	NetworkCapacity       NetworkCapacityService
 	Metrics               MetricService
 	IPRanges              IPRangeService
+	IPs                   IPService
 }
 
 // NewCDNService generates a new service that applies the given options to each
@@ -58,6 +59,7 @@ func NewCDNService(opts ...option.RequestOption) (r CDNService) {
 	r.NetworkCapacity = NewNetworkCapacityService(opts...)
 	r.Metrics = NewMetricService(opts...)
 	r.IPRanges = NewIPRangeService(opts...)
+	r.IPs = NewIPService(opts...)
 	return
 }
 

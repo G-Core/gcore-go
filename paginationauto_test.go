@@ -28,7 +28,7 @@ func TestAutoPagination(t *testing.T) {
 	iter := client.Cloud.Projects.ListAutoPaging(context.TODO(), cloud.ProjectListParams{
 		Limit: gcore.Int(10),
 	})
-	// Prism mock isn't going to give us real pagination
+	// The mock server isn't going to give us real pagination
 	for i := 0; i < 3 && iter.Next(); i++ {
 		project := iter.Current()
 		t.Logf("%+v\n", project.ID)

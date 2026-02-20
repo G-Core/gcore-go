@@ -4,7 +4,6 @@ package waap
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -28,6 +27,7 @@ import (
 // the [NewDomainService] method instead.
 type DomainService struct {
 	Options         []option.RequestOption
+	Policies        DomainPolicyService
 	Settings        DomainSettingService
 	APIPaths        DomainAPIPathService
 	APIPathGroups   DomainAPIPathGroupService
@@ -46,6 +46,7 @@ type DomainService struct {
 func NewDomainService(opts ...option.RequestOption) (r DomainService) {
 	r = DomainService{}
 	r.Options = opts
+	r.Policies = NewDomainPolicyService(opts...)
 	r.Settings = NewDomainSettingService(opts...)
 	r.APIPaths = NewDomainAPIPathService(opts...)
 	r.APIPathGroups = NewDomainAPIPathGroupService(opts...)
@@ -114,18 +115,6 @@ func (r *DomainService) ListRuleSets(ctx context.Context, domainID int64, opts .
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/rule-sets", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Modify the activation state of a policy associated with a domain
-func (r *DomainService) TogglePolicy(ctx context.Context, policyID string, body DomainTogglePolicyParams, opts ...option.RequestOption) (res *WaapPolicyMode, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if policyID == "" {
-		err = errors.New("missing required policy_id parameter")
-		return
-	}
-	path := fmt.Sprintf("waap/v1/domains/%v/policies/%s/toggle", body.DomainID, policyID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
 	return
 }
 
@@ -270,24 +259,6 @@ type WaapDomainSettingsModel struct {
 // Returns the unmodified JSON received from the API
 func (r WaapDomainSettingsModel) RawJSON() string { return r.JSON.raw }
 func (r *WaapDomainSettingsModel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Represents the mode of a security rule.
-type WaapPolicyMode struct {
-	// Indicates if the security rule is active
-	Mode bool `json:"mode,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Mode        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WaapPolicyMode) RawJSON() string { return r.JSON.raw }
-func (r *WaapPolicyMode) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -507,9 +478,3 @@ const (
 	DomainListParamsStatusMonitor DomainListParamsStatus = "monitor"
 	DomainListParamsStatusLocked  DomainListParamsStatus = "locked"
 )
-
-type DomainTogglePolicyParams struct {
-	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
-	paramObj
-}
