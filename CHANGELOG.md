@@ -1,5 +1,61 @@
 # Changelog
 
+## 0.34.0 (2026-02-23)
+
+Full Changelog: [v0.33.0...v0.34.0](https://github.com/G-Core/gcore-go/compare/v0.33.0...v0.34.0)
+
+### ⚠ BREAKING CHANGES
+
+* **iam:** rename models and update examples
+* **iam:** rename models and update examples
+* **waap:** move domains.toggle_policy to domains.policies.toggle
+* **waap:** split api_discovery methods into scan_results, openapi, and settings subresources
+* **streaming:** move streams clip methods to streams.clips
+* **streaming:** move playlists.list_videos to playlists.videos.list
+* **cdn:** move ip_ranges.list_ips to ips.list
+
+### Features
+
+* **api:** aggregated API specs update ([df4ce9a](https://github.com/G-Core/gcore-go/commit/df4ce9af79a022abd5cd58862cece85e813d8f16))
+* **api:** aggregated API specs update ([f15bbe7](https://github.com/G-Core/gcore-go/commit/f15bbe7fb6b2bf394532ca6b4391f3b42440d8ca))
+* **api:** aggregated API specs update ([89a11c7](https://github.com/G-Core/gcore-go/commit/89a11c70c86d277964d4c06a0b7f757dfb6ef398))
+* **api:** aggregated API specs update ([857dd86](https://github.com/G-Core/gcore-go/commit/857dd86974e36d12b60af50f658c713a471aa481))
+* **api:** aggregated API specs update ([f09a741](https://github.com/G-Core/gcore-go/commit/f09a7414555cd7f18d93e0fe709161fdbb4f3f6b))
+* **api:** aggregated API specs update ([6085bf2](https://github.com/G-Core/gcore-go/commit/6085bf22f65ae5243882a4d57201fa577157d494))
+* **api:** aggregated API specs update ([31e99f9](https://github.com/G-Core/gcore-go/commit/31e99f9232b49bf5c5aa28a6aa680af081add1ff))
+* **api:** aggregated API specs update ([fb39eaa](https://github.com/G-Core/gcore-go/commit/fb39eaa0c9404a8fa9b7b89d69738ae3ebbf510d))
+* **api:** manual updates ([48fb410](https://github.com/G-Core/gcore-go/commit/48fb410450a820eeea7810d30908b442cd3d9dd9))
+* **cdn:** enable terraform generation for cdn rules ([c16d050](https://github.com/G-Core/gcore-go/commit/c16d0501aeddf79bf453391628c406c5775ceef5))
+* **cloud:** add NewAndPoll/DeleteAndPoll for SecurityGroupRuleService ([#196](https://github.com/G-Core/gcore-go/issues/196)) ([f74ab49](https://github.com/G-Core/gcore-go/commit/f74ab4937404ce419572d13e9d7e5debbfb356af))
+* **cloud:** enable terraform for security group rules (v2) ([fd257ad](https://github.com/G-Core/gcore-go/commit/fd257ad78df9dcb70ce6ca33c6c572bf13f7eb59))
+
+
+### Bug Fixes
+
+* allow canceling a request while it is waiting to retry ([a6c7ddc](https://github.com/G-Core/gcore-go/commit/a6c7ddc2c047ed863e8a10a936a470217699d574))
+* **api:** revert unnecessary changes to additionalProperties ([b173bf9](https://github.com/G-Core/gcore-go/commit/b173bf9ee63dde29dab91ec646f1b93f96390bf6))
+* **client:** mark count in offset pagination as required ([fbca021](https://github.com/G-Core/gcore-go/commit/fbca021074d00bbc1d83a2b56079365f3fcafb15))
+* **client:** use correct format specifier for header serialization ([3d7d300](https://github.com/G-Core/gcore-go/commit/3d7d300efa368a5a8da1c28f71b3177e8abe4c79))
+* **cloud:** keep v1 replace method for security group rules ([fe6b173](https://github.com/G-Core/gcore-go/commit/fe6b1732fb8ce25cfc9b8a584f3c6a249d0b9826))
+* **cloud:** update security group rule examples for /v2 endpoints ([#197](https://github.com/G-Core/gcore-go/issues/197)) ([24c801f](https://github.com/G-Core/gcore-go/commit/24c801ffd6c75b8bab9f4faba5a32e6837ba6591))
+* **storage:** update storage type in examples after renaming ([532a332](https://github.com/G-Core/gcore-go/commit/532a332ee22116d3c802cc01f91fa41a733f395b))
+* **waap:** split api_discovery methods into scan_results, openapi, and settings subresources ([4dcaaaf](https://github.com/G-Core/gcore-go/commit/4dcaaaf2c2eb70bf55c3f42b59d2416812c9790a))
+
+
+### Chores
+
+* update mock server docs ([4c7ce55](https://github.com/G-Core/gcore-go/commit/4c7ce55acdad61831901d533c6afb7daa2ff3c94))
+
+
+### Refactors
+
+* **cdn:** move ip_ranges.list_ips to ips.list ([2b56e18](https://github.com/G-Core/gcore-go/commit/2b56e189322d6d1ecc58d4c4a3fbd401a61bdbab))
+* **iam:** rename models and update examples ([a1adcf8](https://github.com/G-Core/gcore-go/commit/a1adcf86b850a3fd97e19ce0cf5ff95b56c2158c))
+* **iam:** rename models and update examples ([3f40544](https://github.com/G-Core/gcore-go/commit/3f40544e5234c1ec1a1c302eb2d9873bcdf3a78f))
+* **streaming:** move playlists.list_videos to playlists.videos.list ([c3466bd](https://github.com/G-Core/gcore-go/commit/c3466bd459b828be1c9d81d9b3a4eee37c69b1be))
+* **streaming:** move streams clip methods to streams.clips ([aacd4a2](https://github.com/G-Core/gcore-go/commit/aacd4a2c2f671e98111bed01f226eb90ddea104f))
+* **waap:** move domains.toggle_policy to domains.policies.toggle ([c0e602f](https://github.com/G-Core/gcore-go/commit/c0e602f4379a3ca526c1fd48348d0c2f25310178))
+
 ## 0.33.0 (2026-02-16)
 
 Full Changelog: [v0.32.0...v0.33.0](https://github.com/G-Core/gcore-go/compare/v0.32.0...v0.33.0)
