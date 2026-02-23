@@ -505,6 +505,8 @@ type CDNResourceOptions struct {
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
 	ForwardHostHeader CDNResourceOptionsForwardHostHeader `json:"forward_host_header,nullable"`
+	// Enables gRPC pass-through for the CDN resource.
+	GrpcPassthrough CDNResourceOptionsGrpcPassthrough `json:"grpc_passthrough,nullable"`
 	// Compresses content with gzip on the CDN end. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -694,6 +696,7 @@ type CDNResourceOptions struct {
 		FollowOriginRedirect        respjson.Field
 		ForceReturn                 respjson.Field
 		ForwardHostHeader           respjson.Field
+		GrpcPassthrough             respjson.Field
 		GzipOn                      respjson.Field
 		HostHeader                  respjson.Field
 		Http3Enabled                respjson.Field
@@ -1471,6 +1474,35 @@ type CDNResourceOptionsForwardHostHeader struct {
 // Returns the unmodified JSON received from the API
 func (r CDNResourceOptionsForwardHostHeader) RawJSON() string { return r.JSON.raw }
 func (r *CDNResourceOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables gRPC pass-through for the CDN resource.
+type CDNResourceOptionsGrpcPassthrough struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled     respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CDNResourceOptionsGrpcPassthrough) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsGrpcPassthrough) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3042,6 +3074,8 @@ type CDNResourceNewParamsOptions struct {
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
 	ForwardHostHeader CDNResourceNewParamsOptionsForwardHostHeader `json:"forward_host_header,omitzero"`
+	// Enables gRPC pass-through for the CDN resource.
+	GrpcPassthrough CDNResourceNewParamsOptionsGrpcPassthrough `json:"grpc_passthrough,omitzero"`
 	// Compresses content with gzip on the CDN end. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -3897,6 +3931,33 @@ func (r CDNResourceNewParamsOptionsForwardHostHeader) MarshalJSON() (data []byte
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CDNResourceNewParamsOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables gRPC pass-through for the CDN resource.
+//
+// The properties Enabled, Value are required.
+type CDNResourceNewParamsOptionsGrpcPassthrough struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceNewParamsOptionsGrpcPassthrough) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceNewParamsOptionsGrpcPassthrough
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceNewParamsOptionsGrpcPassthrough) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5381,6 +5442,8 @@ type CDNResourceUpdateParamsOptions struct {
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
 	ForwardHostHeader CDNResourceUpdateParamsOptionsForwardHostHeader `json:"forward_host_header,omitzero"`
+	// Enables gRPC pass-through for the CDN resource.
+	GrpcPassthrough CDNResourceUpdateParamsOptionsGrpcPassthrough `json:"grpc_passthrough,omitzero"`
 	// Compresses content with gzip on the CDN end. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -6236,6 +6299,33 @@ func (r CDNResourceUpdateParamsOptionsForwardHostHeader) MarshalJSON() (data []b
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CDNResourceUpdateParamsOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables gRPC pass-through for the CDN resource.
+//
+// The properties Enabled, Value are required.
+type CDNResourceUpdateParamsOptionsGrpcPassthrough struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceUpdateParamsOptionsGrpcPassthrough) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceUpdateParamsOptionsGrpcPassthrough
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceUpdateParamsOptionsGrpcPassthrough) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -7940,6 +8030,8 @@ type CDNResourceReplaceParamsOptions struct {
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
 	ForwardHostHeader CDNResourceReplaceParamsOptionsForwardHostHeader `json:"forward_host_header,omitzero"`
+	// Enables gRPC pass-through for the CDN resource.
+	GrpcPassthrough CDNResourceReplaceParamsOptionsGrpcPassthrough `json:"grpc_passthrough,omitzero"`
 	// Compresses content with gzip on the CDN end. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -8795,6 +8887,33 @@ func (r CDNResourceReplaceParamsOptionsForwardHostHeader) MarshalJSON() (data []
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CDNResourceReplaceParamsOptionsForwardHostHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables gRPC pass-through for the CDN resource.
+//
+// The properties Enabled, Value are required.
+type CDNResourceReplaceParamsOptionsGrpcPassthrough struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled,required"`
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Value bool `json:"value,required"`
+	paramObj
+}
+
+func (r CDNResourceReplaceParamsOptionsGrpcPassthrough) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceReplaceParamsOptionsGrpcPassthrough
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceReplaceParamsOptionsGrpcPassthrough) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
