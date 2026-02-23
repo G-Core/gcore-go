@@ -31,7 +31,7 @@ func TestNetworkNewWithOptionalParams(t *testing.T) {
 		RegionID:     gcore.Int(1),
 		Name:         "my network",
 		CreateRouter: gcore.Bool(true),
-		Tags: map[string]string{
+		Tags: map[string]any{
 			"my-tag": "my-tag-value",
 		},
 		Type: cloud.NetworkNewParamsTypeVxlan,
@@ -64,9 +64,7 @@ func TestNetworkUpdateWithOptionalParams(t *testing.T) {
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
 			Name:      gcore.String("some_name"),
-			Tags: cloud.TagUpdateMap{
-				"foo": "string",
-			},
+			Tags:      map[string]any{},
 		},
 	)
 	if err != nil {
