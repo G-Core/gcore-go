@@ -46,7 +46,7 @@ func main() {
 	// Rules
 	ruleID := createSecurityGroupRule(&client, sgID)
 	ruleID = replaceSecurityGroupRule(&client, ruleID, sgID)
-	deleteSecurityGroupRule(&client, ruleID)
+	deleteSecurityGroupRule(&client, ruleID, sgID)
 
 	deleteSecurityGroup(&client, sgID)
 }
