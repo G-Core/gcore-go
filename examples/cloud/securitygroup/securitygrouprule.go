@@ -16,7 +16,7 @@ func createSecurityGroupRule(client *gcore.Client, groupID string) string {
 	remoteIP := "0.0.0.0/0"
 	httpDesc := "Allow HTTP traffic"
 
-	rule, err := client.Cloud.SecurityGroups.Rules.New(context.Background(), groupID, cloud.SecurityGroupRuleNewParams{
+	rule, err := client.Cloud.SecurityGroups.Rules.NewAndPoll(context.Background(), groupID, cloud.SecurityGroupRuleNewParams{
 		Direction:      cloud.SecurityGroupRuleNewParamsDirectionIngress,
 		Protocol:       cloud.SecurityGroupRuleNewParamsProtocolTcp,
 		Ethertype:      cloud.SecurityGroupRuleNewParamsEthertypeIPv4,
@@ -62,10 +62,12 @@ func replaceSecurityGroupRule(client *gcore.Client, ruleID, groupID string) stri
 	return rule.ID
 }
 
-func deleteSecurityGroupRule(client *gcore.Client, ruleID string) {
+func deleteSecurityGroupRule(client *gcore.Client, ruleID, groupID string) {
 	fmt.Println("\n=== DELETE SECURITY GROUP RULE ===")
 
-	err := client.Cloud.SecurityGroups.Rules.Delete(context.Background(), ruleID, cloud.SecurityGroupRuleDeleteParams{})
+	err := client.Cloud.SecurityGroups.Rules.DeleteAndPoll(context.Background(), ruleID, cloud.SecurityGroupRuleDeleteParams{
+		GroupID: groupID,
+	})
 	if err != nil {
 		log.Fatalf("Error deleting security group rule: %v", err)
 	}
