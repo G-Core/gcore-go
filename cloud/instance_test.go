@@ -47,7 +47,7 @@ func TestInstanceNewWithOptionalParams(t *testing.T) {
 				AttachmentTag:       gcore.String("boot"),
 				DeleteOnTermination: gcore.Bool(false),
 				Name:                gcore.String("boot-volume"),
-				Tags: map[string]any{
+				Tags: map[string]string{
 					"my-tag": "my-tag-value",
 				},
 				TypeName: "ssd_hiiops",
@@ -65,7 +65,7 @@ func TestInstanceNewWithOptionalParams(t *testing.T) {
 		}},
 		ServergroupID: gcore.String("servergroup_id"),
 		SSHKeyName:    gcore.String("my-ssh-key"),
-		Tags: map[string]any{
+		Tags: map[string]string{
 			"my-tag": "my-tag-value",
 		},
 		UserData: gcore.String("user_data"),
@@ -99,7 +99,9 @@ func TestInstanceUpdateWithOptionalParams(t *testing.T) {
 			ProjectID: gcore.Int(0),
 			RegionID:  gcore.Int(0),
 			Name:      gcore.String("instance_name"),
-			Tags:      map[string]any{},
+			Tags: cloud.TagUpdateMap{
+				"foo": "string",
+			},
 		},
 	)
 	if err != nil {
