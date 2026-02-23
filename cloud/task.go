@@ -240,12 +240,16 @@ const (
 
 // If the task creates resources, this field will contain their IDs
 type TaskCreatedResources struct {
-	// IDs of created AI clusters
+	// Deprecated, use 'clusters' instead. IDs of created GPU clusters
+	//
+	// Deprecated: deprecated
 	AIClusters []string `json:"ai_clusters"`
 	// IDs of created API keys
 	APIKeys []string `json:"api_keys"`
 	// IDs of created CaaS containers
 	CaasContainers []string `json:"caas_containers"`
+	// IDs of created GPU clusters
+	Clusters []string `json:"clusters"`
 	// IDs of created ddos protection profiles
 	DDOSProfiles []int64 `json:"ddos_profiles"`
 	// IDs of created FaaS functions
@@ -315,6 +319,7 @@ type TaskCreatedResources struct {
 		AIClusters         respjson.Field
 		APIKeys            respjson.Field
 		CaasContainers     respjson.Field
+		Clusters           respjson.Field
 		DDOSProfiles       respjson.Field
 		FaasFunctions      respjson.Field
 		FaasNamespaces     respjson.Field
