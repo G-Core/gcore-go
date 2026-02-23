@@ -32,7 +32,7 @@ func TestVolumeSnapshotNewWithOptionalParams(t *testing.T) {
 		Name:        "my-snapshot",
 		VolumeID:    "67baa7d1-08ea-4fc5-bef2-6b2465b7d227",
 		Description: gcore.String("Snapshot description"),
-		Tags: map[string]any{
+		Tags: map[string]string{
 			"my-tag": "my-tag-value",
 		},
 	})
@@ -64,7 +64,9 @@ func TestVolumeSnapshotUpdateWithOptionalParams(t *testing.T) {
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
 			Name:      gcore.String("my-backup-snapshot"),
-			Tags:      map[string]any{},
+			Tags: cloud.TagUpdateMap{
+				"foo": "string",
+			},
 		},
 	)
 	if err != nil {
