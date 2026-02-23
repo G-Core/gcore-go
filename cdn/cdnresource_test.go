@@ -134,6 +134,10 @@ func TestCDNResourceNewWithOptionalParams(t *testing.T) {
 				Enabled: false,
 				Value:   false,
 			},
+			GrpcPassthrough: cdn.CDNResourceNewParamsOptionsGrpcPassthrough{
+				Enabled: true,
+				Value:   true,
+			},
 			GzipOn: cdn.CDNResourceNewParamsOptionsGzipOn{
 				Enabled: true,
 				Value:   true,
@@ -450,6 +454,10 @@ func TestCDNResourceUpdateWithOptionalParams(t *testing.T) {
 				ForwardHostHeader: cdn.CDNResourceUpdateParamsOptionsForwardHostHeader{
 					Enabled: false,
 					Value:   false,
+				},
+				GrpcPassthrough: cdn.CDNResourceUpdateParamsOptionsGrpcPassthrough{
+					Enabled: true,
+					Value:   true,
 				},
 				GzipOn: cdn.CDNResourceUpdateParamsOptionsGzipOn{
 					Enabled: true,
@@ -928,6 +936,10 @@ func TestCDNResourceReplaceWithOptionalParams(t *testing.T) {
 				ForwardHostHeader: cdn.CDNResourceReplaceParamsOptionsForwardHostHeader{
 					Enabled: false,
 					Value:   false,
+				},
+				GrpcPassthrough: cdn.CDNResourceReplaceParamsOptionsGrpcPassthrough{
+					Enabled: true,
+					Value:   true,
 				},
 				GzipOn: cdn.CDNResourceReplaceParamsOptionsGzipOn{
 					Enabled: true,
