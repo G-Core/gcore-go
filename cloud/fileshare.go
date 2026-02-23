@@ -511,7 +511,7 @@ type FileShareNewParamsBodyCreateStandardFileShareSerializer struct {
 	// length of 255 characters. Some tags are read-only and cannot be modified by the
 	// user. Tags are also integrated with cost reports, allowing cost data to be
 	// filtered based on tag keys or values.
-	Tags any `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	// Standard file share type
 	//
 	// Any of "standard".
@@ -604,7 +604,7 @@ type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
 	// length of 255 characters. Some tags are read-only and cannot be modified by the
 	// user. Tags are also integrated with cost reports, allowing cost data to be
 	// filtered based on tag keys or values.
-	Tags any `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	// Vast file share type
 	//
 	// Any of "vast".

@@ -1628,7 +1628,7 @@ type LoadBalancerNewParams struct {
 	// length of 255 characters. Some tags are read-only and cannot be modified by the
 	// user. Tags are also integrated with cost reports, allowing cost data to be
 	// filtered based on tag keys or values.
-	Tags any `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	// IP family for load balancer subnet auto-selection if `vip_network_id` is
 	// specified
 	//
