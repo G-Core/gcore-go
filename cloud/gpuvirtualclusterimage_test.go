@@ -121,7 +121,7 @@ func TestGPUVirtualClusterImageUploadWithOptionalParams(t *testing.T) {
 		OsType:         cloud.GPUVirtualClusterImageUploadParamsOsTypeLinux,
 		OsVersion:      gcore.String("19.04"),
 		SSHKey:         cloud.GPUVirtualClusterImageUploadParamsSSHKeyAllow,
-		Tags: map[string]any{
+		Tags: map[string]string{
 			"my-tag": "my-tag-value",
 		},
 	})
