@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.35.0 (2026-02-24)
+
+Full Changelog: [v0.34.0...v0.35.0](https://github.com/G-Core/gcore-go/compare/v0.34.0...v0.35.0)
+
+### Features
+
+* add /release skill ([d35a208](https://github.com/G-Core/gcore-go/commit/d35a208a82a1b33261911c4e687b22d121eb7d34))
+* **api:** aggregated API specs update ([10ab283](https://github.com/G-Core/gcore-go/commit/10ab283a4e4607e386cdc40ee408a71717e257f1))
+* **cloud:** get cluster_id from task created_resources instead of task data ([507e3f7](https://github.com/G-Core/gcore-go/commit/507e3f74e80721ee8523f62a13aac4d04c6f4c98))
+
 ## 0.34.0 (2026-02-23)
 
 Full Changelog: [v0.33.0...v0.34.0](https://github.com/G-Core/gcore-go/compare/v0.33.0...v0.34.0)
