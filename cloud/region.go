@@ -327,6 +327,8 @@ const (
 )
 
 type RegionListParams struct {
+	// Filter regions by display name. Case-insensitive exact match.
+	DisplayName param.Opt[string] `query:"display_name,omitzero" json:"-"`
 	// Limit the number of returned regions. Falls back to default of 100 if not
 	// specified. Limited by max limit value of 1000
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
