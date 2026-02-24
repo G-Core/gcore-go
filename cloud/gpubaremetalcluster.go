@@ -239,21 +239,25 @@ func (r *GPUBaremetalClusterService) RebootAllServers(ctx context.Context, clust
 	return
 }
 
-// Rebuild one or more nodes in a GPU cluster. All cluster nodes must be specified
-// to update the cluster image.
-func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID string, params GPUBaremetalClusterRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+// Perform a rebuild operation on a bare metal GPU cluster. During the rebuild
+// process, the servers in cluster receive a new image, SSH key, and user data.
+// Important: Before triggering a rebuild, the cluster must have updated server
+// settings to apply. These cluster settings must be patched using the following
+// endpoint: PATCH
+// '/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters/{`cluster_id`}/servers_settings'
+func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID string, body GPUBaremetalClusterRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return
 	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
+	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return
 	}
-	if !params.RegionID.Valid() {
+	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return
 	}
@@ -261,8 +265,8 @@ func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID stri
 		err = errors.New("missing required cluster_id parameter")
 		return
 	}
-	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%v/%v/%s/rebuild", params.ProjectID.Value, params.RegionID.Value, clusterID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/rebuild", body.ProjectID.Value, body.RegionID.Value, clusterID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
@@ -290,6 +294,37 @@ func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID strin
 	}
 	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%v/%v/%s/resize", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return
+}
+
+// This operation only modifies cluster settings such as SSH key, image, and user
+// data. **It does NOT modify or rebuild any existing servers in the cluster.**
+//
+// To apply these configuration changes to running servers, use the
+// `/cloud/v3/gpu/baremetal/{project_id}/{region_id}/clusters/{cluster_id}/rebuild`
+// endpoint.
+func (r *GPUBaremetalClusterService) UpdateServersSettings(ctx context.Context, clusterID string, params GPUBaremetalClusterUpdateServersSettingsParams, opts ...option.RequestOption) (res *GPUBaremetalCluster, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	if clusterID == "" {
+		err = errors.New("missing required cluster_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/servers_settings", params.ProjectID.Value, params.RegionID.Value, clusterID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
 }
 
@@ -1168,24 +1203,11 @@ type GPUBaremetalClusterRebootAllServersParams struct {
 }
 
 type GPUBaremetalClusterRebuildParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// List of nodes uuids to be rebuild
-	Nodes []string `json:"nodes,omitzero" api:"required"`
-	// AI GPU image ID
-	ImageID param.Opt[string] `json:"image_id,omitzero"`
-	// String in base64 format.Examples of the `user_data`:
-	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html
-	UserData param.Opt[string] `json:"user_data,omitzero"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
-}
-
-func (r GPUBaremetalClusterRebuildParams) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterRebuildParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *GPUBaremetalClusterRebuildParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type GPUBaremetalClusterResizeParams struct {
@@ -1201,5 +1223,58 @@ func (r GPUBaremetalClusterResizeParams) MarshalJSON() (data []byte, err error) 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GPUBaremetalClusterResizeParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GPUBaremetalClusterUpdateServersSettingsParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// System image ID
+	ImageID param.Opt[string] `json:"image_id,omitzero" format:"uuid4"`
+	// Configuration settings for the servers in the cluster
+	ServersSettings GPUBaremetalClusterUpdateServersSettingsParamsServersSettings `json:"servers_settings,omitzero"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterUpdateServersSettingsParams) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterUpdateServersSettingsParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterUpdateServersSettingsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration settings for the servers in the cluster
+type GPUBaremetalClusterUpdateServersSettingsParamsServersSettings struct {
+	// Optional custom user data (Base64-encoded)
+	UserData param.Opt[string] `json:"user_data,omitzero"`
+	// Optional server access credentials
+	Credentials GPUBaremetalClusterUpdateServersSettingsParamsServersSettingsCredentials `json:"credentials,omitzero"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterUpdateServersSettingsParamsServersSettings) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterUpdateServersSettingsParamsServersSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterUpdateServersSettingsParamsServersSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional server access credentials
+type GPUBaremetalClusterUpdateServersSettingsParamsServersSettingsCredentials struct {
+	// Specifies the name of the SSH keypair, created via the
+	// [/v1/`ssh_keys` endpoint](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
+	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterUpdateServersSettingsParamsServersSettingsCredentials) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterUpdateServersSettingsParamsServersSettingsCredentials
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterUpdateServersSettingsParamsServersSettingsCredentials) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
