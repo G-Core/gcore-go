@@ -27,6 +27,7 @@ func TestRegionListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Regions.List(context.TODO(), cloud.RegionListParams{
+		DisplayName:     gcore.String("Luxembourg"),
 		Limit:           gcore.Int(100),
 		Offset:          gcore.Int(0),
 		OrderBy:         cloud.RegionListParamsOrderByCreatedAtDesc,
