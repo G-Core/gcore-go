@@ -115,15 +115,15 @@ func (r *ReservedFixedIPVipConnectedPortService) Replace(ctx context.Context, po
 
 type ConnectedPort struct {
 	// ID of the instance that owns the port
-	InstanceID string `json:"instance_id,required" format:"uuid4"`
+	InstanceID string `json:"instance_id" api:"required" format:"uuid4"`
 	// Name of the instance that owns the port
-	InstanceName string `json:"instance_name,required"`
+	InstanceName string `json:"instance_name" api:"required"`
 	// IP addresses assigned to this port
-	IPAssignments []IPWithSubnet `json:"ip_assignments,required"`
+	IPAssignments []IPWithSubnet `json:"ip_assignments" api:"required"`
 	// Network details
-	Network Network `json:"network,required"`
+	Network Network `json:"network" api:"required"`
 	// Port ID that shares VIP
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InstanceID    respjson.Field
@@ -144,9 +144,9 @@ func (r *ConnectedPort) UnmarshalJSON(data []byte) error {
 
 type ConnectedPortList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []ConnectedPort `json:"results,required"`
+	Results []ConnectedPort `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -163,14 +163,14 @@ func (r *ConnectedPortList) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPVipConnectedPortListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type ReservedFixedIPVipConnectedPortAddParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// List of port IDs that will share one VIP
 	PortIDs []string `json:"port_ids,omitzero" format:"uuid4"`
 	paramObj
@@ -185,8 +185,8 @@ func (r *ReservedFixedIPVipConnectedPortAddParams) UnmarshalJSON(data []byte) er
 }
 
 type ReservedFixedIPVipConnectedPortReplaceParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// List of port IDs that will share one VIP
 	PortIDs []string `json:"port_ids,omitzero" format:"uuid4"`
 	paramObj

@@ -343,7 +343,7 @@ type UsageSeriesStat struct {
 	// Date and time when paid feature was disabled (ISO 8601/RFC 3339 format, UTC.)
 	//
 	// It returns **null** if the paid feature is enabled.
-	ActiveTo string `json:"active_to,nullable"`
+	ActiveTo string `json:"active_to" api:"nullable"`
 	// Client ID.
 	ClientID int64 `json:"client_id"`
 	// CDN resource CNAME.
@@ -370,9 +370,9 @@ func (r *UsageSeriesStat) UnmarshalJSON(data []byte) error {
 
 type StatisticGetLogsUsageAggregatedParams struct {
 	// Beginning of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// The way the parameters are arranged in the response.
 	//
 	// Possible values:
@@ -409,9 +409,9 @@ func (r StatisticGetLogsUsageAggregatedParams) URLQuery() (v url.Values, err err
 
 type StatisticGetLogsUsageSeriesParams struct {
 	// Beginning of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// CDN resources IDs by that statistics data is grouped.
 	//
 	// To request multiple values, use:
@@ -435,7 +435,7 @@ func (r StatisticGetLogsUsageSeriesParams) URLQuery() (v url.Values, err error) 
 
 type StatisticGetResourceUsageAggregatedParams struct {
 	// Beginning of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// Types of statistics data.
 	//
 	// Possible values:
@@ -483,15 +483,15 @@ type StatisticGetResourceUsageAggregatedParams struct {
 	//
 	// Metrics **`upstream_response_time`** and **`request_time`** should be requested
 	// separately from other metrics
-	Metrics string `query:"metrics,required" json:"-"`
+	Metrics string `query:"metrics" api:"required" json:"-"`
 	// Service name.
 	//
 	// Possible value:
 	//
 	// - CDN
-	Service string `query:"service,required" json:"-"`
+	Service string `query:"service" api:"required" json:"-"`
 	// End of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// Names of countries for which data should be displayed. English short name from
 	// [ISO 3166 standard][1] without the definite article ("the") should be used.
 	//
@@ -560,7 +560,7 @@ func (r StatisticGetResourceUsageAggregatedParams) URLQuery() (v url.Values, err
 
 type StatisticGetResourceUsageSeriesParams struct {
 	// Beginning of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// Duration of the time blocks into which the data will be divided.
 	//
 	// Possible values:
@@ -570,7 +570,7 @@ type StatisticGetResourceUsageSeriesParams struct {
 	// - **15m**
 	// - **1h**
 	// - **1d**
-	Granularity string `query:"granularity,required" json:"-"`
+	Granularity string `query:"granularity" api:"required" json:"-"`
 	// Types of statistics data.
 	//
 	// Possible values:
@@ -611,15 +611,15 @@ type StatisticGetResourceUsageSeriesParams struct {
 	//
 	// Metrics **`upstream_response_time`** and **`request_time`** should be requested
 	// separately from other metrics
-	Metrics string `query:"metrics,required" json:"-"`
+	Metrics string `query:"metrics" api:"required" json:"-"`
 	// Service name.
 	//
 	// Possible value:
 	//
 	// - CDN
-	Service string `query:"service,required" json:"-"`
+	Service string `query:"service" api:"required" json:"-"`
 	// End of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// Names of countries for which data should be displayed. English short name from
 	// [ISO 3166 standard][1] without the definite article ("the") should be used.
 	//
@@ -681,9 +681,9 @@ func (r StatisticGetResourceUsageSeriesParams) URLQuery() (v url.Values, err err
 
 type StatisticGetShieldUsageAggregatedParams struct {
 	// Beginning of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// The way the parameters are arranged in the response.
 	//
 	// Possible values:
@@ -720,9 +720,9 @@ func (r StatisticGetShieldUsageAggregatedParams) URLQuery() (v url.Values, err e
 
 type StatisticGetShieldUsageSeriesParams struct {
 	// Beginning of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End of the requested time period (ISO 8601/RFC 3339 format, UTC.)
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// CDN resources IDs by that statistics data is grouped.
 	//
 	// To request multiple values, use:

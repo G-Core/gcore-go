@@ -251,43 +251,43 @@ func (r *LoadBalancerService) Resize(ctx context.Context, loadBalancerID string,
 
 type HealthMonitor struct {
 	// Health monitor ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
 	// process traffic. Defaults to true.
-	AdminStateUp bool `json:"admin_state_up,required"`
+	AdminStateUp bool `json:"admin_state_up" api:"required"`
 	// The time, in seconds, between sending probes to members
-	Delay int64 `json:"delay,required"`
+	Delay int64 `json:"delay" api:"required"`
 	// Number of successes before the member is switched to ONLINE state
-	MaxRetries int64 `json:"max_retries,required"`
+	MaxRetries int64 `json:"max_retries" api:"required"`
 	// Number of failures before the member is switched to ERROR state
-	MaxRetriesDown int64 `json:"max_retries_down,required"`
+	MaxRetriesDown int64 `json:"max_retries_down" api:"required"`
 	// Health Monitor operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// Health monitor lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// The maximum time to connect. Must be less than the delay value
-	Timeout int64 `json:"timeout,required"`
+	Timeout int64 `json:"timeout" api:"required"`
 	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
-	Type LbHealthMonitorType `json:"type,required"`
+	Type LbHealthMonitorType `json:"type" api:"required"`
 	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
 	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
 	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
-	ExpectedCodes string `json:"expected_codes,nullable"`
+	ExpectedCodes string `json:"expected_codes" api:"nullable"`
 	// HTTP method
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".
-	HTTPMethod HTTPMethod `json:"http_method,nullable"`
+	HTTPMethod HTTPMethod `json:"http_method" api:"nullable"`
 	// URL Path. Defaults to '/'
-	URLPath string `json:"url_path,nullable"`
+	URLPath string `json:"url_path" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -315,20 +315,20 @@ func (r *HealthMonitor) UnmarshalJSON(data []byte) error {
 
 type HealthMonitorStatus struct {
 	// UUID of the entity
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// Provisioning status of the entity
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// Type of the Health Monitor
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
-	Type LbHealthMonitorType `json:"type,required"`
+	Type LbHealthMonitorType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -398,20 +398,20 @@ const (
 
 type ListenerStatus struct {
 	// UUID of the entity
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Name of the load balancer listener
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// Pools of the Listeners
-	Pools []PoolStatus `json:"pools,required"`
+	Pools []PoolStatus `json:"pools" api:"required"`
 	// Provisioning status of the entity
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -432,23 +432,23 @@ func (r *ListenerStatus) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerFlavorDetail struct {
 	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// Currency code. Shown if the `include_prices` query parameter if set to true
-	CurrencyCode string `json:"currency_code,nullable"`
+	CurrencyCode string `json:"currency_code" api:"nullable"`
 	// Price per hour. Shown if the `include_prices` query parameter if set to true
-	PricePerHour float64 `json:"price_per_hour,nullable"`
+	PricePerHour float64 `json:"price_per_hour" api:"nullable"`
 	// Price per month. Shown if the `include_prices` query parameter if set to true
-	PricePerMonth float64 `json:"price_per_month,nullable"`
+	PricePerMonth float64 `json:"price_per_month" api:"nullable"`
 	// Price status for the UI
 	//
 	// Any of "error", "hide", "show".
-	PriceStatus LoadBalancerFlavorDetailPriceStatus `json:"price_status,nullable"`
+	PriceStatus LoadBalancerFlavorDetailPriceStatus `json:"price_status" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FlavorID      respjson.Field
@@ -481,9 +481,9 @@ const (
 
 type LoadBalancerFlavorList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []LoadBalancerFlavorListResultUnion `json:"results,required"`
+	Results []LoadBalancerFlavorListResultUnion `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -549,13 +549,13 @@ func (r *LoadBalancerFlavorListResultUnion) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerFlavorListResultLbFlavorSerializer struct {
 	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FlavorID    respjson.Field
@@ -575,54 +575,54 @@ func (r *LoadBalancerFlavorListResultLbFlavorSerializer) UnmarshalJSON(data []by
 
 type LoadBalancerL7Policy struct {
 	// ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Action
 	//
 	// Any of "REDIRECT_PREFIX", "REDIRECT_TO_POOL", "REDIRECT_TO_URL", "REJECT".
-	Action LoadBalancerL7PolicyAction `json:"action,required"`
+	Action LoadBalancerL7PolicyAction `json:"action" api:"required"`
 	// Listener ID
-	ListenerID string `json:"listener_id,required"`
+	ListenerID string `json:"listener_id" api:"required"`
 	// Human-readable name of the policy
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// L7 policy operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// The position of this policy on the listener. Positions start at 1.
-	Position int64 `json:"position,required"`
+	Position int64 `json:"position" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// Requests matching this policy will be redirected to the specified URL or Prefix
 	// URL with the HTTP response code. Valid if action is `REDIRECT_TO_URL` or
 	// `REDIRECT_PREFIX`. Valid options are 301, 302, 303, 307, or 308. Default is 302.
-	RedirectHTTPCode int64 `json:"redirect_http_code,required"`
+	RedirectHTTPCode int64 `json:"redirect_http_code" api:"required"`
 	// Requests matching this policy will be redirected to the pool with this ID. Only
 	// valid if action is `REDIRECT_TO_POOL`.
-	RedirectPoolID string `json:"redirect_pool_id,required"`
+	RedirectPoolID string `json:"redirect_pool_id" api:"required"`
 	// Requests matching this policy will be redirected to this Prefix URL. Only valid
 	// if action is `REDIRECT_PREFIX`.
-	RedirectPrefix string `json:"redirect_prefix,required"`
+	RedirectPrefix string `json:"redirect_prefix" api:"required"`
 	// Requests matching this policy will be redirected to this URL. Only valid if
 	// action is `REDIRECT_TO_URL`.
-	RedirectURL string `json:"redirect_url,required"`
+	RedirectURL string `json:"redirect_url" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Rules. All the rules associated with a given policy are logically ANDed
 	// together. A request must match all the policy’s rules to match the policy.If you
 	// need to express a logical OR operation between rules, then do this by creating
 	// multiple policies with the same action.
-	Rules []LoadBalancerL7PolicyRule `json:"rules,required"`
+	Rules []LoadBalancerL7PolicyRule `json:"rules" api:"required"`
 	// A list of simple strings assigned to the resource.
-	Tags []string `json:"tags,required"`
+	Tags []string `json:"tags" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -665,13 +665,13 @@ const (
 
 type LoadBalancerL7PolicyRule struct {
 	// L7Rule ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -691,9 +691,9 @@ func (r *LoadBalancerL7PolicyRule) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerL7PolicyList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []LoadBalancerL7Policy `json:"results,required"`
+	Results []LoadBalancerL7Policy `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -711,43 +711,43 @@ func (r *LoadBalancerL7PolicyList) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerL7Rule struct {
 	// L7Rule ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The comparison type for the L7 rule
 	//
 	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
-	CompareType LoadBalancerL7RuleCompareType `json:"compare_type,required"`
+	CompareType LoadBalancerL7RuleCompareType `json:"compare_type" api:"required"`
 	// When true the logic of the rule is inverted. For example, with invert true,
 	// 'equal to' would become 'not equal to'. Default is false.
-	Invert bool `json:"invert,required"`
+	Invert bool `json:"invert" api:"required"`
 	// The key to use for the comparison. For example, the name of the cookie to
 	// evaluate.
-	Key string `json:"key,required"`
+	Key string `json:"key" api:"required"`
 	// L7 policy operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// A list of simple strings assigned to the l7 rule
-	Tags []string `json:"tags,required"`
+	Tags []string `json:"tags" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// The L7 rule type
 	//
 	// Any of "COOKIE", "FILE_TYPE", "HEADER", "HOST_NAME", "PATH",
 	// "SSL_CONN_HAS_CERT", "SSL_DN_FIELD", "SSL_VERIFY_RESULT".
-	Type LoadBalancerL7RuleType `json:"type,required"`
+	Type LoadBalancerL7RuleType `json:"type" api:"required"`
 	// The value to use for the comparison. For example, the file type to compare.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -801,9 +801,9 @@ const (
 
 type LoadBalancerL7RuleList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []LoadBalancerL7Rule `json:"results,required"`
+	Results []LoadBalancerL7Rule `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -821,66 +821,66 @@ func (r *LoadBalancerL7RuleList) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerListenerDetail struct {
 	// Load balancer listener ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
 	// process traffic. Defaults to true.
-	AdminStateUp bool `json:"admin_state_up,required"`
+	AdminStateUp bool `json:"admin_state_up" api:"required"`
 	// Network CIDRs from which service will be accessible
-	AllowedCidrs []string `json:"allowed_cidrs,required" format:"ipvanynetwork"`
+	AllowedCidrs []string `json:"allowed_cidrs" api:"required" format:"ipvanynetwork"`
 	// Limit of simultaneous connections
-	ConnectionLimit int64 `json:"connection_limit,required"`
+	ConnectionLimit int64 `json:"connection_limit" api:"required"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
 	// Dictionary of additional header insertion into HTTP headers. Only used with HTTP
 	// and `TERMINATED_HTTPS` protocols.
-	InsertHeaders map[string]any `json:"insert_headers,required"`
+	InsertHeaders map[string]any `json:"insert_headers" api:"required"`
 	// Load balancer ID
-	LoadBalancerID string `json:"load_balancer_id,required" format:"uuid4"`
+	LoadBalancerID string `json:"load_balancer_id" api:"required" format:"uuid4"`
 	// Load balancer listener name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Listener operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// Number of pools (for UI)
-	PoolCount int64 `json:"pool_count,required"`
+	PoolCount int64 `json:"pool_count" api:"required"`
 	// Load balancer protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROMETHEUS", "TCP", "TERMINATED_HTTPS", "UDP".
-	Protocol LbListenerProtocol `json:"protocol,required"`
+	Protocol LbListenerProtocol `json:"protocol" api:"required"`
 	// Protocol port
-	ProtocolPort int64 `json:"protocol_port,required"`
+	ProtocolPort int64 `json:"protocol_port" api:"required"`
 	// Listener lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// ID of the secret where PKCS12 file is stored for `TERMINATED_HTTPS` or
 	// PROMETHEUS load balancer
-	SecretID string `json:"secret_id,required"`
+	SecretID string `json:"secret_id" api:"required"`
 	// List of secret's ID containing PKCS12 format certificate/key bundles for
 	// `TERMINATED_HTTPS` or PROMETHEUS listeners
-	SniSecretID []string `json:"sni_secret_id,required"`
+	SniSecretID []string `json:"sni_secret_id" api:"required"`
 	// Statistics of the load balancer. It is available only in get functions by a
 	// flag.
-	Stats LoadBalancerStatistics `json:"stats,required"`
+	Stats LoadBalancerStatistics `json:"stats" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Frontend client inactivity timeout in milliseconds
-	TimeoutClientData int64 `json:"timeout_client_data,required"`
+	TimeoutClientData int64 `json:"timeout_client_data" api:"required"`
 	// Backend member connection timeout in milliseconds
 	//
 	// Deprecated: deprecated
-	TimeoutMemberConnect int64 `json:"timeout_member_connect,required"`
+	TimeoutMemberConnect int64 `json:"timeout_member_connect" api:"required"`
 	// Backend member inactivity timeout in milliseconds
 	//
 	// Deprecated: deprecated
-	TimeoutMemberData int64 `json:"timeout_member_data,required"`
+	TimeoutMemberData int64 `json:"timeout_member_data" api:"required"`
 	// Load balancer listener users list
-	UserList []LoadBalancerListenerDetailUserList `json:"user_list,required"`
+	UserList []LoadBalancerListenerDetailUserList `json:"user_list" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
@@ -917,9 +917,9 @@ func (r *LoadBalancerListenerDetail) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerListenerDetailUserList struct {
 	// Encrypted password to auth via Basic Authentication
-	EncryptedPassword string `json:"encrypted_password,required"`
+	EncryptedPassword string `json:"encrypted_password" api:"required"`
 	// Username to auth via Basic Authentication
-	Username string `json:"username,required"`
+	Username string `json:"username" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EncryptedPassword respjson.Field
@@ -937,9 +937,9 @@ func (r *LoadBalancerListenerDetailUserList) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerListenerList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []LoadBalancerListenerDetail `json:"results,required"`
+	Results []LoadBalancerListenerDetail `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -957,19 +957,19 @@ func (r *LoadBalancerListenerList) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerMetrics struct {
 	// CPU utilization, % (max 100% for multi-core)
-	CPUUtil float64 `json:"cpu_util,nullable"`
+	CPUUtil float64 `json:"cpu_util" api:"nullable"`
 	// RAM utilization, %
-	MemoryUtil float64 `json:"memory_util,nullable"`
+	MemoryUtil float64 `json:"memory_util" api:"nullable"`
 	// Network out, bytes per second
-	NetworkBpsEgress float64 `json:"network_Bps_egress,nullable"`
+	NetworkBpsEgress float64 `json:"network_Bps_egress" api:"nullable"`
 	// Network in, bytes per second
-	NetworkBpsIngress float64 `json:"network_Bps_ingress,nullable"`
+	NetworkBpsIngress float64 `json:"network_Bps_ingress" api:"nullable"`
 	// Network out, packets per second
-	NetworkPpsEgress float64 `json:"network_pps_egress,nullable"`
+	NetworkPpsEgress float64 `json:"network_pps_egress" api:"nullable"`
 	// Network in, packets per second
-	NetworkPpsIngress float64 `json:"network_pps_ingress,nullable"`
+	NetworkPpsIngress float64 `json:"network_pps_ingress" api:"nullable"`
 	// Timestamp
-	Time string `json:"time,nullable"`
+	Time string `json:"time" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CPUUtil           respjson.Field
@@ -992,9 +992,9 @@ func (r *LoadBalancerMetrics) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerMetricsList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []LoadBalancerMetrics `json:"results,required"`
+	Results []LoadBalancerMetrics `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -1012,60 +1012,60 @@ func (r *LoadBalancerMetricsList) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerPool struct {
 	// Pool ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
 	// process traffic. Defaults to true.
-	AdminStateUp bool `json:"admin_state_up,required"`
+	AdminStateUp bool `json:"admin_state_up" api:"required"`
 	// Secret ID of CA certificate bundle
-	CaSecretID string `json:"ca_secret_id,required" format:"uuid4"`
+	CaSecretID string `json:"ca_secret_id" api:"required" format:"uuid4"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
 	// Secret ID of CA revocation list file
-	CrlSecretID string `json:"crl_secret_id,required" format:"uuid4"`
+	CrlSecretID string `json:"crl_secret_id" api:"required" format:"uuid4"`
 	// Health monitor parameters
-	Healthmonitor HealthMonitor `json:"healthmonitor,required"`
+	Healthmonitor HealthMonitor `json:"healthmonitor" api:"required"`
 	// Load balancer algorithm
 	//
 	// Any of "LEAST_CONNECTIONS", "ROUND_ROBIN", "SOURCE_IP".
-	LbAlgorithm LbAlgorithm `json:"lb_algorithm,required"`
+	LbAlgorithm LbAlgorithm `json:"lb_algorithm" api:"required"`
 	// Listeners IDs
-	Listeners []LoadBalancerPoolListener `json:"listeners,required"`
+	Listeners []LoadBalancerPoolListener `json:"listeners" api:"required"`
 	// Load balancers IDs
-	Loadbalancers []LoadBalancerPoolLoadbalancer `json:"loadbalancers,required"`
+	Loadbalancers []LoadBalancerPoolLoadbalancer `json:"loadbalancers" api:"required"`
 	// Pool members
-	Members []Member `json:"members,required"`
+	Members []Member `json:"members" api:"required"`
 	// Pool name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Pool operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// Protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROXY", "PROXYV2", "TCP", "UDP".
-	Protocol LbPoolProtocol `json:"protocol,required"`
+	Protocol LbPoolProtocol `json:"protocol" api:"required"`
 	// Pool lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// Secret ID for TLS client authentication to the member servers
-	SecretID string `json:"secret_id,required" format:"uuid4"`
+	SecretID string `json:"secret_id" api:"required" format:"uuid4"`
 	// Session persistence parameters
-	SessionPersistence SessionPersistence `json:"session_persistence,required"`
+	SessionPersistence SessionPersistence `json:"session_persistence" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Frontend client inactivity timeout in milliseconds
 	//
 	// Deprecated: deprecated
-	TimeoutClientData int64 `json:"timeout_client_data,required"`
+	TimeoutClientData int64 `json:"timeout_client_data" api:"required"`
 	// Backend member connection timeout in milliseconds
-	TimeoutMemberConnect int64 `json:"timeout_member_connect,required"`
+	TimeoutMemberConnect int64 `json:"timeout_member_connect" api:"required"`
 	// Backend member inactivity timeout in milliseconds
-	TimeoutMemberData int64 `json:"timeout_member_data,required"`
+	TimeoutMemberData int64 `json:"timeout_member_data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
@@ -1101,7 +1101,7 @@ func (r *LoadBalancerPool) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerPoolListener struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1118,7 +1118,7 @@ func (r *LoadBalancerPoolListener) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerPoolLoadbalancer struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1135,9 +1135,9 @@ func (r *LoadBalancerPoolLoadbalancer) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerPoolList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []LoadBalancerPoolListResult `json:"results,required"`
+	Results []LoadBalancerPoolListResult `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -1155,60 +1155,60 @@ func (r *LoadBalancerPoolList) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerPoolListResult struct {
 	// Pool ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
 	// process traffic. Defaults to true.
-	AdminStateUp bool `json:"admin_state_up,required"`
+	AdminStateUp bool `json:"admin_state_up" api:"required"`
 	// Secret ID of CA certificate bundle
-	CaSecretID string `json:"ca_secret_id,required" format:"uuid4"`
+	CaSecretID string `json:"ca_secret_id" api:"required" format:"uuid4"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
 	// Secret ID of CA revocation list file
-	CrlSecretID string `json:"crl_secret_id,required" format:"uuid4"`
+	CrlSecretID string `json:"crl_secret_id" api:"required" format:"uuid4"`
 	// Health monitor parameters
-	Healthmonitor HealthMonitor `json:"healthmonitor,required"`
+	Healthmonitor HealthMonitor `json:"healthmonitor" api:"required"`
 	// Load balancer algorithm
 	//
 	// Any of "LEAST_CONNECTIONS", "ROUND_ROBIN", "SOURCE_IP".
-	LbAlgorithm LbAlgorithm `json:"lb_algorithm,required"`
+	LbAlgorithm LbAlgorithm `json:"lb_algorithm" api:"required"`
 	// Listeners IDs
-	Listeners []LoadBalancerPoolListResultListener `json:"listeners,required"`
+	Listeners []LoadBalancerPoolListResultListener `json:"listeners" api:"required"`
 	// Load balancers IDs
-	Loadbalancers []LoadBalancerPoolListResultLoadbalancer `json:"loadbalancers,required"`
+	Loadbalancers []LoadBalancerPoolListResultLoadbalancer `json:"loadbalancers" api:"required"`
 	// Pool members
-	Members []LoadBalancerPoolListResultMemberUnion `json:"members,required"`
+	Members []LoadBalancerPoolListResultMemberUnion `json:"members" api:"required"`
 	// Pool name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Pool operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// Protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROXY", "PROXYV2", "TCP", "UDP".
-	Protocol LbPoolProtocol `json:"protocol,required"`
+	Protocol LbPoolProtocol `json:"protocol" api:"required"`
 	// Pool lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// Secret ID for TLS client authentication to the member servers
-	SecretID string `json:"secret_id,required" format:"uuid4"`
+	SecretID string `json:"secret_id" api:"required" format:"uuid4"`
 	// Session persistence parameters
-	SessionPersistence SessionPersistence `json:"session_persistence,required"`
+	SessionPersistence SessionPersistence `json:"session_persistence" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Frontend client inactivity timeout in milliseconds
 	//
 	// Deprecated: deprecated
-	TimeoutClientData int64 `json:"timeout_client_data,required"`
+	TimeoutClientData int64 `json:"timeout_client_data" api:"required"`
 	// Backend member connection timeout in milliseconds
-	TimeoutMemberConnect int64 `json:"timeout_member_connect,required"`
+	TimeoutMemberConnect int64 `json:"timeout_member_connect" api:"required"`
 	// Backend member inactivity timeout in milliseconds
-	TimeoutMemberData int64 `json:"timeout_member_data,required"`
+	TimeoutMemberData int64 `json:"timeout_member_data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
@@ -1244,7 +1244,7 @@ func (r *LoadBalancerPoolListResult) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerPoolListResultListener struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1261,7 +1261,7 @@ func (r *LoadBalancerPoolListResultListener) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerPoolListResultLoadbalancer struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1337,7 +1337,7 @@ func (r *LoadBalancerPoolListResultMemberUnion) UnmarshalJSON(data []byte) error
 
 type LoadBalancerPoolListResultMemberLbPoolMemberSerializer struct {
 	// Member ID must be provided if an existing member is being updated
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1354,20 +1354,20 @@ func (r *LoadBalancerPoolListResultMemberLbPoolMemberSerializer) UnmarshalJSON(d
 
 type LoadBalancerStatus struct {
 	// UUID of the entity
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Listeners of the Load Balancer
-	Listeners []ListenerStatus `json:"listeners,required"`
+	Listeners []ListenerStatus `json:"listeners" api:"required"`
 	// Name of the load balancer
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// Provisioning status of the entity
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
@@ -1395,9 +1395,9 @@ func (r *LoadBalancerStatus) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerStatusList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []LoadBalancerStatus `json:"results,required"`
+	Results []LoadBalancerStatus `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -1415,31 +1415,31 @@ func (r *LoadBalancerStatusList) UnmarshalJSON(data []byte) error {
 
 type Member struct {
 	// Member ID must be provided if an existing member is being updated
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Member IP address
-	Address string `json:"address,required" format:"ipvanyaddress"`
+	Address string `json:"address" api:"required" format:"ipvanyaddress"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
 	// process traffic. Defaults to true.
-	AdminStateUp bool `json:"admin_state_up,required"`
+	AdminStateUp bool `json:"admin_state_up" api:"required"`
 	// Set to true if the member is a backup member, to which traffic will be sent
 	// exclusively when all non-backup members will be unreachable. It allows to
 	// realize ACTIVE-BACKUP load balancing without thinking about VRRP and VIP
 	// configuration. Default is false
-	Backup bool `json:"backup,required"`
+	Backup bool `json:"backup" api:"required"`
 	// Member operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// Member IP port
-	ProtocolPort int64 `json:"protocol_port,required"`
+	ProtocolPort int64 `json:"protocol_port" api:"required"`
 	// Pool member lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// `subnet_id` in which `address` is present.
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// Member weight. Valid values are 0 < `weight` <= 256, defaults to 1. Controls
 	// traffic distribution based on the pool's load balancing algorithm:
 	//
@@ -1456,13 +1456,13 @@ type Member struct {
 	//     weight = more hash buckets, so more client IPs map to that member. Example:
 	//     weights 2 vs 1 = roughly two-thirds of distinct client IPs map to the
 	//     higher-weight member.
-	Weight int64 `json:"weight,required"`
+	Weight int64 `json:"weight" api:"required"`
 	// An alternate IP address used for health monitoring of a backend member. Default
 	// is null which monitors the member address.
-	MonitorAddress string `json:"monitor_address,nullable" format:"ipvanyaddress"`
+	MonitorAddress string `json:"monitor_address" api:"nullable" format:"ipvanyaddress"`
 	// An alternate protocol port used for health monitoring of a backend member.
 	// Default is null which monitors the member `protocol_port`.
-	MonitorPort int64 `json:"monitor_port,nullable"`
+	MonitorPort int64 `json:"monitor_port" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -1489,20 +1489,20 @@ func (r *Member) UnmarshalJSON(data []byte) error {
 
 type MemberStatus struct {
 	// UUID of the entity
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Address of the member (server)
-	Address string `json:"address,required" format:"ipvanyaddress"`
+	Address string `json:"address" api:"required" format:"ipvanyaddress"`
 	// Operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// Port of the member (server)
-	ProtocolPort int64 `json:"protocol_port,required"`
+	ProtocolPort int64 `json:"protocol_port" api:"required"`
 	// Provisioning status of the entity
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -1523,22 +1523,22 @@ func (r *MemberStatus) UnmarshalJSON(data []byte) error {
 
 type PoolStatus struct {
 	// UUID of the entity
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Members (servers) of the pool
-	Members []MemberStatus `json:"members,required"`
+	Members []MemberStatus `json:"members" api:"required"`
 	// Name of the load balancer pool
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// Provisioning status of the entity
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// Health Monitor of the Pool
-	HealthMonitor HealthMonitorStatus `json:"health_monitor,nullable"`
+	HealthMonitor HealthMonitorStatus `json:"health_monitor" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -1562,13 +1562,13 @@ type SessionPersistence struct {
 	// Session persistence type
 	//
 	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
-	Type LbSessionPersistenceType `json:"type,required"`
+	Type LbSessionPersistenceType `json:"type" api:"required"`
 	// Should be set if app cookie or http cookie is used
-	CookieName string `json:"cookie_name,nullable"`
+	CookieName string `json:"cookie_name" api:"nullable"`
 	// Subnet mask if `source_ip` is used. For UDP ports only
-	PersistenceGranularity string `json:"persistence_granularity,nullable"`
+	PersistenceGranularity string `json:"persistence_granularity" api:"nullable"`
 	// Session persistence timeout. For UDP ports only
-	PersistenceTimeout int64 `json:"persistence_timeout,nullable"`
+	PersistenceTimeout int64 `json:"persistence_timeout" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type                   respjson.Field
@@ -1588,9 +1588,9 @@ func (r *SessionPersistence) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Load balancer flavor name
 	Flavor param.Opt[string] `json:"flavor,omitzero"`
 	// Load balancer name. Either `name` or `name_template` should be specified.
@@ -1709,7 +1709,7 @@ type LoadBalancerNewParamsFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1725,14 +1725,14 @@ func (r *LoadBalancerNewParamsFloatingIPNew) UnmarshalJSON(data []byte) error {
 type LoadBalancerNewParamsFloatingIPExisting struct {
 	// An existing available floating IP id must be specified if the source is set to
 	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
+	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
 	// An existing available floating IP will be attached to the instance. A floating
 	// IP is a public IP that makes the instance accessible from the internet, even if
 	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source,required"`
+	Source constant.Existing `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1747,13 +1747,13 @@ func (r *LoadBalancerNewParamsFloatingIPExisting) UnmarshalJSON(data []byte) err
 // The properties Name, Protocol, ProtocolPort are required.
 type LoadBalancerNewParamsListener struct {
 	// Load balancer listener name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Load balancer listener protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROMETHEUS", "TCP", "TERMINATED_HTTPS", "UDP".
-	Protocol LbListenerProtocol `json:"protocol,omitzero,required"`
+	Protocol LbListenerProtocol `json:"protocol,omitzero" api:"required"`
 	// Protocol port
-	ProtocolPort int64 `json:"protocol_port,required"`
+	ProtocolPort int64 `json:"protocol_port" api:"required"`
 	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
 	// Backend member connection timeout in milliseconds. We are recommending to use
@@ -1808,13 +1808,13 @@ type LoadBalancerNewParamsListenerPool struct {
 	// Load balancer algorithm
 	//
 	// Any of "LEAST_CONNECTIONS", "ROUND_ROBIN", "SOURCE_IP".
-	LbAlgorithm LbAlgorithm `json:"lb_algorithm,omitzero,required"`
+	LbAlgorithm LbAlgorithm `json:"lb_algorithm,omitzero" api:"required"`
 	// Pool name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROXY", "PROXYV2", "TCP", "UDP".
-	Protocol LbPoolProtocol `json:"protocol,omitzero,required"`
+	Protocol LbPoolProtocol `json:"protocol,omitzero" api:"required"`
 	// Secret ID of CA certificate bundle
 	CaSecretID param.Opt[string] `json:"ca_secret_id,omitzero" format:"uuid4"`
 	// Secret ID of CA revocation list file
@@ -1852,15 +1852,15 @@ func (r *LoadBalancerNewParamsListenerPool) UnmarshalJSON(data []byte) error {
 // The properties Delay, MaxRetries, Timeout, Type are required.
 type LoadBalancerNewParamsListenerPoolHealthmonitor struct {
 	// The time, in seconds, between sending probes to members
-	Delay int64 `json:"delay,required"`
+	Delay int64 `json:"delay" api:"required"`
 	// Number of successes before the member is switched to ONLINE state
-	MaxRetries int64 `json:"max_retries,required"`
+	MaxRetries int64 `json:"max_retries" api:"required"`
 	// The maximum time to connect. Must be less than the delay value
-	Timeout int64 `json:"timeout,required"`
+	Timeout int64 `json:"timeout" api:"required"`
 	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
-	Type LbHealthMonitorType `json:"type,omitzero,required"`
+	Type LbHealthMonitorType `json:"type,omitzero" api:"required"`
 	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
 	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
 	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
@@ -1894,9 +1894,9 @@ func (r *LoadBalancerNewParamsListenerPoolHealthmonitor) UnmarshalJSON(data []by
 // The properties Address, ProtocolPort are required.
 type LoadBalancerNewParamsListenerPoolMember struct {
 	// Member IP address
-	Address string `json:"address,required" format:"ipvanyaddress"`
+	Address string `json:"address" api:"required" format:"ipvanyaddress"`
 	// Member IP port
-	ProtocolPort int64 `json:"protocol_port,required"`
+	ProtocolPort int64 `json:"protocol_port" api:"required"`
 	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
 	// An alternate IP address used for health monitoring of a backend member. Default
@@ -1952,7 +1952,7 @@ type LoadBalancerNewParamsListenerPoolSessionPersistence struct {
 	// Session persistence type
 	//
 	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
-	Type LbSessionPersistenceType `json:"type,omitzero,required"`
+	Type LbSessionPersistenceType `json:"type,omitzero" api:"required"`
 	// Should be set if app cookie or http cookie is used
 	CookieName param.Opt[string] `json:"cookie_name,omitzero"`
 	// Subnet mask if `source_ip` is used. For UDP ports only
@@ -1973,9 +1973,9 @@ func (r *LoadBalancerNewParamsListenerPoolSessionPersistence) UnmarshalJSON(data
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerNewParamsListenerUserList struct {
 	// Encrypted password to auth via Basic Authentication
-	EncryptedPassword string `json:"encrypted_password,required"`
+	EncryptedPassword string `json:"encrypted_password" api:"required"`
 	// Username to auth via Basic Authentication
-	Username string `json:"username,required"`
+	Username string `json:"username" api:"required"`
 	paramObj
 }
 
@@ -2010,9 +2010,9 @@ func (r *LoadBalancerNewParamsLogging) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Name.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Logging configuration
@@ -2078,9 +2078,9 @@ func (r *LoadBalancerUpdateParamsLogging) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// With or without assigned floating IP
 	AssignedFloating param.Opt[bool] `query:"assigned_floating,omitzero" json:"-"`
 	// Limit of items on a single page
@@ -2142,17 +2142,17 @@ const (
 
 type LoadBalancerDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerFailoverParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Validate current load balancer status before failover or not.
 	Force param.Opt[bool] `json:"force,omitzero"`
 	paramObj
@@ -2168,9 +2168,9 @@ func (r *LoadBalancerFailoverParams) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Show statistics
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
 	// Show Advanced DDoS protection profile, if exists
@@ -2188,11 +2188,11 @@ func (r LoadBalancerGetParams) URLQuery() (v url.Values, err error) {
 
 type LoadBalancerResizeParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Name of the desired flavor to resize to.
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	paramObj
 }
 

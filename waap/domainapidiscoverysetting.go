@@ -55,16 +55,16 @@ type WaapAPIDiscoverySettings struct {
 	// The URL of the API description file. This will be periodically scanned if
 	// `descriptionFileScanEnabled` is enabled. Supported formats are YAML and JSON,
 	// and it must adhere to OpenAPI versions 2, 3, or 3.1.
-	DescriptionFileLocation string `json:"descriptionFileLocation,nullable"`
+	DescriptionFileLocation string `json:"descriptionFileLocation" api:"nullable"`
 	// Indicates if periodic scan of the description file is enabled
-	DescriptionFileScanEnabled bool `json:"descriptionFileScanEnabled,nullable"`
+	DescriptionFileScanEnabled bool `json:"descriptionFileScanEnabled" api:"nullable"`
 	// The interval in hours for scanning the description file
-	DescriptionFileScanIntervalHours int64 `json:"descriptionFileScanIntervalHours,nullable"`
+	DescriptionFileScanIntervalHours int64 `json:"descriptionFileScanIntervalHours" api:"nullable"`
 	// Indicates if traffic scan is enabled. Traffic scan is used to discover
 	// undocumented APIs
-	TrafficScanEnabled bool `json:"trafficScanEnabled,nullable"`
+	TrafficScanEnabled bool `json:"trafficScanEnabled" api:"nullable"`
 	// The interval in hours for scanning the traffic
-	TrafficScanIntervalHours int64 `json:"trafficScanIntervalHours,nullable"`
+	TrafficScanIntervalHours int64 `json:"trafficScanIntervalHours" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DescriptionFileLocation          respjson.Field

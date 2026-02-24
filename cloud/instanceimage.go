@@ -186,8 +186,8 @@ func (r *InstanceImageService) Upload(ctx context.Context, params InstanceImageU
 }
 
 type InstanceImageUpdateParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Set to true if the image will be used by bare metal servers.
 	IsBaremetal param.Opt[bool] `json:"is_baremetal,omitzero"`
 	// Image display name
@@ -260,8 +260,8 @@ const (
 )
 
 type InstanceImageListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Show price
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	// Any value to show private images
@@ -296,18 +296,18 @@ const (
 )
 
 type InstanceImageDeleteParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InstanceImageNewFromVolumeParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Image name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Required if source is volume. Volume id
-	VolumeID string `json:"volume_id,required" format:"uuid4"`
+	VolumeID string `json:"volume_id" api:"required" format:"uuid4"`
 	// Set to true if the image will be used by bare metal servers. Defaults to false.
 	IsBaremetal param.Opt[bool] `json:"is_baremetal,omitzero"`
 	// Specifies the type of firmware with which to boot the guest.
@@ -401,8 +401,8 @@ const (
 )
 
 type InstanceImageGetParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Show price
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	paramObj
@@ -417,12 +417,12 @@ func (r InstanceImageGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type InstanceImageUploadParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Image name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// URL
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// OS Distribution, i.e. Debian, CentOS, Ubuntu, CoreOS etc.
 	OsDistro param.Opt[string] `json:"os_distro,omitzero"`
 	// OS version, i.e. 22.04 (for Ubuntu) or 9.4 for Debian

@@ -127,13 +127,13 @@ func (r *SecurityGroupRuleService) Replace(ctx context.Context, ruleID string, p
 
 type SecurityGroupRuleNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Ingress or egress, which is the direction in which the security group is applied
 	//
 	// Any of "egress", "ingress".
-	Direction SecurityGroupRuleNewParamsDirection `json:"direction,omitzero,required"`
+	Direction SecurityGroupRuleNewParamsDirection `json:"direction,omitzero" api:"required"`
 	// The maximum port number in the range that is matched by the security group rule
 	PortRangeMax param.Opt[int64] `json:"port_range_max,omitzero"`
 	// The minimum port number in the range that is matched by the security group rule
@@ -213,26 +213,26 @@ const (
 
 type SecurityGroupRuleDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Security group ID
-	GroupID string `path:"group_id,required" format:"uuid4" json:"-"`
+	GroupID string `path:"group_id" api:"required" format:"uuid4" json:"-"`
 	paramObj
 }
 
 type SecurityGroupRuleReplaceParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Ingress or egress, which is the direction in which the security group rule is
 	// applied
 	//
 	// Any of "egress", "ingress".
-	Direction SecurityGroupRuleReplaceParamsDirection `json:"direction,omitzero,required"`
+	Direction SecurityGroupRuleReplaceParamsDirection `json:"direction,omitzero" api:"required"`
 	// Parent security group of this rule
-	SecurityGroupID string `json:"security_group_id,required" format:"uuid4"`
+	SecurityGroupID string `json:"security_group_id" api:"required" format:"uuid4"`
 	// The maximum port number in the range that is matched by the security group rule
 	PortRangeMax param.Opt[int64] `json:"port_range_max,omitzero"`
 	// The minimum port number in the range that is matched by the security group rule

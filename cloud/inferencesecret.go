@@ -153,11 +153,11 @@ func (r *InferenceSecretService) Replace(ctx context.Context, secretName string,
 
 type InferenceSecret struct {
 	// Secret data.
-	Data InferenceSecretData `json:"data,required"`
+	Data InferenceSecretData `json:"data" api:"required"`
 	// Secret name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Secret type.
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -177,9 +177,9 @@ func (r *InferenceSecret) UnmarshalJSON(data []byte) error {
 // Secret data.
 type InferenceSecretData struct {
 	// AWS IAM key ID.
-	AwsAccessKeyID string `json:"aws_access_key_id,required"`
+	AwsAccessKeyID string `json:"aws_access_key_id" api:"required"`
 	// AWS IAM secret key.
-	AwsSecretAccessKey string `json:"aws_secret_access_key,required"`
+	AwsSecretAccessKey string `json:"aws_secret_access_key" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AwsAccessKeyID     respjson.Field
@@ -197,13 +197,13 @@ func (r *InferenceSecretData) UnmarshalJSON(data []byte) error {
 
 type InferenceSecretNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Secret data.
-	Data InferenceSecretNewParamsData `json:"data,omitzero,required"`
+	Data InferenceSecretNewParamsData `json:"data,omitzero" api:"required"`
 	// Secret name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Secret type. Currently only `aws-iam` is supported.
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	paramObj
 }
 
@@ -220,9 +220,9 @@ func (r *InferenceSecretNewParams) UnmarshalJSON(data []byte) error {
 // The properties AwsAccessKeyID, AwsSecretAccessKey are required.
 type InferenceSecretNewParamsData struct {
 	// AWS IAM key ID.
-	AwsAccessKeyID string `json:"aws_access_key_id,required"`
+	AwsAccessKeyID string `json:"aws_access_key_id" api:"required"`
 	// AWS IAM secret key.
-	AwsSecretAccessKey string `json:"aws_secret_access_key,required"`
+	AwsSecretAccessKey string `json:"aws_secret_access_key" api:"required"`
 	paramObj
 }
 
@@ -236,7 +236,7 @@ func (r *InferenceSecretNewParamsData) UnmarshalJSON(data []byte) error {
 
 type InferenceSecretListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
@@ -256,23 +256,23 @@ func (r InferenceSecretListParams) URLQuery() (v url.Values, err error) {
 
 type InferenceSecretDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InferenceSecretGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InferenceSecretReplaceParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Secret data.
-	Data InferenceSecretReplaceParamsData `json:"data,omitzero,required"`
+	Data InferenceSecretReplaceParamsData `json:"data,omitzero" api:"required"`
 	// Secret type.
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	paramObj
 }
 
@@ -289,9 +289,9 @@ func (r *InferenceSecretReplaceParams) UnmarshalJSON(data []byte) error {
 // The properties AwsAccessKeyID, AwsSecretAccessKey are required.
 type InferenceSecretReplaceParamsData struct {
 	// AWS IAM key ID.
-	AwsAccessKeyID string `json:"aws_access_key_id,required"`
+	AwsAccessKeyID string `json:"aws_access_key_id" api:"required"`
 	// AWS IAM secret key.
-	AwsSecretAccessKey string `json:"aws_secret_access_key,required"`
+	AwsSecretAccessKey string `json:"aws_secret_access_key" api:"required"`
 	paramObj
 }
 

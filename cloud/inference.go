@@ -54,9 +54,9 @@ func (r *InferenceService) GetCapacityByRegion(ctx context.Context, opts ...opti
 
 type InferenceRegionCapacity struct {
 	// List of capacities by flavor.
-	Capacity []InferenceRegionCapacityCapacity `json:"capacity,required"`
+	Capacity []InferenceRegionCapacityCapacity `json:"capacity" api:"required"`
 	// Region ID.
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Capacity    respjson.Field
@@ -74,9 +74,9 @@ func (r *InferenceRegionCapacity) UnmarshalJSON(data []byte) error {
 
 type InferenceRegionCapacityCapacity struct {
 	// Available capacity.
-	Capacity int64 `json:"capacity,required"`
+	Capacity int64 `json:"capacity" api:"required"`
 	// Flavor name.
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Capacity    respjson.Field
@@ -94,9 +94,9 @@ func (r *InferenceRegionCapacityCapacity) UnmarshalJSON(data []byte) error {
 
 type InferenceRegionCapacityList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []InferenceRegionCapacity `json:"results,required"`
+	Results []InferenceRegionCapacity `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field

@@ -147,17 +147,17 @@ func (r *InferenceApplicationDeploymentService) Get(ctx context.Context, deploym
 
 type InferenceApplicationDeployment struct {
 	// List of API keys for the application
-	APIKeys []string `json:"api_keys,required"`
+	APIKeys []string `json:"api_keys" api:"required"`
 	// Identifier of the application template from the catalog
-	ApplicationName string `json:"application_name,required"`
+	ApplicationName string `json:"application_name" api:"required"`
 	// Mapping of component names to their configuration (e.g., `"model": {...}`)
-	ComponentsConfiguration map[string]InferenceApplicationDeploymentComponentsConfiguration `json:"components_configuration,required"`
+	ComponentsConfiguration map[string]InferenceApplicationDeploymentComponentsConfiguration `json:"components_configuration" api:"required"`
 	// Unique identifier of the deployment
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Geographical regions where the deployment is active
-	Regions []int64 `json:"regions,required"`
+	Regions []int64 `json:"regions" api:"required"`
 	// Current state of the deployment across regions
-	Status InferenceApplicationDeploymentStatus `json:"status,required"`
+	Status InferenceApplicationDeploymentStatus `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		APIKeys                 respjson.Field
@@ -179,13 +179,13 @@ func (r *InferenceApplicationDeployment) UnmarshalJSON(data []byte) error {
 
 type InferenceApplicationDeploymentComponentsConfiguration struct {
 	// Indicates if the component will obtain a public address
-	Exposed bool `json:"exposed,required"`
+	Exposed bool `json:"exposed" api:"required"`
 	// Chosen flavor or variant of the component
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Map of parameter overrides for customization
-	ParameterOverrides map[string]InferenceApplicationDeploymentComponentsConfigurationParameterOverride `json:"parameter_overrides,required"`
+	ParameterOverrides map[string]InferenceApplicationDeploymentComponentsConfigurationParameterOverride `json:"parameter_overrides" api:"required"`
 	// Scaling parameters of the component
-	Scale InferenceApplicationDeploymentComponentsConfigurationScale `json:"scale,required"`
+	Scale InferenceApplicationDeploymentComponentsConfigurationScale `json:"scale" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Exposed            respjson.Field
@@ -205,7 +205,7 @@ func (r *InferenceApplicationDeploymentComponentsConfiguration) UnmarshalJSON(da
 
 type InferenceApplicationDeploymentComponentsConfigurationParameterOverride struct {
 	// New value assigned to the overridden parameter
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Value       respjson.Field
@@ -225,9 +225,9 @@ func (r *InferenceApplicationDeploymentComponentsConfigurationParameterOverride)
 // Scaling parameters of the component
 type InferenceApplicationDeploymentComponentsConfigurationScale struct {
 	// Maximum number of replicas the container can be scaled up to
-	Max int64 `json:"max,required"`
+	Max int64 `json:"max" api:"required"`
 	// Minimum number of replicas the component can be scaled down to
-	Min int64 `json:"min,required"`
+	Min int64 `json:"min" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Max         respjson.Field
@@ -248,15 +248,15 @@ func (r *InferenceApplicationDeploymentComponentsConfigurationScale) UnmarshalJS
 // Current state of the deployment across regions
 type InferenceApplicationDeploymentStatus struct {
 	// Map of components and their inferences
-	ComponentInferences map[string]InferenceApplicationDeploymentStatusComponentInference `json:"component_inferences,required"`
+	ComponentInferences map[string]InferenceApplicationDeploymentStatusComponentInference `json:"component_inferences" api:"required"`
 	// High-level summary of the deployment status across all regions
 	//
 	// Any of "Active", "Failed", "PartiallyDeployed", "Unknown".
-	ConsolidatedStatus string `json:"consolidated_status,required"`
+	ConsolidatedStatus string `json:"consolidated_status" api:"required"`
 	// Map of component keys to their global access endpoints
-	ExposeAddresses map[string]InferenceApplicationDeploymentStatusExposeAddress `json:"expose_addresses,required"`
+	ExposeAddresses map[string]InferenceApplicationDeploymentStatusExposeAddress `json:"expose_addresses" api:"required"`
 	// Status details for each deployment region
-	Regions []InferenceApplicationDeploymentStatusRegion `json:"regions,required"`
+	Regions []InferenceApplicationDeploymentStatusRegion `json:"regions" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ComponentInferences respjson.Field
@@ -276,9 +276,9 @@ func (r *InferenceApplicationDeploymentStatus) UnmarshalJSON(data []byte) error 
 
 type InferenceApplicationDeploymentStatusComponentInference struct {
 	// Flavor of the inference
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Name of the inference
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Flavor      respjson.Field
@@ -296,7 +296,7 @@ func (r *InferenceApplicationDeploymentStatusComponentInference) UnmarshalJSON(d
 
 type InferenceApplicationDeploymentStatusExposeAddress struct {
 	// Global access endpoint for the component
-	Address string `json:"address,required"`
+	Address string `json:"address" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Address     respjson.Field
@@ -313,11 +313,11 @@ func (r *InferenceApplicationDeploymentStatusExposeAddress) UnmarshalJSON(data [
 
 type InferenceApplicationDeploymentStatusRegion struct {
 	// Mapping of component names to their status in the region
-	Components map[string]InferenceApplicationDeploymentStatusRegionComponent `json:"components,required"`
+	Components map[string]InferenceApplicationDeploymentStatusRegionComponent `json:"components" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Current state of the deployment in a specific region
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Components  respjson.Field
@@ -336,9 +336,9 @@ func (r *InferenceApplicationDeploymentStatusRegion) UnmarshalJSON(data []byte) 
 
 type InferenceApplicationDeploymentStatusRegionComponent struct {
 	// Error message if the component is in an error state
-	Error string `json:"error,required"`
+	Error string `json:"error" api:"required"`
 	// Current state of the component in a specific region
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Error       respjson.Field
@@ -356,9 +356,9 @@ func (r *InferenceApplicationDeploymentStatusRegionComponent) UnmarshalJSON(data
 
 type InferenceApplicationDeploymentList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []InferenceApplicationDeployment `json:"results,required"`
+	Results []InferenceApplicationDeployment `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -376,15 +376,15 @@ func (r *InferenceApplicationDeploymentList) UnmarshalJSON(data []byte) error {
 
 type InferenceApplicationDeploymentNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Identifier of the application from the catalog
-	ApplicationName string `json:"application_name,required"`
+	ApplicationName string `json:"application_name" api:"required"`
 	// Mapping of component names to their configuration (e.g., `"model": {...}`)
-	ComponentsConfiguration map[string]InferenceApplicationDeploymentNewParamsComponentsConfiguration `json:"components_configuration,omitzero,required"`
+	ComponentsConfiguration map[string]InferenceApplicationDeploymentNewParamsComponentsConfiguration `json:"components_configuration,omitzero" api:"required"`
 	// Desired name for the new deployment
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Geographical regions where the deployment should be created
-	Regions []int64 `json:"regions,omitzero,required"`
+	Regions []int64 `json:"regions,omitzero" api:"required"`
 	// List of API keys for the application
 	APIKeys []string `json:"api_keys,omitzero"`
 	paramObj
@@ -402,12 +402,12 @@ func (r *InferenceApplicationDeploymentNewParams) UnmarshalJSON(data []byte) err
 type InferenceApplicationDeploymentNewParamsComponentsConfiguration struct {
 	// Whether the component should be exposed via a public endpoint (e.g., for
 	// external inference/API access).
-	Exposed bool `json:"exposed,required"`
+	Exposed bool `json:"exposed" api:"required"`
 	// Specifies the compute configuration (e.g., CPU/GPU size) to be used for the
 	// component.
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Scaling parameters of the component
-	Scale InferenceApplicationDeploymentNewParamsComponentsConfigurationScale `json:"scale,omitzero,required"`
+	Scale InferenceApplicationDeploymentNewParamsComponentsConfigurationScale `json:"scale,omitzero" api:"required"`
 	// Map of parameter overrides for customization
 	ParameterOverrides map[string]InferenceApplicationDeploymentNewParamsComponentsConfigurationParameterOverride `json:"parameter_overrides,omitzero"`
 	paramObj
@@ -426,9 +426,9 @@ func (r *InferenceApplicationDeploymentNewParamsComponentsConfiguration) Unmarsh
 // The properties Max, Min are required.
 type InferenceApplicationDeploymentNewParamsComponentsConfigurationScale struct {
 	// Maximum number of replicas the container can be scaled up to
-	Max int64 `json:"max,required"`
+	Max int64 `json:"max" api:"required"`
 	// Minimum number of replicas the component can be scaled down to
-	Min int64 `json:"min,required"`
+	Min int64 `json:"min" api:"required"`
 	paramObj
 }
 
@@ -443,7 +443,7 @@ func (r *InferenceApplicationDeploymentNewParamsComponentsConfigurationScale) Un
 // The property Value is required.
 type InferenceApplicationDeploymentNewParamsComponentsConfigurationParameterOverride struct {
 	// New value assigned to the overridden parameter
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -457,7 +457,7 @@ func (r *InferenceApplicationDeploymentNewParamsComponentsConfigurationParameter
 
 type InferenceApplicationDeploymentUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// List of API keys for the application
 	APIKeys []string `json:"api_keys,omitzero"`
 	// Mapping of component names to their configuration (e.g., `"model": {...}`)
@@ -500,7 +500,7 @@ func (r *InferenceApplicationDeploymentUpdateParamsComponentsConfiguration) Unma
 // The property Value is required.
 type InferenceApplicationDeploymentUpdateParamsComponentsConfigurationParameterOverride struct {
 	// New value assigned to the overridden parameter
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -531,18 +531,18 @@ func (r *InferenceApplicationDeploymentUpdateParamsComponentsConfigurationScale)
 
 type InferenceApplicationDeploymentListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InferenceApplicationDeploymentDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InferenceApplicationDeploymentGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

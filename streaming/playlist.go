@@ -390,7 +390,7 @@ func (r *PlaylistCreated) UnmarshalJSON(data []byte) error {
 
 type PlaylistVideo struct {
 	// Video name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Automatic creation of subtitles by transcribing the audio track.
 	//
 	// Values:

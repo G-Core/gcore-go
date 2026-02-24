@@ -97,7 +97,7 @@ func (r *BucketCors) UnmarshalJSON(data []byte) error {
 }
 
 type BucketCorNewParams struct {
-	StorageID int64 `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id" api:"required" json:"-"`
 	// List of allowed origins for CORS requests
 	AllowedOrigins []string `json:"allowedOrigins,omitzero"`
 	paramObj
@@ -112,6 +112,6 @@ func (r *BucketCorNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type BucketCorGetParams struct {
-	StorageID int64 `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id" api:"required" json:"-"`
 	paramObj
 }

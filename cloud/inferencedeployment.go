@@ -235,46 +235,46 @@ func (r *InferenceDeploymentService) Stop(ctx context.Context, deploymentName st
 
 type InferenceDeployment struct {
 	// Address of the inference instance
-	Address string `json:"address,required" format:"uri"`
+	Address string `json:"address" api:"required" format:"uri"`
 	// `true` if instance uses API key authentication.
 	// `"Authorization": "Bearer *****"` or `"X-Api-Key": "*****"` header is required
 	// for the requests to the instance if enabled.
 	//
 	// Deprecated: deprecated
-	AuthEnabled bool `json:"auth_enabled,required"`
+	AuthEnabled bool `json:"auth_enabled" api:"required"`
 	// Command to be executed when running a container from an image.
-	Command string `json:"command,required"`
+	Command string `json:"command" api:"required"`
 	// List of containers for the inference instance
-	Containers []InferenceDeploymentContainer `json:"containers,required"`
+	Containers []InferenceDeploymentContainer `json:"containers" api:"required"`
 	// Inference instance creation date in ISO 8601 format.
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// Registry credentials name
-	CredentialsName string `json:"credentials_name,required"`
+	CredentialsName string `json:"credentials_name" api:"required"`
 	// Inference instance description.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Environment variables for the inference instance
-	Envs map[string]string `json:"envs,required"`
+	Envs map[string]string `json:"envs" api:"required"`
 	// Flavor name for the inference instance
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// Docker image for the inference instance. This field should contain the image
 	// name and tag in the format 'name:tag', e.g., 'nginx:latest'. It defaults to
 	// Docker Hub as the image registry, but any accessible Docker image URL can be
 	// specified.
-	Image string `json:"image,required"`
+	Image string `json:"image" api:"required"`
 	// Ingress options for the inference instance
-	IngressOpts InferenceDeploymentIngressOpts `json:"ingress_opts,required"`
+	IngressOpts InferenceDeploymentIngressOpts `json:"ingress_opts" api:"required"`
 	// Listening port for the inference instance.
-	ListeningPort int64 `json:"listening_port,required"`
+	ListeningPort int64 `json:"listening_port" api:"required"`
 	// Logging configuration for the inference instance
-	Logging Logging `json:"logging,required"`
+	Logging Logging `json:"logging" api:"required"`
 	// Inference instance name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Indicates to which parent object this inference belongs to.
-	ObjectReferences []InferenceDeploymentObjectReference `json:"object_references,required"`
+	ObjectReferences []InferenceDeploymentObjectReference `json:"object_references" api:"required"`
 	// Probes configured for all containers of the inference instance.
-	Probes InferenceDeploymentProbes `json:"probes,required"`
+	Probes InferenceDeploymentProbes `json:"probes" api:"required"`
 	// Project ID. If not provided, your default project ID will be used.
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Inference instance status.
 	//
 	// Value can be one of the following:
@@ -293,14 +293,14 @@ type InferenceDeployment struct {
 	//
 	// Any of "ACTIVE", "DELETING", "DEPLOYING", "DISABLED", "PARTIALLYDEPLOYED",
 	// "PENDING".
-	Status InferenceDeploymentStatus `json:"status,required"`
+	Status InferenceDeploymentStatus `json:"status" api:"required"`
 	// Specifies the duration in seconds without any requests after which the
 	// containers will be downscaled to their minimum scale value as defined by
 	// `scale.min`. If set, this helps in optimizing resource usage by reducing the
 	// number of container instances during periods of inactivity.
-	Timeout int64 `json:"timeout,required"`
+	Timeout int64 `json:"timeout" api:"required"`
 	// List of API keys for the inference instance
-	APIKeys []string `json:"api_keys,nullable"`
+	APIKeys []string `json:"api_keys" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Address          respjson.Field
@@ -336,15 +336,15 @@ func (r *InferenceDeployment) UnmarshalJSON(data []byte) error {
 
 type InferenceDeploymentContainer struct {
 	// Address of the inference instance
-	Address string `json:"address,required" format:"uri"`
+	Address string `json:"address" api:"required" format:"uri"`
 	// Status of the containers deployment
-	DeployStatus InferenceDeploymentContainerDeployStatus `json:"deploy_status,required"`
+	DeployStatus InferenceDeploymentContainerDeployStatus `json:"deploy_status" api:"required"`
 	// Error message if the container deployment failed
-	ErrorMessage string `json:"error_message,required"`
+	ErrorMessage string `json:"error_message" api:"required"`
 	// Region name for the container
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Scale for the container
-	Scale InferenceDeploymentContainerScale `json:"scale,required"`
+	Scale InferenceDeploymentContainerScale `json:"scale" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Address      respjson.Field
@@ -366,9 +366,9 @@ func (r *InferenceDeploymentContainer) UnmarshalJSON(data []byte) error {
 // Status of the containers deployment
 type InferenceDeploymentContainerDeployStatus struct {
 	// Number of ready instances
-	Ready int64 `json:"ready,required"`
+	Ready int64 `json:"ready" api:"required"`
 	// Total number of instances
-	Total int64 `json:"total,required"`
+	Total int64 `json:"total" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Ready       respjson.Field
@@ -387,15 +387,15 @@ func (r *InferenceDeploymentContainerDeployStatus) UnmarshalJSON(data []byte) er
 // Scale for the container
 type InferenceDeploymentContainerScale struct {
 	// Cooldown period between scaling actions in seconds
-	CooldownPeriod int64 `json:"cooldown_period,required"`
+	CooldownPeriod int64 `json:"cooldown_period" api:"required"`
 	// Maximum scale for the container
-	Max int64 `json:"max,required"`
+	Max int64 `json:"max" api:"required"`
 	// Minimum scale for the container
-	Min int64 `json:"min,required"`
+	Min int64 `json:"min" api:"required"`
 	// Polling interval for scaling triggers in seconds
-	PollingInterval int64 `json:"polling_interval,required"`
+	PollingInterval int64 `json:"polling_interval" api:"required"`
 	// Triggers for scaling actions
-	Triggers InferenceDeploymentContainerScaleTriggers `json:"triggers,required"`
+	Triggers InferenceDeploymentContainerScaleTriggers `json:"triggers" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CooldownPeriod  respjson.Field
@@ -417,19 +417,19 @@ func (r *InferenceDeploymentContainerScale) UnmarshalJSON(data []byte) error {
 // Triggers for scaling actions
 type InferenceDeploymentContainerScaleTriggers struct {
 	// CPU trigger configuration
-	CPU InferenceDeploymentContainerScaleTriggersCPU `json:"cpu,required"`
+	CPU InferenceDeploymentContainerScaleTriggersCPU `json:"cpu" api:"required"`
 	// GPU memory trigger configuration. Calculated by `DCGM_FI_DEV_MEM_COPY_UTIL`
 	// metric
-	GPUMemory InferenceDeploymentContainerScaleTriggersGPUMemory `json:"gpu_memory,required"`
+	GPUMemory InferenceDeploymentContainerScaleTriggersGPUMemory `json:"gpu_memory" api:"required"`
 	// GPU utilization trigger configuration. Calculated by `DCGM_FI_DEV_GPU_UTIL`
 	// metric
-	GPUUtilization InferenceDeploymentContainerScaleTriggersGPUUtilization `json:"gpu_utilization,required"`
+	GPUUtilization InferenceDeploymentContainerScaleTriggersGPUUtilization `json:"gpu_utilization" api:"required"`
 	// HTTP trigger configuration
-	HTTP InferenceDeploymentContainerScaleTriggersHTTP `json:"http,required"`
+	HTTP InferenceDeploymentContainerScaleTriggersHTTP `json:"http" api:"required"`
 	// Memory trigger configuration
-	Memory InferenceDeploymentContainerScaleTriggersMemory `json:"memory,required"`
+	Memory InferenceDeploymentContainerScaleTriggersMemory `json:"memory" api:"required"`
 	// SQS trigger configuration
-	Sqs InferenceDeploymentContainerScaleTriggersSqs `json:"sqs,required"`
+	Sqs InferenceDeploymentContainerScaleTriggersSqs `json:"sqs" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CPU            respjson.Field
@@ -452,7 +452,7 @@ func (r *InferenceDeploymentContainerScaleTriggers) UnmarshalJSON(data []byte) e
 // CPU trigger configuration
 type InferenceDeploymentContainerScaleTriggersCPU struct {
 	// Threshold value for the trigger in percentage
-	Threshold int64 `json:"threshold,required"`
+	Threshold int64 `json:"threshold" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Threshold   respjson.Field
@@ -471,7 +471,7 @@ func (r *InferenceDeploymentContainerScaleTriggersCPU) UnmarshalJSON(data []byte
 // metric
 type InferenceDeploymentContainerScaleTriggersGPUMemory struct {
 	// Threshold value for the trigger in percentage
-	Threshold int64 `json:"threshold,required"`
+	Threshold int64 `json:"threshold" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Threshold   respjson.Field
@@ -490,7 +490,7 @@ func (r *InferenceDeploymentContainerScaleTriggersGPUMemory) UnmarshalJSON(data 
 // metric
 type InferenceDeploymentContainerScaleTriggersGPUUtilization struct {
 	// Threshold value for the trigger in percentage
-	Threshold int64 `json:"threshold,required"`
+	Threshold int64 `json:"threshold" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Threshold   respjson.Field
@@ -508,9 +508,9 @@ func (r *InferenceDeploymentContainerScaleTriggersGPUUtilization) UnmarshalJSON(
 // HTTP trigger configuration
 type InferenceDeploymentContainerScaleTriggersHTTP struct {
 	// Request count per 'window' seconds for the http trigger
-	Rate int64 `json:"rate,required"`
+	Rate int64 `json:"rate" api:"required"`
 	// Time window for rate calculation in seconds
-	Window int64 `json:"window,required"`
+	Window int64 `json:"window" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Rate        respjson.Field
@@ -529,7 +529,7 @@ func (r *InferenceDeploymentContainerScaleTriggersHTTP) UnmarshalJSON(data []byt
 // Memory trigger configuration
 type InferenceDeploymentContainerScaleTriggersMemory struct {
 	// Threshold value for the trigger in percentage
-	Threshold int64 `json:"threshold,required"`
+	Threshold int64 `json:"threshold" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Threshold   respjson.Field
@@ -547,21 +547,21 @@ func (r *InferenceDeploymentContainerScaleTriggersMemory) UnmarshalJSON(data []b
 // SQS trigger configuration
 type InferenceDeploymentContainerScaleTriggersSqs struct {
 	// Number of messages for activation
-	ActivationQueueLength int64 `json:"activation_queue_length,required"`
+	ActivationQueueLength int64 `json:"activation_queue_length" api:"required"`
 	// Custom AWS endpoint
-	AwsEndpoint string `json:"aws_endpoint,required"`
+	AwsEndpoint string `json:"aws_endpoint" api:"required"`
 	// AWS region
-	AwsRegion string `json:"aws_region,required"`
+	AwsRegion string `json:"aws_region" api:"required"`
 	// Number of messages for one replica
-	QueueLength int64 `json:"queue_length,required"`
+	QueueLength int64 `json:"queue_length" api:"required"`
 	// SQS queue URL
-	QueueURL string `json:"queue_url,required"`
+	QueueURL string `json:"queue_url" api:"required"`
 	// Scale on delayed messages
-	ScaleOnDelayed bool `json:"scale_on_delayed,required"`
+	ScaleOnDelayed bool `json:"scale_on_delayed" api:"required"`
 	// Scale on in-flight messages
-	ScaleOnFlight bool `json:"scale_on_flight,required"`
+	ScaleOnFlight bool `json:"scale_on_flight" api:"required"`
 	// Auth secret name
-	SecretName string `json:"secret_name,required"`
+	SecretName string `json:"secret_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ActivationQueueLength respjson.Field
@@ -590,7 +590,7 @@ type InferenceDeploymentIngressOpts struct {
 	// upstream application. Ingress tries to buffer the whole response in order to
 	// release the upstream application as soon as possible.By default, the response
 	// buffering is enabled.
-	DisableResponseBuffering bool `json:"disable_response_buffering,required"`
+	DisableResponseBuffering bool `json:"disable_response_buffering" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DisableResponseBuffering respjson.Field
@@ -609,9 +609,9 @@ type InferenceDeploymentObjectReference struct {
 	// Kind of the inference object to be referenced
 	//
 	// Any of "AppDeployment".
-	Kind string `json:"kind,required"`
+	Kind string `json:"kind" api:"required"`
 	// Name of the inference object to be referenced
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Kind        respjson.Field
@@ -630,11 +630,11 @@ func (r *InferenceDeploymentObjectReference) UnmarshalJSON(data []byte) error {
 // Probes configured for all containers of the inference instance.
 type InferenceDeploymentProbes struct {
 	// Liveness probe configuration
-	LivenessProbe ProbeConfig `json:"liveness_probe,required"`
+	LivenessProbe ProbeConfig `json:"liveness_probe" api:"required"`
 	// Readiness probe configuration
-	ReadinessProbe ProbeConfig `json:"readiness_probe,required"`
+	ReadinessProbe ProbeConfig `json:"readiness_probe" api:"required"`
 	// Startup probe configuration
-	StartupProbe ProbeConfig `json:"startup_probe,required"`
+	StartupProbe ProbeConfig `json:"startup_probe" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		LivenessProbe  respjson.Field
@@ -679,11 +679,11 @@ const (
 
 type InferenceDeploymentAPIKey struct {
 	// API key secret
-	Secret string `json:"secret,required"`
+	Secret string `json:"secret" api:"required"`
 	// API key status
 	//
 	// Any of "PENDING", "READY".
-	Status InferenceDeploymentAPIKeyStatus `json:"status,required"`
+	Status InferenceDeploymentAPIKeyStatus `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Secret      respjson.Field
@@ -709,21 +709,21 @@ const (
 
 type Probe struct {
 	// Exec probe configuration
-	Exec ProbeExec `json:"exec,required"`
+	Exec ProbeExec `json:"exec" api:"required"`
 	// The number of consecutive probe failures that mark the container as unhealthy.
-	FailureThreshold int64 `json:"failure_threshold,required"`
+	FailureThreshold int64 `json:"failure_threshold" api:"required"`
 	// HTTP GET probe configuration
-	HTTPGet ProbeHTTPGet `json:"http_get,required"`
+	HTTPGet ProbeHTTPGet `json:"http_get" api:"required"`
 	// The initial delay before starting the first probe.
-	InitialDelaySeconds int64 `json:"initial_delay_seconds,required"`
+	InitialDelaySeconds int64 `json:"initial_delay_seconds" api:"required"`
 	// How often (in seconds) to perform the probe.
-	PeriodSeconds int64 `json:"period_seconds,required"`
+	PeriodSeconds int64 `json:"period_seconds" api:"required"`
 	// The number of consecutive successful probes that mark the container as healthy.
-	SuccessThreshold int64 `json:"success_threshold,required"`
+	SuccessThreshold int64 `json:"success_threshold" api:"required"`
 	// TCP socket probe configuration
-	TcpSocket ProbeTcpSocket `json:"tcp_socket,required"`
+	TcpSocket ProbeTcpSocket `json:"tcp_socket" api:"required"`
 	// The timeout for each probe.
-	TimeoutSeconds int64 `json:"timeout_seconds,required"`
+	TimeoutSeconds int64 `json:"timeout_seconds" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Exec                respjson.Field
@@ -747,9 +747,9 @@ func (r *Probe) UnmarshalJSON(data []byte) error {
 
 type ProbeConfig struct {
 	// Whether the probe is enabled or not.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Probe configuration (exec, `http_get` or `tcp_socket`)
-	Probe Probe `json:"probe,required"`
+	Probe Probe `json:"probe" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -767,7 +767,7 @@ func (r *ProbeConfig) UnmarshalJSON(data []byte) error {
 
 type ProbeExec struct {
 	// Command to be executed inside the running container.
-	Command []string `json:"command,required"`
+	Command []string `json:"command" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Command     respjson.Field
@@ -784,15 +784,15 @@ func (r *ProbeExec) UnmarshalJSON(data []byte) error {
 
 type ProbeHTTPGet struct {
 	// HTTP headers to be sent with the request.
-	Headers map[string]string `json:"headers,required"`
+	Headers map[string]string `json:"headers" api:"required"`
 	// Host name to send HTTP request to.
-	Host string `json:"host,required"`
+	Host string `json:"host" api:"required"`
 	// The endpoint to send the HTTP request to.
-	Path string `json:"path,required"`
+	Path string `json:"path" api:"required"`
 	// Port number the probe should connect to.
-	Port int64 `json:"port,required"`
+	Port int64 `json:"port" api:"required"`
 	// Schema to use for the HTTP request.
-	Schema string `json:"schema,required"`
+	Schema string `json:"schema" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Headers     respjson.Field
@@ -813,7 +813,7 @@ func (r *ProbeHTTPGet) UnmarshalJSON(data []byte) error {
 
 type ProbeTcpSocket struct {
 	// Port number to check if it's open.
-	Port int64 `json:"port,required"`
+	Port int64 `json:"port" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Port        respjson.Field
@@ -830,20 +830,20 @@ func (r *ProbeTcpSocket) UnmarshalJSON(data []byte) error {
 
 type InferenceDeploymentNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// List of containers for the inference instance.
-	Containers []InferenceDeploymentNewParamsContainer `json:"containers,omitzero,required"`
+	Containers []InferenceDeploymentNewParamsContainer `json:"containers,omitzero" api:"required"`
 	// Flavor name for the inference instance.
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// Docker image for the inference instance. This field should contain the image
 	// name and tag in the format 'name:tag', e.g., 'nginx:latest'. It defaults to
 	// Docker Hub as the image registry, but any accessible Docker image URL can be
 	// specified.
-	Image string `json:"image,required"`
+	Image string `json:"image" api:"required"`
 	// Listening port for the inference instance.
-	ListeningPort int64 `json:"listening_port,required"`
+	ListeningPort int64 `json:"listening_port" api:"required"`
 	// Inference instance name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Registry credentials name
 	CredentialsName param.Opt[string] `json:"credentials_name,omitzero"`
 	// Inference instance description.
@@ -890,9 +890,9 @@ func (r *InferenceDeploymentNewParams) UnmarshalJSON(data []byte) error {
 // The properties RegionID, Scale are required.
 type InferenceDeploymentNewParamsContainer struct {
 	// Region id for the container
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Scale for the container
-	Scale InferenceDeploymentNewParamsContainerScale `json:"scale,omitzero,required"`
+	Scale InferenceDeploymentNewParamsContainerScale `json:"scale,omitzero" api:"required"`
 	paramObj
 }
 
@@ -909,9 +909,9 @@ func (r *InferenceDeploymentNewParamsContainer) UnmarshalJSON(data []byte) error
 // The properties Max, Min are required.
 type InferenceDeploymentNewParamsContainerScale struct {
 	// Maximum scale for the container
-	Max int64 `json:"max,required"`
+	Max int64 `json:"max" api:"required"`
 	// Minimum scale for the container
-	Min int64 `json:"min,required"`
+	Min int64 `json:"min" api:"required"`
 	// Cooldown period between scaling actions in seconds
 	CooldownPeriod param.Opt[int64] `json:"cooldown_period,omitzero"`
 	// Polling interval for scaling triggers in seconds
@@ -961,7 +961,7 @@ func (r *InferenceDeploymentNewParamsContainerScaleTriggers) UnmarshalJSON(data 
 // The property Threshold is required.
 type InferenceDeploymentNewParamsContainerScaleTriggersCPU struct {
 	// Threshold value for the trigger in percentage
-	Threshold int64 `json:"threshold,required"`
+	Threshold int64 `json:"threshold" api:"required"`
 	paramObj
 }
 
@@ -979,7 +979,7 @@ func (r *InferenceDeploymentNewParamsContainerScaleTriggersCPU) UnmarshalJSON(da
 // The property Threshold is required.
 type InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory struct {
 	// Threshold value for the trigger in percentage
-	Threshold int64 `json:"threshold,required"`
+	Threshold int64 `json:"threshold" api:"required"`
 	paramObj
 }
 
@@ -997,7 +997,7 @@ func (r *InferenceDeploymentNewParamsContainerScaleTriggersGPUMemory) UnmarshalJ
 // The property Threshold is required.
 type InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization struct {
 	// Threshold value for the trigger in percentage
-	Threshold int64 `json:"threshold,required"`
+	Threshold int64 `json:"threshold" api:"required"`
 	paramObj
 }
 
@@ -1014,9 +1014,9 @@ func (r *InferenceDeploymentNewParamsContainerScaleTriggersGPUUtilization) Unmar
 // The properties Rate, Window are required.
 type InferenceDeploymentNewParamsContainerScaleTriggersHTTP struct {
 	// Request count per 'window' seconds for the http trigger
-	Rate int64 `json:"rate,required"`
+	Rate int64 `json:"rate" api:"required"`
 	// Time window for rate calculation in seconds
-	Window int64 `json:"window,required"`
+	Window int64 `json:"window" api:"required"`
 	paramObj
 }
 
@@ -1033,7 +1033,7 @@ func (r *InferenceDeploymentNewParamsContainerScaleTriggersHTTP) UnmarshalJSON(d
 // The property Threshold is required.
 type InferenceDeploymentNewParamsContainerScaleTriggersMemory struct {
 	// Threshold value for the trigger in percentage
-	Threshold int64 `json:"threshold,required"`
+	Threshold int64 `json:"threshold" api:"required"`
 	paramObj
 }
 
@@ -1051,15 +1051,15 @@ func (r *InferenceDeploymentNewParamsContainerScaleTriggersMemory) UnmarshalJSON
 // SecretName are required.
 type InferenceDeploymentNewParamsContainerScaleTriggersSqs struct {
 	// Number of messages for activation
-	ActivationQueueLength int64 `json:"activation_queue_length,required"`
+	ActivationQueueLength int64 `json:"activation_queue_length" api:"required"`
 	// AWS region
-	AwsRegion string `json:"aws_region,required"`
+	AwsRegion string `json:"aws_region" api:"required"`
 	// Number of messages for one replica
-	QueueLength int64 `json:"queue_length,required"`
+	QueueLength int64 `json:"queue_length" api:"required"`
 	// SQS queue URL
-	QueueURL string `json:"queue_url,required"`
+	QueueURL string `json:"queue_url" api:"required"`
 	// Auth secret name
-	SecretName string `json:"secret_name,required"`
+	SecretName string `json:"secret_name" api:"required"`
 	// Custom AWS endpoint
 	AwsEndpoint param.Opt[string] `json:"aws_endpoint,omitzero"`
 	// Scale on delayed messages
@@ -1143,7 +1143,7 @@ func (r *InferenceDeploymentNewParamsProbes) UnmarshalJSON(data []byte) error {
 // The property Enabled is required.
 type InferenceDeploymentNewParamsProbesLivenessProbe struct {
 	// Whether the probe is enabled or not.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Probe configuration (exec, `http_get` or `tcp_socket`)
 	Probe InferenceDeploymentNewParamsProbesLivenessProbeProbe `json:"probe,omitzero"`
 	paramObj
@@ -1191,7 +1191,7 @@ func (r *InferenceDeploymentNewParamsProbesLivenessProbeProbe) UnmarshalJSON(dat
 // The property Command is required.
 type InferenceDeploymentNewParamsProbesLivenessProbeProbeExec struct {
 	// Command to be executed inside the running container.
-	Command []string `json:"command,omitzero,required"`
+	Command []string `json:"command,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1208,7 +1208,7 @@ func (r *InferenceDeploymentNewParamsProbesLivenessProbeProbeExec) UnmarshalJSON
 // The property Port is required.
 type InferenceDeploymentNewParamsProbesLivenessProbeProbeHTTPGet struct {
 	// Port number the probe should connect to.
-	Port int64 `json:"port,required"`
+	Port int64 `json:"port" api:"required"`
 	// Host name to send HTTP request to.
 	Host param.Opt[string] `json:"host,omitzero"`
 	// The endpoint to send the HTTP request to.
@@ -1233,7 +1233,7 @@ func (r *InferenceDeploymentNewParamsProbesLivenessProbeProbeHTTPGet) UnmarshalJ
 // The property Port is required.
 type InferenceDeploymentNewParamsProbesLivenessProbeProbeTcpSocket struct {
 	// Port number to check if it's open.
-	Port int64 `json:"port,required"`
+	Port int64 `json:"port" api:"required"`
 	paramObj
 }
 
@@ -1250,7 +1250,7 @@ func (r *InferenceDeploymentNewParamsProbesLivenessProbeProbeTcpSocket) Unmarsha
 // The property Enabled is required.
 type InferenceDeploymentNewParamsProbesReadinessProbe struct {
 	// Whether the probe is enabled or not.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Probe configuration (exec, `http_get` or `tcp_socket`)
 	Probe InferenceDeploymentNewParamsProbesReadinessProbeProbe `json:"probe,omitzero"`
 	paramObj
@@ -1298,7 +1298,7 @@ func (r *InferenceDeploymentNewParamsProbesReadinessProbeProbe) UnmarshalJSON(da
 // The property Command is required.
 type InferenceDeploymentNewParamsProbesReadinessProbeProbeExec struct {
 	// Command to be executed inside the running container.
-	Command []string `json:"command,omitzero,required"`
+	Command []string `json:"command,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1315,7 +1315,7 @@ func (r *InferenceDeploymentNewParamsProbesReadinessProbeProbeExec) UnmarshalJSO
 // The property Port is required.
 type InferenceDeploymentNewParamsProbesReadinessProbeProbeHTTPGet struct {
 	// Port number the probe should connect to.
-	Port int64 `json:"port,required"`
+	Port int64 `json:"port" api:"required"`
 	// Host name to send HTTP request to.
 	Host param.Opt[string] `json:"host,omitzero"`
 	// The endpoint to send the HTTP request to.
@@ -1340,7 +1340,7 @@ func (r *InferenceDeploymentNewParamsProbesReadinessProbeProbeHTTPGet) Unmarshal
 // The property Port is required.
 type InferenceDeploymentNewParamsProbesReadinessProbeProbeTcpSocket struct {
 	// Port number to check if it's open.
-	Port int64 `json:"port,required"`
+	Port int64 `json:"port" api:"required"`
 	paramObj
 }
 
@@ -1357,7 +1357,7 @@ func (r *InferenceDeploymentNewParamsProbesReadinessProbeProbeTcpSocket) Unmarsh
 // The property Enabled is required.
 type InferenceDeploymentNewParamsProbesStartupProbe struct {
 	// Whether the probe is enabled or not.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Probe configuration (exec, `http_get` or `tcp_socket`)
 	Probe InferenceDeploymentNewParamsProbesStartupProbeProbe `json:"probe,omitzero"`
 	paramObj
@@ -1405,7 +1405,7 @@ func (r *InferenceDeploymentNewParamsProbesStartupProbeProbe) UnmarshalJSON(data
 // The property Command is required.
 type InferenceDeploymentNewParamsProbesStartupProbeProbeExec struct {
 	// Command to be executed inside the running container.
-	Command []string `json:"command,omitzero,required"`
+	Command []string `json:"command,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1422,7 +1422,7 @@ func (r *InferenceDeploymentNewParamsProbesStartupProbeProbeExec) UnmarshalJSON(
 // The property Port is required.
 type InferenceDeploymentNewParamsProbesStartupProbeProbeHTTPGet struct {
 	// Port number the probe should connect to.
-	Port int64 `json:"port,required"`
+	Port int64 `json:"port" api:"required"`
 	// Host name to send HTTP request to.
 	Host param.Opt[string] `json:"host,omitzero"`
 	// The endpoint to send the HTTP request to.
@@ -1447,7 +1447,7 @@ func (r *InferenceDeploymentNewParamsProbesStartupProbeProbeHTTPGet) UnmarshalJS
 // The property Port is required.
 type InferenceDeploymentNewParamsProbesStartupProbeProbeTcpSocket struct {
 	// Port number to check if it's open.
-	Port int64 `json:"port,required"`
+	Port int64 `json:"port" api:"required"`
 	paramObj
 }
 
@@ -1461,7 +1461,7 @@ func (r *InferenceDeploymentNewParamsProbesStartupProbeProbeTcpSocket) Unmarshal
 
 type InferenceDeploymentUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Registry credentials name
 	CredentialsName param.Opt[string] `json:"credentials_name,omitzero"`
 	// Inference instance description.
@@ -1518,9 +1518,9 @@ func (r *InferenceDeploymentUpdateParams) UnmarshalJSON(data []byte) error {
 // The properties RegionID, Scale are required.
 type InferenceDeploymentUpdateParamsContainer struct {
 	// Region id for the container
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Scale for the container
-	Scale InferenceDeploymentUpdateParamsContainerScale `json:"scale,omitzero,required"`
+	Scale InferenceDeploymentUpdateParamsContainerScale `json:"scale,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1537,9 +1537,9 @@ func (r *InferenceDeploymentUpdateParamsContainer) UnmarshalJSON(data []byte) er
 // The properties Max, Min are required.
 type InferenceDeploymentUpdateParamsContainerScale struct {
 	// Maximum scale for the container
-	Max int64 `json:"max,required"`
+	Max int64 `json:"max" api:"required"`
 	// Minimum scale for the container
-	Min int64 `json:"min,required"`
+	Min int64 `json:"min" api:"required"`
 	// Cooldown period between scaling actions in seconds
 	CooldownPeriod param.Opt[int64] `json:"cooldown_period,omitzero"`
 	// Polling interval for scaling triggers in seconds
@@ -1589,7 +1589,7 @@ func (r *InferenceDeploymentUpdateParamsContainerScaleTriggers) UnmarshalJSON(da
 // The property Threshold is required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersCPU struct {
 	// Threshold value for the trigger in percentage
-	Threshold int64 `json:"threshold,required"`
+	Threshold int64 `json:"threshold" api:"required"`
 	paramObj
 }
 
@@ -1607,7 +1607,7 @@ func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersCPU) UnmarshalJSON
 // The property Threshold is required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory struct {
 	// Threshold value for the trigger in percentage
-	Threshold int64 `json:"threshold,required"`
+	Threshold int64 `json:"threshold" api:"required"`
 	paramObj
 }
 
@@ -1625,7 +1625,7 @@ func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersGPUMemory) Unmarsh
 // The property Threshold is required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization struct {
 	// Threshold value for the trigger in percentage
-	Threshold int64 `json:"threshold,required"`
+	Threshold int64 `json:"threshold" api:"required"`
 	paramObj
 }
 
@@ -1642,9 +1642,9 @@ func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersGPUUtilization) Un
 // The properties Rate, Window are required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP struct {
 	// Request count per 'window' seconds for the http trigger
-	Rate int64 `json:"rate,required"`
+	Rate int64 `json:"rate" api:"required"`
 	// Time window for rate calculation in seconds
-	Window int64 `json:"window,required"`
+	Window int64 `json:"window" api:"required"`
 	paramObj
 }
 
@@ -1661,7 +1661,7 @@ func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersHTTP) UnmarshalJSO
 // The property Threshold is required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersMemory struct {
 	// Threshold value for the trigger in percentage
-	Threshold int64 `json:"threshold,required"`
+	Threshold int64 `json:"threshold" api:"required"`
 	paramObj
 }
 
@@ -1679,15 +1679,15 @@ func (r *InferenceDeploymentUpdateParamsContainerScaleTriggersMemory) UnmarshalJ
 // SecretName are required.
 type InferenceDeploymentUpdateParamsContainerScaleTriggersSqs struct {
 	// Number of messages for activation
-	ActivationQueueLength int64 `json:"activation_queue_length,required"`
+	ActivationQueueLength int64 `json:"activation_queue_length" api:"required"`
 	// AWS region
-	AwsRegion string `json:"aws_region,required"`
+	AwsRegion string `json:"aws_region" api:"required"`
 	// Number of messages for one replica
-	QueueLength int64 `json:"queue_length,required"`
+	QueueLength int64 `json:"queue_length" api:"required"`
 	// SQS queue URL
-	QueueURL string `json:"queue_url,required"`
+	QueueURL string `json:"queue_url" api:"required"`
 	// Auth secret name
-	SecretName string `json:"secret_name,required"`
+	SecretName string `json:"secret_name" api:"required"`
 	// Custom AWS endpoint
 	AwsEndpoint param.Opt[string] `json:"aws_endpoint,omitzero"`
 	// Scale on delayed messages
@@ -2063,7 +2063,7 @@ func (r *InferenceDeploymentUpdateParamsProbesStartupProbeProbeTcpSocket) Unmars
 
 type InferenceDeploymentListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
@@ -2083,30 +2083,30 @@ func (r InferenceDeploymentListParams) URLQuery() (v url.Values, err error) {
 
 type InferenceDeploymentDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InferenceDeploymentGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InferenceDeploymentGetAPIKeyParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InferenceDeploymentStartParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InferenceDeploymentStopParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

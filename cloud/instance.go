@@ -461,23 +461,23 @@ func (r *InstanceService) UnassignSecurityGroup(ctx context.Context, instanceID 
 
 type InstanceInterface struct {
 	// Group of subnet masks and/or IP addresses that share the current IP as VIP
-	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs,required"`
+	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs" api:"required"`
 	// Bodies of floating IPs that are NAT-ing IPs of this port
-	FloatingipDetails []FloatingIP `json:"floatingip_details,required"`
+	FloatingipDetails []FloatingIP `json:"floatingip_details" api:"required"`
 	// IP addresses assigned to this port
-	IPAssignments []IPAssignment `json:"ip_assignments,required"`
+	IPAssignments []IPAssignment `json:"ip_assignments" api:"required"`
 	// Body of the network this port is attached to
-	NetworkDetails NetworkDetails `json:"network_details,required"`
+	NetworkDetails NetworkDetails `json:"network_details" api:"required"`
 	// ID of the network the port is attached to
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// ID of virtual ethernet port object
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Port security status
-	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// Interface name
-	InterfaceName string `json:"interface_name,nullable"`
+	InterfaceName string `json:"interface_name" api:"nullable"`
 	// MAC address of the virtual port
-	MacAddress string `json:"mac_address,nullable"`
+	MacAddress string `json:"mac_address" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedAddressPairs respjson.Field
@@ -502,16 +502,16 @@ func (r *InstanceInterface) UnmarshalJSON(data []byte) error {
 
 type InstanceNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// The flavor of the instance.
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// A list of network interfaces for the instance. You can create one or more
 	// interfaces - private, public, or both.
-	Interfaces []InstanceNewParamsInterfaceUnion `json:"interfaces,omitzero,required"`
+	Interfaces []InstanceNewParamsInterfaceUnion `json:"interfaces,omitzero" api:"required"`
 	// List of volumes that will be attached to the instance.
-	Volumes []InstanceNewParamsVolumeUnion `json:"volumes,omitzero,required"`
+	Volumes []InstanceNewParamsVolumeUnion `json:"volumes,omitzero" api:"required"`
 	// Specifies the name of the SSH keypair, created via the
 	// [/v1/`ssh_keys` endpoint](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
@@ -801,7 +801,7 @@ type InstanceNewParamsInterfaceExternal struct {
 	// A public IP address will be assigned to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "external".
-	Type constant.External `json:"type,required"`
+	Type constant.External `json:"type" api:"required"`
 	paramObj
 }
 
@@ -816,7 +816,7 @@ func (r *InstanceNewParamsInterfaceExternal) UnmarshalJSON(data []byte) error {
 // The property ID is required.
 type InstanceNewParamsInterfaceExternalSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
@@ -835,9 +835,9 @@ func (r *InstanceNewParamsInterfaceExternalSecurityGroup) UnmarshalJSON(data []b
 // The properties NetworkID, SubnetID, Type are required.
 type InstanceNewParamsInterfaceSubnet struct {
 	// The network where the instance will be connected.
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// The instance will get an IP address from this subnet.
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
@@ -850,7 +850,7 @@ type InstanceNewParamsInterfaceSubnet struct {
 	// it will only have a private IP within the network.
 	//
 	// This field can be elided, and will marshal its zero value as "subnet".
-	Type constant.Subnet `json:"type,required"`
+	Type constant.Subnet `json:"type" api:"required"`
 	paramObj
 }
 
@@ -926,7 +926,7 @@ type InstanceNewParamsInterfaceSubnetFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	paramObj
 }
 
@@ -942,14 +942,14 @@ func (r *InstanceNewParamsInterfaceSubnetFloatingIPNew) UnmarshalJSON(data []byt
 type InstanceNewParamsInterfaceSubnetFloatingIPExisting struct {
 	// An existing available floating IP id must be specified if the source is set to
 	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
+	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
 	// An existing available floating IP will be attached to the instance. A floating
 	// IP is a public IP that makes the instance accessible from the internet, even if
 	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source,required"`
+	Source constant.Existing `json:"source" api:"required"`
 	paramObj
 }
 
@@ -964,7 +964,7 @@ func (r *InstanceNewParamsInterfaceSubnetFloatingIPExisting) UnmarshalJSON(data 
 // The property ID is required.
 type InstanceNewParamsInterfaceSubnetSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
@@ -979,7 +979,7 @@ func (r *InstanceNewParamsInterfaceSubnetSecurityGroup) UnmarshalJSON(data []byt
 // The properties NetworkID, Type are required.
 type InstanceNewParamsInterfaceAnySubnet struct {
 	// The network where the instance will be connected.
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
@@ -996,7 +996,7 @@ type InstanceNewParamsInterfaceAnySubnet struct {
 	// Instance will be attached to a subnet with the largest count of free IPs.
 	//
 	// This field can be elided, and will marshal its zero value as "any_subnet".
-	Type constant.AnySubnet `json:"type,required"`
+	Type constant.AnySubnet `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1072,7 +1072,7 @@ type InstanceNewParamsInterfaceAnySubnetFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1088,14 +1088,14 @@ func (r *InstanceNewParamsInterfaceAnySubnetFloatingIPNew) UnmarshalJSON(data []
 type InstanceNewParamsInterfaceAnySubnetFloatingIPExisting struct {
 	// An existing available floating IP id must be specified if the source is set to
 	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
+	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
 	// An existing available floating IP will be attached to the instance. A floating
 	// IP is a public IP that makes the instance accessible from the internet, even if
 	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source,required"`
+	Source constant.Existing `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1110,7 +1110,7 @@ func (r *InstanceNewParamsInterfaceAnySubnetFloatingIPExisting) UnmarshalJSON(da
 // The property ID is required.
 type InstanceNewParamsInterfaceAnySubnetSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
@@ -1125,7 +1125,7 @@ func (r *InstanceNewParamsInterfaceAnySubnetSecurityGroup) UnmarshalJSON(data []
 // The properties PortID, Type are required.
 type InstanceNewParamsInterfaceReservedFixedIP struct {
 	// Network ID the subnet belongs to. Port will be plugged in this network.
-	PortID string `json:"port_id,required"`
+	PortID string `json:"port_id" api:"required"`
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
@@ -1139,7 +1139,7 @@ type InstanceNewParamsInterfaceReservedFixedIP struct {
 	//
 	// This field can be elided, and will marshal its zero value as
 	// "reserved_fixed_ip".
-	Type constant.ReservedFixedIP `json:"type,required"`
+	Type constant.ReservedFixedIP `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1215,7 +1215,7 @@ type InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1231,14 +1231,14 @@ func (r *InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew) UnmarshalJSON(d
 type InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
 	// An existing available floating IP id must be specified if the source is set to
 	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
+	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
 	// An existing available floating IP will be attached to the instance. A floating
 	// IP is a public IP that makes the instance accessible from the internet, even if
 	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source,required"`
+	Source constant.Existing `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1253,7 +1253,7 @@ func (r *InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting) UnmarshalJ
 // The property ID is required.
 type InstanceNewParamsInterfaceReservedFixedIPSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
@@ -1469,7 +1469,7 @@ func init() {
 // The properties Size, Source are required.
 type InstanceNewParamsVolumeNewVolume struct {
 	// Volume size in GiB.
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// Block device attachment tag (not exposed in the normal tags)
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
 	// Set to `true` to automatically delete the volume when the instance is deleted.
@@ -1501,7 +1501,7 @@ type InstanceNewParamsVolumeNewVolume struct {
 	// New volume will be created from scratch and attached to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "new-volume".
-	Source constant.NewVolume `json:"source,required"`
+	Source constant.NewVolume `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1522,7 +1522,7 @@ func init() {
 // The properties ImageID, Source are required.
 type InstanceNewParamsVolumeImage struct {
 	// Image ID.
-	ImageID string `json:"image_id,required" format:"uuid4"`
+	ImageID string `json:"image_id" api:"required" format:"uuid4"`
 	// Block device attachment tag (not exposed in the normal tags)
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
 	// - `0` means that this is the primary boot device;
@@ -1564,7 +1564,7 @@ type InstanceNewParamsVolumeImage struct {
 	// `boot_index=0` to boot from this volume.
 	//
 	// This field can be elided, and will marshal its zero value as "image".
-	Source constant.Image `json:"source,required"`
+	Source constant.Image `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1585,9 +1585,9 @@ func init() {
 // The properties Size, SnapshotID, Source are required.
 type InstanceNewParamsVolumeSnapshot struct {
 	// Volume size in GiB.
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// Snapshot ID.
-	SnapshotID string `json:"snapshot_id,required" format:"uuid4"`
+	SnapshotID string `json:"snapshot_id" api:"required" format:"uuid4"`
 	// Block device attachment tag (not exposed in the normal tags)
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
 	// - `0` means that this is the primary boot device;
@@ -1614,7 +1614,7 @@ type InstanceNewParamsVolumeSnapshot struct {
 	// New volume will be created from the snapshot and attached to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "snapshot".
-	Source constant.Snapshot `json:"source,required"`
+	Source constant.Snapshot `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1635,7 +1635,7 @@ func init() {
 // The properties ApptemplateID, Source are required.
 type InstanceNewParamsVolumeApptemplate struct {
 	// App template ID.
-	ApptemplateID string `json:"apptemplate_id,required"`
+	ApptemplateID string `json:"apptemplate_id" api:"required"`
 	// Block device attachment tag (not exposed in the normal tags)
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
 	// - `0` means that this is the primary boot device;
@@ -1673,7 +1673,7 @@ type InstanceNewParamsVolumeApptemplate struct {
 	// New volume will be created from the app template and attached to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "apptemplate".
-	Source constant.Apptemplate `json:"source,required"`
+	Source constant.Apptemplate `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1694,7 +1694,7 @@ func init() {
 // The properties Source, VolumeID are required.
 type InstanceNewParamsVolumeExistingVolume struct {
 	// Volume ID.
-	VolumeID string `json:"volume_id,required" format:"uuid4"`
+	VolumeID string `json:"volume_id" api:"required" format:"uuid4"`
 	// Block device attachment tag (not exposed in the normal tags)
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
 	// - `0` means that this is the primary boot device;
@@ -1713,7 +1713,7 @@ type InstanceNewParamsVolumeExistingVolume struct {
 	// Existing available volume will be attached to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "existing-volume".
-	Source constant.ExistingVolume `json:"source,required"`
+	Source constant.ExistingVolume `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1728,7 +1728,7 @@ func (r *InstanceNewParamsVolumeExistingVolume) UnmarshalJSON(data []byte) error
 // The property ID is required.
 type InstanceNewParamsSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
@@ -1742,9 +1742,9 @@ func (r *InstanceNewParamsSecurityGroup) UnmarshalJSON(data []byte) error {
 
 type InstanceUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Name
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
@@ -1782,9 +1782,9 @@ func (r *InstanceUpdateParams) UnmarshalJSON(data []byte) error {
 
 type InstanceListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Only show instances which are able to handle floating address
 	AvailableFloating param.Opt[bool] `query:"available_floating,omitzero" json:"-"`
 	// Filters the instances by a date and time stamp when the instances last changed.
@@ -1924,9 +1924,9 @@ const (
 
 type InstanceDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// True if it is required to delete floating IPs assigned to the instance. Can't be
 	// used with `floatings`.
 	DeleteFloatings param.Opt[bool] `query:"delete_floatings,omitzero" json:"-"`
@@ -1949,8 +1949,8 @@ func (r InstanceDeleteParams) URLQuery() (v url.Values, err error) {
 }
 
 type InstanceActionParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 
 	//
 	// Request body variants
@@ -1978,7 +1978,7 @@ type InstanceActionParamsBodyStartActionInstanceSerializer struct {
 	// Instance action name
 	//
 	// This field can be elided, and will marshal its zero value as "start".
-	Action constant.Start `json:"action,required"`
+	Action constant.Start `json:"action" api:"required"`
 	paramObj
 }
 
@@ -1995,7 +1995,7 @@ type InstanceActionParamsBodyBasicActionInstanceSerializer struct {
 	// Instance action name
 	//
 	// Any of "reboot", "reboot_hard", "resume", "stop", "suspend".
-	Action string `json:"action,omitzero,required"`
+	Action string `json:"action,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2014,10 +2014,10 @@ func init() {
 }
 
 type InstanceAddToPlacementGroupParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Anti-affinity or affinity or soft-anti-affinity server group ID.
-	ServergroupID string `json:"servergroup_id,required"`
+	ServergroupID string `json:"servergroup_id" api:"required"`
 	paramObj
 }
 
@@ -2030,8 +2030,8 @@ func (r *InstanceAddToPlacementGroupParams) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceAssignSecurityGroupParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Security group name, applies to all ports
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Port security groups mapping
@@ -2052,9 +2052,9 @@ func (r *InstanceAssignSecurityGroupParams) UnmarshalJSON(data []byte) error {
 // The properties PortID, SecurityGroupNames are required.
 type InstanceAssignSecurityGroupParamsPortsSecurityGroupName struct {
 	// Port ID. If None, security groups will be applied to all ports
-	PortID param.Opt[string] `json:"port_id,omitzero,required"`
+	PortID param.Opt[string] `json:"port_id,omitzero" api:"required"`
 	// List of security group names
-	SecurityGroupNames []string `json:"security_group_names,omitzero,required"`
+	SecurityGroupNames []string `json:"security_group_names,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2067,28 +2067,28 @@ func (r *InstanceAssignSecurityGroupParamsPortsSecurityGroupName) UnmarshalJSON(
 }
 
 type InstanceDisablePortSecurityParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InstanceEnablePortSecurityParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InstanceGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InstanceGetConsoleParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Console type
 	ConsoleType param.Opt[string] `query:"console_type,omitzero" json:"-"`
 	paramObj
@@ -2104,16 +2104,16 @@ func (r InstanceGetConsoleParams) URLQuery() (v url.Values, err error) {
 }
 
 type InstanceRemoveFromPlacementGroupParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InstanceResizeParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Flavor ID
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	paramObj
 }
 
@@ -2126,8 +2126,8 @@ func (r *InstanceResizeParams) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceUnassignSecurityGroupParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Security group name, applies to all ports
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Port security groups mapping
@@ -2148,9 +2148,9 @@ func (r *InstanceUnassignSecurityGroupParams) UnmarshalJSON(data []byte) error {
 // The properties PortID, SecurityGroupNames are required.
 type InstanceUnassignSecurityGroupParamsPortsSecurityGroupName struct {
 	// Port ID. If None, security groups will be applied to all ports
-	PortID param.Opt[string] `json:"port_id,omitzero,required"`
+	PortID param.Opt[string] `json:"port_id,omitzero" api:"required"`
 	// List of security group names
-	SecurityGroupNames []string `json:"security_group_names,omitzero,required"`
+	SecurityGroupNames []string `json:"security_group_names,omitzero" api:"required"`
 	paramObj
 }
 

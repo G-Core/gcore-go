@@ -96,34 +96,34 @@ func (r *GPUVirtualClusterServerService) Delete(ctx context.Context, serverID st
 
 type GPUVirtualClusterServer struct {
 	// Server unique identifier
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Server creation date and time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Unique flavor identifier
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Server's image UUID
-	ImageID string `json:"image_id,required" format:"uuid4"`
+	ImageID string `json:"image_id" api:"required" format:"uuid4"`
 	// List of IP addresses
-	IPAddresses []string `json:"ip_addresses,required"`
+	IPAddresses []string `json:"ip_addresses" api:"required"`
 	// Server's name generated using cluster's name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Security groups
-	SecurityGroups []GPUVirtualClusterServerSecurityGroup `json:"security_groups,required"`
+	SecurityGroups []GPUVirtualClusterServerSecurityGroup `json:"security_groups" api:"required"`
 	// SSH key pair assigned to the server
-	SSHKeyName string `json:"ssh_key_name,required"`
+	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Current server status
 	//
 	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
 	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
 	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
 	// "UNKNOWN", "VERIFY_RESIZE".
-	Status GPUVirtualClusterServerStatus `json:"status,required"`
+	Status GPUVirtualClusterServerStatus `json:"status" api:"required"`
 	// User defined tags
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// Identifier of the task currently modifying the GPU cluster
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Server update date and time
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -151,9 +151,9 @@ func (r *GPUVirtualClusterServer) UnmarshalJSON(data []byte) error {
 
 type GPUVirtualClusterServerSecurityGroup struct {
 	// Security group ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Security group name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -197,9 +197,9 @@ const (
 
 type GPUVirtualClusterServerList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []GPUVirtualClusterServer `json:"results,required"`
+	Results []GPUVirtualClusterServer `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -217,9 +217,9 @@ func (r *GPUVirtualClusterServerList) UnmarshalJSON(data []byte) error {
 
 type GPUVirtualClusterServerListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Filters the results to include only servers whose last change timestamp is less
 	// than the specified datetime. Format: ISO 8601.
 	ChangedBefore param.Opt[time.Time] `query:"changed_before,omitzero" format:"date-time" json:"-"`
@@ -294,11 +294,11 @@ const (
 
 type GPUVirtualClusterServerDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster unique identifier
-	ClusterID string `path:"cluster_id,required" format:"uuid4" json:"-"`
+	ClusterID string `path:"cluster_id" api:"required" format:"uuid4" json:"-"`
 	// Flag indicating whether the floating ips associated with server / cluster are
 	// deleted
 	AllFloatingIPs param.Opt[bool] `query:"all_floating_ips,omitzero" json:"-"`

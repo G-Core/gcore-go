@@ -207,34 +207,34 @@ func (r *FileShareService) Resize(ctx context.Context, fileShareID string, param
 
 type FileShare struct {
 	// File share ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Connection point. Can be null during File share creation
-	ConnectionPoint string `json:"connection_point,required"`
+	ConnectionPoint string `json:"connection_point" api:"required"`
 	// Datetime when the file share was created
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
 	// File share name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Network ID.
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Network name.
-	NetworkName string `json:"network_name,required"`
+	NetworkName string `json:"network_name" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// File share protocol
-	Protocol string `json:"protocol,required"`
+	Protocol string `json:"protocol" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Share network name. May be null if the file share was created with volume type
 	// VAST
-	ShareNetworkName string `json:"share_network_name,required"`
+	ShareNetworkName string `json:"share_network_name" api:"required"`
 	// Share settings specific to the file share type
-	ShareSettings FileShareShareSettingsUnion `json:"share_settings,required"`
+	ShareSettings FileShareShareSettingsUnion `json:"share_settings" api:"required"`
 	// File share size in GiB
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// File share status
 	//
 	// Any of "available", "awaiting_transfer", "backup_creating", "backup_restoring",
@@ -244,31 +244,31 @@ type FileShare struct {
 	// "migrating_to", "replication_change", "reverting", "reverting_error",
 	// "shrinking", "shrinking_error", "shrinking_possible_data_loss_error",
 	// "unmanage_error", "unmanage_starting", "unmanaged".
-	Status FileShareStatus `json:"status,required"`
+	Status FileShareStatus `json:"status" api:"required"`
 	// Subnet ID.
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// Subnet name.
-	SubnetName string `json:"subnet_name,required"`
+	SubnetName string `json:"subnet_name" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// File share type name
 	//
 	// Any of "standard", "vast".
-	TypeName FileShareTypeName `json:"type_name,required"`
+	TypeName FileShareTypeName `json:"type_name" api:"required"`
 	// Deprecated. Use `type_name` instead. File share disk type
 	//
 	// Any of "default_share_type", "vast_share_type".
 	//
 	// Deprecated: deprecated
-	VolumeType FileShareVolumeType `json:"volume_type,required"`
+	VolumeType FileShareVolumeType `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -374,7 +374,7 @@ func (r *FileShareShareSettingsUnion) UnmarshalJSON(data []byte) error {
 
 type FileShareShareSettingsStandard struct {
 	// Standard file share type
-	TypeName constant.Standard `json:"type_name,required"`
+	TypeName constant.Standard `json:"type_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		TypeName    respjson.Field
@@ -391,18 +391,18 @@ func (r *FileShareShareSettingsStandard) UnmarshalJSON(data []byte) error {
 
 type FileShareShareSettingsVast struct {
 	// Any of "LCD", "NPL".
-	AllowedCharacters string `json:"allowed_characters,required"`
+	AllowedCharacters string `json:"allowed_characters" api:"required"`
 	// Any of "LCD", "NPL".
-	PathLength string `json:"path_length,required"`
+	PathLength string `json:"path_length" api:"required"`
 	// Enables or disables root squash for NFS clients.
 	//
 	//   - If `true`, root squash is enabled: the root user is mapped to nobody for all
 	//     file and folder management operations on the export.
 	//   - If `false`, root squash is disabled: the NFS client `root` user retains root
 	//     privileges.
-	RootSquash bool `json:"root_squash,required"`
+	RootSquash bool `json:"root_squash" api:"required"`
 	// Vast file share type
-	TypeName constant.Vast `json:"type_name,required"`
+	TypeName constant.Vast `json:"type_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedCharacters respjson.Field
@@ -472,9 +472,9 @@ const (
 
 type FileShareNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 
 	//
 	// Request body variants
@@ -498,11 +498,11 @@ func (r *FileShareNewParams) UnmarshalJSON(data []byte) error {
 // The properties Name, Network, Protocol, Size are required.
 type FileShareNewParamsBodyCreateStandardFileShareSerializer struct {
 	// File share name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// File share network configuration
-	Network FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork `json:"network,omitzero,required"`
+	Network FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork `json:"network,omitzero" api:"required"`
 	// File share size in GiB
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// Access Rules
 	Access []FileShareNewParamsBodyCreateStandardFileShareSerializerAccess `json:"access,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
@@ -525,7 +525,7 @@ type FileShareNewParamsBodyCreateStandardFileShareSerializer struct {
 	// File share protocol
 	//
 	// This field can be elided, and will marshal its zero value as "NFS".
-	Protocol constant.Nfs `json:"protocol,required"`
+	Protocol constant.Nfs `json:"protocol" api:"required"`
 	paramObj
 }
 
@@ -551,7 +551,7 @@ func init() {
 // The property NetworkID is required.
 type FileShareNewParamsBodyCreateStandardFileShareSerializerNetwork struct {
 	// Network ID.
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Subnetwork ID. If the subnet is not selected, it will be selected automatically.
 	SubnetID param.Opt[string] `json:"subnet_id,omitzero" format:"uuid4"`
 	paramObj
@@ -570,9 +570,9 @@ type FileShareNewParamsBodyCreateStandardFileShareSerializerAccess struct {
 	// Access mode
 	//
 	// Any of "ro", "rw".
-	AccessMode string `json:"access_mode,omitzero,required"`
+	AccessMode string `json:"access_mode,omitzero" api:"required"`
 	// Source IP or network
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	paramObj
 }
 
@@ -593,9 +593,9 @@ func init() {
 // The properties Name, Protocol, Size are required.
 type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
 	// File share name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// File share size in GiB
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// Configuration settings for the share
 	ShareSettings FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings `json:"share_settings,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
@@ -618,7 +618,7 @@ type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
 	// File share protocol
 	//
 	// This field can be elided, and will marshal its zero value as "NFS".
-	Protocol constant.Nfs `json:"protocol,required"`
+	Protocol constant.Nfs `json:"protocol" api:"required"`
 	paramObj
 }
 
@@ -691,9 +691,9 @@ func init() {
 
 type FileShareUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Name
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Configuration settings for the share
@@ -783,9 +783,9 @@ func init() {
 
 type FileShareListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// File share name. Uses partial match.
@@ -818,27 +818,27 @@ const (
 
 type FileShareDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type FileShareGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type FileShareResizeParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// File Share new size in GiB.
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	paramObj
 }
 

@@ -62,15 +62,15 @@ func (r *LoadBalancerMetricService) List(ctx context.Context, loadBalancerID str
 
 type LoadBalancerMetricListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Time interval
-	TimeInterval int64 `json:"time_interval,required"`
+	TimeInterval int64 `json:"time_interval" api:"required"`
 	// Time interval unit
 	//
 	// Any of "day", "hour".
-	TimeUnit InstanceMetricsTimeUnit `json:"time_unit,omitzero,required"`
+	TimeUnit InstanceMetricsTimeUnit `json:"time_unit,omitzero" api:"required"`
 	paramObj
 }
 

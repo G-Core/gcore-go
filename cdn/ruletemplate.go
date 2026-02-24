@@ -124,7 +124,7 @@ type RuleTemplate struct {
 	//     settings.
 	//
 	// Any of "HTTPS", "HTTP", "MATCH".
-	OverrideOriginProtocol RuleTemplateOverrideOriginProtocol `json:"overrideOriginProtocol,nullable"`
+	OverrideOriginProtocol RuleTemplateOverrideOriginProtocol `json:"overrideOriginProtocol" api:"nullable"`
 	// Path to the file or folder for which the rule will be applied.
 	//
 	// The rule is applied if the requested URI matches the rule path.
@@ -178,10 +178,10 @@ func (r *RuleTemplate) UnmarshalJSON(data []byte) error {
 // value from the CDN resource settings.
 type RuleTemplateOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
-	AllowedHTTPMethods RuleTemplateOptionsAllowedHTTPMethods `json:"allowedHttpMethods,nullable"`
+	AllowedHTTPMethods RuleTemplateOptionsAllowedHTTPMethods `json:"allowedHttpMethods" api:"nullable"`
 	// Allows to prevent online services from overloading and ensure your business
 	// workflow running smoothly.
-	BotProtection RuleTemplateOptionsBotProtection `json:"bot_protection,nullable"`
+	BotProtection RuleTemplateOptionsBotProtection `json:"bot_protection" api:"nullable"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -197,45 +197,45 @@ type RuleTemplateOptions struct {
 	//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
 	//     resource and want to enable `brotli_compression` in a rule, you must specify
 	//     `fetch_compressed:false` in the rule.
-	BrotliCompression RuleTemplateOptionsBrotliCompression `json:"brotli_compression,nullable"`
+	BrotliCompression RuleTemplateOptionsBrotliCompression `json:"brotli_compression" api:"nullable"`
 	// Cache expiration time for users browsers in seconds.
 	//
 	// Cache expiration time is applied to the following response codes: 200, 201, 204,
 	// 206, 301, 302, 303, 304, 307, 308.
 	//
 	// Responses with other codes will not be cached.
-	BrowserCacheSettings RuleTemplateOptionsBrowserCacheSettings `json:"browser_cache_settings,nullable"`
+	BrowserCacheSettings RuleTemplateOptionsBrowserCacheSettings `json:"browser_cache_settings" api:"nullable"`
 	// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
 	//
 	// HTTP Headers that must be included in the response.
 	//
 	// Deprecated: deprecated
-	CacheHTTPHeaders RuleTemplateOptionsCacheHTTPHeaders `json:"cache_http_headers,nullable"`
+	CacheHTTPHeaders RuleTemplateOptionsCacheHTTPHeaders `json:"cache_http_headers" api:"nullable"`
 	// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
 	//
 	// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
 	// to a response to a browser.
-	Cors RuleTemplateOptionsCors `json:"cors,nullable"`
+	Cors RuleTemplateOptionsCors `json:"cors" api:"nullable"`
 	// Enables control access to content for specified countries.
-	CountryACL RuleTemplateOptionsCountryACL `json:"country_acl,nullable"`
+	CountryACL RuleTemplateOptionsCountryACL `json:"country_acl" api:"nullable"`
 	// **Legacy option**. Use the `edge_cache_settings` option instead.
 	//
 	// Allows the complete disabling of content caching.
 	//
 	// Deprecated: deprecated
-	DisableCache RuleTemplateOptionsDisableCache `json:"disable_cache,nullable"`
+	DisableCache RuleTemplateOptionsDisableCache `json:"disable_cache" api:"nullable"`
 	// Allows 206 responses regardless of the settings of an origin source.
-	DisableProxyForceRanges RuleTemplateOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges,nullable"`
+	DisableProxyForceRanges RuleTemplateOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges" api:"nullable"`
 	// Cache expiration time for CDN servers.
 	//
 	// `value` and `default` fields cannot be used simultaneously.
-	EdgeCacheSettings RuleTemplateOptionsEdgeCacheSettings `json:"edge_cache_settings,nullable"`
+	EdgeCacheSettings RuleTemplateOptionsEdgeCacheSettings `json:"edge_cache_settings" api:"nullable"`
 	// Allows to configure FastEdge app to be called on different request/response
 	// phases.
 	//
 	// Note: At least one of `on_request_headers`, `on_request_body`,
 	// `on_response_headers`, or `on_response_body` must be specified.
-	Fastedge RuleTemplateOptionsFastedge `json:"fastedge,nullable"`
+	Fastedge RuleTemplateOptionsFastedge `json:"fastedge" api:"nullable"`
 	// Makes the CDN request compressed content from the origin.
 	//
 	// The origin server should support compression. CDN servers will not decompress
@@ -249,20 +249,20 @@ type RuleTemplateOptions struct {
 	//     you enable it in CDN resource and want to use `gzipON` and
 	//     `brotli_compression` in a rule, you have to specify
 	//     `"fetch_compressed": false` in the rule.
-	FetchCompressed RuleTemplateOptionsFetchCompressed `json:"fetch_compressed,nullable"`
+	FetchCompressed RuleTemplateOptionsFetchCompressed `json:"fetch_compressed" api:"nullable"`
 	// Enables redirection from origin. If the origin server returns a redirect, the
 	// option allows the CDN to pull the requested content from the origin server that
 	// was returned in the redirect.
-	FollowOriginRedirect RuleTemplateOptionsFollowOriginRedirect `json:"follow_origin_redirect,nullable"`
+	FollowOriginRedirect RuleTemplateOptionsFollowOriginRedirect `json:"follow_origin_redirect" api:"nullable"`
 	// Applies custom HTTP response codes for CDN content.
 	//
 	// The following codes are reserved by our system and cannot be specified in this
 	// option: 408, 444, 477, 494, 495, 496, 497, 499.
-	ForceReturn RuleTemplateOptionsForceReturn `json:"force_return,nullable"`
+	ForceReturn RuleTemplateOptionsForceReturn `json:"force_return" api:"nullable"`
 	// Forwards the Host header from a end-user request to an origin server.
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	ForwardHostHeader RuleTemplateOptionsForwardHostHeader `json:"forward_host_header,nullable"`
+	ForwardHostHeader RuleTemplateOptionsForwardHostHeader `json:"forward_host_header" api:"nullable"`
 	// Compresses content with gzip on the CDN end. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -273,26 +273,26 @@ type RuleTemplateOptions struct {
 	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
 	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
-	GzipOn RuleTemplateOptionsGzipOn `json:"gzipOn,nullable"`
+	GzipOn RuleTemplateOptionsGzipOn `json:"gzipOn" api:"nullable"`
 	// Sets the Host header that CDN servers use when request content from an origin
 	// server. Your server must be able to process requests with the chosen header.
 	//
 	// If the option is `null`, the Host Header value is equal to first CNAME.
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	HostHeader RuleTemplateOptionsHostHeader `json:"hostHeader,nullable"`
+	HostHeader RuleTemplateOptionsHostHeader `json:"hostHeader" api:"nullable"`
 	// Defines whether the files with the Set-Cookies header are cached as one file or
 	// as different ones.
-	IgnoreCookie RuleTemplateOptionsIgnoreCookie `json:"ignore_cookie,nullable"`
+	IgnoreCookie RuleTemplateOptionsIgnoreCookie `json:"ignore_cookie" api:"nullable"`
 	// How a file with different query strings is cached: either as one object (option
 	// is enabled) or as different objects (option is disabled.)
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	IgnoreQueryString RuleTemplateOptionsIgnoreQueryString `json:"ignoreQueryString,nullable"`
+	IgnoreQueryString RuleTemplateOptionsIgnoreQueryString `json:"ignoreQueryString" api:"nullable"`
 	// Transforms JPG and PNG images (for example, resize or crop) and automatically
 	// converts them to WebP or AVIF format.
-	ImageStack RuleTemplateOptionsImageStack `json:"image_stack,nullable"`
+	ImageStack RuleTemplateOptionsImageStack `json:"image_stack" api:"nullable"`
 	// Controls access to the CDN resource content for specific IP addresses.
 	//
 	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
@@ -300,9 +300,9 @@ type RuleTemplateOptions struct {
 	//
 	// We recommend you use a script for automatically update IP ACL.
 	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
-	IPAddressACL RuleTemplateOptionsIPAddressACL `json:"ip_address_acl,nullable"`
+	IPAddressACL RuleTemplateOptionsIPAddressACL `json:"ip_address_acl" api:"nullable"`
 	// Allows to control the download speed per connection.
-	LimitBandwidth RuleTemplateOptionsLimitBandwidth `json:"limit_bandwidth,nullable"`
+	LimitBandwidth RuleTemplateOptionsLimitBandwidth `json:"limit_bandwidth" api:"nullable"`
 	// Allows you to modify your cache key. If omitted, the default value is
 	// `$request_uri`.
 	//
@@ -315,29 +315,29 @@ type RuleTemplateOptions struct {
 	// **Warning**: Enabling and changing this option can invalidate your current cache
 	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
 	// not work.
-	ProxyCacheKey RuleTemplateOptionsProxyCacheKey `json:"proxy_cache_key,nullable"`
+	ProxyCacheKey RuleTemplateOptionsProxyCacheKey `json:"proxy_cache_key" api:"nullable"`
 	// Caching for POST requests along with default GET and HEAD.
-	ProxyCacheMethodsSet RuleTemplateOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set,nullable"`
+	ProxyCacheMethodsSet RuleTemplateOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set" api:"nullable"`
 	// The time limit for establishing a connection with the origin.
-	ProxyConnectTimeout RuleTemplateOptionsProxyConnectTimeout `json:"proxy_connect_timeout,nullable"`
+	ProxyConnectTimeout RuleTemplateOptionsProxyConnectTimeout `json:"proxy_connect_timeout" api:"nullable"`
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
 	// **Note:** When used with a WebSocket connection, this option supports values
 	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
-	ProxyReadTimeout RuleTemplateOptionsProxyReadTimeout `json:"proxy_read_timeout,nullable"`
+	ProxyReadTimeout RuleTemplateOptionsProxyReadTimeout `json:"proxy_read_timeout" api:"nullable"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	QueryParamsBlacklist RuleTemplateOptionsQueryParamsBlacklist `json:"query_params_blacklist,nullable"`
+	QueryParamsBlacklist RuleTemplateOptionsQueryParamsBlacklist `json:"query_params_blacklist" api:"nullable"`
 	// Files with the specified query parameters are cached as different objects, files
 	// with other parameters are cached as one object.
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	QueryParamsWhitelist RuleTemplateOptionsQueryParamsWhitelist `json:"query_params_whitelist,nullable"`
+	QueryParamsWhitelist RuleTemplateOptionsQueryParamsWhitelist `json:"query_params_whitelist" api:"nullable"`
 	// The Query String Forwarding feature allows for the seamless transfer of
 	// parameters embedded in playlist files to the corresponding media chunk files.
 	// This functionality ensures that specific attributes, such as authentication
@@ -345,31 +345,31 @@ type RuleTemplateOptions struct {
 	// manifest to the individual media segments. This is particularly useful for
 	// maintaining continuity in security, analytics, and any other parameter-based
 	// operations across the entire media delivery workflow.
-	QueryStringForwarding RuleTemplateOptionsQueryStringForwarding `json:"query_string_forwarding,nullable"`
+	QueryStringForwarding RuleTemplateOptionsQueryStringForwarding `json:"query_string_forwarding" api:"nullable"`
 	// Enables redirect from HTTP to HTTPS.
 	//
 	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 	// simultaneously.
-	RedirectHTTPToHTTPS RuleTemplateOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https,nullable"`
+	RedirectHTTPToHTTPS RuleTemplateOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https" api:"nullable"`
 	// Enables redirect from HTTPS to HTTP.
 	//
 	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 	// simultaneously.
-	RedirectHTTPSToHTTP RuleTemplateOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,nullable"`
+	RedirectHTTPSToHTTP RuleTemplateOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http" api:"nullable"`
 	// Controls access to the CDN resource content for specified domain names.
-	ReferrerACL RuleTemplateOptionsReferrerACL `json:"referrer_acl,nullable"`
+	ReferrerACL RuleTemplateOptionsReferrerACL `json:"referrer_acl" api:"nullable"`
 	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter RuleTemplateOptionsRequestLimiter `json:"request_limiter,nullable"`
+	RequestLimiter RuleTemplateOptionsRequestLimiter `json:"request_limiter" api:"nullable"`
 	// Hides HTTP headers from an origin server in the CDN response.
-	ResponseHeadersHidingPolicy RuleTemplateOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,nullable"`
+	ResponseHeadersHidingPolicy RuleTemplateOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy" api:"nullable"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
 	// to the
 	// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
 	// configuration.
-	Rewrite RuleTemplateOptionsRewrite `json:"rewrite,nullable"`
+	Rewrite RuleTemplateOptionsRewrite `json:"rewrite" api:"nullable"`
 	// Configures access with tokenized URLs. This makes impossible to access content
 	// without a valid (unexpired) token.
-	SecureKey RuleTemplateOptionsSecureKey `json:"secure_key,nullable"`
+	SecureKey RuleTemplateOptionsSecureKey `json:"secure_key" api:"nullable"`
 	// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
 	// part.) This reduces time to first byte.
 	//
@@ -381,7 +381,7 @@ type RuleTemplateOptions struct {
 	//  1. Origin must support HTTP Range requests.
 	//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
 	//     options enabled.
-	Slice RuleTemplateOptionsSlice `json:"slice,nullable"`
+	Slice RuleTemplateOptionsSlice `json:"slice" api:"nullable"`
 	// The hostname that is added to SNI requests from CDN servers to the origin server
 	// via HTTPS.
 	//
@@ -391,27 +391,27 @@ type RuleTemplateOptions struct {
 	// the connection.
 	//
 	// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
-	Sni RuleTemplateOptionsSni `json:"sni,nullable"`
+	Sni RuleTemplateOptionsSni `json:"sni" api:"nullable"`
 	// Serves stale cached content in case of origin unavailability.
-	Stale RuleTemplateOptionsStale `json:"stale,nullable"`
+	Stale RuleTemplateOptionsStale `json:"stale" api:"nullable"`
 	// Custom HTTP Headers that a CDN server adds to a response.
-	StaticResponseHeaders RuleTemplateOptionsStaticResponseHeaders `json:"static_response_headers,nullable"`
+	StaticResponseHeaders RuleTemplateOptionsStaticResponseHeaders `json:"static_response_headers" api:"nullable"`
 	// **Legacy option**. Use the `static_response_headers` option instead.
 	//
 	// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
 	// Headers can be specified. May contain a header with multiple values.
 	//
 	// Deprecated: deprecated
-	StaticHeaders RuleTemplateOptionsStaticHeaders `json:"staticHeaders,nullable"`
+	StaticHeaders RuleTemplateOptionsStaticHeaders `json:"staticHeaders" api:"nullable"`
 	// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
 	// Headers can be specified.
-	StaticRequestHeaders RuleTemplateOptionsStaticRequestHeaders `json:"staticRequestHeaders,nullable"`
+	StaticRequestHeaders RuleTemplateOptionsStaticRequestHeaders `json:"staticRequestHeaders" api:"nullable"`
 	// Controls access to the content for specified User-Agents.
-	UserAgentACL RuleTemplateOptionsUserAgentACL `json:"user_agent_acl,nullable"`
+	UserAgentACL RuleTemplateOptionsUserAgentACL `json:"user_agent_acl" api:"nullable"`
 	// Allows to enable WAAP (Web Application and API Protection).
-	Waap RuleTemplateOptionsWaap `json:"waap,nullable"`
+	Waap RuleTemplateOptionsWaap `json:"waap" api:"nullable"`
 	// Enables or disables WebSockets connections to an origin server.
-	Websockets RuleTemplateOptionsWebsockets `json:"websockets,nullable"`
+	Websockets RuleTemplateOptionsWebsockets `json:"websockets" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedHTTPMethods          respjson.Field
@@ -478,9 +478,9 @@ type RuleTemplateOptionsAllowedHTTPMethods struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Any of "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -500,14 +500,14 @@ func (r *RuleTemplateOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error
 // workflow running smoothly.
 type RuleTemplateOptionsBotProtection struct {
 	// Controls the bot challenge module state.
-	BotChallenge RuleTemplateOptionsBotProtectionBotChallenge `json:"bot_challenge,required"`
+	BotChallenge RuleTemplateOptionsBotProtectionBotChallenge `json:"bot_challenge" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BotChallenge respjson.Field
@@ -566,7 +566,7 @@ type RuleTemplateOptionsBrotliCompression struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to select the content types you want to compress.
 	//
 	// `text/html` is a mandatory content type.
@@ -576,7 +576,7 @@ type RuleTemplateOptionsBrotliCompression struct {
 	// "application/x-javascript", "application/xml", "application/xml+rss",
 	// "image/svg+xml", "image/x-icon", "text/css", "text/html", "text/javascript",
 	// "text/plain", "text/xml".
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -605,11 +605,11 @@ type RuleTemplateOptionsBrowserCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Set the cache expiration time to '0s' to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
-	Value string `json:"value,required" format:"nginx time"`
+	Value string `json:"value" api:"required" format:"nginx time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -637,8 +637,8 @@ type RuleTemplateOptionsCacheHTTPHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool     `json:"enabled,required"`
-	Value   []string `json:"value,required"`
+	Enabled bool     `json:"enabled" api:"required"`
+	Value   []string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -665,7 +665,7 @@ type RuleTemplateOptionsCors struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Value of the Access-Control-Allow-Origin header.
 	//
 	// Possible values:
@@ -680,7 +680,7 @@ type RuleTemplateOptionsCors struct {
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
 	//     header in the response. `"value": ["$http_origin"]`
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// Defines whether the Access-Control-Allow-Origin header should be added to a
 	// response from CDN regardless of response code.
 	//
@@ -714,14 +714,14 @@ type RuleTemplateOptionsCountryACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of countries according to ISO-3166-1.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
 	//
 	// - **allow** - List of countries for which access is prohibited.
 	// - **deny** - List of countries for which access is allowed.
-	ExceptedValues []string `json:"excepted_values,required" format:"country-code"`
+	ExceptedValues []string `json:"excepted_values" api:"required" format:"country-code"`
 	// Defines the type of CDN resource access policy.
 	//
 	// Possible values:
@@ -732,7 +732,7 @@ type RuleTemplateOptionsCountryACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,required"`
+	PolicyType string `json:"policy_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled        respjson.Field
@@ -761,12 +761,12 @@ type RuleTemplateOptionsDisableCache struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - content caching is disabled.
 	// - **false** - content caching is enabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -790,12 +790,12 @@ type RuleTemplateOptionsDisableProxyForceRanges struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -821,7 +821,7 @@ type RuleTemplateOptionsEdgeCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP object representing the caching time in seconds for a response with a
 	// specific response code.
 	//
@@ -877,7 +877,7 @@ type RuleTemplateOptionsFastedge struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// body as soon as CDN receives incoming HTTP request.
 	OnRequestBody RuleTemplateOptionsFastedgeOnRequestBody `json:"on_request_body"`
@@ -912,7 +912,7 @@ func (r *RuleTemplateOptionsFastedge) UnmarshalJSON(data []byte) error {
 // body as soon as CDN receives incoming HTTP request.
 type RuleTemplateOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled bool `json:"enabled"`
@@ -944,7 +944,7 @@ func (r *RuleTemplateOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) er
 // headers as soon as CDN receives incoming HTTP request, **before cache**.
 type RuleTemplateOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled bool `json:"enabled"`
@@ -976,7 +976,7 @@ func (r *RuleTemplateOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte)
 // body before CDN sends the HTTP response.
 type RuleTemplateOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled bool `json:"enabled"`
@@ -1008,7 +1008,7 @@ func (r *RuleTemplateOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte) e
 // headers before CDN sends the HTTP response.
 type RuleTemplateOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled bool `json:"enabled"`
@@ -1056,12 +1056,12 @@ type RuleTemplateOptionsFetchCompressed struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1087,14 +1087,14 @@ type RuleTemplateOptionsFollowOriginRedirect struct {
 	// managing the option.
 	//
 	// Any of 301, 302, 303, 307, 308.
-	Codes []int64 `json:"codes,required"`
+	Codes []int64 `json:"codes" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Codes       respjson.Field
@@ -1116,19 +1116,19 @@ func (r *RuleTemplateOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) err
 // option: 408, 444, 477, 494, 495, 496, 497, 499.
 type RuleTemplateOptionsForceReturn struct {
 	// URL for redirection or text.
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Status code value.
-	Code int64 `json:"code,required"`
+	Code int64 `json:"code" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Controls the time at which a custom HTTP response code should be applied. By
 	// default, a custom HTTP response code is applied at any time.
-	TimeInterval RuleTemplateOptionsForceReturnTimeInterval `json:"time_interval,nullable"`
+	TimeInterval RuleTemplateOptionsForceReturnTimeInterval `json:"time_interval" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Body         respjson.Field
@@ -1151,10 +1151,10 @@ func (r *RuleTemplateOptionsForceReturn) UnmarshalJSON(data []byte) error {
 type RuleTemplateOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	EndTime string `json:"end_time,required"`
+	EndTime string `json:"end_time" api:"required"`
 	// Time from which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	StartTime string `json:"start_time,required"`
+	StartTime string `json:"start_time" api:"required"`
 	// Time zone used to calculate time.
 	TimeZone string `json:"time_zone" format:"timezone"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1183,12 +1183,12 @@ type RuleTemplateOptionsForwardHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1221,12 +1221,12 @@ type RuleTemplateOptionsGzipOn struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1255,9 +1255,9 @@ type RuleTemplateOptionsHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Host Header value.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1282,13 +1282,13 @@ type RuleTemplateOptionsIgnoreCookie struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	//   - **true** - Option is enabled, files with cookies are cached as one file.
 	//   - **false** - Option is disabled, files with cookies are cached as different
 	//     files.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1316,12 +1316,12 @@ type RuleTemplateOptionsIgnoreQueryString struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1346,7 +1346,7 @@ type RuleTemplateOptionsImageStack struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables or disables automatic conversion of JPEG and PNG images to AVI format.
 	AvifEnabled bool `json:"avif_enabled"`
 	// Enables or disables compression without quality loss for PNG format.
@@ -1388,7 +1388,7 @@ type RuleTemplateOptionsIPAddressACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of IP addresses with a subnet mask.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
@@ -1400,7 +1400,7 @@ type RuleTemplateOptionsIPAddressACL struct {
 	//
 	// - `192.168.3.2/32`
 	// - `2a03:d000:2980:7::8/128`
-	ExceptedValues []string `json:"excepted_values,required" format:"ipv4net or ipv6net"`
+	ExceptedValues []string `json:"excepted_values" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
 	// Possible values:
@@ -1411,7 +1411,7 @@ type RuleTemplateOptionsIPAddressACL struct {
 	//     field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,required"`
+	PolicyType string `json:"policy_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled        respjson.Field
@@ -1436,7 +1436,7 @@ type RuleTemplateOptionsLimitBandwidth struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Method of controlling the download speed per connection.
 	//
 	// Possible values:
@@ -1454,7 +1454,7 @@ type RuleTemplateOptionsLimitBandwidth struct {
 	// the download speed will be limited to 50kB/s after 500 kB.
 	//
 	// Any of "static", "dynamic".
-	LimitType string `json:"limit_type,required"`
+	LimitType string `json:"limit_type" api:"required"`
 	// Amount of downloaded data after which the user will be rate limited.
 	Buffer int64 `json:"buffer"`
 	// Maximum download speed per connection.
@@ -1495,9 +1495,9 @@ type RuleTemplateOptionsProxyCacheKey struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Key for caching.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1521,12 +1521,12 @@ type RuleTemplateOptionsProxyCacheMethodsSet struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1550,11 +1550,11 @@ type RuleTemplateOptionsProxyConnectTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 5s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1582,11 +1582,11 @@ type RuleTemplateOptionsProxyReadTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 30s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1614,9 +1614,9 @@ type RuleTemplateOptionsQueryParamsBlacklist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1644,9 +1644,9 @@ type RuleTemplateOptionsQueryParamsWhitelist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1676,19 +1676,19 @@ type RuleTemplateOptionsQueryStringForwarding struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The `forward_from_files_types` field specifies the types of playlist files from
 	// which parameters will be extracted and forwarded. This typically includes
 	// formats that list multiple media chunk references, such as HLS and DASH
 	// playlists. Parameters associated with these playlist files (like query strings
 	// or headers) will be propagated to the chunks they reference.
-	ForwardFromFileTypes []string `json:"forward_from_file_types,required"`
+	ForwardFromFileTypes []string `json:"forward_from_file_types" api:"required"`
 	// The field specifies the types of media chunk files to which parameters,
 	// extracted from playlist files, will be forwarded. These refer to the actual
 	// segments of media content that are delivered to viewers. Ensuring the correct
 	// parameters are forwarded to these files is crucial for maintaining the integrity
 	// of the streaming session.
-	ForwardToFileTypes []string `json:"forward_to_file_types,required"`
+	ForwardToFileTypes []string `json:"forward_to_file_types" api:"required"`
 	// The `forward_except_keys` field provides a mechanism to exclude specific
 	// parameters from being forwarded from playlist files to media chunk files. By
 	// listing certain keys in this field, you can ensure that these parameters are
@@ -1732,12 +1732,12 @@ type RuleTemplateOptionsRedirectHTTPToHTTPS struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1764,12 +1764,12 @@ type RuleTemplateOptionsRedirectHTTPSToHTTP struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1793,7 +1793,7 @@ type RuleTemplateOptionsReferrerACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of domain names or wildcard domains (without protocol: `http://` or
 	// `https://`.)
 	//
@@ -1806,7 +1806,7 @@ type RuleTemplateOptionsReferrerACL struct {
 	//
 	// - `example.com`
 	// - `*.example.com`
-	ExceptedValues []string `json:"excepted_values,required" format:"domain or wildcard"`
+	ExceptedValues []string `json:"excepted_values" api:"required" format:"domain or wildcard"`
 	// Policy type.
 	//
 	// Possible values:
@@ -1817,7 +1817,7 @@ type RuleTemplateOptionsReferrerACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,required"`
+	PolicyType string `json:"policy_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled        respjson.Field
@@ -1842,9 +1842,9 @@ type RuleTemplateOptionsRequestLimiter struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Maximum request rate.
-	Rate  int64 `json:"rate,required"`
+	Rate  int64 `json:"rate" api:"required"`
 	Burst int64 `json:"burst"`
 	Delay int64 `json:"delay"`
 	// Units of measurement for the `rate` field.
@@ -1885,7 +1885,7 @@ type RuleTemplateOptionsResponseHeadersHidingPolicy struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of HTTP headers.
 	//
 	// Parameter meaning depends on the value of the `mode` field:
@@ -1901,7 +1901,7 @@ type RuleTemplateOptionsResponseHeadersHidingPolicy struct {
 	// - `Content-Type`
 	// - `Date`
 	// - `Server`
-	Excepted []string `json:"excepted,required" format:"http_header"`
+	Excepted []string `json:"excepted" api:"required" format:"http_header"`
 	// How HTTP headers are hidden from the response.
 	//
 	// Possible values:
@@ -1911,7 +1911,7 @@ type RuleTemplateOptionsResponseHeadersHidingPolicy struct {
 	//     field.
 	//
 	// Any of "hide", "show".
-	Mode string `json:"mode,required"`
+	Mode string `json:"mode" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1938,14 +1938,14 @@ type RuleTemplateOptionsRewrite struct {
 	// Example:
 	//
 	// - `/(.*) /media/$1`
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Flag for the Rewrite option.
 	//
 	// Possible values:
@@ -1984,9 +1984,9 @@ type RuleTemplateOptionsSecureKey struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Key generated on your side that will be used for URL signing.
-	Key string `json:"key,required"`
+	Key string `json:"key" api:"required"`
 	// Type of URL signing.
 	//
 	// Possible types:
@@ -2030,12 +2030,12 @@ type RuleTemplateOptionsSlice struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2064,14 +2064,14 @@ type RuleTemplateOptionsSni struct {
 	// Custom SNI hostname.
 	//
 	// It is required if `sni_type` is set to custom.
-	CustomHostname string `json:"custom_hostname,required" format:"domain"`
+	CustomHostname string `json:"custom_hostname" api:"required" format:"domain"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// SNI (Server Name Indication) type.
 	//
 	// Possible values:
@@ -2112,12 +2112,12 @@ type RuleTemplateOptionsStale struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Defines list of errors for which "Always online" option is applied.
 	//
 	// Any of "error", "http_403", "http_404", "http_429", "http_500", "http_502",
 	// "http_503", "http_504", "invalid_header", "timeout", "updating".
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2141,8 +2141,8 @@ type RuleTemplateOptionsStaticResponseHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool                                            `json:"enabled,required"`
-	Value   []RuleTemplateOptionsStaticResponseHeadersValue `json:"value,required"`
+	Enabled bool                                            `json:"enabled" api:"required"`
+	Value   []RuleTemplateOptionsStaticResponseHeadersValue `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2165,7 +2165,7 @@ type RuleTemplateOptionsStaticResponseHeadersValue struct {
 	//
 	// - Maximum 128 symbols.
 	// - Latin letters (A-Z, a-z,) numbers (0-9,) dashes, and underscores only.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Header value.
 	//
 	// Restrictions:
@@ -2175,7 +2175,7 @@ type RuleTemplateOptionsStaticResponseHeadersValue struct {
 	//     /|\";:?.,><{}[]).
 	//   - Must start with a letter, number, asterisk or {.
 	//   - Multiple values can be added.
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// Defines whether the header will be added to a response from CDN regardless of
 	// response code.
 	//
@@ -2215,7 +2215,7 @@ type RuleTemplateOptionsStaticHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -2225,7 +2225,7 @@ type RuleTemplateOptionsStaticHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value any `json:"value,required"`
+	Value any `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2250,7 +2250,7 @@ type RuleTemplateOptionsStaticRequestHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -2260,7 +2260,7 @@ type RuleTemplateOptionsStaticRequestHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,required"`
+	Value map[string]string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2284,7 +2284,7 @@ type RuleTemplateOptionsUserAgentACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of User-Agents that will be allowed/denied.
 	//
 	// The meaning of the parameter depends on `policy_type`:
@@ -2297,7 +2297,7 @@ type RuleTemplateOptionsUserAgentACL struct {
 	//
 	// Use an empty string `""` to allow/deny access when the User-Agent header is
 	// empty.
-	ExceptedValues []string `json:"excepted_values,required" format:"user_agent"`
+	ExceptedValues []string `json:"excepted_values" api:"required" format:"user_agent"`
 	// User-Agents policy type.
 	//
 	// Possible values:
@@ -2308,7 +2308,7 @@ type RuleTemplateOptionsUserAgentACL struct {
 	//     `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,required"`
+	PolicyType string `json:"policy_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled        respjson.Field
@@ -2333,12 +2333,12 @@ type RuleTemplateOptionsWaap struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2362,12 +2362,12 @@ type RuleTemplateOptionsWebsockets struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2412,7 +2412,7 @@ type RuleTemplateNewParams struct {
 	//
 	// We add a leading forward slash to any rule path. Specify a path without a
 	// forward slash.
-	Rule string `json:"rule,required"`
+	Rule string `json:"rule" api:"required"`
 	// Rule type.
 	//
 	// Possible values:
@@ -2421,7 +2421,7 @@ type RuleTemplateNewParams struct {
 	//   - **Type 1** - Regular expression. Note that for this rule type we automatically
 	//     add / to each rule pattern before your regular expression. This type is
 	//     **legacy**, please use Type 0.
-	RuleType int64 `json:"ruleType,required"`
+	RuleType int64 `json:"ruleType" api:"required"`
 	// Rule template name.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Rule execution order: from lowest (1) to highest.
@@ -2721,9 +2721,9 @@ type RuleTemplateNewParamsOptionsAllowedHTTPMethods struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Any of "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2741,14 +2741,14 @@ func (r *RuleTemplateNewParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []by
 // The properties BotChallenge, Enabled are required.
 type RuleTemplateNewParamsOptionsBotProtection struct {
 	// Controls the bot challenge module state.
-	BotChallenge RuleTemplateNewParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero,required"`
+	BotChallenge RuleTemplateNewParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	paramObj
 }
 
@@ -2802,7 +2802,7 @@ type RuleTemplateNewParamsOptionsBrotliCompression struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to select the content types you want to compress.
 	//
 	// `text/html` is a mandatory content type.
@@ -2812,7 +2812,7 @@ type RuleTemplateNewParamsOptionsBrotliCompression struct {
 	// "application/x-javascript", "application/xml", "application/xml+rss",
 	// "image/svg+xml", "image/x-icon", "text/css", "text/html", "text/javascript",
 	// "text/plain", "text/xml".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2839,11 +2839,11 @@ type RuleTemplateNewParamsOptionsBrowserCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Set the cache expiration time to '0s' to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
-	Value string `json:"value,required" format:"nginx time"`
+	Value string `json:"value" api:"required" format:"nginx time"`
 	paramObj
 }
 
@@ -2869,8 +2869,8 @@ type RuleTemplateNewParamsOptionsCacheHTTPHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool     `json:"enabled,required"`
-	Value   []string `json:"value,omitzero,required"`
+	Enabled bool     `json:"enabled" api:"required"`
+	Value   []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2895,7 +2895,7 @@ type RuleTemplateNewParamsOptionsCors struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Value of the Access-Control-Allow-Origin header.
 	//
 	// Possible values:
@@ -2910,7 +2910,7 @@ type RuleTemplateNewParamsOptionsCors struct {
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
 	//     header in the response. `"value": ["$http_origin"]`
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	// Defines whether the Access-Control-Allow-Origin header should be added to a
 	// response from CDN regardless of response code.
 	//
@@ -2941,14 +2941,14 @@ type RuleTemplateNewParamsOptionsCountryACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of countries according to ISO-3166-1.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
 	//
 	// - **allow** - List of countries for which access is prohibited.
 	// - **deny** - List of countries for which access is allowed.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"country-code"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"country-code"`
 	// Defines the type of CDN resource access policy.
 	//
 	// Possible values:
@@ -2959,7 +2959,7 @@ type RuleTemplateNewParamsOptionsCountryACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2991,12 +2991,12 @@ type RuleTemplateNewParamsOptionsDisableCache struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - content caching is disabled.
 	// - **false** - content caching is enabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3018,12 +3018,12 @@ type RuleTemplateNewParamsOptionsDisableProxyForceRanges struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3047,7 +3047,7 @@ type RuleTemplateNewParamsOptionsEdgeCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
@@ -3099,7 +3099,7 @@ type RuleTemplateNewParamsOptionsFastedge struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// body as soon as CDN receives incoming HTTP request.
 	OnRequestBody RuleTemplateNewParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
@@ -3129,7 +3129,7 @@ func (r *RuleTemplateNewParamsOptionsFastedge) UnmarshalJSON(data []byte) error 
 // The property AppID is required.
 type RuleTemplateNewParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -3156,7 +3156,7 @@ func (r *RuleTemplateNewParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(data [
 // The property AppID is required.
 type RuleTemplateNewParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -3183,7 +3183,7 @@ func (r *RuleTemplateNewParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(dat
 // The property AppID is required.
 type RuleTemplateNewParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -3210,7 +3210,7 @@ func (r *RuleTemplateNewParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(data 
 // The property AppID is required.
 type RuleTemplateNewParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -3253,12 +3253,12 @@ type RuleTemplateNewParamsOptionsFetchCompressed struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3282,14 +3282,14 @@ type RuleTemplateNewParamsOptionsFollowOriginRedirect struct {
 	// managing the option.
 	//
 	// Any of 301, 302, 303, 307, 308.
-	Codes []int64 `json:"codes,omitzero,required"`
+	Codes []int64 `json:"codes,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	paramObj
 }
 
@@ -3309,16 +3309,16 @@ func (r *RuleTemplateNewParamsOptionsFollowOriginRedirect) UnmarshalJSON(data []
 // The properties Body, Code, Enabled are required.
 type RuleTemplateNewParamsOptionsForceReturn struct {
 	// URL for redirection or text.
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Status code value.
-	Code int64 `json:"code,required"`
+	Code int64 `json:"code" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Controls the time at which a custom HTTP response code should be applied. By
 	// default, a custom HTTP response code is applied at any time.
 	TimeInterval RuleTemplateNewParamsOptionsForceReturnTimeInterval `json:"time_interval,omitzero"`
@@ -3340,10 +3340,10 @@ func (r *RuleTemplateNewParamsOptionsForceReturn) UnmarshalJSON(data []byte) err
 type RuleTemplateNewParamsOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	EndTime string `json:"end_time,required"`
+	EndTime string `json:"end_time" api:"required"`
 	// Time from which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	StartTime string `json:"start_time,required"`
+	StartTime string `json:"start_time" api:"required"`
 	// Time zone used to calculate time.
 	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
 	paramObj
@@ -3369,12 +3369,12 @@ type RuleTemplateNewParamsOptionsForwardHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3405,12 +3405,12 @@ type RuleTemplateNewParamsOptionsGzipOn struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3437,9 +3437,9 @@ type RuleTemplateNewParamsOptionsHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Host Header value.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3462,13 +3462,13 @@ type RuleTemplateNewParamsOptionsIgnoreCookie struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	//   - **true** - Option is enabled, files with cookies are cached as one file.
 	//   - **false** - Option is disabled, files with cookies are cached as different
 	//     files.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3494,12 +3494,12 @@ type RuleTemplateNewParamsOptionsIgnoreQueryString struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3522,7 +3522,7 @@ type RuleTemplateNewParamsOptionsImageStack struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables or disables automatic conversion of JPEG and PNG images to AVI format.
 	AvifEnabled param.Opt[bool] `json:"avif_enabled,omitzero"`
 	// Enables or disables compression without quality loss for PNG format.
@@ -3559,7 +3559,7 @@ type RuleTemplateNewParamsOptionsIPAddressACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of IP addresses with a subnet mask.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
@@ -3571,7 +3571,7 @@ type RuleTemplateNewParamsOptionsIPAddressACL struct {
 	//
 	// - `192.168.3.2/32`
 	// - `2a03:d000:2980:7::8/128`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"ipv4net or ipv6net"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
 	// Possible values:
@@ -3582,7 +3582,7 @@ type RuleTemplateNewParamsOptionsIPAddressACL struct {
 	//     field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3610,7 +3610,7 @@ type RuleTemplateNewParamsOptionsLimitBandwidth struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Method of controlling the download speed per connection.
 	//
 	// Possible values:
@@ -3628,7 +3628,7 @@ type RuleTemplateNewParamsOptionsLimitBandwidth struct {
 	// the download speed will be limited to 50kB/s after 500 kB.
 	//
 	// Any of "static", "dynamic".
-	LimitType string `json:"limit_type,omitzero,required"`
+	LimitType string `json:"limit_type,omitzero" api:"required"`
 	// Amount of downloaded data after which the user will be rate limited.
 	Buffer param.Opt[int64] `json:"buffer,omitzero"`
 	// Maximum download speed per connection.
@@ -3671,9 +3671,9 @@ type RuleTemplateNewParamsOptionsProxyCacheKey struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Key for caching.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3695,12 +3695,12 @@ type RuleTemplateNewParamsOptionsProxyCacheMethodsSet struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3722,11 +3722,11 @@ type RuleTemplateNewParamsOptionsProxyConnectTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 5s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3752,11 +3752,11 @@ type RuleTemplateNewParamsOptionsProxyReadTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 30s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3782,9 +3782,9 @@ type RuleTemplateNewParamsOptionsQueryParamsBlacklist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3810,9 +3810,9 @@ type RuleTemplateNewParamsOptionsQueryParamsWhitelist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3840,19 +3840,19 @@ type RuleTemplateNewParamsOptionsQueryStringForwarding struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The `forward_from_files_types` field specifies the types of playlist files from
 	// which parameters will be extracted and forwarded. This typically includes
 	// formats that list multiple media chunk references, such as HLS and DASH
 	// playlists. Parameters associated with these playlist files (like query strings
 	// or headers) will be propagated to the chunks they reference.
-	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero,required"`
+	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero" api:"required"`
 	// The field specifies the types of media chunk files to which parameters,
 	// extracted from playlist files, will be forwarded. These refer to the actual
 	// segments of media content that are delivered to viewers. Ensuring the correct
 	// parameters are forwarded to these files is crucial for maintaining the integrity
 	// of the streaming session.
-	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
+	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero" api:"required"`
 	// The `forward_except_keys` field provides a mechanism to exclude specific
 	// parameters from being forwarded from playlist files to media chunk files. By
 	// listing certain keys in this field, you can ensure that these parameters are
@@ -3891,12 +3891,12 @@ type RuleTemplateNewParamsOptionsRedirectHTTPToHTTPS struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3921,12 +3921,12 @@ type RuleTemplateNewParamsOptionsRedirectHTTPSToHTTP struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3948,7 +3948,7 @@ type RuleTemplateNewParamsOptionsReferrerACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of domain names or wildcard domains (without protocol: `http://` or
 	// `https://`.)
 	//
@@ -3961,7 +3961,7 @@ type RuleTemplateNewParamsOptionsReferrerACL struct {
 	//
 	// - `example.com`
 	// - `*.example.com`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"domain or wildcard"`
 	// Policy type.
 	//
 	// Possible values:
@@ -3972,7 +3972,7 @@ type RuleTemplateNewParamsOptionsReferrerACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4000,9 +4000,9 @@ type RuleTemplateNewParamsOptionsRequestLimiter struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Maximum request rate.
-	Rate int64 `json:"rate,required"`
+	Rate int64 `json:"rate" api:"required"`
 	// Units of measurement for the `rate` field.
 	//
 	// Possible values:
@@ -4042,7 +4042,7 @@ type RuleTemplateNewParamsOptionsResponseHeadersHidingPolicy struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of HTTP headers.
 	//
 	// Parameter meaning depends on the value of the `mode` field:
@@ -4058,7 +4058,7 @@ type RuleTemplateNewParamsOptionsResponseHeadersHidingPolicy struct {
 	// - `Content-Type`
 	// - `Date`
 	// - `Server`
-	Excepted []string `json:"excepted,omitzero,required" format:"http_header"`
+	Excepted []string `json:"excepted,omitzero" api:"required" format:"http_header"`
 	// How HTTP headers are hidden from the response.
 	//
 	// Possible values:
@@ -4068,7 +4068,7 @@ type RuleTemplateNewParamsOptionsResponseHeadersHidingPolicy struct {
 	//     field.
 	//
 	// Any of "hide", "show".
-	Mode string `json:"mode,omitzero,required"`
+	Mode string `json:"mode,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4098,14 +4098,14 @@ type RuleTemplateNewParamsOptionsRewrite struct {
 	// Example:
 	//
 	// - `/(.*) /media/$1`
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Flag for the Rewrite option.
 	//
 	// Possible values:
@@ -4142,14 +4142,14 @@ func init() {
 // The properties Enabled, Key are required.
 type RuleTemplateNewParamsOptionsSecureKey struct {
 	// Key generated on your side that will be used for URL signing.
-	Key param.Opt[string] `json:"key,omitzero,required"`
+	Key param.Opt[string] `json:"key,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Type of URL signing.
 	//
 	// Possible types:
@@ -4196,12 +4196,12 @@ type RuleTemplateNewParamsOptionsSlice struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -4228,14 +4228,14 @@ type RuleTemplateNewParamsOptionsSni struct {
 	// Custom SNI hostname.
 	//
 	// It is required if `sni_type` is set to custom.
-	CustomHostname string `json:"custom_hostname,required" format:"domain"`
+	CustomHostname string `json:"custom_hostname" api:"required" format:"domain"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// SNI (Server Name Indication) type.
 	//
 	// Possible values:
@@ -4279,12 +4279,12 @@ type RuleTemplateNewParamsOptionsStale struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Defines list of errors for which "Always online" option is applied.
 	//
 	// Any of "error", "http_403", "http_404", "http_429", "http_500", "http_502",
 	// "http_503", "http_504", "invalid_header", "timeout", "updating".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4306,8 +4306,8 @@ type RuleTemplateNewParamsOptionsStaticResponseHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool                                                     `json:"enabled,required"`
-	Value   []RuleTemplateNewParamsOptionsStaticResponseHeadersValue `json:"value,omitzero,required"`
+	Enabled bool                                                     `json:"enabled" api:"required"`
+	Value   []RuleTemplateNewParamsOptionsStaticResponseHeadersValue `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4327,7 +4327,7 @@ type RuleTemplateNewParamsOptionsStaticResponseHeadersValue struct {
 	//
 	// - Maximum 128 symbols.
 	// - Latin letters (A-Z, a-z,) numbers (0-9,) dashes, and underscores only.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Header value.
 	//
 	// Restrictions:
@@ -4337,7 +4337,7 @@ type RuleTemplateNewParamsOptionsStaticResponseHeadersValue struct {
 	//     /|\";:?.,><{}[]).
 	//   - Must start with a letter, number, asterisk or {.
 	//   - Multiple values can be added.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	// Defines whether the header will be added to a response from CDN regardless of
 	// response code.
 	//
@@ -4374,7 +4374,7 @@ type RuleTemplateNewParamsOptionsStaticHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -4384,7 +4384,7 @@ type RuleTemplateNewParamsOptionsStaticHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value any `json:"value,omitzero,required"`
+	Value any `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4407,7 +4407,7 @@ type RuleTemplateNewParamsOptionsStaticRequestHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -4417,7 +4417,7 @@ type RuleTemplateNewParamsOptionsStaticRequestHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,omitzero,required"`
+	Value map[string]string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4439,7 +4439,7 @@ type RuleTemplateNewParamsOptionsUserAgentACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of User-Agents that will be allowed/denied.
 	//
 	// The meaning of the parameter depends on `policy_type`:
@@ -4452,7 +4452,7 @@ type RuleTemplateNewParamsOptionsUserAgentACL struct {
 	//
 	// Use an empty string `""` to allow/deny access when the User-Agent header is
 	// empty.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"user_agent"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"user_agent"`
 	// User-Agents policy type.
 	//
 	// Possible values:
@@ -4463,7 +4463,7 @@ type RuleTemplateNewParamsOptionsUserAgentACL struct {
 	//     `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4491,12 +4491,12 @@ type RuleTemplateNewParamsOptionsWaap struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -4518,12 +4518,12 @@ type RuleTemplateNewParamsOptionsWebsockets struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -4871,9 +4871,9 @@ type RuleTemplateUpdateParamsOptionsAllowedHTTPMethods struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Any of "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4891,14 +4891,14 @@ func (r *RuleTemplateUpdateParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data [
 // The properties BotChallenge, Enabled are required.
 type RuleTemplateUpdateParamsOptionsBotProtection struct {
 	// Controls the bot challenge module state.
-	BotChallenge RuleTemplateUpdateParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero,required"`
+	BotChallenge RuleTemplateUpdateParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	paramObj
 }
 
@@ -4952,7 +4952,7 @@ type RuleTemplateUpdateParamsOptionsBrotliCompression struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to select the content types you want to compress.
 	//
 	// `text/html` is a mandatory content type.
@@ -4962,7 +4962,7 @@ type RuleTemplateUpdateParamsOptionsBrotliCompression struct {
 	// "application/x-javascript", "application/xml", "application/xml+rss",
 	// "image/svg+xml", "image/x-icon", "text/css", "text/html", "text/javascript",
 	// "text/plain", "text/xml".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4989,11 +4989,11 @@ type RuleTemplateUpdateParamsOptionsBrowserCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Set the cache expiration time to '0s' to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
-	Value string `json:"value,required" format:"nginx time"`
+	Value string `json:"value" api:"required" format:"nginx time"`
 	paramObj
 }
 
@@ -5019,8 +5019,8 @@ type RuleTemplateUpdateParamsOptionsCacheHTTPHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool     `json:"enabled,required"`
-	Value   []string `json:"value,omitzero,required"`
+	Enabled bool     `json:"enabled" api:"required"`
+	Value   []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -5045,7 +5045,7 @@ type RuleTemplateUpdateParamsOptionsCors struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Value of the Access-Control-Allow-Origin header.
 	//
 	// Possible values:
@@ -5060,7 +5060,7 @@ type RuleTemplateUpdateParamsOptionsCors struct {
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
 	//     header in the response. `"value": ["$http_origin"]`
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	// Defines whether the Access-Control-Allow-Origin header should be added to a
 	// response from CDN regardless of response code.
 	//
@@ -5091,14 +5091,14 @@ type RuleTemplateUpdateParamsOptionsCountryACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of countries according to ISO-3166-1.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
 	//
 	// - **allow** - List of countries for which access is prohibited.
 	// - **deny** - List of countries for which access is allowed.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"country-code"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"country-code"`
 	// Defines the type of CDN resource access policy.
 	//
 	// Possible values:
@@ -5109,7 +5109,7 @@ type RuleTemplateUpdateParamsOptionsCountryACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -5141,12 +5141,12 @@ type RuleTemplateUpdateParamsOptionsDisableCache struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - content caching is disabled.
 	// - **false** - content caching is enabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5168,12 +5168,12 @@ type RuleTemplateUpdateParamsOptionsDisableProxyForceRanges struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5197,7 +5197,7 @@ type RuleTemplateUpdateParamsOptionsEdgeCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
@@ -5249,7 +5249,7 @@ type RuleTemplateUpdateParamsOptionsFastedge struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// body as soon as CDN receives incoming HTTP request.
 	OnRequestBody RuleTemplateUpdateParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
@@ -5279,7 +5279,7 @@ func (r *RuleTemplateUpdateParamsOptionsFastedge) UnmarshalJSON(data []byte) err
 // The property AppID is required.
 type RuleTemplateUpdateParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -5306,7 +5306,7 @@ func (r *RuleTemplateUpdateParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(dat
 // The property AppID is required.
 type RuleTemplateUpdateParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -5333,7 +5333,7 @@ func (r *RuleTemplateUpdateParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(
 // The property AppID is required.
 type RuleTemplateUpdateParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -5360,7 +5360,7 @@ func (r *RuleTemplateUpdateParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(da
 // The property AppID is required.
 type RuleTemplateUpdateParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -5403,12 +5403,12 @@ type RuleTemplateUpdateParamsOptionsFetchCompressed struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5432,14 +5432,14 @@ type RuleTemplateUpdateParamsOptionsFollowOriginRedirect struct {
 	// managing the option.
 	//
 	// Any of 301, 302, 303, 307, 308.
-	Codes []int64 `json:"codes,omitzero,required"`
+	Codes []int64 `json:"codes,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	paramObj
 }
 
@@ -5459,16 +5459,16 @@ func (r *RuleTemplateUpdateParamsOptionsFollowOriginRedirect) UnmarshalJSON(data
 // The properties Body, Code, Enabled are required.
 type RuleTemplateUpdateParamsOptionsForceReturn struct {
 	// URL for redirection or text.
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Status code value.
-	Code int64 `json:"code,required"`
+	Code int64 `json:"code" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Controls the time at which a custom HTTP response code should be applied. By
 	// default, a custom HTTP response code is applied at any time.
 	TimeInterval RuleTemplateUpdateParamsOptionsForceReturnTimeInterval `json:"time_interval,omitzero"`
@@ -5490,10 +5490,10 @@ func (r *RuleTemplateUpdateParamsOptionsForceReturn) UnmarshalJSON(data []byte) 
 type RuleTemplateUpdateParamsOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	EndTime string `json:"end_time,required"`
+	EndTime string `json:"end_time" api:"required"`
 	// Time from which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	StartTime string `json:"start_time,required"`
+	StartTime string `json:"start_time" api:"required"`
 	// Time zone used to calculate time.
 	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
 	paramObj
@@ -5519,12 +5519,12 @@ type RuleTemplateUpdateParamsOptionsForwardHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5555,12 +5555,12 @@ type RuleTemplateUpdateParamsOptionsGzipOn struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5587,9 +5587,9 @@ type RuleTemplateUpdateParamsOptionsHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Host Header value.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5612,13 +5612,13 @@ type RuleTemplateUpdateParamsOptionsIgnoreCookie struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	//   - **true** - Option is enabled, files with cookies are cached as one file.
 	//   - **false** - Option is disabled, files with cookies are cached as different
 	//     files.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5644,12 +5644,12 @@ type RuleTemplateUpdateParamsOptionsIgnoreQueryString struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5672,7 +5672,7 @@ type RuleTemplateUpdateParamsOptionsImageStack struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables or disables automatic conversion of JPEG and PNG images to AVI format.
 	AvifEnabled param.Opt[bool] `json:"avif_enabled,omitzero"`
 	// Enables or disables compression without quality loss for PNG format.
@@ -5709,7 +5709,7 @@ type RuleTemplateUpdateParamsOptionsIPAddressACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of IP addresses with a subnet mask.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
@@ -5721,7 +5721,7 @@ type RuleTemplateUpdateParamsOptionsIPAddressACL struct {
 	//
 	// - `192.168.3.2/32`
 	// - `2a03:d000:2980:7::8/128`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"ipv4net or ipv6net"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
 	// Possible values:
@@ -5732,7 +5732,7 @@ type RuleTemplateUpdateParamsOptionsIPAddressACL struct {
 	//     field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -5760,7 +5760,7 @@ type RuleTemplateUpdateParamsOptionsLimitBandwidth struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Method of controlling the download speed per connection.
 	//
 	// Possible values:
@@ -5778,7 +5778,7 @@ type RuleTemplateUpdateParamsOptionsLimitBandwidth struct {
 	// the download speed will be limited to 50kB/s after 500 kB.
 	//
 	// Any of "static", "dynamic".
-	LimitType string `json:"limit_type,omitzero,required"`
+	LimitType string `json:"limit_type,omitzero" api:"required"`
 	// Amount of downloaded data after which the user will be rate limited.
 	Buffer param.Opt[int64] `json:"buffer,omitzero"`
 	// Maximum download speed per connection.
@@ -5821,9 +5821,9 @@ type RuleTemplateUpdateParamsOptionsProxyCacheKey struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Key for caching.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5845,12 +5845,12 @@ type RuleTemplateUpdateParamsOptionsProxyCacheMethodsSet struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5872,11 +5872,11 @@ type RuleTemplateUpdateParamsOptionsProxyConnectTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 5s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5902,11 +5902,11 @@ type RuleTemplateUpdateParamsOptionsProxyReadTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 30s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5932,9 +5932,9 @@ type RuleTemplateUpdateParamsOptionsQueryParamsBlacklist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -5960,9 +5960,9 @@ type RuleTemplateUpdateParamsOptionsQueryParamsWhitelist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -5990,19 +5990,19 @@ type RuleTemplateUpdateParamsOptionsQueryStringForwarding struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The `forward_from_files_types` field specifies the types of playlist files from
 	// which parameters will be extracted and forwarded. This typically includes
 	// formats that list multiple media chunk references, such as HLS and DASH
 	// playlists. Parameters associated with these playlist files (like query strings
 	// or headers) will be propagated to the chunks they reference.
-	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero,required"`
+	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero" api:"required"`
 	// The field specifies the types of media chunk files to which parameters,
 	// extracted from playlist files, will be forwarded. These refer to the actual
 	// segments of media content that are delivered to viewers. Ensuring the correct
 	// parameters are forwarded to these files is crucial for maintaining the integrity
 	// of the streaming session.
-	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
+	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero" api:"required"`
 	// The `forward_except_keys` field provides a mechanism to exclude specific
 	// parameters from being forwarded from playlist files to media chunk files. By
 	// listing certain keys in this field, you can ensure that these parameters are
@@ -6041,12 +6041,12 @@ type RuleTemplateUpdateParamsOptionsRedirectHTTPToHTTPS struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -6071,12 +6071,12 @@ type RuleTemplateUpdateParamsOptionsRedirectHTTPSToHTTP struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -6098,7 +6098,7 @@ type RuleTemplateUpdateParamsOptionsReferrerACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of domain names or wildcard domains (without protocol: `http://` or
 	// `https://`.)
 	//
@@ -6111,7 +6111,7 @@ type RuleTemplateUpdateParamsOptionsReferrerACL struct {
 	//
 	// - `example.com`
 	// - `*.example.com`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"domain or wildcard"`
 	// Policy type.
 	//
 	// Possible values:
@@ -6122,7 +6122,7 @@ type RuleTemplateUpdateParamsOptionsReferrerACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6150,9 +6150,9 @@ type RuleTemplateUpdateParamsOptionsRequestLimiter struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Maximum request rate.
-	Rate int64 `json:"rate,required"`
+	Rate int64 `json:"rate" api:"required"`
 	// Units of measurement for the `rate` field.
 	//
 	// Possible values:
@@ -6192,7 +6192,7 @@ type RuleTemplateUpdateParamsOptionsResponseHeadersHidingPolicy struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of HTTP headers.
 	//
 	// Parameter meaning depends on the value of the `mode` field:
@@ -6208,7 +6208,7 @@ type RuleTemplateUpdateParamsOptionsResponseHeadersHidingPolicy struct {
 	// - `Content-Type`
 	// - `Date`
 	// - `Server`
-	Excepted []string `json:"excepted,omitzero,required" format:"http_header"`
+	Excepted []string `json:"excepted,omitzero" api:"required" format:"http_header"`
 	// How HTTP headers are hidden from the response.
 	//
 	// Possible values:
@@ -6218,7 +6218,7 @@ type RuleTemplateUpdateParamsOptionsResponseHeadersHidingPolicy struct {
 	//     field.
 	//
 	// Any of "hide", "show".
-	Mode string `json:"mode,omitzero,required"`
+	Mode string `json:"mode,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6248,14 +6248,14 @@ type RuleTemplateUpdateParamsOptionsRewrite struct {
 	// Example:
 	//
 	// - `/(.*) /media/$1`
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Flag for the Rewrite option.
 	//
 	// Possible values:
@@ -6292,14 +6292,14 @@ func init() {
 // The properties Enabled, Key are required.
 type RuleTemplateUpdateParamsOptionsSecureKey struct {
 	// Key generated on your side that will be used for URL signing.
-	Key param.Opt[string] `json:"key,omitzero,required"`
+	Key param.Opt[string] `json:"key,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Type of URL signing.
 	//
 	// Possible types:
@@ -6346,12 +6346,12 @@ type RuleTemplateUpdateParamsOptionsSlice struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -6378,14 +6378,14 @@ type RuleTemplateUpdateParamsOptionsSni struct {
 	// Custom SNI hostname.
 	//
 	// It is required if `sni_type` is set to custom.
-	CustomHostname string `json:"custom_hostname,required" format:"domain"`
+	CustomHostname string `json:"custom_hostname" api:"required" format:"domain"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// SNI (Server Name Indication) type.
 	//
 	// Possible values:
@@ -6429,12 +6429,12 @@ type RuleTemplateUpdateParamsOptionsStale struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Defines list of errors for which "Always online" option is applied.
 	//
 	// Any of "error", "http_403", "http_404", "http_429", "http_500", "http_502",
 	// "http_503", "http_504", "invalid_header", "timeout", "updating".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6456,8 +6456,8 @@ type RuleTemplateUpdateParamsOptionsStaticResponseHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool                                                        `json:"enabled,required"`
-	Value   []RuleTemplateUpdateParamsOptionsStaticResponseHeadersValue `json:"value,omitzero,required"`
+	Enabled bool                                                        `json:"enabled" api:"required"`
+	Value   []RuleTemplateUpdateParamsOptionsStaticResponseHeadersValue `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6477,7 +6477,7 @@ type RuleTemplateUpdateParamsOptionsStaticResponseHeadersValue struct {
 	//
 	// - Maximum 128 symbols.
 	// - Latin letters (A-Z, a-z,) numbers (0-9,) dashes, and underscores only.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Header value.
 	//
 	// Restrictions:
@@ -6487,7 +6487,7 @@ type RuleTemplateUpdateParamsOptionsStaticResponseHeadersValue struct {
 	//     /|\";:?.,><{}[]).
 	//   - Must start with a letter, number, asterisk or {.
 	//   - Multiple values can be added.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	// Defines whether the header will be added to a response from CDN regardless of
 	// response code.
 	//
@@ -6524,7 +6524,7 @@ type RuleTemplateUpdateParamsOptionsStaticHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -6534,7 +6534,7 @@ type RuleTemplateUpdateParamsOptionsStaticHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value any `json:"value,omitzero,required"`
+	Value any `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6557,7 +6557,7 @@ type RuleTemplateUpdateParamsOptionsStaticRequestHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -6567,7 +6567,7 @@ type RuleTemplateUpdateParamsOptionsStaticRequestHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,omitzero,required"`
+	Value map[string]string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6589,7 +6589,7 @@ type RuleTemplateUpdateParamsOptionsUserAgentACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of User-Agents that will be allowed/denied.
 	//
 	// The meaning of the parameter depends on `policy_type`:
@@ -6602,7 +6602,7 @@ type RuleTemplateUpdateParamsOptionsUserAgentACL struct {
 	//
 	// Use an empty string `""` to allow/deny access when the User-Agent header is
 	// empty.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"user_agent"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"user_agent"`
 	// User-Agents policy type.
 	//
 	// Possible values:
@@ -6613,7 +6613,7 @@ type RuleTemplateUpdateParamsOptionsUserAgentACL struct {
 	//     `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6641,12 +6641,12 @@ type RuleTemplateUpdateParamsOptionsWaap struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -6668,12 +6668,12 @@ type RuleTemplateUpdateParamsOptionsWebsockets struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -6712,7 +6712,7 @@ type RuleTemplateReplaceParams struct {
 	//
 	// We add a leading forward slash to any rule path. Specify a path without a
 	// forward slash.
-	Rule string `json:"rule,required"`
+	Rule string `json:"rule" api:"required"`
 	// Rule type.
 	//
 	// Possible values:
@@ -6721,7 +6721,7 @@ type RuleTemplateReplaceParams struct {
 	//   - **Type 1** - Regular expression. Note that for this rule type we automatically
 	//     add / to each rule pattern before your regular expression. This type is
 	//     **legacy**, please use Type 0.
-	RuleType int64 `json:"ruleType,required"`
+	RuleType int64 `json:"ruleType" api:"required"`
 	// Rule template name.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Rule execution order: from lowest (1) to highest.
@@ -7021,9 +7021,9 @@ type RuleTemplateReplaceParamsOptionsAllowedHTTPMethods struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Any of "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -7041,14 +7041,14 @@ func (r *RuleTemplateReplaceParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data 
 // The properties BotChallenge, Enabled are required.
 type RuleTemplateReplaceParamsOptionsBotProtection struct {
 	// Controls the bot challenge module state.
-	BotChallenge RuleTemplateReplaceParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero,required"`
+	BotChallenge RuleTemplateReplaceParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	paramObj
 }
 
@@ -7102,7 +7102,7 @@ type RuleTemplateReplaceParamsOptionsBrotliCompression struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to select the content types you want to compress.
 	//
 	// `text/html` is a mandatory content type.
@@ -7112,7 +7112,7 @@ type RuleTemplateReplaceParamsOptionsBrotliCompression struct {
 	// "application/x-javascript", "application/xml", "application/xml+rss",
 	// "image/svg+xml", "image/x-icon", "text/css", "text/html", "text/javascript",
 	// "text/plain", "text/xml".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -7139,11 +7139,11 @@ type RuleTemplateReplaceParamsOptionsBrowserCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Set the cache expiration time to '0s' to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
-	Value string `json:"value,required" format:"nginx time"`
+	Value string `json:"value" api:"required" format:"nginx time"`
 	paramObj
 }
 
@@ -7169,8 +7169,8 @@ type RuleTemplateReplaceParamsOptionsCacheHTTPHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool     `json:"enabled,required"`
-	Value   []string `json:"value,omitzero,required"`
+	Enabled bool     `json:"enabled" api:"required"`
+	Value   []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -7195,7 +7195,7 @@ type RuleTemplateReplaceParamsOptionsCors struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Value of the Access-Control-Allow-Origin header.
 	//
 	// Possible values:
@@ -7210,7 +7210,7 @@ type RuleTemplateReplaceParamsOptionsCors struct {
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
 	//     header in the response. `"value": ["$http_origin"]`
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	// Defines whether the Access-Control-Allow-Origin header should be added to a
 	// response from CDN regardless of response code.
 	//
@@ -7241,14 +7241,14 @@ type RuleTemplateReplaceParamsOptionsCountryACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of countries according to ISO-3166-1.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
 	//
 	// - **allow** - List of countries for which access is prohibited.
 	// - **deny** - List of countries for which access is allowed.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"country-code"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"country-code"`
 	// Defines the type of CDN resource access policy.
 	//
 	// Possible values:
@@ -7259,7 +7259,7 @@ type RuleTemplateReplaceParamsOptionsCountryACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -7291,12 +7291,12 @@ type RuleTemplateReplaceParamsOptionsDisableCache struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - content caching is disabled.
 	// - **false** - content caching is enabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7318,12 +7318,12 @@ type RuleTemplateReplaceParamsOptionsDisableProxyForceRanges struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7347,7 +7347,7 @@ type RuleTemplateReplaceParamsOptionsEdgeCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
@@ -7399,7 +7399,7 @@ type RuleTemplateReplaceParamsOptionsFastedge struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// body as soon as CDN receives incoming HTTP request.
 	OnRequestBody RuleTemplateReplaceParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
@@ -7429,7 +7429,7 @@ func (r *RuleTemplateReplaceParamsOptionsFastedge) UnmarshalJSON(data []byte) er
 // The property AppID is required.
 type RuleTemplateReplaceParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -7456,7 +7456,7 @@ func (r *RuleTemplateReplaceParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(da
 // The property AppID is required.
 type RuleTemplateReplaceParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -7483,7 +7483,7 @@ func (r *RuleTemplateReplaceParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON
 // The property AppID is required.
 type RuleTemplateReplaceParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -7510,7 +7510,7 @@ func (r *RuleTemplateReplaceParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(d
 // The property AppID is required.
 type RuleTemplateReplaceParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -7553,12 +7553,12 @@ type RuleTemplateReplaceParamsOptionsFetchCompressed struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7582,14 +7582,14 @@ type RuleTemplateReplaceParamsOptionsFollowOriginRedirect struct {
 	// managing the option.
 	//
 	// Any of 301, 302, 303, 307, 308.
-	Codes []int64 `json:"codes,omitzero,required"`
+	Codes []int64 `json:"codes,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	paramObj
 }
 
@@ -7609,16 +7609,16 @@ func (r *RuleTemplateReplaceParamsOptionsFollowOriginRedirect) UnmarshalJSON(dat
 // The properties Body, Code, Enabled are required.
 type RuleTemplateReplaceParamsOptionsForceReturn struct {
 	// URL for redirection or text.
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Status code value.
-	Code int64 `json:"code,required"`
+	Code int64 `json:"code" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Controls the time at which a custom HTTP response code should be applied. By
 	// default, a custom HTTP response code is applied at any time.
 	TimeInterval RuleTemplateReplaceParamsOptionsForceReturnTimeInterval `json:"time_interval,omitzero"`
@@ -7640,10 +7640,10 @@ func (r *RuleTemplateReplaceParamsOptionsForceReturn) UnmarshalJSON(data []byte)
 type RuleTemplateReplaceParamsOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	EndTime string `json:"end_time,required"`
+	EndTime string `json:"end_time" api:"required"`
 	// Time from which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	StartTime string `json:"start_time,required"`
+	StartTime string `json:"start_time" api:"required"`
 	// Time zone used to calculate time.
 	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
 	paramObj
@@ -7669,12 +7669,12 @@ type RuleTemplateReplaceParamsOptionsForwardHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7705,12 +7705,12 @@ type RuleTemplateReplaceParamsOptionsGzipOn struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7737,9 +7737,9 @@ type RuleTemplateReplaceParamsOptionsHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Host Header value.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7762,13 +7762,13 @@ type RuleTemplateReplaceParamsOptionsIgnoreCookie struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	//   - **true** - Option is enabled, files with cookies are cached as one file.
 	//   - **false** - Option is disabled, files with cookies are cached as different
 	//     files.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7794,12 +7794,12 @@ type RuleTemplateReplaceParamsOptionsIgnoreQueryString struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7822,7 +7822,7 @@ type RuleTemplateReplaceParamsOptionsImageStack struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables or disables automatic conversion of JPEG and PNG images to AVI format.
 	AvifEnabled param.Opt[bool] `json:"avif_enabled,omitzero"`
 	// Enables or disables compression without quality loss for PNG format.
@@ -7859,7 +7859,7 @@ type RuleTemplateReplaceParamsOptionsIPAddressACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of IP addresses with a subnet mask.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
@@ -7871,7 +7871,7 @@ type RuleTemplateReplaceParamsOptionsIPAddressACL struct {
 	//
 	// - `192.168.3.2/32`
 	// - `2a03:d000:2980:7::8/128`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"ipv4net or ipv6net"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
 	// Possible values:
@@ -7882,7 +7882,7 @@ type RuleTemplateReplaceParamsOptionsIPAddressACL struct {
 	//     field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -7910,7 +7910,7 @@ type RuleTemplateReplaceParamsOptionsLimitBandwidth struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Method of controlling the download speed per connection.
 	//
 	// Possible values:
@@ -7928,7 +7928,7 @@ type RuleTemplateReplaceParamsOptionsLimitBandwidth struct {
 	// the download speed will be limited to 50kB/s after 500 kB.
 	//
 	// Any of "static", "dynamic".
-	LimitType string `json:"limit_type,omitzero,required"`
+	LimitType string `json:"limit_type,omitzero" api:"required"`
 	// Amount of downloaded data after which the user will be rate limited.
 	Buffer param.Opt[int64] `json:"buffer,omitzero"`
 	// Maximum download speed per connection.
@@ -7971,9 +7971,9 @@ type RuleTemplateReplaceParamsOptionsProxyCacheKey struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Key for caching.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7995,12 +7995,12 @@ type RuleTemplateReplaceParamsOptionsProxyCacheMethodsSet struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8022,11 +8022,11 @@ type RuleTemplateReplaceParamsOptionsProxyConnectTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 5s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8052,11 +8052,11 @@ type RuleTemplateReplaceParamsOptionsProxyReadTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 30s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8082,9 +8082,9 @@ type RuleTemplateReplaceParamsOptionsQueryParamsBlacklist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8110,9 +8110,9 @@ type RuleTemplateReplaceParamsOptionsQueryParamsWhitelist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8140,19 +8140,19 @@ type RuleTemplateReplaceParamsOptionsQueryStringForwarding struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The `forward_from_files_types` field specifies the types of playlist files from
 	// which parameters will be extracted and forwarded. This typically includes
 	// formats that list multiple media chunk references, such as HLS and DASH
 	// playlists. Parameters associated with these playlist files (like query strings
 	// or headers) will be propagated to the chunks they reference.
-	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero,required"`
+	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero" api:"required"`
 	// The field specifies the types of media chunk files to which parameters,
 	// extracted from playlist files, will be forwarded. These refer to the actual
 	// segments of media content that are delivered to viewers. Ensuring the correct
 	// parameters are forwarded to these files is crucial for maintaining the integrity
 	// of the streaming session.
-	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
+	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero" api:"required"`
 	// The `forward_except_keys` field provides a mechanism to exclude specific
 	// parameters from being forwarded from playlist files to media chunk files. By
 	// listing certain keys in this field, you can ensure that these parameters are
@@ -8191,12 +8191,12 @@ type RuleTemplateReplaceParamsOptionsRedirectHTTPToHTTPS struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8221,12 +8221,12 @@ type RuleTemplateReplaceParamsOptionsRedirectHTTPSToHTTP struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8248,7 +8248,7 @@ type RuleTemplateReplaceParamsOptionsReferrerACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of domain names or wildcard domains (without protocol: `http://` or
 	// `https://`.)
 	//
@@ -8261,7 +8261,7 @@ type RuleTemplateReplaceParamsOptionsReferrerACL struct {
 	//
 	// - `example.com`
 	// - `*.example.com`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"domain or wildcard"`
 	// Policy type.
 	//
 	// Possible values:
@@ -8272,7 +8272,7 @@ type RuleTemplateReplaceParamsOptionsReferrerACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8300,9 +8300,9 @@ type RuleTemplateReplaceParamsOptionsRequestLimiter struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Maximum request rate.
-	Rate int64 `json:"rate,required"`
+	Rate int64 `json:"rate" api:"required"`
 	// Units of measurement for the `rate` field.
 	//
 	// Possible values:
@@ -8342,7 +8342,7 @@ type RuleTemplateReplaceParamsOptionsResponseHeadersHidingPolicy struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of HTTP headers.
 	//
 	// Parameter meaning depends on the value of the `mode` field:
@@ -8358,7 +8358,7 @@ type RuleTemplateReplaceParamsOptionsResponseHeadersHidingPolicy struct {
 	// - `Content-Type`
 	// - `Date`
 	// - `Server`
-	Excepted []string `json:"excepted,omitzero,required" format:"http_header"`
+	Excepted []string `json:"excepted,omitzero" api:"required" format:"http_header"`
 	// How HTTP headers are hidden from the response.
 	//
 	// Possible values:
@@ -8368,7 +8368,7 @@ type RuleTemplateReplaceParamsOptionsResponseHeadersHidingPolicy struct {
 	//     field.
 	//
 	// Any of "hide", "show".
-	Mode string `json:"mode,omitzero,required"`
+	Mode string `json:"mode,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8398,14 +8398,14 @@ type RuleTemplateReplaceParamsOptionsRewrite struct {
 	// Example:
 	//
 	// - `/(.*) /media/$1`
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Flag for the Rewrite option.
 	//
 	// Possible values:
@@ -8442,14 +8442,14 @@ func init() {
 // The properties Enabled, Key are required.
 type RuleTemplateReplaceParamsOptionsSecureKey struct {
 	// Key generated on your side that will be used for URL signing.
-	Key param.Opt[string] `json:"key,omitzero,required"`
+	Key param.Opt[string] `json:"key,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Type of URL signing.
 	//
 	// Possible types:
@@ -8496,12 +8496,12 @@ type RuleTemplateReplaceParamsOptionsSlice struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8528,14 +8528,14 @@ type RuleTemplateReplaceParamsOptionsSni struct {
 	// Custom SNI hostname.
 	//
 	// It is required if `sni_type` is set to custom.
-	CustomHostname string `json:"custom_hostname,required" format:"domain"`
+	CustomHostname string `json:"custom_hostname" api:"required" format:"domain"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// SNI (Server Name Indication) type.
 	//
 	// Possible values:
@@ -8579,12 +8579,12 @@ type RuleTemplateReplaceParamsOptionsStale struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Defines list of errors for which "Always online" option is applied.
 	//
 	// Any of "error", "http_403", "http_404", "http_429", "http_500", "http_502",
 	// "http_503", "http_504", "invalid_header", "timeout", "updating".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8606,8 +8606,8 @@ type RuleTemplateReplaceParamsOptionsStaticResponseHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool                                                         `json:"enabled,required"`
-	Value   []RuleTemplateReplaceParamsOptionsStaticResponseHeadersValue `json:"value,omitzero,required"`
+	Enabled bool                                                         `json:"enabled" api:"required"`
+	Value   []RuleTemplateReplaceParamsOptionsStaticResponseHeadersValue `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8627,7 +8627,7 @@ type RuleTemplateReplaceParamsOptionsStaticResponseHeadersValue struct {
 	//
 	// - Maximum 128 symbols.
 	// - Latin letters (A-Z, a-z,) numbers (0-9,) dashes, and underscores only.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Header value.
 	//
 	// Restrictions:
@@ -8637,7 +8637,7 @@ type RuleTemplateReplaceParamsOptionsStaticResponseHeadersValue struct {
 	//     /|\";:?.,><{}[]).
 	//   - Must start with a letter, number, asterisk or {.
 	//   - Multiple values can be added.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	// Defines whether the header will be added to a response from CDN regardless of
 	// response code.
 	//
@@ -8674,7 +8674,7 @@ type RuleTemplateReplaceParamsOptionsStaticHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -8684,7 +8684,7 @@ type RuleTemplateReplaceParamsOptionsStaticHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value any `json:"value,omitzero,required"`
+	Value any `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8707,7 +8707,7 @@ type RuleTemplateReplaceParamsOptionsStaticRequestHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -8717,7 +8717,7 @@ type RuleTemplateReplaceParamsOptionsStaticRequestHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,omitzero,required"`
+	Value map[string]string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8739,7 +8739,7 @@ type RuleTemplateReplaceParamsOptionsUserAgentACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of User-Agents that will be allowed/denied.
 	//
 	// The meaning of the parameter depends on `policy_type`:
@@ -8752,7 +8752,7 @@ type RuleTemplateReplaceParamsOptionsUserAgentACL struct {
 	//
 	// Use an empty string `""` to allow/deny access when the User-Agent header is
 	// empty.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"user_agent"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"user_agent"`
 	// User-Agents policy type.
 	//
 	// Possible values:
@@ -8763,7 +8763,7 @@ type RuleTemplateReplaceParamsOptionsUserAgentACL struct {
 	//     `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8791,12 +8791,12 @@ type RuleTemplateReplaceParamsOptionsWaap struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8818,12 +8818,12 @@ type RuleTemplateReplaceParamsOptionsWebsockets struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 

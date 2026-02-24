@@ -50,9 +50,9 @@ func (r *UsageReportService) Get(ctx context.Context, body UsageReportGetParams,
 
 type UsageReport struct {
 	// Total count of the resources
-	Count     int64                      `json:"count,required"`
-	Resources []UsageReportResourceUnion `json:"resources,required"`
-	Totals    []UsageReportTotalUnion    `json:"totals,required"`
+	Count     int64                      `json:"count" api:"required"`
+	Resources []UsageReportResourceUnion `json:"resources" api:"required"`
+	Totals    []UsageReportTotalUnion    `json:"totals" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -419,30 +419,30 @@ func (r *UsageReportResourceUnion) UnmarshalJSON(data []byte) error {
 // reports results (but not in totals)
 type UsageReportResourceAICluster struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Flavor of the Baremetal GPU cluster
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Name of the AI cluster
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
-	Tags []map[string]string `json:"tags,required"`
-	Type constant.AICluster  `json:"type,required"`
+	Tags []map[string]string `json:"tags" api:"required"`
+	Type constant.AICluster  `json:"type" api:"required"`
 	// UUID of the Baremetal GPU cluster
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -473,30 +473,30 @@ func (r *UsageReportResourceAICluster) UnmarshalJSON(data []byte) error {
 // and usage reports results (but not in totals)
 type UsageReportResourceAIVirtualCluster struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Flavor of the Virtual GPU cluster
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Name of the AI cluster
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
-	Tags []map[string]string       `json:"tags,required"`
-	Type constant.AIVirtualCluster `json:"type,required"`
+	Tags []map[string]string       `json:"tags" api:"required"`
+	Type constant.AIVirtualCluster `json:"type" api:"required"`
 	// UUID of the Virtual GPU cluster
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -527,30 +527,30 @@ func (r *UsageReportResourceAIVirtualCluster) UnmarshalJSON(data []byte) error {
 // and usage reports results (but not in totals)
 type UsageReportResourceBaremetal struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Flavor of the bare metal server
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Name of the bare metal server
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
-	Tags []map[string]string `json:"tags,required"`
-	Type constant.Baremetal  `json:"type,required"`
+	Tags []map[string]string `json:"tags" api:"required"`
+	Type constant.Baremetal  `json:"type" api:"required"`
 	// UUID of the bare metal server
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -581,30 +581,30 @@ func (r *UsageReportResourceBaremetal) UnmarshalJSON(data []byte) error {
 // reports results (but not in totals)
 type UsageReportResourceBasicVm struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Flavor of the basic VM
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Name of the basic VM
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
-	Tags []map[string]string `json:"tags,required"`
-	Type constant.BasicVm    `json:"type,required"`
+	Tags []map[string]string `json:"tags" api:"required"`
+	Type constant.BasicVm    `json:"type" api:"required"`
 	// UUID of the basic VM
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -635,32 +635,32 @@ func (r *UsageReportResourceBasicVm) UnmarshalJSON(data []byte) error {
 // reports results (but not in totals)
 type UsageReportResourceBackup struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the backup
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// Size of the backup in bytes
-	LastSize int64 `json:"last_size,required"`
+	LastSize int64 `json:"last_size" api:"required"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// ID of the backup schedule
-	ScheduleID string `json:"schedule_id,required" format:"uuid"`
+	ScheduleID string `json:"schedule_id" api:"required" format:"uuid"`
 	// UUID of the source volume
-	SourceVolumeUuid string          `json:"source_volume_uuid,required" format:"uuid"`
-	Type             constant.Backup `json:"type,required"`
+	SourceVolumeUuid string          `json:"source_volume_uuid" api:"required" format:"uuid"`
+	Type             constant.Backup `json:"type" api:"required"`
 	// UUID of the backup
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -690,26 +690,26 @@ func (r *UsageReportResourceBackup) UnmarshalJSON(data []byte) error {
 
 type UsageReportResourceContainers struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GBs `json:"billing_value_unit,required"`
+	BillingValueUnit constant.GBs `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the container
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64               `json:"region_id,required"`
-	Type     constant.Containers `json:"type,required"`
+	RegionID int64               `json:"region_id" api:"required"`
+	Type     constant.Containers `json:"type" api:"required"`
 	// UUID of the container
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -738,36 +738,36 @@ func (r *UsageReportResourceContainers) UnmarshalJSON(data []byte) error {
 // usage reports results (but not in totals)
 type UsageReportResourceEgressTraffic struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Bytes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Bytes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the instance
-	InstanceName string `json:"instance_name,required"`
+	InstanceName string `json:"instance_name" api:"required"`
 	// Type of the instance
 	//
 	// Any of "baremetal", "vm".
-	InstanceType string `json:"instance_type,required"`
+	InstanceType string `json:"instance_type" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the port the traffic is associated with
-	PortID string `json:"port_id,required" format:"uuid"`
+	PortID string `json:"port_id" api:"required" format:"uuid"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Unit of size
-	SizeUnit string `json:"size_unit,required"`
+	SizeUnit string `json:"size_unit" api:"required"`
 	// List of tags
-	Tags []map[string]string    `json:"tags,required"`
-	Type constant.EgressTraffic `json:"type,required"`
+	Tags []map[string]string    `json:"tags" api:"required"`
+	Type constant.EgressTraffic `json:"type" api:"required"`
 	// ID of the bare metal server the traffic is associated with
-	VmID string `json:"vm_id,required" format:"uuid"`
+	VmID string `json:"vm_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -800,32 +800,32 @@ func (r *UsageReportResourceEgressTraffic) UnmarshalJSON(data []byte) error {
 // usage reports results (but not in totals)
 type UsageReportResourceExternalIP struct {
 	// ID of the VM the IP is attached to
-	AttachedToVm string `json:"attached_to_vm,required" format:"uuid"`
+	AttachedToVm string `json:"attached_to_vm" api:"required" format:"uuid"`
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// IP address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the network the IP is attached to
-	NetworkID string `json:"network_id,required" format:"uuid"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid"`
 	// ID of the port the IP is associated with
-	PortID string `json:"port_id,required" format:"uuid"`
+	PortID string `json:"port_id" api:"required" format:"uuid"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// ID of the subnet the IP is attached to
-	SubnetID string              `json:"subnet_id,required" format:"uuid"`
-	Type     constant.ExternalIP `json:"type,required"`
+	SubnetID string              `json:"subnet_id" api:"required" format:"uuid"`
+	Type     constant.ExternalIP `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AttachedToVm      respjson.Field
@@ -857,34 +857,34 @@ func (r *UsageReportResourceExternalIP) UnmarshalJSON(data []byte) error {
 // reports results (but not in totals)
 type UsageReportResourceFileShare struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// Type of the file share
-	FileShareType string `json:"file_share_type,required"`
+	FileShareType string `json:"file_share_type" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the file share
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// Size of the file share in bytes
-	LastSize int64 `json:"last_size,required"`
+	LastSize int64 `json:"last_size" api:"required"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Unit of size
-	SizeUnit constant.GiB `json:"size_unit,required"`
+	SizeUnit constant.GiB `json:"size_unit" api:"required"`
 	// List of tags
-	Tags []map[string]string `json:"tags,required"`
-	Type constant.FileShare  `json:"type,required"`
+	Tags []map[string]string `json:"tags" api:"required"`
+	Type constant.FileShare  `json:"type" api:"required"`
 	// UUID of the file share
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -917,30 +917,30 @@ func (r *UsageReportResourceFileShare) UnmarshalJSON(data []byte) error {
 // usage reports results (but not in totals)
 type UsageReportResourceFloatingip struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// IP address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// Name of the floating IP
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
-	Tags []map[string]string `json:"tags,required"`
-	Type constant.Floatingip `json:"type,required"`
+	Tags []map[string]string `json:"tags" api:"required"`
+	Type constant.Floatingip `json:"type" api:"required"`
 	// UUID of the floating IP
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -971,26 +971,26 @@ func (r *UsageReportResourceFloatingip) UnmarshalJSON(data []byte) error {
 // reports results (but not in totals)
 type UsageReportResourceFunctions struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GBs `json:"billing_value_unit,required"`
+	BillingValueUnit constant.GBs `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the function
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64              `json:"region_id,required"`
-	Type     constant.Functions `json:"type,required"`
+	RegionID int64              `json:"region_id" api:"required"`
+	Type     constant.Functions `json:"type" api:"required"`
 	// UUID of the function
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1019,26 +1019,26 @@ func (r *UsageReportResourceFunctions) UnmarshalJSON(data []byte) error {
 // usage reports results (but not in totals)
 type UsageReportResourceFunctionsCalls struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Mls `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Mls `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the function call
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                   `json:"region_id,required"`
-	Type     constant.FunctionsCalls `json:"type,required"`
+	RegionID int64                   `json:"region_id" api:"required"`
+	Type     constant.FunctionsCalls `json:"type" api:"required"`
 	// UUID of the function call
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1067,26 +1067,26 @@ func (r *UsageReportResourceFunctionsCalls) UnmarshalJSON(data []byte) error {
 // cost and usage reports results (but not in totals)
 type UsageReportResourceFunctionsTraffic struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GB `json:"billing_value_unit,required"`
+	BillingValueUnit constant.GB `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the function egress traffic
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                     `json:"region_id,required"`
-	Type     constant.FunctionsTraffic `json:"type,required"`
+	RegionID int64                     `json:"region_id" api:"required"`
+	Type     constant.FunctionsTraffic `json:"type" api:"required"`
 	// UUID of the function egress traffic
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1115,32 +1115,32 @@ func (r *UsageReportResourceFunctionsTraffic) UnmarshalJSON(data []byte) error {
 // reports results (but not in totals)
 type UsageReportResourceImage struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the image
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// Size of the image in bytes
-	LastSize int64 `json:"last_size,required"`
+	LastSize int64 `json:"last_size" api:"required"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Unit of size
-	SizeUnit constant.Bytes `json:"size_unit,required"`
+	SizeUnit constant.Bytes `json:"size_unit" api:"required"`
 	// List of tags
-	Tags []map[string]string `json:"tags,required"`
-	Type constant.Image      `json:"type,required"`
+	Tags []map[string]string `json:"tags" api:"required"`
+	Type constant.Image      `json:"type" api:"required"`
 	// UUID of the image
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1170,28 +1170,28 @@ func (r *UsageReportResourceImage) UnmarshalJSON(data []byte) error {
 
 type UsageReportResourceInference struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit string `json:"billing_value_unit,required"`
+	BillingValueUnit string `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Flavor of the inference deployment
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Name of the inference deployment
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64              `json:"region_id,required"`
-	Type     constant.Inference `json:"type,required"`
+	RegionID int64              `json:"region_id" api:"required"`
+	Type     constant.Inference `json:"type" api:"required"`
 	// UUID of the inference deployment
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1221,30 +1221,30 @@ func (r *UsageReportResourceInference) UnmarshalJSON(data []byte) error {
 // reports results (but not in totals)
 type UsageReportResourceInstance struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Flavor of the instance
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Name of the instance
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
-	Tags []map[string]string `json:"tags,required"`
-	Type constant.Instance   `json:"type,required"`
+	Tags []map[string]string `json:"tags" api:"required"`
+	Type constant.Instance   `json:"type" api:"required"`
 	// UUID of the instance
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1275,30 +1275,30 @@ func (r *UsageReportResourceInstance) UnmarshalJSON(data []byte) error {
 // usage reports results (but not in totals)
 type UsageReportResourceLoadBalancer struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Flavor of the load balancer
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Name of the load balancer
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
-	Tags []map[string]string   `json:"tags,required"`
-	Type constant.LoadBalancer `json:"type,required"`
+	Tags []map[string]string   `json:"tags" api:"required"`
+	Type constant.LoadBalancer `json:"type" api:"required"`
 	// UUID of the load balancer
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1329,30 +1329,30 @@ func (r *UsageReportResourceLoadBalancer) UnmarshalJSON(data []byte) error {
 // reports results (but not in totals)
 type UsageReportResourceLogIndex struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the log index
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// Size of the log index in bytes
-	LastSize int64 `json:"last_size,required"`
+	LastSize int64 `json:"last_size" api:"required"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Unit of size
-	SizeUnit string            `json:"size_unit,required"`
-	Type     constant.LogIndex `json:"type,required"`
+	SizeUnit string            `json:"size_unit" api:"required"`
+	Type     constant.LogIndex `json:"type" api:"required"`
 	// UUID of the log index
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1383,36 +1383,36 @@ func (r *UsageReportResourceLogIndex) UnmarshalJSON(data []byte) error {
 // reports results (but not in totals)
 type UsageReportResourceSnapshot struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the snapshot
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// Size of the snapshot in bytes
-	LastSize int64 `json:"last_size,required"`
+	LastSize int64 `json:"last_size" api:"required"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Unit of size
-	SizeUnit string `json:"size_unit,required"`
+	SizeUnit string `json:"size_unit" api:"required"`
 	// UUID of the source volume
-	SourceVolumeUuid string `json:"source_volume_uuid,required" format:"uuid"`
+	SourceVolumeUuid string `json:"source_volume_uuid" api:"required" format:"uuid"`
 	// List of tags
-	Tags []map[string]string `json:"tags,required"`
-	Type constant.Snapshot   `json:"type,required"`
+	Tags []map[string]string `json:"tags" api:"required"`
+	Type constant.Snapshot   `json:"type" api:"required"`
 	// UUID of the snapshot
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// Type of the volume
-	VolumeType string `json:"volume_type,required"`
+	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1446,36 +1446,36 @@ func (r *UsageReportResourceSnapshot) UnmarshalJSON(data []byte) error {
 // reports results (but not in totals)
 type UsageReportResourceVolume struct {
 	// ID of the VM the volume is attached to
-	AttachedToVm string `json:"attached_to_vm,required" format:"uuid"`
+	AttachedToVm string `json:"attached_to_vm" api:"required" format:"uuid"`
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the volume
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// Size of the volume in bytes
-	LastSize int64 `json:"last_size,required"`
+	LastSize int64 `json:"last_size" api:"required"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Unit of size
-	SizeUnit string `json:"size_unit,required"`
+	SizeUnit string `json:"size_unit" api:"required"`
 	// List of tags
-	Tags []map[string]string `json:"tags,required"`
-	Type constant.Volume     `json:"type,required"`
+	Tags []map[string]string `json:"tags" api:"required"`
+	Type constant.Volume     `json:"type" api:"required"`
 	// UUID of the volume
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// Type of the volume
-	VolumeType string `json:"volume_type,required"`
+	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AttachedToVm      respjson.Field
@@ -1507,26 +1507,26 @@ func (r *UsageReportResourceVolume) UnmarshalJSON(data []byte) error {
 
 type UsageReportResourceDbaasPostgreSQLConnectionPooler struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the cluster
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                                    `json:"region_id,required"`
-	Type     constant.DbaasPostgreSQLConnectionPooler `json:"type,required"`
+	RegionID int64                                    `json:"region_id" api:"required"`
+	Type     constant.DbaasPostgreSQLConnectionPooler `json:"type" api:"required"`
 	// UUID of the cluster
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1553,26 +1553,26 @@ func (r *UsageReportResourceDbaasPostgreSQLConnectionPooler) UnmarshalJSON(data 
 
 type UsageReportResourceDbaasPostgreSQLMemory struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the cluster
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                          `json:"region_id,required"`
-	Type     constant.DbaasPostgreSQLMemory `json:"type,required"`
+	RegionID int64                          `json:"region_id" api:"required"`
+	Type     constant.DbaasPostgreSQLMemory `json:"type" api:"required"`
 	// UUID of the cluster
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1599,26 +1599,26 @@ func (r *UsageReportResourceDbaasPostgreSQLMemory) UnmarshalJSON(data []byte) er
 
 type UsageReportResourceDbaasPostgreSQLPublicNetwork struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the cluster
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                                 `json:"region_id,required"`
-	Type     constant.DbaasPostgreSQLPublicNetwork `json:"type,required"`
+	RegionID int64                                 `json:"region_id" api:"required"`
+	Type     constant.DbaasPostgreSQLPublicNetwork `json:"type" api:"required"`
 	// UUID of the cluster
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1645,26 +1645,26 @@ func (r *UsageReportResourceDbaasPostgreSQLPublicNetwork) UnmarshalJSON(data []b
 
 type UsageReportResourceDbaasPostgreSQLCPU struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the cluster
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                       `json:"region_id,required"`
-	Type     constant.DbaasPostgreSQLCPU `json:"type,required"`
+	RegionID int64                       `json:"region_id" api:"required"`
+	Type     constant.DbaasPostgreSQLCPU `json:"type" api:"required"`
 	// UUID of the cluster
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -1691,30 +1691,30 @@ func (r *UsageReportResourceDbaasPostgreSQLCPU) UnmarshalJSON(data []byte) error
 
 type UsageReportResourceDbaasPostgreSQLVolume struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// First time the resource was seen in the given period
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// Name of the cluster
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// Last time the resource was seen in the given period
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// ID of the project the resource belongs to
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Unit of size
-	SizeUnit string                         `json:"size_unit,required"`
-	Type     constant.DbaasPostgreSQLVolume `json:"type,required"`
+	SizeUnit string                         `json:"size_unit" api:"required"`
+	Type     constant.DbaasPostgreSQLVolume `json:"type" api:"required"`
 	// UUID of the cluster
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// Type of the volume
-	VolumeType string `json:"volume_type,required"`
+	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2038,18 +2038,18 @@ func (r *UsageReportTotalUnion) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalAICluster struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// Flavor of the Baremetal GPU cluster
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64              `json:"region_id,required"`
-	Type     constant.AICluster `json:"type,required"`
+	RegionID int64              `json:"region_id" api:"required"`
+	Type     constant.AICluster `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2072,18 +2072,18 @@ func (r *UsageReportTotalAICluster) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalAIVirtualCluster struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// Flavor of the Virtual GPU cluster
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                     `json:"region_id,required"`
-	Type     constant.AIVirtualCluster `json:"type,required"`
+	RegionID int64                     `json:"region_id" api:"required"`
+	Type     constant.AIVirtualCluster `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2106,18 +2106,18 @@ func (r *UsageReportTotalAIVirtualCluster) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalBaremetal struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// Flavor of the bare metal server
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64              `json:"region_id,required"`
-	Type     constant.Baremetal `json:"type,required"`
+	RegionID int64              `json:"region_id" api:"required"`
+	Type     constant.Baremetal `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2140,18 +2140,18 @@ func (r *UsageReportTotalBaremetal) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalBasicVm struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// Flavor of the basic VM
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64            `json:"region_id,required"`
-	Type     constant.BasicVm `json:"type,required"`
+	RegionID int64            `json:"region_id" api:"required"`
+	Type     constant.BasicVm `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2174,16 +2174,16 @@ func (r *UsageReportTotalBasicVm) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalContainers struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GBs `json:"billing_value_unit,required"`
+	BillingValueUnit constant.GBs `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64               `json:"region_id,required"`
-	Type     constant.Containers `json:"type,required"`
+	RegionID int64               `json:"region_id" api:"required"`
+	Type     constant.Containers `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2205,20 +2205,20 @@ func (r *UsageReportTotalContainers) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalEgressTraffic struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Bytes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Bytes `json:"billing_value_unit" api:"required"`
 	// Type of the instance
 	//
 	// Any of "baremetal", "vm".
-	InstanceType string `json:"instance_type,required"`
+	InstanceType string `json:"instance_type" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                  `json:"region_id,required"`
-	Type     constant.EgressTraffic `json:"type,required"`
+	RegionID int64                  `json:"region_id" api:"required"`
+	Type     constant.EgressTraffic `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2241,16 +2241,16 @@ func (r *UsageReportTotalEgressTraffic) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalExternalIP struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64               `json:"region_id,required"`
-	Type     constant.ExternalIP `json:"type,required"`
+	RegionID int64               `json:"region_id" api:"required"`
+	Type     constant.ExternalIP `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2272,18 +2272,18 @@ func (r *UsageReportTotalExternalIP) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalFileShare struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// Type of the file share
-	FileShareType string `json:"file_share_type,required"`
+	FileShareType string `json:"file_share_type" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64              `json:"region_id,required"`
-	Type     constant.FileShare `json:"type,required"`
+	RegionID int64              `json:"region_id" api:"required"`
+	Type     constant.FileShare `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2306,16 +2306,16 @@ func (r *UsageReportTotalFileShare) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalFloatingip struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64               `json:"region_id,required"`
-	Type     constant.Floatingip `json:"type,required"`
+	RegionID int64               `json:"region_id" api:"required"`
+	Type     constant.Floatingip `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2337,16 +2337,16 @@ func (r *UsageReportTotalFloatingip) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalFunctions struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GBs `json:"billing_value_unit,required"`
+	BillingValueUnit constant.GBs `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64              `json:"region_id,required"`
-	Type     constant.Functions `json:"type,required"`
+	RegionID int64              `json:"region_id" api:"required"`
+	Type     constant.Functions `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2368,16 +2368,16 @@ func (r *UsageReportTotalFunctions) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalFunctionsCalls struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Mls `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Mls `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                   `json:"region_id,required"`
-	Type     constant.FunctionsCalls `json:"type,required"`
+	RegionID int64                   `json:"region_id" api:"required"`
+	Type     constant.FunctionsCalls `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2399,16 +2399,16 @@ func (r *UsageReportTotalFunctionsCalls) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalFunctionsTraffic struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GB `json:"billing_value_unit,required"`
+	BillingValueUnit constant.GB `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                     `json:"region_id,required"`
-	Type     constant.FunctionsTraffic `json:"type,required"`
+	RegionID int64                     `json:"region_id" api:"required"`
+	Type     constant.FunctionsTraffic `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2430,16 +2430,16 @@ func (r *UsageReportTotalFunctionsTraffic) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalImage struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64          `json:"region_id,required"`
-	Type     constant.Image `json:"type,required"`
+	RegionID int64          `json:"region_id" api:"required"`
+	Type     constant.Image `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2461,16 +2461,16 @@ func (r *UsageReportTotalImage) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalInference struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit string `json:"billing_value_unit,required"`
+	BillingValueUnit string `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64              `json:"region_id,required"`
-	Type     constant.Inference `json:"type,required"`
+	RegionID int64              `json:"region_id" api:"required"`
+	Type     constant.Inference `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2492,18 +2492,18 @@ func (r *UsageReportTotalInference) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalInstance struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// Flavor of the instance
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64             `json:"region_id,required"`
-	Type     constant.Instance `json:"type,required"`
+	RegionID int64             `json:"region_id" api:"required"`
+	Type     constant.Instance `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2526,18 +2526,18 @@ func (r *UsageReportTotalInstance) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalLoadBalancer struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// Flavor of the load balancer
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                 `json:"region_id,required"`
-	Type     constant.LoadBalancer `json:"type,required"`
+	RegionID int64                 `json:"region_id" api:"required"`
+	Type     constant.LoadBalancer `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2560,16 +2560,16 @@ func (r *UsageReportTotalLoadBalancer) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalLogIndex struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64             `json:"region_id,required"`
-	Type     constant.LogIndex `json:"type,required"`
+	RegionID int64             `json:"region_id" api:"required"`
+	Type     constant.LogIndex `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2591,18 +2591,18 @@ func (r *UsageReportTotalLogIndex) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalSnapshot struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64             `json:"region_id,required"`
-	Type     constant.Snapshot `json:"type,required"`
+	RegionID int64             `json:"region_id" api:"required"`
+	Type     constant.Snapshot `json:"type" api:"required"`
 	// Type of the volume
-	VolumeType string `json:"volume_type,required"`
+	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2625,18 +2625,18 @@ func (r *UsageReportTotalSnapshot) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalVolume struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64           `json:"region_id,required"`
-	Type     constant.Volume `json:"type,required"`
+	RegionID int64           `json:"region_id" api:"required"`
+	Type     constant.Volume `json:"type" api:"required"`
 	// Type of the volume
-	VolumeType string `json:"volume_type,required"`
+	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2659,16 +2659,16 @@ func (r *UsageReportTotalVolume) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalDbaasPostgreSQLConnectionPooler struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                                    `json:"region_id,required"`
-	Type     constant.DbaasPostgreSQLConnectionPooler `json:"type,required"`
+	RegionID int64                                    `json:"region_id" api:"required"`
+	Type     constant.DbaasPostgreSQLConnectionPooler `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2690,16 +2690,16 @@ func (r *UsageReportTotalDbaasPostgreSQLConnectionPooler) UnmarshalJSON(data []b
 
 type UsageReportTotalDbaasPostgreSQLMemory struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                          `json:"region_id,required"`
-	Type     constant.DbaasPostgreSQLMemory `json:"type,required"`
+	RegionID int64                          `json:"region_id" api:"required"`
+	Type     constant.DbaasPostgreSQLMemory `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2721,16 +2721,16 @@ func (r *UsageReportTotalDbaasPostgreSQLMemory) UnmarshalJSON(data []byte) error
 
 type UsageReportTotalDbaasPostgreSQLPublicNetwork struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                                 `json:"region_id,required"`
-	Type     constant.DbaasPostgreSQLPublicNetwork `json:"type,required"`
+	RegionID int64                                 `json:"region_id" api:"required"`
+	Type     constant.DbaasPostgreSQLPublicNetwork `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2752,16 +2752,16 @@ func (r *UsageReportTotalDbaasPostgreSQLPublicNetwork) UnmarshalJSON(data []byte
 
 type UsageReportTotalDbaasPostgreSQLCPU struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                       `json:"region_id,required"`
-	Type     constant.DbaasPostgreSQLCPU `json:"type,required"`
+	RegionID int64                       `json:"region_id" api:"required"`
+	Type     constant.DbaasPostgreSQLCPU `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2783,18 +2783,18 @@ func (r *UsageReportTotalDbaasPostgreSQLCPU) UnmarshalJSON(data []byte) error {
 
 type UsageReportTotalDbaasPostgreSQLVolume struct {
 	// Name of the billing metric
-	BillingMetricName string `json:"billing_metric_name,required"`
+	BillingMetricName string `json:"billing_metric_name" api:"required"`
 	// Value of the billing metric
-	BillingValue float64 `json:"billing_value,required"`
+	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit,required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
 	// Region ID
-	Region int64 `json:"region,required"`
+	Region int64 `json:"region" api:"required"`
 	// Region ID
-	RegionID int64                          `json:"region_id,required"`
-	Type     constant.DbaasPostgreSQLVolume `json:"type,required"`
+	RegionID int64                          `json:"region_id" api:"required"`
+	Type     constant.DbaasPostgreSQLVolume `json:"type" api:"required"`
 	// Type of the volume
-	VolumeType string `json:"volume_type,required"`
+	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingMetricName respjson.Field
@@ -2818,10 +2818,10 @@ func (r *UsageReportTotalDbaasPostgreSQLVolume) UnmarshalJSON(data []byte) error
 type UsageReportGetParams struct {
 	// The start date of the report period (ISO 8601). The report starts from the
 	// beginning of this day in UTC.
-	TimeFrom time.Time `json:"time_from,required" format:"date-time"`
+	TimeFrom time.Time `json:"time_from" api:"required" format:"date-time"`
 	// The end date of the report period (ISO 8601). The report ends just before the
 	// beginning of this day in UTC.
-	TimeTo time.Time `json:"time_to,required" format:"date-time"`
+	TimeTo time.Time `json:"time_to" api:"required" format:"date-time"`
 	// Expenses for the last specified day are taken into account. As the default,
 	// False.
 	EnableLastDay param.Opt[bool] `json:"enable_last_day,omitzero"`
@@ -3182,11 +3182,11 @@ type UsageReportGetParamsSchemaFilterSnapshot struct {
 	//
 	// Any of "last_name", "last_size", "source_volume_uuid", "type", "uuid",
 	// "volume_type".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "snapshot".
-	Type constant.Snapshot `json:"type,required"`
+	Type constant.Snapshot `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3209,11 +3209,11 @@ type UsageReportGetParamsSchemaFilterInstance struct {
 	// Field name to filter by
 	//
 	// Any of "flavor", "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "instance".
-	Type constant.Instance `json:"type,required"`
+	Type constant.Instance `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3236,11 +3236,11 @@ type UsageReportGetParamsSchemaFilterAICluster struct {
 	// Field name to filter by
 	//
 	// Any of "flavor", "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "ai_cluster".
-	Type constant.AICluster `json:"type,required"`
+	Type constant.AICluster `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3263,12 +3263,12 @@ type UsageReportGetParamsSchemaFilterAIVirtualCluster struct {
 	// Field name to filter by
 	//
 	// Any of "flavor", "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "ai_virtual_cluster".
-	Type constant.AIVirtualCluster `json:"type,required"`
+	Type constant.AIVirtualCluster `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3291,11 +3291,11 @@ type UsageReportGetParamsSchemaFilterBasicVm struct {
 	// Field name to filter by
 	//
 	// Any of "flavor", "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "basic_vm".
-	Type constant.BasicVm `json:"type,required"`
+	Type constant.BasicVm `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3318,11 +3318,11 @@ type UsageReportGetParamsSchemaFilterBaremetal struct {
 	// Field name to filter by
 	//
 	// Any of "flavor", "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "baremetal".
-	Type constant.Baremetal `json:"type,required"`
+	Type constant.Baremetal `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3346,11 +3346,11 @@ type UsageReportGetParamsSchemaFilterVolume struct {
 	//
 	// Any of "attached_to_vm", "last_name", "last_size", "type", "uuid",
 	// "volume_type".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "volume".
-	Type constant.Volume `json:"type,required"`
+	Type constant.Volume `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3373,11 +3373,11 @@ type UsageReportGetParamsSchemaFilterFileShare struct {
 	// Field name to filter by
 	//
 	// Any of "file_share_type", "last_name", "last_size", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "file_share".
-	Type constant.FileShare `json:"type,required"`
+	Type constant.FileShare `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3400,11 +3400,11 @@ type UsageReportGetParamsSchemaFilterImage struct {
 	// Field name to filter by
 	//
 	// Any of "last_name", "last_size", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "image".
-	Type constant.Image `json:"type,required"`
+	Type constant.Image `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3427,11 +3427,11 @@ type UsageReportGetParamsSchemaFilterFloatingip struct {
 	// Field name to filter by
 	//
 	// Any of "ip_address", "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "floatingip".
-	Type constant.Floatingip `json:"type,required"`
+	Type constant.Floatingip `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3454,11 +3454,11 @@ type UsageReportGetParamsSchemaFilterEgressTraffic struct {
 	// Field name to filter by
 	//
 	// Any of "instance_name", "instance_type", "port_id", "type", "vm_id".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "egress_traffic".
-	Type constant.EgressTraffic `json:"type,required"`
+	Type constant.EgressTraffic `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3481,11 +3481,11 @@ type UsageReportGetParamsSchemaFilterLoadBalancer struct {
 	// Field name to filter by
 	//
 	// Any of "flavor", "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "load_balancer".
-	Type constant.LoadBalancer `json:"type,required"`
+	Type constant.LoadBalancer `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3509,11 +3509,11 @@ type UsageReportGetParamsSchemaFilterExternalIP struct {
 	//
 	// Any of "attached_to_vm", "ip_address", "network_id", "port_id", "subnet_id",
 	// "type".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "external_ip".
-	Type constant.ExternalIP `json:"type,required"`
+	Type constant.ExternalIP `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3537,11 +3537,11 @@ type UsageReportGetParamsSchemaFilterBackup struct {
 	//
 	// Any of "last_name", "last_size", "schedule_id", "source_volume_uuid", "type",
 	// "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "backup".
-	Type constant.Backup `json:"type,required"`
+	Type constant.Backup `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3564,11 +3564,11 @@ type UsageReportGetParamsSchemaFilterLogIndex struct {
 	// Field name to filter by
 	//
 	// Any of "last_name", "last_size", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "log_index".
-	Type constant.LogIndex `json:"type,required"`
+	Type constant.LogIndex `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3591,11 +3591,11 @@ type UsageReportGetParamsSchemaFilterFunctions struct {
 	// Field name to filter by
 	//
 	// Any of "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "functions".
-	Type constant.Functions `json:"type,required"`
+	Type constant.Functions `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3618,11 +3618,11 @@ type UsageReportGetParamsSchemaFilterFunctionsCalls struct {
 	// Field name to filter by
 	//
 	// Any of "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "functions_calls".
-	Type constant.FunctionsCalls `json:"type,required"`
+	Type constant.FunctionsCalls `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3645,12 +3645,12 @@ type UsageReportGetParamsSchemaFilterFunctionsTraffic struct {
 	// Field name to filter by
 	//
 	// Any of "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "functions_traffic".
-	Type constant.FunctionsTraffic `json:"type,required"`
+	Type constant.FunctionsTraffic `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3673,11 +3673,11 @@ type UsageReportGetParamsSchemaFilterContainers struct {
 	// Field name to filter by
 	//
 	// Any of "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "containers".
-	Type constant.Containers `json:"type,required"`
+	Type constant.Containers `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3700,11 +3700,11 @@ type UsageReportGetParamsSchemaFilterInference struct {
 	// Field name to filter by
 	//
 	// Any of "flavor", "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "inference".
-	Type constant.Inference `json:"type,required"`
+	Type constant.Inference `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3727,12 +3727,12 @@ type UsageReportGetParamsSchemaFilterDbaasPostgreSQLVolume struct {
 	// Field name to filter by
 	//
 	// Any of "last_name", "type", "uuid", "volume_type".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_volume".
-	Type constant.DbaasPostgreSQLVolume `json:"type,required"`
+	Type constant.DbaasPostgreSQLVolume `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3755,12 +3755,12 @@ type UsageReportGetParamsSchemaFilterDbaasPostgreSQLPublicNetwork struct {
 	// Field name to filter by
 	//
 	// Any of "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_public_network".
-	Type constant.DbaasPostgreSQLPublicNetwork `json:"type,required"`
+	Type constant.DbaasPostgreSQLPublicNetwork `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3783,12 +3783,12 @@ type UsageReportGetParamsSchemaFilterDbaasPostgreSQLCPU struct {
 	// Field name to filter by
 	//
 	// Any of "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_cpu".
-	Type constant.DbaasPostgreSQLCPU `json:"type,required"`
+	Type constant.DbaasPostgreSQLCPU `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3811,12 +3811,12 @@ type UsageReportGetParamsSchemaFilterDbaasPostgreSQLMemory struct {
 	// Field name to filter by
 	//
 	// Any of "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_memory".
-	Type constant.DbaasPostgreSQLMemory `json:"type,required"`
+	Type constant.DbaasPostgreSQLMemory `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3839,12 +3839,12 @@ type UsageReportGetParamsSchemaFilterDbaasPostgreSQLConnectionPooler struct {
 	// Field name to filter by
 	//
 	// Any of "last_name", "type", "uuid".
-	Field string `json:"field,omitzero,required"`
+	Field string `json:"field,omitzero" api:"required"`
 	// List of field values to filter
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_connection_pooler".
-	Type constant.DbaasPostgreSQLConnectionPooler `json:"type,required"`
+	Type constant.DbaasPostgreSQLConnectionPooler `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3917,7 +3917,7 @@ func init() {
 // The property Conditions is required.
 type UsageReportGetParamsTags struct {
 	// A list of tag filtering conditions defining how tags should match.
-	Conditions []UsageReportGetParamsTagsCondition `json:"conditions,omitzero,required"`
+	Conditions []UsageReportGetParamsTagsCondition `json:"conditions,omitzero" api:"required"`
 	// Specifies whether conditions are combined using OR (default) or AND logic.
 	//
 	// Any of "AND", "OR".

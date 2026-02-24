@@ -61,16 +61,16 @@ func (r *EventService) ListAutoPaging(ctx context.Context, query EventListParams
 }
 
 type ClientView struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "ddos_alert", "rtbh_alert".
-	AlertType                  ClientViewAlertType `json:"alert_type,nullable"`
-	AttackPowerBps             float64             `json:"attack_power_bps,nullable"`
-	AttackPowerPps             float64             `json:"attack_power_pps,nullable"`
-	AttackStartTime            time.Time           `json:"attack_start_time,nullable" format:"date-time"`
-	ClientID                   int64               `json:"client_id,nullable"`
-	NotificationType           string              `json:"notification_type,nullable"`
-	NumberOfIPInvolvedInAttack int64               `json:"number_of_ip_involved_in_attack,nullable"`
-	TargetedIPAddresses        string              `json:"targeted_ip_addresses,nullable"`
+	AlertType                  ClientViewAlertType `json:"alert_type" api:"nullable"`
+	AttackPowerBps             float64             `json:"attack_power_bps" api:"nullable"`
+	AttackPowerPps             float64             `json:"attack_power_pps" api:"nullable"`
+	AttackStartTime            time.Time           `json:"attack_start_time" api:"nullable" format:"date-time"`
+	ClientID                   int64               `json:"client_id" api:"nullable"`
+	NotificationType           string              `json:"notification_type" api:"nullable"`
+	NumberOfIPInvolvedInAttack int64               `json:"number_of_ip_involved_in_attack" api:"nullable"`
+	TargetedIPAddresses        string              `json:"targeted_ip_addresses" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                         respjson.Field

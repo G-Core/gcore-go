@@ -23,7 +23,7 @@ type paramObj = param.APIObject
 
 type OffsetPage[T any] struct {
 	Results []T   `json:"results"`
-	Count   int64 `json:"count,required"`
+	Count   int64 `json:"count" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Results     respjson.Field
@@ -132,7 +132,7 @@ func (r *OffsetPageAutoPager[T]) Index() int {
 
 type OffsetPageFastedgeApps[T any] struct {
 	Apps  []T   `json:"apps"`
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Apps        respjson.Field
@@ -241,7 +241,7 @@ func (r *OffsetPageFastedgeAppsAutoPager[T]) Index() int {
 
 type OffsetPageFastedgeTemplates[T any] struct {
 	Templates []T   `json:"templates"`
-	Count     int64 `json:"count,required"`
+	Count     int64 `json:"count" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Templates   respjson.Field
@@ -350,7 +350,7 @@ func (r *OffsetPageFastedgeTemplatesAutoPager[T]) Index() int {
 
 type OffsetPageFastedgeAppLogs[T any] struct {
 	Logs       []T   `json:"logs"`
-	TotalCount int64 `json:"total_count,required"`
+	TotalCount int64 `json:"total_count" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Logs        respjson.Field

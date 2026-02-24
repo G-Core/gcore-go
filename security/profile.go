@@ -89,15 +89,15 @@ func (r *ProfileService) Replace(ctx context.Context, id int64, body ProfileRepl
 }
 
 type ClientProfile struct {
-	ID              int64                 `json:"id,required"`
-	Fields          []ClientProfileField  `json:"fields,required"`
-	Options         ClientProfileOptions  `json:"options,required"`
-	Plan            string                `json:"plan,required"`
-	ProfileTemplate ClientProfileTemplate `json:"profile_template,required"`
-	Protocols       []map[string]any      `json:"protocols,required"`
+	ID              int64                 `json:"id" api:"required"`
+	Fields          []ClientProfileField  `json:"fields" api:"required"`
+	Options         ClientProfileOptions  `json:"options" api:"required"`
+	Plan            string                `json:"plan" api:"required"`
+	ProfileTemplate ClientProfileTemplate `json:"profile_template" api:"required"`
+	Protocols       []map[string]any      `json:"protocols" api:"required"`
 	// Region where the protection profiles will be deployed
-	Site      string         `json:"site,required"`
-	Status    map[string]any `json:"status,required"`
+	Site      string         `json:"site" api:"required"`
+	Status    map[string]any `json:"status" api:"required"`
 	IPAddress string         `json:"ip_address"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -122,14 +122,14 @@ func (r *ClientProfile) UnmarshalJSON(data []byte) error {
 }
 
 type ClientProfileField struct {
-	ID               int64          `json:"id,required"`
-	BaseField        int64          `json:"base_field,required"`
-	Default          string         `json:"default,required"`
-	Description      string         `json:"description,required"`
-	FieldType        string         `json:"field_type,required"`
-	Name             string         `json:"name,required"`
-	Required         bool           `json:"required,required"`
-	ValidationSchema map[string]any `json:"validation_schema,required"`
+	ID               int64          `json:"id" api:"required"`
+	BaseField        int64          `json:"base_field" api:"required"`
+	Default          string         `json:"default" api:"required"`
+	Description      string         `json:"description" api:"required"`
+	FieldType        string         `json:"field_type" api:"required"`
+	Name             string         `json:"name" api:"required"`
+	Required         bool           `json:"required" api:"required"`
+	ValidationSchema map[string]any `json:"validation_schema" api:"required"`
 	FieldValue       any            `json:"field_value"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -154,9 +154,9 @@ func (r *ClientProfileField) UnmarshalJSON(data []byte) error {
 }
 
 type ClientProfileOptions struct {
-	Active bool   `json:"active,required"`
-	Bgp    bool   `json:"bgp,required"`
-	Price  string `json:"price,required" format:"decimal"`
+	Active bool   `json:"active" api:"required"`
+	Bgp    bool   `json:"bgp" api:"required"`
+	Price  string `json:"price" api:"required" format:"decimal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Active      respjson.Field
@@ -174,10 +174,10 @@ func (r *ClientProfileOptions) UnmarshalJSON(data []byte) error {
 }
 
 type ProfileNewParams struct {
-	Fields          []ProfileNewParamsField `json:"fields,omitzero,required"`
-	ProfileTemplate int64                   `json:"profile_template,required"`
+	Fields          []ProfileNewParamsField `json:"fields,omitzero" api:"required"`
+	ProfileTemplate int64                   `json:"profile_template" api:"required"`
 	// Region where the protection profiles will be deployed
-	Site string `json:"site,required"`
+	Site string `json:"site" api:"required"`
 	// Required for Universal template only. Optional for all others.
 	IPAddress param.Opt[string] `json:"ip_address,omitzero"`
 	paramObj
@@ -194,7 +194,7 @@ func (r *ProfileNewParams) UnmarshalJSON(data []byte) error {
 // The properties ID, BaseField, Default, Description, FieldType, Name, Required,
 // ValidationSchema are required.
 type ProfileNewParamsField struct {
-	BaseField  int64 `json:"base_field,required"`
+	BaseField  int64 `json:"base_field" api:"required"`
 	FieldValue any   `json:"field_value,omitzero"`
 	paramObj
 }
@@ -224,8 +224,8 @@ func (r ProfileListParams) URLQuery() (v url.Values, err error) {
 }
 
 type ProfileRecreateParams struct {
-	Fields          []ProfileRecreateParamsField `json:"fields,omitzero,required"`
-	ProfileTemplate int64                        `json:"profile_template,required"`
+	Fields          []ProfileRecreateParamsField `json:"fields,omitzero" api:"required"`
+	ProfileTemplate int64                        `json:"profile_template" api:"required"`
 	// Required for Universal template only. Optional for all others.
 	IPAddress param.Opt[string] `json:"ip_address,omitzero"`
 	// Region where the protection profiles will be deployed
@@ -244,7 +244,7 @@ func (r *ProfileRecreateParams) UnmarshalJSON(data []byte) error {
 // The properties ID, BaseField, Default, Description, FieldType, Name, Required,
 // ValidationSchema are required.
 type ProfileRecreateParamsField struct {
-	BaseField  int64 `json:"base_field,required"`
+	BaseField  int64 `json:"base_field" api:"required"`
 	FieldValue any   `json:"field_value,omitzero"`
 	paramObj
 }
@@ -258,8 +258,8 @@ func (r *ProfileRecreateParamsField) UnmarshalJSON(data []byte) error {
 }
 
 type ProfileReplaceParams struct {
-	Fields          []ProfileReplaceParamsField `json:"fields,omitzero,required"`
-	ProfileTemplate int64                       `json:"profile_template,required"`
+	Fields          []ProfileReplaceParamsField `json:"fields,omitzero" api:"required"`
+	ProfileTemplate int64                       `json:"profile_template" api:"required"`
 	// Required for Universal template only. Optional for all others.
 	IPAddress param.Opt[string] `json:"ip_address,omitzero"`
 	// Region where the protection profiles will be deployed
@@ -278,7 +278,7 @@ func (r *ProfileReplaceParams) UnmarshalJSON(data []byte) error {
 // The properties ID, BaseField, Default, Description, FieldType, Name, Required,
 // ValidationSchema are required.
 type ProfileReplaceParamsField struct {
-	BaseField  int64 `json:"base_field,required"`
+	BaseField  int64 `json:"base_field" api:"required"`
 	FieldValue any   `json:"field_value,omitzero"`
 	paramObj
 }

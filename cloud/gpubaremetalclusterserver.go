@@ -194,34 +194,34 @@ func (r *GPUBaremetalClusterServerService) Reboot(ctx context.Context, instanceI
 
 type GPUBaremetalClusterServer struct {
 	// Server unique identifier
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Server creation date and time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Unique flavor identifier
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Server's image UUID
-	ImageID string `json:"image_id,required" format:"uuid4"`
+	ImageID string `json:"image_id" api:"required" format:"uuid4"`
 	// List of IP addresses
-	IPAddresses []string `json:"ip_addresses,required"`
+	IPAddresses []string `json:"ip_addresses" api:"required"`
 	// Server's name generated using cluster's name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Security groups
-	SecurityGroups []GPUBaremetalClusterServerSecurityGroup `json:"security_groups,required"`
+	SecurityGroups []GPUBaremetalClusterServerSecurityGroup `json:"security_groups" api:"required"`
 	// SSH key pair assigned to the server
-	SSHKeyName string `json:"ssh_key_name,required"`
+	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Current server status
 	//
 	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
 	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
 	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
 	// "UNKNOWN", "VERIFY_RESIZE".
-	Status GPUBaremetalClusterServerStatus `json:"status,required"`
+	Status GPUBaremetalClusterServerStatus `json:"status" api:"required"`
 	// User defined tags
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// Identifier of the task currently modifying the GPU cluster
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Server update date and time
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -249,9 +249,9 @@ func (r *GPUBaremetalClusterServer) UnmarshalJSON(data []byte) error {
 
 type GPUBaremetalClusterServerSecurityGroup struct {
 	// Security group ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Security group name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -295,62 +295,62 @@ const (
 
 type GPUBaremetalClusterServerV1 struct {
 	// GPU server ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Map of `network_name` to list of addresses in that network
-	Addresses map[string][]GPUBaremetalClusterServerV1AddressUnion `json:"addresses,required"`
+	Addresses map[string][]GPUBaremetalClusterServerV1AddressUnion `json:"addresses" api:"required"`
 	// IP addresses of the instances that are blackholed by DDoS mitigation system
-	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
+	BlackholePorts []BlackholePort `json:"blackhole_ports" api:"required"`
 	// Datetime when GPU server was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required"`
+	CreatorTaskID string `json:"creator_task_id" api:"required"`
 	// Advanced DDoS protection profile. It is always `null` if query parameter
 	// `with_ddos=true` is not set.
-	DDOSProfile DDOSProfile `json:"ddos_profile,required"`
+	DDOSProfile DDOSProfile `json:"ddos_profile" api:"required"`
 	// Fixed IP assigned to instance
-	FixedIPAssignments []GPUBaremetalClusterServerV1FixedIPAssignment `json:"fixed_ip_assignments,required"`
+	FixedIPAssignments []GPUBaremetalClusterServerV1FixedIPAssignment `json:"fixed_ip_assignments" api:"required"`
 	// Flavor
-	Flavor GPUBaremetalClusterServerV1Flavor `json:"flavor,required"`
+	Flavor GPUBaremetalClusterServerV1Flavor `json:"flavor" api:"required"`
 	// Instance description
-	InstanceDescription string `json:"instance_description,required"`
+	InstanceDescription string `json:"instance_description" api:"required"`
 	// Instance isolation information
-	InstanceIsolation InstanceIsolation `json:"instance_isolation,required"`
+	InstanceIsolation InstanceIsolation `json:"instance_isolation" api:"required"`
 	// GPU server name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Security groups
-	SecurityGroups []GPUBaremetalClusterServerV1SecurityGroup `json:"security_groups,required"`
+	SecurityGroups []GPUBaremetalClusterServerV1SecurityGroup `json:"security_groups" api:"required"`
 	// SSH key name assigned to instance
-	SSHKeyName string `json:"ssh_key_name,required"`
+	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Instance status
 	//
 	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
 	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
 	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
 	// "UNKNOWN", "VERIFY_RESIZE".
-	Status GPUBaremetalClusterServerV1Status `json:"status,required"`
+	Status GPUBaremetalClusterServerV1Status `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required"`
+	TaskID string `json:"task_id" api:"required"`
 	// Task state
-	TaskState string `json:"task_state,required"`
+	TaskState string `json:"task_state" api:"required"`
 	// Virtual machine state (active)
 	//
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
-	VmState GPUBaremetalClusterServerV1VmState `json:"vm_state,required"`
+	VmState GPUBaremetalClusterServerV1VmState `json:"vm_state" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -431,11 +431,11 @@ func (r *GPUBaremetalClusterServerV1AddressUnion) UnmarshalJSON(data []byte) err
 
 type GPUBaremetalClusterServerV1FixedIPAssignment struct {
 	// Is network external
-	External bool `json:"external,required"`
+	External bool `json:"external" api:"required"`
 	// Ip address
-	IPAddress string `json:"ip_address,required"`
+	IPAddress string `json:"ip_address" api:"required"`
 	// Interface subnet id
-	SubnetID string `json:"subnet_id,required"`
+	SubnetID string `json:"subnet_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		External    respjson.Field
@@ -455,21 +455,21 @@ func (r *GPUBaremetalClusterServerV1FixedIPAssignment) UnmarshalJSON(data []byte
 // Flavor
 type GPUBaremetalClusterServerV1Flavor struct {
 	// CPU architecture
-	Architecture string `json:"architecture,required"`
+	Architecture string `json:"architecture" api:"required"`
 	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// Additional hardware description
-	HardwareDescription GPUBaremetalClusterServerV1FlavorHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription GPUBaremetalClusterServerV1FlavorHardwareDescription `json:"hardware_description" api:"required"`
 	// Operating system
-	OsType string `json:"os_type,required"`
+	OsType string `json:"os_type" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Flavor resource class for mapping to hardware capacity
-	ResourceClass string `json:"resource_class,required"`
+	ResourceClass string `json:"resource_class" api:"required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -494,17 +494,17 @@ func (r *GPUBaremetalClusterServerV1Flavor) UnmarshalJSON(data []byte) error {
 // Additional hardware description
 type GPUBaremetalClusterServerV1FlavorHardwareDescription struct {
 	// Human-readable CPU description
-	CPU string `json:"cpu,required"`
+	CPU string `json:"cpu" api:"required"`
 	// Human-readable disk description
-	Disk string `json:"disk,required"`
+	Disk string `json:"disk" api:"required"`
 	// Human-readable GPU description
-	GPU string `json:"gpu,required"`
+	GPU string `json:"gpu" api:"required"`
 	// If the flavor is licensed, this field contains the license type
-	License string `json:"license,required"`
+	License string `json:"license" api:"required"`
 	// Human-readable NIC description
-	Network string `json:"network,required"`
+	Network string `json:"network" api:"required"`
 	// Human-readable RAM description
-	Ram string `json:"ram,required"`
+	Ram string `json:"ram" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CPU         respjson.Field
@@ -526,7 +526,7 @@ func (r *GPUBaremetalClusterServerV1FlavorHardwareDescription) UnmarshalJSON(dat
 
 type GPUBaremetalClusterServerV1SecurityGroup struct {
 	// Name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -587,9 +587,9 @@ const (
 
 type GPUBaremetalClusterServerV1List struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []GPUBaremetalClusterServerV1 `json:"results,required"`
+	Results []GPUBaremetalClusterServerV1 `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -607,9 +607,9 @@ func (r *GPUBaremetalClusterServerV1List) UnmarshalJSON(data []byte) error {
 
 type GPUBaremetalClusterServerListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Filters the results to include only servers whose last change timestamp is less
 	// than the specified datetime. Format: ISO 8601.
 	ChangedBefore param.Opt[time.Time] `query:"changed_before,omitzero" format:"date-time" json:"-"`
@@ -683,9 +683,9 @@ const (
 )
 
 type GPUBaremetalClusterServerDeleteParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	ClusterID string           `path:"cluster_id,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	ClusterID string           `path:"cluster_id" api:"required" json:"-"`
 	// Set False if you do not want to delete assigned floating IPs. By default, it's
 	// True.
 	DeleteFloatings param.Opt[bool] `query:"delete_floatings,omitzero" json:"-"`
@@ -702,19 +702,19 @@ func (r GPUBaremetalClusterServerDeleteParams) URLQuery() (v url.Values, err err
 }
 
 type GPUBaremetalClusterServerGetConsoleParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type GPUBaremetalClusterServerPowercycleParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type GPUBaremetalClusterServerRebootParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

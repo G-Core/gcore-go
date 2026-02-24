@@ -152,9 +152,9 @@ func (r *SecretService) UploadTlsCertificate(ctx context.Context, params SecretU
 
 type Secret struct {
 	// Secret uuid
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Secret name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Secret type, base64 encoded. symmetric - Used for storing byte arrays such as
 	// keys suitable for symmetric encryption; public - Used for storing the public key
 	// of an asymmetric keypair; private - Used for storing the private key of an
@@ -164,26 +164,26 @@ type Secret struct {
 	// of the API
 	//
 	// Any of "certificate", "opaque", "passphrase", "private", "public", "symmetric".
-	SecretType SecretSecretType `json:"secret_type,required"`
+	SecretType SecretSecretType `json:"secret_type" api:"required"`
 	// Status
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// Metadata provided by a user or system for informational purposes. Defaults to
 	// None
-	Algorithm string `json:"algorithm,nullable"`
+	Algorithm string `json:"algorithm" api:"nullable"`
 	// Metadata provided by a user or system for informational purposes. Value must be
 	// greater than zero. Defaults to None
-	BitLength int64 `json:"bit_length,nullable"`
+	BitLength int64 `json:"bit_length" api:"nullable"`
 	// Describes the content-types that can be used to retrieve the payload. The
 	// content-type used with symmetric secrets is application/octet-stream
-	ContentTypes map[string]string `json:"content_types,nullable"`
+	ContentTypes map[string]string `json:"content_types" api:"nullable"`
 	// Datetime when the secret was created. The format is 2020-01-01T12:00:00+00:00
-	Created time.Time `json:"created,nullable" format:"date-time"`
+	Created time.Time `json:"created" api:"nullable" format:"date-time"`
 	// Datetime when the secret will expire. The format is 2020-01-01T12:00:00+00:00.
 	// Defaults to None
-	Expiration time.Time `json:"expiration,nullable" format:"date-time"`
+	Expiration time.Time `json:"expiration" api:"nullable" format:"date-time"`
 	// Metadata provided by a user or system for informational purposes. Defaults to
 	// None
-	Mode string `json:"mode,nullable"`
+	Mode string `json:"mode" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -227,9 +227,9 @@ const (
 
 type SecretListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
@@ -248,29 +248,29 @@ func (r SecretListParams) URLQuery() (v url.Values, err error) {
 
 type SecretDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type SecretGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type SecretUploadTlsCertificateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Secret name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Secret payload.
-	Payload SecretUploadTlsCertificateParamsPayload `json:"payload,omitzero,required"`
+	Payload SecretUploadTlsCertificateParamsPayload `json:"payload,omitzero" api:"required"`
 	// Datetime when the secret will expire. Defaults to None
 	Expiration param.Opt[time.Time] `json:"expiration,omitzero" format:"date-time"`
 	paramObj
@@ -289,11 +289,11 @@ func (r *SecretUploadTlsCertificateParams) UnmarshalJSON(data []byte) error {
 // The properties Certificate, CertificateChain, PrivateKey are required.
 type SecretUploadTlsCertificateParamsPayload struct {
 	// SSL certificate in PEM format.
-	Certificate string `json:"certificate,required" format:"password"`
+	Certificate string `json:"certificate" api:"required" format:"password"`
 	// SSL certificate chain of intermediates and root certificates in PEM format.
-	CertificateChain string `json:"certificate_chain,required" format:"password"`
+	CertificateChain string `json:"certificate_chain" api:"required" format:"password"`
 	// SSL private key in PEM format.
-	PrivateKey string `json:"private_key,required" format:"password"`
+	PrivateKey string `json:"private_key" api:"required" format:"password"`
 	paramObj
 }
 

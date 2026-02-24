@@ -181,19 +181,19 @@ func (r *LoadBalancerPoolService) Get(ctx context.Context, poolID string, query 
 
 type LoadBalancerPoolNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Load balancer algorithm
 	//
 	// Any of "LEAST_CONNECTIONS", "ROUND_ROBIN", "SOURCE_IP".
-	LbAlgorithm LbAlgorithm `json:"lb_algorithm,omitzero,required"`
+	LbAlgorithm LbAlgorithm `json:"lb_algorithm,omitzero" api:"required"`
 	// Pool name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROXY", "PROXYV2", "TCP", "UDP".
-	Protocol LbPoolProtocol `json:"protocol,omitzero,required"`
+	Protocol LbPoolProtocol `json:"protocol,omitzero" api:"required"`
 	// Secret ID of CA certificate bundle
 	CaSecretID param.Opt[string] `json:"ca_secret_id,omitzero" format:"uuid4"`
 	// Secret ID of CA revocation list file
@@ -233,15 +233,15 @@ func (r *LoadBalancerPoolNewParams) UnmarshalJSON(data []byte) error {
 // The properties Delay, MaxRetries, Timeout, Type are required.
 type LoadBalancerPoolNewParamsHealthmonitor struct {
 	// The time, in seconds, between sending probes to members
-	Delay int64 `json:"delay,required"`
+	Delay int64 `json:"delay" api:"required"`
 	// Number of successes before the member is switched to ONLINE state
-	MaxRetries int64 `json:"max_retries,required"`
+	MaxRetries int64 `json:"max_retries" api:"required"`
 	// The maximum time to connect. Must be less than the delay value
-	Timeout int64 `json:"timeout,required"`
+	Timeout int64 `json:"timeout" api:"required"`
 	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
-	Type LbHealthMonitorType `json:"type,omitzero,required"`
+	Type LbHealthMonitorType `json:"type,omitzero" api:"required"`
 	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
 	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
 	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
@@ -275,9 +275,9 @@ func (r *LoadBalancerPoolNewParamsHealthmonitor) UnmarshalJSON(data []byte) erro
 // The properties Address, ProtocolPort are required.
 type LoadBalancerPoolNewParamsMember struct {
 	// Member IP address
-	Address string `json:"address,required" format:"ipvanyaddress"`
+	Address string `json:"address" api:"required" format:"ipvanyaddress"`
 	// Member IP port
-	ProtocolPort int64 `json:"protocol_port,required"`
+	ProtocolPort int64 `json:"protocol_port" api:"required"`
 	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
 	// An alternate IP address used for health monitoring of a backend member. Default
@@ -333,7 +333,7 @@ type LoadBalancerPoolNewParamsSessionPersistence struct {
 	// Session persistence type
 	//
 	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
-	Type LbSessionPersistenceType `json:"type,omitzero,required"`
+	Type LbSessionPersistenceType `json:"type,omitzero" api:"required"`
 	// Should be set if app cookie or http cookie is used
 	CookieName param.Opt[string] `json:"cookie_name,omitzero"`
 	// Subnet mask if `source_ip` is used. For UDP ports only
@@ -353,9 +353,9 @@ func (r *LoadBalancerPoolNewParamsSessionPersistence) UnmarshalJSON(data []byte)
 
 type LoadBalancerPoolUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Secret ID of CA certificate bundle
 	CaSecretID param.Opt[string] `json:"ca_secret_id,omitzero" format:"uuid4"`
 	// Secret ID of CA revocation list file
@@ -406,11 +406,11 @@ func (r *LoadBalancerPoolUpdateParams) UnmarshalJSON(data []byte) error {
 // The properties Delay, MaxRetries, Timeout are required.
 type LoadBalancerPoolUpdateParamsHealthmonitor struct {
 	// The time, in seconds, between sending probes to members
-	Delay int64 `json:"delay,required"`
+	Delay int64 `json:"delay" api:"required"`
 	// Number of successes before the member is switched to ONLINE state
-	MaxRetries int64 `json:"max_retries,required"`
+	MaxRetries int64 `json:"max_retries" api:"required"`
 	// The maximum time to connect. Must be less than the delay value
-	Timeout int64 `json:"timeout,required"`
+	Timeout int64 `json:"timeout" api:"required"`
 	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
 	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
 	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
@@ -448,9 +448,9 @@ func (r *LoadBalancerPoolUpdateParamsHealthmonitor) UnmarshalJSON(data []byte) e
 // The properties Address, ProtocolPort are required.
 type LoadBalancerPoolUpdateParamsMember struct {
 	// Member IP address
-	Address string `json:"address,required" format:"ipvanyaddress"`
+	Address string `json:"address" api:"required" format:"ipvanyaddress"`
 	// Member IP port
-	ProtocolPort int64 `json:"protocol_port,required"`
+	ProtocolPort int64 `json:"protocol_port" api:"required"`
 	// Either `subnet_id` or `instance_id` should be provided
 	InstanceID param.Opt[string] `json:"instance_id,omitzero" format:"uuid4"`
 	// An alternate IP address used for health monitoring of a backend member. Default
@@ -506,7 +506,7 @@ type LoadBalancerPoolUpdateParamsSessionPersistence struct {
 	// Session persistence type
 	//
 	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
-	Type LbSessionPersistenceType `json:"type,omitzero,required"`
+	Type LbSessionPersistenceType `json:"type,omitzero" api:"required"`
 	// Should be set if app cookie or http cookie is used
 	CookieName param.Opt[string] `json:"cookie_name,omitzero"`
 	// Subnet mask if `source_ip` is used. For UDP ports only
@@ -526,9 +526,9 @@ func (r *LoadBalancerPoolUpdateParamsSessionPersistence) UnmarshalJSON(data []by
 
 type LoadBalancerPoolListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Show members and Health Monitor details
 	Details param.Opt[bool] `query:"details,omitzero" json:"-"`
 	// Listener ID
@@ -549,16 +549,16 @@ func (r LoadBalancerPoolListParams) URLQuery() (v url.Values, err error) {
 
 type LoadBalancerPoolDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerPoolGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

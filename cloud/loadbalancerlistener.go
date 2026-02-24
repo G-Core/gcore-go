@@ -160,19 +160,19 @@ func (r *LoadBalancerListenerService) Get(ctx context.Context, listenerID string
 
 type LoadBalancerListenerNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// ID of already existent Load Balancer.
-	LoadBalancerID string `json:"load_balancer_id,required" format:"uuid4"`
+	LoadBalancerID string `json:"load_balancer_id" api:"required" format:"uuid4"`
 	// Load balancer listener name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Load balancer listener protocol
 	//
 	// Any of "HTTP", "HTTPS", "PROMETHEUS", "TCP", "TERMINATED_HTTPS", "UDP".
-	Protocol LbListenerProtocol `json:"protocol,omitzero,required"`
+	Protocol LbListenerProtocol `json:"protocol,omitzero" api:"required"`
 	// Protocol port
-	ProtocolPort int64 `json:"protocol_port,required"`
+	ProtocolPort int64 `json:"protocol_port" api:"required"`
 	// Frontend client inactivity timeout in milliseconds
 	TimeoutClientData param.Opt[int64] `json:"timeout_client_data,omitzero"`
 	// Backend member connection timeout in milliseconds. We are recommending to use
@@ -223,9 +223,9 @@ const (
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerListenerNewParamsUserList struct {
 	// Encrypted password to auth via Basic Authentication
-	EncryptedPassword string `json:"encrypted_password,required"`
+	EncryptedPassword string `json:"encrypted_password" api:"required"`
 	// Username to auth via Basic Authentication
-	Username string `json:"username,required"`
+	Username string `json:"username" api:"required"`
 	paramObj
 }
 
@@ -239,9 +239,9 @@ func (r *LoadBalancerListenerNewParamsUserList) UnmarshalJSON(data []byte) error
 
 type LoadBalancerListenerUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// ID of the secret where PKCS12 file is stored for `TERMINATED_HTTPS` or
 	// PROMETHEUS load balancer
 	SecretID param.Opt[string] `json:"secret_id,omitzero" format:"uuid4"`
@@ -283,9 +283,9 @@ func (r *LoadBalancerListenerUpdateParams) UnmarshalJSON(data []byte) error {
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerListenerUpdateParamsUserList struct {
 	// Encrypted password to auth via Basic Authentication
-	EncryptedPassword string `json:"encrypted_password,required"`
+	EncryptedPassword string `json:"encrypted_password" api:"required"`
 	// Username to auth via Basic Authentication
-	Username string `json:"username,required"`
+	Username string `json:"username" api:"required"`
 	paramObj
 }
 
@@ -299,9 +299,9 @@ func (r *LoadBalancerListenerUpdateParamsUserList) UnmarshalJSON(data []byte) er
 
 type LoadBalancerListenerListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Load Balancer ID
 	LoadBalancerID param.Opt[string] `query:"load_balancer_id,omitzero" format:"uuid4" json:"-"`
 	// Show stats
@@ -320,9 +320,9 @@ func (r LoadBalancerListenerListParams) URLQuery() (v url.Values, err error) {
 
 type LoadBalancerListenerDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Delete default pool attached directly to the listener.
 	DeleteDefaultPool param.Opt[bool] `query:"delete_default_pool,omitzero" json:"-"`
 	paramObj
@@ -339,9 +339,9 @@ func (r LoadBalancerListenerDeleteParams) URLQuery() (v url.Values, err error) {
 
 type LoadBalancerListenerGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Show stats
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
 	paramObj

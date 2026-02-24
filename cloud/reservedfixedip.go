@@ -181,49 +181,49 @@ func (r *ReservedFixedIPService) Get(ctx context.Context, portID string, query R
 
 type ReservedFixedIP struct {
 	// Group of subnet masks and/or IP addresses that share the current IP as VIP
-	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs,required"`
+	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs" api:"required"`
 	// Reserved fixed IP attachment entities
-	Attachments []ReservedFixedIPAttachment `json:"attachments,required"`
+	Attachments []ReservedFixedIPAttachment `json:"attachments" api:"required"`
 	// Datetime when the reserved fixed IP was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// If reserved fixed IP belongs to a public network
-	IsExternal bool `json:"is_external,required"`
+	IsExternal bool `json:"is_external" api:"required"`
 	// If reserved fixed IP is a VIP
-	IsVip bool `json:"is_vip,required"`
+	IsVip bool `json:"is_vip" api:"required"`
 	// Reserved fixed IP name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Network details
-	Network Network `json:"network,required"`
+	Network Network `json:"network" api:"required"`
 	// ID of the network the port is attached to
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// ID of the port underlying the reserved fixed IP
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Reserved fixed IP status with resource type and ID it is attached to
-	Reservation ReservedFixedIPReservation `json:"reservation,required"`
+	Reservation ReservedFixedIPReservation `json:"reservation" api:"required"`
 	// Underlying port status
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// Datetime when the reserved fixed IP was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"nullable" format:"uuid4"`
 	// IPv4 address of the reserved fixed IP
-	FixedIPAddress string `json:"fixed_ip_address,nullable" format:"ipv4"`
+	FixedIPAddress string `json:"fixed_ip_address" api:"nullable" format:"ipv4"`
 	// IPv6 address of the reserved fixed IP
-	FixedIpv6Address string `json:"fixed_ipv6_address,nullable" format:"ipv6"`
+	FixedIpv6Address string `json:"fixed_ipv6_address" api:"nullable" format:"ipv6"`
 	// Project ID
-	ProjectID int64 `json:"project_id,nullable"`
+	ProjectID int64 `json:"project_id" api:"nullable"`
 	// ID of the subnet that owns the IP address
-	SubnetID string `json:"subnet_id,nullable" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"nullable" format:"uuid4"`
 	// ID of the subnet that owns the IPv6 address
-	SubnetV6ID string `json:"subnet_v6_id,nullable" format:"uuid4"`
+	SubnetV6ID string `json:"subnet_v6_id" api:"nullable" format:"uuid4"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,nullable" format:"uuid4"`
+	TaskID string `json:"task_id" api:"nullable" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedAddressPairs respjson.Field
@@ -260,9 +260,9 @@ func (r *ReservedFixedIP) UnmarshalJSON(data []byte) error {
 
 type ReservedFixedIPAttachment struct {
 	// Resource ID
-	ResourceID string `json:"resource_id,nullable"`
+	ResourceID string `json:"resource_id" api:"nullable"`
 	// Resource type
-	ResourceType string `json:"resource_type,nullable"`
+	ResourceType string `json:"resource_type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ResourceID   respjson.Field
@@ -281,11 +281,11 @@ func (r *ReservedFixedIPAttachment) UnmarshalJSON(data []byte) error {
 // Reserved fixed IP status with resource type and ID it is attached to
 type ReservedFixedIPReservation struct {
 	// ID of the instance or load balancer the IP is attached to
-	ResourceID string `json:"resource_id,nullable" format:"uuid4"`
+	ResourceID string `json:"resource_id" api:"nullable" format:"uuid4"`
 	// Resource type of the resource the IP is attached to
-	ResourceType string `json:"resource_type,nullable"`
+	ResourceType string `json:"resource_type" api:"nullable"`
 	// IP reservation status
-	Status string `json:"status,nullable"`
+	Status string `json:"status" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ResourceID   respjson.Field
@@ -303,8 +303,8 @@ func (r *ReservedFixedIPReservation) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPNewParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 
 	//
 	// Request body variants
@@ -346,7 +346,7 @@ type ReservedFixedIPNewParamsBodyExternal struct {
 	// Must be 'external'
 	//
 	// This field can be elided, and will marshal its zero value as "external".
-	Type constant.External `json:"type,required"`
+	Type constant.External `json:"type" api:"required"`
 	paramObj
 }
 
@@ -361,13 +361,13 @@ func (r *ReservedFixedIPNewParamsBodyExternal) UnmarshalJSON(data []byte) error 
 // The properties SubnetID, Type are required.
 type ReservedFixedIPNewParamsBodySubnet struct {
 	// Reserved fixed IP will be allocated in this subnet
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// If reserved fixed IP is a VIP
 	IsVip param.Opt[bool] `json:"is_vip,omitzero"`
 	// Must be 'subnet'.
 	//
 	// This field can be elided, and will marshal its zero value as "subnet".
-	Type constant.Subnet `json:"type,required"`
+	Type constant.Subnet `json:"type" api:"required"`
 	paramObj
 }
 
@@ -382,7 +382,7 @@ func (r *ReservedFixedIPNewParamsBodySubnet) UnmarshalJSON(data []byte) error {
 // The properties NetworkID, Type are required.
 type ReservedFixedIPNewParamsBodyAnySubnet struct {
 	// Reserved fixed IP will be allocated in a subnet of this network
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// If reserved fixed IP is a VIP
 	IsVip param.Opt[bool] `json:"is_vip,omitzero"`
 	// Which subnets should be selected: IPv4, IPv6 or use dual stack.
@@ -392,7 +392,7 @@ type ReservedFixedIPNewParamsBodyAnySubnet struct {
 	// Must be 'any_subnet'.
 	//
 	// This field can be elided, and will marshal its zero value as "any_subnet".
-	Type constant.AnySubnet `json:"type,required"`
+	Type constant.AnySubnet `json:"type" api:"required"`
 	paramObj
 }
 
@@ -407,15 +407,15 @@ func (r *ReservedFixedIPNewParamsBodyAnySubnet) UnmarshalJSON(data []byte) error
 // The properties IPAddress, NetworkID, Type are required.
 type ReservedFixedIPNewParamsBodyIPAddress struct {
 	// Reserved fixed IP will be allocated the given IP address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// Reserved fixed IP will be allocated in a subnet of this network
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// If reserved fixed IP is a VIP
 	IsVip param.Opt[bool] `json:"is_vip,omitzero"`
 	// Must be 'ip_address'.
 	//
 	// This field can be elided, and will marshal its zero value as "ip_address".
-	Type constant.IPAddress `json:"type,required"`
+	Type constant.IPAddress `json:"type" api:"required"`
 	paramObj
 }
 
@@ -431,11 +431,11 @@ func (r *ReservedFixedIPNewParamsBodyIPAddress) UnmarshalJSON(data []byte) error
 type ReservedFixedIPNewParamsBodyPort struct {
 	// Port ID to make a reserved fixed IP (for example, `vip_port_id` of the Load
 	// Balancer entity).
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Must be 'port'.
 	//
 	// This field can be elided, and will marshal its zero value as "port".
-	Type constant.Port `json:"type,required"`
+	Type constant.Port `json:"type" api:"required"`
 	paramObj
 }
 
@@ -448,10 +448,10 @@ func (r *ReservedFixedIPNewParamsBodyPort) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPUpdateParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// If reserved fixed IP should be a VIP
-	IsVip bool `json:"is_vip,required"`
+	IsVip bool `json:"is_vip" api:"required"`
 	paramObj
 }
 
@@ -464,8 +464,8 @@ func (r *ReservedFixedIPUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Set to true if the response should only list IP addresses that are not attached
 	// to any instance
 	AvailableOnly param.Opt[bool] `query:"available_only,omitzero" json:"-"`
@@ -500,13 +500,13 @@ func (r ReservedFixedIPListParams) URLQuery() (v url.Values, err error) {
 }
 
 type ReservedFixedIPDeleteParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type ReservedFixedIPGetParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

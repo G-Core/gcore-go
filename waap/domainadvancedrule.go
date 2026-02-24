@@ -108,21 +108,21 @@ func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdv
 // An advanced WAAP rule applied to a domain
 type WaapAdvancedRule struct {
 	// The unique identifier for the rule
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// The action that the rule takes when triggered. Only one action can be set per
 	// rule.
-	Action WaapAdvancedRuleAction `json:"action,required"`
+	Action WaapAdvancedRuleAction `json:"action" api:"required"`
 	// Whether or not the rule is enabled
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// A CEL syntax expression that contains the rule's conditions. Allowed objects
 	// are: request, whois, session, response, tags, `user_defined_tags`, `user_agent`,
 	// `client_data`.
 	//
 	// More info can be found here:
 	// https://gcore.com/docs/waap/waap-rules/advanced-rules
-	Source string `json:"source,required"`
+	Source string `json:"source" api:"required"`
 	// The description assigned to the rule
 	Description string `json:"description"`
 	// The WAAP request/response phase for applying the rule. Default is "access".
@@ -137,7 +137,7 @@ type WaapAdvancedRule struct {
 	// before it is sent back to the client.
 	//
 	// Any of "access", "header_filter", "body_filter".
-	Phase WaapAdvancedRulePhase `json:"phase,nullable"`
+	Phase WaapAdvancedRulePhase `json:"phase" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -223,7 +223,7 @@ func (r *WaapAdvancedRuleActionBlock) UnmarshalJSON(data []byte) error {
 // WAAP tag action gets a list of tags to tag the request scope with
 type WaapAdvancedRuleActionTag struct {
 	// The list of user defined tags to tag the request with
-	Tags []string `json:"tags,required"`
+	Tags []string `json:"tags" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Tags        respjson.Field
@@ -259,18 +259,18 @@ const (
 type DomainAdvancedRuleNewParams struct {
 	// The action that the rule takes when triggered. Only one action can be set per
 	// rule.
-	Action DomainAdvancedRuleNewParamsAction `json:"action,omitzero,required"`
+	Action DomainAdvancedRuleNewParamsAction `json:"action,omitzero" api:"required"`
 	// Whether or not the rule is enabled
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// A CEL syntax expression that contains the rule's conditions. Allowed objects
 	// are: request, whois, session, response, tags, `user_defined_tags`, `user_agent`,
 	// `client_data`.
 	//
 	// More info can be found here:
 	// https://gcore.com/docs/waap/waap-rules/advanced-rules
-	Source string `json:"source,required"`
+	Source string `json:"source" api:"required"`
 	// The description assigned to the rule
 	Description param.Opt[string] `json:"description,omitzero"`
 	// The WAAP request/response phase for applying the rule. Default is "access".
@@ -358,7 +358,7 @@ func init() {
 // The property Tags is required.
 type DomainAdvancedRuleNewParamsActionTag struct {
 	// The list of user defined tags to tag the request with
-	Tags []string `json:"tags,omitzero,required"`
+	Tags []string `json:"tags,omitzero" api:"required"`
 	paramObj
 }
 
@@ -390,7 +390,7 @@ const (
 
 type DomainAdvancedRuleUpdateParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	// The description assigned to the rule
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Whether or not the rule is enabled
@@ -490,7 +490,7 @@ func init() {
 // The property Tags is required.
 type DomainAdvancedRuleUpdateParamsActionTag struct {
 	// The list of user defined tags to tag the request with
-	Tags []string `json:"tags,omitzero,required"`
+	Tags []string `json:"tags,omitzero" api:"required"`
 	paramObj
 }
 
@@ -615,21 +615,21 @@ const (
 
 type DomainAdvancedRuleDeleteParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }
 
 type DomainAdvancedRuleGetParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }
 
 type DomainAdvancedRuleToggleParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	// The advanced rule ID
-	RuleID int64 `path:"rule_id,required" json:"-"`
+	RuleID int64 `path:"rule_id" api:"required" json:"-"`
 	paramObj
 }
 

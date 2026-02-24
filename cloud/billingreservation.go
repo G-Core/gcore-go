@@ -47,25 +47,25 @@ func (r *BillingReservationService) List(ctx context.Context, query BillingReser
 
 type BillingReservation struct {
 	// Active billing plan ID
-	ActiveBillingPlanID int64 `json:"active_billing_plan_id,required"`
+	ActiveBillingPlanID int64 `json:"active_billing_plan_id" api:"required"`
 	// Overcommit pricing details
-	ActiveOvercommit BillingReservationActiveOvercommit `json:"active_overcommit,required"`
+	ActiveOvercommit BillingReservationActiveOvercommit `json:"active_overcommit" api:"required"`
 	// Commit pricing details
-	Commit BillingReservationCommit `json:"commit,required"`
+	Commit BillingReservationCommit `json:"commit" api:"required"`
 	// Hardware specifications
-	HardwareInfo BillingReservationHardwareInfo `json:"hardware_info,required"`
+	HardwareInfo BillingReservationHardwareInfo `json:"hardware_info" api:"required"`
 	// Region name
-	RegionName string `json:"region_name,required"`
+	RegionName string `json:"region_name" api:"required"`
 	// Number of reserved resource items
-	ResourceCount int64 `json:"resource_count,required"`
+	ResourceCount int64 `json:"resource_count" api:"required"`
 	// Resource name
-	ResourceName string `json:"resource_name,required"`
+	ResourceName string `json:"resource_name" api:"required"`
 	// Unit name (e.g., 'H' for hours)
-	UnitName string `json:"unit_name,required"`
+	UnitName string `json:"unit_name" api:"required"`
 	// Unit size per month (e.g., 744 hours)
-	UnitSizeMonth string `json:"unit_size_month,required"`
+	UnitSizeMonth string `json:"unit_size_month" api:"required"`
 	// Unit size month multiplied by count of resources in the reservation
-	UnitSizeTotal string `json:"unit_size_total,required"`
+	UnitSizeTotal string `json:"unit_size_total" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ActiveBillingPlanID respjson.Field
@@ -92,17 +92,17 @@ func (r *BillingReservation) UnmarshalJSON(data []byte) error {
 // Overcommit pricing details
 type BillingReservationActiveOvercommit struct {
 	// Billing subscription active from date
-	ActiveFrom time.Time `json:"active_from,required" format:"date-time"`
+	ActiveFrom time.Time `json:"active_from" api:"required" format:"date-time"`
 	// Billing plan item ID
-	PlanItemID int64 `json:"plan_item_id,required"`
+	PlanItemID int64 `json:"plan_item_id" api:"required"`
 	// Price per month
-	PricePerMonth string `json:"price_per_month,required"`
+	PricePerMonth string `json:"price_per_month" api:"required"`
 	// Price per unit (hourly)
-	PricePerUnit string `json:"price_per_unit,required"`
+	PricePerUnit string `json:"price_per_unit" api:"required"`
 	// Total price for the reservation period
-	PriceTotal string `json:"price_total,required"`
+	PriceTotal string `json:"price_total" api:"required"`
 	// Billing subscription ID for overcommit
-	SubscriptionID int64 `json:"subscription_id,required"`
+	SubscriptionID int64 `json:"subscription_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ActiveFrom     respjson.Field
@@ -125,17 +125,17 @@ func (r *BillingReservationActiveOvercommit) UnmarshalJSON(data []byte) error {
 // Commit pricing details
 type BillingReservationCommit struct {
 	// Billing subscription active from date
-	ActiveFrom time.Time `json:"active_from,required" format:"date-time"`
+	ActiveFrom time.Time `json:"active_from" api:"required" format:"date-time"`
 	// Billing subscription active to date
-	ActiveTo time.Time `json:"active_to,required" format:"date-time"`
+	ActiveTo time.Time `json:"active_to" api:"required" format:"date-time"`
 	// Price per month, per one resource
-	PricePerMonth string `json:"price_per_month,required"`
+	PricePerMonth string `json:"price_per_month" api:"required"`
 	// Price per unit, per one resource (hourly)
-	PricePerUnit string `json:"price_per_unit,required"`
+	PricePerUnit string `json:"price_per_unit" api:"required"`
 	// Total price for the reservation period for the full reserved amount
-	PriceTotal string `json:"price_total,required"`
+	PriceTotal string `json:"price_total" api:"required"`
 	// Billing subscription ID for commit
-	SubscriptionID int64 `json:"subscription_id,required"`
+	SubscriptionID int64 `json:"subscription_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ActiveFrom     respjson.Field
@@ -158,11 +158,11 @@ func (r *BillingReservationCommit) UnmarshalJSON(data []byte) error {
 // Hardware specifications
 type BillingReservationHardwareInfo struct {
 	// CPU specification
-	CPU string `json:"cpu,required"`
+	CPU string `json:"cpu" api:"required"`
 	// Disk specification
-	Disk string `json:"disk,required"`
+	Disk string `json:"disk" api:"required"`
 	// RAM specification
-	Ram string `json:"ram,required"`
+	Ram string `json:"ram" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CPU         respjson.Field
@@ -181,9 +181,9 @@ func (r *BillingReservationHardwareInfo) UnmarshalJSON(data []byte) error {
 
 type BillingReservations struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []BillingReservation `json:"results,required"`
+	Results []BillingReservation `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
