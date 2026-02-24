@@ -104,29 +104,9 @@ func createGPUBaremetalCluster(client *gcore.Client, flavorName string, imageID 
 		},
 	}
 
-	// Try NewAndPoll first, fall back to manual polling if it fails
-	// TODO: Remove fallback once API issue is resolved
 	cluster, err := client.Cloud.GPUBaremetal.Clusters.NewAndPoll(context.Background(), params)
 	if err != nil {
-		fmt.Printf("NewAndPoll failed (this may be an API issue): %v\n", err)
-		fmt.Println("Attempting to find the created cluster by name...")
-
-		// Try to find the cluster by listing and matching the name
-		listParams := cloud.GPUBaremetalClusterListParams{}
-		clusters, listErr := client.Cloud.GPUBaremetal.Clusters.List(context.Background(), listParams)
-		if listErr != nil {
-			log.Fatalf("Error listing clusters: %v", listErr)
-		}
-
-		for _, c := range clusters.Results {
-			if c.Name == clusterName {
-				fmt.Printf("Found created cluster: ID=%s, name=%s, status=%s\n", c.ID, c.Name, c.Status)
-				fmt.Printf("Cluster has %d servers\n", c.ServersCount)
-				fmt.Println("===============================")
-				return c.ID
-			}
-		}
-		log.Fatalf("Could not find created cluster by name")
+		log.Fatalf("Error creating GPU baremetal cluster: %v", err)
 	}
 
 	fmt.Printf("Created GPU baremetal cluster: ID=%s, name=%s, status=%s\n", cluster.ID, cluster.Name, cluster.Status)
