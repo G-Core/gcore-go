@@ -245,18 +245,10 @@ func (r *GPUVirtualClusterService) NewAndPoll(ctx context.Context, params GPUVir
 		return
 	}
 
-	// TODO: extract cluster ID from task created_resources when it becomes available, currently the API is not providing it
-	if !task.JSON.Data.Valid() {
-		return nil, errors.New("expected task data to be present")
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Clusters) != 1 {
+		return nil, errors.New("expected exactly one cluster to be created in a task")
 	}
-	dataMap, ok := task.Data.(map[string]any)
-	if !ok {
-		return nil, errors.New("expected task data to be a map")
-	}
-	clusterID, ok := dataMap["cluster_id"].(string)
-	if !ok || clusterID == "" {
-		return nil, errors.New("expected cluster_id to be present in task data")
-	}
+	clusterID := task.CreatedResources.Clusters[0]
 
 	return r.Get(ctx, clusterID, getParams, opts...)
 }
