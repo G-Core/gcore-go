@@ -210,6 +210,41 @@ func (r *GPUBaremetalClusterServerService) Reboot(ctx context.Context, instanceI
 	return
 }
 
+// Perform a rebuild operation on a bare metal GPU cluster server. During the
+// rebuild process, the server receive a new image, SSH key, and user data.
+// Important: Before triggering a rebuild, the cluster must have updated server
+// settings to apply. These cluster settings must be patched using the following
+// endpoint: PATCH
+// '/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters/{`cluster_id`}/servers_settings'
+func (r *GPUBaremetalClusterServerService) Rebuild(ctx context.Context, serverID string, body GPUBaremetalClusterServerRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
+	if !body.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return
+	}
+	if !body.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return
+	}
+	if body.ClusterID == "" {
+		err = errors.New("missing required cluster_id parameter")
+		return
+	}
+	if serverID == "" {
+		err = errors.New("missing required server_id parameter")
+		return
+	}
+	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/servers/%s/rebuild", body.ProjectID.Value, body.RegionID.Value, body.ClusterID, serverID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return
+}
+
 type GPUBaremetalClusterServer struct {
 	// Server unique identifier
 	ID string `json:"id" api:"required" format:"uuid4"`
@@ -734,5 +769,15 @@ type GPUBaremetalClusterServerPowercycleParams struct {
 type GPUBaremetalClusterServerRebootParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	paramObj
+}
+
+type GPUBaremetalClusterServerRebuildParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Cluster unique identifier
+	ClusterID string `path:"cluster_id" api:"required" format:"uuid4" json:"-"`
 	paramObj
 }
