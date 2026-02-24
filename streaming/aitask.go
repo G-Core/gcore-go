@@ -324,13 +324,13 @@ type AIContentmoderationHardnudity struct {
 	// AI content moderation with "hard_nudity" algorithm
 	//
 	// Any of "hard_nudity", "sport", "nsfw", "soft_nudity".
-	Category AIContentmoderationHardnudityCategory `json:"category,required"`
+	Category AIContentmoderationHardnudityCategory `json:"category" api:"required"`
 	// Name of the task to be performed
 	//
 	// Any of "content-moderation".
-	TaskName AIContentmoderationHardnudityTaskName `json:"task_name,required"`
+	TaskName AIContentmoderationHardnudityTaskName `json:"task_name" api:"required"`
 	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
 	// processing.
@@ -403,13 +403,13 @@ type AIContentmoderationNsfw struct {
 	// AI content moderation with NSFW detection algorithm
 	//
 	// Any of "nsfw", "sport", "hard_nudity", "soft_nudity".
-	Category AIContentmoderationNsfwCategory `json:"category,required"`
+	Category AIContentmoderationNsfwCategory `json:"category" api:"required"`
 	// Name of the task to be performed
 	//
 	// Any of "content-moderation".
-	TaskName AIContentmoderationNsfwTaskName `json:"task_name,required"`
+	TaskName AIContentmoderationNsfwTaskName `json:"task_name" api:"required"`
 	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
 	// processing.
@@ -462,13 +462,13 @@ type AIContentmoderationSoftnudity struct {
 	// AI content moderation with "soft_nudity" algorithm
 	//
 	// Any of "soft_nudity", "sport", "nsfw", "hard_nudity".
-	Category AIContentmoderationSoftnudityCategory `json:"category,required"`
+	Category AIContentmoderationSoftnudityCategory `json:"category" api:"required"`
 	// Name of the task to be performed
 	//
 	// Any of "content-moderation".
-	TaskName AIContentmoderationSoftnudityTaskName `json:"task_name,required"`
+	TaskName AIContentmoderationSoftnudityTaskName `json:"task_name" api:"required"`
 	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
 	// processing.
@@ -556,13 +556,13 @@ type AIContentmoderationSport struct {
 	// AI content moderation with types of sports activity detection
 	//
 	// Any of "sport", "nsfw", "hard_nudity", "soft_nudity".
-	Category AIContentmoderationSportCategory `json:"category,required"`
+	Category AIContentmoderationSportCategory `json:"category" api:"required"`
 	// Name of the task to be performed
 	//
 	// Any of "content-moderation".
-	TaskName AIContentmoderationSportTaskName `json:"task_name,required"`
+	TaskName AIContentmoderationSportTaskName `json:"task_name" api:"required"`
 	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
 	// processing.
@@ -725,9 +725,9 @@ type AITaskTaskDataAITranscribe struct {
 	// Name of the task to be performed
 	//
 	// Any of "transcription".
-	TaskName string `json:"task_name,required"`
+	TaskName string `json:"task_name" api:"required"`
 	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Language in original audio (transcription only). This value is used to determine
 	// the language from which to transcribe.
 	//
@@ -898,7 +898,7 @@ const (
 
 type AITaskNewResponse struct {
 	// ID of the created AI task, from which you can get the execution result
-	TaskID string `json:"task_id,required" format:"uuid"`
+	TaskID string `json:"task_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		TaskID      respjson.Field
@@ -1374,7 +1374,7 @@ func (r *AITaskGetResponseResultAIResultsContentmoderationSoftnudityFrame) Unmar
 }
 
 type AITaskGetResponseResultAIResultsFailure struct {
-	Error string `json:"error,required"`
+	Error string `json:"error" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Error       respjson.Field
@@ -1410,9 +1410,9 @@ type AITaskNewParams struct {
 	// Name of the task to be performed
 	//
 	// Any of "transcription", "content-moderation".
-	TaskName AITaskNewParamsTaskName `json:"task_name,omitzero,required"`
+	TaskName AITaskNewParamsTaskName `json:"task_name,omitzero" api:"required"`
 	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Language in original audio (transcription only). This value is used to determine
 	// the language from which to transcribe.
 	//
@@ -1679,7 +1679,7 @@ type AITaskGetAISettingsParams struct {
 	// The parameters section for which parameters are requested
 	//
 	// Any of "language_support".
-	Type AITaskGetAISettingsParamsType `query:"type,omitzero,required" json:"-"`
+	Type AITaskGetAISettingsParamsType `query:"type,omitzero" api:"required" json:"-"`
 	// The source language from which the audio will be transcribed. Required when
 	// `type=language_support`. Value is 3-letter language code according to ISO-639-2
 	// (bibliographic code), (e.g., fre for French).

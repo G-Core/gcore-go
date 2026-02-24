@@ -75,23 +75,23 @@ func (r *InferenceFlavorService) Get(ctx context.Context, flavorName string, opt
 
 type InferenceFlavor struct {
 	// Inference flavor cpu count.
-	CPU float64 `json:"cpu,required"`
+	CPU float64 `json:"cpu" api:"required"`
 	// Inference flavor description.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Inference flavor gpu count.
-	GPU int64 `json:"gpu,required"`
+	GPU int64 `json:"gpu" api:"required"`
 	// Inference flavor gpu compute capability.
-	GPUComputeCapability string `json:"gpu_compute_capability,required"`
+	GPUComputeCapability string `json:"gpu_compute_capability" api:"required"`
 	// Inference flavor gpu memory in Gi.
-	GPUMemory float64 `json:"gpu_memory,required"`
+	GPUMemory float64 `json:"gpu_memory" api:"required"`
 	// Inference flavor gpu model.
-	GPUModel string `json:"gpu_model,required"`
+	GPUModel string `json:"gpu_model" api:"required"`
 	// Inference flavor is gpu shared.
-	IsGPUShared bool `json:"is_gpu_shared,required"`
+	IsGPUShared bool `json:"is_gpu_shared" api:"required"`
 	// Inference flavor memory in Gi.
-	Memory float64 `json:"memory,required"`
+	Memory float64 `json:"memory" api:"required"`
 	// Inference flavor name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CPU                  respjson.Field

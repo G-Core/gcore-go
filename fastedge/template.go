@@ -97,15 +97,15 @@ func (r *TemplateService) Replace(ctx context.Context, id int64, body TemplateRe
 
 type Template struct {
 	// Wasm API type
-	APIType string `json:"api_type,required"`
+	APIType string `json:"api_type" api:"required"`
 	// Binary ID
-	BinaryID int64 `json:"binary_id,required"`
+	BinaryID int64 `json:"binary_id" api:"required"`
 	// Name of the template
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Is the template owned by user?
-	Owned bool `json:"owned,required"`
+	Owned bool `json:"owned" api:"required"`
 	// Parameters
-	Params []TemplateParameterResp `json:"params,required"`
+	Params []TemplateParameterResp `json:"params" api:"required"`
 	// Long description of the template
 	LongDescr string `json:"long_descr"`
 	// Short description of the template
@@ -142,13 +142,13 @@ func (r Template) ToParam() TemplateParam {
 // The properties APIType, BinaryID, Name, Owned, Params are required.
 type TemplateParam struct {
 	// Binary ID
-	BinaryID int64 `json:"binary_id,required"`
+	BinaryID int64 `json:"binary_id" api:"required"`
 	// Name of the template
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Is the template owned by user?
-	Owned bool `json:"owned,required"`
+	Owned bool `json:"owned" api:"required"`
 	// Parameters
-	Params []TemplateParameter `json:"params,omitzero,required"`
+	Params []TemplateParameter `json:"params,omitzero" api:"required"`
 	// Long description of the template
 	LongDescr param.Opt[string] `json:"long_descr,omitzero"`
 	// Short description of the template
@@ -168,11 +168,11 @@ type TemplateParameterResp struct {
 	// Parameter type
 	//
 	// Any of "string", "number", "date", "time", "secret", "store".
-	DataType TemplateParameterDataType `json:"data_type,required"`
+	DataType TemplateParameterDataType `json:"data_type" api:"required"`
 	// Is this field mandatory?
-	Mandatory bool `json:"mandatory,required"`
+	Mandatory bool `json:"mandatory" api:"required"`
 	// Parameter name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Parameter description
 	Descr string `json:"descr"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -218,11 +218,11 @@ type TemplateParameter struct {
 	// Parameter type
 	//
 	// Any of "string", "number", "date", "time", "secret", "store".
-	DataType TemplateParameterDataType `json:"data_type,omitzero,required"`
+	DataType TemplateParameterDataType `json:"data_type,omitzero" api:"required"`
 	// Is this field mandatory?
-	Mandatory bool `json:"mandatory,required"`
+	Mandatory bool `json:"mandatory" api:"required"`
 	// Parameter name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Parameter description
 	Descr param.Opt[string] `json:"descr,omitzero"`
 	paramObj
@@ -238,13 +238,13 @@ func (r *TemplateParameter) UnmarshalJSON(data []byte) error {
 
 type TemplateShort struct {
 	// Template ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Wasm API type
-	APIType string `json:"api_type,required"`
+	APIType string `json:"api_type" api:"required"`
 	// Name of the template
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Is the template owned by user?
-	Owned bool `json:"owned,required"`
+	Owned bool `json:"owned" api:"required"`
 	// Long description of the template
 	LongDescr string `json:"long_descr"`
 	// Short description of the template

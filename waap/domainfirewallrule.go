@@ -116,15 +116,15 @@ func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action DomainFir
 
 type WaapFirewallRule struct {
 	// The unique identifier of the rule
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// The action that the rule takes when triggered
-	Action WaapFirewallRuleAction `json:"action,required"`
+	Action WaapFirewallRuleAction `json:"action" api:"required"`
 	// The condition required for the WAAP engine to trigger the rule.
-	Conditions []WaapFirewallRuleCondition `json:"conditions,required"`
+	Conditions []WaapFirewallRuleCondition `json:"conditions" api:"required"`
 	// Whether or not the rule is enabled
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The description assigned to the rule
 	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -149,10 +149,10 @@ func (r *WaapFirewallRule) UnmarshalJSON(data []byte) error {
 // The action that the rule takes when triggered
 type WaapFirewallRuleAction struct {
 	// The WAAP allows the request
-	Allow map[string]any `json:"allow,nullable"`
+	Allow map[string]any `json:"allow" api:"nullable"`
 	// WAAP block action behavior could be configured with response status code and
 	// action duration.
-	Block WaapFirewallRuleActionBlock `json:"block,nullable"`
+	Block WaapFirewallRuleActionBlock `json:"block" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Allow       respjson.Field
@@ -220,7 +220,7 @@ func (r *WaapFirewallRuleCondition) UnmarshalJSON(data []byte) error {
 // Match the incoming request against a single IP address
 type WaapFirewallRuleConditionIP struct {
 	// A single IPv4 or IPv6 address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -241,9 +241,9 @@ func (r *WaapFirewallRuleConditionIP) UnmarshalJSON(data []byte) error {
 // Match the incoming request against an IP range
 type WaapFirewallRuleConditionIPRange struct {
 	// The lower bound IPv4 or IPv6 address to match against
-	LowerBound string `json:"lower_bound,required" format:"ipvanyaddress"`
+	LowerBound string `json:"lower_bound" api:"required" format:"ipvanyaddress"`
 	// The upper bound IPv4 or IPv6 address to match against
-	UpperBound string `json:"upper_bound,required" format:"ipvanyaddress"`
+	UpperBound string `json:"upper_bound" api:"required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -264,13 +264,13 @@ func (r *WaapFirewallRuleConditionIPRange) UnmarshalJSON(data []byte) error {
 
 type DomainFirewallRuleNewParams struct {
 	// The action that the rule takes when triggered
-	Action DomainFirewallRuleNewParamsAction `json:"action,omitzero,required"`
+	Action DomainFirewallRuleNewParamsAction `json:"action,omitzero" api:"required"`
 	// The condition required for the WAAP engine to trigger the rule.
-	Conditions []DomainFirewallRuleNewParamsCondition `json:"conditions,omitzero,required"`
+	Conditions []DomainFirewallRuleNewParamsCondition `json:"conditions,omitzero" api:"required"`
 	// Whether or not the rule is enabled
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The description assigned to the rule
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
@@ -354,7 +354,7 @@ func (r *DomainFirewallRuleNewParamsCondition) UnmarshalJSON(data []byte) error 
 // The property IPAddress is required.
 type DomainFirewallRuleNewParamsConditionIP struct {
 	// A single IPv4 or IPv6 address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -373,9 +373,9 @@ func (r *DomainFirewallRuleNewParamsConditionIP) UnmarshalJSON(data []byte) erro
 // The properties LowerBound, UpperBound are required.
 type DomainFirewallRuleNewParamsConditionIPRange struct {
 	// The lower bound IPv4 or IPv6 address to match against
-	LowerBound string `json:"lower_bound,required" format:"ipvanyaddress"`
+	LowerBound string `json:"lower_bound" api:"required" format:"ipvanyaddress"`
 	// The upper bound IPv4 or IPv6 address to match against
-	UpperBound string `json:"upper_bound,required" format:"ipvanyaddress"`
+	UpperBound string `json:"upper_bound" api:"required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -391,7 +391,7 @@ func (r *DomainFirewallRuleNewParamsConditionIPRange) UnmarshalJSON(data []byte)
 
 type DomainFirewallRuleUpdateParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	// The description assigned to the rule
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Whether or not the rule is enabled
@@ -483,7 +483,7 @@ func (r *DomainFirewallRuleUpdateParamsCondition) UnmarshalJSON(data []byte) err
 // The property IPAddress is required.
 type DomainFirewallRuleUpdateParamsConditionIP struct {
 	// A single IPv4 or IPv6 address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -502,9 +502,9 @@ func (r *DomainFirewallRuleUpdateParamsConditionIP) UnmarshalJSON(data []byte) e
 // The properties LowerBound, UpperBound are required.
 type DomainFirewallRuleUpdateParamsConditionIPRange struct {
 	// The lower bound IPv4 or IPv6 address to match against
-	LowerBound string `json:"lower_bound,required" format:"ipvanyaddress"`
+	LowerBound string `json:"lower_bound" api:"required" format:"ipvanyaddress"`
 	// The upper bound IPv4 or IPv6 address to match against
-	UpperBound string `json:"upper_bound,required" format:"ipvanyaddress"`
+	UpperBound string `json:"upper_bound" api:"required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -576,13 +576,13 @@ const (
 
 type DomainFirewallRuleDeleteParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }
 
 type DomainFirewallRuleDeleteMultipleParams struct {
 	// The IDs of the rules to delete
-	RuleIDs []int64 `json:"rule_ids,omitzero,required"`
+	RuleIDs []int64 `json:"rule_ids,omitzero" api:"required"`
 	paramObj
 }
 
@@ -596,15 +596,15 @@ func (r *DomainFirewallRuleDeleteMultipleParams) UnmarshalJSON(data []byte) erro
 
 type DomainFirewallRuleGetParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }
 
 type DomainFirewallRuleToggleParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	// The firewall rule ID
-	RuleID int64 `path:"rule_id,required" json:"-"`
+	RuleID int64 `path:"rule_id" api:"required" json:"-"`
 	paramObj
 }
 

@@ -66,9 +66,9 @@ func (r *OrganizationService) ListAutoPaging(ctx context.Context, query Organiza
 // Represents an IP range owner organization
 type WaapOrganization struct {
 	// The ID of an organization
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// The name of an organization
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field

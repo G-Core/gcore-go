@@ -63,7 +63,7 @@ func (r *K8SService) ListVersions(ctx context.Context, query K8SListVersionsPara
 
 type K8SClusterVersion struct {
 	// List of supported Kubernetes cluster versions
-	Version string `json:"version,required"`
+	Version string `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Version     respjson.Field
@@ -80,9 +80,9 @@ func (r *K8SClusterVersion) UnmarshalJSON(data []byte) error {
 
 type K8SClusterVersionList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []K8SClusterVersion `json:"results,required"`
+	Results []K8SClusterVersion `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -100,8 +100,8 @@ func (r *K8SClusterVersionList) UnmarshalJSON(data []byte) error {
 
 type K8SListVersionsParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

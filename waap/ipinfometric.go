@@ -48,11 +48,11 @@ func (r *IPInfoMetricService) List(ctx context.Context, query IPInfoMetricListPa
 
 type WaapIPInfoCounts struct {
 	// The number of requests from the IP address that were blocked
-	BlockedRequests int64 `json:"blocked_requests,required"`
+	BlockedRequests int64 `json:"blocked_requests" api:"required"`
 	// The total number of requests made by the IP address
-	TotalRequests int64 `json:"total_requests,required"`
+	TotalRequests int64 `json:"total_requests" api:"required"`
 	// The number of unique sessions from the IP address
-	UniqueSessions int64 `json:"unique_sessions,required"`
+	UniqueSessions int64 `json:"unique_sessions" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BlockedRequests respjson.Field
@@ -71,7 +71,7 @@ func (r *WaapIPInfoCounts) UnmarshalJSON(data []byte) error {
 
 type IPInfoMetricListParams struct {
 	// The IP address to check
-	IP string `query:"ip,required" format:"ipv4" json:"-"`
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
 	// The identifier for a domain. When specified, the response will exclusively
 	// contain data pertinent to the indicated domain, filtering out information from
 	// other domains.

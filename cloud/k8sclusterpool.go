@@ -321,37 +321,37 @@ func (r *K8SClusterPoolService) ResizeAndPoll(ctx context.Context, poolName stri
 
 type K8SClusterPool struct {
 	// UUID of the cluster pool
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Indicates the status of auto healing
-	AutoHealingEnabled bool `json:"auto_healing_enabled,required"`
+	AutoHealingEnabled bool `json:"auto_healing_enabled" api:"required"`
 	// Size of the boot volume
-	BootVolumeSize int64 `json:"boot_volume_size,required"`
+	BootVolumeSize int64 `json:"boot_volume_size" api:"required"`
 	// Type of the boot volume
-	BootVolumeType string `json:"boot_volume_type,required"`
+	BootVolumeType string `json:"boot_volume_type" api:"required"`
 	// Date of function creation
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// Crio configuration for pool nodes
-	CrioConfig map[string]string `json:"crio_config,required"`
+	CrioConfig map[string]string `json:"crio_config" api:"required"`
 	// ID of the cluster pool flavor
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Indicates if the pool is public
-	IsPublicIpv4 bool `json:"is_public_ipv4,required"`
+	IsPublicIpv4 bool `json:"is_public_ipv4" api:"required"`
 	// Kubelet configuration for pool nodes
-	KubeletConfig map[string]string `json:"kubelet_config,required"`
+	KubeletConfig map[string]string `json:"kubelet_config" api:"required"`
 	// Labels applied to the cluster pool
-	Labels map[string]string `json:"labels,required"`
+	Labels map[string]string `json:"labels" api:"required"`
 	// Maximum node count in the cluster pool
-	MaxNodeCount int64 `json:"max_node_count,required"`
+	MaxNodeCount int64 `json:"max_node_count" api:"required"`
 	// Minimum node count in the cluster pool
-	MinNodeCount int64 `json:"min_node_count,required"`
+	MinNodeCount int64 `json:"min_node_count" api:"required"`
 	// Name of the cluster pool
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Node count in the cluster pool
-	NodeCount int64 `json:"node_count,required"`
+	NodeCount int64 `json:"node_count" api:"required"`
 	// Status of the cluster pool
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// Taints applied to the cluster pool
-	Taints map[string]string `json:"taints,required"`
+	Taints map[string]string `json:"taints" api:"required"`
 	// Server group ID
 	ServergroupID string `json:"servergroup_id"`
 	// Server group name
@@ -392,9 +392,9 @@ func (r *K8SClusterPool) UnmarshalJSON(data []byte) error {
 
 type K8SClusterPoolList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []K8SClusterPool `json:"results,required"`
+	Results []K8SClusterPool `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -619,15 +619,15 @@ func (r *K8SClusterPoolQuota) UnmarshalJSON(data []byte) error {
 
 type K8SClusterPoolNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Flavor ID
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Minimum node count
-	MinNodeCount int64 `json:"min_node_count,required"`
+	MinNodeCount int64 `json:"min_node_count" api:"required"`
 	// Pool's name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Enable auto healing
 	AutoHealingEnabled param.Opt[bool] `json:"auto_healing_enabled,omitzero"`
 	// Boot volume size
@@ -686,11 +686,11 @@ const (
 
 type K8SClusterPoolUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster name
-	ClusterName string `path:"cluster_name,required" json:"-"`
+	ClusterName string `path:"cluster_name" api:"required" json:"-"`
 	// Enable/disable auto healing
 	AutoHealingEnabled param.Opt[bool] `json:"auto_healing_enabled,omitzero"`
 	// Maximum node count
@@ -716,29 +716,29 @@ func (r *K8SClusterPoolUpdateParams) UnmarshalJSON(data []byte) error {
 
 type K8SClusterPoolListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type K8SClusterPoolDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster name
-	ClusterName string `path:"cluster_name,required" json:"-"`
+	ClusterName string `path:"cluster_name" api:"required" json:"-"`
 	paramObj
 }
 
 type K8SClusterPoolCheckQuotaParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Flavor ID
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Boot volume size
 	BootVolumeSize param.Opt[int64] `json:"boot_volume_size,omitzero"`
 	// Maximum node count
@@ -775,23 +775,23 @@ const (
 
 type K8SClusterPoolGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster name
-	ClusterName string `path:"cluster_name,required" json:"-"`
+	ClusterName string `path:"cluster_name" api:"required" json:"-"`
 	paramObj
 }
 
 type K8SClusterPoolResizeParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster name
-	ClusterName string `path:"cluster_name,required" json:"-"`
+	ClusterName string `path:"cluster_name" api:"required" json:"-"`
 	// Target node count
-	NodeCount int64 `json:"node_count,required"`
+	NodeCount int64 `json:"node_count" api:"required"`
 	paramObj
 }
 

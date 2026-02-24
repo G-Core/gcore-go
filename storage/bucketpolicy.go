@@ -97,16 +97,16 @@ func (r *BucketPolicyService) Get(ctx context.Context, bucketName string, query 
 }
 
 type BucketPolicyNewParams struct {
-	StorageID int64 `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id" api:"required" json:"-"`
 	paramObj
 }
 
 type BucketPolicyDeleteParams struct {
-	StorageID int64 `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id" api:"required" json:"-"`
 	paramObj
 }
 
 type BucketPolicyGetParams struct {
-	StorageID int64 `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id" api:"required" json:"-"`
 	paramObj
 }

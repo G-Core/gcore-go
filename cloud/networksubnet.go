@@ -229,15 +229,15 @@ func (r *NetworkSubnetService) Get(ctx context.Context, subnetID string, query N
 
 type NetworkSubnetNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// CIDR
-	Cidr string `json:"cidr,required" format:"ipvanynetwork"`
+	Cidr string `json:"cidr" api:"required" format:"ipvanynetwork"`
 	// Subnet name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Network ID
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Default GW IPv4 address to advertise in DHCP routes in this subnet. Omit this
 	// field to let the cloud backend allocate it automatically. Set to null if no
 	// gateway must be advertised by this subnet's DHCP (useful when attaching
@@ -281,10 +281,10 @@ func (r *NetworkSubnetNewParams) UnmarshalJSON(data []byte) error {
 // The properties Destination, Nexthop are required.
 type NetworkSubnetNewParamsHostRoute struct {
 	// CIDR of destination IPv4 subnet.
-	Destination string `json:"destination,required" format:"ipvanynetwork"`
+	Destination string `json:"destination" api:"required" format:"ipvanynetwork"`
 	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
 	// CIDR.
-	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
+	Nexthop string `json:"nexthop" api:"required" format:"ipvanyaddress"`
 	paramObj
 }
 
@@ -298,9 +298,9 @@ func (r *NetworkSubnetNewParamsHostRoute) UnmarshalJSON(data []byte) error {
 
 type NetworkSubnetUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Default GW IPv4 address to advertise in DHCP routes in this subnet. Omit this
 	// field to let the cloud backend allocate it automatically. Set to null if no
 	// gateway must be advertised by this subnet's DHCP (useful when attaching
@@ -350,10 +350,10 @@ func (r *NetworkSubnetUpdateParams) UnmarshalJSON(data []byte) error {
 // The properties Destination, Nexthop are required.
 type NetworkSubnetUpdateParamsHostRoute struct {
 	// CIDR of destination IPv4 subnet.
-	Destination string `json:"destination,required" format:"ipvanynetwork"`
+	Destination string `json:"destination" api:"required" format:"ipvanynetwork"`
 	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
 	// CIDR.
-	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
+	Nexthop string `json:"nexthop" api:"required" format:"ipvanyaddress"`
 	paramObj
 }
 
@@ -367,9 +367,9 @@ func (r *NetworkSubnetUpdateParamsHostRoute) UnmarshalJSON(data []byte) error {
 
 type NetworkSubnetListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Only list subnets of this network
@@ -423,16 +423,16 @@ const (
 
 type NetworkSubnetDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type NetworkSubnetGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

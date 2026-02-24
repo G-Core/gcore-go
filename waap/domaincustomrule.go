@@ -117,17 +117,17 @@ func (r *DomainCustomRuleService) Toggle(ctx context.Context, action DomainCusto
 // An WAAP rule applied to a domain
 type WaapCustomRule struct {
 	// The unique identifier for the rule
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// The action that the rule takes when triggered. Only one action can be set per
 	// rule.
-	Action WaapCustomRuleAction `json:"action,required"`
+	Action WaapCustomRuleAction `json:"action" api:"required"`
 	// The conditions required for the WAAP engine to trigger the rule. Rules may have
 	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
-	Conditions []WaapCustomRuleCondition `json:"conditions,required"`
+	Conditions []WaapCustomRuleCondition `json:"conditions" api:"required"`
 	// Whether or not the rule is enabled
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The description assigned to the rule
 	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -214,7 +214,7 @@ func (r *WaapCustomRuleActionBlock) UnmarshalJSON(data []byte) error {
 // WAAP tag action gets a list of tags to tag the request scope with
 type WaapCustomRuleActionTag struct {
 	// The list of user defined tags to tag the request with
-	Tags []string `json:"tags,required"`
+	Tags []string `json:"tags" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Tags        respjson.Field
@@ -304,7 +304,7 @@ func (r *WaapCustomRuleCondition) UnmarshalJSON(data []byte) error {
 // Match the requested Content-Type
 type WaapCustomRuleConditionContentType struct {
 	// The list of content types to match against
-	ContentType []string `json:"content_type,required"`
+	ContentType []string `json:"content_type" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -326,7 +326,7 @@ func (r *WaapCustomRuleConditionContentType) UnmarshalJSON(data []byte) error {
 type WaapCustomRuleConditionCountry struct {
 	// A list of ISO 3166-1 alpha-2 formatted strings representing the countries to
 	// match against
-	CountryCode []string `json:"country_code,required"`
+	CountryCode []string `json:"country_code" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -347,7 +347,7 @@ func (r *WaapCustomRuleConditionCountry) UnmarshalJSON(data []byte) error {
 // Match the incoming file extension
 type WaapCustomRuleConditionFileExtension struct {
 	// The list of file extensions to match against
-	FileExtension []string `json:"file_extension,required"`
+	FileExtension []string `json:"file_extension" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -368,9 +368,9 @@ func (r *WaapCustomRuleConditionFileExtension) UnmarshalJSON(data []byte) error 
 // Match an incoming request header
 type WaapCustomRuleConditionHeader struct {
 	// The request header name
-	Header string `json:"header,required"`
+	Header string `json:"header" api:"required"`
 	// The request header value
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// The type of matching condition for header and value.
 	//
 	// Any of "Exact", "Contains".
@@ -397,7 +397,7 @@ func (r *WaapCustomRuleConditionHeader) UnmarshalJSON(data []byte) error {
 // Match when an incoming request header is present
 type WaapCustomRuleConditionHeaderExists struct {
 	// The request header name
-	Header string `json:"header,required"`
+	Header string `json:"header" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -421,7 +421,7 @@ type WaapCustomRuleConditionHTTPMethod struct {
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".
-	HTTPMethod string `json:"http_method,required"`
+	HTTPMethod string `json:"http_method" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -442,7 +442,7 @@ func (r *WaapCustomRuleConditionHTTPMethod) UnmarshalJSON(data []byte) error {
 // Match the incoming request against a single IP address
 type WaapCustomRuleConditionIP struct {
 	// A single IPv4 or IPv6 address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -463,9 +463,9 @@ func (r *WaapCustomRuleConditionIP) UnmarshalJSON(data []byte) error {
 // Match the incoming request against an IP range
 type WaapCustomRuleConditionIPRange struct {
 	// The lower bound IPv4 or IPv6 address to match against
-	LowerBound string `json:"lower_bound,required" format:"ipvanyaddress"`
+	LowerBound string `json:"lower_bound" api:"required" format:"ipvanyaddress"`
 	// The upper bound IPv4 or IPv6 address to match against
-	UpperBound string `json:"upper_bound,required" format:"ipvanyaddress"`
+	UpperBound string `json:"upper_bound" api:"required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -488,7 +488,7 @@ func (r *WaapCustomRuleConditionIPRange) UnmarshalJSON(data []byte) error {
 // lookup of the requesting IP
 type WaapCustomRuleConditionOrganization struct {
 	// The organization to match against
-	Organization string `json:"organization,required"`
+	Organization string `json:"organization" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -535,13 +535,13 @@ func (r *WaapCustomRuleConditionOwnerTypes) UnmarshalJSON(data []byte) error {
 // Match the rate at which requests come in that match certain conditions
 type WaapCustomRuleConditionRequestRate struct {
 	// A regular expression matching the URL path of the incoming request
-	PathPattern string `json:"path_pattern,required"`
+	PathPattern string `json:"path_pattern" api:"required"`
 	// The number of incoming requests over the given time that can trigger a request
 	// rate condition
-	Requests int64 `json:"requests,required"`
+	Requests int64 `json:"requests" api:"required"`
 	// The number of seconds that the WAAP measures incoming requests over before
 	// triggering a request rate condition
-	Time int64 `json:"time,required"`
+	Time int64 `json:"time" api:"required"`
 	// Possible HTTP request methods that can trigger a request rate condition
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
@@ -574,9 +574,9 @@ func (r *WaapCustomRuleConditionRequestRate) UnmarshalJSON(data []byte) error {
 // Match a response header
 type WaapCustomRuleConditionResponseHeader struct {
 	// The response header name
-	Header string `json:"header,required"`
+	Header string `json:"header" api:"required"`
 	// The response header value
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// The type of matching condition for header and value.
 	//
 	// Any of "Exact", "Contains".
@@ -603,7 +603,7 @@ func (r *WaapCustomRuleConditionResponseHeader) UnmarshalJSON(data []byte) error
 // Match when a response header is present
 type WaapCustomRuleConditionResponseHeaderExists struct {
 	// The response header name
-	Header string `json:"header,required"`
+	Header string `json:"header" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -624,7 +624,7 @@ func (r *WaapCustomRuleConditionResponseHeaderExists) UnmarshalJSON(data []byte)
 // Match the number of dynamic page requests made in a WAAP session
 type WaapCustomRuleConditionSessionRequestCount struct {
 	// The number of dynamic requests in the session
-	RequestCount int64 `json:"request_count,required"`
+	RequestCount int64 `json:"request_count" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -645,7 +645,7 @@ func (r *WaapCustomRuleConditionSessionRequestCount) UnmarshalJSON(data []byte) 
 // Matches requests based on specified tags
 type WaapCustomRuleConditionTags struct {
 	// A list of tags to match against the request tags
-	Tags []string `json:"tags,required"`
+	Tags []string `json:"tags" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -672,7 +672,7 @@ type WaapCustomRuleConditionURL struct {
 	//     `^[\w!\$~:#\[\]@\(\)*\+,=\/\-\.\%]+$`).
 	//   - **Regex**: a valid regular expression (e.g., `^/upload(/\d+)?/\w+`).
 	//     Lookahead/lookbehind constructs are forbidden.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// The type of matching condition.
 	//
 	// Any of "Exact", "Contains", "Regex".
@@ -698,7 +698,7 @@ func (r *WaapCustomRuleConditionURL) UnmarshalJSON(data []byte) error {
 // Match the user agent making the request
 type WaapCustomRuleConditionUserAgent struct {
 	// The user agent value to match
-	UserAgent string `json:"user_agent,required"`
+	UserAgent string `json:"user_agent" api:"required"`
 	// The type of matching condition.
 	//
 	// Any of "Exact", "Contains".
@@ -724,7 +724,7 @@ func (r *WaapCustomRuleConditionUserAgent) UnmarshalJSON(data []byte) error {
 // Matches requests based on user-defined tags
 type WaapCustomRuleConditionUserDefinedTags struct {
 	// A list of user-defined tags to match against the request tags
-	Tags []string `json:"tags,required"`
+	Tags []string `json:"tags" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation bool `json:"negation"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -745,14 +745,14 @@ func (r *WaapCustomRuleConditionUserDefinedTags) UnmarshalJSON(data []byte) erro
 type DomainCustomRuleNewParams struct {
 	// The action that the rule takes when triggered. Only one action can be set per
 	// rule.
-	Action DomainCustomRuleNewParamsAction `json:"action,omitzero,required"`
+	Action DomainCustomRuleNewParamsAction `json:"action,omitzero" api:"required"`
 	// The conditions required for the WAAP engine to trigger the rule. Rules may have
 	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
-	Conditions []DomainCustomRuleNewParamsCondition `json:"conditions,omitzero,required"`
+	Conditions []DomainCustomRuleNewParamsCondition `json:"conditions,omitzero" api:"required"`
 	// Whether or not the rule is enabled
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The description assigned to the rule
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
@@ -827,7 +827,7 @@ func init() {
 // The property Tags is required.
 type DomainCustomRuleNewParamsActionTag struct {
 	// The list of user defined tags to tag the request with
-	Tags []string `json:"tags,omitzero,required"`
+	Tags []string `json:"tags,omitzero" api:"required"`
 	paramObj
 }
 
@@ -896,7 +896,7 @@ func (r *DomainCustomRuleNewParamsCondition) UnmarshalJSON(data []byte) error {
 // The property ContentType is required.
 type DomainCustomRuleNewParamsConditionContentType struct {
 	// The list of content types to match against
-	ContentType []string `json:"content_type,omitzero,required"`
+	ContentType []string `json:"content_type,omitzero" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -916,7 +916,7 @@ func (r *DomainCustomRuleNewParamsConditionContentType) UnmarshalJSON(data []byt
 type DomainCustomRuleNewParamsConditionCountry struct {
 	// A list of ISO 3166-1 alpha-2 formatted strings representing the countries to
 	// match against
-	CountryCode []string `json:"country_code,omitzero,required"`
+	CountryCode []string `json:"country_code,omitzero" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -935,7 +935,7 @@ func (r *DomainCustomRuleNewParamsConditionCountry) UnmarshalJSON(data []byte) e
 // The property FileExtension is required.
 type DomainCustomRuleNewParamsConditionFileExtension struct {
 	// The list of file extensions to match against
-	FileExtension []string `json:"file_extension,omitzero,required"`
+	FileExtension []string `json:"file_extension,omitzero" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -954,9 +954,9 @@ func (r *DomainCustomRuleNewParamsConditionFileExtension) UnmarshalJSON(data []b
 // The properties Header, Value are required.
 type DomainCustomRuleNewParamsConditionHeader struct {
 	// The request header name
-	Header string `json:"header,required"`
+	Header string `json:"header" api:"required"`
 	// The request header value
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	// The type of matching condition for header and value.
@@ -985,7 +985,7 @@ func init() {
 // The property Header is required.
 type DomainCustomRuleNewParamsConditionHeaderExists struct {
 	// The request header name
-	Header string `json:"header,required"`
+	Header string `json:"header" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1007,7 +1007,7 @@ type DomainCustomRuleNewParamsConditionHTTPMethod struct {
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".
-	HTTPMethod string `json:"http_method,omitzero,required"`
+	HTTPMethod string `json:"http_method,omitzero" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1032,7 +1032,7 @@ func init() {
 // The property IPAddress is required.
 type DomainCustomRuleNewParamsConditionIP struct {
 	// A single IPv4 or IPv6 address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1051,9 +1051,9 @@ func (r *DomainCustomRuleNewParamsConditionIP) UnmarshalJSON(data []byte) error 
 // The properties LowerBound, UpperBound are required.
 type DomainCustomRuleNewParamsConditionIPRange struct {
 	// The lower bound IPv4 or IPv6 address to match against
-	LowerBound string `json:"lower_bound,required" format:"ipvanyaddress"`
+	LowerBound string `json:"lower_bound" api:"required" format:"ipvanyaddress"`
 	// The upper bound IPv4 or IPv6 address to match against
-	UpperBound string `json:"upper_bound,required" format:"ipvanyaddress"`
+	UpperBound string `json:"upper_bound" api:"required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1073,7 +1073,7 @@ func (r *DomainCustomRuleNewParamsConditionIPRange) UnmarshalJSON(data []byte) e
 // The property Organization is required.
 type DomainCustomRuleNewParamsConditionOrganization struct {
 	// The organization to match against
-	Organization string `json:"organization,required"`
+	Organization string `json:"organization" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1114,13 +1114,13 @@ func (r *DomainCustomRuleNewParamsConditionOwnerTypes) UnmarshalJSON(data []byte
 // The properties PathPattern, Requests, Time are required.
 type DomainCustomRuleNewParamsConditionRequestRate struct {
 	// A regular expression matching the URL path of the incoming request
-	PathPattern string `json:"path_pattern,required"`
+	PathPattern string `json:"path_pattern" api:"required"`
 	// The number of incoming requests over the given time that can trigger a request
 	// rate condition
-	Requests int64 `json:"requests,required"`
+	Requests int64 `json:"requests" api:"required"`
 	// The number of seconds that the WAAP measures incoming requests over before
 	// triggering a request rate condition
-	Time int64 `json:"time,required"`
+	Time int64 `json:"time" api:"required"`
 	// A user-defined tag that can be included in incoming requests and used to trigger
 	// a request rate condition
 	UserDefinedTag param.Opt[string] `json:"user_defined_tag,omitzero"`
@@ -1147,9 +1147,9 @@ func (r *DomainCustomRuleNewParamsConditionRequestRate) UnmarshalJSON(data []byt
 // The properties Header, Value are required.
 type DomainCustomRuleNewParamsConditionResponseHeader struct {
 	// The response header name
-	Header string `json:"header,required"`
+	Header string `json:"header" api:"required"`
 	// The response header value
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	// The type of matching condition for header and value.
@@ -1178,7 +1178,7 @@ func init() {
 // The property Header is required.
 type DomainCustomRuleNewParamsConditionResponseHeaderExists struct {
 	// The response header name
-	Header string `json:"header,required"`
+	Header string `json:"header" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1197,7 +1197,7 @@ func (r *DomainCustomRuleNewParamsConditionResponseHeaderExists) UnmarshalJSON(d
 // The property RequestCount is required.
 type DomainCustomRuleNewParamsConditionSessionRequestCount struct {
 	// The number of dynamic requests in the session
-	RequestCount int64 `json:"request_count,required"`
+	RequestCount int64 `json:"request_count" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1216,7 +1216,7 @@ func (r *DomainCustomRuleNewParamsConditionSessionRequestCount) UnmarshalJSON(da
 // The property Tags is required.
 type DomainCustomRuleNewParamsConditionTags struct {
 	// A list of tags to match against the request tags
-	Tags []string `json:"tags,omitzero,required"`
+	Tags []string `json:"tags,omitzero" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1241,7 +1241,7 @@ type DomainCustomRuleNewParamsConditionURL struct {
 	//     `^[\w!\$~:#\[\]@\(\)*\+,=\/\-\.\%]+$`).
 	//   - **Regex**: a valid regular expression (e.g., `^/upload(/\d+)?/\w+`).
 	//     Lookahead/lookbehind constructs are forbidden.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	// The type of matching condition.
@@ -1270,7 +1270,7 @@ func init() {
 // The property UserAgent is required.
 type DomainCustomRuleNewParamsConditionUserAgent struct {
 	// The user agent value to match
-	UserAgent string `json:"user_agent,required"`
+	UserAgent string `json:"user_agent" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	// The type of matching condition.
@@ -1299,7 +1299,7 @@ func init() {
 // The property Tags is required.
 type DomainCustomRuleNewParamsConditionUserDefinedTags struct {
 	// A list of user-defined tags to match against the request tags
-	Tags []string `json:"tags,omitzero,required"`
+	Tags []string `json:"tags,omitzero" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1315,7 +1315,7 @@ func (r *DomainCustomRuleNewParamsConditionUserDefinedTags) UnmarshalJSON(data [
 
 type DomainCustomRuleUpdateParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	// The description assigned to the rule
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Whether or not the rule is enabled
@@ -1398,7 +1398,7 @@ func init() {
 // The property Tags is required.
 type DomainCustomRuleUpdateParamsActionTag struct {
 	// The list of user defined tags to tag the request with
-	Tags []string `json:"tags,omitzero,required"`
+	Tags []string `json:"tags,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1467,7 +1467,7 @@ func (r *DomainCustomRuleUpdateParamsCondition) UnmarshalJSON(data []byte) error
 // The property ContentType is required.
 type DomainCustomRuleUpdateParamsConditionContentType struct {
 	// The list of content types to match against
-	ContentType []string `json:"content_type,omitzero,required"`
+	ContentType []string `json:"content_type,omitzero" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1487,7 +1487,7 @@ func (r *DomainCustomRuleUpdateParamsConditionContentType) UnmarshalJSON(data []
 type DomainCustomRuleUpdateParamsConditionCountry struct {
 	// A list of ISO 3166-1 alpha-2 formatted strings representing the countries to
 	// match against
-	CountryCode []string `json:"country_code,omitzero,required"`
+	CountryCode []string `json:"country_code,omitzero" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1506,7 +1506,7 @@ func (r *DomainCustomRuleUpdateParamsConditionCountry) UnmarshalJSON(data []byte
 // The property FileExtension is required.
 type DomainCustomRuleUpdateParamsConditionFileExtension struct {
 	// The list of file extensions to match against
-	FileExtension []string `json:"file_extension,omitzero,required"`
+	FileExtension []string `json:"file_extension,omitzero" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1525,9 +1525,9 @@ func (r *DomainCustomRuleUpdateParamsConditionFileExtension) UnmarshalJSON(data 
 // The properties Header, Value are required.
 type DomainCustomRuleUpdateParamsConditionHeader struct {
 	// The request header name
-	Header string `json:"header,required"`
+	Header string `json:"header" api:"required"`
 	// The request header value
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	// The type of matching condition for header and value.
@@ -1556,7 +1556,7 @@ func init() {
 // The property Header is required.
 type DomainCustomRuleUpdateParamsConditionHeaderExists struct {
 	// The request header name
-	Header string `json:"header,required"`
+	Header string `json:"header" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1578,7 +1578,7 @@ type DomainCustomRuleUpdateParamsConditionHTTPMethod struct {
 	//
 	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
 	// "TRACE".
-	HTTPMethod string `json:"http_method,omitzero,required"`
+	HTTPMethod string `json:"http_method,omitzero" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1603,7 +1603,7 @@ func init() {
 // The property IPAddress is required.
 type DomainCustomRuleUpdateParamsConditionIP struct {
 	// A single IPv4 or IPv6 address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1622,9 +1622,9 @@ func (r *DomainCustomRuleUpdateParamsConditionIP) UnmarshalJSON(data []byte) err
 // The properties LowerBound, UpperBound are required.
 type DomainCustomRuleUpdateParamsConditionIPRange struct {
 	// The lower bound IPv4 or IPv6 address to match against
-	LowerBound string `json:"lower_bound,required" format:"ipvanyaddress"`
+	LowerBound string `json:"lower_bound" api:"required" format:"ipvanyaddress"`
 	// The upper bound IPv4 or IPv6 address to match against
-	UpperBound string `json:"upper_bound,required" format:"ipvanyaddress"`
+	UpperBound string `json:"upper_bound" api:"required" format:"ipvanyaddress"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1644,7 +1644,7 @@ func (r *DomainCustomRuleUpdateParamsConditionIPRange) UnmarshalJSON(data []byte
 // The property Organization is required.
 type DomainCustomRuleUpdateParamsConditionOrganization struct {
 	// The organization to match against
-	Organization string `json:"organization,required"`
+	Organization string `json:"organization" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1685,13 +1685,13 @@ func (r *DomainCustomRuleUpdateParamsConditionOwnerTypes) UnmarshalJSON(data []b
 // The properties PathPattern, Requests, Time are required.
 type DomainCustomRuleUpdateParamsConditionRequestRate struct {
 	// A regular expression matching the URL path of the incoming request
-	PathPattern string `json:"path_pattern,required"`
+	PathPattern string `json:"path_pattern" api:"required"`
 	// The number of incoming requests over the given time that can trigger a request
 	// rate condition
-	Requests int64 `json:"requests,required"`
+	Requests int64 `json:"requests" api:"required"`
 	// The number of seconds that the WAAP measures incoming requests over before
 	// triggering a request rate condition
-	Time int64 `json:"time,required"`
+	Time int64 `json:"time" api:"required"`
 	// A user-defined tag that can be included in incoming requests and used to trigger
 	// a request rate condition
 	UserDefinedTag param.Opt[string] `json:"user_defined_tag,omitzero"`
@@ -1718,9 +1718,9 @@ func (r *DomainCustomRuleUpdateParamsConditionRequestRate) UnmarshalJSON(data []
 // The properties Header, Value are required.
 type DomainCustomRuleUpdateParamsConditionResponseHeader struct {
 	// The response header name
-	Header string `json:"header,required"`
+	Header string `json:"header" api:"required"`
 	// The response header value
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	// The type of matching condition for header and value.
@@ -1749,7 +1749,7 @@ func init() {
 // The property Header is required.
 type DomainCustomRuleUpdateParamsConditionResponseHeaderExists struct {
 	// The response header name
-	Header string `json:"header,required"`
+	Header string `json:"header" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1768,7 +1768,7 @@ func (r *DomainCustomRuleUpdateParamsConditionResponseHeaderExists) UnmarshalJSO
 // The property RequestCount is required.
 type DomainCustomRuleUpdateParamsConditionSessionRequestCount struct {
 	// The number of dynamic requests in the session
-	RequestCount int64 `json:"request_count,required"`
+	RequestCount int64 `json:"request_count" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1787,7 +1787,7 @@ func (r *DomainCustomRuleUpdateParamsConditionSessionRequestCount) UnmarshalJSON
 // The property Tags is required.
 type DomainCustomRuleUpdateParamsConditionTags struct {
 	// A list of tags to match against the request tags
-	Tags []string `json:"tags,omitzero,required"`
+	Tags []string `json:"tags,omitzero" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1812,7 +1812,7 @@ type DomainCustomRuleUpdateParamsConditionURL struct {
 	//     `^[\w!\$~:#\[\]@\(\)*\+,=\/\-\.\%]+$`).
 	//   - **Regex**: a valid regular expression (e.g., `^/upload(/\d+)?/\w+`).
 	//     Lookahead/lookbehind constructs are forbidden.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	// The type of matching condition.
@@ -1841,7 +1841,7 @@ func init() {
 // The property UserAgent is required.
 type DomainCustomRuleUpdateParamsConditionUserAgent struct {
 	// The user agent value to match
-	UserAgent string `json:"user_agent,required"`
+	UserAgent string `json:"user_agent" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	// The type of matching condition.
@@ -1870,7 +1870,7 @@ func init() {
 // The property Tags is required.
 type DomainCustomRuleUpdateParamsConditionUserDefinedTags struct {
 	// A list of user-defined tags to match against the request tags
-	Tags []string `json:"tags,omitzero,required"`
+	Tags []string `json:"tags,omitzero" api:"required"`
 	// Whether or not to apply a boolean NOT operation to the rule's condition
 	Negation param.Opt[bool] `json:"negation,omitzero"`
 	paramObj
@@ -1946,13 +1946,13 @@ const (
 
 type DomainCustomRuleDeleteParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }
 
 type DomainCustomRuleDeleteMultipleParams struct {
 	// The IDs of the rules to delete
-	RuleIDs []int64 `json:"rule_ids,omitzero,required"`
+	RuleIDs []int64 `json:"rule_ids,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1966,15 +1966,15 @@ func (r *DomainCustomRuleDeleteMultipleParams) UnmarshalJSON(data []byte) error 
 
 type DomainCustomRuleGetParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }
 
 type DomainCustomRuleToggleParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	// The custom rule ID
-	RuleID int64 `path:"rule_id,required" json:"-"`
+	RuleID int64 `path:"rule_id" api:"required" json:"-"`
 	paramObj
 }
 

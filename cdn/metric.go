@@ -149,7 +149,7 @@ type MetricListParams struct {
 	// The total number of points, which is determined as the difference between "from"
 	// and "to" divided by "granularity", cannot exceed 1440. Exception: "speed"
 	// metrics are limited to 72 points.
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// Possible values:
 	//
 	//   - **`edge_bandwidth`** - Bandwidth from client to CDN (bit/s.)
@@ -209,7 +209,7 @@ type MetricListParams struct {
 	//     requests that status was in the range [200, 300].)
 	//   - **`origin_download_speed`** - Download speed from origin in KB/s (includes
 	//     only requests that status was in the range [200, 300].)
-	Metrics []string `json:"metrics,omitzero,required"`
+	Metrics []string `json:"metrics,omitzero" api:"required"`
 	// Specifies ending period to fetch metrics (ISO 8601/RFC 3339 format, UTC)
 	//
 	// Examples:
@@ -220,7 +220,7 @@ type MetricListParams struct {
 	// The total number of points, which is determined as the difference between "from"
 	// and "to" divided by "granularity", cannot exceed 1440. Exception: "speed"
 	// metrics are limited to 72 points.
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// Duration of the time blocks into which the data is divided. The value must
 	// correspond to the ISO 8601 period format.
 	//
@@ -270,7 +270,7 @@ type MetricListParamsFilterBy struct {
 	//   - **region** - Data is filtered by region (continent.) Available for "speed"
 	//     metrics only.
 	//   - **isp** - Data is filtered by ISP name. Available for "speed" metrics only.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// Comparison operator to be applied.
 	//
 	// Possible values:
@@ -285,9 +285,9 @@ type MetricListParamsFilterBy struct {
 	// - **ne** - '!=' operator.
 	// - **like** - 'LIKE' operator.
 	// - **`not_like`** - 'NOT LIKE' operator.
-	Op string `json:"op,required"`
+	Op string `json:"op" api:"required"`
 	// Contains one or more values to be compared against.
-	Values []MetricListParamsFilterByValueUnion `json:"values,omitzero,required"`
+	Values []MetricListParamsFilterByValueUnion `json:"values,omitzero" api:"required"`
 	paramObj
 }
 

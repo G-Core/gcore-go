@@ -62,11 +62,11 @@ func (r *AuditLogService) ListAutoPaging(ctx context.Context, query AuditLogList
 
 type AuditLogEntry struct {
 	// User action ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// User action log was successfully received by its subscriber in case there is one
-	Acknowledged bool `json:"acknowledged,required"`
+	Acknowledged bool `json:"acknowledged" api:"required"`
 	// Additional information about the action
-	ActionData map[string]any `json:"action_data,required"`
+	ActionData map[string]any `json:"action_data" api:"required"`
 	// Action type
 	//
 	// Any of "activate", "attach", "change_logging_resources", "create",
@@ -77,7 +77,7 @@ type AuditLogEntry struct {
 	// "regenerate_credentials", "remove_from_servergroup", "replace_metadata",
 	// "resize", "resume", "retype", "revert", "scale_down", "scale_up", "start",
 	// "stop", "suspend", "update", "update_metadata", "upgrade".
-	ActionType AuditLogEntryActionType `json:"action_type,required"`
+	ActionType AuditLogEntryActionType `json:"action_type" api:"required"`
 	// API group
 	//
 	// Any of "ai_cluster", "caas_container", "caas_key", "caas_pull_secret",
@@ -91,36 +91,36 @@ type AuditLogEntry struct {
 	// "securitygrouprule", "servergroup", "shared_flavor", "shared_image",
 	// "shared_network", "snapshot", "snapshot_schedule", "ssh_key", "subnet", "user",
 	// "vip_ip_addresses", "volume".
-	APIGroup AuditLogEntryAPIGroup `json:"api_group,required"`
+	APIGroup AuditLogEntryAPIGroup `json:"api_group" api:"required"`
 	// Client ID of the user.
-	ClientID int64 `json:"client_id,required"`
+	ClientID int64 `json:"client_id" api:"required"`
 	// User email address
-	Email string `json:"email,required" format:"email"`
+	Email string `json:"email" api:"required" format:"email"`
 	// User action was filled with all necessary information. If false, then something
 	// went wrong during user action creation or update
-	IsComplete bool `json:"is_complete,required"`
+	IsComplete bool `json:"is_complete" api:"required"`
 	// User ID who issued the token that made the request
-	IssuedByUserID int64 `json:"issued_by_user_id,required"`
+	IssuedByUserID int64 `json:"issued_by_user_id" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Resources
-	Resources []AuditLogEntryResource `json:"resources,required"`
+	Resources []AuditLogEntryResource `json:"resources" api:"required"`
 	// User IP that made the request
-	SourceUserIP string `json:"source_user_ip,required"`
+	SourceUserIP string `json:"source_user_ip" api:"required"`
 	// Task ID
-	TaskID string `json:"task_id,required"`
+	TaskID string `json:"task_id" api:"required"`
 	// Datetime. Action timestamp
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Token ID
-	TokenID int64 `json:"token_id,required"`
+	TokenID int64 `json:"token_id" api:"required"`
 	// Total resource price VAT inclusive
-	TotalPrice AuditLogEntryTotalPrice `json:"total_price,required"`
+	TotalPrice AuditLogEntryTotalPrice `json:"total_price" api:"required"`
 	// User-Agent that made the request
-	UserAgent string `json:"user_agent,required"`
+	UserAgent string `json:"user_agent" api:"required"`
 	// User ID
-	UserID int64 `json:"user_id,required"`
+	UserID int64 `json:"user_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -254,7 +254,7 @@ const (
 
 type AuditLogEntryResource struct {
 	// Resource ID
-	ResourceID string `json:"resource_id,required"`
+	ResourceID string `json:"resource_id" api:"required"`
 	// Resource type
 	//
 	// Any of "caas_container", "caas_key", "caas_pull_secret", "dbaas_postgres",
@@ -272,12 +272,12 @@ type AuditLogEntryResource struct {
 	// "securitygroup", "securitygrouprule", "servergroup", "shared_flavor",
 	// "shared_image", "shared_network", "snapshot", "snapshot_schedule", "ssh_key",
 	// "subnet", "token", "user", "virtual_gpu_cluster", "volume".
-	ResourceType string `json:"resource_type,required"`
+	ResourceType string `json:"resource_type" api:"required"`
 	// Free-form object, resource body.
-	ResourceBody map[string]any `json:"resource_body,nullable"`
+	ResourceBody map[string]any `json:"resource_body" api:"nullable"`
 	// Often used property for filtering actions. It can be a name, IP address, or
 	// other property, depending on the `resource_type`
-	SearchField string `json:"search_field,nullable"`
+	SearchField string `json:"search_field" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ResourceID   respjson.Field
@@ -298,15 +298,15 @@ func (r *AuditLogEntryResource) UnmarshalJSON(data []byte) error {
 // Total resource price VAT inclusive
 type AuditLogEntryTotalPrice struct {
 	// Currency code (3 letter code per ISO 4217)
-	CurrencyCode string `json:"currency_code,required"`
+	CurrencyCode string `json:"currency_code" api:"required"`
 	// Total price VAT inclusive per hour
-	PricePerHour float64 `json:"price_per_hour,required"`
+	PricePerHour float64 `json:"price_per_hour" api:"required"`
 	// Total price VAT inclusive per month (30 days)
-	PricePerMonth float64 `json:"price_per_month,required"`
+	PricePerMonth float64 `json:"price_per_month" api:"required"`
 	// Price status for the UI
 	//
 	// Any of "error", "hide", "show".
-	PriceStatus string `json:"price_status,required"`
+	PriceStatus string `json:"price_status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CurrencyCode  respjson.Field

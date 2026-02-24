@@ -147,15 +147,15 @@ func (r *StreamOverlayService) UpdateMultiple(ctx context.Context, streamID int6
 
 type Overlay struct {
 	// ID of the overlay
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Datetime of creation in ISO 8601
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// ID of a stream to which it is attached
-	StreamID int64 `json:"stream_id,required"`
+	StreamID int64 `json:"stream_id" api:"required"`
 	// Datetime of last update in ISO 8601
-	UpdatedAt string `json:"updated_at,required"`
+	UpdatedAt string `json:"updated_at" api:"required"`
 	// Valid http/https URL to an HTML page/widget
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Height of the widget
 	Height int64 `json:"height"`
 	// Switch of auto scaling the widget. Must not be used as "true" simultaneously
@@ -205,7 +205,7 @@ func (r *StreamOverlayNewParams) UnmarshalJSON(data []byte) error {
 // The property URL is required.
 type StreamOverlayNewParamsBody struct {
 	// Valid http/https URL to an HTML page/widget
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Height of the widget
 	Height param.Opt[int64] `json:"height,omitzero"`
 	// Switch of auto scaling the widget. Must not be used as "true" simultaneously
@@ -229,7 +229,7 @@ func (r *StreamOverlayNewParamsBody) UnmarshalJSON(data []byte) error {
 }
 
 type StreamOverlayUpdateParams struct {
-	StreamID int64 `path:"stream_id,required" json:"-"`
+	StreamID int64 `path:"stream_id" api:"required" json:"-"`
 	// Height of the widget
 	Height param.Opt[int64] `json:"height,omitzero"`
 	// Switch of auto scaling the widget. Must not be used as "true" simultaneously
@@ -255,12 +255,12 @@ func (r *StreamOverlayUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type StreamOverlayDeleteParams struct {
-	StreamID int64 `path:"stream_id,required" json:"-"`
+	StreamID int64 `path:"stream_id" api:"required" json:"-"`
 	paramObj
 }
 
 type StreamOverlayGetParams struct {
-	StreamID int64 `path:"stream_id,required" json:"-"`
+	StreamID int64 `path:"stream_id" api:"required" json:"-"`
 	paramObj
 }
 
@@ -279,7 +279,7 @@ func (r *StreamOverlayUpdateMultipleParams) UnmarshalJSON(data []byte) error {
 // The property ID is required.
 type StreamOverlayUpdateMultipleParamsBody struct {
 	// ID of the overlay
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Height of the widget
 	Height param.Opt[int64] `json:"height,omitzero"`
 	// Switch of auto scaling the widget. Must not be used as "true" simultaneously

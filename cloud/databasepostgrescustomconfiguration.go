@@ -60,9 +60,9 @@ func (r *DatabasePostgresCustomConfigurationService) Validate(ctx context.Contex
 
 type PgConfValidation struct {
 	// Errors list
-	Errors []string `json:"errors,required"`
+	Errors []string `json:"errors" api:"required"`
 	// Validity of pg.conf file
-	IsValid bool `json:"is_valid,required"`
+	IsValid bool `json:"is_valid" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Errors      respjson.Field
@@ -79,12 +79,12 @@ func (r *PgConfValidation) UnmarshalJSON(data []byte) error {
 }
 
 type DatabasePostgresCustomConfigurationValidateParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// PostgreSQL configuration
-	PgConf string `json:"pg_conf,required"`
+	PgConf string `json:"pg_conf" api:"required"`
 	// PostgreSQL version
-	Version string `json:"version,required"`
+	Version string `json:"version" api:"required"`
 	paramObj
 }
 

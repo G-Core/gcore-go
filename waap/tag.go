@@ -65,11 +65,11 @@ func (r *TagService) ListAutoPaging(ctx context.Context, query TagListParams, op
 // more complex WAAP rules.
 type WaapTag struct {
 	// A tag's human readable description
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The name of a tag that should be used in a WAAP rule condition
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The display name of the tag
-	ReadableName string `json:"readable_name,required"`
+	ReadableName string `json:"readable_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Description  respjson.Field

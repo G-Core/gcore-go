@@ -237,7 +237,7 @@ type Stream struct {
 	// - Stream #10003
 	// - Open-Air Camera #31 Backstage
 	// - 480fd499-2de2-4988-bc1a-a4eebe9818ee
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Stream ID
 	ID int64 `json:"id"`
 	// Stream switch between on and off. This is not an indicator of the status "stream
@@ -922,7 +922,7 @@ type StreamNewParams struct {
 	// - Stream #10003
 	// - Open-Air Camera #31 Backstage
 	// - 480fd499-2de2-4988-bc1a-a4eebe9818ee
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Stream switch between on and off. This is not an indicator of the status "stream
 	// is receiving and it is LIVE", but rather an on/off switch.
 	//
@@ -1098,7 +1098,7 @@ type StreamUpdateParamsStream struct {
 	// - Stream #10003
 	// - Open-Air Camera #31 Backstage
 	// - 480fd499-2de2-4988-bc1a-a4eebe9818ee
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Stream switch between on and off. This is not an indicator of the status "stream
 	// is receiving and it is LIVE", but rather an on/off switch.
 	//

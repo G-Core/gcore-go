@@ -94,19 +94,19 @@ func (r *LoadBalancerPoolHealthMonitorService) Delete(ctx context.Context, poolI
 
 type LoadBalancerPoolHealthMonitorNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// The time, in seconds, between sending probes to members
-	Delay int64 `json:"delay,required"`
+	Delay int64 `json:"delay" api:"required"`
 	// Number of successes before the member is switched to ONLINE state
-	MaxRetries int64 `json:"max_retries,required"`
+	MaxRetries int64 `json:"max_retries" api:"required"`
 	// The maximum time to connect. Must be less than the delay value
-	Timeout int64 `json:"timeout,required"`
+	Timeout int64 `json:"timeout" api:"required"`
 	// Health monitor type. Once health monitor is created, cannot be changed.
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
-	Type LbHealthMonitorType `json:"type,omitzero,required"`
+	Type LbHealthMonitorType `json:"type,omitzero" api:"required"`
 	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
 	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
 	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
@@ -139,8 +139,8 @@ func (r *LoadBalancerPoolHealthMonitorNewParams) UnmarshalJSON(data []byte) erro
 
 type LoadBalancerPoolHealthMonitorDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

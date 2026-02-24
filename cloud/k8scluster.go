@@ -384,60 +384,60 @@ func (r *K8SClusterService) UpgradeAndPoll(ctx context.Context, clusterName stri
 
 type K8SCluster struct {
 	// Cluster pool uuid
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Cluster add-ons configuration
-	AddOns K8SClusterAddOns `json:"add_ons,required"`
+	AddOns K8SClusterAddOns `json:"add_ons" api:"required"`
 	// Function creation date
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// Cluster CSI settings
-	Csi K8SClusterCsi `json:"csi,required"`
+	Csi K8SClusterCsi `json:"csi" api:"required"`
 	// Cluster is public
-	IsPublic bool `json:"is_public,required"`
+	IsPublic bool `json:"is_public" api:"required"`
 	// Keypair
-	Keypair string `json:"keypair,required"`
+	Keypair string `json:"keypair" api:"required"`
 	// Logging configuration
-	Logging Logging `json:"logging,required"`
+	Logging Logging `json:"logging" api:"required"`
 	// Name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// pools
-	Pools []K8SClusterPool `json:"pools,required"`
+	Pools []K8SClusterPool `json:"pools" api:"required"`
 	// Status
 	//
 	// Any of "Deleting", "Provisioned", "Provisioning".
-	Status K8SClusterStatus `json:"status,required"`
+	Status K8SClusterStatus `json:"status" api:"required"`
 	// K8s version
-	Version string `json:"version,required"`
+	Version string `json:"version" api:"required"`
 	// Cluster authentication settings
-	Authentication K8SClusterAuthentication `json:"authentication,nullable"`
+	Authentication K8SClusterAuthentication `json:"authentication" api:"nullable"`
 	// Cluster autoscaler configuration.
 	//
 	// It contains overrides to the default cluster-autoscaler parameters provided by
 	// the platform.
-	AutoscalerConfig map[string]string `json:"autoscaler_config,nullable"`
+	AutoscalerConfig map[string]string `json:"autoscaler_config" api:"nullable"`
 	// Cluster CNI settings
-	Cni K8SClusterCni `json:"cni,nullable"`
+	Cni K8SClusterCni `json:"cni" api:"nullable"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,nullable"`
+	CreatorTaskID string `json:"creator_task_id" api:"nullable"`
 	// Advanced DDoS Protection profile
-	DDOSProfile K8SClusterDDOSProfile `json:"ddos_profile,nullable"`
+	DDOSProfile K8SClusterDDOSProfile `json:"ddos_profile" api:"nullable"`
 	// Fixed network id
-	FixedNetwork string `json:"fixed_network,nullable"`
+	FixedNetwork string `json:"fixed_network" api:"nullable"`
 	// Fixed subnet id
-	FixedSubnet string `json:"fixed_subnet,nullable"`
+	FixedSubnet string `json:"fixed_subnet" api:"nullable"`
 	// Enable public v6 address
 	IsIpv6 bool `json:"is_ipv6"`
 	// The IP pool for the pods
-	PodsIPPool string `json:"pods_ip_pool,nullable"`
+	PodsIPPool string `json:"pods_ip_pool" api:"nullable"`
 	// The IPv6 pool for the pods
-	PodsIpv6Pool string `json:"pods_ipv6_pool,nullable"`
+	PodsIpv6Pool string `json:"pods_ipv6_pool" api:"nullable"`
 	// The IP pool for the services
-	ServicesIPPool string `json:"services_ip_pool,nullable"`
+	ServicesIPPool string `json:"services_ip_pool" api:"nullable"`
 	// The IPv6 pool for the services
-	ServicesIpv6Pool string `json:"services_ipv6_pool,nullable"`
+	ServicesIpv6Pool string `json:"services_ipv6_pool" api:"nullable"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,nullable"`
+	TaskID string `json:"task_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -478,7 +478,7 @@ func (r *K8SCluster) UnmarshalJSON(data []byte) error {
 // Cluster add-ons configuration
 type K8SClusterAddOns struct {
 	// Slurm add-on configuration
-	Slurm K8SClusterAddOnsSlurm `json:"slurm,required"`
+	Slurm K8SClusterAddOnsSlurm `json:"slurm" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Slurm       respjson.Field
@@ -499,21 +499,21 @@ type K8SClusterAddOnsSlurm struct {
 	//
 	// This add-on is only supported in clusters running Kubernetes v1.31 and v1.32
 	// with at least 1 GPU cluster pool.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// ID of a VAST file share used as Slurm storage.
 	//
 	// The Slurm add-on creates separate Persistent Volume Claims for different
 	// purposes (controller spool, worker spool, jail) on that file share.
-	FileShareID string `json:"file_share_id,required" format:"uuid4"`
+	FileShareID string `json:"file_share_id" api:"required" format:"uuid4"`
 	// IDs of SSH keys authorized for SSH connection to Slurm login nodes.
-	SSHKeyIDs []string `json:"ssh_key_ids,required" format:"uuid4"`
+	SSHKeyIDs []string `json:"ssh_key_ids" api:"required" format:"uuid4"`
 	// Size of the worker pool, i.e. number of worker nodes.
 	//
 	// Each Slurm worker node is backed by a Pod scheduled on one of cluster's GPU
 	// nodes.
 	//
 	// Note: Downscaling (reducing worker count) is not supported.
-	WorkerCount int64 `json:"worker_count,required"`
+	WorkerCount int64 `json:"worker_count" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -534,7 +534,7 @@ func (r *K8SClusterAddOnsSlurm) UnmarshalJSON(data []byte) error {
 // Cluster CSI settings
 type K8SClusterCsi struct {
 	// NFS settings
-	Nfs K8SClusterCsiNfs `json:"nfs,required"`
+	Nfs K8SClusterCsiNfs `json:"nfs" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Nfs         respjson.Field
@@ -552,7 +552,7 @@ func (r *K8SClusterCsi) UnmarshalJSON(data []byte) error {
 // NFS settings
 type K8SClusterCsiNfs struct {
 	// Indicates the status of VAST NFS integration
-	VastEnabled bool `json:"vast_enabled,required"`
+	VastEnabled bool `json:"vast_enabled" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		VastEnabled respjson.Field
@@ -579,11 +579,11 @@ const (
 // Cluster authentication settings
 type K8SClusterAuthentication struct {
 	// Kubeconfig creation date
-	KubeconfigCreatedAt time.Time `json:"kubeconfig_created_at,nullable" format:"date-time"`
+	KubeconfigCreatedAt time.Time `json:"kubeconfig_created_at" api:"nullable" format:"date-time"`
 	// Kubeconfig expiration date
-	KubeconfigExpiresAt time.Time `json:"kubeconfig_expires_at,nullable" format:"date-time"`
+	KubeconfigExpiresAt time.Time `json:"kubeconfig_expires_at" api:"nullable" format:"date-time"`
 	// OIDC authentication settings
-	Oidc K8SClusterAuthenticationOidc `json:"oidc,nullable"`
+	Oidc K8SClusterAuthenticationOidc `json:"oidc" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		KubeconfigCreatedAt respjson.Field
@@ -603,24 +603,24 @@ func (r *K8SClusterAuthentication) UnmarshalJSON(data []byte) error {
 // OIDC authentication settings
 type K8SClusterAuthenticationOidc struct {
 	// Client ID
-	ClientID string `json:"client_id,nullable"`
+	ClientID string `json:"client_id" api:"nullable"`
 	// JWT claim to use as the user's group
-	GroupsClaim string `json:"groups_claim,nullable"`
+	GroupsClaim string `json:"groups_claim" api:"nullable"`
 	// Prefix prepended to group claims
-	GroupsPrefix string `json:"groups_prefix,nullable"`
+	GroupsPrefix string `json:"groups_prefix" api:"nullable"`
 	// Issuer URL
-	IssuerURL string `json:"issuer_url,nullable"`
+	IssuerURL string `json:"issuer_url" api:"nullable"`
 	// Key-value pairs that describe required claims in the token
-	RequiredClaims map[string]string `json:"required_claims,nullable"`
+	RequiredClaims map[string]string `json:"required_claims" api:"nullable"`
 	// Accepted signing algorithms
 	//
 	// Any of "ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "RS256", "RS384",
 	// "RS512".
-	SigningAlgs []string `json:"signing_algs,nullable"`
+	SigningAlgs []string `json:"signing_algs" api:"nullable"`
 	// JWT claim to use as the user name
-	UsernameClaim string `json:"username_claim,nullable"`
+	UsernameClaim string `json:"username_claim" api:"nullable"`
 	// Prefix prepended to username claims to prevent clashes
-	UsernamePrefix string `json:"username_prefix,nullable"`
+	UsernamePrefix string `json:"username_prefix" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClientID       respjson.Field
@@ -645,7 +645,7 @@ func (r *K8SClusterAuthenticationOidc) UnmarshalJSON(data []byte) error {
 // Cluster CNI settings
 type K8SClusterCni struct {
 	// Cilium settings
-	Cilium K8SClusterCniCilium `json:"cilium,nullable"`
+	Cilium K8SClusterCniCilium `json:"cilium" api:"nullable"`
 	// CNI provider
 	//
 	// Any of "calico", "cilium".
@@ -716,13 +716,13 @@ func (r *K8SClusterCniCilium) UnmarshalJSON(data []byte) error {
 // Advanced DDoS Protection profile
 type K8SClusterDDOSProfile struct {
 	// Enable advanced DDoS protection
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// DDoS profile parameters
-	Fields []K8SClusterDDOSProfileField `json:"fields,nullable"`
+	Fields []K8SClusterDDOSProfileField `json:"fields" api:"nullable"`
 	// DDoS profile template ID
-	ProfileTemplate int64 `json:"profile_template,nullable"`
+	ProfileTemplate int64 `json:"profile_template" api:"nullable"`
 	// DDoS profile template name
-	ProfileTemplateName string `json:"profile_template_name,nullable"`
+	ProfileTemplateName string `json:"profile_template_name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled             respjson.Field
@@ -741,11 +741,11 @@ func (r *K8SClusterDDOSProfile) UnmarshalJSON(data []byte) error {
 }
 
 type K8SClusterDDOSProfileField struct {
-	BaseField int64 `json:"base_field,required"`
+	BaseField int64 `json:"base_field" api:"required"`
 	// Complex value. Only one of 'value' or 'field_value' must be specified
 	FieldValue any `json:"field_value"`
 	// Basic value. Only one of 'value' or 'field_value' must be specified
-	Value string `json:"value,nullable"`
+	Value string `json:"value" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BaseField   respjson.Field
@@ -764,9 +764,9 @@ func (r *K8SClusterDDOSProfileField) UnmarshalJSON(data []byte) error {
 
 type K8SClusterCertificate struct {
 	// Cluster CA certificate
-	Certificate string `json:"certificate,required"`
+	Certificate string `json:"certificate" api:"required"`
 	// Cluster CA private key
-	Key string `json:"key,required"`
+	Key string `json:"key" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Certificate respjson.Field
@@ -784,19 +784,19 @@ func (r *K8SClusterCertificate) UnmarshalJSON(data []byte) error {
 
 type K8SClusterKubeconfig struct {
 	// String in base64 format. Cluster client certificate
-	ClientCertificate string `json:"client_certificate,required"`
+	ClientCertificate string `json:"client_certificate" api:"required"`
 	// String in base64 format. Cluster client key
-	ClientKey string `json:"client_key,required"`
+	ClientKey string `json:"client_key" api:"required"`
 	// String in base64 format. Cluster ca certificate
-	ClusterCaCertificate string `json:"cluster_ca_certificate,required"`
+	ClusterCaCertificate string `json:"cluster_ca_certificate" api:"required"`
 	// Cluster kubeconfig
-	Config string `json:"config,required"`
+	Config string `json:"config" api:"required"`
 	// Kubeconfig creation date
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Kubeconfig expiration date
-	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Cluster host
-	Host string `json:"host,required"`
+	Host string `json:"host" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClientCertificate    respjson.Field
@@ -819,9 +819,9 @@ func (r *K8SClusterKubeconfig) UnmarshalJSON(data []byte) error {
 
 type K8SClusterList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []K8SCluster `json:"results,required"`
+	Results []K8SCluster `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -839,17 +839,17 @@ func (r *K8SClusterList) UnmarshalJSON(data []byte) error {
 
 type K8SClusterNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// The keypair of the cluster
-	Keypair string `json:"keypair,required"`
+	Keypair string `json:"keypair" api:"required"`
 	// The name of the cluster
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The pools of the cluster
-	Pools []K8SClusterNewParamsPool `json:"pools,omitzero,required"`
+	Pools []K8SClusterNewParamsPool `json:"pools,omitzero" api:"required"`
 	// The version of the k8s cluster
-	Version string `json:"version,required"`
+	Version string `json:"version" api:"required"`
 	// The network of the cluster
 	FixedNetwork param.Opt[string] `json:"fixed_network,omitzero"`
 	// The subnet of the cluster
@@ -948,11 +948,11 @@ func (r *K8SClusterNewParams) UnmarshalJSON(data []byte) error {
 // The properties FlavorID, MinNodeCount, Name are required.
 type K8SClusterNewParamsPool struct {
 	// Flavor ID
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Minimum node count
-	MinNodeCount int64 `json:"min_node_count,required"`
+	MinNodeCount int64 `json:"min_node_count" api:"required"`
 	// Pool's name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Enable auto healing
 	AutoHealingEnabled param.Opt[bool] `json:"auto_healing_enabled,omitzero"`
 	// Boot volume size
@@ -1023,23 +1023,23 @@ type K8SClusterNewParamsAddOnsSlurm struct {
 	//
 	// The file share must have `root_squash` disabled, while `path_length` and
 	// `allowed_characters` settings must be set to `NPL`.
-	FileShareID string `json:"file_share_id,required" format:"uuid4"`
+	FileShareID string `json:"file_share_id" api:"required" format:"uuid4"`
 	// IDs of SSH keys to authorize for SSH connection to Slurm login nodes.
-	SSHKeyIDs []string `json:"ssh_key_ids,omitzero,required" format:"uuid4"`
+	SSHKeyIDs []string `json:"ssh_key_ids,omitzero" api:"required" format:"uuid4"`
 	// Size of the worker pool, i.e. the number of Slurm worker nodes.
 	//
 	// Each Slurm worker node will be backed by a Pod scheduled on one of cluster's GPU
 	// nodes.
 	//
 	// Note: Downscaling (reducing worker count) is not supported.
-	WorkerCount int64 `json:"worker_count,required"`
+	WorkerCount int64 `json:"worker_count" api:"required"`
 	// The Slurm add-on will be enabled in the cluster.
 	//
 	// This add-on is only supported in clusters running Kubernetes v1.31 and v1.32
 	// with at least 1 GPU cluster pool and VAST NFS support enabled.
 	//
 	// This field can be elided, and will marshal its zero value as true.
-	Enabled bool `json:"enabled,omitzero,required"`
+	Enabled bool `json:"enabled,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1217,7 +1217,7 @@ func (r *K8SClusterNewParamsCsiNfs) UnmarshalJSON(data []byte) error {
 // The property Enabled is required.
 type K8SClusterNewParamsDDOSProfile struct {
 	// Enable advanced DDoS protection
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// DDoS profile template ID
 	ProfileTemplate param.Opt[int64] `json:"profile_template,omitzero"`
 	// DDoS profile template name
@@ -1237,7 +1237,7 @@ func (r *K8SClusterNewParamsDDOSProfile) UnmarshalJSON(data []byte) error {
 
 // The property BaseField is required.
 type K8SClusterNewParamsDDOSProfileField struct {
-	BaseField int64 `json:"base_field,required"`
+	BaseField int64 `json:"base_field" api:"required"`
 	// Basic value. Only one of 'value' or 'field_value' must be specified
 	Value param.Opt[string] `json:"value,omitzero"`
 	// Complex value. Only one of 'value' or 'field_value' must be specified
@@ -1276,9 +1276,9 @@ func (r *K8SClusterNewParamsLogging) UnmarshalJSON(data []byte) error {
 
 type K8SClusterUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Authentication settings
 	Authentication K8SClusterUpdateParamsAuthentication `json:"authentication,omitzero"`
 	// Cluster autoscaler configuration.
@@ -1449,23 +1449,23 @@ type K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer str
 	//
 	// The file share must have `root_squash` disabled, while `path_length` and
 	// `allowed_characters` settings must be set to `NPL`.
-	FileShareID string `json:"file_share_id,required" format:"uuid4"`
+	FileShareID string `json:"file_share_id" api:"required" format:"uuid4"`
 	// IDs of SSH keys to authorize for SSH connection to Slurm login nodes.
-	SSHKeyIDs []string `json:"ssh_key_ids,omitzero,required" format:"uuid4"`
+	SSHKeyIDs []string `json:"ssh_key_ids,omitzero" api:"required" format:"uuid4"`
 	// Size of the worker pool, i.e. the number of Slurm worker nodes.
 	//
 	// Each Slurm worker node will be backed by a Pod scheduled on one of cluster's GPU
 	// nodes.
 	//
 	// Note: Downscaling (reducing worker count) is not supported.
-	WorkerCount int64 `json:"worker_count,required"`
+	WorkerCount int64 `json:"worker_count" api:"required"`
 	// The Slurm add-on will be enabled in the cluster.
 	//
 	// This add-on is only supported in clusters running Kubernetes v1.31 and v1.32
 	// with at least 1 GPU cluster pool and VAST NFS support enabled.
 	//
 	// This field can be elided, and will marshal its zero value as true.
-	Enabled bool `json:"enabled,omitzero,required"`
+	Enabled bool `json:"enabled,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1493,7 +1493,7 @@ func NewK8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer
 // [NewK8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer].
 type K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer struct {
 	// The Slurm add-on will be disabled in the cluster.
-	Enabled bool `json:"enabled,omitzero,required"`
+	Enabled bool `json:"enabled,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1637,7 +1637,7 @@ func init() {
 // The property Enabled is required.
 type K8SClusterUpdateParamsDDOSProfile struct {
 	// Enable advanced DDoS protection
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// DDoS profile template ID
 	ProfileTemplate param.Opt[int64] `json:"profile_template,omitzero"`
 	// DDoS profile template name
@@ -1657,7 +1657,7 @@ func (r *K8SClusterUpdateParamsDDOSProfile) UnmarshalJSON(data []byte) error {
 
 // The property BaseField is required.
 type K8SClusterUpdateParamsDDOSProfileField struct {
-	BaseField int64 `json:"base_field,required"`
+	BaseField int64 `json:"base_field" api:"required"`
 	// Basic value. Only one of 'value' or 'field_value' must be specified
 	Value param.Opt[string] `json:"value,omitzero"`
 	// Complex value. Only one of 'value' or 'field_value' must be specified
@@ -1696,17 +1696,17 @@ func (r *K8SClusterUpdateParamsLogging) UnmarshalJSON(data []byte) error {
 
 type K8SClusterListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type K8SClusterDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Comma separated list of volume IDs to be deleted with the cluster
 	Volumes param.Opt[string] `query:"volumes,omitzero" json:"-"`
 	paramObj
@@ -1722,43 +1722,43 @@ func (r K8SClusterDeleteParams) URLQuery() (v url.Values, err error) {
 
 type K8SClusterGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type K8SClusterGetCertificateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type K8SClusterGetKubeconfigParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type K8SClusterListVersionsForUpgradeParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type K8SClusterUpgradeParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Target k8s cluster version
-	Version string `json:"version,required"`
+	Version string `json:"version" api:"required"`
 	paramObj
 }
 

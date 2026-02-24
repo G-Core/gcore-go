@@ -48,59 +48,59 @@ func (r *IamService) GetAccountOverview(ctx context.Context, opts ...option.Requ
 
 type AccountOverview struct {
 	// The account ID.
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// System field. Billing type of the account.
-	BillType string `json:"bill_type,required"`
+	BillType string `json:"bill_type" api:"required"`
 	// System field. List of services available for the account.
 	//
 	// Any of "CDN", "STORAGE", "STREAMING", "DNS", "DDOS", "CLOUD".
-	Capabilities []string `json:"capabilities,required"`
+	Capabilities []string `json:"capabilities" api:"required"`
 	// The company name.
-	CompanyName string `json:"companyName,required"`
+	CompanyName string `json:"companyName" api:"required"`
 	// ID of the current user.
-	CurrentUser int64 `json:"currentUser,required"`
+	CurrentUser int64 `json:"currentUser" api:"required"`
 	// The field shows the status of the account:
 	//
 	// - `true` – the account has been deleted
 	// - `false` – the account is not deleted
-	Deleted bool `json:"deleted,required"`
+	Deleted bool `json:"deleted" api:"required"`
 	// The account email.
-	Email string `json:"email,required" format:"email"`
+	Email string `json:"email" api:"required" format:"email"`
 	// System field. Control panel domain.
-	EntryBaseDomain string `json:"entryBaseDomain,required"`
+	EntryBaseDomain string `json:"entryBaseDomain" api:"required"`
 	// An object of arrays which contains information about free features available for
 	// the requested account.
-	FreeFeatures AccountOverviewFreeFeatures `json:"freeFeatures,required"`
+	FreeFeatures AccountOverviewFreeFeatures `json:"freeFeatures" api:"required"`
 	// System field.
-	HasActiveAdmin bool `json:"has_active_admin,required"`
+	HasActiveAdmin bool `json:"has_active_admin" api:"required"`
 	// System field:
 	//
 	// - `true` — a test account;
 	// - `false` — a production account.
-	IsTest bool `json:"is_test,required"`
+	IsTest bool `json:"is_test" api:"required"`
 	// Name of a user who registered the requested account.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// An object of arrays which contains information about paid features available for
 	// the requested account.
-	PaidFeatures AccountOverviewPaidFeatures `json:"paidFeatures,required"`
+	PaidFeatures AccountOverviewPaidFeatures `json:"paidFeatures" api:"required"`
 	// An object of arrays which contains information about all services available for
 	// the requested account.
-	ServiceStatuses AccountOverviewServiceStatuses `json:"serviceStatuses,required"`
+	ServiceStatuses AccountOverviewServiceStatuses `json:"serviceStatuses" api:"required"`
 	// Status of the account.
 	//
 	// Any of "new", "trial", "trialend", "active", "integration", "paused",
 	// "preparation", "ready".
-	Status AccountOverviewStatus `json:"status,required"`
+	Status AccountOverviewStatus `json:"status" api:"required"`
 	// System field. The company country (ISO 3166-1 alpha-2 format).
 	CountryCode string `json:"country_code"`
 	// The account custom ID.
-	CustomID string `json:"custom_id,nullable"`
+	CustomID string `json:"custom_id" api:"nullable"`
 	// Phone of a user who registered the requested account.
-	Phone string `json:"phone,nullable"`
+	Phone string `json:"phone" api:"nullable"`
 	// System field. Type of the account registration process.
 	//
 	// Any of "sign_up_full", "sign_up_simple".
-	SignupProcess AccountOverviewSignupProcess `json:"signup_process,nullable"`
+	SignupProcess AccountOverviewSignupProcess `json:"signup_process" api:"nullable"`
 	// List of account users.
 	Users []AccountOverviewUser `json:"users"`
 	// The company website.
@@ -796,9 +796,9 @@ type AccountOverviewUser struct {
 	// Any of "de", "en", "ru", "zh", "az".
 	Lang UserLanguage `json:"lang"`
 	// User's name.
-	Name string `json:"name,nullable"`
+	Name string `json:"name" api:"nullable"`
 	// User's phone.
-	Phone string `json:"phone,nullable"`
+	Phone string `json:"phone" api:"nullable"`
 	// Services provider ID.
 	Reseller int64 `json:"reseller"`
 	// SSO authentication flag. If `true` then user can login via SAML SSO.

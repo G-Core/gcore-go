@@ -54,24 +54,24 @@ func (r *FastedgeService) GetAccountOverview(ctx context.Context, opts ...option
 
 type Client struct {
 	// Actual allowed number of apps
-	AppCount int64 `json:"app_count,required"`
+	AppCount int64 `json:"app_count" api:"required"`
 	// Actual number of calls for all apps during the current day (UTC)
-	DailyConsumption int64 `json:"daily_consumption,required"`
+	DailyConsumption int64 `json:"daily_consumption" api:"required"`
 	// Actual number of calls for all apps during the current hour
-	HourlyConsumption int64 `json:"hourly_consumption,required"`
+	HourlyConsumption int64 `json:"hourly_consumption" api:"required"`
 	// Actual number of calls for all apps during the current calendar month (UTC)
-	MonthlyConsumption int64 `json:"monthly_consumption,required"`
+	MonthlyConsumption int64 `json:"monthly_consumption" api:"required"`
 	// List of enabled networks
-	Networks []ClientNetwork `json:"networks,required"`
+	Networks []ClientNetwork `json:"networks" api:"required"`
 	// Plan ID
-	PlanID int64 `json:"plan_id,required"`
+	PlanID int64 `json:"plan_id" api:"required"`
 	// Status code:
 	// 1 - enabled
 	// 2 - disabled
 	// 3 - hourly call limit exceeded
 	// 4 - daily call limit exceeded
 	// 5 - suspended
-	Status int64 `json:"status,required"`
+	Status int64 `json:"status" api:"required"`
 	// Plan name
 	Plan string `json:"plan"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -97,9 +97,9 @@ func (r *Client) UnmarshalJSON(data []byte) error {
 
 type ClientNetwork struct {
 	// Is network is default
-	IsDefault bool `json:"is_default,required"`
+	IsDefault bool `json:"is_default" api:"required"`
 	// Network name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsDefault   respjson.Field

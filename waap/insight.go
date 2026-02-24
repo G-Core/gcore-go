@@ -63,21 +63,21 @@ func (r *InsightService) ListTypesAutoPaging(ctx context.Context, query InsightL
 
 type WaapInsightType struct {
 	// The description of the insight type
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The frequency of the insight type
-	InsightFrequency int64 `json:"insight_frequency,required"`
+	InsightFrequency int64 `json:"insight_frequency" api:"required"`
 	// The grouping dimensions of the insight type
-	InsightGroupingDimensions []string `json:"insight_grouping_dimensions,required"`
+	InsightGroupingDimensions []string `json:"insight_grouping_dimensions" api:"required"`
 	// The insight template
-	InsightTemplate string `json:"insight_template,required"`
+	InsightTemplate string `json:"insight_template" api:"required"`
 	// The labels of the insight type
-	Labels []string `json:"labels,required"`
+	Labels []string `json:"labels" api:"required"`
 	// The name of the insight type
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The recommendation template
-	RecommendationTemplate string `json:"recommendation_template,required"`
+	RecommendationTemplate string `json:"recommendation_template" api:"required"`
 	// The slug of the insight type
-	Slug string `json:"slug,required"`
+	Slug string `json:"slug" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Description               respjson.Field

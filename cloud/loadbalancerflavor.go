@@ -61,9 +61,9 @@ func (r *LoadBalancerFlavorService) List(ctx context.Context, params LoadBalance
 
 type LoadBalancerFlavorListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Set to true if the response should include flavor prices
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	paramObj

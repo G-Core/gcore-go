@@ -437,23 +437,23 @@ func (r *VolumeService) RevertToLastSnapshot(ctx context.Context, volumeID strin
 
 type Volume struct {
 	// The unique identifier of the volume.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Indicates whether the volume is bootable.
-	Bootable bool `json:"bootable,required"`
+	Bootable bool `json:"bootable" api:"required"`
 	// The date and time when the volume was created.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Indicates whether this is a root volume.
-	IsRootVolume bool `json:"is_root_volume,required"`
+	IsRootVolume bool `json:"is_root_volume" api:"required"`
 	// The name of the volume.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Project ID.
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// The region where the volume is located.
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// The identifier of the region.
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// The size of the volume in gibibytes (GiB).
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// The current status of the volume.
 	//
 	// Any of "attaching", "available", "awaiting-transfer", "backing-up", "creating",
@@ -461,31 +461,31 @@ type Volume struct {
 	// "error_deleting", "error_extending", "error_restoring", "extending", "in-use",
 	// "maintenance", "reserved", "restoring-backup", "retyping", "reverting",
 	// "uploading".
-	Status VolumeStatus `json:"status,required"`
+	Status VolumeStatus `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// The type of volume storage.
-	VolumeType string `json:"volume_type,required"`
+	VolumeType string `json:"volume_type" api:"required"`
 	// List of attachments associated with the volume.
-	Attachments []VolumeAttachment `json:"attachments,nullable"`
+	Attachments []VolumeAttachment `json:"attachments" api:"nullable"`
 	// The ID of the task that created this volume.
-	CreatorTaskID string `json:"creator_task_id,nullable"`
+	CreatorTaskID string `json:"creator_task_id" api:"nullable"`
 	// Schema representing the Quality of Service (QoS) parameters for a volume.
-	LimiterStats VolumeLimiterStats `json:"limiter_stats,nullable"`
+	LimiterStats VolumeLimiterStats `json:"limiter_stats" api:"nullable"`
 	// List of snapshot IDs associated with this volume.
-	SnapshotIDs []string `json:"snapshot_ids,nullable"`
+	SnapshotIDs []string `json:"snapshot_ids" api:"nullable"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,nullable"`
+	TaskID string `json:"task_id" api:"nullable"`
 	// The date and time when the volume was last updated.
-	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"nullable" format:"date-time"`
 	// Image metadata for volumes created from an image.
-	VolumeImageMetadata map[string]string `json:"volume_image_metadata,nullable"`
+	VolumeImageMetadata map[string]string `json:"volume_image_metadata" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -547,19 +547,19 @@ const (
 
 type VolumeAttachment struct {
 	// The unique identifier of the attachment object.
-	AttachmentID string `json:"attachment_id,required"`
+	AttachmentID string `json:"attachment_id" api:"required"`
 	// The unique identifier of the attached volume.
-	VolumeID string `json:"volume_id,required"`
+	VolumeID string `json:"volume_id" api:"required"`
 	// The date and time when the attachment was created.
-	AttachedAt time.Time `json:"attached_at,nullable" format:"date-time"`
+	AttachedAt time.Time `json:"attached_at" api:"nullable" format:"date-time"`
 	// The block device name inside the guest instance.
-	Device string `json:"device,nullable"`
+	Device string `json:"device" api:"nullable"`
 	// The flavor ID of the instance.
-	FlavorID string `json:"flavor_id,nullable"`
+	FlavorID string `json:"flavor_id" api:"nullable"`
 	// The name of the instance if attached and the server name is known.
-	InstanceName string `json:"instance_name,nullable"`
+	InstanceName string `json:"instance_name" api:"nullable"`
 	// The unique identifier of the instance.
-	ServerID string `json:"server_id,nullable"`
+	ServerID string `json:"server_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AttachmentID respjson.Field
@@ -583,13 +583,13 @@ func (r *VolumeAttachment) UnmarshalJSON(data []byte) error {
 // Schema representing the Quality of Service (QoS) parameters for a volume.
 type VolumeLimiterStats struct {
 	// The sustained IOPS (Input/Output Operations Per Second) limit.
-	IopsBaseLimit int64 `json:"iops_base_limit,required"`
+	IopsBaseLimit int64 `json:"iops_base_limit" api:"required"`
 	// The burst IOPS limit.
-	IopsBurstLimit int64 `json:"iops_burst_limit,required"`
+	IopsBurstLimit int64 `json:"iops_burst_limit" api:"required"`
 	// The sustained bandwidth limit in megabytes per second (MBps).
-	MBpsBaseLimit int64 `json:"MBps_base_limit,required"`
+	MBpsBaseLimit int64 `json:"MBps_base_limit" api:"required"`
 	// The burst bandwidth limit in megabytes per second (MBps).
-	MBpsBurstLimit int64 `json:"MBps_burst_limit,required"`
+	MBpsBurstLimit int64 `json:"MBps_burst_limit" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IopsBaseLimit  respjson.Field
@@ -609,9 +609,9 @@ func (r *VolumeLimiterStats) UnmarshalJSON(data []byte) error {
 
 type VolumeNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 
 	//
 	// Request body variants
@@ -637,11 +637,11 @@ func (r *VolumeNewParams) UnmarshalJSON(data []byte) error {
 // The properties ImageID, Name, Size, Source are required.
 type VolumeNewParamsBodyImage struct {
 	// Image ID
-	ImageID string `json:"image_id,required" format:"uuid4"`
+	ImageID string `json:"image_id" api:"required" format:"uuid4"`
 	// Volume name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Volume size in GiB
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// Block device attachment tag (not exposed in the user tags). Only used in
 	// conjunction with `instance_id_to_attach_to`
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
@@ -665,7 +665,7 @@ type VolumeNewParamsBodyImage struct {
 	// Volume source type
 	//
 	// This field can be elided, and will marshal its zero value as "image".
-	Source constant.Image `json:"source,required"`
+	Source constant.Image `json:"source" api:"required"`
 	paramObj
 }
 
@@ -686,9 +686,9 @@ func init() {
 // The properties Name, SnapshotID, Source are required.
 type VolumeNewParamsBodySnapshot struct {
 	// Volume name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Snapshot ID
-	SnapshotID string `json:"snapshot_id,required" format:"uuid4"`
+	SnapshotID string `json:"snapshot_id" api:"required" format:"uuid4"`
 	// Block device attachment tag (not exposed in the user tags). Only used in
 	// conjunction with `instance_id_to_attach_to`
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
@@ -715,7 +715,7 @@ type VolumeNewParamsBodySnapshot struct {
 	// Volume source type
 	//
 	// This field can be elided, and will marshal its zero value as "snapshot".
-	Source constant.Snapshot `json:"source,required"`
+	Source constant.Snapshot `json:"source" api:"required"`
 	paramObj
 }
 
@@ -736,9 +736,9 @@ func init() {
 // The properties Name, Size, Source are required.
 type VolumeNewParamsBodyNewVolume struct {
 	// Volume name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Volume size in GiB
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// Block device attachment tag (not exposed in the user tags). Only used in
 	// conjunction with `instance_id_to_attach_to`
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
@@ -762,7 +762,7 @@ type VolumeNewParamsBodyNewVolume struct {
 	// Volume source type
 	//
 	// This field can be elided, and will marshal its zero value as "new-volume".
-	Source constant.NewVolume `json:"source,required"`
+	Source constant.NewVolume `json:"source" api:"required"`
 	paramObj
 }
 
@@ -782,9 +782,9 @@ func init() {
 
 type VolumeUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Name
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
@@ -822,9 +822,9 @@ func (r *VolumeUpdateParams) UnmarshalJSON(data []byte) error {
 
 type VolumeListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Filter by bootable field
 	Bootable param.Opt[bool] `query:"bootable,omitzero" json:"-"`
 	// Filter volumes by k8s cluster ID
@@ -860,9 +860,9 @@ func (r VolumeListParams) URLQuery() (v url.Values, err error) {
 
 type VolumeDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Comma separated list of snapshot IDs to be deleted with the volume.
 	Snapshots param.Opt[string] `query:"snapshots,omitzero" json:"-"`
 	paramObj
@@ -878,11 +878,11 @@ func (r VolumeDeleteParams) URLQuery() (v url.Values, err error) {
 
 type VolumeAttachToInstanceParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Instance ID.
-	InstanceID string `json:"instance_id,required" format:"uuid4"`
+	InstanceID string `json:"instance_id" api:"required" format:"uuid4"`
 	// Block device attachment tag (not exposed in the normal tags).
 	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
 	paramObj
@@ -898,13 +898,13 @@ func (r *VolumeAttachToInstanceParams) UnmarshalJSON(data []byte) error {
 
 type VolumeChangeTypeParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// New volume type name
 	//
 	// Any of "ssd_hiiops", "standard".
-	VolumeType VolumeChangeTypeParamsVolumeType `json:"volume_type,omitzero,required"`
+	VolumeType VolumeChangeTypeParamsVolumeType `json:"volume_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -926,11 +926,11 @@ const (
 
 type VolumeDetachFromInstanceParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Instance ID
-	InstanceID string `json:"instance_id,required" format:"uuid4"`
+	InstanceID string `json:"instance_id" api:"required" format:"uuid4"`
 	paramObj
 }
 
@@ -944,19 +944,19 @@ func (r *VolumeDetachFromInstanceParams) UnmarshalJSON(data []byte) error {
 
 type VolumeGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type VolumeResizeParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// New volume size in GiB
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	paramObj
 }
 
@@ -970,8 +970,8 @@ func (r *VolumeResizeParams) UnmarshalJSON(data []byte) error {
 
 type VolumeRevertToLastSnapshotParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

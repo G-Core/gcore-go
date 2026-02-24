@@ -154,25 +154,25 @@ func (r *SSHKeyService) Get(ctx context.Context, sshKeyID string, query SSHKeyGe
 
 type SSHKey struct {
 	// SSH key ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// SSH key creation time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Fingerprint
-	Fingerprint string `json:"fingerprint,required"`
+	Fingerprint string `json:"fingerprint" api:"required"`
 	// SSH key name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// The public part of an SSH key is the shareable portion of an SSH key pair. It
 	// can be safely sent to servers or services to grant access. It does not contain
 	// sensitive information.
-	PublicKey string `json:"public_key,required"`
+	PublicKey string `json:"public_key" api:"required"`
 	// SSH key will be visible to all users in the project
-	SharedInProject bool `json:"shared_in_project,required"`
+	SharedInProject bool `json:"shared_in_project" api:"required"`
 	// SSH key state
 	//
 	// Any of "ACTIVE", "DELETING".
-	State SSHKeyState `json:"state,required"`
+	State SSHKeyState `json:"state" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -204,13 +204,13 @@ const (
 
 type SSHKeyCreated struct {
 	// SSH key ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// SSH key creation time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Fingerprint
-	Fingerprint string `json:"fingerprint,required"`
+	Fingerprint string `json:"fingerprint" api:"required"`
 	// SSH key name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The private part of an SSH key is the confidential portion of the key pair. It
 	// should never be shared or exposed. This key is used to prove your identity when
 	// connecting to a server.
@@ -221,19 +221,19 @@ type SSHKeyCreated struct {
 	//
 	// Best practice: Save the private key to a secure location on your machine (e.g.,
 	// `~/.ssh/id_ed25519`) and set the file permissions to be readable only by you.
-	PrivateKey string `json:"private_key,required"`
+	PrivateKey string `json:"private_key" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// The public part of an SSH key is the shareable portion of an SSH key pair. It
 	// can be safely sent to servers or services to grant access. It does not contain
 	// sensitive information.
-	PublicKey string `json:"public_key,required"`
+	PublicKey string `json:"public_key" api:"required"`
 	// SSH key will be visible to all users in the project
-	SharedInProject bool `json:"shared_in_project,required"`
+	SharedInProject bool `json:"shared_in_project" api:"required"`
 	// SSH key state
 	//
 	// Any of "ACTIVE", "DELETING".
-	State SSHKeyCreatedState `json:"state,required"`
+	State SSHKeyCreatedState `json:"state" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -266,9 +266,9 @@ const (
 
 type SSHKeyNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// SSH key name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The public part of an SSH key is the shareable portion of an SSH key pair. It
 	// can be safely sent to servers or services to grant access. It does not contain
 	// sensitive information.
@@ -294,9 +294,9 @@ func (r *SSHKeyNewParams) UnmarshalJSON(data []byte) error {
 
 type SSHKeyUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Share your ssh key with all users in the project
-	SharedInProject bool `json:"shared_in_project,required"`
+	SharedInProject bool `json:"shared_in_project" api:"required"`
 	paramObj
 }
 
@@ -310,7 +310,7 @@ func (r *SSHKeyUpdateParams) UnmarshalJSON(data []byte) error {
 
 type SSHKeyListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Maximum number of SSH keys to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// SSH key name. Partial substring match. Example: `name=abc` matches any key
@@ -345,12 +345,12 @@ const (
 
 type SSHKeyDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type SSHKeyGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

@@ -44,7 +44,7 @@ func (r *DomainAPIPathGroupService) List(ctx context.Context, domainID int64, op
 // Response model for the API path groups
 type APIPathGroupList struct {
 	// An array of api groups associated with the API path
-	APIPathGroups []string `json:"api_path_groups,required"`
+	APIPathGroups []string `json:"api_path_groups" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		APIPathGroups respjson.Field

@@ -64,19 +64,19 @@ func (r *GPUVirtualClusterInterfaceService) List(ctx context.Context, clusterID 
 
 type GPUVirtualInterface struct {
 	// Bodies of floatingips that are NAT-ing ips of this port
-	FloatingIPs []GPUVirtualInterfaceFloatingIP `json:"floating_ips,required"`
+	FloatingIPs []GPUVirtualInterfaceFloatingIP `json:"floating_ips" api:"required"`
 	// IP addresses assigned to this port
-	IPAssignments []GPUVirtualInterfaceIPAssignment `json:"ip_assignments,required"`
+	IPAssignments []GPUVirtualInterfaceIPAssignment `json:"ip_assignments" api:"required"`
 	// MAC address of the virtual port
-	MacAddress string `json:"mac_address,required"`
+	MacAddress string `json:"mac_address" api:"required"`
 	// Body of the network this port is attached to
-	Network GPUVirtualInterfaceNetwork `json:"network,required"`
+	Network GPUVirtualInterfaceNetwork `json:"network" api:"required"`
 	// ID of the network the port is attached to
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// ID of virtual ethernet port object
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Port security status
-	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FloatingIPs         respjson.Field
@@ -99,30 +99,30 @@ func (r *GPUVirtualInterface) UnmarshalJSON(data []byte) error {
 
 type GPUVirtualInterfaceFloatingIP struct {
 	// Floating IP ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the floating IP was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// IP address of the port the floating IP is attached to
-	FixedIPAddress string `json:"fixed_ip_address,required" format:"ipvanyaddress"`
+	FixedIPAddress string `json:"fixed_ip_address" api:"required" format:"ipvanyaddress"`
 	// IP Address of the floating IP
-	FloatingIPAddress string `json:"floating_ip_address,required" format:"ipvanyaddress"`
+	FloatingIPAddress string `json:"floating_ip_address" api:"required" format:"ipvanyaddress"`
 	// Port ID the floating IP is attached to. The `fixed_ip_address` is the IP address
 	// of the port.
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Router ID
-	RouterID string `json:"router_id,required" format:"uuid4"`
+	RouterID string `json:"router_id" api:"required" format:"uuid4"`
 	// Floating IP status
 	//
 	// Any of "ACTIVE", "DOWN", "ERROR".
-	Status FloatingIPStatus `json:"status,required"`
+	Status FloatingIPStatus `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// Datetime when the floating IP was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                respjson.Field
@@ -147,9 +147,9 @@ func (r *GPUVirtualInterfaceFloatingIP) UnmarshalJSON(data []byte) error {
 
 type GPUVirtualInterfaceIPAssignment struct {
 	// The IP address assigned to the port from the specified subnet
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// ID of the subnet that allocated the IP
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPAddress   respjson.Field
@@ -168,34 +168,34 @@ func (r *GPUVirtualInterfaceIPAssignment) UnmarshalJSON(data []byte) error {
 // Body of the network this port is attached to
 type GPUVirtualInterfaceNetwork struct {
 	// Network ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the network was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// True if the network `router:external` attribute
-	External bool `json:"external,required"`
+	External bool `json:"external" api:"required"`
 	// MTU (maximum transmission unit)
-	Mtu int64 `json:"mtu,required"`
+	Mtu int64 `json:"mtu" api:"required"`
 	// Network name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Indicates `port_security_enabled` status of all newly created in the network
 	// ports.
-	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// Id of network segment
-	SegmentationID int64 `json:"segmentation_id,required"`
+	SegmentationID int64 `json:"segmentation_id" api:"required"`
 	// True when the network is shared with your project by external owner
-	Shared bool `json:"shared,required"`
+	Shared bool `json:"shared" api:"required"`
 	// List of subnetworks
-	Subnets []GPUVirtualInterfaceNetworkSubnet `json:"subnets,required"`
+	Subnets []GPUVirtualInterfaceNetworkSubnet `json:"subnets" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// Network type (vlan, vxlan)
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Datetime when the network was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -223,45 +223,45 @@ func (r *GPUVirtualInterfaceNetwork) UnmarshalJSON(data []byte) error {
 
 type GPUVirtualInterfaceNetworkSubnet struct {
 	// Subnet id.
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Number of available ips in subnet
-	AvailableIPs int64 `json:"available_ips,required"`
+	AvailableIPs int64 `json:"available_ips" api:"required"`
 	// CIDR
-	Cidr string `json:"cidr,required" format:"ipvanynetwork"`
+	Cidr string `json:"cidr" api:"required" format:"ipvanynetwork"`
 	// Datetime when the subnet was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// List IP addresses of a DNS resolver reachable from the network
-	DNSNameservers []string `json:"dns_nameservers,required" format:"ipvanyaddress"`
+	DNSNameservers []string `json:"dns_nameservers" api:"required" format:"ipvanyaddress"`
 	// Indicates whether DHCP is enabled for this subnet. If true, IP addresses will be
 	// assigned automatically
-	EnableDhcp bool `json:"enable_dhcp,required"`
+	EnableDhcp bool `json:"enable_dhcp" api:"required"`
 	// Default GW IPv4 address, advertised in DHCP routes of this subnet. If null, no
 	// gateway is advertised by this subnet.
-	GatewayIP string `json:"gateway_ip,required" format:"ipvanyaddress"`
+	GatewayIP string `json:"gateway_ip" api:"required" format:"ipvanyaddress"`
 	// Deprecated. Always returns `false`.
 	//
 	// Deprecated: deprecated
-	HasRouter bool `json:"has_router,required"`
+	HasRouter bool `json:"has_router" api:"required"`
 	// List of custom static routes to advertise via DHCP.
-	HostRoutes []Route `json:"host_routes,required"`
+	HostRoutes []Route `json:"host_routes" api:"required"`
 	// IP version used by the subnet (IPv4 or IPv6)
 	//
 	// Any of 4, 6.
-	IPVersion int64 `json:"ip_version,required"`
+	IPVersion int64 `json:"ip_version" api:"required"`
 	// Subnet name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Network ID
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// Total number of ips in subnet
-	TotalIPs int64 `json:"total_ips,required"`
+	TotalIPs int64 `json:"total_ips" api:"required"`
 	// Datetime when the subnet was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -292,9 +292,9 @@ func (r *GPUVirtualInterfaceNetworkSubnet) UnmarshalJSON(data []byte) error {
 
 type GPUVirtualInterfaceList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []GPUVirtualInterface `json:"results,required"`
+	Results []GPUVirtualInterface `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -312,8 +312,8 @@ func (r *GPUVirtualInterfaceList) UnmarshalJSON(data []byte) error {
 
 type GPUVirtualClusterInterfaceListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

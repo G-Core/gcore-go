@@ -116,10 +116,10 @@ func (r *IPInfoService) ListAttackedCountries(ctx context.Context, query IPInfoL
 
 type WaapIPCountryAttack struct {
 	// The number of attacks from the specified IP address to the country
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// An ISO 3166-1 alpha-2 formatted string representing the country that was
 	// attacked
-	Country string `json:"country,required"`
+	Country string `json:"country" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -137,9 +137,9 @@ func (r *WaapIPCountryAttack) UnmarshalJSON(data []byte) error {
 
 type WaapIPDDOSInfoModel struct {
 	// Indicates if the IP is tagged as a botnet client
-	BotnetClient bool `json:"botnet_client,required"`
+	BotnetClient bool `json:"botnet_client" api:"required"`
 	// The time series data for the DDoS attacks from the IP address
-	TimeSeries []WaapIPDDOSInfoModelTimeSeries `json:"time_series,required"`
+	TimeSeries []WaapIPDDOSInfoModelTimeSeries `json:"time_series" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BotnetClient respjson.Field
@@ -157,9 +157,9 @@ func (r *WaapIPDDOSInfoModel) UnmarshalJSON(data []byte) error {
 
 type WaapIPDDOSInfoModelTimeSeries struct {
 	// The number of attacks
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// The timestamp of the time series item as a POSIX timestamp
-	Timestamp int64 `json:"timestamp,required"`
+	Timestamp int64 `json:"timestamp" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -179,11 +179,11 @@ type WaapIPInfo struct {
 	// The risk score of the IP address
 	//
 	// Any of "NO_RISK", "LOW", "MEDIUM", "HIGH", "EXTREME", "NOT_ENOUGH_DATA".
-	RiskScore WaapIPInfoRiskScore `json:"risk_score,required"`
+	RiskScore WaapIPInfoRiskScore `json:"risk_score" api:"required"`
 	// The tags associated with the IP address that affect the risk score
-	Tags []string `json:"tags,required"`
+	Tags []string `json:"tags" api:"required"`
 	// The WHOIS information for the IP address
-	Whois WaapIPInfoWhois `json:"whois,required"`
+	Whois WaapIPInfoWhois `json:"whois" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RiskScore   respjson.Field
@@ -215,29 +215,29 @@ const (
 // The WHOIS information for the IP address
 type WaapIPInfoWhois struct {
 	// The abuse mail
-	AbuseMail string `json:"abuse_mail,nullable"`
+	AbuseMail string `json:"abuse_mail" api:"nullable"`
 	// The CIDR
-	Cidr int64 `json:"cidr,nullable"`
+	Cidr int64 `json:"cidr" api:"nullable"`
 	// The country
-	Country string `json:"country,nullable"`
+	Country string `json:"country" api:"nullable"`
 	// The network description
-	NetDescription string `json:"net_description,nullable"`
+	NetDescription string `json:"net_description" api:"nullable"`
 	// The network name
-	NetName string `json:"net_name,nullable"`
+	NetName string `json:"net_name" api:"nullable"`
 	// The network range
-	NetRange string `json:"net_range,nullable"`
+	NetRange string `json:"net_range" api:"nullable"`
 	// The network type
-	NetType string `json:"net_type,nullable"`
+	NetType string `json:"net_type" api:"nullable"`
 	// The organization ID
-	OrgID string `json:"org_id,nullable"`
+	OrgID string `json:"org_id" api:"nullable"`
 	// The organization name
-	OrgName string `json:"org_name,nullable"`
+	OrgName string `json:"org_name" api:"nullable"`
 	// The owner type
-	OwnerType string `json:"owner_type,nullable"`
+	OwnerType string `json:"owner_type" api:"nullable"`
 	// The RIR
-	Rir string `json:"rir,nullable"`
+	Rir string `json:"rir" api:"nullable"`
 	// The state
-	State string `json:"state,nullable"`
+	State string `json:"state" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AbuseMail      respjson.Field
@@ -265,11 +265,11 @@ func (r *WaapIPInfoWhois) UnmarshalJSON(data []byte) error {
 
 type WaapRuleBlockedRequests struct {
 	// The action taken by the rule
-	Action string `json:"action,required"`
+	Action string `json:"action" api:"required"`
 	// The number of requests blocked by the rule
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// The name of the rule that blocked the request
-	RuleName string `json:"rule_name,required"`
+	RuleName string `json:"rule_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Action      respjson.Field
@@ -288,9 +288,9 @@ func (r *WaapRuleBlockedRequests) UnmarshalJSON(data []byte) error {
 
 type WaapTimeSeriesAttack struct {
 	// The type of attack
-	AttackType string `json:"attack_type,required"`
+	AttackType string `json:"attack_type" api:"required"`
 	// The time series data
-	Values []WaapTimeSeriesAttackValue `json:"values,required"`
+	Values []WaapTimeSeriesAttackValue `json:"values" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AttackType  respjson.Field
@@ -308,9 +308,9 @@ func (r *WaapTimeSeriesAttack) UnmarshalJSON(data []byte) error {
 
 type WaapTimeSeriesAttackValue struct {
 	// The number of attacks
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// The timestamp of the time series item as a POSIX timestamp
-	Timestamp int64 `json:"timestamp,required"`
+	Timestamp int64 `json:"timestamp" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -328,15 +328,15 @@ func (r *WaapTimeSeriesAttackValue) UnmarshalJSON(data []byte) error {
 
 type WaapTopSession struct {
 	// The number of blocked requests in the session
-	Blocked int64 `json:"blocked,required"`
+	Blocked int64 `json:"blocked" api:"required"`
 	// The duration of the session in seconds
-	Duration float64 `json:"duration,required"`
+	Duration float64 `json:"duration" api:"required"`
 	// The number of requests in the session
-	Requests int64 `json:"requests,required"`
+	Requests int64 `json:"requests" api:"required"`
 	// The session ID
-	SessionID string `json:"session_id,required" format:"uuid"`
+	SessionID string `json:"session_id" api:"required" format:"uuid"`
 	// The start time of the session as a POSIX timestamp
-	StartTime time.Time `json:"start_time,required" format:"date-time"`
+	StartTime time.Time `json:"start_time" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Blocked     respjson.Field
@@ -357,9 +357,9 @@ func (r *WaapTopSession) UnmarshalJSON(data []byte) error {
 
 type WaapTopURL struct {
 	// The number of attacks to the URL
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// The URL that was attacked
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -377,9 +377,9 @@ func (r *WaapTopURL) UnmarshalJSON(data []byte) error {
 
 type WaapTopUserAgent struct {
 	// The number of requests made with the user agent
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// The user agent that was used
-	UserAgent string `json:"user_agent,required"`
+	UserAgent string `json:"user_agent" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -397,7 +397,7 @@ func (r *WaapTopUserAgent) UnmarshalJSON(data []byte) error {
 
 type IPInfoGetAttackTimeSeriesParams struct {
 	// The IP address to check
-	IP string `query:"ip,required" format:"ipv4" json:"-"`
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
 	paramObj
 }
 
@@ -414,9 +414,9 @@ type IPInfoGetBlockedRequestsParams struct {
 	// The identifier for a domain. When specified, the response will exclusively
 	// contain data pertinent to the indicated domain, filtering out information from
 	// other domains.
-	DomainID int64 `query:"domain_id,required" json:"-"`
+	DomainID int64 `query:"domain_id" api:"required" json:"-"`
 	// The IP address to check
-	IP string `query:"ip,required" format:"ipv4" json:"-"`
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
 	paramObj
 }
 
@@ -431,7 +431,7 @@ func (r IPInfoGetBlockedRequestsParams) URLQuery() (v url.Values, err error) {
 
 type IPInfoGetDDOSAttackSeriesParams struct {
 	// The IP address to check
-	IP string `query:"ip,required" format:"ipv4" json:"-"`
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
 	paramObj
 }
 
@@ -446,7 +446,7 @@ func (r IPInfoGetDDOSAttackSeriesParams) URLQuery() (v url.Values, err error) {
 
 type IPInfoGetIPInfoParams struct {
 	// The IP address to check
-	IP string `query:"ip,required" format:"ipv4" json:"-"`
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
 	paramObj
 }
 
@@ -462,9 +462,9 @@ type IPInfoGetTopURLsParams struct {
 	// The identifier for a domain. When specified, the response will exclusively
 	// contain data pertinent to the indicated domain, filtering out information from
 	// other domains.
-	DomainID int64 `query:"domain_id,required" json:"-"`
+	DomainID int64 `query:"domain_id" api:"required" json:"-"`
 	// The IP address to check
-	IP string `query:"ip,required" format:"ipv4" json:"-"`
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
 	paramObj
 }
 
@@ -480,9 +480,9 @@ type IPInfoGetTopUserAgentsParams struct {
 	// The identifier for a domain. When specified, the response will exclusively
 	// contain data pertinent to the indicated domain, filtering out information from
 	// other domains.
-	DomainID int64 `query:"domain_id,required" json:"-"`
+	DomainID int64 `query:"domain_id" api:"required" json:"-"`
 	// The IP address to check
-	IP string `query:"ip,required" format:"ipv4" json:"-"`
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
 	paramObj
 }
 
@@ -499,9 +499,9 @@ type IPInfoGetTopUserSessionsParams struct {
 	// The identifier for a domain. When specified, the response will exclusively
 	// contain data pertinent to the indicated domain, filtering out information from
 	// other domains.
-	DomainID int64 `query:"domain_id,required" json:"-"`
+	DomainID int64 `query:"domain_id" api:"required" json:"-"`
 	// The IP address to check
-	IP string `query:"ip,required" format:"ipv4" json:"-"`
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
 	paramObj
 }
 
@@ -516,7 +516,7 @@ func (r IPInfoGetTopUserSessionsParams) URLQuery() (v url.Values, err error) {
 
 type IPInfoListAttackedCountriesParams struct {
 	// The IP address to check
-	IP string `query:"ip,required" format:"ipv4" json:"-"`
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
 	paramObj
 }
 
