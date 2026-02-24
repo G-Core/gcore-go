@@ -1658,7 +1658,7 @@ type PoolStatus struct {
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
 	// Health Monitor of the Pool
-	HealthMonitor HealthMonitorStatus `json:"health_monitor"`
+	HealthMonitor HealthMonitorStatus `json:"health_monitor,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
