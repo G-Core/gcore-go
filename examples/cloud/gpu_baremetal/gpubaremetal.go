@@ -70,7 +70,7 @@ func main() {
 
 	// Cluster operations
 	resizeGPUBaremetalCluster(&client, clusterID, 2)
-	rebuildGPUBaremetalCluster(&client, clusterID, imageID)
+	rebuildGPUBaremetalCluster(&client, clusterID)
 
 	// Cleanup
 	fmt.Println("\nCleaning up...")
@@ -212,27 +212,10 @@ func resizeGPUBaremetalCluster(client *gcore.Client, clusterID string, newSize i
 	fmt.Println("===============================")
 }
 
-func rebuildGPUBaremetalCluster(client *gcore.Client, clusterID string, imageID string) {
+func rebuildGPUBaremetalCluster(client *gcore.Client, clusterID string) {
 	fmt.Println("\n=== REBUILD GPU BAREMETAL CLUSTER ===")
 
-	cluster, err := client.Cloud.GPUBaremetal.Clusters.Get(context.Background(), clusterID, cloud.GPUBaremetalClusterGetParams{})
-	if err != nil {
-		fmt.Printf("Error getting cluster for rebuild: %v\n", err)
-		return
-	}
-
-	if len(cluster.ServersIDs) == 0 {
-		fmt.Println("No servers found in cluster to rebuild")
-		return
-	}
-
-	nodes := []string{cluster.ServersIDs[0]}
-
-	params := cloud.GPUBaremetalClusterRebuildParams{
-		Nodes:   nodes,
-		ImageID: param.NewOpt(imageID),
-	}
-
+	params := cloud.GPUBaremetalClusterRebuildParams{}
 	rebuiltCluster, err := client.Cloud.GPUBaremetal.Clusters.RebuildAndPoll(context.Background(), clusterID, params)
 	if err != nil {
 		fmt.Printf("Error rebuilding GPU baremetal cluster: %v\n", err)
