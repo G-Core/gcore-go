@@ -56,7 +56,7 @@ type OriginShielding struct {
 	// Shielding location ID.
 	//
 	// If origin shielding is disabled, the parameter value is **null**.
-	ShieldingPop int64 `json:"shielding_pop,nullable"`
+	ShieldingPop int64 `json:"shielding_pop" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ShieldingPop respjson.Field

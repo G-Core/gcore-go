@@ -103,11 +103,11 @@ func (r *K8SClusterPoolNodeService) Delete(ctx context.Context, instanceID strin
 
 type K8SClusterPoolNodeListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster name
-	ClusterName string `path:"cluster_name,required" json:"-"`
+	ClusterName string `path:"cluster_name" api:"required" json:"-"`
 	// Include DDoS profile information if set to true. Default is false.
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
 	paramObj
@@ -124,12 +124,12 @@ func (r K8SClusterPoolNodeListParams) URLQuery() (v url.Values, err error) {
 
 type K8SClusterPoolNodeDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster name
-	ClusterName string `path:"cluster_name,required" json:"-"`
+	ClusterName string `path:"cluster_name" api:"required" json:"-"`
 	// Pool name
-	PoolName string `path:"pool_name,required" json:"-"`
+	PoolName string `path:"pool_name" api:"required" json:"-"`
 	paramObj
 }

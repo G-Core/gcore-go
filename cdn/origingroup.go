@@ -314,13 +314,13 @@ type OriginGroupsAwsSignatureV4Auth struct {
 	//
 	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
 	// - From 3 to 512 characters.
-	S3AccessKeyID string `json:"s3_access_key_id,required"`
+	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
 	// S3 bucket name.
 	//
 	// Restrictions:
 	//
 	// - Maximum 128 characters.
-	S3BucketName string `json:"s3_bucket_name,required"`
+	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Secret access key for the S3 account.
 	//
 	// Restrictions:
@@ -329,14 +329,14 @@ type OriginGroupsAwsSignatureV4Auth struct {
 	//     underscores.
 	//   - If "s3_type": amazon, length should be 40 characters.
 	//   - If "s3_type": other, length should be from 16 to 255 characters.
-	S3SecretAccessKey string `json:"s3_secret_access_key,required"`
+	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
 	// Storage type compatible with S3.
 	//
 	// Possible values:
 	//
 	// - **amazon** – AWS S3 storage.
 	// - **other** – Other (not AWS) S3 compatible storage.
-	S3Type string `json:"s3_type,required"`
+	S3Type string `json:"s3_type" api:"required"`
 	// S3 storage region.
 	//
 	// The parameter is required, if "s3_type": amazon.
@@ -390,9 +390,9 @@ func (r *OriginGroupNewParams) UnmarshalJSON(data []byte) error {
 // The properties Name, Sources are required.
 type OriginGroupNewParamsBodyNoneAuth struct {
 	// Origin group name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// List of origin sources in the origin group.
-	Sources []OriginGroupNewParamsBodyNoneAuthSource `json:"sources,omitzero,required"`
+	Sources []OriginGroupNewParamsBodyNoneAuthSource `json:"sources,omitzero" api:"required"`
 	// Origin authentication type.
 	//
 	// Possible values:
@@ -471,13 +471,13 @@ func (r *OriginGroupNewParamsBodyNoneAuthSource) UnmarshalJSON(data []byte) erro
 // The properties Auth, AuthType, Name are required.
 type OriginGroupNewParamsBodyAwsSignatureV4 struct {
 	// Credentials to access the private bucket.
-	Auth OriginGroupNewParamsBodyAwsSignatureV4Auth `json:"auth,omitzero,required"`
+	Auth OriginGroupNewParamsBodyAwsSignatureV4Auth `json:"auth,omitzero" api:"required"`
 	// Authentication type.
 	//
 	// **awsSignatureV4** value is used for S3 storage.
-	AuthType string `json:"auth_type,required"`
+	AuthType string `json:"auth_type" api:"required"`
 	// Origin group name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Defines whether to use the next origin from the origin group if origin responds
 	// with the cases specified in `proxy_next_upstream`. If you enable it, you must
 	// specify cases in `proxy_next_upstream`.
@@ -526,13 +526,13 @@ type OriginGroupNewParamsBodyAwsSignatureV4Auth struct {
 	//
 	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
 	// - From 3 to 512 characters.
-	S3AccessKeyID string `json:"s3_access_key_id,required"`
+	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
 	// S3 bucket name.
 	//
 	// Restrictions:
 	//
 	// - Maximum 128 characters.
-	S3BucketName string `json:"s3_bucket_name,required"`
+	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Secret access key for the S3 account.
 	//
 	// Restrictions:
@@ -541,14 +541,14 @@ type OriginGroupNewParamsBodyAwsSignatureV4Auth struct {
 	//     underscores.
 	//   - If "s3_type": amazon, length should be 40 characters.
 	//   - If "s3_type": other, length should be from 16 to 255 characters.
-	S3SecretAccessKey string `json:"s3_secret_access_key,required"`
+	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
 	// Storage type compatible with S3.
 	//
 	// Possible values:
 	//
 	// - **amazon** – AWS S3 storage.
 	// - **other** – Other (not AWS) S3 compatible storage.
-	S3Type string `json:"s3_type,required"`
+	S3Type string `json:"s3_type" api:"required"`
 	// S3 storage region.
 	//
 	// The parameter is required, if "s3_type": amazon.
@@ -592,7 +592,7 @@ func (r *OriginGroupUpdateParams) UnmarshalJSON(data []byte) error {
 // The property Name is required.
 type OriginGroupUpdateParamsBodyNoneAuth struct {
 	// Origin group name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Origin authentication type.
 	//
 	// Possible values:
@@ -731,13 +731,13 @@ type OriginGroupUpdateParamsBodyAwsSignatureV4Auth struct {
 	//
 	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
 	// - From 3 to 512 characters.
-	S3AccessKeyID string `json:"s3_access_key_id,required"`
+	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
 	// S3 bucket name.
 	//
 	// Restrictions:
 	//
 	// - Maximum 128 characters.
-	S3BucketName string `json:"s3_bucket_name,required"`
+	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Secret access key for the S3 account.
 	//
 	// Restrictions:
@@ -746,14 +746,14 @@ type OriginGroupUpdateParamsBodyAwsSignatureV4Auth struct {
 	//     underscores.
 	//   - If "s3_type": amazon, length should be 40 characters.
 	//   - If "s3_type": other, length should be from 16 to 255 characters.
-	S3SecretAccessKey string `json:"s3_secret_access_key,required"`
+	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
 	// Storage type compatible with S3.
 	//
 	// Possible values:
 	//
 	// - **amazon** – AWS S3 storage.
 	// - **other** – Other (not AWS) S3 compatible storage.
-	S3Type string `json:"s3_type,required"`
+	S3Type string `json:"s3_type" api:"required"`
 	// S3 storage region.
 	//
 	// The parameter is required, if "s3_type": amazon.
@@ -825,13 +825,13 @@ type OriginGroupReplaceParamsBodyNoneAuth struct {
 	//
 	// - **none** - Used for public origins.
 	// - **awsSignatureV4** - Used for S3 storage.
-	AuthType string `json:"auth_type,required"`
+	AuthType string `json:"auth_type" api:"required"`
 	// Origin group name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Parameter is **deprecated**.
-	Path string `json:"path,required"`
+	Path string `json:"path" api:"required"`
 	// List of origin sources in the origin group.
-	Sources []OriginGroupReplaceParamsBodyNoneAuthSource `json:"sources,omitzero,required"`
+	Sources []OriginGroupReplaceParamsBodyNoneAuthSource `json:"sources,omitzero" api:"required"`
 	// Defines whether to use the next origin from the origin group if origin responds
 	// with the cases specified in `proxy_next_upstream`. If you enable it, you must
 	// specify cases in `proxy_next_upstream`.
@@ -840,7 +840,7 @@ type OriginGroupReplaceParamsBodyNoneAuth struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	UseNext bool `json:"use_next,required"`
+	UseNext bool `json:"use_next" api:"required"`
 	// Defines cases when the request should be passed on to the next origin.
 	//
 	// Possible values:
@@ -903,15 +903,15 @@ func (r *OriginGroupReplaceParamsBodyNoneAuthSource) UnmarshalJSON(data []byte) 
 // The properties Auth, AuthType, Name, Path, UseNext are required.
 type OriginGroupReplaceParamsBodyAwsSignatureV4 struct {
 	// Credentials to access the private bucket.
-	Auth OriginGroupReplaceParamsBodyAwsSignatureV4Auth `json:"auth,omitzero,required"`
+	Auth OriginGroupReplaceParamsBodyAwsSignatureV4Auth `json:"auth,omitzero" api:"required"`
 	// Authentication type.
 	//
 	// **awsSignatureV4** value is used for S3 storage.
-	AuthType string `json:"auth_type,required"`
+	AuthType string `json:"auth_type" api:"required"`
 	// Origin group name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Parameter is **deprecated**.
-	Path string `json:"path,required"`
+	Path string `json:"path" api:"required"`
 	// Defines whether to use the next origin from the origin group if origin responds
 	// with the cases specified in `proxy_next_upstream`. If you enable it, you must
 	// specify cases in `proxy_next_upstream`.
@@ -920,7 +920,7 @@ type OriginGroupReplaceParamsBodyAwsSignatureV4 struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	UseNext bool `json:"use_next,required"`
+	UseNext bool `json:"use_next" api:"required"`
 	// Defines cases when the request should be passed on to the next origin.
 	//
 	// Possible values:
@@ -960,13 +960,13 @@ type OriginGroupReplaceParamsBodyAwsSignatureV4Auth struct {
 	//
 	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
 	// - From 3 to 512 characters.
-	S3AccessKeyID string `json:"s3_access_key_id,required"`
+	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
 	// S3 bucket name.
 	//
 	// Restrictions:
 	//
 	// - Maximum 128 characters.
-	S3BucketName string `json:"s3_bucket_name,required"`
+	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Secret access key for the S3 account.
 	//
 	// Restrictions:
@@ -975,14 +975,14 @@ type OriginGroupReplaceParamsBodyAwsSignatureV4Auth struct {
 	//     underscores.
 	//   - If "s3_type": amazon, length should be 40 characters.
 	//   - If "s3_type": other, length should be from 16 to 255 characters.
-	S3SecretAccessKey string `json:"s3_secret_access_key,required"`
+	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
 	// Storage type compatible with S3.
 	//
 	// Possible values:
 	//
 	// - **amazon** – AWS S3 storage.
 	// - **other** – Other (not AWS) S3 compatible storage.
-	S3Type string `json:"s3_type,required"`
+	S3Type string `json:"s3_type" api:"required"`
 	// S3 storage region.
 	//
 	// The parameter is required, if "s3_type": amazon.

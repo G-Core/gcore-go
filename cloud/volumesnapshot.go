@@ -192,42 +192,42 @@ func (r *VolumeSnapshotService) Get(ctx context.Context, snapshotID string, quer
 
 type Snapshot struct {
 	// Snapshot ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the snapshot was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
 	// Snapshot description
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Snapshot name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Snapshot size, GiB
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// Snapshot status
 	//
 	// Any of "available", "backing-up", "creating", "deleted", "deleting", "error",
 	// "error_deleting", "restoring", "unmanaging".
-	Status SnapshotStatus `json:"status,required"`
+	Status SnapshotStatus `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Datetime when the snapshot was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// ID of the volume this snapshot was made from
-	VolumeID string `json:"volume_id,required" format:"uuid4"`
+	VolumeID string `json:"volume_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -271,12 +271,12 @@ const (
 )
 
 type VolumeSnapshotNewParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Snapshot name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Volume ID to make snapshot of
-	VolumeID string `json:"volume_id,required" format:"uuid4"`
+	VolumeID string `json:"volume_id" api:"required" format:"uuid4"`
 	// Snapshot description
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
@@ -299,9 +299,9 @@ func (r *VolumeSnapshotNewParams) UnmarshalJSON(data []byte) error {
 
 type VolumeSnapshotUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Display name for the snapshot (3-63 chars). Used in customer portal and API.
 	// Does not affect snapshot data.
 	Name param.Opt[string] `json:"name,omitzero"`
@@ -340,16 +340,16 @@ func (r *VolumeSnapshotUpdateParams) UnmarshalJSON(data []byte) error {
 
 type VolumeSnapshotDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type VolumeSnapshotGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

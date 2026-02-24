@@ -290,35 +290,35 @@ func (r *NetworkRouterService) Get(ctx context.Context, routerID string, query N
 
 type Router struct {
 	// Router ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the router was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Whether the router is distributed or centralized.
-	Distributed bool `json:"distributed,required"`
+	Distributed bool `json:"distributed" api:"required"`
 	// List of router interfaces.
-	Interfaces []RouterInterface `json:"interfaces,required"`
+	Interfaces []RouterInterface `json:"interfaces" api:"required"`
 	// Router name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// List of custom routes.
-	Routes []Route `json:"routes,required"`
+	Routes []Route `json:"routes" api:"required"`
 	// Status of the router.
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Datetime when the router was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"nullable" format:"uuid4"`
 	// State of this router's external gateway.
-	ExternalGatewayInfo RouterExternalGatewayInfo `json:"external_gateway_info,nullable"`
+	ExternalGatewayInfo RouterExternalGatewayInfo `json:"external_gateway_info" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -348,13 +348,13 @@ func (r *Router) UnmarshalJSON(data []byte) error {
 
 type RouterInterface struct {
 	// IP addresses assigned to this port
-	IPAssignments []IPAssignment `json:"ip_assignments,required"`
+	IPAssignments []IPAssignment `json:"ip_assignments" api:"required"`
 	// ID of the network the port is attached to
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// ID of virtual ethernet port object
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// MAC address of the virtual port
-	MacAddress string `json:"mac_address,nullable"`
+	MacAddress string `json:"mac_address" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPAssignments respjson.Field
@@ -375,11 +375,11 @@ func (r *RouterInterface) UnmarshalJSON(data []byte) error {
 // State of this router's external gateway.
 type RouterExternalGatewayInfo struct {
 	// Is SNAT enabled.
-	EnableSnat bool `json:"enable_snat,required"`
+	EnableSnat bool `json:"enable_snat" api:"required"`
 	// List of external IPs that emit SNAT-ed traffic.
-	ExternalFixedIPs []IPAssignment `json:"external_fixed_ips,required"`
+	ExternalFixedIPs []IPAssignment `json:"external_fixed_ips" api:"required"`
 	// Id of the external network.
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EnableSnat       respjson.Field
@@ -398,9 +398,9 @@ func (r *RouterExternalGatewayInfo) UnmarshalJSON(data []byte) error {
 
 type RouterList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []Router `json:"results,required"`
+	Results []Router `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -419,7 +419,7 @@ func (r *RouterList) UnmarshalJSON(data []byte) error {
 // The property SubnetID is required.
 type SubnetIDParam struct {
 	// Target IP is identified by it's subnet
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	paramObj
 }
 
@@ -432,10 +432,10 @@ func (r *SubnetIDParam) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkRouterNewParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// name of router
-	Name                string                                         `json:"name,required"`
+	Name                string                                         `json:"name" api:"required"`
 	ExternalGatewayInfo NetworkRouterNewParamsExternalGatewayInfoUnion `json:"external_gateway_info,omitzero"`
 	// List of interfaces to attach to router immediately after creation.
 	Interfaces []NetworkRouterNewParamsInterface `json:"interfaces,omitzero"`
@@ -508,7 +508,7 @@ func (u NetworkRouterNewParamsExternalGatewayInfoUnion) GetType() *string {
 // The property NetworkID is required.
 type NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer struct {
 	// id of the external network.
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Is SNAT enabled. Defaults to true.
 	EnableSnat param.Opt[bool] `json:"enable_snat,omitzero"`
 	// must be 'manual'.
@@ -571,7 +571,7 @@ func (r *NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSeriali
 // The property SubnetID is required.
 type NetworkRouterNewParamsInterface struct {
 	// id of the subnet to attach to.
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// must be 'subnet'.
 	//
 	// Any of "subnet".
@@ -590,10 +590,10 @@ func (r *NetworkRouterNewParamsInterface) UnmarshalJSON(data []byte) error {
 // The properties Destination, Nexthop are required.
 type NetworkRouterNewParamsRoute struct {
 	// CIDR of destination IPv4 subnet.
-	Destination string `json:"destination,required" format:"ipvanynetwork"`
+	Destination string `json:"destination" api:"required" format:"ipvanynetwork"`
 	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
 	// CIDR.
-	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
+	Nexthop string `json:"nexthop" api:"required" format:"ipvanyaddress"`
 	paramObj
 }
 
@@ -606,8 +606,8 @@ func (r *NetworkRouterNewParamsRoute) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkRouterUpdateParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// New name of router
 	Name param.Opt[string] `json:"name,omitzero"`
 	// New external gateway.
@@ -630,7 +630,7 @@ func (r *NetworkRouterUpdateParams) UnmarshalJSON(data []byte) error {
 // The property NetworkID is required.
 type NetworkRouterUpdateParamsExternalGatewayInfo struct {
 	// id of the external network.
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Is SNAT enabled. Defaults to true.
 	EnableSnat param.Opt[bool] `json:"enable_snat,omitzero"`
 	// must be 'manual'.
@@ -651,10 +651,10 @@ func (r *NetworkRouterUpdateParamsExternalGatewayInfo) UnmarshalJSON(data []byte
 // The properties Destination, Nexthop are required.
 type NetworkRouterUpdateParamsRoute struct {
 	// CIDR of destination IPv4 subnet.
-	Destination string `json:"destination,required" format:"ipvanynetwork"`
+	Destination string `json:"destination" api:"required" format:"ipvanynetwork"`
 	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
 	// CIDR.
-	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
+	Nexthop string `json:"nexthop" api:"required" format:"ipvanyaddress"`
 	paramObj
 }
 
@@ -667,8 +667,8 @@ func (r *NetworkRouterUpdateParamsRoute) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkRouterListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Limit the number of returned routers
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Offset value is used to exclude the first set of records from the result
@@ -686,18 +686,18 @@ func (r NetworkRouterListParams) URLQuery() (v url.Values, err error) {
 }
 
 type NetworkRouterDeleteParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type NetworkRouterAttachSubnetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Subnet ID on which router interface will be created
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// IP address to assign for router's interface, if not specified, address will be
 	// selected automatically
 	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipvanyaddress"`
@@ -713,8 +713,8 @@ func (r *NetworkRouterAttachSubnetParams) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkRouterDetachSubnetParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	SubnetID  SubnetIDParam
 	paramObj
 }
@@ -727,7 +727,7 @@ func (r *NetworkRouterDetachSubnetParams) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkRouterGetParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

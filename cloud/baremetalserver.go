@@ -154,18 +154,18 @@ func (r *BaremetalServerService) Rebuild(ctx context.Context, serverID string, p
 // IP addresses of the trunk port and its subports.
 type BaremetalFixedAddress struct {
 	// Address
-	Addr string `json:"addr,required"`
+	Addr string `json:"addr" api:"required"`
 	// Interface name. This field will be `null` if `with_interfaces_name=true` is not
 	// set in the request when listing servers. It will also be `null` if the
 	// `interface_name` was not specified during server creation or when attaching the
 	// interface.
-	InterfaceName string `json:"interface_name,required"`
+	InterfaceName string `json:"interface_name" api:"required"`
 	// The unique identifier of the subnet associated with this address.
-	SubnetID string `json:"subnet_id,required"`
+	SubnetID string `json:"subnet_id" api:"required"`
 	// The name of the subnet associated with this address.
-	SubnetName string `json:"subnet_name,required"`
+	SubnetName string `json:"subnet_name" api:"required"`
 	// Type of the address
-	Type constant.Fixed `json:"type,required"`
+	Type constant.Fixed `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Addr          respjson.Field
@@ -186,9 +186,9 @@ func (r *BaremetalFixedAddress) UnmarshalJSON(data []byte) error {
 
 type BaremetalFloatingAddress struct {
 	// Address
-	Addr string `json:"addr,required"`
+	Addr string `json:"addr" api:"required"`
 	// Type of the address
-	Type constant.Floating `json:"type,required"`
+	Type constant.Floating `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Addr        respjson.Field
@@ -206,58 +206,58 @@ func (r *BaremetalFloatingAddress) UnmarshalJSON(data []byte) error {
 
 type BaremetalServer struct {
 	// Bare metal server ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Map of `network_name` to list of addresses in that network
-	Addresses map[string][]BaremetalServerAddressUnion `json:"addresses,required"`
+	Addresses map[string][]BaremetalServerAddressUnion `json:"addresses" api:"required"`
 	// IP addresses of the instances that are blackholed by DDoS mitigation system
-	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
+	BlackholePorts []BlackholePort `json:"blackhole_ports" api:"required"`
 	// Datetime when bare metal server was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required"`
+	CreatorTaskID string `json:"creator_task_id" api:"required"`
 	// Bare metal advanced DDoS protection profile. It is always `null` if query
 	// parameter `with_ddos=true` is not set.
-	DDOSProfile DDOSProfile `json:"ddos_profile,required"`
+	DDOSProfile DDOSProfile `json:"ddos_profile" api:"required"`
 	// Fixed IP assigned to instance
-	FixedIPAssignments []BaremetalServerFixedIPAssignment `json:"fixed_ip_assignments,required"`
+	FixedIPAssignments []BaremetalServerFixedIPAssignment `json:"fixed_ip_assignments" api:"required"`
 	// Flavor details
-	Flavor BaremetalServerFlavor `json:"flavor,required"`
+	Flavor BaremetalServerFlavor `json:"flavor" api:"required"`
 	// Instance isolation information
-	InstanceIsolation InstanceIsolation `json:"instance_isolation,required"`
+	InstanceIsolation InstanceIsolation `json:"instance_isolation" api:"required"`
 	// Bare metal server name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// SSH key assigned to bare metal server
-	SSHKeyName string `json:"ssh_key_name,required"`
+	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Bare metal server status
 	//
 	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
 	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
 	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
 	// "UNKNOWN", "VERIFY_RESIZE".
-	Status BaremetalServerStatus `json:"status,required"`
+	Status BaremetalServerStatus `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required"`
+	TaskID string `json:"task_id" api:"required"`
 	// Task state
-	TaskState string `json:"task_state,required"`
+	TaskState string `json:"task_state" api:"required"`
 	// Bare metal server state
 	//
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
-	VmState BaremetalServerVmState `json:"vm_state,required"`
+	VmState BaremetalServerVmState `json:"vm_state" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -332,11 +332,11 @@ func (r *BaremetalServerAddressUnion) UnmarshalJSON(data []byte) error {
 
 type BaremetalServerFixedIPAssignment struct {
 	// Is network external
-	External bool `json:"external,required"`
+	External bool `json:"external" api:"required"`
 	// Ip address
-	IPAddress string `json:"ip_address,required"`
+	IPAddress string `json:"ip_address" api:"required"`
 	// Interface subnet id
-	SubnetID string `json:"subnet_id,required"`
+	SubnetID string `json:"subnet_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		External    respjson.Field
@@ -356,21 +356,21 @@ func (r *BaremetalServerFixedIPAssignment) UnmarshalJSON(data []byte) error {
 // Flavor details
 type BaremetalServerFlavor struct {
 	// CPU architecture
-	Architecture string `json:"architecture,required"`
+	Architecture string `json:"architecture" api:"required"`
 	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// Additional hardware description
-	HardwareDescription BaremetalServerFlavorHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription BaremetalServerFlavorHardwareDescription `json:"hardware_description" api:"required"`
 	// Operating system
-	OsType string `json:"os_type,required"`
+	OsType string `json:"os_type" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Flavor resource class for mapping to hardware capacity
-	ResourceClass string `json:"resource_class,required"`
+	ResourceClass string `json:"resource_class" api:"required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -395,15 +395,15 @@ func (r *BaremetalServerFlavor) UnmarshalJSON(data []byte) error {
 // Additional hardware description
 type BaremetalServerFlavorHardwareDescription struct {
 	// Human-readable CPU description
-	CPU string `json:"cpu,required"`
+	CPU string `json:"cpu" api:"required"`
 	// Human-readable disk description
-	Disk string `json:"disk,required"`
+	Disk string `json:"disk" api:"required"`
 	// If the flavor is licensed, this field contains the license type
-	License string `json:"license,required"`
+	License string `json:"license" api:"required"`
 	// Human-readable NIC description
-	Network string `json:"network,required"`
+	Network string `json:"network" api:"required"`
 	// Human-readable RAM description
-	Ram string `json:"ram,required"`
+	Ram string `json:"ram" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CPU         respjson.Field
@@ -468,14 +468,14 @@ const (
 
 type BaremetalServerNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// The flavor of the instance.
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// A list of network interfaces for the server. You can create one or more
 	// interfaces - private, public, or both.
-	Interfaces []BaremetalServerNewParamsInterfaceUnion `json:"interfaces,omitzero,required"`
+	Interfaces []BaremetalServerNewParamsInterfaceUnion `json:"interfaces,omitzero" api:"required"`
 	// Specifies the name of the SSH keypair, created via the
 	// [/v1/`ssh_keys` endpoint](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
 	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
@@ -738,7 +738,7 @@ type BaremetalServerNewParamsInterfaceExternal struct {
 	// A public IP address will be assigned to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "external".
-	Type constant.External `json:"type,required"`
+	Type constant.External `json:"type" api:"required"`
 	paramObj
 }
 
@@ -757,9 +757,9 @@ func (r *BaremetalServerNewParamsInterfaceExternal) UnmarshalJSON(data []byte) e
 // The properties NetworkID, SubnetID, Type are required.
 type BaremetalServerNewParamsInterfaceSubnet struct {
 	// The network where the instance will be connected.
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// The instance will get an IP address from this subnet.
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
@@ -774,7 +774,7 @@ type BaremetalServerNewParamsInterfaceSubnet struct {
 	// it will only have a private IP within the network.
 	//
 	// This field can be elided, and will marshal its zero value as "subnet".
-	Type constant.Subnet `json:"type,required"`
+	Type constant.Subnet `json:"type" api:"required"`
 	paramObj
 }
 
@@ -850,7 +850,7 @@ type BaremetalServerNewParamsInterfaceSubnetFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	paramObj
 }
 
@@ -866,14 +866,14 @@ func (r *BaremetalServerNewParamsInterfaceSubnetFloatingIPNew) UnmarshalJSON(dat
 type BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting struct {
 	// An existing available floating IP id must be specified if the source is set to
 	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
+	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
 	// An existing available floating IP will be attached to the instance. A floating
 	// IP is a public IP that makes the instance accessible from the internet, even if
 	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source,required"`
+	Source constant.Existing `json:"source" api:"required"`
 	paramObj
 }
 
@@ -888,7 +888,7 @@ func (r *BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting) UnmarshalJSO
 // The properties NetworkID, Type are required.
 type BaremetalServerNewParamsInterfaceAnySubnet struct {
 	// The network where the instance will be connected.
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
@@ -907,7 +907,7 @@ type BaremetalServerNewParamsInterfaceAnySubnet struct {
 	// Instance will be attached to a subnet with the largest count of free IPs.
 	//
 	// This field can be elided, and will marshal its zero value as "any_subnet".
-	Type constant.AnySubnet `json:"type,required"`
+	Type constant.AnySubnet `json:"type" api:"required"`
 	paramObj
 }
 
@@ -983,7 +983,7 @@ type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	paramObj
 }
 
@@ -999,14 +999,14 @@ func (r *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew) UnmarshalJSON(
 type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting struct {
 	// An existing available floating IP id must be specified if the source is set to
 	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
+	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
 	// An existing available floating IP will be attached to the instance. A floating
 	// IP is a public IP that makes the instance accessible from the internet, even if
 	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source,required"`
+	Source constant.Existing `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1021,7 +1021,7 @@ func (r *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting) Unmarshal
 // The properties PortID, Type are required.
 type BaremetalServerNewParamsInterfaceReservedFixedIP struct {
 	// Network ID the subnet belongs to. Port will be plugged in this network.
-	PortID string `json:"port_id,required"`
+	PortID string `json:"port_id" api:"required"`
 	// Interface name. Defaults to `null` and is returned as `null` in the API response
 	// if not set.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
@@ -1037,7 +1037,7 @@ type BaremetalServerNewParamsInterfaceReservedFixedIP struct {
 	//
 	// This field can be elided, and will marshal its zero value as
 	// "reserved_fixed_ip".
-	Type constant.ReservedFixedIP `json:"type,required"`
+	Type constant.ReservedFixedIP `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1113,7 +1113,7 @@ type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1129,14 +1129,14 @@ func (r *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew) Unmarsha
 type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
 	// An existing available floating IP id must be specified if the source is set to
 	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id,required" format:"uuid4"`
+	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
 	// An existing available floating IP will be attached to the instance. A floating
 	// IP is a public IP that makes the instance accessible from the internet, even if
 	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source,required"`
+	Source constant.Existing `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1153,7 +1153,7 @@ func (r *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting) Unm
 // The property ProfileTemplate is required.
 type BaremetalServerNewParamsDDOSProfile struct {
 	// Unique identifier of the DDoS protection template to use for this profile
-	ProfileTemplate int64 `json:"profile_template,required"`
+	ProfileTemplate int64 `json:"profile_template" api:"required"`
 	// List of field configurations that customize the protection parameters for this
 	// profile
 	Fields []BaremetalServerNewParamsDDOSProfileField `json:"fields,omitzero"`
@@ -1191,9 +1191,9 @@ func (r *BaremetalServerNewParamsDDOSProfileField) UnmarshalJSON(data []byte) er
 
 type BaremetalServerListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Filters the instances by a date and time stamp when the instances last changed.
 	ChangesBefore param.Opt[time.Time] `query:"changes-before,omitzero" format:"date-time" json:"-"`
 	// Filters the instances by a date and time stamp when the instances last changed
@@ -1317,9 +1317,9 @@ const (
 
 type BaremetalServerRebuildParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Image ID
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
 	// String in base64 format. Must not be passed together with 'username' or

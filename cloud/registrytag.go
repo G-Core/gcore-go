@@ -69,10 +69,10 @@ func (r *RegistryTagService) Delete(ctx context.Context, tagName string, body Re
 }
 
 type RegistryTagDeleteParams struct {
-	ProjectID      param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID       param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	RegistryID     int64            `path:"registry_id,required" json:"-"`
-	RepositoryName string           `path:"repository_name,required" json:"-"`
-	Digest         string           `path:"digest,required" json:"-"`
+	ProjectID      param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID       param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	RegistryID     int64            `path:"registry_id" api:"required" json:"-"`
+	RepositoryName string           `path:"repository_name" api:"required" json:"-"`
+	Digest         string           `path:"digest" api:"required" json:"-"`
 	paramObj
 }

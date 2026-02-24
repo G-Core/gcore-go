@@ -56,9 +56,9 @@ func (r *BgpAnnounceService) Toggle(ctx context.Context, params BgpAnnounceToggl
 }
 
 type ClientAnnounce struct {
-	Announced    []string `json:"announced,required" format:"ipv4network"`
-	ClientID     int64    `json:"client_id,required"`
-	NotAnnounced []string `json:"not_announced,required" format:"ipv4network"`
+	Announced    []string `json:"announced" api:"required" format:"ipv4network"`
+	ClientID     int64    `json:"client_id" api:"required"`
+	NotAnnounced []string `json:"not_announced" api:"required" format:"ipv4network"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Announced    respjson.Field
@@ -101,8 +101,8 @@ const (
 )
 
 type BgpAnnounceToggleParams struct {
-	Announce string           `json:"announce,required" format:"ipv4network"`
-	Enabled  bool             `json:"enabled,required"`
+	Announce string           `json:"announce" api:"required" format:"ipv4network"`
+	Enabled  bool             `json:"enabled" api:"required"`
 	ClientID param.Opt[int64] `query:"client_id,omitzero" json:"-"`
 	paramObj
 }

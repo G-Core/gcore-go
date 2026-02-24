@@ -111,38 +111,38 @@ func (r *DomainAPIPathService) Get(ctx context.Context, pathID string, query Dom
 // Response model for the API path
 type WaapAPIPath struct {
 	// The path ID
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// An array of api groups associated with the API path
-	APIGroups []string `json:"api_groups,required"`
+	APIGroups []string `json:"api_groups" api:"required"`
 	// The API version
-	APIVersion string `json:"api_version,required"`
+	APIVersion string `json:"api_version" api:"required"`
 	// The date and time in ISO 8601 format the API path was first detected.
-	FirstDetected time.Time `json:"first_detected,required" format:"date-time"`
+	FirstDetected time.Time `json:"first_detected" api:"required" format:"date-time"`
 	// The HTTP version of the API path
 	//
 	// Any of "HTTP", "HTTPS".
-	HTTPScheme WaapAPIPathHTTPScheme `json:"http_scheme,required"`
+	HTTPScheme WaapAPIPathHTTPScheme `json:"http_scheme" api:"required"`
 	// The date and time in ISO 8601 format the API path was last detected.
-	LastDetected time.Time `json:"last_detected,required" format:"date-time"`
+	LastDetected time.Time `json:"last_detected" api:"required" format:"date-time"`
 	// The API RESTful method
 	//
 	// Any of "GET", "POST", "PUT", "PATCH", "DELETE", "TRACE", "HEAD", "OPTIONS".
-	Method WaapAPIPathMethod `json:"method,required"`
+	Method WaapAPIPathMethod `json:"method" api:"required"`
 	// The API path, locations that are saved for resource IDs will be put in curly
 	// brackets
-	Path string `json:"path,required"`
+	Path string `json:"path" api:"required"`
 	// The number of requests for this path in the last 24 hours
-	RequestCount int64 `json:"request_count,required"`
+	RequestCount int64 `json:"request_count" api:"required"`
 	// The source of the discovered API
 	//
 	// Any of "API_DESCRIPTION_FILE", "TRAFFIC_SCAN", "USER_DEFINED".
-	Source WaapAPIPathSource `json:"source,required"`
+	Source WaapAPIPathSource `json:"source" api:"required"`
 	// The status of the discovered API path
 	//
 	// Any of "CONFIRMED_API", "POTENTIAL_API", "NOT_API", "DELISTED_API".
-	Status WaapAPIPathStatus `json:"status,required"`
+	Status WaapAPIPathStatus `json:"status" api:"required"`
 	// An array of tags associated with the API path
-	Tags []string `json:"tags,required"`
+	Tags []string `json:"tags" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -213,14 +213,14 @@ type DomainAPIPathNewParams struct {
 	// The different HTTP schemes an API path can have
 	//
 	// Any of "HTTP", "HTTPS".
-	HTTPScheme DomainAPIPathNewParamsHTTPScheme `json:"http_scheme,omitzero,required"`
+	HTTPScheme DomainAPIPathNewParamsHTTPScheme `json:"http_scheme,omitzero" api:"required"`
 	// The different methods an API path can have
 	//
 	// Any of "GET", "POST", "PUT", "PATCH", "DELETE", "TRACE", "HEAD", "OPTIONS".
-	Method DomainAPIPathNewParamsMethod `json:"method,omitzero,required"`
+	Method DomainAPIPathNewParamsMethod `json:"method,omitzero" api:"required"`
 	// The API path, locations that are saved for resource IDs will be put in curly
 	// brackets
-	Path       string            `json:"path,required"`
+	Path       string            `json:"path" api:"required"`
 	APIVersion param.Opt[string] `json:"api_version,omitzero"`
 	APIGroups  []string          `json:"api_groups,omitzero"`
 	Tags       []string          `json:"tags,omitzero"`
@@ -259,7 +259,7 @@ const (
 
 type DomainAPIPathUpdateParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	// The updated API path. When updating the path, variables can be renamed, path
 	// parts can be converted to variables and vice versa.
 	Path      param.Opt[string] `json:"path,omitzero"`
@@ -394,12 +394,12 @@ const (
 
 type DomainAPIPathDeleteParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }
 
 type DomainAPIPathGetParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }

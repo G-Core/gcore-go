@@ -49,7 +49,7 @@ func (r *DomainPolicyService) Toggle(ctx context.Context, policyID string, body 
 // Represents the mode of a security rule.
 type WaapPolicyMode struct {
 	// Indicates if the security rule is active
-	Mode bool `json:"mode,required"`
+	Mode bool `json:"mode" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Mode        respjson.Field
@@ -66,6 +66,6 @@ func (r *WaapPolicyMode) UnmarshalJSON(data []byte) error {
 
 type DomainPolicyToggleParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }

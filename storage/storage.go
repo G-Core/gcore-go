@@ -177,28 +177,28 @@ func (r *StorageService) UnlinkSSHKey(ctx context.Context, keyID int64, body Sto
 
 type Storage struct {
 	// Unique identifier for the storage instance
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Full hostname/address for accessing the storage endpoint
-	Address string `json:"address,required"`
+	Address string `json:"address" api:"required"`
 	// Client identifier who owns this storage
-	ClientID int64 `json:"client_id,required"`
+	ClientID int64 `json:"client_id" api:"required"`
 	// ISO 8601 timestamp when the storage was created
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// Geographic location code where the storage is provisioned
-	Location string `json:"location,required"`
+	Location string `json:"location" api:"required"`
 	// User-defined name for the storage instance
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Current provisioning status of the storage instance
 	//
 	// Any of "creating", "ok", "updating", "deleting", "deleted".
-	ProvisioningStatus StorageProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus StorageProvisioningStatus `json:"provisioning_status" api:"required"`
 	// Reseller technical client ID associated with the client
-	ResellerID int64 `json:"reseller_id,required"`
+	ResellerID int64 `json:"reseller_id" api:"required"`
 	// Storage protocol type - either S3-compatible object storage or SFTP file
 	// transfer
 	//
 	// Any of "sftp", "s3_compatible".
-	Type StorageType `json:"type,required"`
+	Type StorageType `json:"type" api:"required"`
 	// Whether this storage can be restored if deleted (S3 storages only, within 2
 	// weeks)
 	CanRestore  bool               `json:"can_restore"`
@@ -335,15 +335,15 @@ func (r *StorageCredentialsS3) UnmarshalJSON(data []byte) error {
 type StorageNewParams struct {
 	// Geographic location where the storage will be provisioned. Each location
 	// represents a specific data center region.
-	Location string `json:"location,required"`
+	Location string `json:"location" api:"required"`
 	// Unique storage name identifier. Must contain only letters, numbers, dashes, and
 	// underscores. Cannot be empty and must be less than 256 characters.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Storage protocol type. Choose 's3_compatible' for S3-compatible object storage
 	// with API access, or `sftp` for SFTP file transfer protocol.
 	//
 	// Any of "sftp", "s3_compatible".
-	Type StorageNewParamsType `json:"type,omitzero,required"`
+	Type StorageNewParamsType `json:"type,omitzero" api:"required"`
 	// Automatically generate a secure password for SFTP storage access. Only
 	// applicable when type is `sftp`. When `true`, a random password will be generated
 	// and returned in the response.
@@ -454,7 +454,7 @@ const (
 )
 
 type StorageLinkSSHKeyParams struct {
-	StorageID int64 `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id" api:"required" json:"-"`
 	paramObj
 }
 
@@ -472,6 +472,6 @@ func (r StorageRestoreParams) URLQuery() (v url.Values, err error) {
 }
 
 type StorageUnlinkSSHKeyParams struct {
-	StorageID int64 `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id" api:"required" json:"-"`
 	paramObj
 }

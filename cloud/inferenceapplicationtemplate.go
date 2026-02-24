@@ -64,19 +64,19 @@ func (r *InferenceApplicationTemplateService) Get(ctx context.Context, applicati
 
 type InferenceApplicationTemplate struct {
 	// Configurable components of the application
-	Components map[string]InferenceApplicationTemplateComponent `json:"components,required"`
+	Components map[string]InferenceApplicationTemplateComponent `json:"components" api:"required"`
 	// URL to the application's cover image
-	CoverURL string `json:"cover_url,required"`
+	CoverURL string `json:"cover_url" api:"required"`
 	// Brief overview of the application
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Human-readable name of the application
-	DisplayName string `json:"display_name,required"`
+	DisplayName string `json:"display_name" api:"required"`
 	// Unique application identifier in the catalog
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Detailed documentation or instructions
-	Readme string `json:"readme,required"`
+	Readme string `json:"readme" api:"required"`
 	// Categorization key-value pairs
-	Tags map[string]string `json:"tags,required"`
+	Tags map[string]string `json:"tags" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Components  respjson.Field
@@ -99,22 +99,22 @@ func (r *InferenceApplicationTemplate) UnmarshalJSON(data []byte) error {
 
 type InferenceApplicationTemplateComponent struct {
 	// Summary of the component's functionality
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Human-readable name of the component
-	DisplayName string `json:"display_name,required"`
+	DisplayName string `json:"display_name" api:"required"`
 	// Indicates whether this component can expose a public-facing endpoint (e.g., for
 	// inference or API access).
-	Exposable bool `json:"exposable,required"`
+	Exposable bool `json:"exposable" api:"required"`
 	// URL to the component's license information
-	LicenseURL string `json:"license_url,required"`
+	LicenseURL string `json:"license_url" api:"required"`
 	// Configurable parameters for the component
-	Parameters map[string]InferenceApplicationTemplateComponentParameter `json:"parameters,required"`
+	Parameters map[string]InferenceApplicationTemplateComponentParameter `json:"parameters" api:"required"`
 	// Detailed documentation or usage instructions
-	Readme string `json:"readme,required"`
+	Readme string `json:"readme" api:"required"`
 	// Specifies if the component is required for the application
-	Required bool `json:"required,required"`
+	Required bool `json:"required" api:"required"`
 	// List of compatible flavors or configurations
-	SuitableFlavors []InferenceApplicationTemplateComponentSuitableFlavor `json:"suitable_flavors,required"`
+	SuitableFlavors []InferenceApplicationTemplateComponentSuitableFlavor `json:"suitable_flavors" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Description     respjson.Field
@@ -138,25 +138,25 @@ func (r *InferenceApplicationTemplateComponent) UnmarshalJSON(data []byte) error
 
 type InferenceApplicationTemplateComponentParameter struct {
 	// Default value assigned if not provided
-	DefaultValue string `json:"default_value,required"`
+	DefaultValue string `json:"default_value" api:"required"`
 	// Description of the parameter's purpose
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// User-friendly name of the parameter
-	DisplayName string `json:"display_name,required"`
+	DisplayName string `json:"display_name" api:"required"`
 	// Allowed values when type is "enum"
-	EnumValues []string `json:"enum_values,required"`
+	EnumValues []string `json:"enum_values" api:"required"`
 	// Maximum value (applies to integer and float types)
-	MaxValue string `json:"max_value,required"`
+	MaxValue string `json:"max_value" api:"required"`
 	// Minimum value (applies to integer and float types)
-	MinValue string `json:"min_value,required"`
+	MinValue string `json:"min_value" api:"required"`
 	// Regexp pattern when type is "string"
-	Pattern string `json:"pattern,required"`
+	Pattern string `json:"pattern" api:"required"`
 	// Indicates is parameter mandatory
-	Required bool `json:"required,required"`
+	Required bool `json:"required" api:"required"`
 	// Determines the type of the parameter
 	//
 	// Any of "enum", "float", "integer", "string".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DefaultValue respjson.Field
@@ -181,7 +181,7 @@ func (r *InferenceApplicationTemplateComponentParameter) UnmarshalJSON(data []by
 
 type InferenceApplicationTemplateComponentSuitableFlavor struct {
 	// Name of the flavor
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -198,9 +198,9 @@ func (r *InferenceApplicationTemplateComponentSuitableFlavor) UnmarshalJSON(data
 
 type InferenceApplicationTemplateList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []InferenceApplicationTemplate `json:"results,required"`
+	Results []InferenceApplicationTemplate `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field

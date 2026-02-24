@@ -184,19 +184,19 @@ func (r *GPUVirtualFlavorUnionSupportedFeatures) UnmarshalJSON(data []byte) erro
 
 type GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPrice struct {
 	// Flavor architecture type
-	Architecture string `json:"architecture,required"`
+	Architecture string `json:"architecture" api:"required"`
 	// Number of available instances of given flavor
-	Capacity int64 `json:"capacity,required"`
+	Capacity int64 `json:"capacity" api:"required"`
 	// If the flavor is disabled, new resources cannot be created using this flavor.
-	Disabled bool `json:"disabled,required"`
+	Disabled bool `json:"disabled" api:"required"`
 	// Additional virtual hardware description
-	HardwareDescription GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceHardwareDescription `json:"hardware_description" api:"required"`
 	// Additional virtual hardware properties
-	HardwareProperties GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceHardwareProperties `json:"hardware_properties,required"`
+	HardwareProperties GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceHardwareProperties `json:"hardware_properties" api:"required"`
 	// Flavor name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Set of enabled features based on the flavor's type and configuration
-	SupportedFeatures GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceSupportedFeatures `json:"supported_features,required"`
+	SupportedFeatures GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceSupportedFeatures `json:"supported_features" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -220,13 +220,13 @@ func (r *GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPrice) UnmarshalJSON(data 
 // Additional virtual hardware description
 type GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceHardwareDescription struct {
 	// Human-readable GPU description
-	GPU string `json:"gpu,required"`
+	GPU string `json:"gpu" api:"required"`
 	// Local storage capacity in GiB
-	LocalStorage int64 `json:"local_storage,required"`
+	LocalStorage int64 `json:"local_storage" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Virtual CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		GPU          respjson.Field
@@ -249,15 +249,15 @@ func (r *GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceHardwareDescription) 
 // Additional virtual hardware properties
 type GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceHardwareProperties struct {
 	// The total count of available GPUs.
-	GPUCount int64 `json:"gpu_count,required"`
+	GPUCount int64 `json:"gpu_count" api:"required"`
 	// The manufacturer of the graphics processing GPU
-	GPUManufacturer string `json:"gpu_manufacturer,required"`
+	GPUManufacturer string `json:"gpu_manufacturer" api:"required"`
 	// GPU model
-	GPUModel string `json:"gpu_model,required"`
+	GPUModel string `json:"gpu_model" api:"required"`
 	// The configuration of the Ethernet ports
-	NicEth string `json:"nic_eth,required"`
+	NicEth string `json:"nic_eth" api:"required"`
 	// The configuration of the InfiniBand ports
-	NicIb string `json:"nic_ib,required"`
+	NicIb string `json:"nic_ib" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		GPUCount        respjson.Field
@@ -280,7 +280,7 @@ func (r *GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceHardwareProperties) U
 
 // Set of enabled features based on the flavor's type and configuration
 type GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceSupportedFeatures struct {
-	SecurityGroups bool `json:"security_groups,required"`
+	SecurityGroups bool `json:"security_groups" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SecurityGroups respjson.Field
@@ -299,21 +299,21 @@ func (r *GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceSupportedFeatures) Un
 
 type GPUVirtualFlavorVirtualGPUFlavorsChemaWithPrice struct {
 	// Flavor architecture type
-	Architecture string `json:"architecture,required"`
+	Architecture string `json:"architecture" api:"required"`
 	// Number of available instances of given flavor
-	Capacity int64 `json:"capacity,required"`
+	Capacity int64 `json:"capacity" api:"required"`
 	// If the flavor is disabled, new resources cannot be created using this flavor.
-	Disabled bool `json:"disabled,required"`
+	Disabled bool `json:"disabled" api:"required"`
 	// Additional virtual hardware description
-	HardwareDescription GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceHardwareDescription `json:"hardware_description" api:"required"`
 	// Additional virtual hardware properties
-	HardwareProperties GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceHardwareProperties `json:"hardware_properties,required"`
+	HardwareProperties GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceHardwareProperties `json:"hardware_properties" api:"required"`
 	// Flavor name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Flavor price.
-	Price GPUVirtualFlavorVirtualGPUFlavorsChemaWithPricePrice `json:"price,required"`
+	Price GPUVirtualFlavorVirtualGPUFlavorsChemaWithPricePrice `json:"price" api:"required"`
 	// Set of enabled features based on the flavor's type and configuration
-	SupportedFeatures GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceSupportedFeatures `json:"supported_features,required"`
+	SupportedFeatures GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceSupportedFeatures `json:"supported_features" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -338,13 +338,13 @@ func (r *GPUVirtualFlavorVirtualGPUFlavorsChemaWithPrice) UnmarshalJSON(data []b
 // Additional virtual hardware description
 type GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceHardwareDescription struct {
 	// Human-readable GPU description
-	GPU string `json:"gpu,required"`
+	GPU string `json:"gpu" api:"required"`
 	// Local storage capacity in GiB
-	LocalStorage int64 `json:"local_storage,required"`
+	LocalStorage int64 `json:"local_storage" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Virtual CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		GPU          respjson.Field
@@ -367,15 +367,15 @@ func (r *GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceHardwareDescription) Unm
 // Additional virtual hardware properties
 type GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceHardwareProperties struct {
 	// The total count of available GPUs.
-	GPUCount int64 `json:"gpu_count,required"`
+	GPUCount int64 `json:"gpu_count" api:"required"`
 	// The manufacturer of the graphics processing GPU
-	GPUManufacturer string `json:"gpu_manufacturer,required"`
+	GPUManufacturer string `json:"gpu_manufacturer" api:"required"`
 	// GPU model
-	GPUModel string `json:"gpu_model,required"`
+	GPUModel string `json:"gpu_model" api:"required"`
 	// The configuration of the Ethernet ports
-	NicEth string `json:"nic_eth,required"`
+	NicEth string `json:"nic_eth" api:"required"`
 	// The configuration of the InfiniBand ports
-	NicIb string `json:"nic_ib,required"`
+	NicIb string `json:"nic_ib" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		GPUCount        respjson.Field
@@ -399,15 +399,15 @@ func (r *GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceHardwareProperties) Unma
 // Flavor price.
 type GPUVirtualFlavorVirtualGPUFlavorsChemaWithPricePrice struct {
 	// Currency code. Shown if the `include_prices` query parameter if set to true
-	CurrencyCode string `json:"currency_code,required"`
+	CurrencyCode string `json:"currency_code" api:"required"`
 	// Price per hour. Shown if the `include_prices` query parameter if set to true
-	PricePerHour float64 `json:"price_per_hour,required"`
+	PricePerHour float64 `json:"price_per_hour" api:"required"`
 	// Price per month. Shown if the `include_prices` query parameter if set to true
-	PricePerMonth float64 `json:"price_per_month,required"`
+	PricePerMonth float64 `json:"price_per_month" api:"required"`
 	// Price status for the UI
 	//
 	// Any of "error", "hide", "show".
-	PriceStatus string `json:"price_status,required"`
+	PriceStatus string `json:"price_status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CurrencyCode  respjson.Field
@@ -427,7 +427,7 @@ func (r *GPUVirtualFlavorVirtualGPUFlavorsChemaWithPricePrice) UnmarshalJSON(dat
 
 // Set of enabled features based on the flavor's type and configuration
 type GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceSupportedFeatures struct {
-	SecurityGroups bool `json:"security_groups,required"`
+	SecurityGroups bool `json:"security_groups" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SecurityGroups respjson.Field
@@ -446,9 +446,9 @@ func (r *GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceSupportedFeatures) Unmar
 
 type GPUVirtualFlavorList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []GPUVirtualFlavorUnion `json:"results,required"`
+	Results []GPUVirtualFlavorUnion `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -466,9 +466,9 @@ func (r *GPUVirtualFlavorList) UnmarshalJSON(data []byte) error {
 
 type GPUVirtualClusterFlavorListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Set to `true` to remove the disabled flavors from the response.
 	HideDisabled param.Opt[bool] `query:"hide_disabled,omitzero" json:"-"`
 	// Set to `true` if the response should include flavor prices.

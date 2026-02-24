@@ -43,13 +43,13 @@ func (r *AdvancedRuleService) List(ctx context.Context, opts ...option.RequestOp
 // Advanced rules descriptor object
 type WaapAdvancedRuleDescriptor struct {
 	// The object's name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The object's type
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// The object's attributes list
-	Attrs []WaapAdvancedRuleDescriptorAttr `json:"attrs,nullable"`
+	Attrs []WaapAdvancedRuleDescriptorAttr `json:"attrs" api:"nullable"`
 	// The object's description
-	Description string `json:"description,nullable"`
+	Description string `json:"description" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -70,15 +70,15 @@ func (r *WaapAdvancedRuleDescriptor) UnmarshalJSON(data []byte) error {
 // An attribute of a descriptor's object
 type WaapAdvancedRuleDescriptorAttr struct {
 	// The attribute's name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The attribute's type
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// A list of arguments for the attribute
-	Args []WaapAdvancedRuleDescriptorAttrArg `json:"args,nullable"`
+	Args []WaapAdvancedRuleDescriptorAttrArg `json:"args" api:"nullable"`
 	// The attribute's description
-	Description string `json:"description,nullable"`
+	Description string `json:"description" api:"nullable"`
 	// The attribute's hint
-	Hint string `json:"hint,nullable"`
+	Hint string `json:"hint" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -100,11 +100,11 @@ func (r *WaapAdvancedRuleDescriptorAttr) UnmarshalJSON(data []byte) error {
 // An argument of a descriptor's object
 type WaapAdvancedRuleDescriptorAttrArg struct {
 	// The argument's name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The argument's type
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// The argument's description
-	Description string `json:"description,nullable"`
+	Description string `json:"description" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -124,8 +124,8 @@ func (r *WaapAdvancedRuleDescriptorAttrArg) UnmarshalJSON(data []byte) error {
 // A response from a request to retrieve an advanced rules descriptor
 type WaapAdvancedRuleDescriptorList struct {
 	// The descriptor's version
-	Version string                       `json:"version,required"`
-	Objects []WaapAdvancedRuleDescriptor `json:"objects,nullable"`
+	Version string                       `json:"version" api:"required"`
+	Objects []WaapAdvancedRuleDescriptor `json:"objects" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Version     respjson.Field

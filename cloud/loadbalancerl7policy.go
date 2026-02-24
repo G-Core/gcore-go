@@ -246,9 +246,9 @@ func (r *LoadBalancerL7PolicyService) UpdateAndPoll(ctx context.Context, l7polic
 
 type LoadBalancerL7PolicyNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 
 	//
 	// Request body variants
@@ -276,9 +276,9 @@ func (r *LoadBalancerL7PolicyNewParams) UnmarshalJSON(data []byte) error {
 // The properties Action, ListenerID, RedirectURL are required.
 type LoadBalancerL7PolicyNewParamsBodyRedirectToURL struct {
 	// Listener ID
-	ListenerID string `json:"listener_id,required"`
+	ListenerID string `json:"listener_id" api:"required"`
 	// Requests matching this policy will be redirected to this URL.
-	RedirectURL string `json:"redirect_url,required"`
+	RedirectURL string `json:"redirect_url" api:"required"`
 	// Human-readable name of the policy
 	Name param.Opt[string] `json:"name,omitzero"`
 	// The position of this policy on the listener
@@ -292,7 +292,7 @@ type LoadBalancerL7PolicyNewParamsBodyRedirectToURL struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REDIRECT_TO_URL".
-	Action constant.RedirectToURL `json:"action,required"`
+	Action constant.RedirectToURL `json:"action" api:"required"`
 	paramObj
 }
 
@@ -307,9 +307,9 @@ func (r *LoadBalancerL7PolicyNewParamsBodyRedirectToURL) UnmarshalJSON(data []by
 // The properties Action, ListenerID, RedirectPrefix are required.
 type LoadBalancerL7PolicyNewParamsBodyRedirectPrefix struct {
 	// Listener ID
-	ListenerID string `json:"listener_id,required"`
+	ListenerID string `json:"listener_id" api:"required"`
 	// Requests matching this policy will be redirected to this Prefix URL.
-	RedirectPrefix string `json:"redirect_prefix,required"`
+	RedirectPrefix string `json:"redirect_prefix" api:"required"`
 	// Human-readable name of the policy
 	Name param.Opt[string] `json:"name,omitzero"`
 	// The position of this policy on the listener
@@ -323,7 +323,7 @@ type LoadBalancerL7PolicyNewParamsBodyRedirectPrefix struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REDIRECT_PREFIX".
-	Action constant.RedirectPrefix `json:"action,required"`
+	Action constant.RedirectPrefix `json:"action" api:"required"`
 	paramObj
 }
 
@@ -338,9 +338,9 @@ func (r *LoadBalancerL7PolicyNewParamsBodyRedirectPrefix) UnmarshalJSON(data []b
 // The properties Action, ListenerID, RedirectPoolID are required.
 type LoadBalancerL7PolicyNewParamsBodyRedirectToPool struct {
 	// Listener ID
-	ListenerID string `json:"listener_id,required"`
+	ListenerID string `json:"listener_id" api:"required"`
 	// Requests matching this policy will be redirected to the pool with this ID.
-	RedirectPoolID string `json:"redirect_pool_id,required"`
+	RedirectPoolID string `json:"redirect_pool_id" api:"required"`
 	// Human-readable name of the policy
 	Name param.Opt[string] `json:"name,omitzero"`
 	// The position of this policy on the listener
@@ -350,7 +350,7 @@ type LoadBalancerL7PolicyNewParamsBodyRedirectToPool struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REDIRECT_TO_POOL".
-	Action constant.RedirectToPool `json:"action,required"`
+	Action constant.RedirectToPool `json:"action" api:"required"`
 	paramObj
 }
 
@@ -365,7 +365,7 @@ func (r *LoadBalancerL7PolicyNewParamsBodyRedirectToPool) UnmarshalJSON(data []b
 // The properties Action, ListenerID are required.
 type LoadBalancerL7PolicyNewParamsBodyReject struct {
 	// Listener ID
-	ListenerID string `json:"listener_id,required"`
+	ListenerID string `json:"listener_id" api:"required"`
 	// Human-readable name of the policy
 	Name param.Opt[string] `json:"name,omitzero"`
 	// The position of this policy on the listener
@@ -375,7 +375,7 @@ type LoadBalancerL7PolicyNewParamsBodyReject struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REJECT".
-	Action constant.Reject `json:"action,required"`
+	Action constant.Reject `json:"action" api:"required"`
 	paramObj
 }
 
@@ -389,9 +389,9 @@ func (r *LoadBalancerL7PolicyNewParamsBodyReject) UnmarshalJSON(data []byte) err
 
 type LoadBalancerL7PolicyUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 
 	//
 	// Request body variants
@@ -420,7 +420,7 @@ func (r *LoadBalancerL7PolicyUpdateParams) UnmarshalJSON(data []byte) error {
 type LoadBalancerL7PolicyUpdateParamsBodyRedirectToURL struct {
 	// Requests matching this policy will be redirected to this URL. Only valid if
 	// action is `REDIRECT_TO_URL`.
-	RedirectURL string `json:"redirect_url,required"`
+	RedirectURL string `json:"redirect_url" api:"required"`
 	// Human-readable name of the policy
 	Name param.Opt[string] `json:"name,omitzero"`
 	// The position of this policy on the listener
@@ -434,7 +434,7 @@ type LoadBalancerL7PolicyUpdateParamsBodyRedirectToURL struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REDIRECT_TO_URL".
-	Action constant.RedirectToURL `json:"action,required"`
+	Action constant.RedirectToURL `json:"action" api:"required"`
 	paramObj
 }
 
@@ -449,7 +449,7 @@ func (r *LoadBalancerL7PolicyUpdateParamsBodyRedirectToURL) UnmarshalJSON(data [
 // The properties Action, RedirectPrefix are required.
 type LoadBalancerL7PolicyUpdateParamsBodyRedirectPrefix struct {
 	// Requests matching this policy will be redirected to this Prefix URL.
-	RedirectPrefix string `json:"redirect_prefix,required"`
+	RedirectPrefix string `json:"redirect_prefix" api:"required"`
 	// Human-readable name of the policy
 	Name param.Opt[string] `json:"name,omitzero"`
 	// The position of this policy on the listener
@@ -463,7 +463,7 @@ type LoadBalancerL7PolicyUpdateParamsBodyRedirectPrefix struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REDIRECT_PREFIX".
-	Action constant.RedirectPrefix `json:"action,required"`
+	Action constant.RedirectPrefix `json:"action" api:"required"`
 	paramObj
 }
 
@@ -478,7 +478,7 @@ func (r *LoadBalancerL7PolicyUpdateParamsBodyRedirectPrefix) UnmarshalJSON(data 
 // The properties Action, RedirectPoolID are required.
 type LoadBalancerL7PolicyUpdateParamsBodyRedirectToPool struct {
 	// Requests matching this policy will be redirected to the pool with this ID.
-	RedirectPoolID string `json:"redirect_pool_id,required"`
+	RedirectPoolID string `json:"redirect_pool_id" api:"required"`
 	// Human-readable name of the policy
 	Name param.Opt[string] `json:"name,omitzero"`
 	// The position of this policy on the listener
@@ -488,7 +488,7 @@ type LoadBalancerL7PolicyUpdateParamsBodyRedirectToPool struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REDIRECT_TO_POOL".
-	Action constant.RedirectToPool `json:"action,required"`
+	Action constant.RedirectToPool `json:"action" api:"required"`
 	paramObj
 }
 
@@ -511,7 +511,7 @@ type LoadBalancerL7PolicyUpdateParamsBodyReject struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REJECT".
-	Action constant.Reject `json:"action,required"`
+	Action constant.Reject `json:"action" api:"required"`
 	paramObj
 }
 
@@ -525,24 +525,24 @@ func (r *LoadBalancerL7PolicyUpdateParamsBodyReject) UnmarshalJSON(data []byte) 
 
 type LoadBalancerL7PolicyListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

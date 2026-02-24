@@ -97,9 +97,9 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 
 type AllowedAddressPairs struct {
 	// Subnet mask or IP address of the port specified in `allowed_address_pairs`
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// MAC address of the port specified in `allowed_address_pairs`
-	MacAddress string `json:"mac_address,nullable"`
+	MacAddress string `json:"mac_address" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPAddress   respjson.Field
@@ -118,37 +118,37 @@ func (r *AllowedAddressPairs) UnmarshalJSON(data []byte) error {
 // Bare metal flavor schema
 type BaremetalFlavor struct {
 	// Flavor architecture type
-	Architecture string `json:"architecture,required"`
+	Architecture string `json:"architecture" api:"required"`
 	// Disabled flavor flag
-	Disabled bool `json:"disabled,required"`
+	Disabled bool `json:"disabled" api:"required"`
 	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// Flavor operating system
-	OsType string `json:"os_type,required"`
+	OsType string `json:"os_type" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Flavor resource class for mapping to hardware capacity
-	ResourceClass string `json:"resource_class,required"`
+	ResourceClass string `json:"resource_class" api:"required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// Number of available instances of given configuration
-	Capacity int64 `json:"capacity,nullable"`
+	Capacity int64 `json:"capacity" api:"nullable"`
 	// Currency code. Shown if the `include_prices` query parameter if set to true
-	CurrencyCode string `json:"currency_code,nullable"`
+	CurrencyCode string `json:"currency_code" api:"nullable"`
 	// Additional hardware description
 	HardwareDescription map[string]string `json:"hardware_description"`
 	// Price per hour. Shown if the `include_prices` query parameter if set to true
-	PricePerHour float64 `json:"price_per_hour,nullable"`
+	PricePerHour float64 `json:"price_per_hour" api:"nullable"`
 	// Price per month. Shown if the `include_prices` query parameter if set to true
-	PricePerMonth float64 `json:"price_per_month,nullable"`
+	PricePerMonth float64 `json:"price_per_month" api:"nullable"`
 	// Price status for the UI
 	//
 	// Any of "error", "hide", "show".
-	PriceStatus BaremetalFlavorPriceStatus `json:"price_status,nullable"`
+	PriceStatus BaremetalFlavorPriceStatus `json:"price_status" api:"nullable"`
 	// Number of available instances of given flavor from reservations
-	ReservedCapacity int64 `json:"reserved_capacity,nullable"`
+	ReservedCapacity int64 `json:"reserved_capacity" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -188,9 +188,9 @@ const (
 
 type BaremetalFlavorList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []BaremetalFlavor `json:"results,required"`
+	Results []BaremetalFlavor `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -209,9 +209,9 @@ func (r *BaremetalFlavorList) UnmarshalJSON(data []byte) error {
 type BlackholePort struct {
 	// A date-time string giving the time that the alarm ended. If not yet ended, time
 	// will be given as 0001-01-01T00:00:00Z
-	AlarmEnd time.Time `json:"AlarmEnd,required" format:"date-time"`
+	AlarmEnd time.Time `json:"AlarmEnd" api:"required" format:"date-time"`
 	// A date-time string giving the time that the alarm started
-	AlarmStart time.Time `json:"AlarmStart,required" format:"date-time"`
+	AlarmStart time.Time `json:"AlarmStart" api:"required" format:"date-time"`
 	// Current state of alarm
 	//
 	// Any of "ACK_REQ", "ALARM", "ARCHIVED", "CLEAR", "CLEARING", "CLEARING_FAIL",
@@ -222,12 +222,12 @@ type BlackholePort struct {
 	// "end_grace", "end_wait", "manual_clear", "manual_clearing",
 	// "manual_clearing_fail", "manual_mitigating", "manual_starting",
 	// "manual_starting_fail", "mitigating", "start_wait", "starting", "starting_fail".
-	AlarmState BlackholePortAlarmState `json:"AlarmState,required"`
+	AlarmState BlackholePortAlarmState `json:"AlarmState" api:"required"`
 	// Total alert duration
-	AlertDuration string `json:"AlertDuration,required"`
+	AlertDuration string `json:"AlertDuration" api:"required"`
 	// Notification destination IP address
-	DestinationIP string `json:"DestinationIP,required"`
-	ID            int64  `json:"ID,required"`
+	DestinationIP string `json:"DestinationIP" api:"required"`
+	ID            int64  `json:"ID" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AlarmEnd      respjson.Field
@@ -291,7 +291,7 @@ const (
 
 type Console struct {
 	// Remote console information
-	RemoteConsole ConsoleRemoteConsole `json:"remote_console,required"`
+	RemoteConsole ConsoleRemoteConsole `json:"remote_console" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RemoteConsole respjson.Field
@@ -308,9 +308,9 @@ func (r *Console) UnmarshalJSON(data []byte) error {
 
 // Remote console information
 type ConsoleRemoteConsole struct {
-	Protocol string `json:"protocol,required"`
-	Type     string `json:"type,required"`
-	URL      string `json:"url,required" format:"uri"`
+	Protocol string `json:"protocol" api:"required"`
+	Type     string `json:"type" api:"required"`
+	URL      string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Protocol    respjson.Field
@@ -329,21 +329,21 @@ func (r *ConsoleRemoteConsole) UnmarshalJSON(data []byte) error {
 
 type DDOSProfile struct {
 	// Unique identifier for the DDoS protection profile
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// List of configured field values for the protection profile
-	Fields []DDOSProfileField `json:"fields,required"`
+	Fields []DDOSProfileField `json:"fields" api:"required"`
 	// Configuration options controlling profile activation and BGP routing
-	Options DDOSProfileOptionList `json:"options,required"`
+	Options DDOSProfileOptionList `json:"options" api:"required"`
 	// Complete template configuration data used for this profile
-	ProfileTemplate DDOSProfileTemplate `json:"profile_template,required"`
+	ProfileTemplate DDOSProfileTemplate `json:"profile_template" api:"required"`
 	// Detailed description of the protection template used for this profile
-	ProfileTemplateDescription string `json:"profile_template_description,required"`
+	ProfileTemplateDescription string `json:"profile_template_description" api:"required"`
 	// List of network protocols and ports configured for protection
-	Protocols []DDOSProfileProtocol `json:"protocols,required"`
+	Protocols []DDOSProfileProtocol `json:"protocols" api:"required"`
 	// Geographic site identifier where the protection is deployed
-	Site string `json:"site,required"`
+	Site string `json:"site" api:"required"`
 	// Current operational status and any error information for the profile
-	Status DDOSProfileStatus `json:"status,required"`
+	Status DDOSProfileStatus `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                         respjson.Field
@@ -367,9 +367,9 @@ func (r *DDOSProfile) UnmarshalJSON(data []byte) error {
 
 type DDOSProfileProtocol struct {
 	// Network port number for which protocols are configured
-	Port string `json:"port,required"`
+	Port string `json:"port" api:"required"`
 	// List of network protocols enabled on the specified port
-	Protocols []string `json:"protocols,required"`
+	Protocols []string `json:"protocols" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Port        respjson.Field
@@ -387,27 +387,27 @@ func (r *DDOSProfileProtocol) UnmarshalJSON(data []byte) error {
 
 type DDOSProfileField struct {
 	// Unique identifier for the DDoS protection field
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// ID of DDoS profile field
-	BaseField int64 `json:"base_field,required"`
+	BaseField int64 `json:"base_field" api:"required"`
 	// Predefined default value for the field if not specified
-	Default string `json:"default,required"`
+	Default string `json:"default" api:"required"`
 	// Detailed description explaining the field's purpose and usage guidelines
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Name of DDoS profile field
-	FieldName string `json:"field_name,required"`
+	FieldName string `json:"field_name" api:"required"`
 	// Data type classification of the field (e.g., string, integer, array)
-	FieldType string `json:"field_type,required"`
+	FieldType string `json:"field_type" api:"required"`
 	// Complex value. Only one of 'value' or 'field_value' must be specified.
-	FieldValue any `json:"field_value,required"`
+	FieldValue any `json:"field_value" api:"required"`
 	// Human-readable name of the protection field
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Indicates whether this field must be provided when creating a protection profile
-	Required bool `json:"required,required"`
+	Required bool `json:"required" api:"required"`
 	// JSON schema defining validation rules and constraints for the field value
-	ValidationSchema any `json:"validation_schema,required"`
+	ValidationSchema any `json:"validation_schema" api:"required"`
 	// Basic type value. Only one of 'value' or 'field_value' must be specified.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -435,9 +435,9 @@ func (r *DDOSProfileField) UnmarshalJSON(data []byte) error {
 type DDOSProfileOptionList struct {
 	// Controls whether the DDoS protection profile is enabled and actively protecting
 	// the resource
-	Active bool `json:"active,required"`
+	Active bool `json:"active" api:"required"`
 	// Enables Border Gateway Protocol (BGP) routing for DDoS protection traffic
-	Bgp bool `json:"bgp,required"`
+	Bgp bool `json:"bgp" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Active      respjson.Field
@@ -455,9 +455,9 @@ func (r *DDOSProfileOptionList) UnmarshalJSON(data []byte) error {
 
 type DDOSProfileStatus struct {
 	// Detailed error message describing any issues with the profile operation
-	ErrorDescription string `json:"error_description,required"`
+	ErrorDescription string `json:"error_description" api:"required"`
 	// Current operational status of the DDoS protection profile
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ErrorDescription respjson.Field
@@ -475,13 +475,13 @@ func (r *DDOSProfileStatus) UnmarshalJSON(data []byte) error {
 
 type DDOSProfileTemplate struct {
 	// Unique identifier for the DDoS protection template
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Detailed description explaining the template's purpose and use cases
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// List of configurable fields that define the template's protection parameters
-	Fields []DDOSProfileTemplateField `json:"fields,required"`
+	Fields []DDOSProfileTemplateField `json:"fields" api:"required"`
 	// Human-readable name of the protection template
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -501,19 +501,19 @@ func (r *DDOSProfileTemplate) UnmarshalJSON(data []byte) error {
 
 type DDOSProfileTemplateField struct {
 	// Unique identifier for the DDoS protection field
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Predefined default value for the field if not specified
-	Default string `json:"default,required"`
+	Default string `json:"default" api:"required"`
 	// Detailed description explaining the field's purpose and usage guidelines
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Data type classification of the field (e.g., string, integer, array)
-	FieldType string `json:"field_type,required"`
+	FieldType string `json:"field_type" api:"required"`
 	// Human-readable name of the protection field
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Indicates whether this field must be provided when creating a protection profile
-	Required bool `json:"required,required"`
+	Required bool `json:"required" api:"required"`
 	// JSON schema defining validation rules and constraints for the field value
-	ValidationSchema any `json:"validation_schema,required"`
+	ValidationSchema any `json:"validation_schema" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -538,22 +538,22 @@ func (r *DDOSProfileTemplateField) UnmarshalJSON(data []byte) error {
 // instance.
 type FixedAddress struct {
 	// IP address
-	Addr string `json:"addr,required"`
+	Addr string `json:"addr" api:"required"`
 	// Interface name. This field will be `null` if `with_interfaces_name=true` is not
 	// set in the request when listing instances. It will also be `null` if the
 	// `interface_name` was not specified during instance creation or when attaching
 	// the interface.
-	InterfaceName string `json:"interface_name,required"`
+	InterfaceName string `json:"interface_name" api:"required"`
 	// The unique identifier of the subnet associated with this address. Included only
 	// in the response for a single-resource lookup (GET by ID). For the trunk
 	// subports, this field is always set.
-	SubnetID string `json:"subnet_id,required"`
+	SubnetID string `json:"subnet_id" api:"required"`
 	// The name of the subnet associated with this address. Included only in the
 	// response for a single-resource lookup (GET by ID). For the trunk subports, this
 	// field is always set.
-	SubnetName string `json:"subnet_name,required"`
+	SubnetName string `json:"subnet_name" api:"required"`
 	// Type of the address
-	Type constant.Fixed `json:"type,required"`
+	Type constant.Fixed `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Addr          respjson.Field
@@ -576,14 +576,14 @@ func (r *FixedAddress) UnmarshalJSON(data []byte) error {
 // omits the `subnet_name` and `subnet_id` fields.
 type FixedAddressShort struct {
 	// IP address
-	Addr string `json:"addr,required"`
+	Addr string `json:"addr" api:"required"`
 	// Interface name. This field will be `null` if `with_interfaces_name=true` is not
 	// set in the request when listing instances. It will also be `null` if the
 	// `interface_name` was not specified during instance creation or when attaching
 	// the interface.
-	InterfaceName string `json:"interface_name,required"`
+	InterfaceName string `json:"interface_name" api:"required"`
 	// Type of the address
-	Type constant.Fixed `json:"type,required"`
+	Type constant.Fixed `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Addr          respjson.Field
@@ -603,9 +603,9 @@ func (r *FixedAddressShort) UnmarshalJSON(data []byte) error {
 // Schema for `floating` addresses.
 type FloatingAddress struct {
 	// Address
-	Addr string `json:"addr,required"`
+	Addr string `json:"addr" api:"required"`
 	// Type of the address
-	Type constant.Floating `json:"type,required"`
+	Type constant.Floating `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Addr        respjson.Field
@@ -623,43 +623,43 @@ func (r *FloatingAddress) UnmarshalJSON(data []byte) error {
 
 type FloatingIP struct {
 	// Floating IP ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the floating IP was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
 	// IP address of the port the floating IP is attached to
-	FixedIPAddress string `json:"fixed_ip_address,required" format:"ipvanyaddress"`
+	FixedIPAddress string `json:"fixed_ip_address" api:"required" format:"ipvanyaddress"`
 	// IP Address of the floating IP
-	FloatingIPAddress string `json:"floating_ip_address,required" format:"ipvanyaddress"`
+	FloatingIPAddress string `json:"floating_ip_address" api:"required" format:"ipvanyaddress"`
 	// Port ID the floating IP is attached to. The `fixed_ip_address` is the IP address
 	// of the port.
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Router ID
-	RouterID string `json:"router_id,required" format:"uuid4"`
+	RouterID string `json:"router_id" api:"required" format:"uuid4"`
 	// Floating IP status. DOWN - unassigned (available). ACTIVE - attached to a port
 	// (in use). ERROR - error state.
 	//
 	// Any of "ACTIVE", "DOWN", "ERROR".
-	Status FloatingIPStatus `json:"status,required"`
+	Status FloatingIPStatus `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Datetime when the floating IP was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                respjson.Field
@@ -697,49 +697,49 @@ const (
 
 type GPUImage struct {
 	// Image ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the image was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Minimal boot volume required
-	MinDisk int64 `json:"min_disk,required"`
+	MinDisk int64 `json:"min_disk" api:"required"`
 	// Minimal VM RAM required
-	MinRam int64 `json:"min_ram,required"`
+	MinRam int64 `json:"min_ram" api:"required"`
 	// Image name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Image status
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// Datetime when the image was updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Image visibility. Globally visible images are public
-	Visibility string `json:"visibility,required"`
+	Visibility string `json:"visibility" api:"required"`
 	// Image architecture type
-	Architecture string `json:"architecture,nullable"`
+	Architecture string `json:"architecture" api:"nullable"`
 	// Name of the GPU driver vendor
-	GPUDriver string `json:"gpu_driver,nullable"`
+	GPUDriver string `json:"gpu_driver" api:"nullable"`
 	// Type of the GPU driver
-	GPUDriverType string `json:"gpu_driver_type,nullable"`
+	GPUDriverType string `json:"gpu_driver_type" api:"nullable"`
 	// Version of the installed GPU driver
-	GPUDriverVersion string `json:"gpu_driver_version,nullable"`
+	GPUDriverVersion string `json:"gpu_driver_version" api:"nullable"`
 	// OS Distribution
-	OsDistro string `json:"os_distro,nullable"`
+	OsDistro string `json:"os_distro" api:"nullable"`
 	// The operating system installed on the image
-	OsType string `json:"os_type,nullable"`
+	OsType string `json:"os_type" api:"nullable"`
 	// OS version, i.e. 19.04 (for Ubuntu) or 9.4 for Debian
-	OsVersion string `json:"os_version,nullable"`
+	OsVersion string `json:"os_version" api:"nullable"`
 	// Image size in bytes.
 	Size int64 `json:"size"`
 	// Whether the image supports SSH key or not
-	SSHKey string `json:"ssh_key,nullable"`
+	SSHKey string `json:"ssh_key" api:"nullable"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,nullable"`
+	TaskID string `json:"task_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -774,9 +774,9 @@ func (r *GPUImage) UnmarshalJSON(data []byte) error {
 
 type GPUImageList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []GPUImage `json:"results,required"`
+	Results []GPUImage `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -808,78 +808,78 @@ const (
 
 type Image struct {
 	// Image ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Datetime when the image was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Disk format
-	DiskFormat string `json:"disk_format,required"`
+	DiskFormat string `json:"disk_format" api:"required"`
 	// Minimal boot volume required
-	MinDisk int64 `json:"min_disk,required"`
+	MinDisk int64 `json:"min_disk" api:"required"`
 	// Minimal VM RAM required
-	MinRam int64 `json:"min_ram,required"`
+	MinRam int64 `json:"min_ram" api:"required"`
 	// Image display name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// OS Distribution, i.e. Debian, CentOS, Ubuntu, CoreOS etc.
-	OsDistro string `json:"os_distro,required"`
+	OsDistro string `json:"os_distro" api:"required"`
 	// The operating system installed on the image.
 	//
 	// Any of "linux", "windows".
-	OsType ImageOsType `json:"os_type,required"`
+	OsType ImageOsType `json:"os_type" api:"required"`
 	// OS version, i.e. 19.04 (for Ubuntu) or 9.4 for Debian
-	OsVersion string `json:"os_version,required"`
+	OsVersion string `json:"os_version" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Image size in bytes
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// Image status, i.e. active
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// Datetime when the image was updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Image visibility. Globally visible images are public
-	Visibility string `json:"visibility,required"`
+	Visibility string `json:"visibility" api:"required"`
 	// An image architecture type: aarch64, `x86_64`
 	//
 	// Any of "aarch64", "x86_64".
 	Architecture ImageArchitecture `json:"architecture"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,nullable"`
+	CreatorTaskID string `json:"creator_task_id" api:"nullable"`
 	// Image description
-	Description  string `json:"description,nullable"`
-	DisplayOrder int64  `json:"display_order,nullable"`
+	Description  string `json:"description" api:"nullable"`
+	DisplayOrder int64  `json:"display_order" api:"nullable"`
 	// Name of the GPU driver vendor
-	GPUDriver string `json:"gpu_driver,nullable"`
+	GPUDriver string `json:"gpu_driver" api:"nullable"`
 	// Type of the GPU driver
-	GPUDriverType string `json:"gpu_driver_type,nullable"`
+	GPUDriverType string `json:"gpu_driver_type" api:"nullable"`
 	// Version of the installed GPU driver
-	GPUDriverVersion string `json:"gpu_driver_version,nullable"`
+	GPUDriverVersion string `json:"gpu_driver_version" api:"nullable"`
 	// Specifies the type of firmware with which to boot the guest.
 	//
 	// Any of "bios", "uefi".
-	HwFirmwareType ImageHwFirmwareType `json:"hw_firmware_type,nullable"`
+	HwFirmwareType ImageHwFirmwareType `json:"hw_firmware_type" api:"nullable"`
 	// A virtual chipset type.
 	//
 	// Any of "pc", "q35".
-	HwMachineType ImageHwMachineType `json:"hw_machine_type,nullable"`
+	HwMachineType ImageHwMachineType `json:"hw_machine_type" api:"nullable"`
 	// Set to true if the image will be used by bare metal servers. Defaults to false.
-	IsBaremetal bool `json:"is_baremetal,nullable"`
+	IsBaremetal bool `json:"is_baremetal" api:"nullable"`
 	// Whether the image supports SSH key or not
 	//
 	// Any of "allow", "deny", "required".
-	SSHKey ImageSSHKey `json:"ssh_key,nullable"`
+	SSHKey ImageSSHKey `json:"ssh_key" api:"nullable"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,nullable"`
+	TaskID string `json:"task_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -965,9 +965,9 @@ const (
 
 type ImageList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []Image `json:"results,required"`
+	Results []Image `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -985,64 +985,64 @@ func (r *ImageList) UnmarshalJSON(data []byte) error {
 
 type Instance struct {
 	// Instance ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Map of `network_name` to list of addresses in that network
-	Addresses map[string][]InstanceAddressUnion `json:"addresses,required"`
+	Addresses map[string][]InstanceAddressUnion `json:"addresses" api:"required"`
 	// IP addresses of the instances that are blackholed by DDoS mitigation system
-	BlackholePorts []BlackholePort `json:"blackhole_ports,required"`
+	BlackholePorts []BlackholePort `json:"blackhole_ports" api:"required"`
 	// Datetime when instance was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required"`
+	CreatorTaskID string `json:"creator_task_id" api:"required"`
 	// Advanced DDoS protection profile. It is always `null` if query parameter
 	// `with_ddos=true` is not set.
-	DDOSProfile DDOSProfile `json:"ddos_profile,required"`
+	DDOSProfile DDOSProfile `json:"ddos_profile" api:"required"`
 	// Fixed IP assigned to instance
-	FixedIPAssignments []InstanceFixedIPAssignment `json:"fixed_ip_assignments,required"`
+	FixedIPAssignments []InstanceFixedIPAssignment `json:"fixed_ip_assignments" api:"required"`
 	// Flavor
-	Flavor InstanceFlavorUnion `json:"flavor,required"`
+	Flavor InstanceFlavorUnion `json:"flavor" api:"required"`
 	// Instance description
-	InstanceDescription string `json:"instance_description,required"`
+	InstanceDescription string `json:"instance_description" api:"required"`
 	// Instance isolation information
-	InstanceIsolation InstanceIsolation `json:"instance_isolation,required"`
+	InstanceIsolation InstanceIsolation `json:"instance_isolation" api:"required"`
 	// Instance name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Security groups
-	SecurityGroups []InstanceSecurityGroup `json:"security_groups,required"`
+	SecurityGroups []InstanceSecurityGroup `json:"security_groups" api:"required"`
 	// SSH key assigned to instance
-	SSHKeyName string `json:"ssh_key_name,required"`
+	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Instance status
 	//
 	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
 	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
 	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
 	// "UNKNOWN", "VERIFY_RESIZE".
-	Status InstanceStatus `json:"status,required"`
+	Status InstanceStatus `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required"`
+	TaskID string `json:"task_id" api:"required"`
 	// Task state
-	TaskState string `json:"task_state,required"`
+	TaskState string `json:"task_state" api:"required"`
 	// Virtual machine state (active)
 	//
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
-	VmState InstanceVmState `json:"vm_state,required"`
+	VmState InstanceVmState `json:"vm_state" api:"required"`
 	// List of volumes
-	Volumes []InstanceVolume `json:"volumes,required"`
+	Volumes []InstanceVolume `json:"volumes" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -1124,11 +1124,11 @@ func (r *InstanceAddressUnion) UnmarshalJSON(data []byte) error {
 
 type InstanceFixedIPAssignment struct {
 	// Is network external
-	External bool `json:"external,required"`
+	External bool `json:"external" api:"required"`
 	// Ip address
-	IPAddress string `json:"ip_address,required"`
+	IPAddress string `json:"ip_address" api:"required"`
 	// Interface subnet id
-	SubnetID string `json:"subnet_id,required"`
+	SubnetID string `json:"subnet_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		External    respjson.Field
@@ -1232,19 +1232,19 @@ func (r *InstanceFlavorUnionHardwareDescription) UnmarshalJSON(data []byte) erro
 // Instances flavor schema embedded into instance schema
 type InstanceFlavorInstanceFlavor struct {
 	// CPU architecture
-	Architecture string `json:"architecture,required"`
+	Architecture string `json:"architecture" api:"required"`
 	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// Additional hardware description
-	HardwareDescription InstanceFlavorInstanceFlavorHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription InstanceFlavorInstanceFlavorHardwareDescription `json:"hardware_description" api:"required"`
 	// Flavor operating system
-	OsType string `json:"os_type,required"`
+	OsType string `json:"os_type" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -1268,9 +1268,9 @@ func (r *InstanceFlavorInstanceFlavor) UnmarshalJSON(data []byte) error {
 // Additional hardware description
 type InstanceFlavorInstanceFlavorHardwareDescription struct {
 	// RAM description
-	Ram string `json:"ram,required"`
+	Ram string `json:"ram" api:"required"`
 	// CPU description
-	Vcpus string `json:"vcpus,required"`
+	Vcpus string `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Ram         respjson.Field
@@ -1289,21 +1289,21 @@ func (r *InstanceFlavorInstanceFlavorHardwareDescription) UnmarshalJSON(data []b
 // Bare metal flavor schema embedded into instance schema
 type InstanceFlavorBareMetalFlavor struct {
 	// CPU architecture
-	Architecture string `json:"architecture,required"`
+	Architecture string `json:"architecture" api:"required"`
 	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// Additional hardware description
-	HardwareDescription InstanceFlavorBareMetalFlavorHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription InstanceFlavorBareMetalFlavorHardwareDescription `json:"hardware_description" api:"required"`
 	// Operating system
-	OsType string `json:"os_type,required"`
+	OsType string `json:"os_type" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Flavor resource class for mapping to hardware capacity
-	ResourceClass string `json:"resource_class,required"`
+	ResourceClass string `json:"resource_class" api:"required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -1328,15 +1328,15 @@ func (r *InstanceFlavorBareMetalFlavor) UnmarshalJSON(data []byte) error {
 // Additional hardware description
 type InstanceFlavorBareMetalFlavorHardwareDescription struct {
 	// Human-readable CPU description
-	CPU string `json:"cpu,required"`
+	CPU string `json:"cpu" api:"required"`
 	// Human-readable disk description
-	Disk string `json:"disk,required"`
+	Disk string `json:"disk" api:"required"`
 	// If the flavor is licensed, this field contains the license type
-	License string `json:"license,required"`
+	License string `json:"license" api:"required"`
 	// Human-readable NIC description
-	Network string `json:"network,required"`
+	Network string `json:"network" api:"required"`
 	// Human-readable RAM description
-	Ram string `json:"ram,required"`
+	Ram string `json:"ram" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CPU         respjson.Field
@@ -1358,21 +1358,21 @@ func (r *InstanceFlavorBareMetalFlavorHardwareDescription) UnmarshalJSON(data []
 // GPU cluster flavor schema embedded into instance schema
 type InstanceFlavorGPUClusterFlavor struct {
 	// CPU architecture
-	Architecture string `json:"architecture,required"`
+	Architecture string `json:"architecture" api:"required"`
 	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// Additional hardware description
-	HardwareDescription InstanceFlavorGPUClusterFlavorHardwareDescription `json:"hardware_description,required"`
+	HardwareDescription InstanceFlavorGPUClusterFlavorHardwareDescription `json:"hardware_description" api:"required"`
 	// Operating system
-	OsType string `json:"os_type,required"`
+	OsType string `json:"os_type" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Flavor resource class for mapping to hardware capacity
-	ResourceClass string `json:"resource_class,required"`
+	ResourceClass string `json:"resource_class" api:"required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -1397,17 +1397,17 @@ func (r *InstanceFlavorGPUClusterFlavor) UnmarshalJSON(data []byte) error {
 // Additional hardware description
 type InstanceFlavorGPUClusterFlavorHardwareDescription struct {
 	// Human-readable CPU description
-	CPU string `json:"cpu,required"`
+	CPU string `json:"cpu" api:"required"`
 	// Human-readable disk description
-	Disk string `json:"disk,required"`
+	Disk string `json:"disk" api:"required"`
 	// Human-readable GPU description
-	GPU string `json:"gpu,required"`
+	GPU string `json:"gpu" api:"required"`
 	// If the flavor is licensed, this field contains the license type
-	License string `json:"license,required"`
+	License string `json:"license" api:"required"`
 	// Human-readable NIC description
-	Network string `json:"network,required"`
+	Network string `json:"network" api:"required"`
 	// Human-readable RAM description
-	Ram string `json:"ram,required"`
+	Ram string `json:"ram" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CPU         respjson.Field
@@ -1429,7 +1429,7 @@ func (r *InstanceFlavorGPUClusterFlavorHardwareDescription) UnmarshalJSON(data [
 
 type InstanceSecurityGroup struct {
 	// Name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -1490,9 +1490,9 @@ const (
 
 type InstanceVolume struct {
 	// Volume ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Whether the volume is deleted together with the VM
-	DeleteOnTermination bool `json:"delete_on_termination,required"`
+	DeleteOnTermination bool `json:"delete_on_termination" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -1510,7 +1510,7 @@ func (r *InstanceVolume) UnmarshalJSON(data []byte) error {
 
 type InstanceIsolation struct {
 	// The reason of instance isolation if it is isolated from external internet.
-	Reason string `json:"reason,nullable"`
+	Reason string `json:"reason" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Reason      respjson.Field
@@ -1527,9 +1527,9 @@ func (r *InstanceIsolation) UnmarshalJSON(data []byte) error {
 
 type InstanceList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []Instance `json:"results,required"`
+	Results []Instance `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -1562,9 +1562,9 @@ const (
 
 type IPAssignment struct {
 	// IP address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// ID of the subnet that allocated the IP
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPAddress   respjson.Field
@@ -1589,7 +1589,7 @@ const (
 
 type LaasIndexRetentionPolicy struct {
 	// Duration of days for which logs must be kept.
-	Period int64 `json:"period,required"`
+	Period int64 `json:"period" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Period      respjson.Field
@@ -1617,7 +1617,7 @@ func (r LaasIndexRetentionPolicy) ToParam() LaasIndexRetentionPolicyParam {
 // The property Period is required.
 type LaasIndexRetentionPolicyParam struct {
 	// Duration of days for which logs must be kept.
-	Period param.Opt[int64] `json:"period,omitzero,required"`
+	Period param.Opt[int64] `json:"period,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1631,71 +1631,71 @@ func (r *LaasIndexRetentionPolicyParam) UnmarshalJSON(data []byte) error {
 
 type LoadBalancer struct {
 	// Load balancer ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
 	// process traffic. Defaults to true.
-	AdminStateUp bool `json:"admin_state_up,required"`
+	AdminStateUp bool `json:"admin_state_up" api:"required"`
 	// Datetime when the load balancer was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Load balancer name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Load balancer operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
-	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status,required"`
+	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Load balancer lifecycle status
 	//
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
-	ProvisioningStatus ProvisioningStatus `json:"provisioning_status,required"`
+	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	TagsV2 []Tag `json:"tags_v2,required"`
+	TagsV2 []Tag `json:"tags_v2" api:"required"`
 	// List of additional IP addresses
 	AdditionalVips []LoadBalancerAdditionalVip `json:"additional_vips"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"nullable" format:"uuid4"`
 	// Loadbalancer advanced DDoS protection profile.
-	DDOSProfile DDOSProfile `json:"ddos_profile,nullable"`
+	DDOSProfile DDOSProfile `json:"ddos_profile" api:"nullable"`
 	// Load balancer flavor (if not default)
-	Flavor LoadBalancerFlavor `json:"flavor,nullable"`
+	Flavor LoadBalancerFlavor `json:"flavor" api:"nullable"`
 	// List of assigned floating IPs
 	FloatingIPs []FloatingIP `json:"floating_ips"`
 	// Load balancer listeners
 	Listeners []LoadBalancerListener `json:"listeners"`
 	// Logging configuration
-	Logging Logging `json:"logging,nullable"`
+	Logging Logging `json:"logging" api:"nullable"`
 	// Preferred option to establish connectivity between load balancer and its pools
 	// members
 	//
 	// Any of "L2", "L3".
 	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity"`
 	// Statistics of load balancer.
-	Stats LoadBalancerStatistics `json:"stats,nullable"`
+	Stats LoadBalancerStatistics `json:"stats" api:"nullable"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,nullable" format:"uuid4"`
+	TaskID string `json:"task_id" api:"nullable" format:"uuid4"`
 	// Datetime when the load balancer was last updated
-	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"nullable" format:"date-time"`
 	// Load balancer IP address
-	VipAddress string `json:"vip_address,nullable" format:"ipvanyaddress"`
+	VipAddress string `json:"vip_address" api:"nullable" format:"ipvanyaddress"`
 	// Load balancer IP family
 	//
 	// Any of "dual", "ipv4", "ipv6".
-	VipIPFamily InterfaceIPFamily `json:"vip_ip_family,nullable"`
+	VipIPFamily InterfaceIPFamily `json:"vip_ip_family" api:"nullable"`
 	// The ID of the Virtual IP (VIP) port.
-	VipPortID string `json:"vip_port_id,nullable" format:"uuid4"`
+	VipPortID string `json:"vip_port_id" api:"nullable" format:"uuid4"`
 	// List of VRRP IP addresses
 	VrrpIPs []LoadBalancerVrrpIP `json:"vrrp_ips"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1738,9 +1738,9 @@ func (r *LoadBalancer) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerAdditionalVip struct {
 	// IP address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// Subnet UUID
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPAddress   respjson.Field
@@ -1759,13 +1759,13 @@ func (r *LoadBalancerAdditionalVip) UnmarshalJSON(data []byte) error {
 // Load balancer flavor (if not default)
 type LoadBalancerFlavor struct {
 	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FlavorID    respjson.Field
@@ -1785,7 +1785,7 @@ func (r *LoadBalancerFlavor) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerListener struct {
 	// Listener ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1802,13 +1802,13 @@ func (r *LoadBalancerListener) UnmarshalJSON(data []byte) error {
 
 type LoadBalancerVrrpIP struct {
 	// IP address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// LoadBalancer instance role to which VRRP IP belong
 	//
 	// Any of "BACKUP", "MASTER", "STANDALONE".
-	Role LoadBalancerInstanceRole `json:"role,required"`
+	Role LoadBalancerInstanceRole `json:"role" api:"required"`
 	// Subnet UUID
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPAddress   respjson.Field
@@ -1853,15 +1853,15 @@ const (
 
 type LoadBalancerStatistics struct {
 	// Currently active connections
-	ActiveConnections int64 `json:"active_connections,required"`
+	ActiveConnections int64 `json:"active_connections" api:"required"`
 	// Total bytes received
-	BytesIn int64 `json:"bytes_in,required"`
+	BytesIn int64 `json:"bytes_in" api:"required"`
 	// Total bytes sent
-	BytesOut int64 `json:"bytes_out,required"`
+	BytesOut int64 `json:"bytes_out" api:"required"`
 	// Total requests that were unable to be fulfilled
-	RequestErrors int64 `json:"request_errors,required"`
+	RequestErrors int64 `json:"request_errors" api:"required"`
 	// Total connections handled
-	TotalConnections int64 `json:"total_connections,required"`
+	TotalConnections int64 `json:"total_connections" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ActiveConnections respjson.Field
@@ -1882,13 +1882,13 @@ func (r *LoadBalancerStatistics) UnmarshalJSON(data []byte) error {
 
 type Logging struct {
 	// ID of the region in which the logs will be stored
-	DestinationRegionID int64 `json:"destination_region_id,required"`
+	DestinationRegionID int64 `json:"destination_region_id" api:"required"`
 	// Indicates if log streaming is enabled or disabled
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The topic name to stream logs to
-	TopicName string `json:"topic_name,required"`
+	TopicName string `json:"topic_name" api:"required"`
 	// Logs retention policy
-	RetentionPolicy LaasIndexRetentionPolicy `json:"retention_policy,nullable"`
+	RetentionPolicy LaasIndexRetentionPolicy `json:"retention_policy" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DestinationRegionID respjson.Field
@@ -1908,48 +1908,48 @@ func (r *Logging) UnmarshalJSON(data []byte) error {
 
 type Network struct {
 	// Network ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the network was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
 	// True if network has `is_default` attribute
-	Default bool `json:"default,required"`
+	Default bool `json:"default" api:"required"`
 	// True if the network `router:external` attribute
-	External bool `json:"external,required"`
+	External bool `json:"external" api:"required"`
 	// MTU (maximum transmission unit). Default value is 1450
-	Mtu int64 `json:"mtu,required"`
+	Mtu int64 `json:"mtu" api:"required"`
 	// Network name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Indicates `port_security_enabled` status of all newly created in the network
 	// ports.
-	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Id of network segment
-	SegmentationID int64 `json:"segmentation_id,required"`
+	SegmentationID int64 `json:"segmentation_id" api:"required"`
 	// True when the network is shared with your project by external owner
-	Shared bool `json:"shared,required"`
+	Shared bool `json:"shared" api:"required"`
 	// List of subnetworks
-	Subnets []string `json:"subnets,required" format:"uuid4"`
+	Subnets []string `json:"subnets" api:"required" format:"uuid4"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Network type (vlan, vxlan)
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Datetime when the network was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -1983,48 +1983,48 @@ func (r *Network) UnmarshalJSON(data []byte) error {
 
 type NetworkDetails struct {
 	// Network ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the network was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
 	// True if network has `is_default` attribute
-	Default bool `json:"default,required"`
+	Default bool `json:"default" api:"required"`
 	// True if the network `router:external` attribute
-	External bool `json:"external,required"`
+	External bool `json:"external" api:"required"`
 	// MTU (maximum transmission unit). Default value is 1450
-	Mtu int64 `json:"mtu,required"`
+	Mtu int64 `json:"mtu" api:"required"`
 	// Network name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Indicates `port_security_enabled` status of all newly created in the network
 	// ports.
-	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Id of network segment
-	SegmentationID int64 `json:"segmentation_id,required"`
+	SegmentationID int64 `json:"segmentation_id" api:"required"`
 	// True when the network is shared with your project by external owner
-	Shared bool `json:"shared,required"`
+	Shared bool `json:"shared" api:"required"`
 	// List of subnets associated with the network
-	Subnets []Subnet `json:"subnets,required"`
+	Subnets []Subnet `json:"subnets" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Network type (vlan, vxlan)
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Datetime when the network was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -2058,25 +2058,25 @@ func (r *NetworkDetails) UnmarshalJSON(data []byte) error {
 
 type NetworkInterface struct {
 	// Group of subnet masks and/or IP addresses that share the current IP as VIP
-	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs,required"`
+	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs" api:"required"`
 	// Bodies of floating IPs that are NAT-ing IPs of this port
-	FloatingipDetails []FloatingIP `json:"floatingip_details,required"`
+	FloatingipDetails []FloatingIP `json:"floatingip_details" api:"required"`
 	// IP addresses assigned to this port
-	IPAssignments []IPAssignment `json:"ip_assignments,required"`
+	IPAssignments []IPAssignment `json:"ip_assignments" api:"required"`
 	// Body of the network this port is attached to
-	NetworkDetails NetworkDetails `json:"network_details,required"`
+	NetworkDetails NetworkDetails `json:"network_details" api:"required"`
 	// ID of the network the port is attached to
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// ID of virtual ethernet port object
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Port security status
-	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// body of ports that are included into trunk port
-	SubPorts []NetworkInterfaceSubPort `json:"sub_ports,required"`
+	SubPorts []NetworkInterfaceSubPort `json:"sub_ports" api:"required"`
 	// Interface name
-	InterfaceName string `json:"interface_name,nullable"`
+	InterfaceName string `json:"interface_name" api:"nullable"`
 	// MAC address of the virtual port
-	MacAddress string `json:"mac_address,nullable"`
+	MacAddress string `json:"mac_address" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedAddressPairs respjson.Field
@@ -2102,27 +2102,27 @@ func (r *NetworkInterface) UnmarshalJSON(data []byte) error {
 
 type NetworkInterfaceSubPort struct {
 	// Group of subnet masks and/or IP addresses that share the current IP as VIP
-	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs,required"`
+	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs" api:"required"`
 	// Bodies of floating IPs that are NAT-ing IPs of this port
-	FloatingipDetails []FloatingIP `json:"floatingip_details,required"`
+	FloatingipDetails []FloatingIP `json:"floatingip_details" api:"required"`
 	// IP addresses assigned to this port
-	IPAssignments []IPAssignment `json:"ip_assignments,required"`
+	IPAssignments []IPAssignment `json:"ip_assignments" api:"required"`
 	// Body of the network this port is attached to
-	NetworkDetails NetworkDetails `json:"network_details,required"`
+	NetworkDetails NetworkDetails `json:"network_details" api:"required"`
 	// ID of the network the port is attached to
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// ID of virtual ethernet port object
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Port security status
-	PortSecurityEnabled bool `json:"port_security_enabled,required"`
+	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// id of network segment
-	SegmentationID int64 `json:"segmentation_id,required"`
+	SegmentationID int64 `json:"segmentation_id" api:"required"`
 	// type of network segment
-	SegmentationType string `json:"segmentation_type,required"`
+	SegmentationType string `json:"segmentation_type" api:"required"`
 	// Interface name
-	InterfaceName string `json:"interface_name,nullable"`
+	InterfaceName string `json:"interface_name" api:"nullable"`
 	// MAC address of the virtual port
-	MacAddress string `json:"mac_address,nullable"`
+	MacAddress string `json:"mac_address" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedAddressPairs respjson.Field
@@ -2149,9 +2149,9 @@ func (r *NetworkInterfaceSubPort) UnmarshalJSON(data []byte) error {
 
 type NetworkInterfaceList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []NetworkInterface `json:"results,required"`
+	Results []NetworkInterface `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -2180,10 +2180,10 @@ const (
 
 type Route struct {
 	// CIDR of destination IPv4 subnet.
-	Destination string `json:"destination,required" format:"ipvanynetwork"`
+	Destination string `json:"destination" api:"required" format:"ipvanynetwork"`
 	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
 	// CIDR.
-	Nexthop string `json:"nexthop,required" format:"ipvanyaddress"`
+	Nexthop string `json:"nexthop" api:"required" format:"ipvanyaddress"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Destination respjson.Field
@@ -2201,56 +2201,56 @@ func (r *Route) UnmarshalJSON(data []byte) error {
 
 type Subnet struct {
 	// CIDR
-	Cidr string `json:"cidr,required" format:"ipvanynetwork"`
+	Cidr string `json:"cidr" api:"required" format:"ipvanynetwork"`
 	// Datetime when the subnet was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// True if DHCP should be enabled
-	EnableDhcp bool `json:"enable_dhcp,required"`
+	EnableDhcp bool `json:"enable_dhcp" api:"required"`
 	// IP version
 	//
 	// Any of 4, 6.
-	IPVersion int64 `json:"ip_version,required"`
+	IPVersion int64 `json:"ip_version" api:"required"`
 	// Subnet name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Network ID
-	NetworkID string `json:"network_id,required" format:"uuid4"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// Datetime when the subnet was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Subnet id.
-	ID string `json:"id,nullable" format:"uuid4"`
+	ID string `json:"id" api:"nullable" format:"uuid4"`
 	// Number of available ips in subnet
-	AvailableIPs int64 `json:"available_ips,nullable"`
+	AvailableIPs int64 `json:"available_ips" api:"nullable"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,nullable" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"nullable" format:"uuid4"`
 	// List IP addresses of a DNS resolver reachable from the network
-	DNSNameservers []string `json:"dns_nameservers,nullable" format:"ipvanyaddress"`
+	DNSNameservers []string `json:"dns_nameservers" api:"nullable" format:"ipvanyaddress"`
 	// Default GW IPv4 address, advertised in DHCP routes of this subnet. If null, no
 	// gateway is advertised by this subnet.
-	GatewayIP string `json:"gateway_ip,nullable" format:"ipvanyaddress"`
+	GatewayIP string `json:"gateway_ip" api:"nullable" format:"ipvanyaddress"`
 	// Deprecated. Always returns `false`.
 	//
 	// Deprecated: deprecated
 	HasRouter bool `json:"has_router"`
 	// List of custom static routes to advertise via DHCP.
-	HostRoutes []Route `json:"host_routes,nullable"`
+	HostRoutes []Route `json:"host_routes" api:"nullable"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,nullable" format:"uuid4"`
+	TaskID string `json:"task_id" api:"nullable" format:"uuid4"`
 	// Total number of ips in subnet
-	TotalIPs int64 `json:"total_ips,nullable"`
+	TotalIPs int64 `json:"total_ips" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cidr           respjson.Field
@@ -2292,12 +2292,12 @@ func (r *Subnet) UnmarshalJSON(data []byte) error {
 type Tag struct {
 	// Tag key. Maximum 255 characters. Cannot contain spaces, tabs, newlines, empty
 	// string or '=' character.
-	Key string `json:"key,required"`
+	Key string `json:"key" api:"required"`
 	// If true, the tag is read-only and cannot be modified by the user
-	ReadOnly bool `json:"read_only,required"`
+	ReadOnly bool `json:"read_only" api:"required"`
 	// Tag value. Maximum 255 characters. Cannot contain spaces, tabs, newlines, empty
 	// string or '=' character.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Key         respjson.Field
@@ -2323,7 +2323,7 @@ type TaskIDList struct {
 	//   - `GET /v1/tasks/{task_id}` - Check individual task status and details Poll task
 	//     status until completion (`FINISHED`/`ERROR`) before proceeding with dependent
 	//     operations.
-	Tasks []string `json:"tasks,required"`
+	Tasks []string `json:"tasks" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Tasks       respjson.Field

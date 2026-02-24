@@ -177,14 +177,14 @@ func (r *InstanceInterfaceService) DetachAndPoll(ctx context.Context, instanceID
 }
 
 type InstanceInterfaceListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InstanceInterfaceAttachParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 
 	//
 	// Request body variants
@@ -253,7 +253,7 @@ func init() {
 // The property ProfileTemplate is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile struct {
 	// DDoS profile template ID.
-	ProfileTemplate int64 `json:"profile_template,required"`
+	ProfileTemplate int64 `json:"profile_template" api:"required"`
 	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// Protection parameters.
@@ -294,7 +294,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDD
 // The property ID is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -311,7 +311,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDD
 // The property SubnetID is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema struct {
 	// Port will get an IP address from this subnet
-	SubnetID string `json:"subnet_id,required"`
+	SubnetID string `json:"subnet_id" api:"required"`
 	// Interface name
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
 	// Each group will be added to the separate trunk.
@@ -338,7 +338,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema) Unma
 // The property ProfileTemplate is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile struct {
 	// DDoS profile template ID.
-	ProfileTemplate int64 `json:"profile_template,required"`
+	ProfileTemplate int64 `json:"profile_template" api:"required"`
 	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// Protection parameters.
@@ -379,7 +379,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSPr
 // The property ID is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -397,7 +397,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecuri
 // The property NetworkID is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema struct {
 	// Port will get an IP address in this network subnet
-	NetworkID string `json:"network_id,required"`
+	NetworkID string `json:"network_id" api:"required"`
 	// Interface name
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
 	// Each group will be added to the separate trunk.
@@ -434,7 +434,7 @@ func init() {
 // The property ProfileTemplate is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile struct {
 	// DDoS profile template ID.
-	ProfileTemplate int64 `json:"profile_template,required"`
+	ProfileTemplate int64 `json:"profile_template" api:"required"`
 	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// Protection parameters.
@@ -475,7 +475,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile
 // The property ID is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -493,7 +493,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGro
 // The property PortID is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema struct {
 	// Port ID
-	PortID string `json:"port_id,required"`
+	PortID string `json:"port_id" api:"required"`
 	// Interface name
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
 	// Each group will be added to the separate trunk.
@@ -520,7 +520,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema) Unm
 // The property ProfileTemplate is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile struct {
 	// DDoS profile template ID.
-	ProfileTemplate int64 `json:"profile_template,required"`
+	ProfileTemplate int64 `json:"profile_template" api:"required"`
 	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// Protection parameters.
@@ -561,7 +561,7 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSP
 // The property ID is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -574,12 +574,12 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecur
 }
 
 type InstanceInterfaceDetachParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// IP address
-	IPAddress string `json:"ip_address,required"`
+	IPAddress string `json:"ip_address" api:"required"`
 	// ID of the port
-	PortID string `json:"port_id,required"`
+	PortID string `json:"port_id" api:"required"`
 	paramObj
 }
 

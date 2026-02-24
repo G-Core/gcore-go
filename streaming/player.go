@@ -108,7 +108,7 @@ func (r *PlayerService) Preview(ctx context.Context, playerID int64, opts ...opt
 // their values from default Streaming player.
 type Player struct {
 	// Player name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Player ID
 	ID int64 `json:"id"`
 	// Enables video playback right after player load:
@@ -234,7 +234,7 @@ func (r Player) ToParam() PlayerParam {
 // The property Name is required.
 type PlayerParam struct {
 	// Player name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Player ID
 	ID param.Opt[int64] `json:"id,omitzero"`
 	// Enables video playback right after player load:

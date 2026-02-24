@@ -127,7 +127,7 @@ func (r *StreamClipService) List(ctx context.Context, streamID int64, opts ...op
 
 type Clip struct {
 	// ID of the clip
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Requested segment duration in seconds to be cut.
 	//
 	// Please, note that cutting is based on the idea of instantly creating a clip,
@@ -141,7 +141,7 @@ type Clip struct {
 	//
 	// Duration of cutted segment cannot be greater than DVR duration for this stream.
 	// Therefore, to change the maximum, use "dvr_duration" parameter of this stream.
-	Duration int64 `json:"duration,required"`
+	Duration int64 `json:"duration" api:"required"`
 	// Creation date and time. Format is date time in ISO 8601
 	CreatedAt string `json:"created_at"`
 	// Expire time of the clip via a public link.
@@ -227,7 +227,7 @@ type StreamClipNewParams struct {
 	//
 	// Duration of cutted segment cannot be greater than DVR duration for this stream.
 	// Therefore, to change the maximum, use "dvr_duration" parameter of this stream.
-	Duration int64 `json:"duration,required"`
+	Duration int64 `json:"duration" api:"required"`
 	// Expire time of the clip via a public link.
 	//
 	// Unix timestamp in seconds, absolute value.

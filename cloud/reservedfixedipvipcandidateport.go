@@ -63,15 +63,15 @@ func (r *ReservedFixedIPVipCandidatePortService) List(ctx context.Context, portI
 
 type CandidatePort struct {
 	// ID of the instance that owns the port
-	InstanceID string `json:"instance_id,required" format:"uuid4"`
+	InstanceID string `json:"instance_id" api:"required" format:"uuid4"`
 	// Name of the instance that owns the port
-	InstanceName string `json:"instance_name,required"`
+	InstanceName string `json:"instance_name" api:"required"`
 	// IP addresses assigned to this port
-	IPAssignments []IPWithSubnet `json:"ip_assignments,required"`
+	IPAssignments []IPWithSubnet `json:"ip_assignments" api:"required"`
 	// Network details
-	Network Network `json:"network,required"`
+	Network Network `json:"network" api:"required"`
 	// Port ID that shares VIP
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InstanceID    respjson.Field
@@ -92,9 +92,9 @@ func (r *CandidatePort) UnmarshalJSON(data []byte) error {
 
 type CandidatePortList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []CandidatePort `json:"results,required"`
+	Results []CandidatePort `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -111,7 +111,7 @@ func (r *CandidatePortList) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPVipCandidatePortListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

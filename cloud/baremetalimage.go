@@ -60,8 +60,8 @@ func (r *BaremetalImageService) List(ctx context.Context, params BaremetalImageL
 }
 
 type BaremetalImageListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Show price
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	// Any value to show private images

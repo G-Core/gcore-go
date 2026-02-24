@@ -146,25 +146,25 @@ func (r *TaskService) Poll(ctx context.Context, taskID string, opts ...requestco
 
 type Task struct {
 	// The task ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Created timestamp
-	CreatedOn string `json:"created_on,required"`
+	CreatedOn string `json:"created_on" api:"required"`
 	// The task state
 	//
 	// Any of "ERROR", "FINISHED", "NEW", "RUNNING".
-	State TaskState `json:"state,required"`
+	State TaskState `json:"state" api:"required"`
 	// The task type
-	TaskType string `json:"task_type,required"`
+	TaskType string `json:"task_type" api:"required"`
 	// The user ID that initiated the task
-	UserID int64 `json:"user_id,required"`
+	UserID int64 `json:"user_id" api:"required"`
 	// If task was acknowledged, this field stores acknowledge timestamp
-	AcknowledgedAt string `json:"acknowledged_at,nullable"`
+	AcknowledgedAt string `json:"acknowledged_at" api:"nullable"`
 	// If task was acknowledged, this field stores `user_id` of the person
-	AcknowledgedBy int64 `json:"acknowledged_by,nullable"`
+	AcknowledgedBy int64 `json:"acknowledged_by" api:"nullable"`
 	// The client ID
-	ClientID int64 `json:"client_id,nullable"`
+	ClientID int64 `json:"client_id" api:"nullable"`
 	// If the task creates resources, this field will contain their IDs
-	CreatedResources TaskCreatedResources `json:"created_resources,nullable"`
+	CreatedResources TaskCreatedResources `json:"created_resources" api:"nullable"`
 	// Task parameters
 	Data any `json:"data"`
 	// Task detailed state that is more specific to task type
@@ -173,27 +173,27 @@ type Task struct {
 	// "CLUSTER_RESUME", "CLUSTER_SERVER_REBUILD", "CLUSTER_SUSPEND", "ERROR",
 	// "FINISHED", "IPU_SERVERS", "NETWORK", "POPLAR_SERVERS", "POST_DEPLOY_SETUP",
 	// "VIPU_CONTROLLER".
-	DetailedState TaskDetailedState `json:"detailed_state,nullable"`
+	DetailedState TaskDetailedState `json:"detailed_state" api:"nullable"`
 	// The error value
-	Error string `json:"error,nullable"`
+	Error string `json:"error" api:"nullable"`
 	// Finished timestamp
-	FinishedOn string `json:"finished_on,nullable"`
+	FinishedOn string `json:"finished_on" api:"nullable"`
 	// Job ID
-	JobID string `json:"job_id,nullable"`
+	JobID string `json:"job_id" api:"nullable"`
 	// Lifecycle policy ID
-	LifecyclePolicyID int64 `json:"lifecycle_policy_id,nullable"`
+	LifecyclePolicyID int64 `json:"lifecycle_policy_id" api:"nullable"`
 	// The project ID
-	ProjectID int64 `json:"project_id,nullable"`
+	ProjectID int64 `json:"project_id" api:"nullable"`
 	// The region ID
-	RegionID int64 `json:"region_id,nullable"`
+	RegionID int64 `json:"region_id" api:"nullable"`
 	// The request ID
-	RequestID string `json:"request_id,nullable"`
+	RequestID string `json:"request_id" api:"nullable"`
 	// Schedule ID
-	ScheduleID string `json:"schedule_id,nullable"`
+	ScheduleID string `json:"schedule_id" api:"nullable"`
 	// Last updated timestamp
-	UpdatedOn string `json:"updated_on,nullable"`
+	UpdatedOn string `json:"updated_on" api:"nullable"`
 	// Client, specified in user's JWT
-	UserClientID int64 `json:"user_client_id,nullable"`
+	UserClientID int64 `json:"user_client_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                respjson.Field

@@ -78,7 +78,7 @@ func (r *BucketLifecycleService) Delete(ctx context.Context, bucketName string, 
 }
 
 type BucketLifecycleNewParams struct {
-	StorageID int64 `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id" api:"required" json:"-"`
 	// Number of days after which objects will be automatically deleted from the
 	// bucket. Must be a positive integer. Common values: 30 for monthly cleanup, 365
 	// for yearly retention.
@@ -95,6 +95,6 @@ func (r *BucketLifecycleNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type BucketLifecycleDeleteParams struct {
-	StorageID int64 `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id" api:"required" json:"-"`
 	paramObj
 }

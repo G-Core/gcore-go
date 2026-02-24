@@ -52,10 +52,10 @@ func (r *StatisticService) GetUsageSeries(ctx context.Context, query StatisticGe
 // Response model for the statistics item
 type WaapStatisticItem struct {
 	// The date and time for the statistic in ISO 8601 format
-	DateTime time.Time `json:"date_time,required" format:"date-time"`
+	DateTime time.Time `json:"date_time" api:"required" format:"date-time"`
 	// The value for the statistic. If there is no data for the given time, the value
 	// will be 0.
-	Value int64 `json:"value,required"`
+	Value int64 `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DateTime    respjson.Field
@@ -74,9 +74,9 @@ func (r *WaapStatisticItem) UnmarshalJSON(data []byte) error {
 // Response model for the statistics series
 type WaapStatisticsSeries struct {
 	// Will be returned if `total_bytes` is requested in the metrics parameter
-	TotalBytes []WaapStatisticItem `json:"total_bytes,nullable"`
+	TotalBytes []WaapStatisticItem `json:"total_bytes" api:"nullable"`
 	// Will be included if `total_requests` is requested in the metrics parameter
-	TotalRequests []WaapStatisticItem `json:"total_requests,nullable"`
+	TotalRequests []WaapStatisticItem `json:"total_requests" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		TotalBytes    respjson.Field
@@ -94,17 +94,17 @@ func (r *WaapStatisticsSeries) UnmarshalJSON(data []byte) error {
 
 type StatisticGetUsageSeriesParams struct {
 	// Beginning of the requested time period (ISO 8601 format, UTC)
-	From time.Time `query:"from,required" format:"date-time" json:"-"`
+	From time.Time `query:"from" api:"required" format:"date-time" json:"-"`
 	// Duration of the time blocks into which the data will be divided.
 	//
 	// Any of "1h", "1d".
-	Granularity StatisticGetUsageSeriesParamsGranularity `query:"granularity,omitzero,required" json:"-"`
+	Granularity StatisticGetUsageSeriesParamsGranularity `query:"granularity,omitzero" api:"required" json:"-"`
 	// List of metric types to retrieve statistics for.
 	//
 	// Any of "total_bytes", "total_requests".
-	Metrics []string `query:"metrics,omitzero,required" json:"-"`
+	Metrics []string `query:"metrics,omitzero" api:"required" json:"-"`
 	// End of the requested time period (ISO 8601 format, UTC)
-	To time.Time `query:"to,required" format:"date-time" json:"-"`
+	To time.Time `query:"to" api:"required" format:"date-time" json:"-"`
 	paramObj
 }
 

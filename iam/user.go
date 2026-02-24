@@ -108,24 +108,24 @@ func (r *UserService) Invite(ctx context.Context, body UserInviteParams, opts ..
 
 type User struct {
 	// User's ID.
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Email confirmation:
 	//
 	// - `true` – user confirmed the email;
 	// - `false` – user did not confirm the email.
-	Activated bool `json:"activated,required"`
+	Activated bool `json:"activated" api:"required"`
 	// System field. List of auth types available for the account.
-	AuthTypes []AuthType `json:"auth_types,required"`
+	AuthTypes []AuthType `json:"auth_types" api:"required"`
 	// User's account ID.
-	Client float64 `json:"client,required"`
+	Client float64 `json:"client" api:"required"`
 	// List of user's clients. User can access to one or more clients.
-	ClientAndRoles []UserClientAndRole `json:"client_and_roles,required"`
+	ClientAndRoles []UserClientAndRole `json:"client_and_roles" api:"required"`
 	// User's company.
-	Company string `json:"company,required"`
+	Company string `json:"company" api:"required"`
 	// Deletion flag. If `true` then user was deleted.
-	Deleted bool `json:"deleted,required"`
+	Deleted bool `json:"deleted" api:"required"`
 	// User's email address.
-	Email string `json:"email,required" format:"email"`
+	Email string `json:"email" api:"required" format:"email"`
 	// User's group in the current account.
 	//
 	// IAM supports 5 groups:
@@ -135,32 +135,32 @@ type User struct {
 	// - Engineers
 	// - Purge and Prefetch only (API)
 	// - Purge and Prefetch only (API+Web)
-	Groups []UserGroup `json:"groups,required"`
+	Groups []UserGroup `json:"groups" api:"required"`
 	// User activity flag.
-	IsActive bool `json:"is_active,required"`
+	IsActive bool `json:"is_active" api:"required"`
 	// User's language.
 	//
 	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
-	Lang UserLanguage `json:"lang,required"`
+	Lang UserLanguage `json:"lang" api:"required"`
 	// User's name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// User's phone.
-	Phone string `json:"phone,required"`
+	Phone string `json:"phone" api:"required"`
 	// Services provider ID.
-	Reseller int64 `json:"reseller,required"`
+	Reseller int64 `json:"reseller" api:"required"`
 	// SSO authentication flag. If `true` then user can login via SAML SSO.
-	SSOAuth bool `json:"sso_auth,required"`
+	SSOAuth bool `json:"sso_auth" api:"required"`
 	// Two-step verification:
 	//
 	// - `true` – user enabled two-step verification;
 	// - `false` – user disabled two-step verification.
-	TwoFa bool `json:"two_fa,required"`
+	TwoFa bool `json:"two_fa" api:"required"`
 	// User's type.
 	//
 	// Any of "common", "reseller", "seller".
-	UserType UserType `json:"user_type,required"`
+	UserType UserType `json:"user_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -192,12 +192,12 @@ func (r *User) UnmarshalJSON(data []byte) error {
 }
 
 type UserClientAndRole struct {
-	ClientCompanyName string `json:"client_company_name,required"`
-	ClientID          int64  `json:"client_id,required"`
+	ClientCompanyName string `json:"client_company_name" api:"required"`
+	ClientID          int64  `json:"client_id" api:"required"`
 	// User's ID.
-	UserID int64 `json:"user_id,required"`
+	UserID int64 `json:"user_id" api:"required"`
 	// User role in this client.
-	UserRoles []string `json:"user_roles,required"`
+	UserRoles []string `json:"user_roles" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClientCompanyName respjson.Field
@@ -217,9 +217,9 @@ func (r *UserClientAndRole) UnmarshalJSON(data []byte) error {
 
 type UserInvited struct {
 	// Status of the invitation.
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// Invited user ID.
-	UserID int64 `json:"user_id,required"`
+	UserID int64 `json:"user_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Status      respjson.Field
@@ -246,19 +246,19 @@ const (
 
 type UserUpdateParams struct {
 	// User's name.
-	Name param.Opt[string] `json:"name,omitzero,required"`
+	Name param.Opt[string] `json:"name,omitzero" api:"required"`
 	// User's phone.
-	Phone param.Opt[string] `json:"phone,omitzero,required"`
+	Phone param.Opt[string] `json:"phone,omitzero" api:"required"`
 	// System field. List of auth types available for the account.
-	AuthTypes []AuthType `json:"auth_types,omitzero,required"`
+	AuthTypes []AuthType `json:"auth_types,omitzero" api:"required"`
 	// User's email address.
-	Email string `json:"email,required" format:"email"`
+	Email string `json:"email" api:"required" format:"email"`
 	// User's language.
 	//
 	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
-	Lang UserLanguage `json:"lang,omitzero,required"`
+	Lang UserLanguage `json:"lang,omitzero" api:"required"`
 	paramObj
 }
 
@@ -287,16 +287,16 @@ func (r UserListParams) URLQuery() (v url.Values, err error) {
 }
 
 type UserDeleteParams struct {
-	ClientID int64 `path:"clientId,required" json:"-"`
+	ClientID int64 `path:"clientId" api:"required" json:"-"`
 	paramObj
 }
 
 type UserInviteParams struct {
 	// ID of account.
-	ClientID int64 `json:"client_id,required"`
+	ClientID int64 `json:"client_id" api:"required"`
 	// User email.
-	Email    string         `json:"email,required" format:"email"`
-	UserRole UserGroupParam `json:"user_role,omitzero,required"`
+	Email    string         `json:"email" api:"required" format:"email"`
+	UserRole UserGroupParam `json:"user_role,omitzero" api:"required"`
 	// User name.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// User's language.

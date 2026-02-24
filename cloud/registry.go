@@ -157,21 +157,21 @@ func (r *RegistryService) Resize(ctx context.Context, registryID int64, params R
 
 type Registry struct {
 	// Registry ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Registry creation date-time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Registry name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Number of repositories in the registry
-	RepoCount int64 `json:"repo_count,required"`
+	RepoCount int64 `json:"repo_count" api:"required"`
 	// Registry storage limit, GiB
-	StorageLimit int64 `json:"storage_limit,required"`
+	StorageLimit int64 `json:"storage_limit" api:"required"`
 	// Registry storage used, bytes
-	StorageUsed int64 `json:"storage_used,required"`
+	StorageUsed int64 `json:"storage_used" api:"required"`
 	// Registry modification date-time
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Registry url
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -195,9 +195,9 @@ func (r *Registry) UnmarshalJSON(data []byte) error {
 
 type RegistryList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []Registry `json:"results,required"`
+	Results []Registry `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -215,17 +215,17 @@ func (r *RegistryList) UnmarshalJSON(data []byte) error {
 
 type RegistryTag struct {
 	// Tag ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Artifact ID
-	ArtifactID int64 `json:"artifact_id,required"`
+	ArtifactID int64 `json:"artifact_id" api:"required"`
 	// Tag name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Tag last pull date-time
-	PulledAt time.Time `json:"pulled_at,required" format:"date-time"`
+	PulledAt time.Time `json:"pulled_at" api:"required" format:"date-time"`
 	// Tag push date-time
-	PushedAt time.Time `json:"pushed_at,required" format:"date-time"`
+	PushedAt time.Time `json:"pushed_at" api:"required" format:"date-time"`
 	// Repository ID
-	RepositoryID int64 `json:"repository_id,required"`
+	RepositoryID int64 `json:"repository_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -246,14 +246,14 @@ func (r *RegistryTag) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryNewParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// A name for the container registry.
 	//
 	// Should be in lowercase, consisting only of numbers, letters and -,
 	//
 	// with maximum length of 24 characters
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Registry storage limit, GiB
 	StorageLimit param.Opt[int64] `json:"storage_limit,omitzero"`
 	paramObj
@@ -268,26 +268,26 @@ func (r *RegistryNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type RegistryDeleteParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type RegistryGetParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type RegistryResizeParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Registry storage limit, GiB
 	StorageLimit param.Opt[int64] `json:"storage_limit,omitzero"`
 	paramObj

@@ -120,7 +120,7 @@ func (r *BroadcastService) GetSpectatorsCount(ctx context.Context, broadcastID i
 
 type Broadcast struct {
 	// Broadcast name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// ID of ad to be displayed in a live stream. If empty the default ad is show. If
 	// there is no default ad, no ad is shown
 	AdID int64 `json:"ad_id"`
@@ -220,7 +220,7 @@ func (r *BroadcastNewParams) UnmarshalJSON(data []byte) error {
 // The property Name is required.
 type BroadcastNewParamsBroadcast struct {
 	// Broadcast name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// ID of ad to be displayed in a live stream. If empty the default ad is show. If
 	// there is no default ad, no ad is shown
 	AdID param.Opt[int64] `json:"ad_id,omitzero"`
@@ -291,7 +291,7 @@ func (r *BroadcastUpdateParams) UnmarshalJSON(data []byte) error {
 // The property Name is required.
 type BroadcastUpdateParamsBroadcast struct {
 	// Broadcast name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// ID of ad to be displayed in a live stream. If empty the default ad is show. If
 	// there is no default ad, no ad is shown
 	AdID param.Opt[int64] `json:"ad_id,omitzero"`

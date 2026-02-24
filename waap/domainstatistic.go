@@ -154,17 +154,17 @@ func (r *DomainStatisticService) GetTrafficSeries(ctx context.Context, domainID 
 type WaapBlockedStatistics struct {
 	// A collection of event counts per action. The first item is the action's
 	// abbreviation/full action name, and the second item is the number of events
-	Action [][]WaapBlockedStatisticsActionUnion `json:"action,required"`
+	Action [][]WaapBlockedStatisticsActionUnion `json:"action" api:"required"`
 	// A collection of event counts per country of origin. The first item is the
 	// country's ISO 3166-1 alpha-2, and the second item is the number of events
-	Country [][]WaapBlockedStatisticsCountryUnion `json:"country,required"`
+	Country [][]WaapBlockedStatisticsCountryUnion `json:"country" api:"required"`
 	// A collection of event counts per organization that owns the event's client IP.
 	// The first item is the organization's name, and the second item is the number of
 	// events
-	Org [][]WaapBlockedStatisticsOrgUnion `json:"org,required"`
+	Org [][]WaapBlockedStatisticsOrgUnion `json:"org" api:"required"`
 	// A collection of event counts per rule that triggered the event. The first item
 	// is the rule's name, and the second item is the number of events
-	RuleName [][]WaapBlockedStatisticsRuleNameUnion `json:"rule_name,required"`
+	RuleName [][]WaapBlockedStatisticsRuleNameUnion `json:"rule_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Action      respjson.Field
@@ -330,17 +330,17 @@ func (r *WaapBlockedStatisticsRuleNameUnion) UnmarshalJSON(data []byte) error {
 type WaapCountStatistics struct {
 	// A collection of event counts per action. The first item is the action's
 	// abbreviation/full action name, and the second item is the number of events
-	Action [][]WaapCountStatisticsActionUnion `json:"action,required"`
+	Action [][]WaapCountStatisticsActionUnion `json:"action" api:"required"`
 	// A collection of event counts per country of origin. The first item is the
 	// country's ISO 3166-1 alpha-2, and the second item is the number of events
-	Country [][]WaapCountStatisticsCountryUnion `json:"country,required"`
+	Country [][]WaapCountStatisticsCountryUnion `json:"country" api:"required"`
 	// A collection of event counts per organization that owns the event's client IP.
 	// The first item is the organization's name, and the second item is the number of
 	// events
-	Org [][]WaapCountStatisticsOrgUnion `json:"org,required"`
+	Org [][]WaapCountStatisticsOrgUnion `json:"org" api:"required"`
 	// A collection of event counts per rule that triggered the event. The first item
 	// is the rule's name, and the second item is the number of events
-	RuleName [][]WaapCountStatisticsRuleNameUnion `json:"rule_name,required"`
+	RuleName [][]WaapCountStatisticsRuleNameUnion `json:"rule_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Action      respjson.Field
@@ -504,9 +504,9 @@ func (r *WaapCountStatisticsRuleNameUnion) UnmarshalJSON(data []byte) error {
 
 type WaapDDOSAttack struct {
 	// End time of DDoS attack
-	EndTime time.Time `json:"end_time,nullable" format:"date-time"`
+	EndTime time.Time `json:"end_time" api:"nullable" format:"date-time"`
 	// Start time of DDoS attack
-	StartTime time.Time `json:"start_time,nullable" format:"date-time"`
+	StartTime time.Time `json:"start_time" api:"nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EndTime     respjson.Field
@@ -524,11 +524,11 @@ func (r *WaapDDOSAttack) UnmarshalJSON(data []byte) error {
 
 type WaapDDOSInfo struct {
 	// The number of requests made
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// The value for the grouped by type
-	Identity string `json:"identity,required"`
+	Identity string `json:"identity" api:"required"`
 	// Any of "URL", "IP", "User-Agent".
-	Type WaapDDOSInfoType `json:"type,required"`
+	Type WaapDDOSInfoType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -556,9 +556,9 @@ const (
 // A collection of event metrics over a time span
 type WaapEventStatistics struct {
 	// A collection of total numbers of events with blocked results per criteria
-	Blocked WaapBlockedStatistics `json:"blocked,required"`
+	Blocked WaapBlockedStatistics `json:"blocked" api:"required"`
 	// A collection of total numbers of events per criteria
-	Count WaapCountStatistics `json:"count,required"`
+	Count WaapCountStatistics `json:"count" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Blocked     respjson.Field
@@ -577,61 +577,61 @@ func (r *WaapEventStatistics) UnmarshalJSON(data []byte) error {
 // Request's details used when displaying a single request.
 type WaapRequestDetails struct {
 	// Request ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Request action
-	Action string `json:"action,required"`
+	Action string `json:"action" api:"required"`
 	// List of common tags
-	CommonTags []WaapRequestDetailsCommonTag `json:"common_tags,required"`
+	CommonTags []WaapRequestDetailsCommonTag `json:"common_tags" api:"required"`
 	// Content type of request
-	ContentType string `json:"content_type,required"`
+	ContentType string `json:"content_type" api:"required"`
 	// Domain name
-	Domain string `json:"domain,required"`
+	Domain string `json:"domain" api:"required"`
 	// Status code for http request
-	HTTPStatusCode int64 `json:"http_status_code,required"`
+	HTTPStatusCode int64 `json:"http_status_code" api:"required"`
 	// HTTP version of request
-	HTTPVersion string `json:"http_version,required"`
+	HTTPVersion string `json:"http_version" api:"required"`
 	// ID of challenge that was generated
-	IncidentID string `json:"incident_id,required"`
+	IncidentID string `json:"incident_id" api:"required"`
 	// Request method
-	Method string `json:"method,required"`
+	Method string `json:"method" api:"required"`
 	// Network details
-	Network WaapRequestDetailsNetwork `json:"network,required"`
+	Network WaapRequestDetailsNetwork `json:"network" api:"required"`
 	// Request path
-	Path string `json:"path,required"`
+	Path string `json:"path" api:"required"`
 	// List of shield tags
-	PatternMatchedTags []WaapRequestDetailsPatternMatchedTag `json:"pattern_matched_tags,required"`
+	PatternMatchedTags []WaapRequestDetailsPatternMatchedTag `json:"pattern_matched_tags" api:"required"`
 	// The query string of the request
-	QueryString string `json:"query_string,required"`
+	QueryString string `json:"query_string" api:"required"`
 	// Reference ID to identify user sanction
-	ReferenceID string `json:"reference_id,required"`
+	ReferenceID string `json:"reference_id" api:"required"`
 	// HTTP request headers
-	RequestHeaders map[string]any `json:"request_headers,required"`
+	RequestHeaders map[string]any `json:"request_headers" api:"required"`
 	// The time of the request
-	RequestTime time.Time `json:"request_time,required" format:"date-time"`
+	RequestTime time.Time `json:"request_time" api:"required" format:"date-time"`
 	// The type of the request that generated an event
-	RequestType string `json:"request_type,required"`
+	RequestType string `json:"request_type" api:"required"`
 	// The real domain name
-	RequestedDomain string `json:"requested_domain,required"`
+	RequestedDomain string `json:"requested_domain" api:"required"`
 	// Time took to process all request
-	ResponseTime string `json:"response_time,required"`
+	ResponseTime string `json:"response_time" api:"required"`
 	// The result of a request
 	//
 	// Any of "passed", "blocked", "suppressed", "".
-	Result WaapRequestDetailsResult `json:"result,required"`
+	Result WaapRequestDetailsResult `json:"result" api:"required"`
 	// ID of the triggered rule
-	RuleID string `json:"rule_id,required"`
+	RuleID string `json:"rule_id" api:"required"`
 	// Name of the triggered rule
-	RuleName string `json:"rule_name,required"`
+	RuleName string `json:"rule_name" api:"required"`
 	// The HTTP scheme of the request that generated an event
-	Scheme string `json:"scheme,required"`
+	Scheme string `json:"scheme" api:"required"`
 	// The session ID associated with the request.
-	SessionID string `json:"session_id,required"`
+	SessionID string `json:"session_id" api:"required"`
 	// The number requests in session
-	SessionRequestCount string `json:"session_request_count,required"`
+	SessionRequestCount string `json:"session_request_count" api:"required"`
 	// List of traffic types
-	TrafficTypes []string `json:"traffic_types,required"`
+	TrafficTypes []string `json:"traffic_types" api:"required"`
 	// User agent
-	UserAgent WaapRequestDetailsUserAgent `json:"user_agent,required"`
+	UserAgent WaapRequestDetailsUserAgent `json:"user_agent" api:"required"`
 	// The decision made for processing the request through the WAAP.
 	//
 	// Any of "passed", "allowed", "monitored", "blocked", "".
@@ -685,11 +685,11 @@ func (r *WaapRequestDetails) UnmarshalJSON(data []byte) error {
 // Common tag details
 type WaapRequestDetailsCommonTag struct {
 	// Tag description information
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The tag's display name
-	DisplayName string `json:"display_name,required"`
+	DisplayName string `json:"display_name" api:"required"`
 	// Tag name
-	Tag string `json:"tag,required"`
+	Tag string `json:"tag" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Description respjson.Field
@@ -709,11 +709,11 @@ func (r *WaapRequestDetailsCommonTag) UnmarshalJSON(data []byte) error {
 // Network details
 type WaapRequestDetailsNetwork struct {
 	// Client IP
-	ClientIP string `json:"client_ip,required"`
+	ClientIP string `json:"client_ip" api:"required"`
 	// Country code
-	Country string `json:"country,required"`
+	Country string `json:"country" api:"required"`
 	// Organization details
-	Organization WaapRequestDetailsNetworkOrganization `json:"organization,required"`
+	Organization WaapRequestDetailsNetworkOrganization `json:"organization" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClientIP     respjson.Field
@@ -733,9 +733,9 @@ func (r *WaapRequestDetailsNetwork) UnmarshalJSON(data []byte) error {
 // Organization details
 type WaapRequestDetailsNetworkOrganization struct {
 	// Organization name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Network range
-	Subnet string `json:"subnet,required"`
+	Subnet string `json:"subnet" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -754,23 +754,23 @@ func (r *WaapRequestDetailsNetworkOrganization) UnmarshalJSON(data []byte) error
 // Pattern matched tag details
 type WaapRequestDetailsPatternMatchedTag struct {
 	// Tag description information
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The tag's display name
-	DisplayName string `json:"display_name,required"`
+	DisplayName string `json:"display_name" api:"required"`
 	// The phase in which the tag was triggered: access -> Request, `header_filter` ->
 	// `response_header`, `body_filter` -> `response_body`
-	ExecutionPhase string `json:"execution_phase,required"`
+	ExecutionPhase string `json:"execution_phase" api:"required"`
 	// The entity to which the variable that triggered the tag belong to. For example:
 	// `request_headers`, uri, cookies etc.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// The name of the variable which holds the value that triggered the tag
-	FieldName string `json:"field_name,required"`
+	FieldName string `json:"field_name" api:"required"`
 	// The name of the detected regexp pattern
-	PatternName string `json:"pattern_name,required"`
+	PatternName string `json:"pattern_name" api:"required"`
 	// The pattern which triggered the tag
-	PatternValue string `json:"pattern_value,required"`
+	PatternValue string `json:"pattern_value" api:"required"`
 	// Tag name
-	Tag string `json:"tag,required"`
+	Tag string `json:"tag" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Description    respjson.Field
@@ -805,27 +805,27 @@ const (
 // User agent
 type WaapRequestDetailsUserAgent struct {
 	// User agent browser
-	BaseBrowser string `json:"base_browser,required"`
+	BaseBrowser string `json:"base_browser" api:"required"`
 	// User agent browser version
-	BaseBrowserVersion string `json:"base_browser_version,required"`
+	BaseBrowserVersion string `json:"base_browser_version" api:"required"`
 	// Client from User agent header
-	Client string `json:"client,required"`
+	Client string `json:"client" api:"required"`
 	// User agent client type
-	ClientType string `json:"client_type,required"`
+	ClientType string `json:"client_type" api:"required"`
 	// User agent client version
-	ClientVersion string `json:"client_version,required"`
+	ClientVersion string `json:"client_version" api:"required"`
 	// User agent cpu
-	CPU string `json:"cpu,required"`
+	CPU string `json:"cpu" api:"required"`
 	// User agent device
-	Device string `json:"device,required"`
+	Device string `json:"device" api:"required"`
 	// User agent device type
-	DeviceType string `json:"device_type,required"`
+	DeviceType string `json:"device_type" api:"required"`
 	// User agent
-	FullString string `json:"full_string,required"`
+	FullString string `json:"full_string" api:"required"`
 	// User agent os
-	Os string `json:"os,required"`
+	Os string `json:"os" api:"required"`
 	// User agent engine
-	RenderingEngine string `json:"rendering_engine,required"`
+	RenderingEngine string `json:"rendering_engine" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BaseBrowser        respjson.Field
@@ -873,49 +873,49 @@ const (
 // Request summary used when displaying a list of requests
 type WaapRequestSummary struct {
 	// Request's unique id
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Action of the triggered rule
-	Action string `json:"action,required"`
+	Action string `json:"action" api:"required"`
 	// Client's IP address.
-	ClientIP string `json:"client_ip,required"`
+	ClientIP string `json:"client_ip" api:"required"`
 	// Country code
-	Country string `json:"country,required"`
+	Country string `json:"country" api:"required"`
 	// The decision made for processing the request through the WAAP.
 	//
 	// Any of "passed", "allowed", "monitored", "blocked", "".
-	Decision WaapRequestSummaryDecision `json:"decision,required"`
+	Decision WaapRequestSummaryDecision `json:"decision" api:"required"`
 	// Domain name
-	Domain string `json:"domain,required"`
+	Domain string `json:"domain" api:"required"`
 	// Domain ID
-	DomainID int64 `json:"domain_id,required"`
+	DomainID int64 `json:"domain_id" api:"required"`
 	// HTTP method
-	Method string `json:"method,required"`
+	Method string `json:"method" api:"required"`
 	// An optional action that may be applied in addition to the primary decision.
 	//
 	// Any of "captcha", "challenge", "".
-	OptionalAction WaapRequestSummaryOptionalAction `json:"optional_action,required"`
+	OptionalAction WaapRequestSummaryOptionalAction `json:"optional_action" api:"required"`
 	// Organization
-	Organization string `json:"organization,required"`
+	Organization string `json:"organization" api:"required"`
 	// Request path
-	Path string `json:"path,required"`
+	Path string `json:"path" api:"required"`
 	// The reference ID to a sanction that was given to a user.
-	ReferenceID string `json:"reference_id,required"`
+	ReferenceID string `json:"reference_id" api:"required"`
 	// The UNIX timestamp in ms of the date a set of traffic counters was recorded
-	RequestTime int64 `json:"request_time,required"`
+	RequestTime int64 `json:"request_time" api:"required"`
 	// Any of "passed", "blocked", "suppressed", "".
-	Result WaapRequestSummaryResult `json:"result,required"`
+	Result WaapRequestSummaryResult `json:"result" api:"required"`
 	// The ID of the triggered rule.
-	RuleID string `json:"rule_id,required"`
+	RuleID string `json:"rule_id" api:"required"`
 	// Name of the triggered rule
-	RuleName string `json:"rule_name,required"`
+	RuleName string `json:"rule_name" api:"required"`
 	// Status code for http request
-	StatusCode int64 `json:"status_code,required"`
+	StatusCode int64 `json:"status_code" api:"required"`
 	// Comma separated list of traffic types.
-	TrafficTypes string `json:"traffic_types,required"`
+	TrafficTypes string `json:"traffic_types" api:"required"`
 	// User agent
-	UserAgent string `json:"user_agent,required"`
+	UserAgent string `json:"user_agent" api:"required"`
 	// Client from parsed User agent header
-	UserAgentClient string `json:"user_agent_client,required"`
+	UserAgentClient string `json:"user_agent_client" api:"required"`
 	// The session ID associated with the request.
 	SessionID string `json:"session_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -984,7 +984,7 @@ const (
 // Represents the traffic metrics for a domain at a given time window
 type WaapTrafficMetrics struct {
 	// UNIX timestamp indicating when the traffic data was recorded
-	Timestamp int64 `json:"timestamp,required"`
+	Timestamp int64 `json:"timestamp" api:"required"`
 	// Number of AJAX requests made
 	Ajax int64 `json:"ajax"`
 	// Number of API requests made
@@ -1092,9 +1092,9 @@ type DomainStatisticGetDDOSInfoParams struct {
 	// The identity of the requests to group by
 	//
 	// Any of "URL", "User-Agent", "IP".
-	GroupBy DomainStatisticGetDDOSInfoParamsGroupBy `query:"group_by,omitzero,required" json:"-"`
+	GroupBy DomainStatisticGetDDOSInfoParamsGroupBy `query:"group_by,omitzero" api:"required" json:"-"`
 	// Filter data items starting from a specified date in ISO 8601 format
-	Start string `query:"start,required" json:"-"`
+	Start string `query:"start" api:"required" json:"-"`
 	// Filter data items up to a specified end date in ISO 8601 format. If not
 	// provided, defaults to the current date and time.
 	End param.Opt[string] `query:"end,omitzero" json:"-"`
@@ -1125,7 +1125,7 @@ const (
 
 type DomainStatisticGetEventsAggregatedParams struct {
 	// Filter data items starting from a specified date in ISO 8601 format
-	Start string `query:"start,required" json:"-"`
+	Start string `query:"start" api:"required" json:"-"`
 	// Filter data items up to a specified end date in ISO 8601 format. If not
 	// provided, defaults to the current date and time.
 	End param.Opt[string] `query:"end,omitzero" json:"-"`
@@ -1155,13 +1155,13 @@ func (r DomainStatisticGetEventsAggregatedParams) URLQuery() (v url.Values, err 
 
 type DomainStatisticGetRequestDetailsParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }
 
 type DomainStatisticGetRequestsSeriesParams struct {
 	// Filter data items starting from a specified date in ISO 8601 format
-	Start string `query:"start,required" json:"-"`
+	Start string `query:"start" api:"required" json:"-"`
 	// Filter data items up to a specified end date in ISO 8601 format. If not
 	// provided, defaults to the current date and time.
 	End param.Opt[string] `query:"end,omitzero" json:"-"`
@@ -1208,9 +1208,9 @@ type DomainStatisticGetTrafficSeriesParams struct {
 	// Specifies the granularity of the result data.
 	//
 	// Any of "daily", "hourly", "minutely".
-	Resolution DomainStatisticGetTrafficSeriesParamsResolution `query:"resolution,omitzero,required" json:"-"`
+	Resolution DomainStatisticGetTrafficSeriesParamsResolution `query:"resolution,omitzero" api:"required" json:"-"`
 	// Filter data items starting from a specified date in ISO 8601 format
-	Start string `query:"start,required" json:"-"`
+	Start string `query:"start" api:"required" json:"-"`
 	// Filter data items up to a specified end date in ISO 8601 format. If not
 	// provided, defaults to the current date and time.
 	End param.Opt[string] `query:"end,omitzero" json:"-"`

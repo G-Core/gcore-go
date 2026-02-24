@@ -87,23 +87,23 @@ func (r *UserRoleAssignmentService) Delete(ctx context.Context, assignmentID int
 
 type RoleAssignment struct {
 	// Assignment ID
-	ID         int64 `json:"id,required"`
-	AssignedBy int64 `json:"assigned_by,required"`
+	ID         int64 `json:"id" api:"required"`
+	AssignedBy int64 `json:"assigned_by" api:"required"`
 	// Client ID
-	ClientID int64 `json:"client_id,required"`
+	ClientID int64 `json:"client_id" api:"required"`
 	// Created timestamp
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// User role
 	//
 	// Any of "ClientAdministrator", "InternalNetworkOnlyUser", "Observer",
 	// "ProjectAdministrator", "User".
-	Role RoleAssignmentRole `json:"role,required"`
+	Role RoleAssignmentRole `json:"role" api:"required"`
 	// Updated timestamp
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// User ID
-	UserID int64 `json:"user_id,required"`
+	UserID int64 `json:"user_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -138,7 +138,7 @@ const (
 
 type RoleAssignmentUpdatedDeleted struct {
 	// Assignment ID
-	AssignmentID int64 `json:"assignment_id,required"`
+	AssignmentID int64 `json:"assignment_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AssignmentID respjson.Field
@@ -158,9 +158,9 @@ type UserRoleAssignmentNewParams struct {
 	//
 	// Any of "ClientAdministrator", "InternalNetworkOnlyUser", "Observer",
 	// "ProjectAdministrator", "User".
-	Role UserRoleAssignmentNewParamsRole `json:"role,omitzero,required"`
+	Role UserRoleAssignmentNewParamsRole `json:"role,omitzero" api:"required"`
 	// User ID
-	UserID int64 `json:"user_id,required"`
+	UserID int64 `json:"user_id" api:"required"`
 	// Client ID. Required if `project_id` is specified
 	ClientID param.Opt[int64] `json:"client_id,omitzero"`
 	// Project ID
@@ -192,9 +192,9 @@ type UserRoleAssignmentUpdateParams struct {
 	//
 	// Any of "ClientAdministrator", "InternalNetworkOnlyUser", "Observer",
 	// "ProjectAdministrator", "User".
-	Role UserRoleAssignmentUpdateParamsRole `json:"role,omitzero,required"`
+	Role UserRoleAssignmentUpdateParamsRole `json:"role,omitzero" api:"required"`
 	// User ID
-	UserID int64 `json:"user_id,required"`
+	UserID int64 `json:"user_id" api:"required"`
 	// Client ID. Required if `project_id` is specified
 	ClientID param.Opt[int64] `json:"client_id,omitzero"`
 	// Project ID

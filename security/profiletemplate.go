@@ -43,14 +43,14 @@ func (r *ProfileTemplateService) List(ctx context.Context, opts ...option.Reques
 }
 
 type ClientProfileTemplate struct {
-	ID             int64                        `json:"id,required"`
-	Created        time.Time                    `json:"created,required" format:"date-time"`
-	Fields         []ClientProfileTemplateField `json:"fields,required"`
-	Name           string                       `json:"name,required"`
-	Version        string                       `json:"version,required" format:"uuid"`
-	BaseTemplate   int64                        `json:"base_template,nullable"`
+	ID             int64                        `json:"id" api:"required"`
+	Created        time.Time                    `json:"created" api:"required" format:"date-time"`
+	Fields         []ClientProfileTemplateField `json:"fields" api:"required"`
+	Name           string                       `json:"name" api:"required"`
+	Version        string                       `json:"version" api:"required" format:"uuid"`
+	BaseTemplate   int64                        `json:"base_template" api:"nullable"`
 	Description    string                       `json:"description"`
-	TemplateSifter string                       `json:"template_sifter,nullable"`
+	TemplateSifter string                       `json:"template_sifter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -73,12 +73,12 @@ func (r *ClientProfileTemplate) UnmarshalJSON(data []byte) error {
 }
 
 type ClientProfileTemplateField struct {
-	ID          int64  `json:"id,required"`
-	Name        string `json:"name,required"`
-	Default     string `json:"default,nullable"`
+	ID          int64  `json:"id" api:"required"`
+	Name        string `json:"name" api:"required"`
+	Default     string `json:"default" api:"nullable"`
 	Description string `json:"description"`
 	// Any of "int", "bool", "str".
-	FieldType        ClientProfileTemplateFieldFieldType `json:"field_type,nullable"`
+	FieldType        ClientProfileTemplateFieldFieldType `json:"field_type" api:"nullable"`
 	Required         bool                                `json:"required"`
 	ValidationSchema map[string]any                      `json:"validation_schema"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

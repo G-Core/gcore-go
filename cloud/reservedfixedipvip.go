@@ -67,11 +67,11 @@ func (r *ReservedFixedIPVipService) Toggle(ctx context.Context, portID string, p
 
 type IPWithSubnet struct {
 	// IP address
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// Subnet details
-	Subnet Subnet `json:"subnet,required"`
+	Subnet Subnet `json:"subnet" api:"required"`
 	// ID of the subnet that allocated the IP
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPAddress   respjson.Field
@@ -89,10 +89,10 @@ func (r *IPWithSubnet) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPVipToggleParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// If reserved fixed IP should be a VIP
-	IsVip bool `json:"is_vip,required"`
+	IsVip bool `json:"is_vip" api:"required"`
 	paramObj
 }
 

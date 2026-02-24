@@ -99,9 +99,9 @@ func (r *DatabasePostgresClusterUserCredentialService) Regenerate(ctx context.Co
 
 type PostgresUserCredentials struct {
 	// Password
-	Password string `json:"password,required"`
+	Password string `json:"password" api:"required"`
 	// Username
-	Username string `json:"username,required"`
+	Username string `json:"username" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Password    respjson.Field
@@ -118,15 +118,15 @@ func (r *PostgresUserCredentials) UnmarshalJSON(data []byte) error {
 }
 
 type DatabasePostgresClusterUserCredentialGetParams struct {
-	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	ClusterName string           `path:"cluster_name,required" json:"-"`
+	ProjectID   param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID    param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	ClusterName string           `path:"cluster_name" api:"required" json:"-"`
 	paramObj
 }
 
 type DatabasePostgresClusterUserCredentialRegenerateParams struct {
-	ProjectID   param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID    param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	ClusterName string           `path:"cluster_name,required" json:"-"`
+	ProjectID   param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID    param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	ClusterName string           `path:"cluster_name" api:"required" json:"-"`
 	paramObj
 }

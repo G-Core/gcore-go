@@ -88,25 +88,25 @@ func (r *DomainInsightService) Replace(ctx context.Context, insightID string, pa
 
 type WaapInsight struct {
 	// A generated unique identifier for the insight
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The description of the insight
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The date and time the insight was first seen in ISO 8601 format
-	FirstSeen time.Time `json:"first_seen,required" format:"date-time"`
+	FirstSeen time.Time `json:"first_seen" api:"required" format:"date-time"`
 	// The slug of the insight type
-	InsightType string `json:"insight_type,required"`
+	InsightType string `json:"insight_type" api:"required"`
 	// A hash table of label names and values that apply to the insight
-	Labels map[string]string `json:"labels,required"`
+	Labels map[string]string `json:"labels" api:"required"`
 	// The date and time the insight was last seen in ISO 8601 format
-	LastSeen time.Time `json:"last_seen,required" format:"date-time"`
+	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`
 	// The date and time the insight was last seen in ISO 8601 format
-	LastStatusChange time.Time `json:"last_status_change,required" format:"date-time"`
+	LastStatusChange time.Time `json:"last_status_change" api:"required" format:"date-time"`
 	// The recommended action to perform to resolve the insight
-	Recommendation string `json:"recommendation,required"`
+	Recommendation string `json:"recommendation" api:"required"`
 	// The status of the insight
 	//
 	// Any of "OPEN", "ACKED", "CLOSED".
-	Status WaapInsightStatus `json:"status,required"`
+	Status WaapInsightStatus `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -191,17 +191,17 @@ const (
 
 type DomainInsightGetParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }
 
 type DomainInsightReplaceParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	// The status of the insight
 	//
 	// Any of "OPEN", "ACKED", "CLOSED".
-	Status DomainInsightReplaceParamsStatus `json:"status,omitzero,required"`
+	Status DomainInsightReplaceParamsStatus `json:"status,omitzero" api:"required"`
 	paramObj
 }
 

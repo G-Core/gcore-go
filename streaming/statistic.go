@@ -414,12 +414,12 @@ func (r *Ffprobes) UnmarshalJSON(data []byte) error {
 }
 
 type FfprobesData struct {
-	AvgBitrate          float64 `json:"avg_bitrate,required"`
-	MaxFps              float64 `json:"max_fps,required"`
-	MaxHeight           int64   `json:"max_height,required"`
-	MaxKeyframeInterval int64   `json:"max_keyframe_interval,required"`
-	SumFrames           int64   `json:"sum_frames,required"`
-	Time                string  `json:"time,required"`
+	AvgBitrate          float64 `json:"avg_bitrate" api:"required"`
+	MaxFps              float64 `json:"max_fps" api:"required"`
+	MaxHeight           int64   `json:"max_height" api:"required"`
+	MaxKeyframeInterval int64   `json:"max_keyframe_interval" api:"required"`
+	SumFrames           int64   `json:"sum_frames" api:"required"`
+	Time                string  `json:"time" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AvgBitrate          respjson.Field
@@ -442,8 +442,8 @@ func (r *FfprobesData) UnmarshalJSON(data []byte) error {
 type MaxStreamSeries []MaxStreamSeriesItem
 
 type MaxStreamSeriesItem struct {
-	Client  int64                      `json:"client,required"`
-	Metrics MaxStreamSeriesItemMetrics `json:"metrics,required"`
+	Client  int64                      `json:"client" api:"required"`
+	Metrics MaxStreamSeriesItemMetrics `json:"metrics" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Client      respjson.Field
@@ -460,7 +460,7 @@ func (r *MaxStreamSeriesItem) UnmarshalJSON(data []byte) error {
 }
 
 type MaxStreamSeriesItemMetrics struct {
-	Streams []int64 `json:"streams,required"`
+	Streams []int64 `json:"streams" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Streams     respjson.Field
@@ -492,8 +492,8 @@ func (r *PopularVideos) UnmarshalJSON(data []byte) error {
 }
 
 type PopularVideosData struct {
-	ID    string `json:"id,required"`
-	Views int64  `json:"views,required"`
+	ID    string `json:"id" api:"required"`
+	Views int64  `json:"views" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -512,8 +512,8 @@ func (r *PopularVideosData) UnmarshalJSON(data []byte) error {
 type StorageSeries []StorageSeriesItem
 
 type StorageSeriesItem struct {
-	Client  int64                    `json:"client,required"`
-	Metrics StorageSeriesItemMetrics `json:"metrics,required"`
+	Client  int64                    `json:"client" api:"required"`
+	Metrics StorageSeriesItemMetrics `json:"metrics" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Client      respjson.Field
@@ -530,8 +530,8 @@ func (r *StorageSeriesItem) UnmarshalJSON(data []byte) error {
 }
 
 type StorageSeriesItemMetrics struct {
-	MaxVolumeUsage []int64   `json:"max_volume_usage,required"`
-	Storage        [][]int64 `json:"storage,required"`
+	MaxVolumeUsage []int64   `json:"max_volume_usage" api:"required"`
+	Storage        [][]int64 `json:"storage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		MaxVolumeUsage respjson.Field
@@ -550,8 +550,8 @@ func (r *StorageSeriesItemMetrics) UnmarshalJSON(data []byte) error {
 type StreamSeries []StreamSeriesItem
 
 type StreamSeriesItem struct {
-	Client  int64                   `json:"client,required"`
-	Metrics StreamSeriesItemMetrics `json:"metrics,required"`
+	Client  int64                   `json:"client" api:"required"`
+	Metrics StreamSeriesItemMetrics `json:"metrics" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Client      respjson.Field
@@ -568,7 +568,7 @@ func (r *StreamSeriesItem) UnmarshalJSON(data []byte) error {
 }
 
 type StreamSeriesItemMetrics struct {
-	Streams []int64 `json:"streams,required"`
+	Streams []int64 `json:"streams" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Streams     respjson.Field
@@ -600,8 +600,8 @@ func (r *UniqueViewers) UnmarshalJSON(data []byte) error {
 }
 
 type UniqueViewersData struct {
-	Date      string `json:"date,required"`
-	UniqueIPs int64  `json:"unique_ips,required"`
+	Date      string `json:"date" api:"required"`
+	UniqueIPs int64  `json:"unique_ips" api:"required"`
 	ID        int64  `json:"id"`
 	Browser   string `json:"browser"`
 	Country   string `json:"country"`
@@ -652,8 +652,8 @@ func (r *UniqueViewersCDN) UnmarshalJSON(data []byte) error {
 }
 
 type UniqueViewersCDNData struct {
-	Type  string `json:"type,required"`
-	Uniqs int64  `json:"uniqs,required"`
+	Type  string `json:"type" api:"required"`
+	Uniqs int64  `json:"uniqs" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -686,9 +686,9 @@ func (r *Views) UnmarshalJSON(data []byte) error {
 }
 
 type ViewsData struct {
-	Date     string `json:"date,required"`
-	Type     string `json:"type,required"`
-	Views    int64  `json:"views,required"`
+	Date     string `json:"date" api:"required"`
+	Type     string `json:"type" api:"required"`
+	Views    int64  `json:"views" api:"required"`
 	ID       int64  `json:"id"`
 	Browser  string `json:"browser"`
 	Country  string `json:"country"`
@@ -738,8 +738,8 @@ func (r *ViewsByBrowser) UnmarshalJSON(data []byte) error {
 }
 
 type ViewsByBrowserData struct {
-	Browser string `json:"browser,required"`
-	Views   int64  `json:"views,required"`
+	Browser string `json:"browser" api:"required"`
+	Views   int64  `json:"views" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Browser     respjson.Field
@@ -772,9 +772,9 @@ func (r *ViewsByCountry) UnmarshalJSON(data []byte) error {
 }
 
 type ViewsByCountryData struct {
-	Country     string `json:"country,required"`
-	CountryName string `json:"country_name,required"`
-	Views       int64  `json:"views,required"`
+	Country     string `json:"country" api:"required"`
+	CountryName string `json:"country_name" api:"required"`
+	Views       int64  `json:"views" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Country     respjson.Field
@@ -808,8 +808,8 @@ func (r *ViewsByHostname) UnmarshalJSON(data []byte) error {
 }
 
 type ViewsByHostnameData struct {
-	Host  string `json:"host,required"`
-	Views int64  `json:"views,required"`
+	Host  string `json:"host" api:"required"`
+	Views int64  `json:"views" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Host        respjson.Field
@@ -842,8 +842,8 @@ func (r *ViewsByOperatingSystem) UnmarshalJSON(data []byte) error {
 }
 
 type ViewsByOperatingSystemData struct {
-	Os    string `json:"os,required"`
-	Views int64  `json:"views,required"`
+	Os    string `json:"os" api:"required"`
+	Views int64  `json:"views" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Os          respjson.Field
@@ -876,8 +876,8 @@ func (r *ViewsByReferer) UnmarshalJSON(data []byte) error {
 }
 
 type ViewsByRefererData struct {
-	EmbedURL string `json:"embed_url,required"`
-	Views    int64  `json:"views,required"`
+	EmbedURL string `json:"embed_url" api:"required"`
+	Views    int64  `json:"views" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EmbedURL    respjson.Field
@@ -910,9 +910,9 @@ func (r *ViewsByRegion) UnmarshalJSON(data []byte) error {
 }
 
 type ViewsByRegionData struct {
-	Region     string `json:"region,required"`
-	RegionName string `json:"region_name,required"`
-	Views      int64  `json:"views,required"`
+	Region     string `json:"region" api:"required"`
+	RegionName string `json:"region_name" api:"required"`
+	Views      int64  `json:"views" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Region      respjson.Field
@@ -946,7 +946,7 @@ func (r *ViewsHeatmap) UnmarshalJSON(data []byte) error {
 }
 
 type ViewsHeatmapData struct {
-	Viewers int64  `json:"viewers,required"`
+	Viewers int64  `json:"viewers" api:"required"`
 	Seconds int64  `json:"seconds"`
 	Time    string `json:"time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -968,8 +968,8 @@ func (r *ViewsHeatmapData) UnmarshalJSON(data []byte) error {
 type VodStatisticsSeries []VodStatisticsSeriesItem
 
 type VodStatisticsSeriesItem struct {
-	Client  int64                          `json:"client,required"`
-	Metrics VodStatisticsSeriesItemMetrics `json:"metrics,required"`
+	Client  int64                          `json:"client" api:"required"`
+	Metrics VodStatisticsSeriesItemMetrics `json:"metrics" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Client      respjson.Field
@@ -986,7 +986,7 @@ func (r *VodStatisticsSeriesItem) UnmarshalJSON(data []byte) error {
 }
 
 type VodStatisticsSeriesItemMetrics struct {
-	Vod []int64 `json:"vod,required"`
+	Vod []int64 `json:"vod" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Vod         respjson.Field
@@ -1004,9 +1004,9 @@ func (r *VodStatisticsSeriesItemMetrics) UnmarshalJSON(data []byte) error {
 type VodTotalStreamDurationSeries []VodTotalStreamDurationSeriesItem
 
 type VodTotalStreamDurationSeriesItem struct {
-	Client int64 `json:"client,required"`
+	Client int64 `json:"client" api:"required"`
 	// count of minutes
-	Duration     int64  `json:"duration,required"`
+	Duration     int64  `json:"duration" api:"required"`
 	ClientUserID int64  `json:"client_user_id"`
 	StreamID     string `json:"stream_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1027,8 +1027,8 @@ func (r *VodTotalStreamDurationSeriesItem) UnmarshalJSON(data []byte) error {
 }
 
 type StatisticGetLiveUniqueViewersResponse struct {
-	Client  int64                                        `json:"client,required"`
-	Metrics StatisticGetLiveUniqueViewersResponseMetrics `json:"metrics,required"`
+	Client  int64                                        `json:"client" api:"required"`
+	Metrics StatisticGetLiveUniqueViewersResponseMetrics `json:"metrics" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Client      respjson.Field
@@ -1045,7 +1045,7 @@ func (r *StatisticGetLiveUniqueViewersResponse) UnmarshalJSON(data []byte) error
 }
 
 type StatisticGetLiveUniqueViewersResponseMetrics struct {
-	Streams []int64 `json:"streams,required"`
+	Streams []int64 `json:"streams" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Streams     respjson.Field
@@ -1061,9 +1061,9 @@ func (r *StatisticGetLiveUniqueViewersResponseMetrics) UnmarshalJSON(data []byte
 }
 
 type StatisticGetVodWatchTimeTotalCDNResponse struct {
-	Client int64 `json:"client,required"`
+	Client int64 `json:"client" api:"required"`
 	// count of minutes
-	Duration     int64  `json:"duration,required"`
+	Duration     int64  `json:"duration" api:"required"`
 	ClientUserID int64  `json:"client_user_id"`
 	Slug         string `json:"slug"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1085,11 +1085,11 @@ func (r *StatisticGetVodWatchTimeTotalCDNResponse) UnmarshalJSON(data []byte) er
 
 type StatisticGetFfprobesParams struct {
 	// Start of time frame. Format is ISO 8601.
-	DateFrom string `query:"date_from,required" json:"-"`
+	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	DateTo string `query:"date_to,required" json:"-"`
+	DateTo string `query:"date_to" api:"required" json:"-"`
 	// Stream ID
-	StreamID string           `query:"stream_id,required" json:"-"`
+	StreamID string           `query:"stream_id" api:"required" json:"-"`
 	Interval param.Opt[int64] `query:"interval,omitzero" json:"-"`
 	// Any of "second", "minute", "hour", "day", "week", "month".
 	Units StatisticGetFfprobesParamsUnits `query:"units,omitzero" json:"-"`
@@ -1118,9 +1118,9 @@ const (
 
 type StatisticGetLiveUniqueViewersParams struct {
 	// Start of time frame. Format is date time in ISO 8601
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End of time frame. Format is date time in ISO 8601
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// Filter by "client_user_id"
 	ClientUserID param.Opt[int64] `query:"client_user_id,omitzero" json:"-"`
 	// Filter by "stream_id"
@@ -1155,7 +1155,7 @@ const (
 type StatisticGetLiveWatchTimeCDNParams struct {
 	// Start of the time period for counting minutes of watching. Format is date time
 	// in ISO 8601.
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// Filter by field "client_user_id"
 	ClientUserID param.Opt[int64] `query:"client_user_id,omitzero" json:"-"`
 	// Filter by `stream_id`
@@ -1216,9 +1216,9 @@ func (r StatisticGetLiveWatchTimeTotalCDNParams) URLQuery() (v url.Values, err e
 
 type StatisticGetMaxStreamsSeriesParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// specifies the time interval for grouping data
 	//
 	// Any of "1m", "5m", "15m", "1h", "1d".
@@ -1248,9 +1248,9 @@ const (
 
 type StatisticGetPopularVideosParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	DateFrom string `query:"date_from,required" json:"-"`
+	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	DateTo string `query:"date_to,required" json:"-"`
+	DateTo string `query:"date_to" api:"required" json:"-"`
 	paramObj
 }
 
@@ -1265,9 +1265,9 @@ func (r StatisticGetPopularVideosParams) URLQuery() (v url.Values, err error) {
 
 type StatisticGetStorageSeriesParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// specifies the time interval for grouping data
 	//
 	// Any of "1m", "5m", "15m", "1h", "1d".
@@ -1297,9 +1297,9 @@ const (
 
 type StatisticGetStreamSeriesParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// specifies the time interval for grouping data
 	//
 	// Any of "1m", "5m", "15m", "1h", "1d".
@@ -1329,9 +1329,9 @@ const (
 
 type StatisticGetUniqueViewersParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	DateFrom string `query:"date_from,required" json:"-"`
+	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	DateTo string `query:"date_to,required" json:"-"`
+	DateTo string `query:"date_to" api:"required" json:"-"`
 	// filter by entity's id
 	ID param.Opt[string] `query:"id,omitzero" json:"-"`
 	// filter by country
@@ -1383,9 +1383,9 @@ const (
 
 type StatisticGetUniqueViewersCDNParams struct {
 	// Start of time frame. Format is date time in ISO 8601.
-	DateFrom string `query:"date_from,required" json:"-"`
+	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Format is date time in ISO 8601.
-	DateTo string `query:"date_to,required" json:"-"`
+	DateTo string `query:"date_to" api:"required" json:"-"`
 	// Filter by entity's id. Put ID of a Live stream, VOD or a playlist to be
 	// calculated.
 	//
@@ -1422,9 +1422,9 @@ const (
 
 type StatisticGetViewsParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	DateFrom string `query:"date_from,required" json:"-"`
+	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	DateTo string `query:"date_to,required" json:"-"`
+	DateTo string `query:"date_to" api:"required" json:"-"`
 	// filter by entity's id
 	ID param.Opt[string] `query:"id,omitzero" json:"-"`
 	// filter by country
@@ -1475,9 +1475,9 @@ const (
 
 type StatisticGetViewsByBrowsersParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	DateFrom string `query:"date_from,required" json:"-"`
+	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	DateTo string `query:"date_to,required" json:"-"`
+	DateTo string `query:"date_to" api:"required" json:"-"`
 	paramObj
 }
 
@@ -1492,9 +1492,9 @@ func (r StatisticGetViewsByBrowsersParams) URLQuery() (v url.Values, err error) 
 
 type StatisticGetViewsByCountryParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	DateFrom string `query:"date_from,required" json:"-"`
+	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	DateTo string `query:"date_to,required" json:"-"`
+	DateTo string `query:"date_to" api:"required" json:"-"`
 	paramObj
 }
 
@@ -1509,9 +1509,9 @@ func (r StatisticGetViewsByCountryParams) URLQuery() (v url.Values, err error) {
 
 type StatisticGetViewsByHostnameParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	DateFrom string `query:"date_from,required" json:"-"`
+	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	DateTo string `query:"date_to,required" json:"-"`
+	DateTo string `query:"date_to" api:"required" json:"-"`
 	paramObj
 }
 
@@ -1526,9 +1526,9 @@ func (r StatisticGetViewsByHostnameParams) URLQuery() (v url.Values, err error) 
 
 type StatisticGetViewsByOperatingSystemParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	DateFrom string `query:"date_from,required" json:"-"`
+	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	DateTo string `query:"date_to,required" json:"-"`
+	DateTo string `query:"date_to" api:"required" json:"-"`
 	paramObj
 }
 
@@ -1543,9 +1543,9 @@ func (r StatisticGetViewsByOperatingSystemParams) URLQuery() (v url.Values, err 
 
 type StatisticGetViewsByRefererParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	DateFrom string `query:"date_from,required" json:"-"`
+	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	DateTo string `query:"date_to,required" json:"-"`
+	DateTo string `query:"date_to" api:"required" json:"-"`
 	paramObj
 }
 
@@ -1560,9 +1560,9 @@ func (r StatisticGetViewsByRefererParams) URLQuery() (v url.Values, err error) {
 
 type StatisticGetViewsByRegionParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	DateFrom string `query:"date_from,required" json:"-"`
+	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	DateTo string `query:"date_to,required" json:"-"`
+	DateTo string `query:"date_to" api:"required" json:"-"`
 	paramObj
 }
 
@@ -1577,15 +1577,15 @@ func (r StatisticGetViewsByRegionParams) URLQuery() (v url.Values, err error) {
 
 type StatisticGetViewsHeatmapParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	DateFrom string `query:"date_from,required" json:"-"`
+	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	DateTo string `query:"date_to,required" json:"-"`
+	DateTo string `query:"date_to" api:"required" json:"-"`
 	// video streaming ID
-	StreamID string `query:"stream_id,required" json:"-"`
+	StreamID string `query:"stream_id" api:"required" json:"-"`
 	// entity's type
 	//
 	// Any of "live", "vod", "playlist".
-	Type StatisticGetViewsHeatmapParamsType `query:"type,omitzero,required" json:"-"`
+	Type StatisticGetViewsHeatmapParamsType `query:"type,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
@@ -1609,9 +1609,9 @@ const (
 
 type StatisticGetVodStorageVolumeParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	paramObj
 }
 
@@ -1626,9 +1626,9 @@ func (r StatisticGetVodStorageVolumeParams) URLQuery() (v url.Values, err error)
 
 type StatisticGetVodTranscodingDurationParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	paramObj
 }
 
@@ -1643,9 +1643,9 @@ func (r StatisticGetVodTranscodingDurationParams) URLQuery() (v url.Values, err 
 
 type StatisticGetVodUniqueViewersCDNParams struct {
 	// Start of time frame. Format is date time in ISO 8601
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End of time frame. Format is date time in ISO 8601
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// Filter by user "id"
 	ClientUserID param.Opt[int64] `query:"client_user_id,omitzero" json:"-"`
 	// Filter by video "slug"
@@ -1680,7 +1680,7 @@ const (
 type StatisticGetVodWatchTimeCDNParams struct {
 	// Start of the time period for counting minutes of watching. Format is date time
 	// in ISO 8601.
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// Filter by field "client_user_id"
 	ClientUserID param.Opt[int64] `query:"client_user_id,omitzero" json:"-"`
 	// Filter by video's slug

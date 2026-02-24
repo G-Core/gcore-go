@@ -120,18 +120,18 @@ func (r *FileShareAccessRuleService) Delete(ctx context.Context, accessRuleID st
 
 type AccessRule struct {
 	// Access Rule ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Access mode
 	//
 	// Any of "ro", "rw".
-	AccessLevel AccessRuleAccessLevel `json:"access_level,required"`
+	AccessLevel AccessRuleAccessLevel `json:"access_level" api:"required"`
 	// Source IP or network
-	AccessTo string `json:"access_to,required" format:"ipvanyaddress"`
+	AccessTo string `json:"access_to" api:"required" format:"ipvanyaddress"`
 	// Access Rule state
 	//
 	// Any of "active", "applying", "denying", "error", "new", "queued_to_apply",
 	// "queued_to_deny".
-	State AccessRuleState `json:"state,required"`
+	State AccessRuleState `json:"state" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -172,9 +172,9 @@ const (
 
 type AccessRuleList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []AccessRule `json:"results,required"`
+	Results []AccessRule `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -192,15 +192,15 @@ func (r *AccessRuleList) UnmarshalJSON(data []byte) error {
 
 type FileShareAccessRuleNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Access mode
 	//
 	// Any of "ro", "rw".
-	AccessMode FileShareAccessRuleNewParamsAccessMode `json:"access_mode,omitzero,required"`
+	AccessMode FileShareAccessRuleNewParamsAccessMode `json:"access_mode,omitzero" api:"required"`
 	// Source IP or network
-	IPAddress string `json:"ip_address,required" format:"ipvanyaddress"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	paramObj
 }
 
@@ -222,18 +222,18 @@ const (
 
 type FileShareAccessRuleListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type FileShareAccessRuleDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// File Share ID
-	FileShareID string `path:"file_share_id,required" format:"uuid4" json:"-"`
+	FileShareID string `path:"file_share_id" api:"required" format:"uuid4" json:"-"`
 	paramObj
 }

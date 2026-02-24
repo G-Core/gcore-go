@@ -58,10 +58,10 @@ func (r *DatabasePostgresConfigurationService) Get(ctx context.Context, query Da
 }
 
 type PostgresConfiguration struct {
-	Flavors        []PostgresConfigurationFlavor       `json:"flavors,required"`
-	StorageClasses []PostgresConfigurationStorageClass `json:"storage_classes,required"`
+	Flavors        []PostgresConfigurationFlavor       `json:"flavors" api:"required"`
+	StorageClasses []PostgresConfigurationStorageClass `json:"storage_classes" api:"required"`
 	// Available versions
-	Versions []string `json:"versions,required"`
+	Versions []string `json:"versions" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Flavors        respjson.Field
@@ -80,10 +80,10 @@ func (r *PostgresConfiguration) UnmarshalJSON(data []byte) error {
 
 type PostgresConfigurationFlavor struct {
 	// Maximum available cores for instance
-	CPU int64 `json:"cpu,required"`
+	CPU int64 `json:"cpu" api:"required"`
 	// Maximum available RAM for instance
-	MemoryGib int64  `json:"memory_gib,required"`
-	PgConf    string `json:"pg_conf,required"`
+	MemoryGib int64  `json:"memory_gib" api:"required"`
+	PgConf    string `json:"pg_conf" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CPU         respjson.Field
@@ -102,7 +102,7 @@ func (r *PostgresConfigurationFlavor) UnmarshalJSON(data []byte) error {
 
 type PostgresConfigurationStorageClass struct {
 	// Storage type
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -118,7 +118,7 @@ func (r *PostgresConfigurationStorageClass) UnmarshalJSON(data []byte) error {
 }
 
 type DatabasePostgresConfigurationGetParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

@@ -59,13 +59,13 @@ func (r *WaapService) GetAccountOverview(ctx context.Context, opts ...option.Req
 // Represents the WAAP service information for a client
 type WaapGetAccountOverviewResponse struct {
 	// The client ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// List of enabled features
-	Features []string `json:"features,required"`
+	Features []string `json:"features" api:"required"`
 	// Quotas for the client
-	Quotas map[string]WaapGetAccountOverviewResponseQuota `json:"quotas,required"`
+	Quotas map[string]WaapGetAccountOverviewResponseQuota `json:"quotas" api:"required"`
 	// Information about the WAAP service status
-	Service WaapGetAccountOverviewResponseService `json:"service,required"`
+	Service WaapGetAccountOverviewResponseService `json:"service" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -85,9 +85,9 @@ func (r *WaapGetAccountOverviewResponse) UnmarshalJSON(data []byte) error {
 
 type WaapGetAccountOverviewResponseQuota struct {
 	// The maximum allowed number of this resource
-	Allowed int64 `json:"allowed,required"`
+	Allowed int64 `json:"allowed" api:"required"`
 	// The current number of this resource
-	Current int64 `json:"current,required"`
+	Current int64 `json:"current" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Allowed     respjson.Field
@@ -106,7 +106,7 @@ func (r *WaapGetAccountOverviewResponseQuota) UnmarshalJSON(data []byte) error {
 // Information about the WAAP service status
 type WaapGetAccountOverviewResponseService struct {
 	// Whether the service is enabled
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field

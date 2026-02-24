@@ -64,19 +64,19 @@ func (r *GPUVirtualClusterVolumeService) List(ctx context.Context, clusterID str
 
 type GPUVirtualClusterVolume struct {
 	// Volume unique identifier
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// True if this is bootable volume
-	Bootable bool `json:"bootable,required"`
+	Bootable bool `json:"bootable" api:"required"`
 	// Volume creation date and time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// User defined name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// True if this volume contains root file system
-	RootFs bool `json:"root_fs,required"`
+	RootFs bool `json:"root_fs" api:"required"`
 	// Server UUID
-	ServerID string `json:"server_id,required" format:"uuid4"`
+	ServerID string `json:"server_id" api:"required" format:"uuid4"`
 	// Volume size in GiB
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// Current volume status
 	//
 	// Any of "attaching", "available", "awaiting-transfer", "backing-up", "creating",
@@ -84,11 +84,11 @@ type GPUVirtualClusterVolume struct {
 	// "error_deleting", "error_extending", "error_restoring", "extending", "in-use",
 	// "maintenance", "reserved", "restoring-backup", "retyping", "reverting",
 	// "uploading".
-	Status GPUVirtualClusterVolumeStatus `json:"status,required"`
+	Status GPUVirtualClusterVolumeStatus `json:"status" api:"required"`
 	// User defined tags
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// Volume type
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -141,9 +141,9 @@ const (
 
 type GPUVirtualClusterVolumeList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []GPUVirtualClusterVolume `json:"results,required"`
+	Results []GPUVirtualClusterVolume `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -161,8 +161,8 @@ func (r *GPUVirtualClusterVolumeList) UnmarshalJSON(data []byte) error {
 
 type GPUVirtualClusterVolumeListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

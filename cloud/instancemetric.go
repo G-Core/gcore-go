@@ -64,21 +64,21 @@ func (r *InstanceMetricService) List(ctx context.Context, instanceID string, par
 // Instance metrics item
 type Metrics struct {
 	// Timestamp
-	Time string `json:"time,required"`
+	Time string `json:"time" api:"required"`
 	// CPU utilization, % (max 100% for multi-core)
-	CPUUtil float64 `json:"cpu_util,nullable"`
+	CPUUtil float64 `json:"cpu_util" api:"nullable"`
 	// Disks metrics for each of the disks attached
-	Disks []MetricsDisk `json:"disks,nullable"`
+	Disks []MetricsDisk `json:"disks" api:"nullable"`
 	// RAM utilization, %
-	MemoryUtil float64 `json:"memory_util,nullable"`
+	MemoryUtil float64 `json:"memory_util" api:"nullable"`
 	// Network out, bytes per second
-	NetworkBpsEgress float64 `json:"network_Bps_egress,nullable"`
+	NetworkBpsEgress float64 `json:"network_Bps_egress" api:"nullable"`
 	// Network in, bytes per second
-	NetworkBpsIngress float64 `json:"network_Bps_ingress,nullable"`
+	NetworkBpsIngress float64 `json:"network_Bps_ingress" api:"nullable"`
 	// Network out, packets per second
-	NetworkPpsEgress float64 `json:"network_pps_egress,nullable"`
+	NetworkPpsEgress float64 `json:"network_pps_egress" api:"nullable"`
 	// Network in, packets per second
-	NetworkPpsIngress float64 `json:"network_pps_ingress,nullable"`
+	NetworkPpsIngress float64 `json:"network_pps_ingress" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Time              respjson.Field
@@ -103,15 +103,15 @@ func (r *Metrics) UnmarshalJSON(data []byte) error {
 // Disk metrics item
 type MetricsDisk struct {
 	// Disk read, Bytes per second
-	DiskBpsRead float64 `json:"disk_Bps_read,nullable"`
+	DiskBpsRead float64 `json:"disk_Bps_read" api:"nullable"`
 	// Disk write, Bytes per second
-	DiskBpsWrite float64 `json:"disk_Bps_write,nullable"`
+	DiskBpsWrite float64 `json:"disk_Bps_write" api:"nullable"`
 	// Disk read, iops
-	DiskIopsRead float64 `json:"disk_iops_read,nullable"`
+	DiskIopsRead float64 `json:"disk_iops_read" api:"nullable"`
 	// Disk write, iops
-	DiskIopsWrite float64 `json:"disk_iops_write,nullable"`
+	DiskIopsWrite float64 `json:"disk_iops_write" api:"nullable"`
 	// Disk attached slot name
-	DiskName string `json:"disk_name,nullable"`
+	DiskName string `json:"disk_name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DiskBpsRead   respjson.Field
@@ -132,9 +132,9 @@ func (r *MetricsDisk) UnmarshalJSON(data []byte) error {
 
 type MetricsList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []Metrics `json:"results,required"`
+	Results []Metrics `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -152,15 +152,15 @@ func (r *MetricsList) UnmarshalJSON(data []byte) error {
 
 type InstanceMetricListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Time interval.
-	TimeInterval int64 `json:"time_interval,required"`
+	TimeInterval int64 `json:"time_interval" api:"required"`
 	// Time interval unit.
 	//
 	// Any of "day", "hour".
-	TimeUnit InstanceMetricsTimeUnit `json:"time_unit,omitzero,required"`
+	TimeUnit InstanceMetricsTimeUnit `json:"time_unit,omitzero" api:"required"`
 	paramObj
 }
 

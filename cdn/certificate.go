@@ -200,7 +200,7 @@ type SslRequestStatus struct {
 	LatestStatus SslRequestStatusLatestStatus `json:"latest_status"`
 	// Time of the next scheduled attempt to issue the Let's Encrypt certificate (ISO
 	// 8601/RFC 3339 format, UTC).
-	NextAttemptTime string `json:"next_attempt_time,nullable"`
+	NextAttemptTime string `json:"next_attempt_time" api:"nullable"`
 	// CDN resource ID.
 	Resource int64 `json:"resource"`
 	// Date when the process of issuing a Let's Encrypt certificate was started (ISO
@@ -345,13 +345,13 @@ type CertificateNewParamsBodyOwnCertificate struct {
 	// SSL certificate name.
 	//
 	// It must be unique.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Public part of the SSL certificate.
 	//
 	// All chain of the SSL certificate should be added.
-	SslCertificate string `json:"sslCertificate,required"`
+	SslCertificate string `json:"sslCertificate" api:"required"`
 	// Private key of the SSL certificate.
-	SslPrivateKey string `json:"sslPrivateKey,required"`
+	SslPrivateKey string `json:"sslPrivateKey" api:"required"`
 	// Defines whether to check the SSL certificate for a signature from a trusted
 	// certificate authority.
 	//
@@ -376,9 +376,9 @@ func (r *CertificateNewParamsBodyOwnCertificate) UnmarshalJSON(data []byte) erro
 // The properties Automated, Name are required.
 type CertificateNewParamsBodyLetSEncryptCertificate struct {
 	// Must be **true** to issue certificate automatically.
-	Automated bool `json:"automated,required"`
+	Automated bool `json:"automated" api:"required"`
 	// SSL certificate name. It must be unique.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 
@@ -435,13 +435,13 @@ type CertificateReplaceParams struct {
 	// SSL certificate name.
 	//
 	// It must be unique.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Public part of the SSL certificate.
 	//
 	// All chain of the SSL certificate should be added.
-	SslCertificate string `json:"sslCertificate,required"`
+	SslCertificate string `json:"sslCertificate" api:"required"`
 	// Private key of the SSL certificate.
-	SslPrivateKey string `json:"sslPrivateKey,required"`
+	SslPrivateKey string `json:"sslPrivateKey" api:"required"`
 	// Defines whether to check the SSL certificate for a signature from a trusted
 	// certificate authority.
 	//

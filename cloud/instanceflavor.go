@@ -125,21 +125,21 @@ func (r *InstanceFlavorDetailedUnion) UnmarshalJSON(data []byte) error {
 // Instances flavor schema without price information
 type InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice struct {
 	// Flavor architecture type
-	Architecture string `json:"architecture,required"`
+	Architecture string `json:"architecture" api:"required"`
 	// Disabled flavor flag
-	Disabled bool `json:"disabled,required"`
+	Disabled bool `json:"disabled" api:"required"`
 	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// Additional hardware description
-	HardwareDescription map[string]string `json:"hardware_description,required"`
+	HardwareDescription map[string]string `json:"hardware_description" api:"required"`
 	// Flavor operating system
-	OsType string `json:"os_type,required"`
+	OsType string `json:"os_type" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Virtual CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -164,31 +164,31 @@ func (r *InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice) UnmarshalJSON(
 // Instances flavor schema with price information
 type InstanceFlavorDetailedInstancesFlavorSchemaWithPrice struct {
 	// Flavor architecture type
-	Architecture string `json:"architecture,required"`
+	Architecture string `json:"architecture" api:"required"`
 	// Currency code
-	CurrencyCode string `json:"currency_code,required"`
+	CurrencyCode string `json:"currency_code" api:"required"`
 	// Disabled flavor flag
-	Disabled bool `json:"disabled,required"`
+	Disabled bool `json:"disabled" api:"required"`
 	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// Additional hardware description
-	HardwareDescription map[string]string `json:"hardware_description,required"`
+	HardwareDescription map[string]string `json:"hardware_description" api:"required"`
 	// Flavor operating system
-	OsType string `json:"os_type,required"`
+	OsType string `json:"os_type" api:"required"`
 	// Price per hour
-	PricePerHour float64 `json:"price_per_hour,required"`
+	PricePerHour float64 `json:"price_per_hour" api:"required"`
 	// Price per month
-	PricePerMonth float64 `json:"price_per_month,required"`
+	PricePerMonth float64 `json:"price_per_month" api:"required"`
 	// Price status for the UI
 	//
 	// Any of "error", "hide", "show".
-	PriceStatus string `json:"price_status,required"`
+	PriceStatus string `json:"price_status" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Virtual CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
@@ -216,9 +216,9 @@ func (r *InstanceFlavorDetailedInstancesFlavorSchemaWithPrice) UnmarshalJSON(dat
 
 type InstanceFlavorList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []InstanceFlavorDetailedUnion `json:"results,required"`
+	Results []InstanceFlavorDetailedUnion `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -235,8 +235,8 @@ func (r *InstanceFlavorList) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceFlavorListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Flag for filtering disabled flavors in the region. Defaults to true
 	Disabled param.Opt[bool] `query:"disabled,omitzero" json:"-"`
 	// Set to true to exclude flavors dedicated to linux images. Default False

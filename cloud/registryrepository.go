@@ -87,19 +87,19 @@ func (r *RegistryRepositoryService) Delete(ctx context.Context, repositoryName s
 
 type RegistryRepository struct {
 	// Repository ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Number of artifacts in the repository
-	ArtifactCount int64 `json:"artifact_count,required"`
+	ArtifactCount int64 `json:"artifact_count" api:"required"`
 	// Repository creation date-time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Repository name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Number of pools from the repository
-	PullCount int64 `json:"pull_count,required"`
+	PullCount int64 `json:"pull_count" api:"required"`
 	// Repository registry ID
-	RegistryID int64 `json:"registry_id,required"`
+	RegistryID int64 `json:"registry_id" api:"required"`
 	// Repository modification date-time
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -122,9 +122,9 @@ func (r *RegistryRepository) UnmarshalJSON(data []byte) error {
 
 type RegistryRepositoryList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []RegistryRepository `json:"results,required"`
+	Results []RegistryRepository `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -141,14 +141,14 @@ func (r *RegistryRepositoryList) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryRepositoryListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type RegistryRepositoryDeleteParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	RegistryID int64            `path:"registry_id,required" json:"-"`
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	RegistryID int64            `path:"registry_id" api:"required" json:"-"`
 	paramObj
 }

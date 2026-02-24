@@ -395,37 +395,37 @@ func (r *GPUBaremetalClusterService) ResizeAndPoll(ctx context.Context, clusterI
 
 type GPUBaremetalCluster struct {
 	// Cluster unique identifier
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Cluster creation date time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Cluster flavor name
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Image ID
-	ImageID string `json:"image_id,required"`
+	ImageID string `json:"image_id" api:"required"`
 	// User type managing the resource
 	//
 	// Any of "k8s", "user".
-	ManagedBy GPUBaremetalClusterManagedBy `json:"managed_by,required"`
+	ManagedBy GPUBaremetalClusterManagedBy `json:"managed_by" api:"required"`
 	// Cluster name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Cluster servers count
-	ServersCount int64 `json:"servers_count,required"`
+	ServersCount int64 `json:"servers_count" api:"required"`
 	// List of cluster nodes
-	ServersIDs      []string                           `json:"servers_ids,required" format:"uuid4"`
-	ServersSettings GPUBaremetalClusterServersSettings `json:"servers_settings,required"`
+	ServersIDs      []string                           `json:"servers_ids" api:"required" format:"uuid4"`
+	ServersSettings GPUBaremetalClusterServersSettings `json:"servers_settings" api:"required"`
 	// Cluster status
 	//
 	// Any of "active", "creating", "degraded", "deleting", "error", "new",
 	// "rebooting", "rebuilding", "resizing", "shutoff".
-	Status GPUBaremetalClusterStatus `json:"status,required"`
+	Status GPUBaremetalClusterStatus `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// Cluster update date time
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -461,14 +461,14 @@ const (
 
 type GPUBaremetalClusterServersSettings struct {
 	// List of file shares mounted across the cluster.
-	FileShares []GPUBaremetalClusterServersSettingsFileShare      `json:"file_shares,required"`
-	Interfaces []GPUBaremetalClusterServersSettingsInterfaceUnion `json:"interfaces,required"`
+	FileShares []GPUBaremetalClusterServersSettingsFileShare      `json:"file_shares" api:"required"`
+	Interfaces []GPUBaremetalClusterServersSettingsInterfaceUnion `json:"interfaces" api:"required"`
 	// Security groups
-	SecurityGroups []GPUBaremetalClusterServersSettingsSecurityGroup `json:"security_groups,required"`
+	SecurityGroups []GPUBaremetalClusterServersSettingsSecurityGroup `json:"security_groups" api:"required"`
 	// SSH key name
-	SSHKeyName string `json:"ssh_key_name,required"`
+	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Optional custom user data
-	UserData string `json:"user_data,required"`
+	UserData string `json:"user_data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FileShares     respjson.Field
@@ -489,9 +489,9 @@ func (r *GPUBaremetalClusterServersSettings) UnmarshalJSON(data []byte) error {
 
 type GPUBaremetalClusterServersSettingsFileShare struct {
 	// Unique identifier of the file share in UUID format.
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Absolute mount path inside the system where the file share will be mounted.
-	MountPath string `json:"mount_path,required"`
+	MountPath string `json:"mount_path" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -626,10 +626,10 @@ type GPUBaremetalClusterServersSettingsInterfaceExternal struct {
 	// Which subnets should be selected: IPv4, IPv6, or use dual stack.
 	//
 	// Any of "dual", "ipv4", "ipv6".
-	IPFamily string `json:"ip_family,required"`
+	IPFamily string `json:"ip_family" api:"required"`
 	// Interface name
-	Name string            `json:"name,required"`
-	Type constant.External `json:"type,required"`
+	Name string            `json:"name" api:"required"`
+	Type constant.External `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPFamily    respjson.Field
@@ -648,14 +648,14 @@ func (r *GPUBaremetalClusterServersSettingsInterfaceExternal) UnmarshalJSON(data
 
 type GPUBaremetalClusterServersSettingsInterfaceSubnet struct {
 	// Floating IP config for this subnet attachment
-	FloatingIP GPUBaremetalClusterServersSettingsInterfaceSubnetFloatingIP `json:"floating_ip,required"`
+	FloatingIP GPUBaremetalClusterServersSettingsInterfaceSubnetFloatingIP `json:"floating_ip" api:"required"`
 	// Interface name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Network ID the subnet belongs to. Port will be plugged in this network
-	NetworkID string `json:"network_id,required"`
+	NetworkID string `json:"network_id" api:"required"`
 	// Port is assigned an IP address from this subnet
-	SubnetID string          `json:"subnet_id,required" format:"uuid4"`
-	Type     constant.Subnet `json:"type,required"`
+	SubnetID string          `json:"subnet_id" api:"required" format:"uuid4"`
+	Type     constant.Subnet `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FloatingIP  respjson.Field
@@ -676,7 +676,7 @@ func (r *GPUBaremetalClusterServersSettingsInterfaceSubnet) UnmarshalJSON(data [
 
 // Floating IP config for this subnet attachment
 type GPUBaremetalClusterServersSettingsInterfaceSubnetFloatingIP struct {
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Source      respjson.Field
@@ -695,18 +695,18 @@ func (r *GPUBaremetalClusterServersSettingsInterfaceSubnetFloatingIP) UnmarshalJ
 
 type GPUBaremetalClusterServersSettingsInterfaceAnySubnet struct {
 	// Floating IP config for this subnet attachment
-	FloatingIP GPUBaremetalClusterServersSettingsInterfaceAnySubnetFloatingIP `json:"floating_ip,required"`
+	FloatingIP GPUBaremetalClusterServersSettingsInterfaceAnySubnetFloatingIP `json:"floating_ip" api:"required"`
 	// Fixed IP address
-	IPAddress string `json:"ip_address,required"`
+	IPAddress string `json:"ip_address" api:"required"`
 	// Which subnets should be selected: IPv4, IPv6, or use dual stack
 	//
 	// Any of "dual", "ipv4", "ipv6".
-	IPFamily string `json:"ip_family,required"`
+	IPFamily string `json:"ip_family" api:"required"`
 	// Interface name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Network ID the subnet belongs to. Port will be plugged in this network
-	NetworkID string             `json:"network_id,required"`
-	Type      constant.AnySubnet `json:"type,required"`
+	NetworkID string             `json:"network_id" api:"required"`
+	Type      constant.AnySubnet `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FloatingIP  respjson.Field
@@ -728,7 +728,7 @@ func (r *GPUBaremetalClusterServersSettingsInterfaceAnySubnet) UnmarshalJSON(dat
 
 // Floating IP config for this subnet attachment
 type GPUBaremetalClusterServersSettingsInterfaceAnySubnetFloatingIP struct {
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Source      respjson.Field
@@ -747,9 +747,9 @@ func (r *GPUBaremetalClusterServersSettingsInterfaceAnySubnetFloatingIP) Unmarsh
 
 type GPUBaremetalClusterServersSettingsSecurityGroup struct {
 	// Security group ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Security group name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -783,19 +783,19 @@ const (
 
 type GPUBaremetalClusterNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster flavor ID
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// System image ID
-	ImageID string `json:"image_id,required"`
+	ImageID string `json:"image_id" api:"required"`
 	// Cluster name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Number of servers in the cluster
-	ServersCount int64 `json:"servers_count,required"`
+	ServersCount int64 `json:"servers_count" api:"required"`
 	// Configuration settings for the servers in the cluster
-	ServersSettings GPUBaremetalClusterNewParamsServersSettings `json:"servers_settings,omitzero,required"`
+	ServersSettings GPUBaremetalClusterNewParamsServersSettings `json:"servers_settings,omitzero" api:"required"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Both tag keys and values have a maximum
@@ -819,7 +819,7 @@ func (r *GPUBaremetalClusterNewParams) UnmarshalJSON(data []byte) error {
 // The property Interfaces is required.
 type GPUBaremetalClusterNewParamsServersSettings struct {
 	// Subnet IPs and floating IPs
-	Interfaces []GPUBaremetalClusterNewParamsServersSettingsInterfaceUnion `json:"interfaces,omitzero,required"`
+	Interfaces []GPUBaremetalClusterNewParamsServersSettingsInterfaceUnion `json:"interfaces,omitzero" api:"required"`
 	// Optional custom user data (Base64-encoded)
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	// Optional server access credentials
@@ -977,7 +977,7 @@ type GPUBaremetalClusterNewParamsServersSettingsInterfaceExternal struct {
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
 	// This field can be elided, and will marshal its zero value as "external".
-	Type constant.External `json:"type,required"`
+	Type constant.External `json:"type" api:"required"`
 	paramObj
 }
 
@@ -998,15 +998,15 @@ func init() {
 // The properties NetworkID, SubnetID, Type are required.
 type GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnet struct {
 	// Network ID the subnet belongs to. Port will be plugged in this network
-	NetworkID string `json:"network_id,required"`
+	NetworkID string `json:"network_id" api:"required"`
 	// Port is assigned an IP address from this subnet
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// Interface name
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Floating IP config for this subnet attachment
 	FloatingIP GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetFloatingIP `json:"floating_ip,omitzero"`
 	// This field can be elided, and will marshal its zero value as "subnet".
-	Type constant.Subnet `json:"type,required"`
+	Type constant.Subnet `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1029,7 +1029,7 @@ func NewGPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetFloatingIP() G
 // This struct has a constant value, construct it with
 // [NewGPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetFloatingIP].
 type GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetFloatingIP struct {
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1044,7 +1044,7 @@ func (r *GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetFloatingIP) U
 // The properties NetworkID, Type are required.
 type GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnet struct {
 	// Network ID the subnet belongs to. Port will be plugged in this network
-	NetworkID string `json:"network_id,required"`
+	NetworkID string `json:"network_id" api:"required"`
 	// Interface name
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Floating IP config for this subnet attachment
@@ -1054,7 +1054,7 @@ type GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnet struct {
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
 	// This field can be elided, and will marshal its zero value as "any_subnet".
-	Type constant.AnySubnet `json:"type,required"`
+	Type constant.AnySubnet `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1083,7 +1083,7 @@ func NewGPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP(
 // This struct has a constant value, construct it with
 // [NewGPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP].
 type GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP struct {
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1120,9 +1120,9 @@ func (r *GPUBaremetalClusterNewParamsServersSettingsCredentials) UnmarshalJSON(d
 // The properties ID, MountPath are required.
 type GPUBaremetalClusterNewParamsServersSettingsFileShare struct {
 	// Unique identifier of the file share in UUID format.
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Absolute mount path inside the system where the file share will be mounted.
-	MountPath string `json:"mount_path,required"`
+	MountPath string `json:"mount_path" api:"required"`
 	paramObj
 }
 
@@ -1137,7 +1137,7 @@ func (r *GPUBaremetalClusterNewParamsServersSettingsFileShare) UnmarshalJSON(dat
 // The property ID is required.
 type GPUBaremetalClusterNewParamsServersSettingsSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
@@ -1151,9 +1151,9 @@ func (r *GPUBaremetalClusterNewParamsServersSettingsSecurityGroup) UnmarshalJSON
 
 type GPUBaremetalClusterListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Limit of items on a single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Offset in results list
@@ -1180,9 +1180,9 @@ func (r GPUBaremetalClusterListParams) URLQuery() (v url.Values, err error) {
 
 type GPUBaremetalClusterDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Flag indicating whether the floating ips associated with server / cluster are
 	// deleted
 	AllFloatingIPs param.Opt[bool] `query:"all_floating_ips,omitzero" json:"-"`
@@ -1207,9 +1207,9 @@ func (r GPUBaremetalClusterDeleteParams) URLQuery() (v url.Values, err error) {
 
 type GPUBaremetalClusterActionParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
@@ -1231,11 +1231,11 @@ type GPUBaremetalClusterActionParams struct {
 	//     preserving other existing tags.
 	//   - **Replace all:** first delete existing tags with null values, then add new
 	//     ones in the same request.
-	Tags TagUpdateMap `json:"tags,omitzero,required"`
+	Tags TagUpdateMap `json:"tags,omitzero" api:"required"`
 	// Action name
 	//
 	// This field can be elided, and will marshal its zero value as "update_tags".
-	Action constant.UpdateTags `json:"action,required"`
+	Action constant.UpdateTags `json:"action" api:"required"`
 	paramObj
 }
 
@@ -1249,29 +1249,29 @@ func (r *GPUBaremetalClusterActionParams) UnmarshalJSON(data []byte) error {
 
 type GPUBaremetalClusterGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type GPUBaremetalClusterPowercycleAllServersParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type GPUBaremetalClusterRebootAllServersParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type GPUBaremetalClusterRebuildParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// List of nodes uuids to be rebuild
-	Nodes []string `json:"nodes,omitzero,required"`
+	Nodes []string `json:"nodes,omitzero" api:"required"`
 	// AI GPU image ID
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
 	// String in base64 format.Examples of the `user_data`:
@@ -1289,10 +1289,10 @@ func (r *GPUBaremetalClusterRebuildParams) UnmarshalJSON(data []byte) error {
 }
 
 type GPUBaremetalClusterResizeParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Resized (total) number of instances
-	InstancesCount int64 `json:"instances_count,required"`
+	InstancesCount int64 `json:"instances_count" api:"required"`
 	paramObj
 }
 

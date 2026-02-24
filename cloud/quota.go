@@ -871,8 +871,8 @@ func (r *QuotaGetGlobalResponse) UnmarshalJSON(data []byte) error {
 
 type QuotaGetByRegionParams struct {
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Client ID
-	ClientID int64 `path:"client_id,required" json:"-"`
+	ClientID int64 `path:"client_id" api:"required" json:"-"`
 	paramObj
 }

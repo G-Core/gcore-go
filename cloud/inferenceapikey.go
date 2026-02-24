@@ -156,15 +156,15 @@ func (r *InferenceAPIKeyService) Get(ctx context.Context, apiKeyName string, que
 
 type InferenceAPIKey struct {
 	// Timestamp when the API Key was created.
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// List of inference deployment names to which this API Key has been attached.
-	DeploymentNames []string `json:"deployment_names,required"`
+	DeploymentNames []string `json:"deployment_names" api:"required"`
 	// Description of the API Key.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Timestamp when the API Key will expire.
-	ExpiresAt string `json:"expires_at,required"`
+	ExpiresAt string `json:"expires_at" api:"required"`
 	// API Key name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt       respjson.Field
@@ -185,17 +185,17 @@ func (r *InferenceAPIKey) UnmarshalJSON(data []byte) error {
 
 type InferenceAPIKeyCreated struct {
 	// Timestamp when the API Key was created.
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// List of inference deployment names to which this API Key has been attached.
-	DeploymentNames []string `json:"deployment_names,required"`
+	DeploymentNames []string `json:"deployment_names" api:"required"`
 	// Description of the API Key.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Timestamp when the API Key will expire.
-	ExpiresAt string `json:"expires_at,required"`
+	ExpiresAt string `json:"expires_at" api:"required"`
 	// API Key name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The actual API Key secret.
-	Secret string `json:"secret,required"`
+	Secret string `json:"secret" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt       respjson.Field
@@ -217,9 +217,9 @@ func (r *InferenceAPIKeyCreated) UnmarshalJSON(data []byte) error {
 
 type InferenceAPIKeyNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Name of the API Key.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Description of the API Key.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Expiration date of the API Key in ISO 8601 format.
@@ -237,7 +237,7 @@ func (r *InferenceAPIKeyNewParams) UnmarshalJSON(data []byte) error {
 
 type InferenceAPIKeyUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Description of the API Key.
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
@@ -253,7 +253,7 @@ func (r *InferenceAPIKeyUpdateParams) UnmarshalJSON(data []byte) error {
 
 type InferenceAPIKeyListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
@@ -273,12 +273,12 @@ func (r InferenceAPIKeyListParams) URLQuery() (v url.Values, err error) {
 
 type InferenceAPIKeyDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InferenceAPIKeyGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

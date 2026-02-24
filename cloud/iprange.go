@@ -59,7 +59,7 @@ func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption)
 
 type IPRanges struct {
 	// IP ranges list
-	Ranges []string `json:"ranges,required" format:"ipv4interface"`
+	Ranges []string `json:"ranges" api:"required" format:"ipv4interface"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Ranges      respjson.Field

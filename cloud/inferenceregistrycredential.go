@@ -153,13 +153,13 @@ func (r *InferenceRegistryCredentialService) Replace(ctx context.Context, creden
 
 type InferenceRegistryCredentials struct {
 	// Registry credential name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Project ID to which the inference registry credentials belongs.
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Registry URL.
-	RegistryURL string `json:"registry_url,required"`
+	RegistryURL string `json:"registry_url" api:"required"`
 	// Registry username.
-	Username string `json:"username,required"`
+	Username string `json:"username" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -179,15 +179,15 @@ func (r *InferenceRegistryCredentials) UnmarshalJSON(data []byte) error {
 
 type InferenceRegistryCredentialNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Registry credential name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Registry password.
-	Password string `json:"password,required"`
+	Password string `json:"password" api:"required"`
 	// Registry URL.
-	RegistryURL string `json:"registry_url,required"`
+	RegistryURL string `json:"registry_url" api:"required"`
 	// Registry username.
-	Username string `json:"username,required"`
+	Username string `json:"username" api:"required"`
 	paramObj
 }
 
@@ -201,7 +201,7 @@ func (r *InferenceRegistryCredentialNewParams) UnmarshalJSON(data []byte) error 
 
 type InferenceRegistryCredentialListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
@@ -221,25 +221,25 @@ func (r InferenceRegistryCredentialListParams) URLQuery() (v url.Values, err err
 
 type InferenceRegistryCredentialDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InferenceRegistryCredentialGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InferenceRegistryCredentialReplaceParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Registry password.
-	Password string `json:"password,required"`
+	Password string `json:"password" api:"required"`
 	// Registry URL.
-	RegistryURL string `json:"registry_url,required"`
+	RegistryURL string `json:"registry_url" api:"required"`
 	// Registry username.
-	Username string `json:"username,required"`
+	Username string `json:"username" api:"required"`
 	paramObj
 }
 

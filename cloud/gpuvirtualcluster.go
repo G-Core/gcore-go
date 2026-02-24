@@ -303,31 +303,31 @@ func (r *GPUVirtualClusterService) ActionAndPoll(ctx context.Context, clusterID 
 
 type GPUVirtualCluster struct {
 	// Cluster unique identifier
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Cluster creation date time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Cluster flavor name
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Cluster name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Cluster servers count
-	ServersCount int64 `json:"servers_count,required"`
+	ServersCount int64 `json:"servers_count" api:"required"`
 	// List of cluster nodes
-	ServersIDs      []string                         `json:"servers_ids,required" format:"uuid4"`
-	ServersSettings GPUVirtualClusterServersSettings `json:"servers_settings,required"`
+	ServersIDs      []string                         `json:"servers_ids" api:"required" format:"uuid4"`
+	ServersSettings GPUVirtualClusterServersSettings `json:"servers_settings" api:"required"`
 	// Cluster status
 	//
 	// Any of "active", "creating", "degraded", "deleting", "error", "new",
 	// "rebooting", "rebuilding", "resizing", "shutoff".
-	Status GPUVirtualClusterStatus `json:"status,required"`
+	Status GPUVirtualClusterStatus `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// Cluster update date time
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -353,16 +353,16 @@ func (r *GPUVirtualCluster) UnmarshalJSON(data []byte) error {
 
 type GPUVirtualClusterServersSettings struct {
 	// List of file shares mounted across the cluster.
-	FileShares []GPUVirtualClusterServersSettingsFileShare      `json:"file_shares,required"`
-	Interfaces []GPUVirtualClusterServersSettingsInterfaceUnion `json:"interfaces,required"`
+	FileShares []GPUVirtualClusterServersSettingsFileShare      `json:"file_shares" api:"required"`
+	Interfaces []GPUVirtualClusterServersSettingsInterfaceUnion `json:"interfaces" api:"required"`
 	// Security groups
-	SecurityGroups []GPUVirtualClusterServersSettingsSecurityGroup `json:"security_groups,required"`
+	SecurityGroups []GPUVirtualClusterServersSettingsSecurityGroup `json:"security_groups" api:"required"`
 	// SSH key name
-	SSHKeyName string `json:"ssh_key_name,required"`
+	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Optional custom user data
-	UserData string `json:"user_data,required"`
+	UserData string `json:"user_data" api:"required"`
 	// List of volumes
-	Volumes []GPUVirtualClusterServersSettingsVolume `json:"volumes,required"`
+	Volumes []GPUVirtualClusterServersSettingsVolume `json:"volumes" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FileShares     respjson.Field
@@ -384,9 +384,9 @@ func (r *GPUVirtualClusterServersSettings) UnmarshalJSON(data []byte) error {
 
 type GPUVirtualClusterServersSettingsFileShare struct {
 	// Unique identifier of the file share in UUID format.
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Absolute mount path inside the system where the file share will be mounted.
-	MountPath string `json:"mount_path,required"`
+	MountPath string `json:"mount_path" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -519,10 +519,10 @@ type GPUVirtualClusterServersSettingsInterfaceExternal struct {
 	// Which subnets should be selected: IPv4, IPv6, or use dual stack.
 	//
 	// Any of "dual", "ipv4", "ipv6".
-	IPFamily string `json:"ip_family,required"`
+	IPFamily string `json:"ip_family" api:"required"`
 	// Interface name
-	Name string            `json:"name,required"`
-	Type constant.External `json:"type,required"`
+	Name string            `json:"name" api:"required"`
+	Type constant.External `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPFamily    respjson.Field
@@ -541,14 +541,14 @@ func (r *GPUVirtualClusterServersSettingsInterfaceExternal) UnmarshalJSON(data [
 
 type GPUVirtualClusterServersSettingsInterfaceSubnet struct {
 	// Floating IP config for this subnet attachment
-	FloatingIP GPUVirtualClusterServersSettingsInterfaceSubnetFloatingIP `json:"floating_ip,required"`
+	FloatingIP GPUVirtualClusterServersSettingsInterfaceSubnetFloatingIP `json:"floating_ip" api:"required"`
 	// Interface name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Network ID the subnet belongs to. Port will be plugged in this network
-	NetworkID string `json:"network_id,required"`
+	NetworkID string `json:"network_id" api:"required"`
 	// Port is assigned an IP address from this subnet
-	SubnetID string          `json:"subnet_id,required" format:"uuid4"`
-	Type     constant.Subnet `json:"type,required"`
+	SubnetID string          `json:"subnet_id" api:"required" format:"uuid4"`
+	Type     constant.Subnet `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FloatingIP  respjson.Field
@@ -569,7 +569,7 @@ func (r *GPUVirtualClusterServersSettingsInterfaceSubnet) UnmarshalJSON(data []b
 
 // Floating IP config for this subnet attachment
 type GPUVirtualClusterServersSettingsInterfaceSubnetFloatingIP struct {
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Source      respjson.Field
@@ -588,18 +588,18 @@ func (r *GPUVirtualClusterServersSettingsInterfaceSubnetFloatingIP) UnmarshalJSO
 
 type GPUVirtualClusterServersSettingsInterfaceAnySubnet struct {
 	// Floating IP config for this subnet attachment
-	FloatingIP GPUVirtualClusterServersSettingsInterfaceAnySubnetFloatingIP `json:"floating_ip,required"`
+	FloatingIP GPUVirtualClusterServersSettingsInterfaceAnySubnetFloatingIP `json:"floating_ip" api:"required"`
 	// Fixed IP address
-	IPAddress string `json:"ip_address,required"`
+	IPAddress string `json:"ip_address" api:"required"`
 	// Which subnets should be selected: IPv4, IPv6, or use dual stack
 	//
 	// Any of "dual", "ipv4", "ipv6".
-	IPFamily string `json:"ip_family,required"`
+	IPFamily string `json:"ip_family" api:"required"`
 	// Interface name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Network ID the subnet belongs to. Port will be plugged in this network
-	NetworkID string             `json:"network_id,required"`
-	Type      constant.AnySubnet `json:"type,required"`
+	NetworkID string             `json:"network_id" api:"required"`
+	Type      constant.AnySubnet `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FloatingIP  respjson.Field
@@ -621,7 +621,7 @@ func (r *GPUVirtualClusterServersSettingsInterfaceAnySubnet) UnmarshalJSON(data 
 
 // Floating IP config for this subnet attachment
 type GPUVirtualClusterServersSettingsInterfaceAnySubnetFloatingIP struct {
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Source      respjson.Field
@@ -640,9 +640,9 @@ func (r *GPUVirtualClusterServersSettingsInterfaceAnySubnetFloatingIP) Unmarshal
 
 type GPUVirtualClusterServersSettingsSecurityGroup struct {
 	// Security group ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Security group name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -660,25 +660,25 @@ func (r *GPUVirtualClusterServersSettingsSecurityGroup) UnmarshalJSON(data []byt
 
 type GPUVirtualClusterServersSettingsVolume struct {
 	// Boot index of the volume
-	BootIndex int64 `json:"boot_index,required"`
+	BootIndex int64 `json:"boot_index" api:"required"`
 	// Flag indicating whether the volume is deleted on instance termination
-	DeleteOnTermination bool `json:"delete_on_termination,required"`
+	DeleteOnTermination bool `json:"delete_on_termination" api:"required"`
 	// Image ID for the volume
-	ImageID string `json:"image_id,required"`
+	ImageID string `json:"image_id" api:"required"`
 	// Volume name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Volume size in GiB
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// Volume type
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BootIndex           respjson.Field
@@ -717,17 +717,17 @@ const (
 
 type GPUVirtualClusterNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster flavor ID
-	Flavor string `json:"flavor,required"`
+	Flavor string `json:"flavor" api:"required"`
 	// Cluster name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Number of servers in the cluster
-	ServersCount int64 `json:"servers_count,required"`
+	ServersCount int64 `json:"servers_count" api:"required"`
 	// Configuration settings for the servers in the cluster
-	ServersSettings GPUVirtualClusterNewParamsServersSettings `json:"servers_settings,omitzero,required"`
+	ServersSettings GPUVirtualClusterNewParamsServersSettings `json:"servers_settings,omitzero" api:"required"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Both tag keys and values have a maximum
@@ -751,9 +751,9 @@ func (r *GPUVirtualClusterNewParams) UnmarshalJSON(data []byte) error {
 // The properties Interfaces, Volumes are required.
 type GPUVirtualClusterNewParamsServersSettings struct {
 	// Subnet IPs and floating IPs
-	Interfaces []GPUVirtualClusterNewParamsServersSettingsInterfaceUnion `json:"interfaces,omitzero,required"`
+	Interfaces []GPUVirtualClusterNewParamsServersSettingsInterfaceUnion `json:"interfaces,omitzero" api:"required"`
 	// List of volumes
-	Volumes []GPUVirtualClusterNewParamsServersSettingsVolumeUnion `json:"volumes,omitzero,required"`
+	Volumes []GPUVirtualClusterNewParamsServersSettingsVolumeUnion `json:"volumes,omitzero" api:"required"`
 	// Optional custom user data (Base64-encoded)
 	UserData param.Opt[string] `json:"user_data,omitzero"`
 	// Optional server access credentials
@@ -909,7 +909,7 @@ type GPUVirtualClusterNewParamsServersSettingsInterfaceExternal struct {
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
 	// This field can be elided, and will marshal its zero value as "external".
-	Type constant.External `json:"type,required"`
+	Type constant.External `json:"type" api:"required"`
 	paramObj
 }
 
@@ -930,15 +930,15 @@ func init() {
 // The properties NetworkID, SubnetID, Type are required.
 type GPUVirtualClusterNewParamsServersSettingsInterfaceSubnet struct {
 	// Network ID the subnet belongs to. Port will be plugged in this network
-	NetworkID string `json:"network_id,required"`
+	NetworkID string `json:"network_id" api:"required"`
 	// Port is assigned an IP address from this subnet
-	SubnetID string `json:"subnet_id,required" format:"uuid4"`
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// Interface name
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Floating IP config for this subnet attachment
 	FloatingIP GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetFloatingIP `json:"floating_ip,omitzero"`
 	// This field can be elided, and will marshal its zero value as "subnet".
-	Type constant.Subnet `json:"type,required"`
+	Type constant.Subnet `json:"type" api:"required"`
 	paramObj
 }
 
@@ -961,7 +961,7 @@ func NewGPUVirtualClusterNewParamsServersSettingsInterfaceSubnetFloatingIP() GPU
 // This struct has a constant value, construct it with
 // [NewGPUVirtualClusterNewParamsServersSettingsInterfaceSubnetFloatingIP].
 type GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetFloatingIP struct {
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	paramObj
 }
 
@@ -976,7 +976,7 @@ func (r *GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetFloatingIP) Unm
 // The properties NetworkID, Type are required.
 type GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnet struct {
 	// Network ID the subnet belongs to. Port will be plugged in this network
-	NetworkID string `json:"network_id,required"`
+	NetworkID string `json:"network_id" api:"required"`
 	// Interface name
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Floating IP config for this subnet attachment
@@ -986,7 +986,7 @@ type GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnet struct {
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
 	// This field can be elided, and will marshal its zero value as "any_subnet".
-	Type constant.AnySubnet `json:"type,required"`
+	Type constant.AnySubnet `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1015,7 +1015,7 @@ func NewGPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP() 
 // This struct has a constant value, construct it with
 // [NewGPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP].
 type GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP struct {
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1141,21 +1141,21 @@ func init() {
 // The properties BootIndex, Name, Size, Source, Type are required.
 type GPUVirtualClusterNewParamsServersSettingsVolumeNew struct {
 	// Boot index of the volume
-	BootIndex int64 `json:"boot_index,required"`
+	BootIndex int64 `json:"boot_index" api:"required"`
 	// Volume name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Volume size in GiB
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// Volume type
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	// Flag indicating whether the volume is deleted on instance termination
 	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
 	// Tags associated with the volume
 	Tags map[string]string `json:"tags,omitzero"`
 	// This field can be elided, and will marshal its zero value as "new".
-	Source constant.New `json:"source,required"`
+	Source constant.New `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1176,23 +1176,23 @@ func init() {
 // The properties BootIndex, ImageID, Name, Size, Source, Type are required.
 type GPUVirtualClusterNewParamsServersSettingsVolumeImage struct {
 	// Boot index of the volume
-	BootIndex int64 `json:"boot_index,required"`
+	BootIndex int64 `json:"boot_index" api:"required"`
 	// Image ID for the volume
-	ImageID string `json:"image_id,required" format:"uuid4"`
+	ImageID string `json:"image_id" api:"required" format:"uuid4"`
 	// Volume name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Volume size in GiB
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// Volume type
 	//
 	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	// Flag indicating whether the volume is deleted on instance termination
 	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
 	// Tags associated with the volume
 	Tags map[string]string `json:"tags,omitzero"`
 	// This field can be elided, and will marshal its zero value as "image".
-	Source constant.Image `json:"source,required"`
+	Source constant.Image `json:"source" api:"required"`
 	paramObj
 }
 
@@ -1235,9 +1235,9 @@ func (r *GPUVirtualClusterNewParamsServersSettingsCredentials) UnmarshalJSON(dat
 // The properties ID, MountPath are required.
 type GPUVirtualClusterNewParamsServersSettingsFileShare struct {
 	// Unique identifier of the file share in UUID format.
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Absolute mount path inside the system where the file share will be mounted.
-	MountPath string `json:"mount_path,required"`
+	MountPath string `json:"mount_path" api:"required"`
 	paramObj
 }
 
@@ -1252,7 +1252,7 @@ func (r *GPUVirtualClusterNewParamsServersSettingsFileShare) UnmarshalJSON(data 
 // The property ID is required.
 type GPUVirtualClusterNewParamsServersSettingsSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
@@ -1266,11 +1266,11 @@ func (r *GPUVirtualClusterNewParamsServersSettingsSecurityGroup) UnmarshalJSON(d
 
 type GPUVirtualClusterUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 
@@ -1284,9 +1284,9 @@ func (r *GPUVirtualClusterUpdateParams) UnmarshalJSON(data []byte) error {
 
 type GPUVirtualClusterListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Limit of items on a single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Offset in results list
@@ -1305,9 +1305,9 @@ func (r GPUVirtualClusterListParams) URLQuery() (v url.Values, err error) {
 
 type GPUVirtualClusterDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Flag indicating whether the floating ips associated with server / cluster are
 	// deleted
 	AllFloatingIPs param.Opt[bool] `query:"all_floating_ips,omitzero" json:"-"`
@@ -1336,9 +1336,9 @@ func (r GPUVirtualClusterDeleteParams) URLQuery() (v url.Values, err error) {
 
 type GPUVirtualClusterActionParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 
 	//
 	// Request body variants
@@ -1382,7 +1382,7 @@ func NewGPUVirtualClusterActionParamsBodyStart() GPUVirtualClusterActionParamsBo
 // [NewGPUVirtualClusterActionParamsBodyStart].
 type GPUVirtualClusterActionParamsBodyStart struct {
 	// Action name
-	Action constant.Start `json:"action,required"`
+	Action constant.Start `json:"action" api:"required"`
 	paramObj
 }
 
@@ -1404,7 +1404,7 @@ func NewGPUVirtualClusterActionParamsBodyStop() GPUVirtualClusterActionParamsBod
 // [NewGPUVirtualClusterActionParamsBodyStop].
 type GPUVirtualClusterActionParamsBodyStop struct {
 	// Action name
-	Action constant.Stop `json:"action,required"`
+	Action constant.Stop `json:"action" api:"required"`
 	paramObj
 }
 
@@ -1426,7 +1426,7 @@ func NewGPUVirtualClusterActionParamsBodySoftReboot() GPUVirtualClusterActionPar
 // [NewGPUVirtualClusterActionParamsBodySoftReboot].
 type GPUVirtualClusterActionParamsBodySoftReboot struct {
 	// Action name
-	Action constant.SoftReboot `json:"action,required"`
+	Action constant.SoftReboot `json:"action" api:"required"`
 	paramObj
 }
 
@@ -1448,7 +1448,7 @@ func NewGPUVirtualClusterActionParamsBodyHardReboot() GPUVirtualClusterActionPar
 // [NewGPUVirtualClusterActionParamsBodyHardReboot].
 type GPUVirtualClusterActionParamsBodyHardReboot struct {
 	// Action name
-	Action constant.HardReboot `json:"action,required"`
+	Action constant.HardReboot `json:"action" api:"required"`
 	paramObj
 }
 
@@ -1483,11 +1483,11 @@ type GPUVirtualClusterActionParamsBodyUpdateTags struct {
 	//     preserving other existing tags.
 	//   - **Replace all:** first delete existing tags with null values, then add new
 	//     ones in the same request.
-	Tags TagUpdateMap `json:"tags,omitzero,required"`
+	Tags TagUpdateMap `json:"tags,omitzero" api:"required"`
 	// Action name
 	//
 	// This field can be elided, and will marshal its zero value as "update_tags".
-	Action constant.UpdateTags `json:"action,required"`
+	Action constant.UpdateTags `json:"action" api:"required"`
 	paramObj
 }
 
@@ -1502,11 +1502,11 @@ func (r *GPUVirtualClusterActionParamsBodyUpdateTags) UnmarshalJSON(data []byte)
 // The properties Action, ServersCount are required.
 type GPUVirtualClusterActionParamsBodyResize struct {
 	// Requested servers count
-	ServersCount int64 `json:"servers_count,required"`
+	ServersCount int64 `json:"servers_count" api:"required"`
 	// Action name
 	//
 	// This field can be elided, and will marshal its zero value as "resize".
-	Action constant.Resize `json:"action,required"`
+	Action constant.Resize `json:"action" api:"required"`
 	paramObj
 }
 
@@ -1520,8 +1520,8 @@ func (r *GPUVirtualClusterActionParamsBodyResize) UnmarshalJSON(data []byte) err
 
 type GPUVirtualClusterGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

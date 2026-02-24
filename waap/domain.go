@@ -124,19 +124,19 @@ func (r *DomainService) ListRuleSets(ctx context.Context, domainID int64, opts .
 // configurations to manage web application firewall settings and behaviors.
 type WaapDetailedDomain struct {
 	// The domain ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// The date and time the domain was created in ISO 8601 format
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// The ID of the custom page set
-	CustomPageSet int64 `json:"custom_page_set,required"`
+	CustomPageSet int64 `json:"custom_page_set" api:"required"`
 	// The domain name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The different statuses a domain can have
 	//
 	// Any of "active", "bypass", "monitor", "locked".
-	Status WaapDetailedDomainStatus `json:"status,required"`
+	Status WaapDetailedDomainStatus `json:"status" api:"required"`
 	// Domain level quotas
-	Quotas map[string]WaapDetailedDomainQuota `json:"quotas,nullable"`
+	Quotas map[string]WaapDetailedDomainQuota `json:"quotas" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -168,9 +168,9 @@ const (
 
 type WaapDetailedDomainQuota struct {
 	// The maximum allowed number of this resource
-	Allowed int64 `json:"allowed,required"`
+	Allowed int64 `json:"allowed" api:"required"`
 	// The current number of this resource
-	Current int64 `json:"current,required"`
+	Current int64 `json:"current" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Allowed     respjson.Field
@@ -244,9 +244,9 @@ func (r *WaapDomainDDOSSettings) UnmarshalJSON(data []byte) error {
 // Settings for a domain.
 type WaapDomainSettingsModel struct {
 	// API settings of a domain
-	API WaapDomainAPISettings `json:"api,required"`
+	API WaapDomainAPISettings `json:"api" api:"required"`
 	// DDoS settings for a domain.
-	DDOS WaapDomainDDOSSettings `json:"ddos,required"`
+	DDOS WaapDomainDDOSSettings `json:"ddos" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		API         respjson.Field
@@ -265,17 +265,17 @@ func (r *WaapDomainSettingsModel) UnmarshalJSON(data []byte) error {
 // Represents a custom rule set.
 type WaapRuleSet struct {
 	// Identifier of the rule set.
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Detailed description of the rule set.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Indicates if the rule set is currently active.
-	IsActive bool `json:"is_active,required"`
+	IsActive bool `json:"is_active" api:"required"`
 	// Name of the rule set.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Collection of tags associated with the rule set.
-	Tags []WaapRuleSetTag `json:"tags,required"`
+	Tags []WaapRuleSetTag `json:"tags" api:"required"`
 	// The resource slug associated with the rule set.
-	ResourceSlug string            `json:"resource_slug,nullable"`
+	ResourceSlug string            `json:"resource_slug" api:"nullable"`
 	Rules        []WaapRuleSetRule `json:"rules"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -300,11 +300,11 @@ func (r *WaapRuleSet) UnmarshalJSON(data []byte) error {
 // A single tag associated with a rule set.
 type WaapRuleSetTag struct {
 	// Identifier of the tag.
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Detailed description of the tag.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Name of the tag.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -324,22 +324,22 @@ func (r *WaapRuleSetTag) UnmarshalJSON(data []byte) error {
 // Represents a configurable WAAP security rule, also known as a policy.
 type WaapRuleSetRule struct {
 	// Unique identifier for the security rule
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Specifies the action taken by the WAAP upon rule activation
 	//
 	// Any of "Allow", "Block", "Captcha", "Gateway", "Handshake", "Monitor",
 	// "Composite".
-	Action string `json:"action,required"`
+	Action string `json:"action" api:"required"`
 	// Detailed description of the security rule
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The rule set group name to which the rule belongs
-	Group string `json:"group,required"`
+	Group string `json:"group" api:"required"`
 	// Indicates if the security rule is active
-	Mode bool `json:"mode,required"`
+	Mode bool `json:"mode" api:"required"`
 	// Name of the security rule
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Identifier of the rule set to which the rule belongs
-	RuleSetID int64 `json:"rule_set_id,required"`
+	RuleSetID int64 `json:"rule_set_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -363,17 +363,17 @@ func (r *WaapRuleSetRule) UnmarshalJSON(data []byte) error {
 // Represents a WAAP domain when getting a list of domains.
 type WaapSummaryDomain struct {
 	// The domain ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// The date and time the domain was created in ISO 8601 format
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// The ID of the custom page set
-	CustomPageSet int64 `json:"custom_page_set,required"`
+	CustomPageSet int64 `json:"custom_page_set" api:"required"`
 	// The domain name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The different statuses a domain can have
 	//
 	// Any of "active", "bypass", "monitor", "locked".
-	Status WaapSummaryDomainStatus `json:"status,required"`
+	Status WaapSummaryDomainStatus `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -406,7 +406,7 @@ type DomainUpdateParams struct {
 	// The current status of the domain
 	//
 	// Any of "active", "monitor".
-	Status DomainUpdateParamsStatus `json:"status,omitzero,required"`
+	Status DomainUpdateParamsStatus `json:"status,omitzero" api:"required"`
 	paramObj
 }
 

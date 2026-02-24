@@ -89,19 +89,19 @@ func (r *QuotaRequestService) Get(ctx context.Context, requestID int64, opts ...
 
 type QuotaRequestListResponse struct {
 	// Request ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Client ID
-	ClientID int64 `json:"client_id,required"`
+	ClientID int64 `json:"client_id" api:"required"`
 	// Requested limits.
-	RequestedLimits QuotaRequestListResponseRequestedLimits `json:"requested_limits,required"`
+	RequestedLimits QuotaRequestListResponseRequestedLimits `json:"requested_limits" api:"required"`
 	// Request status
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// Datetime when the request was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Describe the reason, in general terms.
-	Description string `json:"description,nullable"`
+	Description string `json:"description" api:"nullable"`
 	// Datetime when the request was updated.
-	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -356,19 +356,19 @@ func (r *QuotaRequestListResponseRequestedLimitsRegionalLimit) UnmarshalJSON(dat
 
 type QuotaRequestGetResponse struct {
 	// Request ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Client ID
-	ClientID int64 `json:"client_id,required"`
+	ClientID int64 `json:"client_id" api:"required"`
 	// Requested limits.
-	RequestedLimits QuotaRequestGetResponseRequestedLimits `json:"requested_limits,required"`
+	RequestedLimits QuotaRequestGetResponseRequestedLimits `json:"requested_limits" api:"required"`
 	// Request status
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// Datetime when the request was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Describe the reason, in general terms.
-	Description string `json:"description,nullable"`
+	Description string `json:"description" api:"nullable"`
 	// Datetime when the request was updated.
-	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -623,9 +623,9 @@ func (r *QuotaRequestGetResponseRequestedLimitsRegionalLimit) UnmarshalJSON(data
 
 type QuotaRequestNewParams struct {
 	// Describe the reason, in general terms.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Limits you want to increase.
-	RequestedLimits QuotaRequestNewParamsRequestedLimits `json:"requested_limits,omitzero,required"`
+	RequestedLimits QuotaRequestNewParamsRequestedLimits `json:"requested_limits,omitzero" api:"required"`
 	paramObj
 }
 

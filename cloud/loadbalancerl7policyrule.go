@@ -265,20 +265,20 @@ func (r *LoadBalancerL7PolicyRuleService) ReplaceAndPoll(ctx context.Context, l7
 
 type LoadBalancerL7PolicyRuleNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// The comparison type for the L7 rule
 	//
 	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
-	CompareType LoadBalancerL7PolicyRuleNewParamsCompareType `json:"compare_type,omitzero,required"`
+	CompareType LoadBalancerL7PolicyRuleNewParamsCompareType `json:"compare_type,omitzero" api:"required"`
 	// The L7 rule type
 	//
 	// Any of "COOKIE", "FILE_TYPE", "HEADER", "HOST_NAME", "PATH",
 	// "SSL_CONN_HAS_CERT", "SSL_DN_FIELD", "SSL_VERIFY_RESULT".
-	Type LoadBalancerL7PolicyRuleNewParamsType `json:"type,omitzero,required"`
+	Type LoadBalancerL7PolicyRuleNewParamsType `json:"type,omitzero" api:"required"`
 	// The value to use for the comparison
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// When true the logic of the rule is inverted.
 	Invert param.Opt[bool] `json:"invert,omitzero"`
 	// The key to use for the comparison. Required for COOKIE and HEADER `type` only.
@@ -323,43 +323,43 @@ const (
 
 type LoadBalancerL7PolicyRuleListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyRuleDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// L7 policy ID
-	L7policyID string `path:"l7policy_id,required" json:"-"`
+	L7policyID string `path:"l7policy_id" api:"required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyRuleGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// L7 policy ID
-	L7policyID string `path:"l7policy_id,required" json:"-"`
+	L7policyID string `path:"l7policy_id" api:"required" json:"-"`
 	paramObj
 }
 
 type LoadBalancerL7PolicyRuleReplaceParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// L7 policy ID
-	L7policyID string `path:"l7policy_id,required" json:"-"`
+	L7policyID string `path:"l7policy_id" api:"required" json:"-"`
 	// The comparison type for the L7 rule
 	//
 	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
-	CompareType LoadBalancerL7PolicyRuleReplaceParamsCompareType `json:"compare_type,omitzero,required"`
+	CompareType LoadBalancerL7PolicyRuleReplaceParamsCompareType `json:"compare_type,omitzero" api:"required"`
 	// When true the logic of the rule is inverted.
 	Invert param.Opt[bool] `json:"invert,omitzero"`
 	// The key to use for the comparison. Required for COOKIE and HEADER `type` only.

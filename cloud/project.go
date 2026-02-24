@@ -148,27 +148,27 @@ func (r *ProjectService) Get(ctx context.Context, query ProjectGetParams, opts .
 
 type Project struct {
 	// Project ID, which is automatically generated upon creation.
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// ID associated with the client.
-	ClientID int64 `json:"client_id,required"`
+	ClientID int64 `json:"client_id" api:"required"`
 	// Datetime of creation, which is automatically generated.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Datetime of deletion, which is automatically generated if the project is
 	// deleted.
-	DeletedAt time.Time `json:"deleted_at,required" format:"date-time"`
+	DeletedAt time.Time `json:"deleted_at" api:"required" format:"date-time"`
 	// Description of the project.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Indicates if the project is the default one. Each client always has one default
 	// project.
-	IsDefault bool `json:"is_default,required"`
+	IsDefault bool `json:"is_default" api:"required"`
 	// Unique project name for a client.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The state of the project.
-	State string `json:"state,required"`
+	State string `json:"state" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required"`
+	TaskID string `json:"task_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -193,7 +193,7 @@ func (r *Project) UnmarshalJSON(data []byte) error {
 
 type ProjectNewParams struct {
 	// Unique project name for a client. Each client always has one "default" project.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Description of the project.
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
@@ -209,7 +209,7 @@ func (r *ProjectNewParams) UnmarshalJSON(data []byte) error {
 
 type ProjectUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Description of the project.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Name of the entity, following a specific format.
@@ -263,12 +263,12 @@ const (
 
 type ProjectDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type ProjectGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

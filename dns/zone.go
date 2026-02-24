@@ -618,7 +618,7 @@ type ZoneReplaceResponse = any
 
 type ZoneNewParams struct {
 	// name of DNS zone
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// email address of the administrator responsible for this zone
 	Contact param.Opt[string] `json:"contact,omitzero"`
 	// If a zone is disabled, then its records will not be resolved on dns servers
@@ -783,7 +783,7 @@ func (r *ZoneImportParams) UnmarshalJSON(data []byte) error {
 
 type ZoneReplaceParams struct {
 	// name of DNS zone
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// email address of the administrator responsible for this zone
 	Contact param.Opt[string] `json:"contact,omitzero"`
 	// If a zone is disabled, then its records will not be resolved on dns servers

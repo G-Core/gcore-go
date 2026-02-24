@@ -70,19 +70,19 @@ func (r *LocationService) ListAutoPaging(ctx context.Context, query LocationList
 // LocationV2 represents location data for v2 API where title is a string
 type Location struct {
 	// Full hostname/address for accessing the storage endpoint in this location
-	Address string `json:"address,required"`
+	Address string `json:"address" api:"required"`
 	// Indicates whether new storage can be created in this location
 	//
 	// Any of "deny", "allow".
-	AllowForNewStorage LocationAllowForNewStorage `json:"allow_for_new_storage,required"`
+	AllowForNewStorage LocationAllowForNewStorage `json:"allow_for_new_storage" api:"required"`
 	// Location code (region identifier)
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Human-readable title for the location
-	Title string `json:"title,required"`
+	Title string `json:"title" api:"required"`
 	// Storage protocol type supported in this location
 	//
 	// Any of "s3_compatible", "sftp".
-	Type LocationType `json:"type,required"`
+	Type LocationType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Address            respjson.Field

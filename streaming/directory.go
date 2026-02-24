@@ -367,7 +367,7 @@ func (r *DirectoryGetResponseDirectoryItemUnion) UnmarshalJSON(data []byte) erro
 
 type DirectoryNewParams struct {
 	// Title of the directory.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// ID of a parent directory. "null" if it's in the root.
 	ParentID param.Opt[int64] `json:"parent_id,omitzero"`
 	paramObj

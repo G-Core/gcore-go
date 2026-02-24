@@ -82,78 +82,78 @@ func (r *RegionService) Get(ctx context.Context, params RegionGetParams, opts ..
 
 type Region struct {
 	// Region ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// The access level of the region.
 	//
 	// Any of "core", "edge".
-	AccessLevel RegionAccessLevel `json:"access_level,required"`
+	AccessLevel RegionAccessLevel `json:"access_level" api:"required"`
 	// List of available volume types, 'standard', 'ssd_hiiops', 'cold'].
-	AvailableVolumeTypes []string `json:"available_volume_types,required"`
+	AvailableVolumeTypes []string `json:"available_volume_types" api:"required"`
 	// Coordinates of the region
-	Coordinates RegionCoordinates `json:"coordinates,required"`
+	Coordinates RegionCoordinates `json:"coordinates" api:"required"`
 	// Two-letter country code, ISO 3166-1 alpha-2
-	Country string `json:"country,required"`
+	Country string `json:"country" api:"required"`
 	// Region creation date and time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// This field is deprecated. Use `created_at` instead.
 	//
 	// Deprecated: deprecated
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// Human-readable region name
-	DisplayName string `json:"display_name,required"`
+	DisplayName string `json:"display_name" api:"required"`
 	// Endpoint type
 	//
 	// Any of "admin", "internal", "public".
-	EndpointType RegionEndpointType `json:"endpoint_type,required"`
+	EndpointType RegionEndpointType `json:"endpoint_type" api:"required"`
 	// External network ID for Neutron
-	ExternalNetworkID string `json:"external_network_id,required"`
+	ExternalNetworkID string `json:"external_network_id" api:"required"`
 	// List of available file share types
 	//
 	// Any of "standard", "vast".
-	FileShareTypes []string `json:"file_share_types,required"`
+	FileShareTypes []string `json:"file_share_types" api:"required"`
 	// Region has AI capability
-	HasAI bool `json:"has_ai,required"`
+	HasAI bool `json:"has_ai" api:"required"`
 	// Region has AI GPU capability
-	HasAIGPU bool `json:"has_ai_gpu,required"`
+	HasAIGPU bool `json:"has_ai_gpu" api:"required"`
 	// Region has bare metal capability
-	HasBaremetal bool `json:"has_baremetal,required"`
+	HasBaremetal bool `json:"has_baremetal" api:"required"`
 	// Region has basic vm capability
-	HasBasicVm bool `json:"has_basic_vm,required"`
+	HasBasicVm bool `json:"has_basic_vm" api:"required"`
 	// Region has DBAAS service
-	HasDbaas bool `json:"has_dbaas,required"`
+	HasDbaas bool `json:"has_dbaas" api:"required"`
 	// Region has Advanced DDoS Protection capability
-	HasDDOS bool `json:"has_ddos,required"`
+	HasDDOS bool `json:"has_ddos" api:"required"`
 	// Region has managed kubernetes capability
-	HasK8S bool `json:"has_k8s,required"`
+	HasK8S bool `json:"has_k8s" api:"required"`
 	// Region has KVM virtualization capability
-	HasKvm bool `json:"has_kvm,required"`
+	HasKvm bool `json:"has_kvm" api:"required"`
 	// Region has SFS capability
-	HasSfs bool `json:"has_sfs,required"`
+	HasSfs bool `json:"has_sfs" api:"required"`
 	// Foreign key to Keystone entity
-	KeystoneID int64 `json:"keystone_id,required"`
+	KeystoneID int64 `json:"keystone_id" api:"required"`
 	// Technical region name
-	KeystoneName string `json:"keystone_name,required"`
+	KeystoneName string `json:"keystone_name" api:"required"`
 	// Foreign key to Metrics database entity
-	MetricsDatabaseID int64 `json:"metrics_database_id,required"`
+	MetricsDatabaseID int64 `json:"metrics_database_id" api:"required"`
 	// Region state
 	//
 	// Any of "ACTIVE", "DELETED", "DELETING", "DELETION_FAILED", "INACTIVE",
 	// "MAINTENANCE", "NEW".
-	State RegionState `json:"state,required"`
+	State RegionState `json:"state" api:"required"`
 	// This field is deprecated and can be ignored
 	//
 	// Deprecated: deprecated
-	TaskID string `json:"task_id,required"`
+	TaskID string `json:"task_id" api:"required"`
 	// Physical network name to create vlan networks
-	VlanPhysicalNetwork string `json:"vlan_physical_network,required"`
+	VlanPhysicalNetwork string `json:"vlan_physical_network" api:"required"`
 	// Geographical zone
 	//
 	// Any of "AMERICAS", "APAC", "EMEA", "RUSSIA_AND_CIS".
-	Zone RegionZone `json:"zone,required"`
+	Zone RegionZone `json:"zone" api:"required"`
 	// DDoS endpoint ID
 	//
 	// Deprecated: deprecated
-	DDOSEndpointID int64 `json:"ddos_endpoint_id,nullable"`
+	DDOSEndpointID int64 `json:"ddos_endpoint_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
@@ -205,8 +205,8 @@ const (
 
 // Coordinates of the region
 type RegionCoordinates struct {
-	Latitude  RegionCoordinatesLatitudeUnion  `json:"latitude,required"`
-	Longitude RegionCoordinatesLongitudeUnion `json:"longitude,required"`
+	Latitude  RegionCoordinatesLatitudeUnion  `json:"latitude" api:"required"`
+	Longitude RegionCoordinatesLongitudeUnion `json:"longitude" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Latitude    respjson.Field
@@ -377,7 +377,7 @@ const (
 
 type RegionGetParams struct {
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// If true, null `available_volume_type` is replaced with a list of available
 	// volume types.
 	ShowVolumeTypes param.Opt[bool] `query:"show_volume_types,omitzero" json:"-"`

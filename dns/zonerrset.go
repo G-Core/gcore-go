@@ -278,13 +278,13 @@ func (r *DNSFailoverLogItem) UnmarshalJSON(data []byte) error {
 }
 
 type DNSOutputRrset struct {
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// List of resource record from rrset
-	ResourceRecords []DNSOutputRrsetResourceRecord `json:"resource_records,required"`
+	ResourceRecords []DNSOutputRrsetResourceRecord `json:"resource_records" api:"required"`
 	// RRSet type
 	//
 	// Any of "A", "AAAA", "NS", "CNAME", "MX", "TXT", "SRV", "SOA".
-	Type        DNSOutputRrsetType `json:"type,required"`
+	Type        DNSOutputRrsetType `json:"type" api:"required"`
 	FilterSetID int64              `json:"filter_set_id"`
 	// Meta information for rrset. Map with string key and any valid json as value,
 	// with valid keys
@@ -347,7 +347,7 @@ type DNSOutputRrsetResourceRecord struct {
 	//   - MX-record: `[ "mail1.example.com", "mail2.example.com" ]`
 	//   - SVCB/HTTPS-record:
 	//     `[ 1, ".", ["alpn", "h3", "h2"], [ "port", 1443 ], [ "ipv4hint", "10.0.0.1" ], [ "ech", "AEn+DQBFKwAgACABWIHUGj4u+PIggYXcR5JF0gYk3dCRioBW8uJq9H4mKAAIAAEAAQABAANAEnB1YmxpYy50bHMtZWNoLmRldgAA" ] ]`
-	Content []any `json:"content,required"`
+	Content []any `json:"content" api:"required"`
 	ID      int64 `json:"id"`
 	Enabled bool  `json:"enabled"`
 	// Meta information for record Map with string key and any valid json as value,
@@ -405,7 +405,7 @@ type DNSOutputRrsetPicker struct {
 	//
 	// Any of "geodns", "asn", "country", "continent", "region", "ip", "geodistance",
 	// "weighted_shuffle", "default", "first_n".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Limits the number of records returned by the filter Can be a positive value for
 	// a specific limit. Use zero or leave it blank to indicate no limits.
 	Limit int64 `json:"limit"`
@@ -486,10 +486,10 @@ func (r *ZoneRrsetGetFailoverLogsResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ZoneRrsetNewParams struct {
-	ZoneName  string `path:"zoneName,required" json:"-"`
-	RrsetName string `path:"rrsetName,required" json:"-"`
+	ZoneName  string `path:"zoneName" api:"required" json:"-"`
+	RrsetName string `path:"rrsetName" api:"required" json:"-"`
 	// List of resource record from rrset
-	ResourceRecords []ZoneRrsetNewParamsResourceRecord `json:"resource_records,omitzero,required"`
+	ResourceRecords []ZoneRrsetNewParamsResourceRecord `json:"resource_records,omitzero" api:"required"`
 	Ttl             param.Opt[int64]                   `json:"ttl,omitzero"`
 	// Meta information for rrset
 	Meta map[string]any `json:"meta,omitzero"`
@@ -521,7 +521,7 @@ type ZoneRrsetNewParamsResourceRecord struct {
 	//   - MX-record: `[ "mail1.example.com", "mail2.example.com" ]`
 	//   - SVCB/HTTPS-record:
 	//     `[ 1, ".", ["alpn", "h3", "h2"], [ "port", 1443 ], [ "ipv4hint", "10.0.0.1" ], [ "ech", "AEn+DQBFKwAgACABWIHUGj4u+PIggYXcR5JF0gYk3dCRioBW8uJq9H4mKAAIAAEAAQABAANAEnB1YmxpYy50bHMtZWNoLmRldgAA" ] ]`
-	Content []any           `json:"content,omitzero,required"`
+	Content []any           `json:"content,omitzero" api:"required"`
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// This meta will be used to decide which resource record should pass through
 	// filters from the filter set
@@ -543,7 +543,7 @@ type ZoneRrsetNewParamsPicker struct {
 	//
 	// Any of "geodns", "asn", "country", "continent", "region", "ip", "geodistance",
 	// "weighted_shuffle", "default", "first_n".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	// Limits the number of records returned by the filter Can be a positive value for
 	// a specific limit. Use zero or leave it blank to indicate no limits.
 	Limit param.Opt[int64] `json:"limit,omitzero"`
@@ -598,20 +598,20 @@ const (
 )
 
 type ZoneRrsetDeleteParams struct {
-	ZoneName  string `path:"zoneName,required" json:"-"`
-	RrsetName string `path:"rrsetName,required" json:"-"`
+	ZoneName  string `path:"zoneName" api:"required" json:"-"`
+	RrsetName string `path:"rrsetName" api:"required" json:"-"`
 	paramObj
 }
 
 type ZoneRrsetGetParams struct {
-	ZoneName  string `path:"zoneName,required" json:"-"`
-	RrsetName string `path:"rrsetName,required" json:"-"`
+	ZoneName  string `path:"zoneName" api:"required" json:"-"`
+	RrsetName string `path:"rrsetName" api:"required" json:"-"`
 	paramObj
 }
 
 type ZoneRrsetGetFailoverLogsParams struct {
-	ZoneName  string `path:"zoneName,required" json:"-"`
-	RrsetName string `path:"rrsetName,required" json:"-"`
+	ZoneName  string `path:"zoneName" api:"required" json:"-"`
+	RrsetName string `path:"rrsetName" api:"required" json:"-"`
 	// Max number of records in response
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Amount of records to skip before beginning to write in response.
@@ -629,10 +629,10 @@ func (r ZoneRrsetGetFailoverLogsParams) URLQuery() (v url.Values, err error) {
 }
 
 type ZoneRrsetReplaceParams struct {
-	ZoneName  string `path:"zoneName,required" json:"-"`
-	RrsetName string `path:"rrsetName,required" json:"-"`
+	ZoneName  string `path:"zoneName" api:"required" json:"-"`
+	RrsetName string `path:"rrsetName" api:"required" json:"-"`
 	// List of resource record from rrset
-	ResourceRecords []ZoneRrsetReplaceParamsResourceRecord `json:"resource_records,omitzero,required"`
+	ResourceRecords []ZoneRrsetReplaceParamsResourceRecord `json:"resource_records,omitzero" api:"required"`
 	Ttl             param.Opt[int64]                       `json:"ttl,omitzero"`
 	// Meta information for rrset
 	Meta map[string]any `json:"meta,omitzero"`
@@ -664,7 +664,7 @@ type ZoneRrsetReplaceParamsResourceRecord struct {
 	//   - MX-record: `[ "mail1.example.com", "mail2.example.com" ]`
 	//   - SVCB/HTTPS-record:
 	//     `[ 1, ".", ["alpn", "h3", "h2"], [ "port", 1443 ], [ "ipv4hint", "10.0.0.1" ], [ "ech", "AEn+DQBFKwAgACABWIHUGj4u+PIggYXcR5JF0gYk3dCRioBW8uJq9H4mKAAIAAEAAQABAANAEnB1YmxpYy50bHMtZWNoLmRldgAA" ] ]`
-	Content []any           `json:"content,omitzero,required"`
+	Content []any           `json:"content,omitzero" api:"required"`
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// This meta will be used to decide which resource record should pass through
 	// filters from the filter set
@@ -686,7 +686,7 @@ type ZoneRrsetReplaceParamsPicker struct {
 	//
 	// Any of "geodns", "asn", "country", "continent", "region", "ip", "geodistance",
 	// "weighted_shuffle", "default", "first_n".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	// Limits the number of records returned by the filter Can be a positive value for
 	// a specific limit. Use zero or leave it blank to indicate no limits.
 	Limit param.Opt[int64] `json:"limit,omitzero"`

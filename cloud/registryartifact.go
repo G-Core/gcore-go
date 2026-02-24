@@ -95,21 +95,21 @@ func (r *RegistryArtifactService) Delete(ctx context.Context, digest string, bod
 
 type RegistryArtifact struct {
 	// Repository ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Artifact digest
-	Digest string `json:"digest,required"`
+	Digest string `json:"digest" api:"required"`
 	// Artifact last pull date-time
-	PulledAt time.Time `json:"pulled_at,required" format:"date-time"`
+	PulledAt time.Time `json:"pulled_at" api:"required" format:"date-time"`
 	// Artifact push date-time
-	PushedAt time.Time `json:"pushed_at,required" format:"date-time"`
+	PushedAt time.Time `json:"pushed_at" api:"required" format:"date-time"`
 	// Artifact registry ID
-	RegistryID int64 `json:"registry_id,required"`
+	RegistryID int64 `json:"registry_id" api:"required"`
 	// Artifact repository ID
-	RepositoryID int64 `json:"repository_id,required"`
+	RepositoryID int64 `json:"repository_id" api:"required"`
 	// Artifact size, bytes
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// Artifact tags
-	Tags []RegistryTag `json:"tags,required"`
+	Tags []RegistryTag `json:"tags" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -133,9 +133,9 @@ func (r *RegistryArtifact) UnmarshalJSON(data []byte) error {
 
 type RegistryArtifactList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []RegistryArtifact `json:"results,required"`
+	Results []RegistryArtifact `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -152,16 +152,16 @@ func (r *RegistryArtifactList) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryArtifactListParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	RegistryID int64            `path:"registry_id,required" json:"-"`
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	RegistryID int64            `path:"registry_id" api:"required" json:"-"`
 	paramObj
 }
 
 type RegistryArtifactDeleteParams struct {
-	ProjectID      param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID       param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	RegistryID     int64            `path:"registry_id,required" json:"-"`
-	RepositoryName string           `path:"repository_name,required" json:"-"`
+	ProjectID      param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID       param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	RegistryID     int64            `path:"registry_id" api:"required" json:"-"`
+	RepositoryName string           `path:"repository_name" api:"required" json:"-"`
 	paramObj
 }

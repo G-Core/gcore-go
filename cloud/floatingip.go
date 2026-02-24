@@ -393,46 +393,46 @@ func (r *FloatingIPService) Unassign(ctx context.Context, floatingIPID string, b
 
 type FloatingIPDetailed struct {
 	// Floating IP ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the floating IP was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required" format:"uuid4"`
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
 	// IP address of the port the floating IP is attached to
-	FixedIPAddress string `json:"fixed_ip_address,required" format:"ipvanyaddress"`
+	FixedIPAddress string `json:"fixed_ip_address" api:"required" format:"ipvanyaddress"`
 	// IP Address of the floating IP
-	FloatingIPAddress string `json:"floating_ip_address,required" format:"ipvanyaddress"`
+	FloatingIPAddress string `json:"floating_ip_address" api:"required" format:"ipvanyaddress"`
 	// Instance the floating IP is attached to
-	Instance FloatingIPDetailedInstance `json:"instance,required"`
+	Instance FloatingIPDetailedInstance `json:"instance" api:"required"`
 	// Load balancer the floating IP is attached to
-	Loadbalancer LoadBalancer `json:"loadbalancer,required"`
+	Loadbalancer LoadBalancer `json:"loadbalancer" api:"required"`
 	// Port ID
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Router ID
-	RouterID string `json:"router_id,required" format:"uuid4"`
+	RouterID string `json:"router_id" api:"required" format:"uuid4"`
 	// Floating IP status. DOWN - unassigned (available). ACTIVE - attached to a port
 	// (in use). ERROR - error state.
 	//
 	// Any of "ACTIVE", "DOWN", "ERROR".
-	Status FloatingIPStatus `json:"status,required"`
+	Status FloatingIPStatus `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Datetime when the floating IP was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                respjson.Field
@@ -465,55 +465,55 @@ func (r *FloatingIPDetailed) UnmarshalJSON(data []byte) error {
 // Instance the floating IP is attached to
 type FloatingIPDetailedInstance struct {
 	// Instance ID
-	ID string `json:"id,required" format:"uuid4"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// Map of `network_name` to list of addresses in that network
-	Addresses map[string][]FloatingIPDetailedInstanceAddressUnion `json:"addresses,required"`
+	Addresses map[string][]FloatingIPDetailedInstanceAddressUnion `json:"addresses" api:"required"`
 	// Datetime when instance was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id,required"`
+	CreatorTaskID string `json:"creator_task_id" api:"required"`
 	// Flavor
-	Flavor FloatingIPDetailedInstanceFlavor `json:"flavor,required"`
+	Flavor FloatingIPDetailedInstanceFlavor `json:"flavor" api:"required"`
 	// Instance description
-	InstanceDescription string `json:"instance_description,required"`
+	InstanceDescription string `json:"instance_description" api:"required"`
 	// Instance name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Security groups
-	SecurityGroups []FloatingIPDetailedInstanceSecurityGroup `json:"security_groups,required"`
+	SecurityGroups []FloatingIPDetailedInstanceSecurityGroup `json:"security_groups" api:"required"`
 	// SSH key name assigned to instance
-	SSHKeyName string `json:"ssh_key_name,required"`
+	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Instance status
 	//
 	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
 	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
 	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
 	// "UNKNOWN", "VERIFY_RESIZE".
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags,required"`
+	Tags []Tag `json:"tags" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id,required"`
+	TaskID string `json:"task_id" api:"required"`
 	// Task state
-	TaskState string `json:"task_state,required"`
+	TaskState string `json:"task_state" api:"required"`
 	// Virtual machine state (active)
 	//
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
-	VmState string `json:"vm_state,required"`
+	VmState string `json:"vm_state" api:"required"`
 	// List of volumes
-	Volumes []FloatingIPDetailedInstanceVolume `json:"volumes,required"`
+	Volumes []FloatingIPDetailedInstanceVolume `json:"volumes" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -592,13 +592,13 @@ func (r *FloatingIPDetailedInstanceAddressUnion) UnmarshalJSON(data []byte) erro
 // Flavor
 type FloatingIPDetailedInstanceFlavor struct {
 	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id,required"`
+	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
-	FlavorName string `json:"flavor_name,required"`
+	FlavorName string `json:"flavor_name" api:"required"`
 	// RAM size in MiB
-	Ram int64 `json:"ram,required"`
+	Ram int64 `json:"ram" api:"required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus,required"`
+	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FlavorID    respjson.Field
@@ -618,7 +618,7 @@ func (r *FloatingIPDetailedInstanceFlavor) UnmarshalJSON(data []byte) error {
 
 type FloatingIPDetailedInstanceSecurityGroup struct {
 	// Name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -635,9 +635,9 @@ func (r *FloatingIPDetailedInstanceSecurityGroup) UnmarshalJSON(data []byte) err
 
 type FloatingIPDetailedInstanceVolume struct {
 	// Volume ID
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Whether the volume is deleted together with the VM
-	DeleteOnTermination bool `json:"delete_on_termination,required"`
+	DeleteOnTermination bool `json:"delete_on_termination" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -655,9 +655,9 @@ func (r *FloatingIPDetailedInstanceVolume) UnmarshalJSON(data []byte) error {
 
 type FloatingIPNewParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// If the port has multiple IP addresses, a specific one can be selected using this
 	// field. If not specified, the first IP in the port's list will be used by
 	// default.
@@ -684,9 +684,9 @@ func (r *FloatingIPNewParams) UnmarshalJSON(data []byte) error {
 
 type FloatingIPUpdateParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Fixed IP address
 	FixedIPAddress param.Opt[string] `json:"fixed_ip_address,omitzero" format:"ipv4"`
 	// Port ID
@@ -726,9 +726,9 @@ func (r *FloatingIPUpdateParams) UnmarshalJSON(data []byte) error {
 
 type FloatingIPListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
@@ -756,19 +756,19 @@ func (r FloatingIPListParams) URLQuery() (v url.Values, err error) {
 
 type FloatingIPDeleteParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type FloatingIPAssignParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Port ID
-	PortID string `json:"port_id,required" format:"uuid4"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Fixed IP address
 	FixedIPAddress param.Opt[string] `json:"fixed_ip_address,omitzero" format:"ipvanyaddress"`
 	paramObj
@@ -784,16 +784,16 @@ func (r *FloatingIPAssignParams) UnmarshalJSON(data []byte) error {
 
 type FloatingIPGetParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type FloatingIPUnassignParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

@@ -178,7 +178,7 @@ func (r VideoSubtitleNewParamsBody) MarshalJSON() (data []byte, err error) {
 }
 
 type VideoSubtitleUpdateParams struct {
-	VideoID      int64 `path:"video_id,required" json:"-"`
+	VideoID      int64 `path:"video_id" api:"required" json:"-"`
 	SubtitleBase SubtitleBaseParam
 	paramObj
 }
@@ -191,11 +191,11 @@ func (r *VideoSubtitleUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type VideoSubtitleDeleteParams struct {
-	VideoID int64 `path:"video_id,required" json:"-"`
+	VideoID int64 `path:"video_id" api:"required" json:"-"`
 	paramObj
 }
 
 type VideoSubtitleGetParams struct {
-	VideoID int64 `path:"video_id,required" json:"-"`
+	VideoID int64 `path:"video_id" api:"required" json:"-"`
 	paramObj
 }

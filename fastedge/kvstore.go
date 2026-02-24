@@ -82,7 +82,7 @@ func (r *KvStoreService) Replace(ctx context.Context, id int64, body KvStoreRepl
 
 type KvStore struct {
 	// A name of the store
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The number of applications that use this store
 	AppCount int64 `json:"app_count"`
 	// BYOD (Bring Your Own Data) settings
@@ -127,9 +127,9 @@ func (r KvStore) ToParam() KvStoreParam {
 // BYOD (Bring Your Own Data) settings
 type KvStoreByod struct {
 	// Key prefix
-	Prefix string `json:"prefix,required"`
+	Prefix string `json:"prefix" api:"required"`
 	// URL to connect to
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Prefix      respjson.Field
@@ -148,7 +148,7 @@ func (r *KvStoreByod) UnmarshalJSON(data []byte) error {
 // The property Name is required.
 type KvStoreParam struct {
 	// A name of the store
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// A description of the store
 	Comment param.Opt[string] `json:"comment,omitzero"`
 	// BYOD (Bring Your Own Data) settings
@@ -169,9 +169,9 @@ func (r *KvStoreParam) UnmarshalJSON(data []byte) error {
 // The properties Prefix, URL are required.
 type KvStoreByodParam struct {
 	// Key prefix
-	Prefix string `json:"prefix,required"`
+	Prefix string `json:"prefix" api:"required"`
 	// URL to connect to
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	paramObj
 }
 
@@ -185,11 +185,11 @@ func (r *KvStoreByodParam) UnmarshalJSON(data []byte) error {
 
 type KvStoreShort struct {
 	// The unique identifier of the store
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// The number of applications that use this store
-	AppCount int64 `json:"app_count,required"`
+	AppCount int64 `json:"app_count" api:"required"`
 	// A name of the store
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// A description of the store
 	Comment string `json:"comment"`
 	// Total store size in bytes
@@ -232,8 +232,8 @@ func (r *KvStoreNewResponse) UnmarshalJSON(data []byte) error {
 
 type KvStoreListResponse struct {
 	// Total number of stores
-	Count  int64          `json:"count,required"`
-	Stores []KvStoreShort `json:"stores,required"`
+	Count  int64          `json:"count" api:"required"`
+	Stores []KvStoreShort `json:"stores" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
