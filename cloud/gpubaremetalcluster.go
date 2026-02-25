@@ -428,6 +428,54 @@ func (r *GPUBaremetalClusterService) UpdateServersSettings(ctx context.Context, 
 	return
 }
 
+// DeleteAndPoll deletes a bare metal GPU cluster and polls for completion of the first task. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
+func (r *GPUBaremetalClusterService) DeleteAndPoll(ctx context.Context, clusterID string, params GPUBaremetalClusterDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, clusterID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
+}
+
+// ActionAndPoll performs an action on a bare metal GPU cluster and polls for completion of the first task. Use the
+// [TaskService.Poll] method if you need to poll for all tasks.
+func (r *GPUBaremetalClusterService) ActionAndPoll(ctx context.Context, clusterID string, params GPUBaremetalClusterActionParams, opts ...option.RequestOption) (v *GPUBaremetalCluster, err error) {
+	resource, err := r.Action(ctx, clusterID, params, opts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams GPUBaremetalClusterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Get(ctx, clusterID, getParams, opts...)
+}
+
 type GPUBaremetalCluster struct {
 	// Cluster unique identifier
 	ID string `json:"id" api:"required" format:"uuid4"`

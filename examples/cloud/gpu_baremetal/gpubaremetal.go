@@ -71,6 +71,7 @@ func main() {
 	// Cluster operations
 	resizeGPUBaremetalCluster(&client, clusterID, 2)
 	rebuildGPUBaremetalCluster(&client, clusterID)
+	updateGPUBaremetalClusterTags(&client, clusterID)
 
 	// Cleanup
 	fmt.Println("\nCleaning up...")
@@ -260,6 +261,26 @@ func powercycleAllServers(client *gcore.Client, clusterID string) {
 	fmt.Println("===============================")
 }
 
+func updateGPUBaremetalClusterTags(client *gcore.Client, clusterID string) {
+	fmt.Println("\n=== UPDATE GPU BAREMETAL CLUSTER TAGS ===")
+
+	params := cloud.GPUBaremetalClusterActionParams{
+		Tags: cloud.TagUpdateMap{
+			"environment": "production",
+			"team":        "gpu-infra",
+		},
+	}
+
+	cluster, err := client.Cloud.GPUBaremetal.Clusters.ActionAndPoll(context.Background(), clusterID, params)
+	if err != nil {
+		fmt.Printf("Error updating GPU baremetal cluster tags: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Updated tags for GPU baremetal cluster: ID=%s, name=%s\n", cluster.ID, cluster.Name)
+	fmt.Println("===============================")
+}
+
 func deleteGPUBaremetalCluster(client *gcore.Client, clusterID string) {
 	fmt.Println("\n=== DELETE GPU BAREMETAL CLUSTER ===")
 
@@ -267,7 +288,7 @@ func deleteGPUBaremetalCluster(client *gcore.Client, clusterID string) {
 		AllFloatingIPs: param.NewOpt(true),
 	}
 
-	_, err := client.Cloud.GPUBaremetal.Clusters.Delete(context.Background(), clusterID, params)
+	err := client.Cloud.GPUBaremetal.Clusters.DeleteAndPoll(context.Background(), clusterID, params)
 	if err != nil {
 		fmt.Printf("Error deleting GPU baremetal cluster: %v\n", err)
 		return
