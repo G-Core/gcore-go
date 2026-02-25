@@ -28,7 +28,10 @@ func TestBgpAnnounceListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Security.BgpAnnounces.List(context.TODO(), security.BgpAnnounceListParams{
 		Announced: gcore.Bool(true),
-		Origin:    security.BgpAnnounceListParamsOriginStatic,
+		ClientID:  gcore.Int(1),
+		Limit:     gcore.Int(1),
+		Offset:    gcore.Int(0),
+		Origin:    []string{"STATIC", "DYNAMIC"},
 		Site:      gcore.String("x"),
 	})
 	if err != nil {
@@ -55,7 +58,7 @@ func TestBgpAnnounceToggleWithOptionalParams(t *testing.T) {
 	_, err := client.Security.BgpAnnounces.Toggle(context.TODO(), security.BgpAnnounceToggleParams{
 		Announce: "192.9.9.1/32",
 		Enabled:  true,
-		ClientID: gcore.Int(0),
+		ClientID: gcore.Int(1),
 	})
 	if err != nil {
 		var apierr *gcore.Error
