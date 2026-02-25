@@ -656,7 +656,7 @@ type VolumeNewParamsBodyImage struct {
 	// length of 255 characters. Some tags are read-only and cannot be modified by the
 	// user. Tags are also integrated with cost reports, allowing cost data to be
 	// filtered based on tag keys or values.
-	Tags TagUpdateMap `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	// Volume type. Defaults to `standard`. If not specified for source `snapshot`,
 	// volume type will be derived from the snapshot volume.
 	//
@@ -706,7 +706,7 @@ type VolumeNewParamsBodySnapshot struct {
 	// length of 255 characters. Some tags are read-only and cannot be modified by the
 	// user. Tags are also integrated with cost reports, allowing cost data to be
 	// filtered based on tag keys or values.
-	Tags TagUpdateMap `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	// Volume type. Defaults to `standard`. If not specified for source `snapshot`,
 	// volume type will be derived from the snapshot volume.
 	//
@@ -753,7 +753,7 @@ type VolumeNewParamsBodyNewVolume struct {
 	// length of 255 characters. Some tags are read-only and cannot be modified by the
 	// user. Tags are also integrated with cost reports, allowing cost data to be
 	// filtered based on tag keys or values.
-	Tags TagUpdateMap `json:"tags,omitzero"`
+	Tags map[string]string `json:"tags,omitzero"`
 	// Volume type. Defaults to `standard`. If not specified for source `snapshot`,
 	// volume type will be derived from the snapshot volume.
 	//
