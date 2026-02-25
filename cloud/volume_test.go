@@ -36,8 +36,8 @@ func TestVolumeNewWithOptionalParams(t *testing.T) {
 			AttachmentTag:        gcore.String("device-tag"),
 			InstanceIDToAttachTo: gcore.String("88f3e0bd-ca86-4cf7-be8b-dd2988e23c2d"),
 			LifecyclePolicyIDs:   []int64{1, 2},
-			Tags: cloud.TagUpdateMap{
-				"foo": "string",
+			Tags: map[string]string{
+				"my-tag": "my-tag-value",
 			},
 			TypeName: "standard",
 		},
