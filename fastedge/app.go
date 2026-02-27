@@ -21,6 +21,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Apps are descriptions of edge apps, that reference the binary and may contain
+// app-specific settings, such as environment variables.
+//
 // AppService contains methods and other services that help with interacting with
 // the gcore API.
 //
@@ -29,7 +32,9 @@ import (
 // the [NewAppService] method instead.
 type AppService struct {
 	Options []option.RequestOption
-	Logs    AppLogService
+	// Apps are descriptions of edge apps, that reference the binary and may contain
+	// app-specific settings, such as environment variables.
+	Logs AppLogService
 }
 
 // NewAppService generates a new service that applies the given options to each

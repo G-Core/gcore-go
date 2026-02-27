@@ -13,6 +13,11 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Consumption statistics is updated in near real-time as a standard practice.
+// However, the frequency of updates can vary, but they are typically available
+// within a 24-hour period. Exceptions, such as maintenance periods, may delay data
+// beyond 24 hours until servers resume and fill in the missing statistics.
+//
 // NetworkCapacityService contains methods and other services that help with
 // interacting with the gcore API.
 //
