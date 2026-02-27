@@ -30,14 +30,36 @@ type CDNService struct {
 	RuleTemplates         RuleTemplateService
 	Certificates          CertificateService
 	TrustedCaCertificates TrustedCaCertificateService
-	AuditLogs             AuditLogService
-	Logs                  LogService
-	LogsUploader          LogsUploaderService
-	Statistics            StatisticService
-	NetworkCapacity       NetworkCapacityService
-	Metrics               MetricService
-	IPRanges              IPRangeService
-	IPs                   IPService
+	// Get the history of users requests to CDN. It contains requests made both via the
+	// API and via the control panel.
+	//
+	// The following methods are not tracked in the activity logs:
+	//
+	// - HEAD
+	// - OPTIONS
+	AuditLogs AuditLogService
+	// Log viewer provides you with general information about CDN operation. This
+	// information does not contain all possible sets of fields and restricted by time.
+	// To receive full data, use Logs Uploader.
+	Logs         LogService
+	LogsUploader LogsUploaderService
+	// Consumption statistics is updated in near real-time as a standard practice.
+	// However, the frequency of updates can vary, but they are typically available
+	// within a 24-hour period. Exceptions, such as maintenance periods, may delay data
+	// beyond 24 hours until servers resume and fill in the missing statistics.
+	Statistics StatisticService
+	// Consumption statistics is updated in near real-time as a standard practice.
+	// However, the frequency of updates can vary, but they are typically available
+	// within a 24-hour period. Exceptions, such as maintenance periods, may delay data
+	// beyond 24 hours until servers resume and fill in the missing statistics.
+	NetworkCapacity NetworkCapacityService
+	// Consumption statistics is updated in near real-time as a standard practice.
+	// However, the frequency of updates can vary, but they are typically available
+	// within a 24-hour period. Exceptions, such as maintenance periods, may delay data
+	// beyond 24 hours until servers resume and fill in the missing statistics.
+	Metrics  MetricService
+	IPRanges IPRangeService
+	IPs      IPService
 }
 
 // NewCDNService generates a new service that applies the given options to each

@@ -13,6 +13,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Client-level settings and limits
+//
 // FastedgeService contains methods and other services that help with interacting
 // with the gcore API.
 //
@@ -20,13 +22,20 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewFastedgeService] method instead.
 type FastedgeService struct {
-	Options    []option.RequestOption
-	Templates  TemplateService
-	Secrets    SecretService
-	Binaries   BinaryService
+	Options []option.RequestOption
+	// Application templates
+	Templates TemplateService
+	// Secret values that can be used in apps
+	Secrets SecretService
+	// Binaries are WebAssembly executables that are actually executed when app is ran.
+	Binaries BinaryService
+	// Statistics of edge app use
 	Statistics StatisticService
-	Apps       AppService
-	KvStores   KvStoreService
+	// Apps are descriptions of edge apps, that reference the binary and may contain
+	// app-specific settings, such as environment variables.
+	Apps AppService
+	// Key-value edge storage for apps
+	KvStores KvStoreService
 }
 
 // NewFastedgeService generates a new service that applies the given options to

@@ -19,6 +19,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Secret values that can be used in apps
+//
 // SecretService contains methods and other services that help with interacting
 // with the gcore API.
 //

@@ -20,6 +20,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Key-value edge storage for apps
+//
 // KvStoreService contains methods and other services that help with interacting
 // with the gcore API.
 //
