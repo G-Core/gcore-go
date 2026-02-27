@@ -20,6 +20,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Application templates
+//
 // TemplateService contains methods and other services that help with interacting
 // with the gcore API.
 //

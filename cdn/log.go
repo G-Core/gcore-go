@@ -17,6 +17,10 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Log viewer provides you with general information about CDN operation. This
+// information does not contain all possible sets of fields and restricted by time.
+// To receive full data, use Logs Uploader.
+//
 // LogService contains methods and other services that help with interacting with
 // the gcore API.
 //

@@ -26,10 +26,13 @@ import (
 // interacting with the gcore API. You should not instantiate this client directly,
 // and instead use the [NewClient] method instead.
 type Client struct {
-	Options   []option.RequestOption
-	Cloud     cloud.CloudService
-	Waap      waap.WaapService
-	Iam       iam.IamService
+	Options []option.RequestOption
+	Cloud   cloud.CloudService
+	Waap    waap.WaapService
+	// Account management operations including authentication, password management, and
+	// account details.
+	Iam iam.IamService
+	// Client-level settings and limits
 	Fastedge  fastedge.FastedgeService
 	Streaming streaming.StreamingService
 	Security  security.SecurityService

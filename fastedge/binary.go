@@ -15,6 +15,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Binaries are WebAssembly executables that are actually executed when app is ran.
+//
 // BinaryService contains methods and other services that help with interacting
 // with the gcore API.
 //
