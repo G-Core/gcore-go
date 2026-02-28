@@ -171,17 +171,17 @@ func (r *RegistryUserService) RefreshSecret(ctx context.Context, userID int64, b
 
 type RegistryUser struct {
 	// User ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// User creation date-time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// User account operating time, days
-	Duration int64 `json:"duration,required"`
+	Duration int64 `json:"duration" api:"required"`
 	// User operation end date-time
-	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// User name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Read-only user
-	ReadOnly bool `json:"read_only,required"`
+	ReadOnly bool `json:"read_only" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -203,19 +203,19 @@ func (r *RegistryUser) UnmarshalJSON(data []byte) error {
 
 type RegistryUserCreated struct {
 	// User ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// User creation date-time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// User account operating time, days
-	Duration int64 `json:"duration,required"`
+	Duration int64 `json:"duration" api:"required"`
 	// User operation end date-time
-	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// User name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Read-only user
-	ReadOnly bool `json:"read_only,required"`
+	ReadOnly bool `json:"read_only" api:"required"`
 	// User secret
-	Secret string `json:"secret,required"`
+	Secret string `json:"secret" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -238,9 +238,9 @@ func (r *RegistryUserCreated) UnmarshalJSON(data []byte) error {
 
 type RegistryUserList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []RegistryUser `json:"results,required"`
+	Results []RegistryUser `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -258,19 +258,19 @@ func (r *RegistryUserList) UnmarshalJSON(data []byte) error {
 
 type RegistryUserRefreshSecretResponse struct {
 	// User ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// User creation date-time
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// User account operating time, days
-	Duration int64 `json:"duration,required"`
+	Duration int64 `json:"duration" api:"required"`
 	// User operation end date-time
-	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// User name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Read-only user
-	ReadOnly bool `json:"read_only,required"`
+	ReadOnly bool `json:"read_only" api:"required"`
 	// User secret
-	Secret string `json:"secret,required"`
+	Secret string `json:"secret" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -292,16 +292,16 @@ func (r *RegistryUserRefreshSecretResponse) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryUserNewParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// User account operating time, days
-	Duration int64 `json:"duration,required"`
+	Duration int64 `json:"duration" api:"required"`
 	// A name for the registry user.
 	//
 	// Should be in lowercase, consisting only of numbers and letters,
 	//
 	// with maximum length of 16 characters
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Read-only user
 	ReadOnly param.Opt[bool] `json:"read_only,omitzero"`
 	// User secret
@@ -318,11 +318,11 @@ func (r *RegistryUserNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryUserUpdateParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	RegistryID int64            `path:"registry_id,required" json:"-"`
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	RegistryID int64            `path:"registry_id" api:"required" json:"-"`
 	// User account operating time, days
-	Duration int64 `json:"duration,required"`
+	Duration int64 `json:"duration" api:"required"`
 	// Read-only user
 	ReadOnly param.Opt[bool] `json:"read_only,omitzero"`
 	paramObj
@@ -337,23 +337,23 @@ func (r *RegistryUserUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryUserListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type RegistryUserDeleteParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	RegistryID int64            `path:"registry_id,required" json:"-"`
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	RegistryID int64            `path:"registry_id" api:"required" json:"-"`
 	paramObj
 }
 
 type RegistryUserNewMultipleParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Set of users
-	Users []RegistryUserNewMultipleParamsUser `json:"users,omitzero,required"`
+	Users []RegistryUserNewMultipleParamsUser `json:"users,omitzero" api:"required"`
 	paramObj
 }
 
@@ -368,13 +368,13 @@ func (r *RegistryUserNewMultipleParams) UnmarshalJSON(data []byte) error {
 // The properties Duration, Name are required.
 type RegistryUserNewMultipleParamsUser struct {
 	// User account operating time, days
-	Duration int64 `json:"duration,required"`
+	Duration int64 `json:"duration" api:"required"`
 	// A name for the registry user.
 	//
 	// Should be in lowercase, consisting only of numbers and letters,
 	//
 	// with maximum length of 16 characters
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Read-only user
 	ReadOnly param.Opt[bool] `json:"read_only,omitzero"`
 	// User secret
@@ -391,8 +391,8 @@ func (r *RegistryUserNewMultipleParamsUser) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryUserRefreshSecretParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
-	RegistryID int64            `path:"registry_id,required" json:"-"`
+	ProjectID  param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID   param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	RegistryID int64            `path:"registry_id" api:"required" json:"-"`
 	paramObj
 }

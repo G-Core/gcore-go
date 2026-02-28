@@ -77,13 +77,13 @@ func (r *InferenceDeploymentLogService) ListAutoPaging(ctx context.Context, depl
 
 type InferenceDeploymentLog struct {
 	// Log message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// Pod name.
-	Pod string `json:"pod,required"`
+	Pod string `json:"pod" api:"required"`
 	// Region ID where the container is deployed.
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Log message timestamp in ISO 8601 format.
-	Time time.Time `json:"time,required" format:"date-time"`
+	Time time.Time `json:"time" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Message     respjson.Field
@@ -103,7 +103,7 @@ func (r *InferenceDeploymentLog) UnmarshalJSON(data []byte) error {
 
 type InferenceDeploymentLogListParams struct {
 	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `query:"region_id,omitzero" json:"-"`
 	// Optional. Limit the number of returned items

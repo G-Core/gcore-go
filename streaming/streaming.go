@@ -51,7 +51,7 @@ func NewStreamingService(opts ...option.RequestOption) (r StreamingService) {
 // The property Name is required.
 type CreateVideoParam struct {
 	// Video name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Custom field where you can specify user ID in your system
 	ClientUserID param.Opt[int64] `json:"client_user_id,omitzero"`
 	// The length of the trimmed segment to transcode, instead of the entire length of

@@ -18,6 +18,16 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Logs uploader allows you to upload logs with desired format to desired storages.
+//
+// Consists of three main parts:
+//
+//   - **Policies** - rules that define which logs are uploaded and how they are
+//     uploaded.
+//   - **Targets** - destinations where logs are uploaded.
+//   - **Configs** - combinations of logs uploader policies, targets and resources to
+//     which they are applied.
+//
 // LogsUploaderConfigService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -167,11 +177,11 @@ type LogsUploaderConfigList []LogsUploaderConfig
 
 type LogsUploaderConfigNewParams struct {
 	// Name of the config.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// ID of the policy that should be assigned to given config.
-	Policy int64 `json:"policy,required"`
+	Policy int64 `json:"policy" api:"required"`
 	// ID of the target to which logs should be uploaded.
-	Target int64 `json:"target,required"`
+	Target int64 `json:"target" api:"required"`
 	// Enables or disables the config.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// If set to true, the config will be applied to all CDN resources. If set to
@@ -236,11 +246,11 @@ func (r LogsUploaderConfigListParams) URLQuery() (v url.Values, err error) {
 
 type LogsUploaderConfigReplaceParams struct {
 	// Name of the config.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// ID of the policy that should be assigned to given config.
-	Policy int64 `json:"policy,required"`
+	Policy int64 `json:"policy" api:"required"`
 	// ID of the target to which logs should be uploaded.
-	Target int64 `json:"target,required"`
+	Target int64 `json:"target" api:"required"`
 	// Enables or disables the config.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// If set to true, the config will be applied to all CDN resources. If set to

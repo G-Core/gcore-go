@@ -269,23 +269,23 @@ func (r *DatabasePostgresClusterService) Get(ctx context.Context, clusterName st
 }
 
 type PostgresCluster struct {
-	ClusterName string                    `json:"cluster_name,required"`
-	CreatedAt   time.Time                 `json:"created_at,required" format:"date-time"`
-	Databases   []PostgresClusterDatabase `json:"databases,required"`
+	ClusterName string                    `json:"cluster_name" api:"required"`
+	CreatedAt   time.Time                 `json:"created_at" api:"required" format:"date-time"`
+	Databases   []PostgresClusterDatabase `json:"databases" api:"required"`
 	// Instance RAM and CPU
-	Flavor           PostgresClusterFlavor           `json:"flavor,required"`
-	HighAvailability PostgresClusterHighAvailability `json:"high_availability,required"`
-	Network          PostgresClusterNetwork          `json:"network,required"`
+	Flavor           PostgresClusterFlavor           `json:"flavor" api:"required"`
+	HighAvailability PostgresClusterHighAvailability `json:"high_availability" api:"required"`
+	Network          PostgresClusterNetwork          `json:"network" api:"required"`
 	// Main PG configuration
-	PgServerConfiguration PostgresClusterPgServerConfiguration `json:"pg_server_configuration,required"`
+	PgServerConfiguration PostgresClusterPgServerConfiguration `json:"pg_server_configuration" api:"required"`
 	// Current cluster status
 	//
 	// Any of "DELETING", "FAILED", "PREPARING", "READY", "UNHEALTHY", "UNKNOWN",
 	// "UPDATING".
-	Status PostgresClusterStatus `json:"status,required"`
+	Status PostgresClusterStatus `json:"status" api:"required"`
 	// PG's storage configuration
-	Storage PostgresClusterStorage `json:"storage,required"`
-	Users   []PostgresClusterUser  `json:"users,required"`
+	Storage PostgresClusterStorage `json:"storage" api:"required"`
+	Users   []PostgresClusterUser  `json:"users" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClusterName           respjson.Field
@@ -311,11 +311,11 @@ func (r *PostgresCluster) UnmarshalJSON(data []byte) error {
 
 type PostgresClusterDatabase struct {
 	// Database name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Database owner from users list
-	Owner string `json:"owner,required"`
+	Owner string `json:"owner" api:"required"`
 	// Size in bytes
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -335,9 +335,9 @@ func (r *PostgresClusterDatabase) UnmarshalJSON(data []byte) error {
 // Instance RAM and CPU
 type PostgresClusterFlavor struct {
 	// Maximum available cores for instance
-	CPU int64 `json:"cpu,required"`
+	CPU int64 `json:"cpu" api:"required"`
 	// Maximum available RAM for instance
-	MemoryGib int64 `json:"memory_gib,required"`
+	MemoryGib int64 `json:"memory_gib" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CPU         respjson.Field
@@ -357,7 +357,7 @@ type PostgresClusterHighAvailability struct {
 	// Type of replication
 	//
 	// Any of "async", "sync".
-	ReplicationMode string `json:"replication_mode,required"`
+	ReplicationMode string `json:"replication_mode" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ReplicationMode respjson.Field
@@ -374,13 +374,13 @@ func (r *PostgresClusterHighAvailability) UnmarshalJSON(data []byte) error {
 
 type PostgresClusterNetwork struct {
 	// Allowed IPs and subnets for incoming traffic
-	ACL []string `json:"acl,required" format:"ipvanyinterface"`
+	ACL []string `json:"acl" api:"required" format:"ipvanyinterface"`
 	// Connection string to main database
-	ConnectionString string `json:"connection_string,required"`
+	ConnectionString string `json:"connection_string" api:"required"`
 	// database hostname
-	Host string `json:"host,required"`
+	Host string `json:"host" api:"required"`
 	// Network Type
-	NetworkType constant.Public `json:"network_type,required"`
+	NetworkType constant.Public `json:"network_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ACL              respjson.Field
@@ -401,10 +401,10 @@ func (r *PostgresClusterNetwork) UnmarshalJSON(data []byte) error {
 // Main PG configuration
 type PostgresClusterPgServerConfiguration struct {
 	// pg.conf settings
-	PgConf string `json:"pg_conf,required"`
+	PgConf string `json:"pg_conf" api:"required"`
 	// Cluster version
-	Version string                                     `json:"version,required"`
-	Pooler  PostgresClusterPgServerConfigurationPooler `json:"pooler,nullable"`
+	Version string                                     `json:"version" api:"required"`
+	Pooler  PostgresClusterPgServerConfigurationPooler `json:"pooler" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PgConf      respjson.Field
@@ -423,7 +423,7 @@ func (r *PostgresClusterPgServerConfiguration) UnmarshalJSON(data []byte) error 
 
 type PostgresClusterPgServerConfigurationPooler struct {
 	// Any of "session", "statement", "transaction".
-	Mode string `json:"mode,required"`
+	Mode string `json:"mode" api:"required"`
 	// Any of "pgbouncer".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -457,9 +457,9 @@ const (
 // PG's storage configuration
 type PostgresClusterStorage struct {
 	// Total available storage for database
-	SizeGib int64 `json:"size_gib,required"`
+	SizeGib int64 `json:"size_gib" api:"required"`
 	// Storage type
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SizeGib     respjson.Field
@@ -477,13 +477,13 @@ func (r *PostgresClusterStorage) UnmarshalJSON(data []byte) error {
 
 type PostgresClusterUser struct {
 	// Display was secret revealed or not
-	IsSecretRevealed bool `json:"is_secret_revealed,required"`
+	IsSecretRevealed bool `json:"is_secret_revealed" api:"required"`
 	// User name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// User's attributes
 	//
 	// Any of "BYPASSRLS", "CREATEDB", "CREATEROLE", "INHERIT", "LOGIN", "NOLOGIN".
-	RoleAttributes []string `json:"role_attributes,required"`
+	RoleAttributes []string `json:"role_attributes" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsSecretRevealed respjson.Field
@@ -502,16 +502,16 @@ func (r *PostgresClusterUser) UnmarshalJSON(data []byte) error {
 
 type PostgresClusterShort struct {
 	// PostgreSQL cluster name
-	ClusterName string `json:"cluster_name,required"`
+	ClusterName string `json:"cluster_name" api:"required"`
 	// Creation timestamp
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Current cluster status
 	//
 	// Any of "DELETING", "FAILED", "PREPARING", "READY", "UNHEALTHY", "UNKNOWN",
 	// "UPDATING".
-	Status PostgresClusterShortStatus `json:"status,required"`
+	Status PostgresClusterShortStatus `json:"status" api:"required"`
 	// Cluster version
-	Version string `json:"version,required"`
+	Version string `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClusterName respjson.Field
@@ -543,19 +543,19 @@ const (
 )
 
 type DatabasePostgresClusterNewParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// High Availability settings
-	HighAvailability DatabasePostgresClusterNewParamsHighAvailability `json:"high_availability,omitzero,required"`
+	HighAvailability DatabasePostgresClusterNewParamsHighAvailability `json:"high_availability,omitzero" api:"required"`
 	// PostgreSQL cluster name
-	ClusterName string `json:"cluster_name,required"`
+	ClusterName string `json:"cluster_name" api:"required"`
 	// Instance RAM and CPU
-	Flavor  DatabasePostgresClusterNewParamsFlavor  `json:"flavor,omitzero,required"`
-	Network DatabasePostgresClusterNewParamsNetwork `json:"network,omitzero,required"`
+	Flavor  DatabasePostgresClusterNewParamsFlavor  `json:"flavor,omitzero" api:"required"`
+	Network DatabasePostgresClusterNewParamsNetwork `json:"network,omitzero" api:"required"`
 	// PosgtreSQL cluster configuration
-	PgServerConfiguration DatabasePostgresClusterNewParamsPgServerConfiguration `json:"pg_server_configuration,omitzero,required"`
+	PgServerConfiguration DatabasePostgresClusterNewParamsPgServerConfiguration `json:"pg_server_configuration,omitzero" api:"required"`
 	// Cluster's storage configuration
-	Storage   DatabasePostgresClusterNewParamsStorage    `json:"storage,omitzero,required"`
+	Storage   DatabasePostgresClusterNewParamsStorage    `json:"storage,omitzero" api:"required"`
 	Databases []DatabasePostgresClusterNewParamsDatabase `json:"databases,omitzero"`
 	Users     []DatabasePostgresClusterNewParamsUser     `json:"users,omitzero"`
 	paramObj
@@ -574,9 +574,9 @@ func (r *DatabasePostgresClusterNewParams) UnmarshalJSON(data []byte) error {
 // The properties CPU, MemoryGib are required.
 type DatabasePostgresClusterNewParamsFlavor struct {
 	// Maximum available cores for instance
-	CPU int64 `json:"cpu,required"`
+	CPU int64 `json:"cpu" api:"required"`
 	// Maximum available RAM for instance
-	MemoryGib int64 `json:"memory_gib,required"`
+	MemoryGib int64 `json:"memory_gib" api:"required"`
 	paramObj
 }
 
@@ -595,7 +595,7 @@ type DatabasePostgresClusterNewParamsHighAvailability struct {
 	// Type of replication
 	//
 	// Any of "async", "sync".
-	ReplicationMode string `json:"replication_mode,omitzero,required"`
+	ReplicationMode string `json:"replication_mode,omitzero" api:"required"`
 	paramObj
 }
 
@@ -616,11 +616,11 @@ func init() {
 // The properties ACL, NetworkType are required.
 type DatabasePostgresClusterNewParamsNetwork struct {
 	// Allowed IPs and subnets for incoming traffic
-	ACL []string `json:"acl,omitzero,required" format:"ipvanyinterface"`
+	ACL []string `json:"acl,omitzero" api:"required" format:"ipvanyinterface"`
 	// Network Type
 	//
 	// This field can be elided, and will marshal its zero value as "public".
-	NetworkType constant.Public `json:"network_type,required"`
+	NetworkType constant.Public `json:"network_type" api:"required"`
 	paramObj
 }
 
@@ -637,9 +637,9 @@ func (r *DatabasePostgresClusterNewParamsNetwork) UnmarshalJSON(data []byte) err
 // The properties PgConf, Version are required.
 type DatabasePostgresClusterNewParamsPgServerConfiguration struct {
 	// pg.conf settings
-	PgConf string `json:"pg_conf,required"`
+	PgConf string `json:"pg_conf" api:"required"`
 	// Cluster version
-	Version string                                                      `json:"version,required"`
+	Version string                                                      `json:"version" api:"required"`
 	Pooler  DatabasePostgresClusterNewParamsPgServerConfigurationPooler `json:"pooler,omitzero"`
 	paramObj
 }
@@ -655,7 +655,7 @@ func (r *DatabasePostgresClusterNewParamsPgServerConfiguration) UnmarshalJSON(da
 // The property Mode is required.
 type DatabasePostgresClusterNewParamsPgServerConfigurationPooler struct {
 	// Any of "session", "statement", "transaction".
-	Mode string `json:"mode,omitzero,required"`
+	Mode string `json:"mode,omitzero" api:"required"`
 	// Any of "pgbouncer".
 	Type string `json:"type,omitzero"`
 	paramObj
@@ -683,9 +683,9 @@ func init() {
 // The properties SizeGib, Type are required.
 type DatabasePostgresClusterNewParamsStorage struct {
 	// Total available storage for database
-	SizeGib int64 `json:"size_gib,required"`
+	SizeGib int64 `json:"size_gib" api:"required"`
 	// Storage type
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	paramObj
 }
 
@@ -700,9 +700,9 @@ func (r *DatabasePostgresClusterNewParamsStorage) UnmarshalJSON(data []byte) err
 // The properties Name, Owner are required.
 type DatabasePostgresClusterNewParamsDatabase struct {
 	// Database name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Database owner from users list
-	Owner string `json:"owner,required"`
+	Owner string `json:"owner" api:"required"`
 	paramObj
 }
 
@@ -717,11 +717,11 @@ func (r *DatabasePostgresClusterNewParamsDatabase) UnmarshalJSON(data []byte) er
 // The properties Name, RoleAttributes are required.
 type DatabasePostgresClusterNewParamsUser struct {
 	// User name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// User's attributes
 	//
 	// Any of "BYPASSRLS", "CREATEDB", "CREATEROLE", "INHERIT", "LOGIN", "NOLOGIN".
-	RoleAttributes []string `json:"role_attributes,omitzero,required"`
+	RoleAttributes []string `json:"role_attributes,omitzero" api:"required"`
 	paramObj
 }
 
@@ -734,8 +734,8 @@ func (r *DatabasePostgresClusterNewParamsUser) UnmarshalJSON(data []byte) error 
 }
 
 type DatabasePostgresClusterUpdateParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// New instance RAM and CPU
 	Flavor DatabasePostgresClusterUpdateParamsFlavor `json:"flavor,omitzero"`
 	// New High Availability settings
@@ -761,9 +761,9 @@ func (r *DatabasePostgresClusterUpdateParams) UnmarshalJSON(data []byte) error {
 // The properties Name, Owner are required.
 type DatabasePostgresClusterUpdateParamsDatabase struct {
 	// Database name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Database owner from users list
-	Owner string `json:"owner,required"`
+	Owner string `json:"owner" api:"required"`
 	paramObj
 }
 
@@ -780,9 +780,9 @@ func (r *DatabasePostgresClusterUpdateParamsDatabase) UnmarshalJSON(data []byte)
 // The properties CPU, MemoryGib are required.
 type DatabasePostgresClusterUpdateParamsFlavor struct {
 	// Maximum available cores for instance
-	CPU int64 `json:"cpu,required"`
+	CPU int64 `json:"cpu" api:"required"`
 	// Maximum available RAM for instance
-	MemoryGib int64 `json:"memory_gib,required"`
+	MemoryGib int64 `json:"memory_gib" api:"required"`
 	paramObj
 }
 
@@ -801,7 +801,7 @@ type DatabasePostgresClusterUpdateParamsHighAvailability struct {
 	// Type of replication
 	//
 	// Any of "async", "sync".
-	ReplicationMode string `json:"replication_mode,omitzero,required"`
+	ReplicationMode string `json:"replication_mode,omitzero" api:"required"`
 	paramObj
 }
 
@@ -822,11 +822,11 @@ func init() {
 // The properties ACL, NetworkType are required.
 type DatabasePostgresClusterUpdateParamsNetwork struct {
 	// Allowed IPs and subnets for incoming traffic
-	ACL []string `json:"acl,omitzero,required" format:"ipvanyinterface"`
+	ACL []string `json:"acl,omitzero" api:"required" format:"ipvanyinterface"`
 	// Network Type
 	//
 	// This field can be elided, and will marshal its zero value as "public".
-	NetworkType constant.Public `json:"network_type,required"`
+	NetworkType constant.Public `json:"network_type" api:"required"`
 	paramObj
 }
 
@@ -859,7 +859,7 @@ func (r *DatabasePostgresClusterUpdateParamsPgServerConfiguration) UnmarshalJSON
 // The property Mode is required.
 type DatabasePostgresClusterUpdateParamsPgServerConfigurationPooler struct {
 	// Any of "session", "statement", "transaction".
-	Mode string `json:"mode,omitzero,required"`
+	Mode string `json:"mode,omitzero" api:"required"`
 	// Any of "pgbouncer".
 	Type string `json:"type,omitzero"`
 	paramObj
@@ -887,7 +887,7 @@ func init() {
 // The property SizeGib is required.
 type DatabasePostgresClusterUpdateParamsStorage struct {
 	// Total available storage for database
-	SizeGib int64 `json:"size_gib,required"`
+	SizeGib int64 `json:"size_gib" api:"required"`
 	paramObj
 }
 
@@ -902,11 +902,11 @@ func (r *DatabasePostgresClusterUpdateParamsStorage) UnmarshalJSON(data []byte) 
 // The properties Name, RoleAttributes are required.
 type DatabasePostgresClusterUpdateParamsUser struct {
 	// User name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// User's attributes
 	//
 	// Any of "BYPASSRLS", "CREATEDB", "CREATEROLE", "INHERIT", "LOGIN", "NOLOGIN".
-	RoleAttributes []string `json:"role_attributes,omitzero,required"`
+	RoleAttributes []string `json:"role_attributes,omitzero" api:"required"`
 	paramObj
 }
 
@@ -919,8 +919,8 @@ func (r *DatabasePostgresClusterUpdateParamsUser) UnmarshalJSON(data []byte) err
 }
 
 type DatabasePostgresClusterListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Maximum number of clusters to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Number of clusters to skip
@@ -938,13 +938,13 @@ func (r DatabasePostgresClusterListParams) URLQuery() (v url.Values, err error) 
 }
 
 type DatabasePostgresClusterDeleteParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type DatabasePostgresClusterGetParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

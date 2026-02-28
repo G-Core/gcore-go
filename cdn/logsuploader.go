@@ -17,10 +17,37 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewLogsUploaderService] method instead.
 type LogsUploaderService struct {
-	Options  []option.RequestOption
+	Options []option.RequestOption
+	// Logs uploader allows you to upload logs with desired format to desired storages.
+	//
+	// Consists of three main parts:
+	//
+	//   - **Policies** - rules that define which logs are uploaded and how they are
+	//     uploaded.
+	//   - **Targets** - destinations where logs are uploaded.
+	//   - **Configs** - combinations of logs uploader policies, targets and resources to
+	//     which they are applied.
 	Policies LogsUploaderPolicyService
-	Targets  LogsUploaderTargetService
-	Configs  LogsUploaderConfigService
+	// Logs uploader allows you to upload logs with desired format to desired storages.
+	//
+	// Consists of three main parts:
+	//
+	//   - **Policies** - rules that define which logs are uploaded and how they are
+	//     uploaded.
+	//   - **Targets** - destinations where logs are uploaded.
+	//   - **Configs** - combinations of logs uploader policies, targets and resources to
+	//     which they are applied.
+	Targets LogsUploaderTargetService
+	// Logs uploader allows you to upload logs with desired format to desired storages.
+	//
+	// Consists of three main parts:
+	//
+	//   - **Policies** - rules that define which logs are uploaded and how they are
+	//     uploaded.
+	//   - **Targets** - destinations where logs are uploaded.
+	//   - **Configs** - combinations of logs uploader policies, targets and resources to
+	//     which they are applied.
+	Configs LogsUploaderConfigService
 }
 
 // NewLogsUploaderService generates a new service that applies the given options to

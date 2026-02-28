@@ -17,6 +17,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Statistics of edge app use
+//
 // StatisticService contains methods and other services that help with interacting
 // with the gcore API.
 //
@@ -55,9 +57,9 @@ func (r *StatisticService) GetDurationSeries(ctx context.Context, query Statisti
 // Edge app call statistics
 type CallStatus struct {
 	// Count by status
-	CountByStatus []CallStatusCountByStatus `json:"count_by_status,required"`
+	CountByStatus []CallStatusCountByStatus `json:"count_by_status" api:"required"`
 	// Beginning ot reporting slot
-	Time time.Time `json:"time,required" format:"date-time"`
+	Time time.Time `json:"time" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CountByStatus respjson.Field
@@ -75,9 +77,9 @@ func (r *CallStatus) UnmarshalJSON(data []byte) error {
 
 type CallStatusCountByStatus struct {
 	// Number of app calls
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// HTTP status
-	Status int64 `json:"status,required"`
+	Status int64 `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -96,19 +98,19 @@ func (r *CallStatusCountByStatus) UnmarshalJSON(data []byte) error {
 // Edge app execution duration statistics
 type DurationStats struct {
 	// Average duration in usec
-	Avg int64 `json:"avg,required"`
+	Avg int64 `json:"avg" api:"required"`
 	// Max duration in usec
-	Max int64 `json:"max,required"`
+	Max int64 `json:"max" api:"required"`
 	// Median (50% percentile) duration in usec
-	Median int64 `json:"median,required"`
+	Median int64 `json:"median" api:"required"`
 	// Min duration in usec
-	Min int64 `json:"min,required"`
+	Min int64 `json:"min" api:"required"`
 	// 75% percentile duration in usec
-	Perc75 int64 `json:"perc75,required"`
+	Perc75 int64 `json:"perc75" api:"required"`
 	// 90% percentile duration in usec
-	Perc90 int64 `json:"perc90,required"`
+	Perc90 int64 `json:"perc90" api:"required"`
 	// Beginning of reporting slot
-	Time time.Time `json:"time,required" format:"date-time"`
+	Time time.Time `json:"time" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Avg         respjson.Field
@@ -130,7 +132,7 @@ func (r *DurationStats) UnmarshalJSON(data []byte) error {
 }
 
 type StatisticGetCallSeriesResponse struct {
-	Stats []CallStatus `json:"stats,required"`
+	Stats []CallStatus `json:"stats" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Stats       respjson.Field
@@ -146,7 +148,7 @@ func (r *StatisticGetCallSeriesResponse) UnmarshalJSON(data []byte) error {
 }
 
 type StatisticGetDurationSeriesResponse struct {
-	Stats []DurationStats `json:"stats,required"`
+	Stats []DurationStats `json:"stats" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Stats       respjson.Field
@@ -163,11 +165,11 @@ func (r *StatisticGetDurationSeriesResponse) UnmarshalJSON(data []byte) error {
 
 type StatisticGetCallSeriesParams struct {
 	// Reporting period start time, RFC3339 format
-	From time.Time `query:"from,required" format:"date-time" json:"-"`
+	From time.Time `query:"from" api:"required" format:"date-time" json:"-"`
 	// Reporting granularity, in seconds
-	Step int64 `query:"step,required" json:"-"`
+	Step int64 `query:"step" api:"required" json:"-"`
 	// Reporting period end time (not included into reporting period), RFC3339 format
-	To time.Time `query:"to,required" format:"date-time" json:"-"`
+	To time.Time `query:"to" api:"required" format:"date-time" json:"-"`
 	// App ID
 	ID param.Opt[int64] `query:"id,omitzero" json:"-"`
 	// Network name
@@ -186,11 +188,11 @@ func (r StatisticGetCallSeriesParams) URLQuery() (v url.Values, err error) {
 
 type StatisticGetDurationSeriesParams struct {
 	// Reporting period start time, RFC3339 format
-	From time.Time `query:"from,required" format:"date-time" json:"-"`
+	From time.Time `query:"from" api:"required" format:"date-time" json:"-"`
 	// Reporting granularity, in seconds
-	Step int64 `query:"step,required" json:"-"`
+	Step int64 `query:"step" api:"required" json:"-"`
 	// Reporting period end time (not included into reporting period), RFC3339 format
-	To time.Time `query:"to,required" format:"date-time" json:"-"`
+	To time.Time `query:"to" api:"required" format:"date-time" json:"-"`
 	// App ID
 	ID param.Opt[int64] `query:"id,omitzero" json:"-"`
 	// Network name

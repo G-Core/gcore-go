@@ -19,6 +19,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Secret values that can be used in apps
+//
 // SecretService contains methods and other services that help with interacting
 // with the gcore API.
 //
@@ -124,7 +126,7 @@ func (r Secret) ToParam() SecretParam {
 
 type SecretSecretSlot struct {
 	// Secret slot ID.
-	Slot int64 `json:"slot,required"`
+	Slot int64 `json:"slot" api:"required"`
 	// A checksum of the secret value for integrity verification.
 	Checksum string `json:"checksum"`
 	// The value of the secret.
@@ -166,7 +168,7 @@ func (r *SecretParam) UnmarshalJSON(data []byte) error {
 // The property Slot is required.
 type SecretSecretSlotParam struct {
 	// Secret slot ID.
-	Slot int64 `json:"slot,required"`
+	Slot int64 `json:"slot" api:"required"`
 	// The value of the secret.
 	Value param.Opt[string] `json:"value,omitzero"`
 	paramObj
@@ -182,7 +184,7 @@ func (r *SecretSecretSlotParam) UnmarshalJSON(data []byte) error {
 
 type SecretShort struct {
 	// The unique name of the secret.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The unique identifier of the secret.
 	ID int64 `json:"id"`
 	// The number of applications that use this secret.
@@ -225,7 +227,7 @@ func (r *SecretNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type SecretListResponse struct {
-	Secrets []SecretShort `json:"secrets,required"`
+	Secrets []SecretShort `json:"secrets" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Secrets     respjson.Field

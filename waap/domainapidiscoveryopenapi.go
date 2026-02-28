@@ -58,7 +58,7 @@ func (r *DomainAPIDiscoveryOpenAPIService) Upload(ctx context.Context, domainID 
 // Response model for the task result ID
 type WaapTaskID struct {
 	// The task ID
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -76,9 +76,9 @@ func (r *WaapTaskID) UnmarshalJSON(data []byte) error {
 type DomainAPIDiscoveryOpenAPIUploadParams struct {
 	// Base64 representation of the description file. Supported formats are YAML and
 	// JSON, and it must adhere to OpenAPI versions 2, 3, or 3.1.
-	FileData string `json:"file_data,required"`
+	FileData string `json:"file_data" api:"required"`
 	// The name of the file
-	FileName string `json:"file_name,required"`
+	FileName string `json:"file_name" api:"required"`
 	paramObj
 }
 

@@ -17,6 +17,21 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Use permanent API tokens for regular automated requests to services. You can
+// either set its validity period when creating it or issue a token for an
+// unlimited time. Please address the API documentation of the specific product in
+// order to check if it supports API tokens.
+//
+// Provide your APIKey in the Authorization header.
+//
+// Example:
+// `curl -H "Authorization: APIKey 123$61b8e1e7a68c" https://api.gcore.com/iam/users/me`
+//
+// Please note: When authorizing via SAML SSO, our system does not have any
+// information about permissions given to the user by the identity provider. Even
+// if the provider revokes the user's access rights, their tokens remain active.
+// Therefore, if necessary, the token will need to be deleted manually.
+//
 // APITokenService contains methods and other services that help with interacting
 // with the gcore API.
 //
@@ -75,22 +90,22 @@ func (r *APITokenService) Get(ctx context.Context, tokenID int64, query APIToken
 
 type APIToken struct {
 	// API token ID.
-	ID         int64              `json:"id,required"`
-	ClientUser APITokenClientUser `json:"client_user,required"`
+	ID         int64              `json:"id" api:"required"`
+	ClientUser APITokenClientUser `json:"client_user" api:"required"`
 	// Date when the API token was issued (ISO 8086/RFC 3339 format), UTC.
-	Created string `json:"created,required"`
+	Created string `json:"created" api:"required"`
 	// Deletion flag. If true, then the API token was deleted.
-	Deleted bool `json:"deleted,required"`
+	Deleted bool `json:"deleted" api:"required"`
 	// Date when the API token becomes expired (ISO 8086/RFC 3339 format), UTC. If
 	// null, then the API token will never expire.
-	ExpDate string `json:"exp_date,required"`
+	ExpDate string `json:"exp_date" api:"required"`
 	// Expiration flag. If true, then the API token has expired. When an API token
 	// expires it will be automatically deleted.
-	Expired bool `json:"expired,required"`
+	Expired bool `json:"expired" api:"required"`
 	// Date when the API token was last used (ISO 8086/RFC 3339 format), UTC.
-	LastUsage string `json:"last_usage,required"`
+	LastUsage string `json:"last_usage" api:"required"`
 	// API token name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// API token description.
 	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -117,16 +132,16 @@ func (r *APIToken) UnmarshalJSON(data []byte) error {
 
 type APITokenClientUser struct {
 	// Account's ID.
-	ClientID int64 `json:"client_id,required"`
+	ClientID int64 `json:"client_id" api:"required"`
 	// Deletion flag. If true, then the API token was deleted.
-	Deleted bool                   `json:"deleted,required"`
-	Role    APITokenClientUserRole `json:"role,required"`
+	Deleted bool                   `json:"deleted" api:"required"`
+	Role    APITokenClientUserRole `json:"role" api:"required"`
 	// User's email who issued the API token.
-	UserEmail string `json:"user_email,required"`
+	UserEmail string `json:"user_email" api:"required"`
 	// User's ID who issued the API token.
-	UserID int64 `json:"user_id,required"`
+	UserID int64 `json:"user_id" api:"required"`
 	// User's name who issued the API token.
-	UserName string `json:"user_name,required"`
+	UserName string `json:"user_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClientID    respjson.Field
@@ -196,11 +211,11 @@ type APITokenList []APIToken
 type APITokenNewParams struct {
 	// Date when the API token becomes expired (ISO 8086/RFC 3339 format), UTC. If
 	// null, then the API token will never expire.
-	ExpDate param.Opt[string] `json:"exp_date,omitzero,required"`
+	ExpDate param.Opt[string] `json:"exp_date,omitzero" api:"required"`
 	// API token role.
-	ClientUser APITokenNewParamsClientUser `json:"client_user,omitzero,required"`
+	ClientUser APITokenNewParamsClientUser `json:"client_user,omitzero" api:"required"`
 	// API token name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// API token description.
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
@@ -264,11 +279,11 @@ func (r APITokenListParams) URLQuery() (v url.Values, err error) {
 }
 
 type APITokenDeleteParams struct {
-	ClientID int64 `path:"clientId,required" json:"-"`
+	ClientID int64 `path:"clientId" api:"required" json:"-"`
 	paramObj
 }
 
 type APITokenGetParams struct {
-	ClientID int64 `path:"clientId,required" json:"-"`
+	ClientID int64 `path:"clientId" api:"required" json:"-"`
 	paramObj
 }

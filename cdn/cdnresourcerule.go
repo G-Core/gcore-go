@@ -15,6 +15,17 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Rules allow to set up custom settings for certain file types or paths. By
+// default, the rule inherits all options values from the related CDN resource.
+//
+// Each option in rule settings can be in one of the following states:
+//
+//   - **Inherit** - Option is not added to the rule. Option inherits its value from
+//     the CDN resource settings. In this case, the option value is **null**.
+//   - **ON** - Option is added to the rule and enabled. Option values configured in
+//     the rule will override values from the CDN resource settings.
+//   - **OFF** - Option is added to the rule and disabled. Option will be turned off.
+//
 // CDNResourceRuleService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -118,7 +129,7 @@ type CDNResourceRule struct {
 	//
 	// If the origin group is not specified, the rule is applied to the origin group
 	// that the CDN resource is associated with.
-	OriginGroup int64 `json:"originGroup,nullable"`
+	OriginGroup int64 `json:"originGroup" api:"nullable"`
 	// Protocol used by CDN servers to request content from an origin source.
 	//
 	// Possible values:
@@ -145,7 +156,7 @@ type CDNResourceRule struct {
 	//     settings.
 	//
 	// Any of "HTTPS", "HTTP", "MATCH".
-	OverrideOriginProtocol CDNResourceRuleOverrideOriginProtocol `json:"overrideOriginProtocol,nullable"`
+	OverrideOriginProtocol CDNResourceRuleOverrideOriginProtocol `json:"overrideOriginProtocol" api:"nullable"`
 	// Defines whether the rule has an applied preset.
 	//
 	// Possible values:
@@ -158,7 +169,7 @@ type CDNResourceRule struct {
 	PresetApplied bool `json:"preset_applied"`
 	// ID of the rule with which the current rule is synchronized within the CDN
 	// resource shared cache zone feature.
-	PrimaryRule int64 `json:"primary_rule,nullable"`
+	PrimaryRule int64 `json:"primary_rule" api:"nullable"`
 	// Path to the file or folder for which the rule will be applied.
 	//
 	// The rule is applied if the requested URI matches the rule path.
@@ -212,10 +223,10 @@ func (r *CDNResourceRule) UnmarshalJSON(data []byte) error {
 // value from the CDN resource settings.
 type CDNResourceRuleOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
-	AllowedHTTPMethods CDNResourceRuleOptionsAllowedHTTPMethods `json:"allowedHttpMethods,nullable"`
+	AllowedHTTPMethods CDNResourceRuleOptionsAllowedHTTPMethods `json:"allowedHttpMethods" api:"nullable"`
 	// Allows to prevent online services from overloading and ensure your business
 	// workflow running smoothly.
-	BotProtection CDNResourceRuleOptionsBotProtection `json:"bot_protection,nullable"`
+	BotProtection CDNResourceRuleOptionsBotProtection `json:"bot_protection" api:"nullable"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -231,45 +242,45 @@ type CDNResourceRuleOptions struct {
 	//     `brotli_compression` in rules. If you enabled `fetch_compressed` in CDN
 	//     resource and want to enable `brotli_compression` in a rule, you must specify
 	//     `fetch_compressed:false` in the rule.
-	BrotliCompression CDNResourceRuleOptionsBrotliCompression `json:"brotli_compression,nullable"`
+	BrotliCompression CDNResourceRuleOptionsBrotliCompression `json:"brotli_compression" api:"nullable"`
 	// Cache expiration time for users browsers in seconds.
 	//
 	// Cache expiration time is applied to the following response codes: 200, 201, 204,
 	// 206, 301, 302, 303, 304, 307, 308.
 	//
 	// Responses with other codes will not be cached.
-	BrowserCacheSettings CDNResourceRuleOptionsBrowserCacheSettings `json:"browser_cache_settings,nullable"`
+	BrowserCacheSettings CDNResourceRuleOptionsBrowserCacheSettings `json:"browser_cache_settings" api:"nullable"`
 	// **Legacy option**. Use the `response_headers_hiding_policy` option instead.
 	//
 	// HTTP Headers that must be included in the response.
 	//
 	// Deprecated: deprecated
-	CacheHTTPHeaders CDNResourceRuleOptionsCacheHTTPHeaders `json:"cache_http_headers,nullable"`
+	CacheHTTPHeaders CDNResourceRuleOptionsCacheHTTPHeaders `json:"cache_http_headers" api:"nullable"`
 	// Enables or disables CORS (Cross-Origin Resource Sharing) header support.
 	//
 	// CORS header support allows the CDN to add the Access-Control-Allow-Origin header
 	// to a response to a browser.
-	Cors CDNResourceRuleOptionsCors `json:"cors,nullable"`
+	Cors CDNResourceRuleOptionsCors `json:"cors" api:"nullable"`
 	// Enables control access to content for specified countries.
-	CountryACL CDNResourceRuleOptionsCountryACL `json:"country_acl,nullable"`
+	CountryACL CDNResourceRuleOptionsCountryACL `json:"country_acl" api:"nullable"`
 	// **Legacy option**. Use the `edge_cache_settings` option instead.
 	//
 	// Allows the complete disabling of content caching.
 	//
 	// Deprecated: deprecated
-	DisableCache CDNResourceRuleOptionsDisableCache `json:"disable_cache,nullable"`
+	DisableCache CDNResourceRuleOptionsDisableCache `json:"disable_cache" api:"nullable"`
 	// Allows 206 responses regardless of the settings of an origin source.
-	DisableProxyForceRanges CDNResourceRuleOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges,nullable"`
+	DisableProxyForceRanges CDNResourceRuleOptionsDisableProxyForceRanges `json:"disable_proxy_force_ranges" api:"nullable"`
 	// Cache expiration time for CDN servers.
 	//
 	// `value` and `default` fields cannot be used simultaneously.
-	EdgeCacheSettings CDNResourceRuleOptionsEdgeCacheSettings `json:"edge_cache_settings,nullable"`
+	EdgeCacheSettings CDNResourceRuleOptionsEdgeCacheSettings `json:"edge_cache_settings" api:"nullable"`
 	// Allows to configure FastEdge app to be called on different request/response
 	// phases.
 	//
 	// Note: At least one of `on_request_headers`, `on_request_body`,
 	// `on_response_headers`, or `on_response_body` must be specified.
-	Fastedge CDNResourceRuleOptionsFastedge `json:"fastedge,nullable"`
+	Fastedge CDNResourceRuleOptionsFastedge `json:"fastedge" api:"nullable"`
 	// Makes the CDN request compressed content from the origin.
 	//
 	// The origin server should support compression. CDN servers will not decompress
@@ -283,20 +294,20 @@ type CDNResourceRuleOptions struct {
 	//     you enable it in CDN resource and want to use `gzipON` and
 	//     `brotli_compression` in a rule, you have to specify
 	//     `"fetch_compressed": false` in the rule.
-	FetchCompressed CDNResourceRuleOptionsFetchCompressed `json:"fetch_compressed,nullable"`
+	FetchCompressed CDNResourceRuleOptionsFetchCompressed `json:"fetch_compressed" api:"nullable"`
 	// Enables redirection from origin. If the origin server returns a redirect, the
 	// option allows the CDN to pull the requested content from the origin server that
 	// was returned in the redirect.
-	FollowOriginRedirect CDNResourceRuleOptionsFollowOriginRedirect `json:"follow_origin_redirect,nullable"`
+	FollowOriginRedirect CDNResourceRuleOptionsFollowOriginRedirect `json:"follow_origin_redirect" api:"nullable"`
 	// Applies custom HTTP response codes for CDN content.
 	//
 	// The following codes are reserved by our system and cannot be specified in this
 	// option: 408, 444, 477, 494, 495, 496, 497, 499.
-	ForceReturn CDNResourceRuleOptionsForceReturn `json:"force_return,nullable"`
+	ForceReturn CDNResourceRuleOptionsForceReturn `json:"force_return" api:"nullable"`
 	// Forwards the Host header from a end-user request to an origin server.
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	ForwardHostHeader CDNResourceRuleOptionsForwardHostHeader `json:"forward_host_header,nullable"`
+	ForwardHostHeader CDNResourceRuleOptionsForwardHostHeader `json:"forward_host_header" api:"nullable"`
 	// Compresses content with gzip on the CDN end. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -307,26 +318,26 @@ type CDNResourceRuleOptions struct {
 	//  2. `fetch_compressed` option in CDN resource settings overrides `gzipON` in
 	//     rules. If you enable `fetch_compressed` in CDN resource and want to enable
 	//     `gzipON` in rules, you need to specify `"fetch_compressed":false` for rules.
-	GzipOn CDNResourceRuleOptionsGzipOn `json:"gzipOn,nullable"`
+	GzipOn CDNResourceRuleOptionsGzipOn `json:"gzipOn" api:"nullable"`
 	// Sets the Host header that CDN servers use when request content from an origin
 	// server. Your server must be able to process requests with the chosen header.
 	//
 	// If the option is `null`, the Host Header value is equal to first CNAME.
 	//
 	// `hostHeader` and `forward_host_header` options cannot be enabled simultaneously.
-	HostHeader CDNResourceRuleOptionsHostHeader `json:"hostHeader,nullable"`
+	HostHeader CDNResourceRuleOptionsHostHeader `json:"hostHeader" api:"nullable"`
 	// Defines whether the files with the Set-Cookies header are cached as one file or
 	// as different ones.
-	IgnoreCookie CDNResourceRuleOptionsIgnoreCookie `json:"ignore_cookie,nullable"`
+	IgnoreCookie CDNResourceRuleOptionsIgnoreCookie `json:"ignore_cookie" api:"nullable"`
 	// How a file with different query strings is cached: either as one object (option
 	// is enabled) or as different objects (option is disabled.)
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	IgnoreQueryString CDNResourceRuleOptionsIgnoreQueryString `json:"ignoreQueryString,nullable"`
+	IgnoreQueryString CDNResourceRuleOptionsIgnoreQueryString `json:"ignoreQueryString" api:"nullable"`
 	// Transforms JPG and PNG images (for example, resize or crop) and automatically
 	// converts them to WebP or AVIF format.
-	ImageStack CDNResourceRuleOptionsImageStack `json:"image_stack,nullable"`
+	ImageStack CDNResourceRuleOptionsImageStack `json:"image_stack" api:"nullable"`
 	// Controls access to the CDN resource content for specific IP addresses.
 	//
 	// If you want to use IPs from our CDN servers IP list for IP ACL configuration,
@@ -334,9 +345,9 @@ type CDNResourceRuleOptions struct {
 	//
 	// We recommend you use a script for automatically update IP ACL.
 	// [Read more.](/docs/api-reference/cdn/ip-addresses-list/get-cdn-servers-ip-addresses)
-	IPAddressACL CDNResourceRuleOptionsIPAddressACL `json:"ip_address_acl,nullable"`
+	IPAddressACL CDNResourceRuleOptionsIPAddressACL `json:"ip_address_acl" api:"nullable"`
 	// Allows to control the download speed per connection.
-	LimitBandwidth CDNResourceRuleOptionsLimitBandwidth `json:"limit_bandwidth,nullable"`
+	LimitBandwidth CDNResourceRuleOptionsLimitBandwidth `json:"limit_bandwidth" api:"nullable"`
 	// Allows you to modify your cache key. If omitted, the default value is
 	// `$request_uri`.
 	//
@@ -349,29 +360,29 @@ type CDNResourceRuleOptions struct {
 	// **Warning**: Enabling and changing this option can invalidate your current cache
 	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
 	// not work.
-	ProxyCacheKey CDNResourceRuleOptionsProxyCacheKey `json:"proxy_cache_key,nullable"`
+	ProxyCacheKey CDNResourceRuleOptionsProxyCacheKey `json:"proxy_cache_key" api:"nullable"`
 	// Caching for POST requests along with default GET and HEAD.
-	ProxyCacheMethodsSet CDNResourceRuleOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set,nullable"`
+	ProxyCacheMethodsSet CDNResourceRuleOptionsProxyCacheMethodsSet `json:"proxy_cache_methods_set" api:"nullable"`
 	// The time limit for establishing a connection with the origin.
-	ProxyConnectTimeout CDNResourceRuleOptionsProxyConnectTimeout `json:"proxy_connect_timeout,nullable"`
+	ProxyConnectTimeout CDNResourceRuleOptionsProxyConnectTimeout `json:"proxy_connect_timeout" api:"nullable"`
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
 	// **Note:** When used with a WebSocket connection, this option supports values
 	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
-	ProxyReadTimeout CDNResourceRuleOptionsProxyReadTimeout `json:"proxy_read_timeout,nullable"`
+	ProxyReadTimeout CDNResourceRuleOptionsProxyReadTimeout `json:"proxy_read_timeout" api:"nullable"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	QueryParamsBlacklist CDNResourceRuleOptionsQueryParamsBlacklist `json:"query_params_blacklist,nullable"`
+	QueryParamsBlacklist CDNResourceRuleOptionsQueryParamsBlacklist `json:"query_params_blacklist" api:"nullable"`
 	// Files with the specified query parameters are cached as different objects, files
 	// with other parameters are cached as one object.
 	//
 	// `ignoreQueryString`, `query_params_whitelist` and `query_params_blacklist`
 	// options cannot be enabled simultaneously.
-	QueryParamsWhitelist CDNResourceRuleOptionsQueryParamsWhitelist `json:"query_params_whitelist,nullable"`
+	QueryParamsWhitelist CDNResourceRuleOptionsQueryParamsWhitelist `json:"query_params_whitelist" api:"nullable"`
 	// The Query String Forwarding feature allows for the seamless transfer of
 	// parameters embedded in playlist files to the corresponding media chunk files.
 	// This functionality ensures that specific attributes, such as authentication
@@ -379,31 +390,31 @@ type CDNResourceRuleOptions struct {
 	// manifest to the individual media segments. This is particularly useful for
 	// maintaining continuity in security, analytics, and any other parameter-based
 	// operations across the entire media delivery workflow.
-	QueryStringForwarding CDNResourceRuleOptionsQueryStringForwarding `json:"query_string_forwarding,nullable"`
+	QueryStringForwarding CDNResourceRuleOptionsQueryStringForwarding `json:"query_string_forwarding" api:"nullable"`
 	// Enables redirect from HTTP to HTTPS.
 	//
 	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 	// simultaneously.
-	RedirectHTTPToHTTPS CDNResourceRuleOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https,nullable"`
+	RedirectHTTPToHTTPS CDNResourceRuleOptionsRedirectHTTPToHTTPS `json:"redirect_http_to_https" api:"nullable"`
 	// Enables redirect from HTTPS to HTTP.
 	//
 	// `redirect_http_to_https` and `redirect_https_to_http` options cannot be enabled
 	// simultaneously.
-	RedirectHTTPSToHTTP CDNResourceRuleOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,nullable"`
+	RedirectHTTPSToHTTP CDNResourceRuleOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http" api:"nullable"`
 	// Controls access to the CDN resource content for specified domain names.
-	ReferrerACL CDNResourceRuleOptionsReferrerACL `json:"referrer_acl,nullable"`
+	ReferrerACL CDNResourceRuleOptionsReferrerACL `json:"referrer_acl" api:"nullable"`
 	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter CDNResourceRuleOptionsRequestLimiter `json:"request_limiter,nullable"`
+	RequestLimiter CDNResourceRuleOptionsRequestLimiter `json:"request_limiter" api:"nullable"`
 	// Hides HTTP headers from an origin server in the CDN response.
-	ResponseHeadersHidingPolicy CDNResourceRuleOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,nullable"`
+	ResponseHeadersHidingPolicy CDNResourceRuleOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy" api:"nullable"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
 	// to the
 	// [Nginx](https://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
 	// configuration.
-	Rewrite CDNResourceRuleOptionsRewrite `json:"rewrite,nullable"`
+	Rewrite CDNResourceRuleOptionsRewrite `json:"rewrite" api:"nullable"`
 	// Configures access with tokenized URLs. This makes impossible to access content
 	// without a valid (unexpired) token.
-	SecureKey CDNResourceRuleOptionsSecureKey `json:"secure_key,nullable"`
+	SecureKey CDNResourceRuleOptionsSecureKey `json:"secure_key" api:"nullable"`
 	// Requests and caches files larger than 10 MB in parts (no larger than 10 MB per
 	// part.) This reduces time to first byte.
 	//
@@ -415,7 +426,7 @@ type CDNResourceRuleOptions struct {
 	//  1. Origin must support HTTP Range requests.
 	//  2. Not supported with `gzipON`, `brotli_compression` or `fetch_compressed`
 	//     options enabled.
-	Slice CDNResourceRuleOptionsSlice `json:"slice,nullable"`
+	Slice CDNResourceRuleOptionsSlice `json:"slice" api:"nullable"`
 	// The hostname that is added to SNI requests from CDN servers to the origin server
 	// via HTTPS.
 	//
@@ -425,27 +436,27 @@ type CDNResourceRuleOptions struct {
 	// the connection.
 	//
 	// The option works only if `originProtocol` parameter is `HTTPS` or `MATCH`.
-	Sni CDNResourceRuleOptionsSni `json:"sni,nullable"`
+	Sni CDNResourceRuleOptionsSni `json:"sni" api:"nullable"`
 	// Serves stale cached content in case of origin unavailability.
-	Stale CDNResourceRuleOptionsStale `json:"stale,nullable"`
+	Stale CDNResourceRuleOptionsStale `json:"stale" api:"nullable"`
 	// Custom HTTP Headers that a CDN server adds to a response.
-	StaticResponseHeaders CDNResourceRuleOptionsStaticResponseHeaders `json:"static_response_headers,nullable"`
+	StaticResponseHeaders CDNResourceRuleOptionsStaticResponseHeaders `json:"static_response_headers" api:"nullable"`
 	// **Legacy option**. Use the `static_response_headers` option instead.
 	//
 	// Custom HTTP Headers that a CDN server adds to response. Up to fifty custom HTTP
 	// Headers can be specified. May contain a header with multiple values.
 	//
 	// Deprecated: deprecated
-	StaticHeaders CDNResourceRuleOptionsStaticHeaders `json:"staticHeaders,nullable"`
+	StaticHeaders CDNResourceRuleOptionsStaticHeaders `json:"staticHeaders" api:"nullable"`
 	// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
 	// Headers can be specified.
-	StaticRequestHeaders CDNResourceRuleOptionsStaticRequestHeaders `json:"staticRequestHeaders,nullable"`
+	StaticRequestHeaders CDNResourceRuleOptionsStaticRequestHeaders `json:"staticRequestHeaders" api:"nullable"`
 	// Controls access to the content for specified User-Agents.
-	UserAgentACL CDNResourceRuleOptionsUserAgentACL `json:"user_agent_acl,nullable"`
+	UserAgentACL CDNResourceRuleOptionsUserAgentACL `json:"user_agent_acl" api:"nullable"`
 	// Allows to enable WAAP (Web Application and API Protection).
-	Waap CDNResourceRuleOptionsWaap `json:"waap,nullable"`
+	Waap CDNResourceRuleOptionsWaap `json:"waap" api:"nullable"`
 	// Enables or disables WebSockets connections to an origin server.
-	Websockets CDNResourceRuleOptionsWebsockets `json:"websockets,nullable"`
+	Websockets CDNResourceRuleOptionsWebsockets `json:"websockets" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedHTTPMethods          respjson.Field
@@ -512,9 +523,9 @@ type CDNResourceRuleOptionsAllowedHTTPMethods struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Any of "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -534,14 +545,14 @@ func (r *CDNResourceRuleOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) er
 // workflow running smoothly.
 type CDNResourceRuleOptionsBotProtection struct {
 	// Controls the bot challenge module state.
-	BotChallenge CDNResourceRuleOptionsBotProtectionBotChallenge `json:"bot_challenge,required"`
+	BotChallenge CDNResourceRuleOptionsBotProtectionBotChallenge `json:"bot_challenge" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BotChallenge respjson.Field
@@ -600,7 +611,7 @@ type CDNResourceRuleOptionsBrotliCompression struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to select the content types you want to compress.
 	//
 	// `text/html` is a mandatory content type.
@@ -610,7 +621,7 @@ type CDNResourceRuleOptionsBrotliCompression struct {
 	// "application/x-javascript", "application/xml", "application/xml+rss",
 	// "image/svg+xml", "image/x-icon", "text/css", "text/html", "text/javascript",
 	// "text/plain", "text/xml".
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -639,11 +650,11 @@ type CDNResourceRuleOptionsBrowserCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Set the cache expiration time to '0s' to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
-	Value string `json:"value,required" format:"nginx time"`
+	Value string `json:"value" api:"required" format:"nginx time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -671,8 +682,8 @@ type CDNResourceRuleOptionsCacheHTTPHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool     `json:"enabled,required"`
-	Value   []string `json:"value,required"`
+	Enabled bool     `json:"enabled" api:"required"`
+	Value   []string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -699,7 +710,7 @@ type CDNResourceRuleOptionsCors struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Value of the Access-Control-Allow-Origin header.
 	//
 	// Possible values:
@@ -714,7 +725,7 @@ type CDNResourceRuleOptionsCors struct {
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
 	//     header in the response. `"value": ["$http_origin"]`
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// Defines whether the Access-Control-Allow-Origin header should be added to a
 	// response from CDN regardless of response code.
 	//
@@ -748,14 +759,14 @@ type CDNResourceRuleOptionsCountryACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of countries according to ISO-3166-1.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
 	//
 	// - **allow** - List of countries for which access is prohibited.
 	// - **deny** - List of countries for which access is allowed.
-	ExceptedValues []string `json:"excepted_values,required" format:"country-code"`
+	ExceptedValues []string `json:"excepted_values" api:"required" format:"country-code"`
 	// Defines the type of CDN resource access policy.
 	//
 	// Possible values:
@@ -766,7 +777,7 @@ type CDNResourceRuleOptionsCountryACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,required"`
+	PolicyType string `json:"policy_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled        respjson.Field
@@ -795,12 +806,12 @@ type CDNResourceRuleOptionsDisableCache struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - content caching is disabled.
 	// - **false** - content caching is enabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -824,12 +835,12 @@ type CDNResourceRuleOptionsDisableProxyForceRanges struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -855,7 +866,7 @@ type CDNResourceRuleOptionsEdgeCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP object representing the caching time in seconds for a response with a
 	// specific response code.
 	//
@@ -911,7 +922,7 @@ type CDNResourceRuleOptionsFastedge struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// body as soon as CDN receives incoming HTTP request.
 	OnRequestBody CDNResourceRuleOptionsFastedgeOnRequestBody `json:"on_request_body"`
@@ -946,7 +957,7 @@ func (r *CDNResourceRuleOptionsFastedge) UnmarshalJSON(data []byte) error {
 // body as soon as CDN receives incoming HTTP request.
 type CDNResourceRuleOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled bool `json:"enabled"`
@@ -978,7 +989,7 @@ func (r *CDNResourceRuleOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte)
 // headers as soon as CDN receives incoming HTTP request, **before cache**.
 type CDNResourceRuleOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled bool `json:"enabled"`
@@ -1010,7 +1021,7 @@ func (r *CDNResourceRuleOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []by
 // body before CDN sends the HTTP response.
 type CDNResourceRuleOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled bool `json:"enabled"`
@@ -1042,7 +1053,7 @@ func (r *CDNResourceRuleOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte
 // headers before CDN sends the HTTP response.
 type CDNResourceRuleOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled bool `json:"enabled"`
@@ -1090,12 +1101,12 @@ type CDNResourceRuleOptionsFetchCompressed struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1121,14 +1132,14 @@ type CDNResourceRuleOptionsFollowOriginRedirect struct {
 	// managing the option.
 	//
 	// Any of 301, 302, 303, 307, 308.
-	Codes []int64 `json:"codes,required"`
+	Codes []int64 `json:"codes" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Codes       respjson.Field
@@ -1150,19 +1161,19 @@ func (r *CDNResourceRuleOptionsFollowOriginRedirect) UnmarshalJSON(data []byte) 
 // option: 408, 444, 477, 494, 495, 496, 497, 499.
 type CDNResourceRuleOptionsForceReturn struct {
 	// URL for redirection or text.
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Status code value.
-	Code int64 `json:"code,required"`
+	Code int64 `json:"code" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Controls the time at which a custom HTTP response code should be applied. By
 	// default, a custom HTTP response code is applied at any time.
-	TimeInterval CDNResourceRuleOptionsForceReturnTimeInterval `json:"time_interval,nullable"`
+	TimeInterval CDNResourceRuleOptionsForceReturnTimeInterval `json:"time_interval" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Body         respjson.Field
@@ -1185,10 +1196,10 @@ func (r *CDNResourceRuleOptionsForceReturn) UnmarshalJSON(data []byte) error {
 type CDNResourceRuleOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	EndTime string `json:"end_time,required"`
+	EndTime string `json:"end_time" api:"required"`
 	// Time from which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	StartTime string `json:"start_time,required"`
+	StartTime string `json:"start_time" api:"required"`
 	// Time zone used to calculate time.
 	TimeZone string `json:"time_zone" format:"timezone"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1217,12 +1228,12 @@ type CDNResourceRuleOptionsForwardHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1255,12 +1266,12 @@ type CDNResourceRuleOptionsGzipOn struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1289,9 +1300,9 @@ type CDNResourceRuleOptionsHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Host Header value.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1316,13 +1327,13 @@ type CDNResourceRuleOptionsIgnoreCookie struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	//   - **true** - Option is enabled, files with cookies are cached as one file.
 	//   - **false** - Option is disabled, files with cookies are cached as different
 	//     files.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1350,12 +1361,12 @@ type CDNResourceRuleOptionsIgnoreQueryString struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1380,7 +1391,7 @@ type CDNResourceRuleOptionsImageStack struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables or disables automatic conversion of JPEG and PNG images to AVI format.
 	AvifEnabled bool `json:"avif_enabled"`
 	// Enables or disables compression without quality loss for PNG format.
@@ -1422,7 +1433,7 @@ type CDNResourceRuleOptionsIPAddressACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of IP addresses with a subnet mask.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
@@ -1434,7 +1445,7 @@ type CDNResourceRuleOptionsIPAddressACL struct {
 	//
 	// - `192.168.3.2/32`
 	// - `2a03:d000:2980:7::8/128`
-	ExceptedValues []string `json:"excepted_values,required" format:"ipv4net or ipv6net"`
+	ExceptedValues []string `json:"excepted_values" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
 	// Possible values:
@@ -1445,7 +1456,7 @@ type CDNResourceRuleOptionsIPAddressACL struct {
 	//     field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,required"`
+	PolicyType string `json:"policy_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled        respjson.Field
@@ -1470,7 +1481,7 @@ type CDNResourceRuleOptionsLimitBandwidth struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Method of controlling the download speed per connection.
 	//
 	// Possible values:
@@ -1488,7 +1499,7 @@ type CDNResourceRuleOptionsLimitBandwidth struct {
 	// the download speed will be limited to 50kB/s after 500 kB.
 	//
 	// Any of "static", "dynamic".
-	LimitType string `json:"limit_type,required"`
+	LimitType string `json:"limit_type" api:"required"`
 	// Amount of downloaded data after which the user will be rate limited.
 	Buffer int64 `json:"buffer"`
 	// Maximum download speed per connection.
@@ -1529,9 +1540,9 @@ type CDNResourceRuleOptionsProxyCacheKey struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Key for caching.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1555,12 +1566,12 @@ type CDNResourceRuleOptionsProxyCacheMethodsSet struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1584,11 +1595,11 @@ type CDNResourceRuleOptionsProxyConnectTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 5s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1616,11 +1627,11 @@ type CDNResourceRuleOptionsProxyReadTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 30s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1648,9 +1659,9 @@ type CDNResourceRuleOptionsQueryParamsBlacklist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1678,9 +1689,9 @@ type CDNResourceRuleOptionsQueryParamsWhitelist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1710,19 +1721,19 @@ type CDNResourceRuleOptionsQueryStringForwarding struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The `forward_from_files_types` field specifies the types of playlist files from
 	// which parameters will be extracted and forwarded. This typically includes
 	// formats that list multiple media chunk references, such as HLS and DASH
 	// playlists. Parameters associated with these playlist files (like query strings
 	// or headers) will be propagated to the chunks they reference.
-	ForwardFromFileTypes []string `json:"forward_from_file_types,required"`
+	ForwardFromFileTypes []string `json:"forward_from_file_types" api:"required"`
 	// The field specifies the types of media chunk files to which parameters,
 	// extracted from playlist files, will be forwarded. These refer to the actual
 	// segments of media content that are delivered to viewers. Ensuring the correct
 	// parameters are forwarded to these files is crucial for maintaining the integrity
 	// of the streaming session.
-	ForwardToFileTypes []string `json:"forward_to_file_types,required"`
+	ForwardToFileTypes []string `json:"forward_to_file_types" api:"required"`
 	// The `forward_except_keys` field provides a mechanism to exclude specific
 	// parameters from being forwarded from playlist files to media chunk files. By
 	// listing certain keys in this field, you can ensure that these parameters are
@@ -1766,12 +1777,12 @@ type CDNResourceRuleOptionsRedirectHTTPToHTTPS struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1798,12 +1809,12 @@ type CDNResourceRuleOptionsRedirectHTTPSToHTTP struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1827,7 +1838,7 @@ type CDNResourceRuleOptionsReferrerACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of domain names or wildcard domains (without protocol: `http://` or
 	// `https://`.)
 	//
@@ -1840,7 +1851,7 @@ type CDNResourceRuleOptionsReferrerACL struct {
 	//
 	// - `example.com`
 	// - `*.example.com`
-	ExceptedValues []string `json:"excepted_values,required" format:"domain or wildcard"`
+	ExceptedValues []string `json:"excepted_values" api:"required" format:"domain or wildcard"`
 	// Policy type.
 	//
 	// Possible values:
@@ -1851,7 +1862,7 @@ type CDNResourceRuleOptionsReferrerACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,required"`
+	PolicyType string `json:"policy_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled        respjson.Field
@@ -1876,9 +1887,9 @@ type CDNResourceRuleOptionsRequestLimiter struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Maximum request rate.
-	Rate  int64 `json:"rate,required"`
+	Rate  int64 `json:"rate" api:"required"`
 	Burst int64 `json:"burst"`
 	Delay int64 `json:"delay"`
 	// Units of measurement for the `rate` field.
@@ -1919,7 +1930,7 @@ type CDNResourceRuleOptionsResponseHeadersHidingPolicy struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of HTTP headers.
 	//
 	// Parameter meaning depends on the value of the `mode` field:
@@ -1935,7 +1946,7 @@ type CDNResourceRuleOptionsResponseHeadersHidingPolicy struct {
 	// - `Content-Type`
 	// - `Date`
 	// - `Server`
-	Excepted []string `json:"excepted,required" format:"http_header"`
+	Excepted []string `json:"excepted" api:"required" format:"http_header"`
 	// How HTTP headers are hidden from the response.
 	//
 	// Possible values:
@@ -1945,7 +1956,7 @@ type CDNResourceRuleOptionsResponseHeadersHidingPolicy struct {
 	//     field.
 	//
 	// Any of "hide", "show".
-	Mode string `json:"mode,required"`
+	Mode string `json:"mode" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -1972,14 +1983,14 @@ type CDNResourceRuleOptionsRewrite struct {
 	// Example:
 	//
 	// - `/(.*) /media/$1`
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Flag for the Rewrite option.
 	//
 	// Possible values:
@@ -2018,9 +2029,9 @@ type CDNResourceRuleOptionsSecureKey struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Key generated on your side that will be used for URL signing.
-	Key string `json:"key,required"`
+	Key string `json:"key" api:"required"`
 	// Type of URL signing.
 	//
 	// Possible types:
@@ -2064,12 +2075,12 @@ type CDNResourceRuleOptionsSlice struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2098,14 +2109,14 @@ type CDNResourceRuleOptionsSni struct {
 	// Custom SNI hostname.
 	//
 	// It is required if `sni_type` is set to custom.
-	CustomHostname string `json:"custom_hostname,required" format:"domain"`
+	CustomHostname string `json:"custom_hostname" api:"required" format:"domain"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// SNI (Server Name Indication) type.
 	//
 	// Possible values:
@@ -2146,12 +2157,12 @@ type CDNResourceRuleOptionsStale struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Defines list of errors for which "Always online" option is applied.
 	//
 	// Any of "error", "http_403", "http_404", "http_429", "http_500", "http_502",
 	// "http_503", "http_504", "invalid_header", "timeout", "updating".
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2175,8 +2186,8 @@ type CDNResourceRuleOptionsStaticResponseHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool                                               `json:"enabled,required"`
-	Value   []CDNResourceRuleOptionsStaticResponseHeadersValue `json:"value,required"`
+	Enabled bool                                               `json:"enabled" api:"required"`
+	Value   []CDNResourceRuleOptionsStaticResponseHeadersValue `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2199,7 +2210,7 @@ type CDNResourceRuleOptionsStaticResponseHeadersValue struct {
 	//
 	// - Maximum 128 symbols.
 	// - Latin letters (A-Z, a-z,) numbers (0-9,) dashes, and underscores only.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Header value.
 	//
 	// Restrictions:
@@ -2209,7 +2220,7 @@ type CDNResourceRuleOptionsStaticResponseHeadersValue struct {
 	//     /|\";:?.,><{}[]).
 	//   - Must start with a letter, number, asterisk or {.
 	//   - Multiple values can be added.
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// Defines whether the header will be added to a response from CDN regardless of
 	// response code.
 	//
@@ -2249,7 +2260,7 @@ type CDNResourceRuleOptionsStaticHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -2259,7 +2270,7 @@ type CDNResourceRuleOptionsStaticHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value any `json:"value,required"`
+	Value any `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2284,7 +2295,7 @@ type CDNResourceRuleOptionsStaticRequestHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -2294,7 +2305,7 @@ type CDNResourceRuleOptionsStaticRequestHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,required"`
+	Value map[string]string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2318,7 +2329,7 @@ type CDNResourceRuleOptionsUserAgentACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of User-Agents that will be allowed/denied.
 	//
 	// The meaning of the parameter depends on `policy_type`:
@@ -2331,7 +2342,7 @@ type CDNResourceRuleOptionsUserAgentACL struct {
 	//
 	// Use an empty string `""` to allow/deny access when the User-Agent header is
 	// empty.
-	ExceptedValues []string `json:"excepted_values,required" format:"user_agent"`
+	ExceptedValues []string `json:"excepted_values" api:"required" format:"user_agent"`
 	// User-Agents policy type.
 	//
 	// Possible values:
@@ -2342,7 +2353,7 @@ type CDNResourceRuleOptionsUserAgentACL struct {
 	//     `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,required"`
+	PolicyType string `json:"policy_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled        respjson.Field
@@ -2367,12 +2378,12 @@ type CDNResourceRuleOptionsWaap struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2396,12 +2407,12 @@ type CDNResourceRuleOptionsWebsockets struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
@@ -2458,14 +2469,14 @@ type CDNResourceRuleList []CDNResourceRule
 
 type CDNResourceRuleNewParams struct {
 	// Rule name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Path to the file or folder for which the rule will be applied.
 	//
 	// The rule is applied if the requested URI matches the rule path.
 	//
 	// We add a leading forward slash to any rule path. Specify a path without a
 	// forward slash.
-	Rule string `json:"rule,required"`
+	Rule string `json:"rule" api:"required"`
 	// Rule type.
 	//
 	// Possible values:
@@ -2474,7 +2485,7 @@ type CDNResourceRuleNewParams struct {
 	//   - **Type 1** - Regular expression. Note that for this rule type we automatically
 	//     add / to each rule pattern before your regular expression. This type is
 	//     **legacy**, please use Type 0.
-	RuleType int64 `json:"ruleType,required"`
+	RuleType int64 `json:"ruleType" api:"required"`
 	// ID of the origin group to which the rule is applied.
 	//
 	// If the origin group is not specified, the rule is applied to the origin group
@@ -2784,9 +2795,9 @@ type CDNResourceRuleNewParamsOptionsAllowedHTTPMethods struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Any of "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2804,14 +2815,14 @@ func (r *CDNResourceRuleNewParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data [
 // The properties BotChallenge, Enabled are required.
 type CDNResourceRuleNewParamsOptionsBotProtection struct {
 	// Controls the bot challenge module state.
-	BotChallenge CDNResourceRuleNewParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero,required"`
+	BotChallenge CDNResourceRuleNewParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	paramObj
 }
 
@@ -2865,7 +2876,7 @@ type CDNResourceRuleNewParamsOptionsBrotliCompression struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to select the content types you want to compress.
 	//
 	// `text/html` is a mandatory content type.
@@ -2875,7 +2886,7 @@ type CDNResourceRuleNewParamsOptionsBrotliCompression struct {
 	// "application/x-javascript", "application/xml", "application/xml+rss",
 	// "image/svg+xml", "image/x-icon", "text/css", "text/html", "text/javascript",
 	// "text/plain", "text/xml".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2902,11 +2913,11 @@ type CDNResourceRuleNewParamsOptionsBrowserCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Set the cache expiration time to '0s' to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
-	Value string `json:"value,required" format:"nginx time"`
+	Value string `json:"value" api:"required" format:"nginx time"`
 	paramObj
 }
 
@@ -2932,8 +2943,8 @@ type CDNResourceRuleNewParamsOptionsCacheHTTPHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool     `json:"enabled,required"`
-	Value   []string `json:"value,omitzero,required"`
+	Enabled bool     `json:"enabled" api:"required"`
+	Value   []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2958,7 +2969,7 @@ type CDNResourceRuleNewParamsOptionsCors struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Value of the Access-Control-Allow-Origin header.
 	//
 	// Possible values:
@@ -2973,7 +2984,7 @@ type CDNResourceRuleNewParamsOptionsCors struct {
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
 	//     header in the response. `"value": ["$http_origin"]`
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	// Defines whether the Access-Control-Allow-Origin header should be added to a
 	// response from CDN regardless of response code.
 	//
@@ -3004,14 +3015,14 @@ type CDNResourceRuleNewParamsOptionsCountryACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of countries according to ISO-3166-1.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
 	//
 	// - **allow** - List of countries for which access is prohibited.
 	// - **deny** - List of countries for which access is allowed.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"country-code"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"country-code"`
 	// Defines the type of CDN resource access policy.
 	//
 	// Possible values:
@@ -3022,7 +3033,7 @@ type CDNResourceRuleNewParamsOptionsCountryACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3054,12 +3065,12 @@ type CDNResourceRuleNewParamsOptionsDisableCache struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - content caching is disabled.
 	// - **false** - content caching is enabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3081,12 +3092,12 @@ type CDNResourceRuleNewParamsOptionsDisableProxyForceRanges struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3110,7 +3121,7 @@ type CDNResourceRuleNewParamsOptionsEdgeCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
@@ -3162,7 +3173,7 @@ type CDNResourceRuleNewParamsOptionsFastedge struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// body as soon as CDN receives incoming HTTP request.
 	OnRequestBody CDNResourceRuleNewParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
@@ -3192,7 +3203,7 @@ func (r *CDNResourceRuleNewParamsOptionsFastedge) UnmarshalJSON(data []byte) err
 // The property AppID is required.
 type CDNResourceRuleNewParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -3219,7 +3230,7 @@ func (r *CDNResourceRuleNewParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(dat
 // The property AppID is required.
 type CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -3246,7 +3257,7 @@ func (r *CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(
 // The property AppID is required.
 type CDNResourceRuleNewParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -3273,7 +3284,7 @@ func (r *CDNResourceRuleNewParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(da
 // The property AppID is required.
 type CDNResourceRuleNewParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -3316,12 +3327,12 @@ type CDNResourceRuleNewParamsOptionsFetchCompressed struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3345,14 +3356,14 @@ type CDNResourceRuleNewParamsOptionsFollowOriginRedirect struct {
 	// managing the option.
 	//
 	// Any of 301, 302, 303, 307, 308.
-	Codes []int64 `json:"codes,omitzero,required"`
+	Codes []int64 `json:"codes,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	paramObj
 }
 
@@ -3372,16 +3383,16 @@ func (r *CDNResourceRuleNewParamsOptionsFollowOriginRedirect) UnmarshalJSON(data
 // The properties Body, Code, Enabled are required.
 type CDNResourceRuleNewParamsOptionsForceReturn struct {
 	// URL for redirection or text.
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Status code value.
-	Code int64 `json:"code,required"`
+	Code int64 `json:"code" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Controls the time at which a custom HTTP response code should be applied. By
 	// default, a custom HTTP response code is applied at any time.
 	TimeInterval CDNResourceRuleNewParamsOptionsForceReturnTimeInterval `json:"time_interval,omitzero"`
@@ -3403,10 +3414,10 @@ func (r *CDNResourceRuleNewParamsOptionsForceReturn) UnmarshalJSON(data []byte) 
 type CDNResourceRuleNewParamsOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	EndTime string `json:"end_time,required"`
+	EndTime string `json:"end_time" api:"required"`
 	// Time from which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	StartTime string `json:"start_time,required"`
+	StartTime string `json:"start_time" api:"required"`
 	// Time zone used to calculate time.
 	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
 	paramObj
@@ -3432,12 +3443,12 @@ type CDNResourceRuleNewParamsOptionsForwardHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3468,12 +3479,12 @@ type CDNResourceRuleNewParamsOptionsGzipOn struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3500,9 +3511,9 @@ type CDNResourceRuleNewParamsOptionsHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Host Header value.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3525,13 +3536,13 @@ type CDNResourceRuleNewParamsOptionsIgnoreCookie struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	//   - **true** - Option is enabled, files with cookies are cached as one file.
 	//   - **false** - Option is disabled, files with cookies are cached as different
 	//     files.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3557,12 +3568,12 @@ type CDNResourceRuleNewParamsOptionsIgnoreQueryString struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3585,7 +3596,7 @@ type CDNResourceRuleNewParamsOptionsImageStack struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables or disables automatic conversion of JPEG and PNG images to AVI format.
 	AvifEnabled param.Opt[bool] `json:"avif_enabled,omitzero"`
 	// Enables or disables compression without quality loss for PNG format.
@@ -3622,7 +3633,7 @@ type CDNResourceRuleNewParamsOptionsIPAddressACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of IP addresses with a subnet mask.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
@@ -3634,7 +3645,7 @@ type CDNResourceRuleNewParamsOptionsIPAddressACL struct {
 	//
 	// - `192.168.3.2/32`
 	// - `2a03:d000:2980:7::8/128`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"ipv4net or ipv6net"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
 	// Possible values:
@@ -3645,7 +3656,7 @@ type CDNResourceRuleNewParamsOptionsIPAddressACL struct {
 	//     field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3673,7 +3684,7 @@ type CDNResourceRuleNewParamsOptionsLimitBandwidth struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Method of controlling the download speed per connection.
 	//
 	// Possible values:
@@ -3691,7 +3702,7 @@ type CDNResourceRuleNewParamsOptionsLimitBandwidth struct {
 	// the download speed will be limited to 50kB/s after 500 kB.
 	//
 	// Any of "static", "dynamic".
-	LimitType string `json:"limit_type,omitzero,required"`
+	LimitType string `json:"limit_type,omitzero" api:"required"`
 	// Amount of downloaded data after which the user will be rate limited.
 	Buffer param.Opt[int64] `json:"buffer,omitzero"`
 	// Maximum download speed per connection.
@@ -3734,9 +3745,9 @@ type CDNResourceRuleNewParamsOptionsProxyCacheKey struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Key for caching.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3758,12 +3769,12 @@ type CDNResourceRuleNewParamsOptionsProxyCacheMethodsSet struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3785,11 +3796,11 @@ type CDNResourceRuleNewParamsOptionsProxyConnectTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 5s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3815,11 +3826,11 @@ type CDNResourceRuleNewParamsOptionsProxyReadTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 30s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3845,9 +3856,9 @@ type CDNResourceRuleNewParamsOptionsQueryParamsBlacklist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3873,9 +3884,9 @@ type CDNResourceRuleNewParamsOptionsQueryParamsWhitelist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3903,19 +3914,19 @@ type CDNResourceRuleNewParamsOptionsQueryStringForwarding struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The `forward_from_files_types` field specifies the types of playlist files from
 	// which parameters will be extracted and forwarded. This typically includes
 	// formats that list multiple media chunk references, such as HLS and DASH
 	// playlists. Parameters associated with these playlist files (like query strings
 	// or headers) will be propagated to the chunks they reference.
-	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero,required"`
+	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero" api:"required"`
 	// The field specifies the types of media chunk files to which parameters,
 	// extracted from playlist files, will be forwarded. These refer to the actual
 	// segments of media content that are delivered to viewers. Ensuring the correct
 	// parameters are forwarded to these files is crucial for maintaining the integrity
 	// of the streaming session.
-	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
+	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero" api:"required"`
 	// The `forward_except_keys` field provides a mechanism to exclude specific
 	// parameters from being forwarded from playlist files to media chunk files. By
 	// listing certain keys in this field, you can ensure that these parameters are
@@ -3954,12 +3965,12 @@ type CDNResourceRuleNewParamsOptionsRedirectHTTPToHTTPS struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -3984,12 +3995,12 @@ type CDNResourceRuleNewParamsOptionsRedirectHTTPSToHTTP struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -4011,7 +4022,7 @@ type CDNResourceRuleNewParamsOptionsReferrerACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of domain names or wildcard domains (without protocol: `http://` or
 	// `https://`.)
 	//
@@ -4024,7 +4035,7 @@ type CDNResourceRuleNewParamsOptionsReferrerACL struct {
 	//
 	// - `example.com`
 	// - `*.example.com`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"domain or wildcard"`
 	// Policy type.
 	//
 	// Possible values:
@@ -4035,7 +4046,7 @@ type CDNResourceRuleNewParamsOptionsReferrerACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4063,9 +4074,9 @@ type CDNResourceRuleNewParamsOptionsRequestLimiter struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Maximum request rate.
-	Rate int64 `json:"rate,required"`
+	Rate int64 `json:"rate" api:"required"`
 	// Units of measurement for the `rate` field.
 	//
 	// Possible values:
@@ -4105,7 +4116,7 @@ type CDNResourceRuleNewParamsOptionsResponseHeadersHidingPolicy struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of HTTP headers.
 	//
 	// Parameter meaning depends on the value of the `mode` field:
@@ -4121,7 +4132,7 @@ type CDNResourceRuleNewParamsOptionsResponseHeadersHidingPolicy struct {
 	// - `Content-Type`
 	// - `Date`
 	// - `Server`
-	Excepted []string `json:"excepted,omitzero,required" format:"http_header"`
+	Excepted []string `json:"excepted,omitzero" api:"required" format:"http_header"`
 	// How HTTP headers are hidden from the response.
 	//
 	// Possible values:
@@ -4131,7 +4142,7 @@ type CDNResourceRuleNewParamsOptionsResponseHeadersHidingPolicy struct {
 	//     field.
 	//
 	// Any of "hide", "show".
-	Mode string `json:"mode,omitzero,required"`
+	Mode string `json:"mode,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4161,14 +4172,14 @@ type CDNResourceRuleNewParamsOptionsRewrite struct {
 	// Example:
 	//
 	// - `/(.*) /media/$1`
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Flag for the Rewrite option.
 	//
 	// Possible values:
@@ -4205,14 +4216,14 @@ func init() {
 // The properties Enabled, Key are required.
 type CDNResourceRuleNewParamsOptionsSecureKey struct {
 	// Key generated on your side that will be used for URL signing.
-	Key param.Opt[string] `json:"key,omitzero,required"`
+	Key param.Opt[string] `json:"key,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Type of URL signing.
 	//
 	// Possible types:
@@ -4259,12 +4270,12 @@ type CDNResourceRuleNewParamsOptionsSlice struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -4291,14 +4302,14 @@ type CDNResourceRuleNewParamsOptionsSni struct {
 	// Custom SNI hostname.
 	//
 	// It is required if `sni_type` is set to custom.
-	CustomHostname string `json:"custom_hostname,required" format:"domain"`
+	CustomHostname string `json:"custom_hostname" api:"required" format:"domain"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// SNI (Server Name Indication) type.
 	//
 	// Possible values:
@@ -4342,12 +4353,12 @@ type CDNResourceRuleNewParamsOptionsStale struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Defines list of errors for which "Always online" option is applied.
 	//
 	// Any of "error", "http_403", "http_404", "http_429", "http_500", "http_502",
 	// "http_503", "http_504", "invalid_header", "timeout", "updating".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4369,8 +4380,8 @@ type CDNResourceRuleNewParamsOptionsStaticResponseHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool                                                        `json:"enabled,required"`
-	Value   []CDNResourceRuleNewParamsOptionsStaticResponseHeadersValue `json:"value,omitzero,required"`
+	Enabled bool                                                        `json:"enabled" api:"required"`
+	Value   []CDNResourceRuleNewParamsOptionsStaticResponseHeadersValue `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4390,7 +4401,7 @@ type CDNResourceRuleNewParamsOptionsStaticResponseHeadersValue struct {
 	//
 	// - Maximum 128 symbols.
 	// - Latin letters (A-Z, a-z,) numbers (0-9,) dashes, and underscores only.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Header value.
 	//
 	// Restrictions:
@@ -4400,7 +4411,7 @@ type CDNResourceRuleNewParamsOptionsStaticResponseHeadersValue struct {
 	//     /|\";:?.,><{}[]).
 	//   - Must start with a letter, number, asterisk or {.
 	//   - Multiple values can be added.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	// Defines whether the header will be added to a response from CDN regardless of
 	// response code.
 	//
@@ -4437,7 +4448,7 @@ type CDNResourceRuleNewParamsOptionsStaticHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -4447,7 +4458,7 @@ type CDNResourceRuleNewParamsOptionsStaticHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value any `json:"value,omitzero,required"`
+	Value any `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4470,7 +4481,7 @@ type CDNResourceRuleNewParamsOptionsStaticRequestHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -4480,7 +4491,7 @@ type CDNResourceRuleNewParamsOptionsStaticRequestHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,omitzero,required"`
+	Value map[string]string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4502,7 +4513,7 @@ type CDNResourceRuleNewParamsOptionsUserAgentACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of User-Agents that will be allowed/denied.
 	//
 	// The meaning of the parameter depends on `policy_type`:
@@ -4515,7 +4526,7 @@ type CDNResourceRuleNewParamsOptionsUserAgentACL struct {
 	//
 	// Use an empty string `""` to allow/deny access when the User-Agent header is
 	// empty.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"user_agent"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"user_agent"`
 	// User-Agents policy type.
 	//
 	// Possible values:
@@ -4526,7 +4537,7 @@ type CDNResourceRuleNewParamsOptionsUserAgentACL struct {
 	//     `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4554,12 +4565,12 @@ type CDNResourceRuleNewParamsOptionsWaap struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -4581,12 +4592,12 @@ type CDNResourceRuleNewParamsOptionsWebsockets struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -4619,7 +4630,7 @@ const (
 )
 
 type CDNResourceRuleUpdateParams struct {
-	ResourceID int64 `path:"resource_id,required" json:"-"`
+	ResourceID int64 `path:"resource_id" api:"required" json:"-"`
 	// ID of the origin group to which the rule is applied.
 	//
 	// If the origin group is not specified, the rule is applied to the origin group
@@ -4947,9 +4958,9 @@ type CDNResourceRuleUpdateParamsOptionsAllowedHTTPMethods struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Any of "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4967,14 +4978,14 @@ func (r *CDNResourceRuleUpdateParamsOptionsAllowedHTTPMethods) UnmarshalJSON(dat
 // The properties BotChallenge, Enabled are required.
 type CDNResourceRuleUpdateParamsOptionsBotProtection struct {
 	// Controls the bot challenge module state.
-	BotChallenge CDNResourceRuleUpdateParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero,required"`
+	BotChallenge CDNResourceRuleUpdateParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	paramObj
 }
 
@@ -5028,7 +5039,7 @@ type CDNResourceRuleUpdateParamsOptionsBrotliCompression struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to select the content types you want to compress.
 	//
 	// `text/html` is a mandatory content type.
@@ -5038,7 +5049,7 @@ type CDNResourceRuleUpdateParamsOptionsBrotliCompression struct {
 	// "application/x-javascript", "application/xml", "application/xml+rss",
 	// "image/svg+xml", "image/x-icon", "text/css", "text/html", "text/javascript",
 	// "text/plain", "text/xml".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -5065,11 +5076,11 @@ type CDNResourceRuleUpdateParamsOptionsBrowserCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Set the cache expiration time to '0s' to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
-	Value string `json:"value,required" format:"nginx time"`
+	Value string `json:"value" api:"required" format:"nginx time"`
 	paramObj
 }
 
@@ -5095,8 +5106,8 @@ type CDNResourceRuleUpdateParamsOptionsCacheHTTPHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool     `json:"enabled,required"`
-	Value   []string `json:"value,omitzero,required"`
+	Enabled bool     `json:"enabled" api:"required"`
+	Value   []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -5121,7 +5132,7 @@ type CDNResourceRuleUpdateParamsOptionsCors struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Value of the Access-Control-Allow-Origin header.
 	//
 	// Possible values:
@@ -5136,7 +5147,7 @@ type CDNResourceRuleUpdateParamsOptionsCors struct {
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
 	//     header in the response. `"value": ["$http_origin"]`
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	// Defines whether the Access-Control-Allow-Origin header should be added to a
 	// response from CDN regardless of response code.
 	//
@@ -5167,14 +5178,14 @@ type CDNResourceRuleUpdateParamsOptionsCountryACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of countries according to ISO-3166-1.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
 	//
 	// - **allow** - List of countries for which access is prohibited.
 	// - **deny** - List of countries for which access is allowed.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"country-code"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"country-code"`
 	// Defines the type of CDN resource access policy.
 	//
 	// Possible values:
@@ -5185,7 +5196,7 @@ type CDNResourceRuleUpdateParamsOptionsCountryACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -5217,12 +5228,12 @@ type CDNResourceRuleUpdateParamsOptionsDisableCache struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - content caching is disabled.
 	// - **false** - content caching is enabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5244,12 +5255,12 @@ type CDNResourceRuleUpdateParamsOptionsDisableProxyForceRanges struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5273,7 +5284,7 @@ type CDNResourceRuleUpdateParamsOptionsEdgeCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
@@ -5325,7 +5336,7 @@ type CDNResourceRuleUpdateParamsOptionsFastedge struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// body as soon as CDN receives incoming HTTP request.
 	OnRequestBody CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
@@ -5355,7 +5366,7 @@ func (r *CDNResourceRuleUpdateParamsOptionsFastedge) UnmarshalJSON(data []byte) 
 // The property AppID is required.
 type CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -5382,7 +5393,7 @@ func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(
 // The property AppID is required.
 type CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -5409,7 +5420,7 @@ func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders) UnmarshalJS
 // The property AppID is required.
 type CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -5436,7 +5447,7 @@ func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseBody) UnmarshalJSON
 // The property AppID is required.
 type CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -5479,12 +5490,12 @@ type CDNResourceRuleUpdateParamsOptionsFetchCompressed struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5508,14 +5519,14 @@ type CDNResourceRuleUpdateParamsOptionsFollowOriginRedirect struct {
 	// managing the option.
 	//
 	// Any of 301, 302, 303, 307, 308.
-	Codes []int64 `json:"codes,omitzero,required"`
+	Codes []int64 `json:"codes,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	paramObj
 }
 
@@ -5535,16 +5546,16 @@ func (r *CDNResourceRuleUpdateParamsOptionsFollowOriginRedirect) UnmarshalJSON(d
 // The properties Body, Code, Enabled are required.
 type CDNResourceRuleUpdateParamsOptionsForceReturn struct {
 	// URL for redirection or text.
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Status code value.
-	Code int64 `json:"code,required"`
+	Code int64 `json:"code" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Controls the time at which a custom HTTP response code should be applied. By
 	// default, a custom HTTP response code is applied at any time.
 	TimeInterval CDNResourceRuleUpdateParamsOptionsForceReturnTimeInterval `json:"time_interval,omitzero"`
@@ -5566,10 +5577,10 @@ func (r *CDNResourceRuleUpdateParamsOptionsForceReturn) UnmarshalJSON(data []byt
 type CDNResourceRuleUpdateParamsOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	EndTime string `json:"end_time,required"`
+	EndTime string `json:"end_time" api:"required"`
 	// Time from which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	StartTime string `json:"start_time,required"`
+	StartTime string `json:"start_time" api:"required"`
 	// Time zone used to calculate time.
 	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
 	paramObj
@@ -5595,12 +5606,12 @@ type CDNResourceRuleUpdateParamsOptionsForwardHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5631,12 +5642,12 @@ type CDNResourceRuleUpdateParamsOptionsGzipOn struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5663,9 +5674,9 @@ type CDNResourceRuleUpdateParamsOptionsHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Host Header value.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5688,13 +5699,13 @@ type CDNResourceRuleUpdateParamsOptionsIgnoreCookie struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	//   - **true** - Option is enabled, files with cookies are cached as one file.
 	//   - **false** - Option is disabled, files with cookies are cached as different
 	//     files.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5720,12 +5731,12 @@ type CDNResourceRuleUpdateParamsOptionsIgnoreQueryString struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5748,7 +5759,7 @@ type CDNResourceRuleUpdateParamsOptionsImageStack struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables or disables automatic conversion of JPEG and PNG images to AVI format.
 	AvifEnabled param.Opt[bool] `json:"avif_enabled,omitzero"`
 	// Enables or disables compression without quality loss for PNG format.
@@ -5785,7 +5796,7 @@ type CDNResourceRuleUpdateParamsOptionsIPAddressACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of IP addresses with a subnet mask.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
@@ -5797,7 +5808,7 @@ type CDNResourceRuleUpdateParamsOptionsIPAddressACL struct {
 	//
 	// - `192.168.3.2/32`
 	// - `2a03:d000:2980:7::8/128`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"ipv4net or ipv6net"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
 	// Possible values:
@@ -5808,7 +5819,7 @@ type CDNResourceRuleUpdateParamsOptionsIPAddressACL struct {
 	//     field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -5836,7 +5847,7 @@ type CDNResourceRuleUpdateParamsOptionsLimitBandwidth struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Method of controlling the download speed per connection.
 	//
 	// Possible values:
@@ -5854,7 +5865,7 @@ type CDNResourceRuleUpdateParamsOptionsLimitBandwidth struct {
 	// the download speed will be limited to 50kB/s after 500 kB.
 	//
 	// Any of "static", "dynamic".
-	LimitType string `json:"limit_type,omitzero,required"`
+	LimitType string `json:"limit_type,omitzero" api:"required"`
 	// Amount of downloaded data after which the user will be rate limited.
 	Buffer param.Opt[int64] `json:"buffer,omitzero"`
 	// Maximum download speed per connection.
@@ -5897,9 +5908,9 @@ type CDNResourceRuleUpdateParamsOptionsProxyCacheKey struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Key for caching.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5921,12 +5932,12 @@ type CDNResourceRuleUpdateParamsOptionsProxyCacheMethodsSet struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5948,11 +5959,11 @@ type CDNResourceRuleUpdateParamsOptionsProxyConnectTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 5s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -5978,11 +5989,11 @@ type CDNResourceRuleUpdateParamsOptionsProxyReadTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 30s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -6008,9 +6019,9 @@ type CDNResourceRuleUpdateParamsOptionsQueryParamsBlacklist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6036,9 +6047,9 @@ type CDNResourceRuleUpdateParamsOptionsQueryParamsWhitelist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6066,19 +6077,19 @@ type CDNResourceRuleUpdateParamsOptionsQueryStringForwarding struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The `forward_from_files_types` field specifies the types of playlist files from
 	// which parameters will be extracted and forwarded. This typically includes
 	// formats that list multiple media chunk references, such as HLS and DASH
 	// playlists. Parameters associated with these playlist files (like query strings
 	// or headers) will be propagated to the chunks they reference.
-	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero,required"`
+	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero" api:"required"`
 	// The field specifies the types of media chunk files to which parameters,
 	// extracted from playlist files, will be forwarded. These refer to the actual
 	// segments of media content that are delivered to viewers. Ensuring the correct
 	// parameters are forwarded to these files is crucial for maintaining the integrity
 	// of the streaming session.
-	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
+	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero" api:"required"`
 	// The `forward_except_keys` field provides a mechanism to exclude specific
 	// parameters from being forwarded from playlist files to media chunk files. By
 	// listing certain keys in this field, you can ensure that these parameters are
@@ -6117,12 +6128,12 @@ type CDNResourceRuleUpdateParamsOptionsRedirectHTTPToHTTPS struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -6147,12 +6158,12 @@ type CDNResourceRuleUpdateParamsOptionsRedirectHTTPSToHTTP struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -6174,7 +6185,7 @@ type CDNResourceRuleUpdateParamsOptionsReferrerACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of domain names or wildcard domains (without protocol: `http://` or
 	// `https://`.)
 	//
@@ -6187,7 +6198,7 @@ type CDNResourceRuleUpdateParamsOptionsReferrerACL struct {
 	//
 	// - `example.com`
 	// - `*.example.com`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"domain or wildcard"`
 	// Policy type.
 	//
 	// Possible values:
@@ -6198,7 +6209,7 @@ type CDNResourceRuleUpdateParamsOptionsReferrerACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6226,9 +6237,9 @@ type CDNResourceRuleUpdateParamsOptionsRequestLimiter struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Maximum request rate.
-	Rate int64 `json:"rate,required"`
+	Rate int64 `json:"rate" api:"required"`
 	// Units of measurement for the `rate` field.
 	//
 	// Possible values:
@@ -6268,7 +6279,7 @@ type CDNResourceRuleUpdateParamsOptionsResponseHeadersHidingPolicy struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of HTTP headers.
 	//
 	// Parameter meaning depends on the value of the `mode` field:
@@ -6284,7 +6295,7 @@ type CDNResourceRuleUpdateParamsOptionsResponseHeadersHidingPolicy struct {
 	// - `Content-Type`
 	// - `Date`
 	// - `Server`
-	Excepted []string `json:"excepted,omitzero,required" format:"http_header"`
+	Excepted []string `json:"excepted,omitzero" api:"required" format:"http_header"`
 	// How HTTP headers are hidden from the response.
 	//
 	// Possible values:
@@ -6294,7 +6305,7 @@ type CDNResourceRuleUpdateParamsOptionsResponseHeadersHidingPolicy struct {
 	//     field.
 	//
 	// Any of "hide", "show".
-	Mode string `json:"mode,omitzero,required"`
+	Mode string `json:"mode,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6324,14 +6335,14 @@ type CDNResourceRuleUpdateParamsOptionsRewrite struct {
 	// Example:
 	//
 	// - `/(.*) /media/$1`
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Flag for the Rewrite option.
 	//
 	// Possible values:
@@ -6368,14 +6379,14 @@ func init() {
 // The properties Enabled, Key are required.
 type CDNResourceRuleUpdateParamsOptionsSecureKey struct {
 	// Key generated on your side that will be used for URL signing.
-	Key param.Opt[string] `json:"key,omitzero,required"`
+	Key param.Opt[string] `json:"key,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Type of URL signing.
 	//
 	// Possible types:
@@ -6422,12 +6433,12 @@ type CDNResourceRuleUpdateParamsOptionsSlice struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -6454,14 +6465,14 @@ type CDNResourceRuleUpdateParamsOptionsSni struct {
 	// Custom SNI hostname.
 	//
 	// It is required if `sni_type` is set to custom.
-	CustomHostname string `json:"custom_hostname,required" format:"domain"`
+	CustomHostname string `json:"custom_hostname" api:"required" format:"domain"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// SNI (Server Name Indication) type.
 	//
 	// Possible values:
@@ -6505,12 +6516,12 @@ type CDNResourceRuleUpdateParamsOptionsStale struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Defines list of errors for which "Always online" option is applied.
 	//
 	// Any of "error", "http_403", "http_404", "http_429", "http_500", "http_502",
 	// "http_503", "http_504", "invalid_header", "timeout", "updating".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6532,8 +6543,8 @@ type CDNResourceRuleUpdateParamsOptionsStaticResponseHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool                                                           `json:"enabled,required"`
-	Value   []CDNResourceRuleUpdateParamsOptionsStaticResponseHeadersValue `json:"value,omitzero,required"`
+	Enabled bool                                                           `json:"enabled" api:"required"`
+	Value   []CDNResourceRuleUpdateParamsOptionsStaticResponseHeadersValue `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6553,7 +6564,7 @@ type CDNResourceRuleUpdateParamsOptionsStaticResponseHeadersValue struct {
 	//
 	// - Maximum 128 symbols.
 	// - Latin letters (A-Z, a-z,) numbers (0-9,) dashes, and underscores only.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Header value.
 	//
 	// Restrictions:
@@ -6563,7 +6574,7 @@ type CDNResourceRuleUpdateParamsOptionsStaticResponseHeadersValue struct {
 	//     /|\";:?.,><{}[]).
 	//   - Must start with a letter, number, asterisk or {.
 	//   - Multiple values can be added.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	// Defines whether the header will be added to a response from CDN regardless of
 	// response code.
 	//
@@ -6600,7 +6611,7 @@ type CDNResourceRuleUpdateParamsOptionsStaticHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -6610,7 +6621,7 @@ type CDNResourceRuleUpdateParamsOptionsStaticHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value any `json:"value,omitzero,required"`
+	Value any `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6633,7 +6644,7 @@ type CDNResourceRuleUpdateParamsOptionsStaticRequestHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -6643,7 +6654,7 @@ type CDNResourceRuleUpdateParamsOptionsStaticRequestHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,omitzero,required"`
+	Value map[string]string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6665,7 +6676,7 @@ type CDNResourceRuleUpdateParamsOptionsUserAgentACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of User-Agents that will be allowed/denied.
 	//
 	// The meaning of the parameter depends on `policy_type`:
@@ -6678,7 +6689,7 @@ type CDNResourceRuleUpdateParamsOptionsUserAgentACL struct {
 	//
 	// Use an empty string `""` to allow/deny access when the User-Agent header is
 	// empty.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"user_agent"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"user_agent"`
 	// User-Agents policy type.
 	//
 	// Possible values:
@@ -6689,7 +6700,7 @@ type CDNResourceRuleUpdateParamsOptionsUserAgentACL struct {
 	//     `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -6717,12 +6728,12 @@ type CDNResourceRuleUpdateParamsOptionsWaap struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -6744,12 +6755,12 @@ type CDNResourceRuleUpdateParamsOptionsWebsockets struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -6782,24 +6793,24 @@ const (
 )
 
 type CDNResourceRuleDeleteParams struct {
-	ResourceID int64 `path:"resource_id,required" json:"-"`
+	ResourceID int64 `path:"resource_id" api:"required" json:"-"`
 	paramObj
 }
 
 type CDNResourceRuleGetParams struct {
-	ResourceID int64 `path:"resource_id,required" json:"-"`
+	ResourceID int64 `path:"resource_id" api:"required" json:"-"`
 	paramObj
 }
 
 type CDNResourceRuleReplaceParams struct {
-	ResourceID int64 `path:"resource_id,required" json:"-"`
+	ResourceID int64 `path:"resource_id" api:"required" json:"-"`
 	// Path to the file or folder for which the rule will be applied.
 	//
 	// The rule is applied if the requested URI matches the rule path.
 	//
 	// We add a leading forward slash to any rule path. Specify a path without a
 	// forward slash.
-	Rule string `json:"rule,required"`
+	Rule string `json:"rule" api:"required"`
 	// Rule type.
 	//
 	// Possible values:
@@ -6808,7 +6819,7 @@ type CDNResourceRuleReplaceParams struct {
 	//   - **Type 1** - Regular expression. Note that for this rule type we automatically
 	//     add / to each rule pattern before your regular expression. This type is
 	//     **legacy**, please use Type 0.
-	RuleType int64 `json:"ruleType,required"`
+	RuleType int64 `json:"ruleType" api:"required"`
 	// ID of the origin group to which the rule is applied.
 	//
 	// If the origin group is not specified, the rule is applied to the origin group
@@ -7120,9 +7131,9 @@ type CDNResourceRuleReplaceParamsOptionsAllowedHTTPMethods struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Any of "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -7140,14 +7151,14 @@ func (r *CDNResourceRuleReplaceParamsOptionsAllowedHTTPMethods) UnmarshalJSON(da
 // The properties BotChallenge, Enabled are required.
 type CDNResourceRuleReplaceParamsOptionsBotProtection struct {
 	// Controls the bot challenge module state.
-	BotChallenge CDNResourceRuleReplaceParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero,required"`
+	BotChallenge CDNResourceRuleReplaceParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	paramObj
 }
 
@@ -7201,7 +7212,7 @@ type CDNResourceRuleReplaceParamsOptionsBrotliCompression struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to select the content types you want to compress.
 	//
 	// `text/html` is a mandatory content type.
@@ -7211,7 +7222,7 @@ type CDNResourceRuleReplaceParamsOptionsBrotliCompression struct {
 	// "application/x-javascript", "application/xml", "application/xml+rss",
 	// "image/svg+xml", "image/x-icon", "text/css", "text/html", "text/javascript",
 	// "text/plain", "text/xml".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -7238,11 +7249,11 @@ type CDNResourceRuleReplaceParamsOptionsBrowserCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Set the cache expiration time to '0s' to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
-	Value string `json:"value,required" format:"nginx time"`
+	Value string `json:"value" api:"required" format:"nginx time"`
 	paramObj
 }
 
@@ -7268,8 +7279,8 @@ type CDNResourceRuleReplaceParamsOptionsCacheHTTPHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool     `json:"enabled,required"`
-	Value   []string `json:"value,omitzero,required"`
+	Enabled bool     `json:"enabled" api:"required"`
+	Value   []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -7294,7 +7305,7 @@ type CDNResourceRuleReplaceParamsOptionsCors struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Value of the Access-Control-Allow-Origin header.
 	//
 	// Possible values:
@@ -7309,7 +7320,7 @@ type CDNResourceRuleReplaceParamsOptionsCors struct {
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
 	//     header in the response. `"value": ["$http_origin"]`
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	// Defines whether the Access-Control-Allow-Origin header should be added to a
 	// response from CDN regardless of response code.
 	//
@@ -7340,14 +7351,14 @@ type CDNResourceRuleReplaceParamsOptionsCountryACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of countries according to ISO-3166-1.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
 	//
 	// - **allow** - List of countries for which access is prohibited.
 	// - **deny** - List of countries for which access is allowed.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"country-code"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"country-code"`
 	// Defines the type of CDN resource access policy.
 	//
 	// Possible values:
@@ -7358,7 +7369,7 @@ type CDNResourceRuleReplaceParamsOptionsCountryACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -7390,12 +7401,12 @@ type CDNResourceRuleReplaceParamsOptionsDisableCache struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - content caching is disabled.
 	// - **false** - content caching is enabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7417,12 +7428,12 @@ type CDNResourceRuleReplaceParamsOptionsDisableProxyForceRanges struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7446,7 +7457,7 @@ type CDNResourceRuleReplaceParamsOptionsEdgeCacheSettings struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
@@ -7498,7 +7509,7 @@ type CDNResourceRuleReplaceParamsOptionsFastedge struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Allows to configure FastEdge application that will be called to handle request
 	// body as soon as CDN receives incoming HTTP request.
 	OnRequestBody CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestBody `json:"on_request_body,omitzero"`
@@ -7528,7 +7539,7 @@ func (r *CDNResourceRuleReplaceParamsOptionsFastedge) UnmarshalJSON(data []byte)
 // The property AppID is required.
 type CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -7555,7 +7566,7 @@ func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestBody) UnmarshalJSON
 // The property AppID is required.
 type CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -7582,7 +7593,7 @@ func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders) UnmarshalJ
 // The property AppID is required.
 type CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -7609,7 +7620,7 @@ func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseBody) UnmarshalJSO
 // The property AppID is required.
 type CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
-	AppID string `json:"app_id,required"`
+	AppID string `json:"app_id" api:"required"`
 	// Determines if the FastEdge application should be called whenever HTTP request
 	// headers are received.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -7652,12 +7663,12 @@ type CDNResourceRuleReplaceParamsOptionsFetchCompressed struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7681,14 +7692,14 @@ type CDNResourceRuleReplaceParamsOptionsFollowOriginRedirect struct {
 	// managing the option.
 	//
 	// Any of 301, 302, 303, 307, 308.
-	Codes []int64 `json:"codes,omitzero,required"`
+	Codes []int64 `json:"codes,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	paramObj
 }
 
@@ -7708,16 +7719,16 @@ func (r *CDNResourceRuleReplaceParamsOptionsFollowOriginRedirect) UnmarshalJSON(
 // The properties Body, Code, Enabled are required.
 type CDNResourceRuleReplaceParamsOptionsForceReturn struct {
 	// URL for redirection or text.
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Status code value.
-	Code int64 `json:"code,required"`
+	Code int64 `json:"code" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Controls the time at which a custom HTTP response code should be applied. By
 	// default, a custom HTTP response code is applied at any time.
 	TimeInterval CDNResourceRuleReplaceParamsOptionsForceReturnTimeInterval `json:"time_interval,omitzero"`
@@ -7739,10 +7750,10 @@ func (r *CDNResourceRuleReplaceParamsOptionsForceReturn) UnmarshalJSON(data []by
 type CDNResourceRuleReplaceParamsOptionsForceReturnTimeInterval struct {
 	// Time until which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	EndTime string `json:"end_time,required"`
+	EndTime string `json:"end_time" api:"required"`
 	// Time from which a custom HTTP response code should be applied. Indicated in
 	// 24-hour format.
-	StartTime string `json:"start_time,required"`
+	StartTime string `json:"start_time" api:"required"`
 	// Time zone used to calculate time.
 	TimeZone param.Opt[string] `json:"time_zone,omitzero" format:"timezone"`
 	paramObj
@@ -7768,12 +7779,12 @@ type CDNResourceRuleReplaceParamsOptionsForwardHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7804,12 +7815,12 @@ type CDNResourceRuleReplaceParamsOptionsGzipOn struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7836,9 +7847,9 @@ type CDNResourceRuleReplaceParamsOptionsHostHeader struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Host Header value.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7861,13 +7872,13 @@ type CDNResourceRuleReplaceParamsOptionsIgnoreCookie struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	//   - **true** - Option is enabled, files with cookies are cached as one file.
 	//   - **false** - Option is disabled, files with cookies are cached as different
 	//     files.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7893,12 +7904,12 @@ type CDNResourceRuleReplaceParamsOptionsIgnoreQueryString struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -7921,7 +7932,7 @@ type CDNResourceRuleReplaceParamsOptionsImageStack struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Enables or disables automatic conversion of JPEG and PNG images to AVI format.
 	AvifEnabled param.Opt[bool] `json:"avif_enabled,omitzero"`
 	// Enables or disables compression without quality loss for PNG format.
@@ -7958,7 +7969,7 @@ type CDNResourceRuleReplaceParamsOptionsIPAddressACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of IP addresses with a subnet mask.
 	//
 	// The meaning of the parameter depends on `policy_type` value:
@@ -7970,7 +7981,7 @@ type CDNResourceRuleReplaceParamsOptionsIPAddressACL struct {
 	//
 	// - `192.168.3.2/32`
 	// - `2a03:d000:2980:7::8/128`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"ipv4net or ipv6net"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
 	// Possible values:
@@ -7981,7 +7992,7 @@ type CDNResourceRuleReplaceParamsOptionsIPAddressACL struct {
 	//     field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8009,7 +8020,7 @@ type CDNResourceRuleReplaceParamsOptionsLimitBandwidth struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Method of controlling the download speed per connection.
 	//
 	// Possible values:
@@ -8027,7 +8038,7 @@ type CDNResourceRuleReplaceParamsOptionsLimitBandwidth struct {
 	// the download speed will be limited to 50kB/s after 500 kB.
 	//
 	// Any of "static", "dynamic".
-	LimitType string `json:"limit_type,omitzero,required"`
+	LimitType string `json:"limit_type,omitzero" api:"required"`
 	// Amount of downloaded data after which the user will be rate limited.
 	Buffer param.Opt[int64] `json:"buffer,omitzero"`
 	// Maximum download speed per connection.
@@ -8070,9 +8081,9 @@ type CDNResourceRuleReplaceParamsOptionsProxyCacheKey struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Key for caching.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8094,12 +8105,12 @@ type CDNResourceRuleReplaceParamsOptionsProxyCacheMethodsSet struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8121,11 +8132,11 @@ type CDNResourceRuleReplaceParamsOptionsProxyConnectTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 5s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8151,11 +8162,11 @@ type CDNResourceRuleReplaceParamsOptionsProxyReadTimeout struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
 	// Supported range: **1s - 30s**.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8181,9 +8192,9 @@ type CDNResourceRuleReplaceParamsOptionsQueryParamsBlacklist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8209,9 +8220,9 @@ type CDNResourceRuleReplaceParamsOptionsQueryParamsWhitelist struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of query parameters.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8239,19 +8250,19 @@ type CDNResourceRuleReplaceParamsOptionsQueryStringForwarding struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The `forward_from_files_types` field specifies the types of playlist files from
 	// which parameters will be extracted and forwarded. This typically includes
 	// formats that list multiple media chunk references, such as HLS and DASH
 	// playlists. Parameters associated with these playlist files (like query strings
 	// or headers) will be propagated to the chunks they reference.
-	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero,required"`
+	ForwardFromFileTypes []string `json:"forward_from_file_types,omitzero" api:"required"`
 	// The field specifies the types of media chunk files to which parameters,
 	// extracted from playlist files, will be forwarded. These refer to the actual
 	// segments of media content that are delivered to viewers. Ensuring the correct
 	// parameters are forwarded to these files is crucial for maintaining the integrity
 	// of the streaming session.
-	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero,required"`
+	ForwardToFileTypes []string `json:"forward_to_file_types,omitzero" api:"required"`
 	// The `forward_except_keys` field provides a mechanism to exclude specific
 	// parameters from being forwarded from playlist files to media chunk files. By
 	// listing certain keys in this field, you can ensure that these parameters are
@@ -8290,12 +8301,12 @@ type CDNResourceRuleReplaceParamsOptionsRedirectHTTPToHTTPS struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8320,12 +8331,12 @@ type CDNResourceRuleReplaceParamsOptionsRedirectHTTPSToHTTP struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8347,7 +8358,7 @@ type CDNResourceRuleReplaceParamsOptionsReferrerACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of domain names or wildcard domains (without protocol: `http://` or
 	// `https://`.)
 	//
@@ -8360,7 +8371,7 @@ type CDNResourceRuleReplaceParamsOptionsReferrerACL struct {
 	//
 	// - `example.com`
 	// - `*.example.com`
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"domain or wildcard"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"domain or wildcard"`
 	// Policy type.
 	//
 	// Possible values:
@@ -8371,7 +8382,7 @@ type CDNResourceRuleReplaceParamsOptionsReferrerACL struct {
 	//     in `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8399,9 +8410,9 @@ type CDNResourceRuleReplaceParamsOptionsRequestLimiter struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Maximum request rate.
-	Rate int64 `json:"rate,required"`
+	Rate int64 `json:"rate" api:"required"`
 	// Units of measurement for the `rate` field.
 	//
 	// Possible values:
@@ -8441,7 +8452,7 @@ type CDNResourceRuleReplaceParamsOptionsResponseHeadersHidingPolicy struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of HTTP headers.
 	//
 	// Parameter meaning depends on the value of the `mode` field:
@@ -8457,7 +8468,7 @@ type CDNResourceRuleReplaceParamsOptionsResponseHeadersHidingPolicy struct {
 	// - `Content-Type`
 	// - `Date`
 	// - `Server`
-	Excepted []string `json:"excepted,omitzero,required" format:"http_header"`
+	Excepted []string `json:"excepted,omitzero" api:"required" format:"http_header"`
 	// How HTTP headers are hidden from the response.
 	//
 	// Possible values:
@@ -8467,7 +8478,7 @@ type CDNResourceRuleReplaceParamsOptionsResponseHeadersHidingPolicy struct {
 	//     field.
 	//
 	// Any of "hide", "show".
-	Mode string `json:"mode,omitzero,required"`
+	Mode string `json:"mode,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8497,14 +8508,14 @@ type CDNResourceRuleReplaceParamsOptionsRewrite struct {
 	// Example:
 	//
 	// - `/(.*) /media/$1`
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Flag for the Rewrite option.
 	//
 	// Possible values:
@@ -8541,14 +8552,14 @@ func init() {
 // The properties Enabled, Key are required.
 type CDNResourceRuleReplaceParamsOptionsSecureKey struct {
 	// Key generated on your side that will be used for URL signing.
-	Key param.Opt[string] `json:"key,omitzero,required"`
+	Key param.Opt[string] `json:"key,omitzero" api:"required"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Type of URL signing.
 	//
 	// Possible types:
@@ -8595,12 +8606,12 @@ type CDNResourceRuleReplaceParamsOptionsSlice struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8627,14 +8638,14 @@ type CDNResourceRuleReplaceParamsOptionsSni struct {
 	// Custom SNI hostname.
 	//
 	// It is required if `sni_type` is set to custom.
-	CustomHostname string `json:"custom_hostname,required" format:"domain"`
+	CustomHostname string `json:"custom_hostname" api:"required" format:"domain"`
 	// Controls the option state.
 	//
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// SNI (Server Name Indication) type.
 	//
 	// Possible values:
@@ -8678,12 +8689,12 @@ type CDNResourceRuleReplaceParamsOptionsStale struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Defines list of errors for which "Always online" option is applied.
 	//
 	// Any of "error", "http_403", "http_404", "http_429", "http_500", "http_502",
 	// "http_503", "http_504", "invalid_header", "timeout", "updating".
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8705,8 +8716,8 @@ type CDNResourceRuleReplaceParamsOptionsStaticResponseHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool                                                            `json:"enabled,required"`
-	Value   []CDNResourceRuleReplaceParamsOptionsStaticResponseHeadersValue `json:"value,omitzero,required"`
+	Enabled bool                                                            `json:"enabled" api:"required"`
+	Value   []CDNResourceRuleReplaceParamsOptionsStaticResponseHeadersValue `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8726,7 +8737,7 @@ type CDNResourceRuleReplaceParamsOptionsStaticResponseHeadersValue struct {
 	//
 	// - Maximum 128 symbols.
 	// - Latin letters (A-Z, a-z,) numbers (0-9,) dashes, and underscores only.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Header value.
 	//
 	// Restrictions:
@@ -8736,7 +8747,7 @@ type CDNResourceRuleReplaceParamsOptionsStaticResponseHeadersValue struct {
 	//     /|\";:?.,><{}[]).
 	//   - Must start with a letter, number, asterisk or {.
 	//   - Multiple values can be added.
-	Value []string `json:"value,omitzero,required"`
+	Value []string `json:"value,omitzero" api:"required"`
 	// Defines whether the header will be added to a response from CDN regardless of
 	// response code.
 	//
@@ -8773,7 +8784,7 @@ type CDNResourceRuleReplaceParamsOptionsStaticHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -8783,7 +8794,7 @@ type CDNResourceRuleReplaceParamsOptionsStaticHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value any `json:"value,omitzero,required"`
+	Value any `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8806,7 +8817,7 @@ type CDNResourceRuleReplaceParamsOptionsStaticRequestHeaders struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// A MAP for static headers in a format of `header_name: header_value`.
 	//
 	// Restrictions:
@@ -8816,7 +8827,7 @@ type CDNResourceRuleReplaceParamsOptionsStaticRequestHeaders struct {
 	//   - **Header value** - Maximum 512 symbols, may contain letters (a-z), numbers
 	//     (0-9), spaces, and symbols (`~!@#%%^&\*()-\_=+ /|\";:?.,><{}[]). Must start
 	//     with a letter, number, asterisk or {.
-	Value map[string]string `json:"value,omitzero,required"`
+	Value map[string]string `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8838,7 +8849,7 @@ type CDNResourceRuleReplaceParamsOptionsUserAgentACL struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// List of User-Agents that will be allowed/denied.
 	//
 	// The meaning of the parameter depends on `policy_type`:
@@ -8851,7 +8862,7 @@ type CDNResourceRuleReplaceParamsOptionsUserAgentACL struct {
 	//
 	// Use an empty string `""` to allow/deny access when the User-Agent header is
 	// empty.
-	ExceptedValues []string `json:"excepted_values,omitzero,required" format:"user_agent"`
+	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"user_agent"`
 	// User-Agents policy type.
 	//
 	// Possible values:
@@ -8862,7 +8873,7 @@ type CDNResourceRuleReplaceParamsOptionsUserAgentACL struct {
 	//     `excepted_values` field.
 	//
 	// Any of "allow", "deny".
-	PolicyType string `json:"policy_type,omitzero,required"`
+	PolicyType string `json:"policy_type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -8890,12 +8901,12 @@ type CDNResourceRuleReplaceParamsOptionsWaap struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 
@@ -8917,12 +8928,12 @@ type CDNResourceRuleReplaceParamsOptionsWebsockets struct {
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Possible values:
 	//
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
-	Value bool `json:"value,required"`
+	Value bool `json:"value" api:"required"`
 	paramObj
 }
 

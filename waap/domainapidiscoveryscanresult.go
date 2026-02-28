@@ -77,21 +77,21 @@ func (r *DomainAPIDiscoveryScanResultService) Get(ctx context.Context, scanID st
 // The result of a scan
 type WaapAPIScanResult struct {
 	// The scan ID
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The date and time the scan ended
-	EndTime time.Time `json:"end_time,required" format:"date-time"`
+	EndTime time.Time `json:"end_time" api:"required" format:"date-time"`
 	// The message associated with the scan
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// The date and time the scan started
-	StartTime time.Time `json:"start_time,required" format:"date-time"`
+	StartTime time.Time `json:"start_time" api:"required" format:"date-time"`
 	// The status of the scan
 	//
 	// Any of "SUCCESS", "FAILURE", "IN_PROGRESS".
-	Status WaapAPIScanResultStatus `json:"status,required"`
+	Status WaapAPIScanResultStatus `json:"status" api:"required"`
 	// The type of scan
 	//
 	// Any of "TRAFFIC_SCAN", "API_DESCRIPTION_FILE_SCAN".
-	Type WaapAPIScanResultType `json:"type,required"`
+	Type WaapAPIScanResultType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -197,6 +197,6 @@ const (
 
 type DomainAPIDiscoveryScanResultGetParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }

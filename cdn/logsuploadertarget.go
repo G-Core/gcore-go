@@ -19,6 +19,16 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Logs uploader allows you to upload logs with desired format to desired storages.
+//
+// Consists of three main parts:
+//
+//   - **Policies** - rules that define which logs are uploaded and how they are
+//     uploaded.
+//   - **Targets** - destinations where logs are uploaded.
+//   - **Configs** - combinations of logs uploader policies, targets and resources to
+//     which they are applied.
+//
 // LogsUploaderTargetService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -254,7 +264,7 @@ func (r *LogsUploaderTargetConfigUnion) UnmarshalJSON(data []byte) error {
 type LogsUploaderTargetConfigS3GcoreConfig struct {
 	AccessKeyID  string `json:"access_key_id"`
 	BucketName   string `json:"bucket_name"`
-	Directory    string `json:"directory,nullable"`
+	Directory    string `json:"directory" api:"nullable"`
 	Endpoint     string `json:"endpoint"`
 	Region       string `json:"region"`
 	UsePathStyle bool   `json:"use_path_style"`
@@ -280,7 +290,7 @@ func (r *LogsUploaderTargetConfigS3GcoreConfig) UnmarshalJSON(data []byte) error
 type LogsUploaderTargetConfigS3AmazonConfig struct {
 	AccessKeyID string `json:"access_key_id"`
 	BucketName  string `json:"bucket_name"`
-	Directory   string `json:"directory,nullable"`
+	Directory   string `json:"directory" api:"nullable"`
 	Region      string `json:"region"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -302,9 +312,9 @@ func (r *LogsUploaderTargetConfigS3AmazonConfig) UnmarshalJSON(data []byte) erro
 type LogsUploaderTargetConfigObject struct {
 	AccessKeyID string `json:"access_key_id"`
 	BucketName  string `json:"bucket_name"`
-	Directory   string `json:"directory,nullable"`
-	Endpoint    string `json:"endpoint,nullable"`
-	Region      string `json:"region,nullable"`
+	Directory   string `json:"directory" api:"nullable"`
+	Endpoint    string `json:"endpoint" api:"nullable"`
+	Region      string `json:"region" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AccessKeyID respjson.Field
@@ -324,7 +334,7 @@ func (r *LogsUploaderTargetConfigObject) UnmarshalJSON(data []byte) error {
 }
 
 type LogsUploaderTargetConfigFtpConfig struct {
-	Directory      string `json:"directory,nullable"`
+	Directory      string `json:"directory" api:"nullable"`
 	Hostname       string `json:"hostname"`
 	TimeoutSeconds int64  `json:"timeout_seconds"`
 	User           string `json:"user"`
@@ -346,12 +356,12 @@ func (r *LogsUploaderTargetConfigFtpConfig) UnmarshalJSON(data []byte) error {
 }
 
 type LogsUploaderTargetConfigSftpConfig struct {
-	Hostname       string `json:"hostname,required"`
-	User           string `json:"user,required"`
-	Directory      string `json:"directory,nullable"`
-	KeyPassphrase  string `json:"key_passphrase,nullable"`
-	Password       string `json:"password,nullable"`
-	PrivateKey     string `json:"private_key,nullable"`
+	Hostname       string `json:"hostname" api:"required"`
+	User           string `json:"user" api:"required"`
+	Directory      string `json:"directory" api:"nullable"`
+	KeyPassphrase  string `json:"key_passphrase" api:"nullable"`
+	Password       string `json:"password" api:"nullable"`
+	PrivateKey     string `json:"private_key" api:"nullable"`
 	TimeoutSeconds int64  `json:"timeout_seconds"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -620,12 +630,12 @@ type LogsUploaderTargetList []LogsUploaderTarget
 
 type LogsUploaderTargetNewParams struct {
 	// Config for specific storage type.
-	Config LogsUploaderTargetNewParamsConfigUnion `json:"config,omitzero,required"`
+	Config LogsUploaderTargetNewParamsConfigUnion `json:"config,omitzero" api:"required"`
 	// Type of storage for logs.
 	//
 	// Any of "s3_gcore", "s3_amazon", "s3_oss", "s3_other", "s3_v1", "ftp", "sftp",
 	// "http".
-	StorageType LogsUploaderTargetNewParamsStorageType `json:"storage_type,omitzero,required"`
+	StorageType LogsUploaderTargetNewParamsStorageType `json:"storage_type,omitzero" api:"required"`
 	// Description of the target.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Name of the target.
@@ -900,11 +910,11 @@ func (u LogsUploaderTargetNewParamsConfigUnion) GetTimeoutSeconds() *int64 {
 // The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
 // required.
 type LogsUploaderTargetNewParamsConfigS3GcoreConfig struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	Endpoint        string            `json:"endpoint,required"`
-	Region          string            `json:"region,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	Endpoint        string            `json:"endpoint" api:"required"`
+	Region          string            `json:"region" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
@@ -920,10 +930,10 @@ func (r *LogsUploaderTargetNewParamsConfigS3GcoreConfig) UnmarshalJSON(data []by
 
 // The properties AccessKeyID, BucketName, Region, SecretAccessKey are required.
 type LogsUploaderTargetNewParamsConfigS3AmazonConfig struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	Region          string            `json:"region,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	Region          string            `json:"region" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	paramObj
 }
@@ -938,9 +948,9 @@ func (r *LogsUploaderTargetNewParamsConfigS3AmazonConfig) UnmarshalJSON(data []b
 
 // The properties AccessKeyID, BucketName, SecretAccessKey are required.
 type LogsUploaderTargetNewParamsConfigS3OssConfig struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
 	Region          param.Opt[string] `json:"region,omitzero"`
@@ -958,11 +968,11 @@ func (r *LogsUploaderTargetNewParamsConfigS3OssConfig) UnmarshalJSON(data []byte
 // The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
 // required.
 type LogsUploaderTargetNewParamsConfigS3OtherConfig struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	Endpoint        string            `json:"endpoint,required"`
-	Region          string            `json:"region,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	Endpoint        string            `json:"endpoint" api:"required"`
+	Region          string            `json:"region" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
@@ -979,11 +989,11 @@ func (r *LogsUploaderTargetNewParamsConfigS3OtherConfig) UnmarshalJSON(data []by
 // The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
 // required.
 type LogsUploaderTargetNewParamsConfigS3V1Config struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	Endpoint        string            `json:"endpoint,required"`
-	Region          string            `json:"region,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	Endpoint        string            `json:"endpoint" api:"required"`
+	Region          string            `json:"region" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
@@ -999,9 +1009,9 @@ func (r *LogsUploaderTargetNewParamsConfigS3V1Config) UnmarshalJSON(data []byte)
 
 // The properties Hostname, Password, User are required.
 type LogsUploaderTargetNewParamsConfigFtpConfig struct {
-	Hostname       string            `json:"hostname,required"`
-	Password       string            `json:"password,required"`
-	User           string            `json:"user,required"`
+	Hostname       string            `json:"hostname" api:"required"`
+	Password       string            `json:"password" api:"required"`
+	User           string            `json:"user" api:"required"`
 	Directory      param.Opt[string] `json:"directory,omitzero"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
 	paramObj
@@ -1017,8 +1027,8 @@ func (r *LogsUploaderTargetNewParamsConfigFtpConfig) UnmarshalJSON(data []byte) 
 
 // The properties Hostname, User are required.
 type LogsUploaderTargetNewParamsConfigSftpConfig struct {
-	Hostname       string            `json:"hostname,required"`
-	User           string            `json:"user,required"`
+	Hostname       string            `json:"hostname" api:"required"`
+	User           string            `json:"user" api:"required"`
 	Directory      param.Opt[string] `json:"directory,omitzero"`
 	KeyPassphrase  param.Opt[string] `json:"key_passphrase,omitzero"`
 	Password       param.Opt[string] `json:"password,omitzero"`
@@ -1037,7 +1047,7 @@ func (r *LogsUploaderTargetNewParamsConfigSftpConfig) UnmarshalJSON(data []byte)
 
 // The property Upload is required.
 type LogsUploaderTargetNewParamsConfigHTTPConfig struct {
-	Upload LogsUploaderTargetNewParamsConfigHTTPConfigUpload `json:"upload,omitzero,required"`
+	Upload LogsUploaderTargetNewParamsConfigHTTPConfigUpload `json:"upload,omitzero" api:"required"`
 	Append LogsUploaderTargetNewParamsConfigHTTPConfigAppend `json:"append,omitzero"`
 	Auth   LogsUploaderTargetNewParamsConfigHTTPConfigAuth   `json:"auth,omitzero"`
 	// Any of "json", "text".
@@ -1062,7 +1072,7 @@ func init() {
 
 // The property URL is required.
 type LogsUploaderTargetNewParamsConfigHTTPConfigUpload struct {
-	URL            string            `json:"url,required"`
+	URL            string            `json:"url" api:"required"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
 	UseCompression param.Opt[bool]   `json:"use_compression,omitzero"`
 	Headers        map[string]string `json:"headers,omitzero"`
@@ -1089,7 +1099,7 @@ func init() {
 // The property Action is required.
 type LogsUploaderTargetNewParamsConfigHTTPConfigUploadResponseAction struct {
 	// Any of "drop", "retry", "append".
-	Action          string            `json:"action,omitzero,required"`
+	Action          string            `json:"action,omitzero" api:"required"`
 	Description     param.Opt[string] `json:"description,omitzero"`
 	MatchPayload    param.Opt[string] `json:"match_payload,omitzero"`
 	MatchStatusCode param.Opt[int64]  `json:"match_status_code,omitzero"`
@@ -1112,7 +1122,7 @@ func init() {
 
 // The property URL is required.
 type LogsUploaderTargetNewParamsConfigHTTPConfigAppend struct {
-	URL            string            `json:"url,required"`
+	URL            string            `json:"url" api:"required"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
 	UseCompression param.Opt[bool]   `json:"use_compression,omitzero"`
 	Headers        map[string]string `json:"headers,omitzero"`
@@ -1139,7 +1149,7 @@ func init() {
 // The property Action is required.
 type LogsUploaderTargetNewParamsConfigHTTPConfigAppendResponseAction struct {
 	// Any of "drop", "retry", "append".
-	Action          string            `json:"action,omitzero,required"`
+	Action          string            `json:"action,omitzero" api:"required"`
 	Description     param.Opt[string] `json:"description,omitzero"`
 	MatchPayload    param.Opt[string] `json:"match_payload,omitzero"`
 	MatchStatusCode param.Opt[int64]  `json:"match_status_code,omitzero"`
@@ -1162,9 +1172,9 @@ func init() {
 
 // The properties Config, Type are required.
 type LogsUploaderTargetNewParamsConfigHTTPConfigAuth struct {
-	Config LogsUploaderTargetNewParamsConfigHTTPConfigAuthConfig `json:"config,omitzero,required"`
+	Config LogsUploaderTargetNewParamsConfigHTTPConfigAuthConfig `json:"config,omitzero" api:"required"`
 	// Any of "token".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1184,8 +1194,8 @@ func init() {
 
 // The properties Token, HeaderName are required.
 type LogsUploaderTargetNewParamsConfigHTTPConfigAuthConfig struct {
-	Token      string `json:"token,required"`
-	HeaderName string `json:"header_name,required"`
+	Token      string `json:"token" api:"required"`
+	HeaderName string `json:"header_name" api:"required"`
 	paramObj
 }
 
@@ -1199,7 +1209,7 @@ func (r *LogsUploaderTargetNewParamsConfigHTTPConfigAuthConfig) UnmarshalJSON(da
 
 // The property URL is required.
 type LogsUploaderTargetNewParamsConfigHTTPConfigRetry struct {
-	URL            string            `json:"url,required"`
+	URL            string            `json:"url" api:"required"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
 	UseCompression param.Opt[bool]   `json:"use_compression,omitzero"`
 	Headers        map[string]string `json:"headers,omitzero"`
@@ -1226,7 +1236,7 @@ func init() {
 // The property Action is required.
 type LogsUploaderTargetNewParamsConfigHTTPConfigRetryResponseAction struct {
 	// Any of "drop", "retry", "append".
-	Action          string            `json:"action,omitzero,required"`
+	Action          string            `json:"action,omitzero" api:"required"`
 	Description     param.Opt[string] `json:"description,omitzero"`
 	MatchPayload    param.Opt[string] `json:"match_payload,omitzero"`
 	MatchStatusCode param.Opt[int64]  `json:"match_status_code,omitzero"`
@@ -1543,11 +1553,11 @@ func (u LogsUploaderTargetUpdateParamsConfigUnion) GetTimeoutSeconds() *int64 {
 // The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
 // required.
 type LogsUploaderTargetUpdateParamsConfigS3GcoreConfig struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	Endpoint        string            `json:"endpoint,required"`
-	Region          string            `json:"region,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	Endpoint        string            `json:"endpoint" api:"required"`
+	Region          string            `json:"region" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
@@ -1563,10 +1573,10 @@ func (r *LogsUploaderTargetUpdateParamsConfigS3GcoreConfig) UnmarshalJSON(data [
 
 // The properties AccessKeyID, BucketName, Region, SecretAccessKey are required.
 type LogsUploaderTargetUpdateParamsConfigS3AmazonConfig struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	Region          string            `json:"region,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	Region          string            `json:"region" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	paramObj
 }
@@ -1581,9 +1591,9 @@ func (r *LogsUploaderTargetUpdateParamsConfigS3AmazonConfig) UnmarshalJSON(data 
 
 // The properties AccessKeyID, BucketName, SecretAccessKey are required.
 type LogsUploaderTargetUpdateParamsConfigS3OssConfig struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
 	Region          param.Opt[string] `json:"region,omitzero"`
@@ -1601,11 +1611,11 @@ func (r *LogsUploaderTargetUpdateParamsConfigS3OssConfig) UnmarshalJSON(data []b
 // The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
 // required.
 type LogsUploaderTargetUpdateParamsConfigS3OtherConfig struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	Endpoint        string            `json:"endpoint,required"`
-	Region          string            `json:"region,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	Endpoint        string            `json:"endpoint" api:"required"`
+	Region          string            `json:"region" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
@@ -1622,11 +1632,11 @@ func (r *LogsUploaderTargetUpdateParamsConfigS3OtherConfig) UnmarshalJSON(data [
 // The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
 // required.
 type LogsUploaderTargetUpdateParamsConfigS3V1Config struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	Endpoint        string            `json:"endpoint,required"`
-	Region          string            `json:"region,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	Endpoint        string            `json:"endpoint" api:"required"`
+	Region          string            `json:"region" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
@@ -1642,9 +1652,9 @@ func (r *LogsUploaderTargetUpdateParamsConfigS3V1Config) UnmarshalJSON(data []by
 
 // The properties Hostname, Password, User are required.
 type LogsUploaderTargetUpdateParamsConfigFtpConfig struct {
-	Hostname       string            `json:"hostname,required"`
-	Password       string            `json:"password,required"`
-	User           string            `json:"user,required"`
+	Hostname       string            `json:"hostname" api:"required"`
+	Password       string            `json:"password" api:"required"`
+	User           string            `json:"user" api:"required"`
 	Directory      param.Opt[string] `json:"directory,omitzero"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
 	paramObj
@@ -1660,8 +1670,8 @@ func (r *LogsUploaderTargetUpdateParamsConfigFtpConfig) UnmarshalJSON(data []byt
 
 // The properties Hostname, User are required.
 type LogsUploaderTargetUpdateParamsConfigSftpConfig struct {
-	Hostname       string            `json:"hostname,required"`
-	User           string            `json:"user,required"`
+	Hostname       string            `json:"hostname" api:"required"`
+	User           string            `json:"user" api:"required"`
 	Directory      param.Opt[string] `json:"directory,omitzero"`
 	KeyPassphrase  param.Opt[string] `json:"key_passphrase,omitzero"`
 	Password       param.Opt[string] `json:"password,omitzero"`
@@ -1680,7 +1690,7 @@ func (r *LogsUploaderTargetUpdateParamsConfigSftpConfig) UnmarshalJSON(data []by
 
 // The property Upload is required.
 type LogsUploaderTargetUpdateParamsConfigHTTPConfig struct {
-	Upload LogsUploaderTargetUpdateParamsConfigHTTPConfigUpload `json:"upload,omitzero,required"`
+	Upload LogsUploaderTargetUpdateParamsConfigHTTPConfigUpload `json:"upload,omitzero" api:"required"`
 	Append LogsUploaderTargetUpdateParamsConfigHTTPConfigAppend `json:"append,omitzero"`
 	Auth   LogsUploaderTargetUpdateParamsConfigHTTPConfigAuth   `json:"auth,omitzero"`
 	// Any of "json", "text".
@@ -1705,7 +1715,7 @@ func init() {
 
 // The property URL is required.
 type LogsUploaderTargetUpdateParamsConfigHTTPConfigUpload struct {
-	URL            string            `json:"url,required"`
+	URL            string            `json:"url" api:"required"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
 	UseCompression param.Opt[bool]   `json:"use_compression,omitzero"`
 	Headers        map[string]string `json:"headers,omitzero"`
@@ -1732,7 +1742,7 @@ func init() {
 // The property Action is required.
 type LogsUploaderTargetUpdateParamsConfigHTTPConfigUploadResponseAction struct {
 	// Any of "drop", "retry", "append".
-	Action          string            `json:"action,omitzero,required"`
+	Action          string            `json:"action,omitzero" api:"required"`
 	Description     param.Opt[string] `json:"description,omitzero"`
 	MatchPayload    param.Opt[string] `json:"match_payload,omitzero"`
 	MatchStatusCode param.Opt[int64]  `json:"match_status_code,omitzero"`
@@ -1755,7 +1765,7 @@ func init() {
 
 // The property URL is required.
 type LogsUploaderTargetUpdateParamsConfigHTTPConfigAppend struct {
-	URL            string            `json:"url,required"`
+	URL            string            `json:"url" api:"required"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
 	UseCompression param.Opt[bool]   `json:"use_compression,omitzero"`
 	Headers        map[string]string `json:"headers,omitzero"`
@@ -1782,7 +1792,7 @@ func init() {
 // The property Action is required.
 type LogsUploaderTargetUpdateParamsConfigHTTPConfigAppendResponseAction struct {
 	// Any of "drop", "retry", "append".
-	Action          string            `json:"action,omitzero,required"`
+	Action          string            `json:"action,omitzero" api:"required"`
 	Description     param.Opt[string] `json:"description,omitzero"`
 	MatchPayload    param.Opt[string] `json:"match_payload,omitzero"`
 	MatchStatusCode param.Opt[int64]  `json:"match_status_code,omitzero"`
@@ -1805,9 +1815,9 @@ func init() {
 
 // The properties Config, Type are required.
 type LogsUploaderTargetUpdateParamsConfigHTTPConfigAuth struct {
-	Config LogsUploaderTargetUpdateParamsConfigHTTPConfigAuthConfig `json:"config,omitzero,required"`
+	Config LogsUploaderTargetUpdateParamsConfigHTTPConfigAuthConfig `json:"config,omitzero" api:"required"`
 	// Any of "token".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1827,8 +1837,8 @@ func init() {
 
 // The properties Token, HeaderName are required.
 type LogsUploaderTargetUpdateParamsConfigHTTPConfigAuthConfig struct {
-	Token      string `json:"token,required"`
-	HeaderName string `json:"header_name,required"`
+	Token      string `json:"token" api:"required"`
+	HeaderName string `json:"header_name" api:"required"`
 	paramObj
 }
 
@@ -1842,7 +1852,7 @@ func (r *LogsUploaderTargetUpdateParamsConfigHTTPConfigAuthConfig) UnmarshalJSON
 
 // The property URL is required.
 type LogsUploaderTargetUpdateParamsConfigHTTPConfigRetry struct {
-	URL            string            `json:"url,required"`
+	URL            string            `json:"url" api:"required"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
 	UseCompression param.Opt[bool]   `json:"use_compression,omitzero"`
 	Headers        map[string]string `json:"headers,omitzero"`
@@ -1869,7 +1879,7 @@ func init() {
 // The property Action is required.
 type LogsUploaderTargetUpdateParamsConfigHTTPConfigRetryResponseAction struct {
 	// Any of "drop", "retry", "append".
-	Action          string            `json:"action,omitzero,required"`
+	Action          string            `json:"action,omitzero" api:"required"`
 	Description     param.Opt[string] `json:"description,omitzero"`
 	MatchPayload    param.Opt[string] `json:"match_payload,omitzero"`
 	MatchStatusCode param.Opt[int64]  `json:"match_status_code,omitzero"`
@@ -1923,12 +1933,12 @@ func (r LogsUploaderTargetListParams) URLQuery() (v url.Values, err error) {
 
 type LogsUploaderTargetReplaceParams struct {
 	// Config for specific storage type.
-	Config LogsUploaderTargetReplaceParamsConfigUnion `json:"config,omitzero,required"`
+	Config LogsUploaderTargetReplaceParamsConfigUnion `json:"config,omitzero" api:"required"`
 	// Type of storage for logs.
 	//
 	// Any of "s3_gcore", "s3_amazon", "s3_oss", "s3_other", "s3_v1", "ftp", "sftp",
 	// "http".
-	StorageType LogsUploaderTargetReplaceParamsStorageType `json:"storage_type,omitzero,required"`
+	StorageType LogsUploaderTargetReplaceParamsStorageType `json:"storage_type,omitzero" api:"required"`
 	// Description of the target.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Name of the target.
@@ -2203,11 +2213,11 @@ func (u LogsUploaderTargetReplaceParamsConfigUnion) GetTimeoutSeconds() *int64 {
 // The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
 // required.
 type LogsUploaderTargetReplaceParamsConfigS3GcoreConfig struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	Endpoint        string            `json:"endpoint,required"`
-	Region          string            `json:"region,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	Endpoint        string            `json:"endpoint" api:"required"`
+	Region          string            `json:"region" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
@@ -2223,10 +2233,10 @@ func (r *LogsUploaderTargetReplaceParamsConfigS3GcoreConfig) UnmarshalJSON(data 
 
 // The properties AccessKeyID, BucketName, Region, SecretAccessKey are required.
 type LogsUploaderTargetReplaceParamsConfigS3AmazonConfig struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	Region          string            `json:"region,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	Region          string            `json:"region" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	paramObj
 }
@@ -2241,9 +2251,9 @@ func (r *LogsUploaderTargetReplaceParamsConfigS3AmazonConfig) UnmarshalJSON(data
 
 // The properties AccessKeyID, BucketName, SecretAccessKey are required.
 type LogsUploaderTargetReplaceParamsConfigS3OssConfig struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
 	Region          param.Opt[string] `json:"region,omitzero"`
@@ -2261,11 +2271,11 @@ func (r *LogsUploaderTargetReplaceParamsConfigS3OssConfig) UnmarshalJSON(data []
 // The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
 // required.
 type LogsUploaderTargetReplaceParamsConfigS3OtherConfig struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	Endpoint        string            `json:"endpoint,required"`
-	Region          string            `json:"region,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	Endpoint        string            `json:"endpoint" api:"required"`
+	Region          string            `json:"region" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
@@ -2282,11 +2292,11 @@ func (r *LogsUploaderTargetReplaceParamsConfigS3OtherConfig) UnmarshalJSON(data 
 // The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
 // required.
 type LogsUploaderTargetReplaceParamsConfigS3V1Config struct {
-	AccessKeyID     string            `json:"access_key_id,required"`
-	BucketName      string            `json:"bucket_name,required"`
-	Endpoint        string            `json:"endpoint,required"`
-	Region          string            `json:"region,required"`
-	SecretAccessKey string            `json:"secret_access_key,required"`
+	AccessKeyID     string            `json:"access_key_id" api:"required"`
+	BucketName      string            `json:"bucket_name" api:"required"`
+	Endpoint        string            `json:"endpoint" api:"required"`
+	Region          string            `json:"region" api:"required"`
+	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
@@ -2302,9 +2312,9 @@ func (r *LogsUploaderTargetReplaceParamsConfigS3V1Config) UnmarshalJSON(data []b
 
 // The properties Hostname, Password, User are required.
 type LogsUploaderTargetReplaceParamsConfigFtpConfig struct {
-	Hostname       string            `json:"hostname,required"`
-	Password       string            `json:"password,required"`
-	User           string            `json:"user,required"`
+	Hostname       string            `json:"hostname" api:"required"`
+	Password       string            `json:"password" api:"required"`
+	User           string            `json:"user" api:"required"`
 	Directory      param.Opt[string] `json:"directory,omitzero"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
 	paramObj
@@ -2320,8 +2330,8 @@ func (r *LogsUploaderTargetReplaceParamsConfigFtpConfig) UnmarshalJSON(data []by
 
 // The properties Hostname, User are required.
 type LogsUploaderTargetReplaceParamsConfigSftpConfig struct {
-	Hostname       string            `json:"hostname,required"`
-	User           string            `json:"user,required"`
+	Hostname       string            `json:"hostname" api:"required"`
+	User           string            `json:"user" api:"required"`
 	Directory      param.Opt[string] `json:"directory,omitzero"`
 	KeyPassphrase  param.Opt[string] `json:"key_passphrase,omitzero"`
 	Password       param.Opt[string] `json:"password,omitzero"`
@@ -2340,7 +2350,7 @@ func (r *LogsUploaderTargetReplaceParamsConfigSftpConfig) UnmarshalJSON(data []b
 
 // The property Upload is required.
 type LogsUploaderTargetReplaceParamsConfigHTTPConfig struct {
-	Upload LogsUploaderTargetReplaceParamsConfigHTTPConfigUpload `json:"upload,omitzero,required"`
+	Upload LogsUploaderTargetReplaceParamsConfigHTTPConfigUpload `json:"upload,omitzero" api:"required"`
 	Append LogsUploaderTargetReplaceParamsConfigHTTPConfigAppend `json:"append,omitzero"`
 	Auth   LogsUploaderTargetReplaceParamsConfigHTTPConfigAuth   `json:"auth,omitzero"`
 	// Any of "json", "text".
@@ -2365,7 +2375,7 @@ func init() {
 
 // The property URL is required.
 type LogsUploaderTargetReplaceParamsConfigHTTPConfigUpload struct {
-	URL            string            `json:"url,required"`
+	URL            string            `json:"url" api:"required"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
 	UseCompression param.Opt[bool]   `json:"use_compression,omitzero"`
 	Headers        map[string]string `json:"headers,omitzero"`
@@ -2392,7 +2402,7 @@ func init() {
 // The property Action is required.
 type LogsUploaderTargetReplaceParamsConfigHTTPConfigUploadResponseAction struct {
 	// Any of "drop", "retry", "append".
-	Action          string            `json:"action,omitzero,required"`
+	Action          string            `json:"action,omitzero" api:"required"`
 	Description     param.Opt[string] `json:"description,omitzero"`
 	MatchPayload    param.Opt[string] `json:"match_payload,omitzero"`
 	MatchStatusCode param.Opt[int64]  `json:"match_status_code,omitzero"`
@@ -2415,7 +2425,7 @@ func init() {
 
 // The property URL is required.
 type LogsUploaderTargetReplaceParamsConfigHTTPConfigAppend struct {
-	URL            string            `json:"url,required"`
+	URL            string            `json:"url" api:"required"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
 	UseCompression param.Opt[bool]   `json:"use_compression,omitzero"`
 	Headers        map[string]string `json:"headers,omitzero"`
@@ -2442,7 +2452,7 @@ func init() {
 // The property Action is required.
 type LogsUploaderTargetReplaceParamsConfigHTTPConfigAppendResponseAction struct {
 	// Any of "drop", "retry", "append".
-	Action          string            `json:"action,omitzero,required"`
+	Action          string            `json:"action,omitzero" api:"required"`
 	Description     param.Opt[string] `json:"description,omitzero"`
 	MatchPayload    param.Opt[string] `json:"match_payload,omitzero"`
 	MatchStatusCode param.Opt[int64]  `json:"match_status_code,omitzero"`
@@ -2465,9 +2475,9 @@ func init() {
 
 // The properties Config, Type are required.
 type LogsUploaderTargetReplaceParamsConfigHTTPConfigAuth struct {
-	Config LogsUploaderTargetReplaceParamsConfigHTTPConfigAuthConfig `json:"config,omitzero,required"`
+	Config LogsUploaderTargetReplaceParamsConfigHTTPConfigAuthConfig `json:"config,omitzero" api:"required"`
 	// Any of "token".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2487,8 +2497,8 @@ func init() {
 
 // The properties Token, HeaderName are required.
 type LogsUploaderTargetReplaceParamsConfigHTTPConfigAuthConfig struct {
-	Token      string `json:"token,required"`
-	HeaderName string `json:"header_name,required"`
+	Token      string `json:"token" api:"required"`
+	HeaderName string `json:"header_name" api:"required"`
 	paramObj
 }
 
@@ -2502,7 +2512,7 @@ func (r *LogsUploaderTargetReplaceParamsConfigHTTPConfigAuthConfig) UnmarshalJSO
 
 // The property URL is required.
 type LogsUploaderTargetReplaceParamsConfigHTTPConfigRetry struct {
-	URL            string            `json:"url,required"`
+	URL            string            `json:"url" api:"required"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
 	UseCompression param.Opt[bool]   `json:"use_compression,omitzero"`
 	Headers        map[string]string `json:"headers,omitzero"`
@@ -2529,7 +2539,7 @@ func init() {
 // The property Action is required.
 type LogsUploaderTargetReplaceParamsConfigHTTPConfigRetryResponseAction struct {
 	// Any of "drop", "retry", "append".
-	Action          string            `json:"action,omitzero,required"`
+	Action          string            `json:"action,omitzero" api:"required"`
 	Description     param.Opt[string] `json:"description,omitzero"`
 	MatchPayload    param.Opt[string] `json:"match_payload,omitzero"`
 	MatchStatusCode param.Opt[int64]  `json:"match_status_code,omitzero"`

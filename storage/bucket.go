@@ -126,7 +126,7 @@ func (r *BucketService) Delete(ctx context.Context, bucketName string, body Buck
 // BucketDtoV2 for response
 type Bucket struct {
 	// Name of the S3 bucket
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Lifecycle policy expiration days (zero if not set)
 	Lifecycle int64 `json:"lifecycle"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -145,7 +145,7 @@ func (r *Bucket) UnmarshalJSON(data []byte) error {
 }
 
 type BucketNewParams struct {
-	StorageID int64 `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id" api:"required" json:"-"`
 	paramObj
 }
 
@@ -166,6 +166,6 @@ func (r BucketListParams) URLQuery() (v url.Values, err error) {
 }
 
 type BucketDeleteParams struct {
-	StorageID int64 `path:"storage_id,required" json:"-"`
+	StorageID int64 `path:"storage_id" api:"required" json:"-"`
 	paramObj
 }

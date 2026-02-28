@@ -154,20 +154,20 @@ func (r *PlacementGroupService) Get(ctx context.Context, groupID string, query P
 
 type PlacementGroup struct {
 	// The list of instances in this server group.
-	Instances []PlacementGroupInstance `json:"instances,required"`
+	Instances []PlacementGroupInstance `json:"instances" api:"required"`
 	// The name of the server group.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The server group policy. Options are: anti-affinity, affinity, or
 	// soft-anti-affinity.
-	Policy string `json:"policy,required"`
+	Policy string `json:"policy" api:"required"`
 	// Project ID
-	ProjectID int64 `json:"project_id,required"`
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id,required"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// The ID of the server group.
-	ServergroupID string `json:"servergroup_id,required"`
+	ServergroupID string `json:"servergroup_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Instances     respjson.Field
@@ -190,9 +190,9 @@ func (r *PlacementGroup) UnmarshalJSON(data []byte) error {
 
 type PlacementGroupInstance struct {
 	// The ID of the instance, corresponding to the attribute 'id'.
-	InstanceID string `json:"instance_id,required"`
+	InstanceID string `json:"instance_id" api:"required"`
 	// The name of the instance, corresponding to the attribute 'name'.
-	InstanceName string `json:"instance_name,required"`
+	InstanceName string `json:"instance_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InstanceID   respjson.Field
@@ -210,9 +210,9 @@ func (r *PlacementGroupInstance) UnmarshalJSON(data []byte) error {
 
 type PlacementGroupList struct {
 	// Number of objects
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []PlacementGroup `json:"results,required"`
+	Results []PlacementGroup `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -229,14 +229,14 @@ func (r *PlacementGroupList) UnmarshalJSON(data []byte) error {
 }
 
 type PlacementGroupNewParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// The name of the server group.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The server group policy.
 	//
 	// Any of "affinity", "anti-affinity", "soft-anti-affinity".
-	Policy PlacementGroupNewParamsPolicy `json:"policy,omitzero,required"`
+	Policy PlacementGroupNewParamsPolicy `json:"policy,omitzero" api:"required"`
 	paramObj
 }
 
@@ -258,19 +258,19 @@ const (
 )
 
 type PlacementGroupListParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type PlacementGroupDeleteParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type PlacementGroupGetParams struct {
-	ProjectID param.Opt[int64] `path:"project_id,omitzero,required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero,required" json:"-"`
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

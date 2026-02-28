@@ -18,6 +18,16 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Logs uploader allows you to upload logs with desired format to desired storages.
+//
+// Consists of three main parts:
+//
+//   - **Policies** - rules that define which logs are uploaded and how they are
+//     uploaded.
+//   - **Targets** - destinations where logs are uploaded.
+//   - **Configs** - combinations of logs uploader policies, targets and resources to
+//     which they are applied.
+//
 // LogsUploaderPolicyService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -161,7 +171,7 @@ type LogsUploaderPolicy struct {
 	// Threshold in lines to rotate logs.
 	RotateThresholdLines int64 `json:"rotate_threshold_lines"`
 	// Threshold in MB to rotate logs.
-	RotateThresholdMB int64 `json:"rotate_threshold_mb,nullable"`
+	RotateThresholdMB int64 `json:"rotate_threshold_mb" api:"nullable"`
 	// Tags allow for dynamic decoration of logs by adding predefined fields to the log
 	// format. These tags serve as customizable key-value pairs that can be included in
 	// log entries to enhance context and readability.

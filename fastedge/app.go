@@ -21,6 +21,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Apps are descriptions of edge apps, that reference the binary and may contain
+// app-specific settings, such as environment variables.
+//
 // AppService contains methods and other services that help with interacting with
 // the gcore API.
 //
@@ -29,7 +32,9 @@ import (
 // the [NewAppService] method instead.
 type AppService struct {
 	Options []option.RequestOption
-	Logs    AppLogService
+	// Apps are descriptions of edge apps, that reference the binary and may contain
+	// app-specific settings, such as environment variables.
+	Logs AppLogService
 }
 
 // NewAppService generates a new service that applies the given options to each
@@ -122,7 +127,7 @@ type App struct {
 	// Logging channel (by default - kafka, which allows exploring logs with API)
 	//
 	// Any of "kafka", "none".
-	Log AppLog `json:"log,nullable"`
+	Log AppLog `json:"log" api:"nullable"`
 	// App name
 	Name string `json:"name"`
 	// Networks
@@ -202,7 +207,7 @@ const (
 // Application secret short description
 type AppSecret struct {
 	// The unique identifier of the secret.
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// A description or comment about the secret.
 	Comment string `json:"comment"`
 	// The unique name of the secret.
@@ -226,7 +231,7 @@ func (r *AppSecret) UnmarshalJSON(data []byte) error {
 // Application stores
 type AppStore struct {
 	// The identifier of the store
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// A description of the store
 	Comment string `json:"comment"`
 	// The name of the store
@@ -294,7 +299,7 @@ func (r *AppParam) UnmarshalJSON(data []byte) error {
 // The property ID is required.
 type AppSecretParam struct {
 	// The unique identifier of the secret.
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	paramObj
 }
 
@@ -311,7 +316,7 @@ func (r *AppSecretParam) UnmarshalJSON(data []byte) error {
 // The property ID is required.
 type AppStoreParam struct {
 	// The identifier of the store
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	paramObj
 }
 
@@ -325,15 +330,15 @@ func (r *AppStoreParam) UnmarshalJSON(data []byte) error {
 
 type AppShort struct {
 	// App ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Wasm API type
-	APIType string `json:"api_type,required"`
+	APIType string `json:"api_type" api:"required"`
 	// Binary ID
-	Binary int64 `json:"binary,required"`
+	Binary int64 `json:"binary" api:"required"`
 	// App name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Application plan ID
-	PlanID int64 `json:"plan_id,required"`
+	PlanID int64 `json:"plan_id" api:"required"`
 	// Status code:
 	// 0 - draft (inactive)
 	// 1 - enabled
@@ -341,7 +346,7 @@ type AppShort struct {
 	// 3 - hourly call limit exceeded
 	// 4 - daily call limit exceeded
 	// 5 - suspended
-	Status int64 `json:"status,required"`
+	Status int64 `json:"status" api:"required"`
 	// Description of the binary
 	Comment string `json:"comment"`
 	// Switch on logging for 30 minutes (switched off by default)

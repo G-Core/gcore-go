@@ -17,6 +17,10 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Log viewer provides you with general information about CDN operation. This
+// information does not contain all possible sets of fields and restricted by time.
+// To receive full data, use Logs Uploader.
+//
 // LogService contains methods and other services that help with interacting with
 // the gcore API.
 //
@@ -191,7 +195,7 @@ type LogListParams struct {
 	//
 	// - &from=2021-06-14T00:00:00Z
 	// - &from=2021-06-14T00:00:00.000Z
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End date and time of the requested time period (ISO 8601/RFC 3339 format, UTC.)
 	//
 	// Difference between "from" and "to" cannot exceed 6 hours.
@@ -200,7 +204,7 @@ type LogListParams struct {
 	//
 	// - &to=2021-06-15T00:00:00Z
 	// - &to=2021-06-15T00:00:00.000Z
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// Caching status. Possible values: 'MISS', 'BYPASS', 'EXPIRED', 'STALE',
 	// 'PENDING', 'UPDATING', 'REVALIDATED', 'HIT', '-'.
 	CacheStatusEq param.Opt[string] `query:"cache_status__eq,omitzero" json:"-"`
@@ -365,7 +369,7 @@ type LogDownloadParams struct {
 	//
 	// - csv
 	// - tsv
-	Format string `query:"format,required" json:"-"`
+	Format string `query:"format" api:"required" json:"-"`
 	// Start date and time of the requested time period (ISO 8601/RFC 3339 format,
 	// UTC.)
 	//
@@ -375,7 +379,7 @@ type LogDownloadParams struct {
 	//
 	// - &from=2021-06-14T00:00:00Z
 	// - &from=2021-06-14T00:00:00.000Z
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// End date and time of the requested time period (ISO 8601/RFC 3339 format, UTC.)
 	//
 	// Difference between "from" and "to" cannot exceed 6 hours.
@@ -384,7 +388,7 @@ type LogDownloadParams struct {
 	//
 	// - &to=2021-06-15T00:00:00Z
 	// - &to=2021-06-15T00:00:00.000Z
-	To string `query:"to,required" json:"-"`
+	To string `query:"to" api:"required" json:"-"`
 	// Caching status. Possible values: 'MISS', 'BYPASS', 'EXPIRED', 'STALE',
 	// 'PENDING', 'UPDATING', 'REVALIDATED', 'HIT', '-'.
 	CacheStatusEq param.Opt[string] `query:"cache_status__eq,omitzero" json:"-"`

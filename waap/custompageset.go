@@ -110,7 +110,7 @@ func (r *CustomPageSetService) Preview(ctx context.Context, params CustomPageSet
 
 type WaapCustomPagePreview struct {
 	// HTML content of the custom page
-	HTML string `json:"html,required"`
+	HTML string `json:"html" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		HTML        respjson.Field
@@ -127,17 +127,17 @@ func (r *WaapCustomPagePreview) UnmarshalJSON(data []byte) error {
 
 type WaapCustomPageSet struct {
 	// The ID of the custom page set
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Name of the custom page set
-	Name           string                          `json:"name,required"`
-	Block          WaapCustomPageSetBlock          `json:"block,nullable"`
-	BlockCsrf      WaapCustomPageSetBlockCsrf      `json:"block_csrf,nullable"`
-	Captcha        WaapCustomPageSetCaptcha        `json:"captcha,nullable"`
-	CookieDisabled WaapCustomPageSetCookieDisabled `json:"cookie_disabled,nullable"`
+	Name           string                          `json:"name" api:"required"`
+	Block          WaapCustomPageSetBlock          `json:"block" api:"nullable"`
+	BlockCsrf      WaapCustomPageSetBlockCsrf      `json:"block_csrf" api:"nullable"`
+	Captcha        WaapCustomPageSetCaptcha        `json:"captcha" api:"nullable"`
+	CookieDisabled WaapCustomPageSetCookieDisabled `json:"cookie_disabled" api:"nullable"`
 	// List of domain IDs that are associated with this page set
-	Domains            []int64                             `json:"domains,nullable"`
-	Handshake          WaapCustomPageSetHandshake          `json:"handshake,nullable"`
-	JavascriptDisabled WaapCustomPageSetJavascriptDisabled `json:"javascript_disabled,nullable"`
+	Domains            []int64                             `json:"domains" api:"nullable"`
+	Handshake          WaapCustomPageSetHandshake          `json:"handshake" api:"nullable"`
+	JavascriptDisabled WaapCustomPageSetJavascriptDisabled `json:"javascript_disabled" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -162,7 +162,7 @@ func (r *WaapCustomPageSet) UnmarshalJSON(data []byte) error {
 
 type WaapCustomPageSetBlock struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header string `json:"header"`
 	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
@@ -193,7 +193,7 @@ func (r *WaapCustomPageSetBlock) UnmarshalJSON(data []byte) error {
 
 type WaapCustomPageSetBlockCsrf struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header string `json:"header"`
 	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
@@ -224,7 +224,7 @@ func (r *WaapCustomPageSetBlockCsrf) UnmarshalJSON(data []byte) error {
 
 type WaapCustomPageSetCaptcha struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Error message
 	Error string `json:"error"`
 	// The text to display in the header of the custom page
@@ -258,7 +258,7 @@ func (r *WaapCustomPageSetCaptcha) UnmarshalJSON(data []byte) error {
 
 type WaapCustomPageSetCookieDisabled struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header string `json:"header"`
 	// The text to display in the body of the custom page
@@ -281,7 +281,7 @@ func (r *WaapCustomPageSetCookieDisabled) UnmarshalJSON(data []byte) error {
 
 type WaapCustomPageSetHandshake struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header string `json:"header"`
 	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
@@ -309,7 +309,7 @@ func (r *WaapCustomPageSetHandshake) UnmarshalJSON(data []byte) error {
 
 type WaapCustomPageSetJavascriptDisabled struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header string `json:"header"`
 	// The text to display in the body of the custom page
@@ -332,7 +332,7 @@ func (r *WaapCustomPageSetJavascriptDisabled) UnmarshalJSON(data []byte) error {
 
 type CustomPageSetNewParams struct {
 	// Name of the custom page set
-	Name           string                               `json:"name,required"`
+	Name           string                               `json:"name" api:"required"`
 	Block          CustomPageSetNewParamsBlock          `json:"block,omitzero"`
 	BlockCsrf      CustomPageSetNewParamsBlockCsrf      `json:"block_csrf,omitzero"`
 	Captcha        CustomPageSetNewParamsCaptcha        `json:"captcha,omitzero"`
@@ -355,7 +355,7 @@ func (r *CustomPageSetNewParams) UnmarshalJSON(data []byte) error {
 // The property Enabled is required.
 type CustomPageSetNewParamsBlock struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header param.Opt[string] `json:"header,omitzero"`
 	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
@@ -380,7 +380,7 @@ func (r *CustomPageSetNewParamsBlock) UnmarshalJSON(data []byte) error {
 // The property Enabled is required.
 type CustomPageSetNewParamsBlockCsrf struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header param.Opt[string] `json:"header,omitzero"`
 	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
@@ -405,7 +405,7 @@ func (r *CustomPageSetNewParamsBlockCsrf) UnmarshalJSON(data []byte) error {
 // The property Enabled is required.
 type CustomPageSetNewParamsCaptcha struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Error message
 	Error param.Opt[string] `json:"error,omitzero"`
 	// The text to display in the header of the custom page
@@ -432,7 +432,7 @@ func (r *CustomPageSetNewParamsCaptcha) UnmarshalJSON(data []byte) error {
 // The property Enabled is required.
 type CustomPageSetNewParamsCookieDisabled struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header param.Opt[string] `json:"header,omitzero"`
 	// The text to display in the body of the custom page
@@ -451,7 +451,7 @@ func (r *CustomPageSetNewParamsCookieDisabled) UnmarshalJSON(data []byte) error 
 // The property Enabled is required.
 type CustomPageSetNewParamsHandshake struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header param.Opt[string] `json:"header,omitzero"`
 	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
@@ -474,7 +474,7 @@ func (r *CustomPageSetNewParamsHandshake) UnmarshalJSON(data []byte) error {
 // The property Enabled is required.
 type CustomPageSetNewParamsJavascriptDisabled struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header param.Opt[string] `json:"header,omitzero"`
 	// The text to display in the body of the custom page
@@ -515,7 +515,7 @@ func (r *CustomPageSetUpdateParams) UnmarshalJSON(data []byte) error {
 // The property Enabled is required.
 type CustomPageSetUpdateParamsBlock struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header param.Opt[string] `json:"header,omitzero"`
 	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
@@ -540,7 +540,7 @@ func (r *CustomPageSetUpdateParamsBlock) UnmarshalJSON(data []byte) error {
 // The property Enabled is required.
 type CustomPageSetUpdateParamsBlockCsrf struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header param.Opt[string] `json:"header,omitzero"`
 	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
@@ -565,7 +565,7 @@ func (r *CustomPageSetUpdateParamsBlockCsrf) UnmarshalJSON(data []byte) error {
 // The property Enabled is required.
 type CustomPageSetUpdateParamsCaptcha struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Error message
 	Error param.Opt[string] `json:"error,omitzero"`
 	// The text to display in the header of the custom page
@@ -592,7 +592,7 @@ func (r *CustomPageSetUpdateParamsCaptcha) UnmarshalJSON(data []byte) error {
 // The property Enabled is required.
 type CustomPageSetUpdateParamsCookieDisabled struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header param.Opt[string] `json:"header,omitzero"`
 	// The text to display in the body of the custom page
@@ -611,7 +611,7 @@ func (r *CustomPageSetUpdateParamsCookieDisabled) UnmarshalJSON(data []byte) err
 // The property Enabled is required.
 type CustomPageSetUpdateParamsHandshake struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header param.Opt[string] `json:"header,omitzero"`
 	// Supported image types are JPEG, PNG and JPG, size is limited to width 450px,
@@ -634,7 +634,7 @@ func (r *CustomPageSetUpdateParamsHandshake) UnmarshalJSON(data []byte) error {
 // The property Enabled is required.
 type CustomPageSetUpdateParamsJavascriptDisabled struct {
 	// Indicates whether the custom custom page is active or inactive
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The text to display in the header of the custom page
 	Header param.Opt[string] `json:"header,omitzero"`
 	// The text to display in the body of the custom page
@@ -690,7 +690,7 @@ type CustomPageSetPreviewParams struct {
 	//
 	// Any of "block.html", "block_csrf.html", "captcha.html", "cookieDisabled.html",
 	// "handshake.html", "javascriptDisabled.html".
-	PageType CustomPageSetPreviewParamsPageType `query:"page_type,omitzero,required" json:"-"`
+	PageType CustomPageSetPreviewParamsPageType `query:"page_type,omitzero" api:"required" json:"-"`
 	// Error message
 	Error param.Opt[string] `json:"error,omitzero"`
 	// The text to display in the header of the custom page

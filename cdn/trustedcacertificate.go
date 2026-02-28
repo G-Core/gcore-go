@@ -140,11 +140,11 @@ type TrustedCaCertificateNewParams struct {
 	// CA certificate name.
 	//
 	// It must be unique.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Public part of the CA certificate.
 	//
 	// It must be in the PEM format.
-	SslCertificate string `json:"sslCertificate,required"`
+	SslCertificate string `json:"sslCertificate" api:"required"`
 	paramObj
 }
 
@@ -187,7 +187,7 @@ type TrustedCaCertificateReplaceParams struct {
 	// CA certificate name.
 	//
 	// It must be unique.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 

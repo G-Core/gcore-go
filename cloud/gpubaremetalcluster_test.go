@@ -248,7 +248,7 @@ func TestGPUBaremetalClusterRebootAllServers(t *testing.T) {
 	}
 }
 
-func TestGPUBaremetalClusterRebuildWithOptionalParams(t *testing.T) {
+func TestGPUBaremetalClusterRebuild(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -262,13 +262,10 @@ func TestGPUBaremetalClusterRebuildWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetal.Clusters.Rebuild(
 		context.TODO(),
-		"cluster_id",
+		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUBaremetalClusterRebuildParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			Nodes:     []string{"string"},
-			ImageID:   gcore.String("f01fd9a0-9548-48ba-82dc-a8c8b2d6f2f1"),
-			UserData:  gcore.String("user_data"),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 		},
 	)
 	if err != nil {
@@ -299,6 +296,42 @@ func TestGPUBaremetalClusterResize(t *testing.T) {
 			ProjectID:      gcore.Int(0),
 			RegionID:       gcore.Int(0),
 			InstancesCount: 1,
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestGPUBaremetalClusterUpdateServersSettingsWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.GPUBaremetal.Clusters.UpdateServersSettings(
+		context.TODO(),
+		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
+		cloud.GPUBaremetalClusterUpdateServersSettingsParams{
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
+			ImageID:   gcore.String("3793c250-0b3b-4678-bab3-e11afbc29657"),
+			ServersSettings: cloud.GPUBaremetalClusterUpdateServersSettingsParamsServersSettings{
+				Credentials: cloud.GPUBaremetalClusterUpdateServersSettingsParamsServersSettingsCredentials{
+					SSHKeyName: gcore.String("my-ssh-key"),
+				},
+				UserData: gcore.String("eyJ0ZXN0IjogImRhdGEifQ=="),
+			},
 		},
 	)
 	if err != nil {

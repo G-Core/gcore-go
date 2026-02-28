@@ -35,9 +35,8 @@ func NewBgpAnnounceService(opts ...option.RequestOption) (r BgpAnnounceService) 
 	return
 }
 
-// Get BGP announces filtered by parameters. Shows announces in active profiles,
-// meaning that to get a non-empty response, the client must have at least one
-// active profile.
+// List BGP announces with optional filtering by site, origin, announcement status,
+// and client.
 func (r *BgpAnnounceService) List(ctx context.Context, query BgpAnnounceListParams, opts ...option.RequestOption) (res *[]ClientAnnounce, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "security/sifter/v2/protected_addresses/announces"
@@ -45,9 +44,7 @@ func (r *BgpAnnounceService) List(ctx context.Context, query BgpAnnounceListPara
 	return
 }
 
-// Change BGP announces (it can be enabled or disabled, but not created or
-// updated). Can be applied to already existing announces in active profiles,
-// meaning that the client must have at least one active profile.
+// Enable or disable BGP announces for a client.
 func (r *BgpAnnounceService) Toggle(ctx context.Context, params BgpAnnounceToggleParams, opts ...option.RequestOption) (res *BgpAnnounceToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "security/sifter/v2/protected_addresses/announces"
@@ -56,9 +53,9 @@ func (r *BgpAnnounceService) Toggle(ctx context.Context, params BgpAnnounceToggl
 }
 
 type ClientAnnounce struct {
-	Announced    []string `json:"announced,required" format:"ipv4network"`
-	ClientID     int64    `json:"client_id,required"`
-	NotAnnounced []string `json:"not_announced,required" format:"ipv4network"`
+	Announced    []string `json:"announced" api:"required" format:"ipvanynetwork"`
+	ClientID     int64    `json:"client_id" api:"required"`
+	NotAnnounced []string `json:"not_announced" api:"required" format:"ipvanynetwork"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Announced    respjson.Field
@@ -78,10 +75,14 @@ func (r *ClientAnnounce) UnmarshalJSON(data []byte) error {
 type BgpAnnounceToggleResponse = any
 
 type BgpAnnounceListParams struct {
-	Announced param.Opt[bool]   `query:"announced,omitzero" json:"-"`
-	Site      param.Opt[string] `query:"site,omitzero" json:"-"`
-	// Any of "STATIC", "DYNAMIC".
-	Origin BgpAnnounceListParamsOrigin `query:"origin,omitzero" json:"-"`
+	Announced param.Opt[bool] `query:"announced,omitzero" json:"-"`
+	// A positive integer ID
+	ClientID param.Opt[int64]  `query:"client_id,omitzero" json:"-"`
+	Limit    param.Opt[int64]  `query:"limit,omitzero" json:"-"`
+	Offset   param.Opt[int64]  `query:"offset,omitzero" json:"-"`
+	Site     param.Opt[string] `query:"site,omitzero" json:"-"`
+	// Any of "STATIC", "DYNAMIC", "IAAS", "PROTECTED_NETWORK", "EDGE_PROXY".
+	Origin []string `query:"origin,omitzero" json:"-"`
 	paramObj
 }
 
@@ -93,16 +94,12 @@ func (r BgpAnnounceListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-type BgpAnnounceListParamsOrigin string
-
-const (
-	BgpAnnounceListParamsOriginStatic  BgpAnnounceListParamsOrigin = "STATIC"
-	BgpAnnounceListParamsOriginDynamic BgpAnnounceListParamsOrigin = "DYNAMIC"
-)
-
 type BgpAnnounceToggleParams struct {
-	Announce string           `json:"announce,required" format:"ipv4network"`
-	Enabled  bool             `json:"enabled,required"`
+	// IP network to announce
+	Announce string `json:"announce" api:"required" format:"ipvanynetwork"`
+	// Whether the announcement is enabled
+	Enabled bool `json:"enabled" api:"required"`
+	// A positive integer ID
 	ClientID param.Opt[int64] `query:"client_id,omitzero" json:"-"`
 	paramObj
 }

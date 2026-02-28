@@ -18,6 +18,14 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Get the history of users requests to CDN. It contains requests made both via the
+// API and via the control panel.
+//
+// The following methods are not tracked in the activity logs:
+//
+// - HEAD
+// - OPTIONS
+//
 // AuditLogService contains methods and other services that help with interacting
 // with the gcore API.
 //

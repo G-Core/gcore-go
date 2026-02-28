@@ -110,17 +110,17 @@ func (r *DomainInsightSilenceService) Get(ctx context.Context, silenceID string,
 
 type WaapInsightSilence struct {
 	// A generated unique identifier for the silence
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The author of the silence
-	Author string `json:"author,required"`
+	Author string `json:"author" api:"required"`
 	// A comment explaining the reason for the silence
-	Comment string `json:"comment,required"`
+	Comment string `json:"comment" api:"required"`
 	// The date and time the silence expires in ISO 8601 format
-	ExpireAt time.Time `json:"expire_at,required" format:"date-time"`
+	ExpireAt time.Time `json:"expire_at" api:"required" format:"date-time"`
 	// The slug of the insight type
-	InsightType string `json:"insight_type,required"`
+	InsightType string `json:"insight_type" api:"required"`
 	// A hash table of label names and values that apply to the insight silence
-	Labels map[string]string `json:"labels,required"`
+	Labels map[string]string `json:"labels" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -142,13 +142,13 @@ func (r *WaapInsightSilence) UnmarshalJSON(data []byte) error {
 
 type DomainInsightSilenceNewParams struct {
 	// The author of the silence
-	Author string `json:"author,required"`
+	Author string `json:"author" api:"required"`
 	// A comment explaining the reason for the silence
-	Comment string `json:"comment,required"`
+	Comment string `json:"comment" api:"required"`
 	// The slug of the insight type
-	InsightType string `json:"insight_type,required"`
+	InsightType string `json:"insight_type" api:"required"`
 	// A hash table of label names and values that apply to the insight silence
-	Labels map[string]string `json:"labels,omitzero,required"`
+	Labels map[string]string `json:"labels,omitzero" api:"required"`
 	// The date and time the silence expires in ISO 8601 format
 	ExpireAt param.Opt[time.Time] `json:"expire_at,omitzero" format:"date-time"`
 	paramObj
@@ -164,13 +164,13 @@ func (r *DomainInsightSilenceNewParams) UnmarshalJSON(data []byte) error {
 
 type DomainInsightSilenceUpdateParams struct {
 	// The date and time the silence expires in ISO 8601 format
-	ExpireAt param.Opt[time.Time] `json:"expire_at,omitzero,required" format:"date-time"`
+	ExpireAt param.Opt[time.Time] `json:"expire_at,omitzero" api:"required" format:"date-time"`
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	// The author of the silence
-	Author string `json:"author,required"`
+	Author string `json:"author" api:"required"`
 	// A comment explaining the reason for the silence
-	Comment string `json:"comment,required"`
+	Comment string `json:"comment" api:"required"`
 	// A hash table of label names and values that apply to the insight silence
 	Labels map[string]string `json:"labels,omitzero"`
 	paramObj
@@ -232,12 +232,12 @@ const (
 
 type DomainInsightSilenceDeleteParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }
 
 type DomainInsightSilenceGetParams struct {
 	// The domain ID
-	DomainID int64 `path:"domain_id,required" json:"-"`
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
 	paramObj
 }

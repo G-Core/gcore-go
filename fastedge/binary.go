@@ -15,6 +15,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Binaries are WebAssembly executables that are actually executed when app is ran.
+//
 // BinaryService contains methods and other services that help with interacting
 // with the gcore API.
 //
@@ -70,14 +72,14 @@ func (r *BinaryService) Get(ctx context.Context, id int64, opts ...option.Reques
 
 type Binary struct {
 	// Binary ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Wasm API type
-	APIType string `json:"api_type,required"`
+	APIType string `json:"api_type" api:"required"`
 	// Source language:
 	// 0 - unknown
 	// 1 - Rust
 	// 2 - JavaScript
-	Source int64 `json:"source,required"`
+	Source int64 `json:"source" api:"required"`
 	// Status code:
 	// 0 - pending
 	// 1 - compiled
@@ -85,7 +87,7 @@ type Binary struct {
 	// 3 - compilation failed (errors not available)
 	// 4 - resulting binary exceeded the limit
 	// 5 - unsupported source language
-	Status int64 `json:"status,required"`
+	Status int64 `json:"status" api:"required"`
 	// MD5 hash of the binary
 	Checksum string `json:"checksum"`
 	// Not used since (UTC)
@@ -111,9 +113,9 @@ func (r *Binary) UnmarshalJSON(data []byte) error {
 
 type BinaryShort struct {
 	// Binary ID
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Wasm API type
-	APIType string `json:"api_type,required"`
+	APIType string `json:"api_type" api:"required"`
 	// Status code:
 	// 0 - pending
 	// 1 - compiled
@@ -121,7 +123,7 @@ type BinaryShort struct {
 	// 3 - compilation failed (errors not available)
 	// 4 - resulting binary exceeded the limit
 	// 5 - unsupported source language
-	Status int64 `json:"status,required"`
+	Status int64 `json:"status" api:"required"`
 	// MD5 hash of the binary
 	Checksum string `json:"checksum"`
 	// Not used since (UTC)
@@ -145,7 +147,7 @@ func (r *BinaryShort) UnmarshalJSON(data []byte) error {
 }
 
 type BinaryListResponse struct {
-	Binaries []BinaryShort `json:"binaries,required"`
+	Binaries []BinaryShort `json:"binaries" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Binaries    respjson.Field
