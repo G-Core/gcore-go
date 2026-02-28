@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.36.0 (2026-02-28)
+
+Full Changelog: [v0.35.0...v0.36.0](https://github.com/G-Core/gcore-go/compare/v0.35.0...v0.36.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** update gpu baremetal endpoints to latest versions
+
+### Features
+
+* **api:** aggregated API specs update ([06bd89d](https://github.com/G-Core/gcore-go/commit/06bd89d38f6353be30028c822301daff5606e45e))
+* **api:** aggregated API specs update ([05fe2fb](https://github.com/G-Core/gcore-go/commit/05fe2fb515d8a848feedaeed303edeacfd49055e))
+* **cloud:** add DeleteAndPoll and ActionAndPoll for GPU bare metal clusters ([8ac53d1](https://github.com/G-Core/gcore-go/commit/8ac53d1b115b44a0e0a553716810c0d800464a1e))
+* **cloud:** update gpu baremetal endpoints to latest versions ([1a0702b](https://github.com/G-Core/gcore-go/commit/1a0702b2e7efe0e7f4d9686606cff92e54a2d82d))
+
+
+### Chores
+
+* **ci:** add build step ([1e83e77](https://github.com/G-Core/gcore-go/commit/1e83e77f2ea9668661b01b3b4eee97271cf9ea3c))
+* **docs:** add missing descriptions ([94bd2cd](https://github.com/G-Core/gcore-go/commit/94bd2cdf4623026ad4bfc8bac80d80102113ad09))
+* **internal:** move custom custom `json` tags to `api` ([374b0bc](https://github.com/G-Core/gcore-go/commit/374b0bc490e3febcf5eb2525218b3f9ccccd1b29))
+
 ## 0.35.0 (2026-02-24)
 
 Full Changelog: [v0.34.0...v0.35.0](https://github.com/G-Core/gcore-go/compare/v0.34.0...v0.35.0)
