@@ -292,19 +292,40 @@ type CDNAccountLimits struct {
 	// Maximum number of origins that can be added to the origin group on your tariff
 	// plan.
 	OriginsInGroupLimit int64 `json:"origins_in_group_limit"`
+	// Maximum number of patterns per prefetch request.
+	PrefetchPatternLimit int64 `json:"prefetch_pattern_limit"`
+	// Rate limit for prefetch requests.
+	PrefetchRequestLimit string `json:"prefetch_request_limit"`
+	// Rate limit for purge-by-URL requests.
+	PurgeByURLsRequestLimit string `json:"purge_by_urls_request_limit"`
+	// Maximum number of URLs per purge-by-URL request.
+	PurgeMaxURLsLimit int64 `json:"purge_max_urls_limit"`
+	// Maximum number of patterns per purge request.
+	PurgePatternLimit int64 `json:"purge_pattern_limit"`
+	// Rate limit for purge-by-pattern requests.
+	PurgeRequestLimit string `json:"purge_request_limit"`
 	// Maximum number of CDN resources that can be created on your tariff plan.
 	ResourcesLimit int64 `json:"resources_limit"`
 	// Maximum number of rules that can be created per CDN resource on your tariff
 	// plan.
 	RulesLimit int64 `json:"rules_limit"`
+	// Maximum number of secondary hostnames (additional CNAMEs) per CDN resource.
+	SecondaryHostnamesLimit int64 `json:"secondary_hostnames_limit"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                  respjson.Field
-		OriginsInGroupLimit respjson.Field
-		ResourcesLimit      respjson.Field
-		RulesLimit          respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		ID                      respjson.Field
+		OriginsInGroupLimit     respjson.Field
+		PrefetchPatternLimit    respjson.Field
+		PrefetchRequestLimit    respjson.Field
+		PurgeByURLsRequestLimit respjson.Field
+		PurgeMaxURLsLimit       respjson.Field
+		PurgePatternLimit       respjson.Field
+		PurgeRequestLimit       respjson.Field
+		ResourcesLimit          respjson.Field
+		RulesLimit              respjson.Field
+		SecondaryHostnamesLimit respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 
