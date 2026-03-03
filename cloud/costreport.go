@@ -7165,6 +7165,13 @@ type CostReportGetDetailedParams struct {
 	Offset param.Opt[int64] `json:"offset,omitzero"`
 	// Round cost values to 5 decimal places. When false, returns full precision.
 	Rounding param.Opt[bool] `json:"rounding,omitzero"`
+	// List of sorting criteria in 'field.direction' format.
+	//
+	// Any of "billing_value.asc", "billing_value.desc", "first_seen.asc",
+	// "first_seen.desc", "last_name.asc", "last_name.desc", "last_seen.asc",
+	// "last_seen.desc", "project.asc", "project.desc", "region.asc", "region.desc",
+	// "type.asc", "type.desc".
+	OrderBy []string `json:"order_by,omitzero"`
 	// List of project IDs
 	Projects []int64 `json:"projects,omitzero"`
 	// List of region IDs.
@@ -7175,7 +7182,8 @@ type CostReportGetDetailedParams struct {
 	ResponseFormat CostReportGetDetailedParamsResponseFormat `json:"response_format,omitzero"`
 	// Extended filter for field filtering.
 	SchemaFilter CostReportGetDetailedParamsSchemaFilterUnion `json:"schema_filter,omitzero"`
-	// List of sorting filters (JSON objects) fields: project. directions: asc, desc.
+	// (DEPRECATED Use 'order_by' instead) List of sorting filters (JSON objects)
+	// fields: project. directions: asc, desc.
 	Sorting []CostReportGetDetailedParamsSorting `json:"sorting,omitzero"`
 	// Filter by tags
 	Tags CostReportGetDetailedParamsTags `json:"tags,omitzero"`

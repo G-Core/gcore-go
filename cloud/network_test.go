@@ -93,10 +93,13 @@ func TestNetworkListWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.Networks.List(context.TODO(), cloud.NetworkListParams{
 		ProjectID:   gcore.Int(1),
 		RegionID:    gcore.Int(1),
+		External:    gcore.Bool(true),
 		Limit:       gcore.Int(1000),
 		Name:        gcore.String("my-network"),
+		NetworkType: cloud.NetworkListParamsNetworkTypeVlan,
 		Offset:      gcore.Int(0),
 		OrderBy:     cloud.NetworkListParamsOrderByCreatedAtDesc,
+		OwnedBy:     cloud.NetworkListParamsOwnedByProject,
 		TagKey:      []string{"key1", "key2"},
 		TagKeyValue: gcore.String("tag_key_value"),
 	})

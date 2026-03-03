@@ -85,7 +85,9 @@ func (r *NetworkSubnetService) Update(ctx context.Context, subnetID string, para
 	return
 }
 
-// List subnets
+// Returns a list of subnets. Use the `owned_by` query parameter to control which
+// subnets are returned: `project` (default) returns only subnets owned by the
+// project, `any` returns all subnets from networks available to the project.
 func (r *NetworkSubnetService) List(ctx context.Context, params NetworkSubnetListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Subnet], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -117,7 +119,9 @@ func (r *NetworkSubnetService) List(ctx context.Context, params NetworkSubnetLis
 	return res, nil
 }
 
-// List subnets
+// Returns a list of subnets. Use the `owned_by` query parameter to control which
+// subnets are returned: `project` (default) returns only subnets owned by the
+// project, `any` returns all subnets from networks available to the project.
 func (r *NetworkSubnetService) ListAutoPaging(ctx context.Context, params NetworkSubnetListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Subnet] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
@@ -334,6 +338,12 @@ type NetworkSubnetListParams struct {
 	// "created_at.asc", "created_at.desc", "name.asc", "name.desc", "total_ips.asc",
 	// "total_ips.desc", "updated_at.asc", "updated_at.desc".
 	OrderBy NetworkSubnetListParamsOrderBy `query:"order_by,omitzero" json:"-"`
+	// Controls which subnets are returned. 'project' (default) returns only subnets
+	// owned by the project. 'any' returns all subnets from networks available to the
+	// project, including subnets from shared networks.
+	//
+	// Any of "any", "project".
+	OwnedBy NetworkSubnetListParamsOwnedBy `query:"owned_by,omitzero" json:"-"`
 	// Optional. Filter by tag keys. ?`tag_key`=key1&`tag_key`=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
@@ -366,6 +376,16 @@ const (
 	NetworkSubnetListParamsOrderByTotalIPsDesc     NetworkSubnetListParamsOrderBy = "total_ips.desc"
 	NetworkSubnetListParamsOrderByUpdatedAtAsc     NetworkSubnetListParamsOrderBy = "updated_at.asc"
 	NetworkSubnetListParamsOrderByUpdatedAtDesc    NetworkSubnetListParamsOrderBy = "updated_at.desc"
+)
+
+// Controls which subnets are returned. 'project' (default) returns only subnets
+// owned by the project. 'any' returns all subnets from networks available to the
+// project, including subnets from shared networks.
+type NetworkSubnetListParamsOwnedBy string
+
+const (
+	NetworkSubnetListParamsOwnedByAny     NetworkSubnetListParamsOwnedBy = "any"
+	NetworkSubnetListParamsOwnedByProject NetworkSubnetListParamsOwnedBy = "project"
 )
 
 type NetworkSubnetDeleteParams struct {
