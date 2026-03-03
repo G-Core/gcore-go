@@ -130,6 +130,7 @@ func TestCostReportGetDetailedWithOptionalParams(t *testing.T) {
 		EnableLastDay:  gcore.Bool(false),
 		Limit:          gcore.Int(10),
 		Offset:         gcore.Int(0),
+		OrderBy:        []string{"project.asc", "region.desc"},
 		Projects:       []int64{16, 17, 18, 19, 20},
 		Regions:        []int64{1, 2, 3},
 		ResponseFormat: cloud.CostReportGetDetailedParamsResponseFormatCsvRecords,

@@ -114,6 +114,7 @@ func TestNetworkSubnetListWithOptionalParams(t *testing.T) {
 		NetworkID:   gcore.String("b30d0de7-bca2-4c83-9c57-9e645bd2cc92"),
 		Offset:      gcore.Int(0),
 		OrderBy:     cloud.NetworkSubnetListParamsOrderByNameAsc,
+		OwnedBy:     cloud.NetworkSubnetListParamsOwnedByProject,
 		TagKey:      []string{"key1", "key2"},
 		TagKeyValue: gcore.String("tag_key_value"),
 	})

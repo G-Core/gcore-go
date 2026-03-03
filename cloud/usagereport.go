@@ -2831,11 +2831,19 @@ type UsageReportGetParams struct {
 	Offset param.Opt[int64] `json:"offset,omitzero"`
 	// List of project IDs
 	Projects []int64 `json:"projects,omitzero"`
+	// List of sorting criteria in 'field.direction' format.
+	//
+	// Any of "billing_value.asc", "billing_value.desc", "first_seen.asc",
+	// "first_seen.desc", "last_name.asc", "last_name.desc", "last_seen.asc",
+	// "last_seen.desc", "project.asc", "project.desc", "region.asc", "region.desc",
+	// "type.asc", "type.desc".
+	OrderBy []string `json:"order_by,omitzero"`
 	// List of region IDs.
 	Regions []int64 `json:"regions,omitzero"`
 	// Extended filter for field filtering.
 	SchemaFilter UsageReportGetParamsSchemaFilterUnion `json:"schema_filter,omitzero"`
-	// List of sorting filters (JSON objects) fields: project. directions: asc, desc.
+	// (DEPRECATED Use 'order_by' instead) List of sorting filters (JSON objects)
+	// fields: project. directions: asc, desc.
 	Sorting []UsageReportGetParamsSorting `json:"sorting,omitzero"`
 	// Filter by tags
 	Tags UsageReportGetParamsTags `json:"tags,omitzero"`

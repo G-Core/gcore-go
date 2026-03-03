@@ -127,7 +127,10 @@ func (r *NetworkService) Update(ctx context.Context, networkID string, params Ne
 	return
 }
 
-// List networks
+// Returns a list of networks. Use the `owned_by` query parameter to control which
+// networks are returned: `project` (default) returns only networks owned by the
+// project, `any` returns all networks the project can use, including shared
+// networks.
 func (r *NetworkService) List(ctx context.Context, params NetworkListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Network], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -159,7 +162,10 @@ func (r *NetworkService) List(ctx context.Context, params NetworkListParams, opt
 	return res, nil
 }
 
-// List networks
+// Returns a list of networks. Use the `owned_by` query parameter to control which
+// networks are returned: `project` (default) returns only networks owned by the
+// project, `any` returns all networks the project can use, including shared
+// networks.
 func (r *NetworkService) ListAutoPaging(ctx context.Context, params NetworkListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Network] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
@@ -316,6 +322,8 @@ type NetworkListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Filter by external network status
+	External param.Opt[bool] `query:"external,omitzero" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Filter networks by name
@@ -325,11 +333,24 @@ type NetworkListParams struct {
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Optional. Filter by tag key-value pairs.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// Ordering networks list result by `name`, `created_at` fields of the network and
-	// directions (`created_at.desc`).
+	// Filter by network type (vlan or vxlan)
 	//
-	// Any of "created_at.asc", "created_at.desc", "name.asc", "name.desc".
+	// Any of "vlan", "vxlan".
+	NetworkType NetworkListParamsNetworkType `query:"network_type,omitzero" json:"-"`
+	// Ordering networks list result by `name`, `created_at` or `priority` fields and
+	// directions (e.g. `created_at.desc`). Default is `created_at.desc`. Use
+	// `priority.desc` to sort by shared network priority (relevant when
+	// `owned_by=any`).
+	//
+	// Any of "created_at.asc", "created_at.desc", "name.asc", "name.desc",
+	// "priority.desc".
 	OrderBy NetworkListParamsOrderBy `query:"order_by,omitzero" json:"-"`
+	// Controls which networks are returned. 'project' (default) returns only networks
+	// owned by the project. 'any' returns all networks that the project can use,
+	// including shared networks from other projects.
+	//
+	// Any of "any", "project".
+	OwnedBy NetworkListParamsOwnedBy `query:"owned_by,omitzero" json:"-"`
 	// Optional. Filter by tag keys. ?`tag_key`=key1&`tag_key`=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj
@@ -343,8 +364,18 @@ func (r NetworkListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Ordering networks list result by `name`, `created_at` fields of the network and
-// directions (`created_at.desc`).
+// Filter by network type (vlan or vxlan)
+type NetworkListParamsNetworkType string
+
+const (
+	NetworkListParamsNetworkTypeVlan  NetworkListParamsNetworkType = "vlan"
+	NetworkListParamsNetworkTypeVxlan NetworkListParamsNetworkType = "vxlan"
+)
+
+// Ordering networks list result by `name`, `created_at` or `priority` fields and
+// directions (e.g. `created_at.desc`). Default is `created_at.desc`. Use
+// `priority.desc` to sort by shared network priority (relevant when
+// `owned_by=any`).
 type NetworkListParamsOrderBy string
 
 const (
@@ -352,6 +383,17 @@ const (
 	NetworkListParamsOrderByCreatedAtDesc NetworkListParamsOrderBy = "created_at.desc"
 	NetworkListParamsOrderByNameAsc       NetworkListParamsOrderBy = "name.asc"
 	NetworkListParamsOrderByNameDesc      NetworkListParamsOrderBy = "name.desc"
+	NetworkListParamsOrderByPriorityDesc  NetworkListParamsOrderBy = "priority.desc"
+)
+
+// Controls which networks are returned. 'project' (default) returns only networks
+// owned by the project. 'any' returns all networks that the project can use,
+// including shared networks from other projects.
+type NetworkListParamsOwnedBy string
+
+const (
+	NetworkListParamsOwnedByAny     NetworkListParamsOwnedBy = "any"
+	NetworkListParamsOwnedByProject NetworkListParamsOwnedBy = "project"
 )
 
 type NetworkDeleteParams struct {
