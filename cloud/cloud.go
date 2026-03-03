@@ -1690,6 +1690,8 @@ type LoadBalancer struct {
 	UpdatedAt time.Time `json:"updated_at" api:"nullable" format:"date-time"`
 	// Load balancer IP address
 	VipAddress string `json:"vip_address" api:"nullable" format:"ipvanyaddress"`
+	// Fully qualified domain name for the load balancer VIP
+	VipFqdn string `json:"vip_fqdn" api:"nullable"`
 	// Load balancer IP family
 	//
 	// Any of "dual", "ipv4", "ipv6".
@@ -1722,6 +1724,7 @@ type LoadBalancer struct {
 		TaskID                respjson.Field
 		UpdatedAt             respjson.Field
 		VipAddress            respjson.Field
+		VipFqdn               respjson.Field
 		VipIPFamily           respjson.Field
 		VipPortID             respjson.Field
 		VrrpIPs               respjson.Field
