@@ -20,6 +20,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Projects are organizational units that group cloud resources for access control
+// and billing.
+//
 // ProjectService contains methods and other services that help with interacting
 // with the gcore API.
 //

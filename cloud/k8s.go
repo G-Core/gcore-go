@@ -23,8 +23,10 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewK8SService] method instead.
 type K8SService struct {
-	Options  []option.RequestOption
-	Flavors  K8SFlavorService
+	Options []option.RequestOption
+	Flavors K8SFlavorService
+	// Managed Kubernetes clusters with configurable worker node pools, networking, and
+	// cluster add-ons.
 	Clusters K8SClusterService
 }
 

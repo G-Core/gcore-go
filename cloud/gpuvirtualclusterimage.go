@@ -15,6 +15,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
+// GPU virtual images are custom boot images for virtual GPU cluster instances.
+//
 // GPUVirtualClusterImageService contains methods and other services that help with
 // interacting with the gcore API.
 //

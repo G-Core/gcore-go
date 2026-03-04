@@ -20,6 +20,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Secrets store sensitive data such as TLS certificates and private keys in
+// encrypted form within a cloud region.
+//
 // SecretService contains methods and other services that help with interacting
 // with the gcore API.
 //

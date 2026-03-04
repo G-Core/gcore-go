@@ -19,6 +19,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Registry credentials store authentication details for private container
+// registries used by inference deployments.
+//
 // InferenceRegistryCredentialService contains methods and other services that help
 // with interacting with the gcore API.
 //

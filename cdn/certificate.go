@@ -17,6 +17,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// CDN SSL certificates enable HTTPS content delivery, supporting both uploaded
+// certificates and automated Let's Encrypt provisioning.
+//
 // CertificateService contains methods and other services that help with
 // interacting with the gcore API.
 //

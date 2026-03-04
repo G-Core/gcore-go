@@ -18,6 +18,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
+// Networks provide software-defined networking infrastructure for connecting
+// instances and other cloud resources within a region.
+//
 // NetworkService contains methods and other services that help with interacting
 // with the gcore API.
 //
@@ -26,7 +29,11 @@ import (
 // the [NewNetworkService] method instead.
 type NetworkService struct {
 	Options []option.RequestOption
+	// Subnets define IP address ranges within a network for instance connectivity,
+	// with support for DHCP and DNS configuration.
 	Subnets NetworkSubnetService
+	// Routers interconnect subnets and manage network routing, including external
+	// gateway connectivity and static routes.
 	Routers NetworkRouterService
 	tasks   TaskService
 }

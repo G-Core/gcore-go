@@ -17,6 +17,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
+// Load balancer pools group backend instances with a load balancing algorithm and
+// health monitoring configuration.
+//
 // LoadBalancerPoolService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -26,7 +29,9 @@ import (
 type LoadBalancerPoolService struct {
 	Options        []option.RequestOption
 	HealthMonitors LoadBalancerPoolHealthMonitorService
-	Members        LoadBalancerPoolMemberService
+	// Pool members represent backend instances that receive load-balanced traffic from
+	// a pool.
+	Members LoadBalancerPoolMemberService
 	tasks          TaskService
 }
 

@@ -19,6 +19,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// WAAP domains enable Web Application and API Protection for monitoring and
+// defending web applications against security threats.
+//
 // DomainService contains methods and other services that help with interacting
 // with the gcore API.
 //

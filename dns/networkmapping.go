@@ -20,6 +20,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// DNS network mappings associate CIDR ranges with network tags for private DNS
+// resolution and traffic-based routing.
+//
 // NetworkMappingService contains methods and other services that help with
 // interacting with the gcore API.
 //
