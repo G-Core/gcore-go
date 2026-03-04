@@ -15,6 +15,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
+// GPU bare metal images are custom boot images for bare metal GPU servers.
+//
 // GPUBaremetalClusterImageService contains methods and other services that help
 // with interacting with the gcore API.
 //

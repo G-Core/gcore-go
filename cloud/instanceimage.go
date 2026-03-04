@@ -17,6 +17,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
+// Instance images are operating system images (public, private, or shared) used to
+// boot cloud instances.
+//
 // InstanceImageService contains methods and other services that help with
 // interacting with the gcore API.
 //

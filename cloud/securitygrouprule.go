@@ -15,6 +15,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
+// Security group rules define individual traffic permissions specifying protocol,
+// port range, direction, and allowed sources.
+//
 // SecurityGroupRuleService contains methods and other services that help with
 // interacting with the gcore API.
 //

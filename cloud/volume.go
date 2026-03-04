@@ -21,6 +21,9 @@ import (
 	"github.com/G-Core/gcore-go/shared/constant"
 )
 
+// Volumes are block storage devices that can be attached to instances as boot or
+// data disks, with support for resizing and type changes.
+//
 // VolumeService contains methods and other services that help with interacting
 // with the gcore API.
 //

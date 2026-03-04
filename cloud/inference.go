@@ -20,13 +20,19 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewInferenceService] method instead.
 type InferenceService struct {
-	Options             []option.RequestOption
-	Flavors             InferenceFlavorService
-	Deployments         InferenceDeploymentService
+	Options []option.RequestOption
+	Flavors InferenceFlavorService
+	// Inference deployments run containerized ML models with configurable scaling,
+	// health probes, and GPU flavors.
+	Deployments InferenceDeploymentService
+	// Registry credentials store authentication details for private container
+	// registries used by inference deployments.
 	RegistryCredentials InferenceRegistryCredentialService
-	Secrets             InferenceSecretService
-	APIKeys             InferenceAPIKeyService
-	Applications        InferenceApplicationService
+	// Inference secrets store sensitive values such as AWS credentials used for
+	// SQS-based autoscaling triggers in deployments.
+	Secrets      InferenceSecretService
+	APIKeys      InferenceAPIKeyService
+	Applications InferenceApplicationService
 }
 
 // NewInferenceService generates a new service that applies the given options to

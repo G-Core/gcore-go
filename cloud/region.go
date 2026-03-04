@@ -20,6 +20,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Regions represent available Gcore cloud data centers with information about
+// supported services and volume types.
+//
 // RegionService contains methods and other services that help with interacting
 // with the gcore API.
 //

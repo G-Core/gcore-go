@@ -22,6 +22,9 @@ import (
 	"github.com/G-Core/gcore-go/shared/constant"
 )
 
+// GPU virtual clusters provide managed virtual GPU servers with auto-scaling for
+// parallel computation workloads.
+//
 // GPUVirtualClusterService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -34,7 +37,8 @@ type GPUVirtualClusterService struct {
 	Volumes    GPUVirtualClusterVolumeService
 	Interfaces GPUVirtualClusterInterfaceService
 	Flavors    GPUVirtualClusterFlavorService
-	Images     GPUVirtualClusterImageService
+	// GPU virtual images are custom boot images for virtual GPU cluster instances.
+	Images GPUVirtualClusterImageService
 }
 
 // NewGPUVirtualClusterService generates a new service that applies the given

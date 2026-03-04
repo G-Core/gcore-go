@@ -19,6 +19,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Managed Kubernetes clusters with configurable worker node pools, networking, and
+// cluster add-ons.
+//
 // K8SClusterService contains methods and other services that help with interacting
 // with the gcore API.
 //

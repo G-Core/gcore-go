@@ -21,8 +21,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
-// Apps are descriptions of edge apps, that reference the binary and may contain
-// app-specific settings, such as environment variables.
+// FastEdge applications combine a WebAssembly binary with configuration,
+// environment variables, and secrets for deployment at the CDN edge.
 //
 // AppService contains methods and other services that help with interacting with
 // the gcore API.

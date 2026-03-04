@@ -33,7 +33,8 @@ type GPUBaremetalClusterService struct {
 	Interfaces GPUBaremetalClusterInterfaceService
 	Servers    GPUBaremetalClusterServerService
 	Flavors    GPUBaremetalClusterFlavorService
-	Images     GPUBaremetalClusterImageService
+	// GPU bare metal images are custom boot images for bare metal GPU servers.
+	Images GPUBaremetalClusterImageService
 }
 
 // NewGPUBaremetalClusterService generates a new service that applies the given

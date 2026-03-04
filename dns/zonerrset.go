@@ -19,6 +19,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// DNS resource record sets (RRsets) define individual DNS records such as A, AAAA,
+// CNAME, MX, and TXT with TTL and geo-balancing settings.
+//
 // ZoneRrsetService contains methods and other services that help with interacting
 // with the gcore API.
 //

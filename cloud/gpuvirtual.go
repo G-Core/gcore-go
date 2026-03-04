@@ -13,7 +13,9 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewGPUVirtualService] method instead.
 type GPUVirtualService struct {
-	Options  []option.RequestOption
+	Options []option.RequestOption
+	// GPU virtual clusters provide managed virtual GPU servers with auto-scaling for
+	// parallel computation workloads.
 	Clusters GPUVirtualClusterService
 }
 

@@ -21,6 +21,9 @@ import (
 	"github.com/G-Core/gcore-go/shared/constant"
 )
 
+// Instances are cloud virtual machines with configurable CPU, memory, storage, and
+// networking, supporting various operating systems and workloads.
+//
 // InstanceService contains methods and other services that help with interacting
 // with the gcore API.
 //
@@ -28,11 +31,15 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewInstanceService] method instead.
 type InstanceService struct {
-	Options    []option.RequestOption
+	Options []option.RequestOption
+	// Instance flavors define available CPU, memory, and disk configurations for
+	// creating cloud instances.
 	Flavors    InstanceFlavorService
 	Interfaces InstanceInterfaceService
-	Images     InstanceImageService
-	Metrics    InstanceMetricService
+	// Instance images are operating system images (public, private, or shared) used to
+	// boot cloud instances.
+	Images  InstanceImageService
+	Metrics InstanceMetricService
 }
 
 // NewInstanceService generates a new service that applies the given options to

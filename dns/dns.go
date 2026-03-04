@@ -23,11 +23,15 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewDNSService] method instead.
 type DNSService struct {
-	Options         []option.RequestOption
-	Locations       LocationService
-	Metrics         MetricService
-	Pickers         PickerService
-	Zones           ZoneService
+	Options   []option.RequestOption
+	Locations LocationService
+	Metrics   MetricService
+	Pickers   PickerService
+	// DNS zones are authoritative containers for domain name records, with support for
+	// DNSSEC and SOA configuration.
+	Zones ZoneService
+	// DNS network mappings associate CIDR ranges with network tags for private DNS
+	// resolution and traffic-based routing.
 	NetworkMappings NetworkMappingService
 }
 

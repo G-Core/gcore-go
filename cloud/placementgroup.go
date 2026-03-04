@@ -16,8 +16,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
-// Placement Groups allow you to specific a policy that determines whether Virtual
-// Machines will be hosted on the same physical server or on different ones.
+// Placement groups enforce affinity or anti-affinity policies that control whether
+// virtual machines are hosted on the same or different physical servers.
 //
 // PlacementGroupService contains methods and other services that help with
 // interacting with the gcore API.

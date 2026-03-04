@@ -21,6 +21,9 @@ import (
 	"github.com/G-Core/gcore-go/shared/constant"
 )
 
+// Reserved fixed IPs are static IP addresses that persist independently of
+// instances and can be used as virtual IPs (VIPs) for high availability.
+//
 // ReservedFixedIPService contains methods and other services that help with
 // interacting with the gcore API.
 //

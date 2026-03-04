@@ -20,6 +20,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Security groups act as virtual firewalls controlling inbound and outbound
+// traffic for instances and other resources.
+//
 // SecurityGroupService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -28,7 +31,9 @@ import (
 // the [NewSecurityGroupService] method instead.
 type SecurityGroupService struct {
 	Options []option.RequestOption
-	Rules   SecurityGroupRuleService
+	// Security group rules define individual traffic permissions specifying protocol,
+	// port range, direction, and allowed sources.
+	Rules SecurityGroupRuleService
 }
 
 // NewSecurityGroupService generates a new service that applies the given options
