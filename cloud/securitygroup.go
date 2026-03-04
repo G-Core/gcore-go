@@ -20,6 +20,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Security groups act as virtual firewalls controlling inbound and outbound
+// traffic for instances and other resources.
+//
 // SecurityGroupService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -28,7 +31,9 @@ import (
 // the [NewSecurityGroupService] method instead.
 type SecurityGroupService struct {
 	Options []option.RequestOption
-	Rules   SecurityGroupRuleService
+	// Security group rules define individual traffic permissions specifying protocol,
+	// port range, direction, and allowed sources.
+	Rules SecurityGroupRuleService
 	tasks   TaskService
 }
 
@@ -560,6 +565,18 @@ func init() {
 	)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
+		"direction", "egress", "ingress",
+	)
+	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
+		"ethertype", "IPv4", "IPv6",
+	)
+	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
+		"protocol", "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp",
+	)
+}
+
 type SecurityGroupUpdateParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
@@ -640,18 +657,6 @@ func (r SecurityGroupUpdateParamsRule) MarshalJSON() (data []byte, err error) {
 }
 func (r *SecurityGroupUpdateParamsRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
-		"direction", "egress", "ingress",
-	)
-	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
-		"ethertype", "IPv4", "IPv6",
-	)
-	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
-		"protocol", "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp",
-	)
 }
 
 type SecurityGroupListParams struct {

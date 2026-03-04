@@ -19,6 +19,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Inference deployments run containerized ML models with configurable scaling,
+// health probes, and GPU flavors.
+//
 // InferenceDeploymentService contains methods and other services that help with
 // interacting with the gcore API.
 //

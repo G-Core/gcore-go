@@ -18,6 +18,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
+// Subnets define IP address ranges within a network for instance connectivity,
+// with support for DHCP and DNS configuration.
+//
 // NetworkSubnetService contains methods and other services that help with
 // interacting with the gcore API.
 //

@@ -20,41 +20,63 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewCloudService] method instead.
 type CloudService struct {
-	Options          []option.RequestOption
-	Projects         ProjectService
-	Tasks            TaskService
-	Regions          RegionService
-	Quotas           QuotaService
-	Secrets          SecretService
-	SSHKeys          SSHKeyService
-	IPRanges         IPRangeService
-	LoadBalancers    LoadBalancerService
+	Options []option.RequestOption
+	// Projects are organizational units that group cloud resources for access control
+	// and billing.
+	Projects ProjectService
+	Tasks    TaskService
+	// Regions represent available Gcore cloud data centers with information about
+	// supported services and volume types.
+	Regions RegionService
+	Quotas  QuotaService
+	// Secrets store sensitive data such as TLS certificates and private keys in
+	// encrypted form within a cloud region.
+	Secrets SecretService
+	// SSH key pairs provide secure authentication to cloud instances, supporting both
+	// generated and imported public keys.
+	SSHKeys  SSHKeyService
+	IPRanges IPRangeService
+	// Load balancers distribute incoming traffic across multiple instances with
+	// support for listeners, pools, and health monitoring.
+	LoadBalancers LoadBalancerService
+	// Reserved fixed IPs are static IP addresses that persist independently of
+	// instances and can be used as virtual IPs (VIPs) for high availability.
 	ReservedFixedIPs ReservedFixedIPService
-	Networks         NetworkService
-	Volumes          VolumeService
+	// Networks provide software-defined networking infrastructure for connecting
+	// instances and other cloud resources within a region.
+	Networks NetworkService
+	// Volumes are block storage devices that can be attached to instances as boot or
+	// data disks, with support for resizing and type changes.
+	Volumes VolumeService
 	// A floating IP is a static IP address that points to one of your Instances. It
 	// allows you to redirect network traffic to any of your Instances in the same
 	// datacenter.
-	FloatingIPs    FloatingIPService
+	FloatingIPs FloatingIPService
+	// Security groups act as virtual firewalls controlling inbound and outbound
+	// traffic for instances and other resources.
 	SecurityGroups SecurityGroupService
 	Users          UserService
 	Inference      InferenceService
-	// Placement Groups allow you to specific a policy that determines whether Virtual
-	// Machines will be hosted on the same physical server or on different ones.
-	PlacementGroups     PlacementGroupService
-	Baremetal           BaremetalService
-	Registries          RegistryService
+	// Placement groups enforce affinity or anti-affinity policies that control whether
+	// virtual machines are hosted on the same or different physical servers.
+	PlacementGroups PlacementGroupService
+	Baremetal       BaremetalService
+	Registries      RegistryService
+	// File shares provide NFS-based shared storage that can be mounted by virtual
+	// machines and Kubernetes clusters for persistent data.
 	FileShares          FileShareService
 	BillingReservations BillingReservationService
 	GPUBaremetal        GPUBaremetalService
 	GPUVirtual          GPUVirtualService
-	Instances           InstanceService
-	K8S                 K8SService
-	AuditLogs           AuditLogService
-	CostReports         CostReportService
-	UsageReports        UsageReportService
-	Databases           DatabaseService
-	VolumeSnapshots     VolumeSnapshotService
+	// Instances are cloud virtual machines with configurable CPU, memory, storage, and
+	// networking, supporting various operating systems and workloads.
+	Instances       InstanceService
+	K8S             K8SService
+	AuditLogs       AuditLogService
+	CostReports     CostReportService
+	UsageReports    UsageReportService
+	Databases       DatabaseService
+	VolumeSnapshots VolumeSnapshotService
 }
 
 // NewCloudService generates a new service that applies the given options to each

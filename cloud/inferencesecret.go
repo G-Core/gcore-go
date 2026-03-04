@@ -19,6 +19,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Inference secrets store sensitive values such as AWS credentials used for
+// SQS-based autoscaling triggers in deployments.
+//
 // InferenceSecretService contains methods and other services that help with
 // interacting with the gcore API.
 //

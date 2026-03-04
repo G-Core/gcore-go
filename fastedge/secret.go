@@ -19,7 +19,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
-// Secret values that can be used in apps
+// FastEdge secrets store sensitive values such as API keys and tokens that can be
+// referenced by FastEdge applications.
 //
 // SecretService contains methods and other services that help with interacting
 // with the gcore API.

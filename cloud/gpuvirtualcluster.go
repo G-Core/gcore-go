@@ -22,6 +22,9 @@ import (
 	"github.com/G-Core/gcore-go/shared/constant"
 )
 
+// GPU virtual clusters provide managed virtual GPU servers with auto-scaling for
+// parallel computation workloads.
+//
 // GPUVirtualClusterService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -34,7 +37,8 @@ type GPUVirtualClusterService struct {
 	Volumes    GPUVirtualClusterVolumeService
 	Interfaces GPUVirtualClusterInterfaceService
 	Flavors    GPUVirtualClusterFlavorService
-	Images     GPUVirtualClusterImageService
+	// GPU virtual images are custom boot images for virtual GPU cluster instances.
+	Images GPUVirtualClusterImageService
 	tasks      TaskService
 }
 
@@ -900,6 +904,38 @@ func init() {
 	)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[GPUVirtualClusterNewParamsServersSettingsInterfaceExternal](
+		"ip_family", "dual", "ipv4", "ipv6",
+	)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnet](
+		"ip_family", "dual", "ipv4", "ipv6",
+	)
+}
+
+func init() {
+	apijson.RegisterUnion[GPUVirtualClusterNewParamsServersSettingsVolumeUnion](
+		"source",
+		apijson.Discriminator[GPUVirtualClusterNewParamsServersSettingsVolumeNew]("new"),
+		apijson.Discriminator[GPUVirtualClusterNewParamsServersSettingsVolumeImage]("image"),
+	)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[GPUVirtualClusterNewParamsServersSettingsVolumeNew](
+		"type", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+	)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[GPUVirtualClusterNewParamsServersSettingsVolumeImage](
+		"type", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+	)
+}
+
 // The property Type is required.
 type GPUVirtualClusterNewParamsServersSettingsInterfaceExternal struct {
 	// Interface name
@@ -919,12 +955,6 @@ func (r GPUVirtualClusterNewParamsServersSettingsInterfaceExternal) MarshalJSON(
 }
 func (r *GPUVirtualClusterNewParamsServersSettingsInterfaceExternal) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[GPUVirtualClusterNewParamsServersSettingsInterfaceExternal](
-		"ip_family", "dual", "ipv4", "ipv6",
-	)
 }
 
 // The properties NetworkID, SubnetID, Type are required.
@@ -996,12 +1026,6 @@ func (r GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnet) MarshalJSON
 }
 func (r *GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnet](
-		"ip_family", "dual", "ipv4", "ipv6",
-	)
 }
 
 func NewGPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP() GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP {
@@ -1130,14 +1154,6 @@ func (u GPUVirtualClusterNewParamsServersSettingsVolumeUnion) GetTags() map[stri
 	return nil
 }
 
-func init() {
-	apijson.RegisterUnion[GPUVirtualClusterNewParamsServersSettingsVolumeUnion](
-		"source",
-		apijson.Discriminator[GPUVirtualClusterNewParamsServersSettingsVolumeNew]("new"),
-		apijson.Discriminator[GPUVirtualClusterNewParamsServersSettingsVolumeImage]("image"),
-	)
-}
-
 // The properties BootIndex, Name, Size, Source, Type are required.
 type GPUVirtualClusterNewParamsServersSettingsVolumeNew struct {
 	// Boot index of the volume
@@ -1165,12 +1181,6 @@ func (r GPUVirtualClusterNewParamsServersSettingsVolumeNew) MarshalJSON() (data 
 }
 func (r *GPUVirtualClusterNewParamsServersSettingsVolumeNew) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[GPUVirtualClusterNewParamsServersSettingsVolumeNew](
-		"type", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
-	)
 }
 
 // The properties BootIndex, ImageID, Name, Size, Source, Type are required.
@@ -1202,12 +1212,6 @@ func (r GPUVirtualClusterNewParamsServersSettingsVolumeImage) MarshalJSON() (dat
 }
 func (r *GPUVirtualClusterNewParamsServersSettingsVolumeImage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[GPUVirtualClusterNewParamsServersSettingsVolumeImage](
-		"type", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
-	)
 }
 
 // Optional server access credentials

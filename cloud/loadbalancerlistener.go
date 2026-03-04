@@ -19,6 +19,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
+// Load balancer listeners handle incoming traffic on specified protocols and
+// ports, forwarding requests to backend pools.
+//
 // LoadBalancerListenerService contains methods and other services that help with
 // interacting with the gcore API.
 //
