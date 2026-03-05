@@ -235,8 +235,8 @@ type GPUVirtualCluster struct {
 	ServersSettings GPUVirtualClusterServersSettings `json:"servers_settings" api:"required"`
 	// Cluster status
 	//
-	// Any of "active", "creating", "degraded", "deleting", "error", "new",
-	// "rebooting", "rebuilding", "resizing", "shutoff".
+	// Any of "active", "creating", "degraded", "deleting", "error", "rebooting",
+	// "rebuilding", "resizing", "shutoff".
 	Status GPUVirtualClusterStatus `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
@@ -626,7 +626,6 @@ const (
 	GPUVirtualClusterStatusDegraded   GPUVirtualClusterStatus = "degraded"
 	GPUVirtualClusterStatusDeleting   GPUVirtualClusterStatus = "deleting"
 	GPUVirtualClusterStatusError      GPUVirtualClusterStatus = "error"
-	GPUVirtualClusterStatusNew        GPUVirtualClusterStatus = "new"
 	GPUVirtualClusterStatusRebooting  GPUVirtualClusterStatus = "rebooting"
 	GPUVirtualClusterStatusRebuilding GPUVirtualClusterStatus = "rebuilding"
 	GPUVirtualClusterStatusResizing   GPUVirtualClusterStatus = "resizing"
