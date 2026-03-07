@@ -79,6 +79,7 @@ type ZoneDnssecUpdateResponse struct {
 	Message string `json:"message"`
 	// Represents the public key used in the DS record.
 	PublicKey string `json:"public_key"`
+	Uuid      string `json:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Algorithm       respjson.Field
@@ -91,6 +92,7 @@ type ZoneDnssecUpdateResponse struct {
 		KeyType         respjson.Field
 		Message         respjson.Field
 		PublicKey       respjson.Field
+		Uuid            respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`

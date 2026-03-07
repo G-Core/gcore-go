@@ -22,6 +22,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Routers interconnect subnets and manage network routing, including external
+// gateway connectivity and static routes.
+//
 // NetworkRouterService contains methods and other services that help with
 // interacting with the gcore API.
 //

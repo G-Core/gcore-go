@@ -15,6 +15,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
+// Pool members represent backend instances that receive load-balanced traffic from
+// a pool.
+//
 // LoadBalancerPoolMemberService contains methods and other services that help with
 // interacting with the gcore API.
 //

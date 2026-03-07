@@ -23,12 +23,18 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewCDNService] method instead.
 type CDNService struct {
-	Options               []option.RequestOption
-	CDNResources          CDNResourceService
-	Shields               ShieldService
-	OriginGroups          OriginGroupService
-	RuleTemplates         RuleTemplateService
-	Certificates          CertificateService
+	Options      []option.RequestOption
+	CDNResources CDNResourceService
+	Shields      ShieldService
+	// CDN origin groups aggregate one or more origin servers with failover and load
+	// balancing for content delivery.
+	OriginGroups  OriginGroupService
+	RuleTemplates RuleTemplateService
+	// CDN SSL certificates enable HTTPS content delivery, supporting both uploaded
+	// certificates and automated Let's Encrypt provisioning.
+	Certificates CertificateService
+	// Trusted CA certificates verify the authenticity of CDN origin servers during
+	// HTTPS connections.
 	TrustedCaCertificates TrustedCaCertificateService
 	// Get the history of users requests to CDN. It contains requests made both via the
 	// API and via the control panel.

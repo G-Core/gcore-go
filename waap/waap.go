@@ -20,8 +20,10 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewWaapService] method instead.
 type WaapService struct {
-	Options        []option.RequestOption
-	Statistics     StatisticService
+	Options    []option.RequestOption
+	Statistics StatisticService
+	// WAAP domains enable Web Application and API Protection for monitoring and
+	// defending web applications against security threats.
 	Domains        DomainService
 	CustomPageSets CustomPageSetService
 	AdvancedRules  AdvancedRuleService

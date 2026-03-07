@@ -18,6 +18,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// CDN origin groups aggregate one or more origin servers with failover and load
+// balancing for content delivery.
+//
 // OriginGroupService contains methods and other services that help with
 // interacting with the gcore API.
 //

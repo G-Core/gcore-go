@@ -25,14 +25,16 @@ type FastedgeService struct {
 	Options []option.RequestOption
 	// Application templates
 	Templates TemplateService
-	// Secret values that can be used in apps
+	// FastEdge secrets store sensitive values such as API keys and tokens that can be
+	// referenced by FastEdge applications.
 	Secrets SecretService
-	// Binaries are WebAssembly executables that are actually executed when app is ran.
+	// FastEdge binaries are immutable WebAssembly modules that implement edge
+	// application logic.
 	Binaries BinaryService
 	// Statistics of edge app use
 	Statistics StatisticService
-	// Apps are descriptions of edge apps, that reference the binary and may contain
-	// app-specific settings, such as environment variables.
+	// FastEdge applications combine a WebAssembly binary with configuration,
+	// environment variables, and secrets for deployment at the CDN edge.
 	Apps AppService
 	// Key-value edge storage for apps
 	KvStores KvStoreService

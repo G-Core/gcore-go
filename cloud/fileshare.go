@@ -21,6 +21,9 @@ import (
 	"github.com/G-Core/gcore-go/shared/constant"
 )
 
+// File shares provide NFS-based shared storage that can be mounted by virtual
+// machines and Kubernetes clusters for persistent data.
+//
 // FileShareService contains methods and other services that help with interacting
 // with the gcore API.
 //
@@ -28,7 +31,9 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewFileShareService] method instead.
 type FileShareService struct {
-	Options     []option.RequestOption
+	Options []option.RequestOption
+	// File share access rules control which IP addresses can mount a file share and
+	// their permissions (read-only or read-write).
 	AccessRules FileShareAccessRuleService
 	tasks       TaskService
 }

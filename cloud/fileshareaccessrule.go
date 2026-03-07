@@ -16,6 +16,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// File share access rules control which IP addresses can mount a file share and
+// their permissions (read-only or read-write).
+//
 // FileShareAccessRuleService contains methods and other services that help with
 // interacting with the gcore API.
 //

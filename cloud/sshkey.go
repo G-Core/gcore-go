@@ -20,6 +20,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// SSH key pairs provide secure authentication to cloud instances, supporting both
+// generated and imported public keys.
+//
 // SSHKeyService contains methods and other services that help with interacting
 // with the gcore API.
 //

@@ -33,7 +33,8 @@ type GPUBaremetalClusterService struct {
 	Interfaces GPUBaremetalClusterInterfaceService
 	Servers    GPUBaremetalClusterServerService
 	Flavors    GPUBaremetalClusterFlavorService
-	Images     GPUBaremetalClusterImageService
+	// GPU bare metal images are custom boot images for bare metal GPU servers.
+	Images GPUBaremetalClusterImageService
 	tasks      TaskService
 }
 
@@ -498,8 +499,8 @@ type GPUBaremetalCluster struct {
 	ServersSettings GPUBaremetalClusterServersSettings `json:"servers_settings" api:"required"`
 	// Cluster status
 	//
-	// Any of "active", "creating", "degraded", "deleting", "error", "new",
-	// "rebooting", "rebuilding", "resizing", "shutoff".
+	// Any of "active", "creating", "degraded", "deleting", "error", "rebooting",
+	// "rebuilding", "resizing", "shutoff".
 	Status GPUBaremetalClusterStatus `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
@@ -857,7 +858,6 @@ const (
 	GPUBaremetalClusterStatusDegraded   GPUBaremetalClusterStatus = "degraded"
 	GPUBaremetalClusterStatusDeleting   GPUBaremetalClusterStatus = "deleting"
 	GPUBaremetalClusterStatusError      GPUBaremetalClusterStatus = "error"
-	GPUBaremetalClusterStatusNew        GPUBaremetalClusterStatus = "new"
 	GPUBaremetalClusterStatusRebooting  GPUBaremetalClusterStatus = "rebooting"
 	GPUBaremetalClusterStatusRebuilding GPUBaremetalClusterStatus = "rebuilding"
 	GPUBaremetalClusterStatusResizing   GPUBaremetalClusterStatus = "resizing"

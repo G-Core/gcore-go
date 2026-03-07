@@ -21,6 +21,9 @@ import (
 	"github.com/G-Core/gcore-go/shared/constant"
 )
 
+// Load balancers distribute incoming traffic across multiple instances with
+// support for listeners, pools, and health monitoring.
+//
 // LoadBalancerService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -31,10 +34,14 @@ type LoadBalancerService struct {
 	Options    []option.RequestOption
 	L7Policies LoadBalancerL7PolicyService
 	Flavors    LoadBalancerFlavorService
-	Listeners  LoadBalancerListenerService
-	Pools      LoadBalancerPoolService
-	Metrics    LoadBalancerMetricService
-	Statuses   LoadBalancerStatusService
+	// Load balancer listeners handle incoming traffic on specified protocols and
+	// ports, forwarding requests to backend pools.
+	Listeners LoadBalancerListenerService
+	// Load balancer pools group backend instances with a load balancing algorithm and
+	// health monitoring configuration.
+	Pools    LoadBalancerPoolService
+	Metrics  LoadBalancerMetricService
+	Statuses LoadBalancerStatusService
 	tasks      TaskService
 }
 
@@ -1816,6 +1823,12 @@ func init() {
 	)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[LoadBalancerNewParamsListener](
+		"secret_id", "",
+	)
+}
+
 func NewLoadBalancerNewParamsFloatingIPNew() LoadBalancerNewParamsFloatingIPNew {
 	return LoadBalancerNewParamsFloatingIPNew{
 		Source: "new",
@@ -1915,12 +1928,6 @@ func (r LoadBalancerNewParamsListener) MarshalJSON() (data []byte, err error) {
 }
 func (r *LoadBalancerNewParamsListener) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[LoadBalancerNewParamsListener](
-		"secret_id", "",
-	)
 }
 
 // The properties LbAlgorithm, Name, Protocol are required.

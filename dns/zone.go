@@ -21,6 +21,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// DNS zones are authoritative containers for domain name records, with support for
+// DNSSEC and SOA configuration.
+//
 // ZoneService contains methods and other services that help with interacting with
 // the gcore API.
 //
@@ -30,7 +33,9 @@ import (
 type ZoneService struct {
 	Options []option.RequestOption
 	Dnssec  ZoneDnssecService
-	Rrsets  ZoneRrsetService
+	// DNS resource record sets (RRsets) define individual DNS records such as A, AAAA,
+	// CNAME, MX, and TXT with TTL and geo-balancing settings.
+	Rrsets ZoneRrsetService
 }
 
 // NewZoneService generates a new service that applies the given options to each
