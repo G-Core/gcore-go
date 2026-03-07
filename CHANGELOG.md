@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.37.0 (2026-03-07)
+
+Full Changelog: [v0.36.0...v0.37.0](https://github.com/G-Core/gcore-go/compare/v0.36.0...v0.37.0)
+
+### Features
+
+* add descriptions for all Terraform-enabled resources ([351b75f](https://github.com/G-Core/gcore-go/commit/351b75fc3aebf4ad6ab6c00c1e758b3e567ab39e))
+* **api:** aggregated API specs update ([a5b4a2c](https://github.com/G-Core/gcore-go/commit/a5b4a2c82a567ffcd58168ea7ce2decb97232fc9))
+* **api:** aggregated API specs update ([d6443cc](https://github.com/G-Core/gcore-go/commit/d6443cc6424dd249e7e65661b21d11c3cab4c384))
+
+
+### Bug Fixes
+
+* fix request delays for retrying to be more respectful of high requested delays ([52c689e](https://github.com/G-Core/gcore-go/commit/52c689eabcacf52f0569ee18004e97843d818605))
+
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([6cc05fb](https://github.com/G-Core/gcore-go/commit/6cc05fbd89fc0add189e5b75b5a76a1a01dd6c03))
+* **test:** do not count install time for mock server timeout ([d43fe7a](https://github.com/G-Core/gcore-go/commit/d43fe7acab2f48b7276a97fa3e77eead4a4fa0a4))
+* update placeholder string ([c466d4d](https://github.com/G-Core/gcore-go/commit/c466d4daac500a328406ee5360d6e41f2e239ce7))
+
 ## 0.36.0 (2026-03-03)
 
 Full Changelog: [v0.35.0...v0.36.0](https://github.com/G-Core/gcore-go/compare/v0.35.0...v0.36.0)
