@@ -27,7 +27,7 @@ func TestBinaryNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Fastedge.Binaries.New(context.TODO(), io.Reader(bytes.NewBuffer([]byte("some file contents"))))
+	_, err := client.Fastedge.Binaries.New(context.TODO(), io.Reader(bytes.NewBuffer([]byte("Example data"))))
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
