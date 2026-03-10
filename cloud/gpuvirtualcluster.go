@@ -78,6 +78,10 @@ func (r *GPUVirtualClusterService) New(ctx context.Context, params GPUVirtualClu
 }
 
 // Update the name of an existing virtual GPU cluster.
+//
+// Update tags for a virtual GPU cluster (and apply to all its nodes) using JSON
+// Merge Patch semantics (RFC 7386). To add or update tags, provide key-value
+// pairs. To remove a tag, set its value to null.
 func (r *GPUVirtualClusterService) Update(ctx context.Context, clusterID string, params GPUVirtualClusterUpdateParams, opts ...option.RequestOption) (res *GPUVirtualCluster, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -167,7 +171,7 @@ func (r *GPUVirtualClusterService) Delete(ctx context.Context, clusterID string,
 }
 
 // Perform a specific action on a virtual GPU cluster. Available actions: start,
-// stop, soft reboot, hard reboot, resize, update tags.
+// stop, soft reboot, hard reboot, resize
 func (r *GPUVirtualClusterService) Action(ctx context.Context, clusterID string, params GPUVirtualClusterActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -1187,7 +1191,29 @@ type GPUVirtualClusterUpdateParams struct {
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster name
-	Name string `json:"name" api:"required"`
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified.
+	//
+	// **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
+	//     adds/updates 'environment' and 'cost_center' while removing 'deprecated_tag',
+	//     preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -1270,8 +1296,6 @@ type GPUVirtualClusterActionParams struct {
 	// This field is a request body variant, only one variant field can be set.
 	OfHardReboot *GPUVirtualClusterActionParamsBodyHardReboot `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfUpdateTags *GPUVirtualClusterActionParamsBodyUpdateTags `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
 	OfResize *GPUVirtualClusterActionParamsBodyResize `json:",inline"`
 
 	paramObj
@@ -1282,7 +1306,6 @@ func (u GPUVirtualClusterActionParams) MarshalJSON() ([]byte, error) {
 		u.OfStop,
 		u.OfSoftReboot,
 		u.OfHardReboot,
-		u.OfUpdateTags,
 		u.OfResize)
 }
 func (r *GPUVirtualClusterActionParams) UnmarshalJSON(data []byte) error {
@@ -1374,45 +1397,6 @@ func (r GPUVirtualClusterActionParamsBodyHardReboot) MarshalJSON() (data []byte,
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GPUVirtualClusterActionParamsBodyHardReboot) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Action, Tags are required.
-type GPUVirtualClusterActionParamsBodyUpdateTags struct {
-	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
-	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
-	// Unspecified tags remain unchanged. Read-only tags are always preserved and
-	// cannot be modified.
-	//
-	// **Examples:**
-	//
-	//   - **Add/update tags:**
-	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
-	//     updates existing ones.
-	//   - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
-	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
-	//     tags are preserved).
-	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
-	//     specified tags.
-	//   - **Mixed operations:**
-	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
-	//     adds/updates 'environment' and 'cost_center' while removing 'deprecated_tag',
-	//     preserving other existing tags.
-	//   - **Replace all:** first delete existing tags with null values, then add new
-	//     ones in the same request.
-	Tags TagUpdateMap `json:"tags,omitzero" api:"required"`
-	// Action name
-	//
-	// This field can be elided, and will marshal its zero value as "update_tags".
-	Action constant.UpdateTags `json:"action" api:"required"`
-	paramObj
-}
-
-func (r GPUVirtualClusterActionParamsBodyUpdateTags) MarshalJSON() (data []byte, err error) {
-	type shadow GPUVirtualClusterActionParamsBodyUpdateTags
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *GPUVirtualClusterActionParamsBodyUpdateTags) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

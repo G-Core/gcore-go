@@ -37,8 +37,8 @@ func NewLocationService(opts ...option.RequestOption) (r LocationService) {
 }
 
 // Returns available storage locations where you can create storages. Each location
-// represents a geographic region with specific data center facilities. Deprecated,
-// use GET /provisioning/v3/locations instead.
+// represents a geographic region with specific data center facilities. Deprecated:
+// Use GET /v4/locations instead.
 //
 // Deprecated: deprecated
 func (r *LocationService) List(ctx context.Context, query LocationListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Location], err error) {
@@ -59,8 +59,8 @@ func (r *LocationService) List(ctx context.Context, query LocationListParams, op
 }
 
 // Returns available storage locations where you can create storages. Each location
-// represents a geographic region with specific data center facilities. Deprecated,
-// use GET /provisioning/v3/locations instead.
+// represents a geographic region with specific data center facilities. Deprecated:
+// Use GET /v4/locations instead.
 //
 // Deprecated: deprecated
 func (r *LocationService) ListAutoPaging(ctx context.Context, query LocationListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Location] {

@@ -40,7 +40,7 @@ func NewBucketCorService(opts ...option.RequestOption) (r BucketCorService) {
 // browsers.
 //
 // Deprecated: Use PATCH
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} with {"cors":
+// /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`} with {"cors":
 // {"allowed_origins": [...]}} instead.
 //
 // Deprecated: deprecated
@@ -60,9 +60,8 @@ func (r *BucketCorService) New(ctx context.Context, bucketName string, params Bu
 // S3 bucket, showing which domains are allowed to access the bucket from web
 // browsers.
 //
-// Deprecated: Use GET
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} instead, which
-// returns CORS along with policy and lifecycle configuration.
+// Deprecated: Use GET /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`}
+// instead, which returns CORS along with policy and lifecycle configuration.
 //
 // Deprecated: deprecated
 func (r *BucketCorService) Get(ctx context.Context, bucketName string, query BucketCorGetParams, opts ...option.RequestOption) (res *BucketCors, err error) {
