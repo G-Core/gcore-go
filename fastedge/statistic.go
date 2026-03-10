@@ -43,7 +43,7 @@ func (r *StatisticService) GetCallSeries(ctx context.Context, query StatisticGet
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/stats/calls"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Execution duration statistics
@@ -51,7 +51,7 @@ func (r *StatisticService) GetDurationSeries(ctx context.Context, query Statisti
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/stats/app_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Edge app call statistics

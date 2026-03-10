@@ -42,29 +42,29 @@ func (r *DatabasePostgresClusterUserCredentialService) Get(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if query.ClusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	if username == "" {
 		err = errors.New("missing required username parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/dbaas/postgres/clusters/%v/%v/%s/users/%s/credentials", query.ProjectID.Value, query.RegionID.Value, query.ClusterName, username)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Generate new credentials for a specific user in a PostgreSQL cluster.
@@ -72,29 +72,29 @@ func (r *DatabasePostgresClusterUserCredentialService) Regenerate(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if body.ClusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	if username == "" {
 		err = errors.New("missing required username parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/dbaas/postgres/clusters/%v/%v/%s/users/%s/credentials", body.ProjectID.Value, body.RegionID.Value, body.ClusterName, username)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PostgresUserCredentials struct {

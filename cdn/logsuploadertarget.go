@@ -53,7 +53,7 @@ func (r *LogsUploaderTargetService) New(ctx context.Context, body LogsUploaderTa
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/logs_uploader/targets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Change logs uploader target partially.
@@ -61,7 +61,7 @@ func (r *LogsUploaderTargetService) Update(ctx context.Context, id int64, body L
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/logs_uploader/targets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get list of logs uploader targets.
@@ -69,7 +69,7 @@ func (r *LogsUploaderTargetService) List(ctx context.Context, query LogsUploader
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/logs_uploader/targets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete the logs uploader target from the system permanently.
@@ -83,7 +83,7 @@ func (r *LogsUploaderTargetService) Delete(ctx context.Context, id int64, opts .
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/targets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get information about logs uploader target.
@@ -91,7 +91,7 @@ func (r *LogsUploaderTargetService) Get(ctx context.Context, id int64, opts ...o
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/logs_uploader/targets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Change logs uploader target.
@@ -99,7 +99,7 @@ func (r *LogsUploaderTargetService) Replace(ctx context.Context, id int64, body 
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/logs_uploader/targets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Validate logs uploader target.
@@ -107,7 +107,7 @@ func (r *LogsUploaderTargetService) Validate(ctx context.Context, id int64, opts
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/logs_uploader/targets/%v/validate", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type LogsUploaderTarget struct {

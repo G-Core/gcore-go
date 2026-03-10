@@ -91,7 +91,7 @@ func (r *DomainStatisticService) GetEventsAggregated(ctx context.Context, domain
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/stats", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves all the available information for a request that matches a given
@@ -100,11 +100,11 @@ func (r *DomainStatisticService) GetRequestDetails(ctx context.Context, requestI
 	opts = slices.Concat(r.Options, opts)
 	if requestID == "" {
 		err = errors.New("missing required request_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("waap/v1/domains/%v/requests/%s/details", query.DomainID, requestID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a domain's requests data. Deprecated. Use
@@ -147,7 +147,7 @@ func (r *DomainStatisticService) GetTrafficSeries(ctx context.Context, domainID 
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/traffic", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // A collection of total numbers of events with blocked results per criteria

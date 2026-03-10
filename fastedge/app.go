@@ -52,7 +52,7 @@ func (r *AppService) New(ctx context.Context, body AppNewParams, opts ...option.
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/apps"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Update app
@@ -60,7 +60,7 @@ func (r *AppService) Update(ctx context.Context, id int64, body AppUpdateParams,
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List client's apps
@@ -92,7 +92,7 @@ func (r *AppService) Delete(ctx context.Context, id int64, opts ...option.Reques
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get app details
@@ -100,7 +100,7 @@ func (r *AppService) Get(ctx context.Context, id int64, opts ...option.RequestOp
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an app
@@ -108,7 +108,7 @@ func (r *AppService) Replace(ctx context.Context, id int64, body AppReplaceParam
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type App struct {

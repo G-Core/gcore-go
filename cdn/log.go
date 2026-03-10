@@ -86,7 +86,7 @@ func (r *LogService) Download(ctx context.Context, query LogDownloadParams, opts
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/zip")}, opts...)
 	path := "cdn/advanced/v1/logs/download"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type CDNLogEntry struct {

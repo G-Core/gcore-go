@@ -36,5 +36,5 @@ func (r *PlaylistVideoService) List(ctx context.Context, playlistID int64, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/playlists/%v/videos", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }

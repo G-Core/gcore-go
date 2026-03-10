@@ -52,7 +52,7 @@ func (r *LogsUploaderPolicyService) New(ctx context.Context, body LogsUploaderPo
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/logs_uploader/policies"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Change logs uploader policy partially.
@@ -60,7 +60,7 @@ func (r *LogsUploaderPolicyService) Update(ctx context.Context, id int64, body L
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/logs_uploader/policies/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get list of logs uploader policies.
@@ -68,7 +68,7 @@ func (r *LogsUploaderPolicyService) List(ctx context.Context, query LogsUploader
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/logs_uploader/policies"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete the logs uploader policy from the system permanently.
@@ -82,7 +82,7 @@ func (r *LogsUploaderPolicyService) Delete(ctx context.Context, id int64, opts .
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/logs_uploader/policies/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get information about logs uploader policy.
@@ -90,7 +90,7 @@ func (r *LogsUploaderPolicyService) Get(ctx context.Context, id int64, opts ...o
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/logs_uploader/policies/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get list of available fields for logs uploader policy.
@@ -98,7 +98,7 @@ func (r *LogsUploaderPolicyService) ListFields(ctx context.Context, opts ...opti
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/logs_uploader/policies/fields"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Change logs uploader policy.
@@ -106,7 +106,7 @@ func (r *LogsUploaderPolicyService) Replace(ctx context.Context, id int64, body 
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/logs_uploader/policies/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type LogsUploaderPolicy struct {

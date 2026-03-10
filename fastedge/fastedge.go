@@ -60,7 +60,7 @@ func (r *FastedgeService) GetAccountOverview(ctx context.Context, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Client struct {

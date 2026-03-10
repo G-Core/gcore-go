@@ -46,7 +46,7 @@ func (r *KvStoreService) New(ctx context.Context, body KvStoreNewParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/kv"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List available edge stores
@@ -54,7 +54,7 @@ func (r *KvStoreService) List(ctx context.Context, query KvStoreListParams, opts
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/kv"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a store
@@ -63,7 +63,7 @@ func (r *KvStoreService) Delete(ctx context.Context, id int64, opts ...option.Re
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/kv/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get the edge store by id
@@ -71,7 +71,7 @@ func (r *KvStoreService) Get(ctx context.Context, id int64, opts ...option.Reque
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/kv/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a store
@@ -79,7 +79,7 @@ func (r *KvStoreService) Replace(ctx context.Context, id int64, body KvStoreRepl
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/kv/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type KvStore struct {

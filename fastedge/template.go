@@ -46,7 +46,7 @@ func (r *TemplateService) New(ctx context.Context, body TemplateNewParams, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/template"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List app templates
@@ -78,7 +78,7 @@ func (r *TemplateService) Delete(ctx context.Context, id int64, body TemplateDel
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/template/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Get template details
@@ -86,7 +86,7 @@ func (r *TemplateService) Get(ctx context.Context, id int64, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/template/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update template
@@ -94,7 +94,7 @@ func (r *TemplateService) Replace(ctx context.Context, id int64, body TemplateRe
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/template/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Template struct {

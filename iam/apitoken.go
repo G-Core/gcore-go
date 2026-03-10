@@ -56,7 +56,7 @@ func (r *APITokenService) New(ctx context.Context, clientID int64, body APIToken
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/clients/%v/tokens", clientID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get information about your permanent API tokens in the account. A user with the
@@ -65,7 +65,7 @@ func (r *APITokenService) List(ctx context.Context, clientID int64, query APITok
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/clients/%v/tokens", clientID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete API token from current account. Ensure that the API token is not being
@@ -77,7 +77,7 @@ func (r *APITokenService) Delete(ctx context.Context, tokenID int64, body APITok
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("iam/clients/%v/tokens/%v", body.ClientID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get API Token
@@ -85,7 +85,7 @@ func (r *APITokenService) Get(ctx context.Context, tokenID int64, query APIToken
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/clients/%v/tokens/%v", query.ClientID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type APIToken struct {

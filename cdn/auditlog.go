@@ -73,7 +73,7 @@ func (r *AuditLogService) Get(ctx context.Context, logID int64, opts ...option.R
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/activity_log/requests/%v", logID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CDNAuditLogEntry struct {

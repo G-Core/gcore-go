@@ -42,7 +42,7 @@ func (r *BillingReservationService) List(ctx context.Context, query BillingReser
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v2/reservations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type BillingReservation struct {

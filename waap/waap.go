@@ -55,7 +55,7 @@ func (r *WaapService) GetAccountOverview(ctx context.Context, opts ...option.Req
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/clients/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Represents the WAAP service information for a client

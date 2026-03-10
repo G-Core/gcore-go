@@ -66,11 +66,11 @@ func (r *InferenceFlavorService) Get(ctx context.Context, flavorName string, opt
 	opts = slices.Concat(r.Options, opts)
 	if flavorName == "" {
 		err = errors.New("missing required flavor_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/flavors/%s", flavorName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type InferenceFlavor struct {

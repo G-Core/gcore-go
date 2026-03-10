@@ -47,7 +47,7 @@ func (r *TrustedCaCertificateService) New(ctx context.Context, body TrustedCaCer
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/sslCertificates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get list of trusted CA certificates used to verify an origin.
@@ -55,7 +55,7 @@ func (r *TrustedCaCertificateService) List(ctx context.Context, query TrustedCaC
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/sslCertificates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete trusted CA certificate
@@ -64,7 +64,7 @@ func (r *TrustedCaCertificateService) Delete(ctx context.Context, id int64, opts
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/sslCertificates/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get trusted CA certificate details
@@ -72,7 +72,7 @@ func (r *TrustedCaCertificateService) Get(ctx context.Context, id int64, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/sslCertificates/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Change trusted CA certificate
@@ -80,7 +80,7 @@ func (r *TrustedCaCertificateService) Replace(ctx context.Context, id int64, bod
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/sslCertificates/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CaCertificate struct {

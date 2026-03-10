@@ -43,25 +43,25 @@ func (r *FileShareAccessRuleService) New(ctx context.Context, fileShareID string
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if fileShareID == "" {
 		err = errors.New("missing required file_share_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/file_shares/%v/%v/%s/access_rule", params.ProjectID.Value, params.RegionID.Value, fileShareID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // List file share access rules
@@ -69,25 +69,25 @@ func (r *FileShareAccessRuleService) List(ctx context.Context, fileShareID strin
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if fileShareID == "" {
 		err = errors.New("missing required file_share_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/file_shares/%v/%v/%s/access_rule", query.ProjectID.Value, query.RegionID.Value, fileShareID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete file share access rule
@@ -96,29 +96,29 @@ func (r *FileShareAccessRuleService) Delete(ctx context.Context, accessRuleID st
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return err
 	}
 	if body.FileShareID == "" {
 		err = errors.New("missing required file_share_id parameter")
-		return
+		return err
 	}
 	if accessRuleID == "" {
 		err = errors.New("missing required access_rule_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("cloud/v1/file_shares/%v/%v/%s/access_rule/%s", body.ProjectID.Value, body.RegionID.Value, body.FileShareID, accessRuleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type AccessRule struct {

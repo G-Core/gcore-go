@@ -44,25 +44,25 @@ func (r *ReservedFixedIPVipService) Toggle(ctx context.Context, portID string, p
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if portID == "" {
 		err = errors.New("missing required port_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/reserved_fixed_ips/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, portID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type IPWithSubnet struct {

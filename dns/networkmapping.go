@@ -84,7 +84,7 @@ func (r *NetworkMappingService) New(ctx context.Context, body NetworkMappingNewP
 	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/network-mappings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List of network mappings.
@@ -101,7 +101,7 @@ func (r *NetworkMappingService) List(ctx context.Context, query NetworkMappingLi
 	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/network-mappings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete network mapping.
@@ -116,7 +116,7 @@ func (r *NetworkMappingService) Delete(ctx context.Context, id int64, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("dns/v2/network-mappings/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Particular network mapping item info
@@ -131,7 +131,7 @@ func (r *NetworkMappingService) Get(ctx context.Context, id int64, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("dns/v2/network-mappings/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get network mapping by name.
@@ -148,11 +148,11 @@ func (r *NetworkMappingService) GetByName(ctx context.Context, name string, opts
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/network-mappings/%s", name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Import network mapping from YAML file.
@@ -228,7 +228,7 @@ func (r *NetworkMappingService) Import(ctx context.Context, opts ...option.Reque
 	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/network-mappings/import"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update network mapping (Note: name of network mapping cannot be changed)
@@ -271,7 +271,7 @@ func (r *NetworkMappingService) Replace(ctx context.Context, id int64, body Netw
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("dns/v2/network-mappings/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type DNSMappingEntry struct {

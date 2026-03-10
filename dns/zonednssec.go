@@ -40,11 +40,11 @@ func (r *ZoneDnssecService) Update(ctx context.Context, name string, body ZoneDn
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/dnssec", name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get DNSSEC DS for a DNS zone.
@@ -52,11 +52,11 @@ func (r *ZoneDnssecService) Get(ctx context.Context, name string, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/dnssec", name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneDnssecUpdateResponse struct {

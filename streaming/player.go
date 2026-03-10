@@ -44,7 +44,7 @@ func (r *PlayerService) New(ctx context.Context, body PlayerNewParams, opts ...o
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "streaming/players"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Updates player settings
@@ -52,7 +52,7 @@ func (r *PlayerService) Update(ctx context.Context, playerID int64, body PlayerU
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/players/%v", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of created players
@@ -84,7 +84,7 @@ func (r *PlayerService) Delete(ctx context.Context, playerID int64, opts ...opti
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/players/%v", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Returns player settings
@@ -92,7 +92,7 @@ func (r *PlayerService) Get(ctx context.Context, playerID int64, opts ...option.
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/players/%v", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns player configuration in HTML
@@ -101,7 +101,7 @@ func (r *PlayerService) Preview(ctx context.Context, playerID int64, opts ...opt
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/players/%v/preview", playerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Set of properties for displaying videos. All parameters may be blank to inherit
