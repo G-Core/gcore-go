@@ -50,7 +50,7 @@ func (r *IPRangeService) List(ctx context.Context, params IPRangeListParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/public-net-list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type PublicNetworkList struct {

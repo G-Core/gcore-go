@@ -53,7 +53,7 @@ func (r *CertificateService) New(ctx context.Context, body CertificateNewParams,
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "cdn/sslData"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Get information about SSL certificates.
@@ -61,7 +61,7 @@ func (r *CertificateService) List(ctx context.Context, query CertificateListPara
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/sslData"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete SSL certificate
@@ -70,7 +70,7 @@ func (r *CertificateService) Delete(ctx context.Context, sslID int64, opts ...op
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/sslData/%v", sslID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Force retry issuance of Let's Encrypt certificate if the previous attempt was
@@ -80,7 +80,7 @@ func (r *CertificateService) ForceRetry(ctx context.Context, certID int64, opts 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/sslData/%v/force-retry", certID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get SSL certificate details
@@ -88,7 +88,7 @@ func (r *CertificateService) Get(ctx context.Context, sslID int64, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/sslData/%v", sslID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get details about the latest Let's Encrypt certificate issuing attempt for the
@@ -97,7 +97,7 @@ func (r *CertificateService) GetStatus(ctx context.Context, certID int64, query 
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/sslData/%v/status", certID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Renew free Let's Encrypt certificate for the CDN resource. It can take up to
@@ -107,7 +107,7 @@ func (r *CertificateService) Renew(ctx context.Context, certID int64, opts ...op
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/sslData/%v/renew", certID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Change SSL certificate
@@ -115,7 +115,7 @@ func (r *CertificateService) Replace(ctx context.Context, sslID int64, body Cert
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/sslData/%v", sslID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type SslDetail struct {

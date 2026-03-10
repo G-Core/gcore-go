@@ -40,7 +40,7 @@ func (r *DirectoryService) New(ctx context.Context, body DirectoryNewParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/directories"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Change a directory name or move to another "parent_id".
@@ -48,7 +48,7 @@ func (r *DirectoryService) Update(ctx context.Context, directoryID int64, body D
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/directories/%v", directoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a directory **and all entities inside**.
@@ -67,7 +67,7 @@ func (r *DirectoryService) Delete(ctx context.Context, directoryID int64, opts .
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/directories/%v", directoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Complete directory structure with contents. The structure contains both
@@ -76,7 +76,7 @@ func (r *DirectoryService) Get(ctx context.Context, directoryID int64, opts ...o
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/directories/%v", directoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Tree structure of directories.
@@ -86,7 +86,7 @@ func (r *DirectoryService) GetTree(ctx context.Context, opts ...option.RequestOp
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/directories/tree"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type DirectoriesTree struct {

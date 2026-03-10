@@ -42,7 +42,7 @@ func (r *DomainAdvancedRuleService) New(ctx context.Context, domainID int64, bod
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Only properties present in the request will be updated
@@ -51,7 +51,7 @@ func (r *DomainAdvancedRuleService) Update(ctx context.Context, ruleID int64, pa
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules/%v", params.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve a list of advanced rules assigned to a domain, offering filter,
@@ -85,7 +85,7 @@ func (r *DomainAdvancedRuleService) Delete(ctx context.Context, ruleID int64, bo
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules/%v", body.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve a specific advanced rule assigned to a domain
@@ -93,7 +93,7 @@ func (r *DomainAdvancedRuleService) Get(ctx context.Context, ruleID int64, query
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules/%v", query.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Toggle an advanced rule
@@ -102,7 +102,7 @@ func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdv
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules/%v/%v", body.DomainID, body.RuleID, action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // An advanced WAAP rule applied to a domain

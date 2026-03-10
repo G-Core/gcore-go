@@ -42,7 +42,7 @@ func (r *NetworkCapacityService) List(ctx context.Context, opts ...option.Reques
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/advanced/v1/capacity"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type NetworkCapacity []NetworkCapacityItem

@@ -55,7 +55,7 @@ func (r *InferenceService) GetCapacityByRegion(ctx context.Context, opts ...opti
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v3/inference/capacity"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type InferenceRegionCapacity struct {

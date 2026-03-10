@@ -69,7 +69,7 @@ func (r *DomainService) Update(ctx context.Context, domainID int64, body DomainU
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve a list of domains associated with the client
@@ -102,7 +102,7 @@ func (r *DomainService) Delete(ctx context.Context, domainID int64, opts ...opti
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve detailed information about a specific domain
@@ -110,7 +110,7 @@ func (r *DomainService) Get(ctx context.Context, domainID int64, opts ...option.
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve all rule sets linked to a particular domain
@@ -118,7 +118,7 @@ func (r *DomainService) ListRuleSets(ctx context.Context, domainID int64, opts .
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/rule-sets", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Represents a WAAP domain, serving as a singular unit within the WAAP service.

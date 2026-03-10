@@ -49,11 +49,11 @@ func (r *BucketCorService) New(ctx context.Context, bucketName string, params Bu
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s/cors", params.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
-	return
+	return err
 }
 
 // Retrieves the current Cross-Origin Resource Sharing (CORS) configuration for an
@@ -68,11 +68,11 @@ func (r *BucketCorService) Get(ctx context.Context, bucketName string, query Buc
 	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s/cors", query.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // StorageGetBucketCorsEndpointRes output

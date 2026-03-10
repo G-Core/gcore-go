@@ -179,7 +179,7 @@ func (r *AITaskService) New(ctx context.Context, body AITaskNewParams, opts ...o
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/ai/tasks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of previously created and processed AI tasks.
@@ -219,11 +219,11 @@ func (r *AITaskService) Cancel(ctx context.Context, taskID string, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("streaming/ai/tasks/%s/cancel", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This is the single method to check the execution status of an AI task, and
@@ -270,11 +270,11 @@ func (r *AITaskService) Get(ctx context.Context, taskID string, opts ...option.R
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("streaming/ai/tasks/%s", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // The method for revealing basic information and advanced underlying settings that
@@ -317,7 +317,7 @@ func (r *AITaskService) GetAISettings(ctx context.Context, query AITaskGetAISett
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/ai/info"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AIContentmoderationHardnudity struct {

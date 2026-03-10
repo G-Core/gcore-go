@@ -43,7 +43,7 @@ func (r *StatisticService) GetUsageAggregated(ctx context.Context, body Statisti
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/stats/v1/storage/usage/total"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Consumption statistics is updated in near real-time as a standard practice.
@@ -57,7 +57,7 @@ func (r *StatisticService) GetUsageSeries(ctx context.Context, body StatisticGet
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/stats/v1/storage/usage/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type UsageSeries struct {

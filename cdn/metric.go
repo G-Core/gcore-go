@@ -44,7 +44,7 @@ func (r *MetricService) List(ctx context.Context, body MetricListParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/advanced/v1/metrics"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CDNMetrics struct {

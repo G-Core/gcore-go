@@ -43,16 +43,16 @@ func (r *InferenceApplicationDeploymentService) New(ctx context.Context, params 
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/applications/%v/deployments", params.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing application deployment. You can modify the target regions
@@ -63,20 +63,20 @@ func (r *InferenceApplicationDeploymentService) Update(ctx context.Context, depl
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if deploymentName == "" {
 		err = errors.New("missing required deployment_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/applications/%v/deployments/%s", params.ProjectID.Value, deploymentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your application deployments, including deployment names,
@@ -86,16 +86,16 @@ func (r *InferenceApplicationDeploymentService) List(ctx context.Context, query 
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/applications/%v/deployments", query.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an existing application deployment along with all associated resources.
@@ -105,20 +105,20 @@ func (r *InferenceApplicationDeploymentService) Delete(ctx context.Context, depl
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if deploymentName == "" {
 		err = errors.New("missing required deployment_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/applications/%v/deployments/%s", body.ProjectID.Value, deploymentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves detailed information about a specific application deployment. The
@@ -129,20 +129,20 @@ func (r *InferenceApplicationDeploymentService) Get(ctx context.Context, deploym
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if deploymentName == "" {
 		err = errors.New("missing required deployment_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/applications/%v/deployments/%s", query.ProjectID.Value, deploymentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type InferenceApplicationDeployment struct {

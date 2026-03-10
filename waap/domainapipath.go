@@ -44,7 +44,7 @@ func (r *DomainAPIPathService) New(ctx context.Context, domainID int64, body Dom
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-paths", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a specific API path for a domain
@@ -53,11 +53,11 @@ func (r *DomainAPIPathService) Update(ctx context.Context, pathID string, params
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if pathID == "" {
 		err = errors.New("missing required path_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("waap/v1/domains/%v/api-paths/%s", params.DomainID, pathID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve a list of API paths for a specific domain
@@ -89,11 +89,11 @@ func (r *DomainAPIPathService) Delete(ctx context.Context, pathID string, body D
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if pathID == "" {
 		err = errors.New("missing required path_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("waap/v1/domains/%v/api-paths/%s", body.DomainID, pathID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve a specific API path for a domain
@@ -101,11 +101,11 @@ func (r *DomainAPIPathService) Get(ctx context.Context, pathID string, query Dom
 	opts = slices.Concat(r.Options, opts)
 	if pathID == "" {
 		err = errors.New("missing required path_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("waap/v1/domains/%v/api-paths/%s", query.DomainID, pathID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Response model for the API path

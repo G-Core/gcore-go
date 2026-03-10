@@ -42,7 +42,7 @@ func (r *ProfileService) New(ctx context.Context, body ProfileNewParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "security/iaas/v2/profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get list of protection profiles. Client receives only profiles created by him
@@ -50,7 +50,7 @@ func (r *ProfileService) List(ctx context.Context, query ProfileListParams, opts
 	opts = slices.Concat(r.Options, opts)
 	path := "security/iaas/v2/profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete protection profile. Protection is disabled at the same time as profile is
@@ -60,7 +60,7 @@ func (r *ProfileService) Delete(ctx context.Context, id int64, opts ...option.Re
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get profile by id
@@ -68,7 +68,7 @@ func (r *ProfileService) Get(ctx context.Context, id int64, opts ...option.Reque
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Recreate profile with another profile template (for other cases use detail API)
@@ -76,7 +76,7 @@ func (r *ProfileService) Recreate(ctx context.Context, id int64, body ProfileRec
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v/recreate", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Update profile. Protection policies are updated at the same time as profile
@@ -85,7 +85,7 @@ func (r *ProfileService) Replace(ctx context.Context, id int64, body ProfileRepl
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("security/iaas/v2/profiles/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ClientProfile struct {

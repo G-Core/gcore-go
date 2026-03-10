@@ -43,7 +43,7 @@ func (r *IPInfoMetricService) List(ctx context.Context, query IPInfoMetricListPa
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/ip-info/counts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type WaapIPInfoCounts struct {

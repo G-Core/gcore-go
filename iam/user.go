@@ -42,7 +42,7 @@ func (r *UserService) Update(ctx context.Context, userID int64, body UserUpdateP
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/users/%v", userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a list of users.
@@ -83,7 +83,7 @@ func (r *UserService) Delete(ctx context.Context, userID int64, body UserDeleteP
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("iam/clients/%v/client-users/%v", body.ClientID, userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get user's details
@@ -91,7 +91,7 @@ func (r *UserService) Get(ctx context.Context, userID int64, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/users/%v", userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Invite a user to the account.
@@ -103,7 +103,7 @@ func (r *UserService) Invite(ctx context.Context, body UserInviteParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "iam/clients/invite_user"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type User struct {

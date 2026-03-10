@@ -40,25 +40,25 @@ func (r *InstanceMetricService) List(ctx context.Context, instanceID string, par
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/metrics", params.ProjectID.Value, params.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Instance metrics item

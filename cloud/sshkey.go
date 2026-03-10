@@ -47,16 +47,16 @@ func (r *SSHKeyService) New(ctx context.Context, params SSHKeyNewParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/ssh_keys/%v", params.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Share or unshare SSH key with users
@@ -64,20 +64,20 @@ func (r *SSHKeyService) Update(ctx context.Context, sshKeyID string, params SSHK
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if sshKeyID == "" {
 		err = errors.New("missing required ssh_key_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/ssh_keys/%v/%s", params.ProjectID.Value, sshKeyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // List SSH keys
@@ -87,12 +87,12 @@ func (r *SSHKeyService) List(ctx context.Context, params SSHKeyListParams, opts 
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/ssh_keys/%v", params.ProjectID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -118,20 +118,20 @@ func (r *SSHKeyService) Delete(ctx context.Context, sshKeyID string, body SSHKey
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return err
 	}
 	if sshKeyID == "" {
 		err = errors.New("missing required ssh_key_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("cloud/v1/ssh_keys/%v/%s", body.ProjectID.Value, sshKeyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get SSH key
@@ -139,20 +139,20 @@ func (r *SSHKeyService) Get(ctx context.Context, sshKeyID string, query SSHKeyGe
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if sshKeyID == "" {
 		err = errors.New("missing required ssh_key_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/ssh_keys/%v/%s", query.ProjectID.Value, sshKeyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SSHKey struct {

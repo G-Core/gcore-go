@@ -42,7 +42,7 @@ func (r *DomainCustomRuleService) New(ctx context.Context, domainID int64, body 
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Only properties present in the request will be updated
@@ -51,7 +51,7 @@ func (r *DomainCustomRuleService) Update(ctx context.Context, ruleID int64, para
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/%v", params.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
-	return
+	return err
 }
 
 // Extracts a list of custom rules assigned to a domain, offering filter, ordering,
@@ -85,7 +85,7 @@ func (r *DomainCustomRuleService) Delete(ctx context.Context, ruleID int64, body
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/%v", body.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Delete multiple WAAP rules
@@ -94,7 +94,7 @@ func (r *DomainCustomRuleService) DeleteMultiple(ctx context.Context, domainID i
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/bulk_delete", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Extracts a specific custom rule assigned to a domain
@@ -102,7 +102,7 @@ func (r *DomainCustomRuleService) Get(ctx context.Context, ruleID int64, query D
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/%v", query.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Toggle a custom rule
@@ -111,7 +111,7 @@ func (r *DomainCustomRuleService) Toggle(ctx context.Context, action DomainCusto
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules/%v/%v", body.DomainID, body.RuleID, action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // An WAAP rule applied to a domain

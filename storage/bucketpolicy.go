@@ -48,11 +48,11 @@ func (r *BucketPolicyService) New(ctx context.Context, bucketName string, body B
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s/policy", body.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Removes the public read policy from an S3 bucket, making all objects private and
@@ -70,11 +70,11 @@ func (r *BucketPolicyService) Delete(ctx context.Context, bucketName string, bod
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s/policy", body.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Returns whether the S3 bucket is currently configured for public read access.
@@ -89,11 +89,11 @@ func (r *BucketPolicyService) Get(ctx context.Context, bucketName string, query 
 	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s/policy", query.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type BucketPolicyNewParams struct {

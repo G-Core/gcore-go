@@ -46,16 +46,16 @@ func (r *InferenceRegistryCredentialService) New(ctx context.Context, params Inf
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/registry_credentials", params.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // List inference registry credentials
@@ -65,12 +65,12 @@ func (r *InferenceRegistryCredentialService) List(ctx context.Context, params In
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/registry_credentials", params.ProjectID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -96,20 +96,20 @@ func (r *InferenceRegistryCredentialService) Delete(ctx context.Context, credent
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return err
 	}
 	if credentialName == "" {
 		err = errors.New("missing required credential_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/registry_credentials/%s", body.ProjectID.Value, credentialName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get inference registry credential
@@ -117,20 +117,20 @@ func (r *InferenceRegistryCredentialService) Get(ctx context.Context, credential
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if credentialName == "" {
 		err = errors.New("missing required credential_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/registry_credentials/%s", query.ProjectID.Value, credentialName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Replace inference registry credential
@@ -138,20 +138,20 @@ func (r *InferenceRegistryCredentialService) Replace(ctx context.Context, creden
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if credentialName == "" {
 		err = errors.New("missing required credential_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/registry_credentials/%s", params.ProjectID.Value, credentialName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type InferenceRegistryCredentials struct {

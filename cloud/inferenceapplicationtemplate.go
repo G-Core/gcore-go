@@ -43,7 +43,7 @@ func (r *InferenceApplicationTemplateService) List(ctx context.Context, opts ...
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v3/inference/applications/catalog"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves detailed information about a specific machine learning application
@@ -55,11 +55,11 @@ func (r *InferenceApplicationTemplateService) Get(ctx context.Context, applicati
 	opts = slices.Concat(r.Options, opts)
 	if applicationName == "" {
 		err = errors.New("missing required application_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/applications/catalog/%s", applicationName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type InferenceApplicationTemplate struct {

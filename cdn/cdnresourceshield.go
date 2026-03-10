@@ -41,7 +41,7 @@ func (r *CDNResourceShieldService) Get(ctx context.Context, resourceID int64, op
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v/shielding_v2", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Change origin shielding settings or disabled origin shielding.
@@ -49,7 +49,7 @@ func (r *CDNResourceShieldService) Replace(ctx context.Context, resourceID int64
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v/shielding_v2", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type OriginShielding struct {

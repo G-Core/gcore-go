@@ -49,21 +49,21 @@ func (r *RegistryService) New(ctx context.Context, params RegistryNewParams, opt
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/registries/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // List all container registries in the specified project and region.
@@ -71,21 +71,21 @@ func (r *RegistryService) List(ctx context.Context, query RegistryListParams, op
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/registries/%v/%v", query.ProjectID.Value, query.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a specific container registry and all its associated resources.
@@ -94,21 +94,21 @@ func (r *RegistryService) Delete(ctx context.Context, registryID int64, body Reg
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v", body.ProjectID.Value, body.RegionID.Value, registryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get detailed information about a specific container registry.
@@ -116,21 +116,21 @@ func (r *RegistryService) Get(ctx context.Context, registryID int64, query Regis
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v", query.ProjectID.Value, query.RegionID.Value, registryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the size of a container registry.
@@ -138,21 +138,21 @@ func (r *RegistryService) Resize(ctx context.Context, registryID int64, params R
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/resize", params.ProjectID.Value, params.RegionID.Value, registryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type Registry struct {

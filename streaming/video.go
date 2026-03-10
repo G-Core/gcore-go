@@ -112,7 +112,7 @@ func (r *VideoService) New(ctx context.Context, body VideoNewParams, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/videos"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Changes parameters of the video to new values.
@@ -135,7 +135,7 @@ func (r *VideoService) Update(ctx context.Context, videoID int64, body VideoUpda
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/videos/%v", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a set of videos by the given criteria.
@@ -177,7 +177,7 @@ func (r *VideoService) Delete(ctx context.Context, videoID int64, opts ...option
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Mass upload of your videos. Method is used to set the task of creating videos in
@@ -198,7 +198,7 @@ func (r *VideoService) NewMultiple(ctx context.Context, params VideoNewMultipleP
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/videos/batch"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Information about a video entity.
@@ -223,7 +223,7 @@ func (r *VideoService) Get(ctx context.Context, videoID int64, opts ...option.Re
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/videos/%v", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Use this method to get TUS' session parameters: hostname of the server to
@@ -266,7 +266,7 @@ func (r *VideoService) GetParametersForDirectUpload(ctx context.Context, videoID
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/videos/%v/upload", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns names for specified video IDs
@@ -275,7 +275,7 @@ func (r *VideoService) ListNames(ctx context.Context, query VideoListNamesParams
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "streaming/videos/names"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
-	return
+	return err
 }
 
 type DirectUploadParametersResp struct {

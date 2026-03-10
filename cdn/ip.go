@@ -51,7 +51,7 @@ func (r *IPService) List(ctx context.Context, params IPListParams, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/public-ip-list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type PublicIPList struct {

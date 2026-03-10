@@ -55,21 +55,21 @@ func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewP
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/security_groups/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // NewAndPoll creates a security group and polls for completion of the first task. Use the [TaskService.Poll] method if
@@ -131,25 +131,25 @@ func (r *SecurityGroupService) Update(ctx context.Context, groupID string, param
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/security_groups/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // UpdateAndPoll updates a security group and polls for completion of the first task. Use the [TaskService.Poll] method if
@@ -190,17 +190,17 @@ func (r *SecurityGroupService) List(ctx context.Context, params SecurityGroupLis
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/securitygroups/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -226,25 +226,25 @@ func (r *SecurityGroupService) Delete(ctx context.Context, groupID string, body 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return err
 	}
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("cloud/v1/securitygroups/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Create a deep copy of an existing security group.
@@ -252,25 +252,25 @@ func (r *SecurityGroupService) Copy(ctx context.Context, groupID string, params 
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/securitygroups/%v/%v/%s/copy", params.ProjectID.Value, params.RegionID.Value, groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Get detailed information about a specific security group.
@@ -278,25 +278,25 @@ func (r *SecurityGroupService) Get(ctx context.Context, groupID string, query Se
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/securitygroups/%v/%v/%s", query.ProjectID.Value, query.RegionID.Value, groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Revert a security group to its previous state.
@@ -304,25 +304,25 @@ func (r *SecurityGroupService) RevertToDefault(ctx context.Context, groupID stri
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/securitygroups/%v/%v/%s/revert", body.ProjectID.Value, body.RegionID.Value, groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SecurityGroup struct {

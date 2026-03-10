@@ -46,7 +46,7 @@ func (r *StatisticService) GetUsageSeries(ctx context.Context, query StatisticGe
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/statistics/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Response model for the statistics item

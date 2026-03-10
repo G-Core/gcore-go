@@ -53,7 +53,7 @@ func (r *BroadcastService) New(ctx context.Context, body BroadcastNewParams, opt
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "streaming/broadcasts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Updates broadcast settings
@@ -61,7 +61,7 @@ func (r *BroadcastService) Update(ctx context.Context, broadcastID int64, body B
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/broadcasts/%v", broadcastID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Note: Feature "Broadcast" is outdated, soon it will be replaced by
@@ -99,7 +99,7 @@ func (r *BroadcastService) Delete(ctx context.Context, broadcastID int64, opts .
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/broadcasts/%v", broadcastID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Returns broadcast details
@@ -107,7 +107,7 @@ func (r *BroadcastService) Get(ctx context.Context, broadcastID int64, opts ...o
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/broadcasts/%v", broadcastID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns number of simultaneous broadcast viewers at the current moment
@@ -115,7 +115,7 @@ func (r *BroadcastService) GetSpectatorsCount(ctx context.Context, broadcastID i
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/broadcasts/%v/spectators", broadcastID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Broadcast struct {

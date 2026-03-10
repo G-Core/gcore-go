@@ -44,16 +44,16 @@ func (r *InferenceAPIKeyService) New(ctx context.Context, params InferenceAPIKey
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/api_keys", params.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // This endpoint updates a specific API key for everywhere inference.
@@ -61,20 +61,20 @@ func (r *InferenceAPIKeyService) Update(ctx context.Context, apiKeyName string, 
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if apiKeyName == "" {
 		err = errors.New("missing required api_key_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/api_keys/%s", params.ProjectID.Value, apiKeyName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // This endpoint retrieves a list of API keys for everywhere inference.
@@ -84,12 +84,12 @@ func (r *InferenceAPIKeyService) List(ctx context.Context, params InferenceAPIKe
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/api_keys", params.ProjectID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -117,20 +117,20 @@ func (r *InferenceAPIKeyService) Delete(ctx context.Context, apiKeyName string, 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return err
 	}
 	if apiKeyName == "" {
 		err = errors.New("missing required api_key_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/api_keys/%s", body.ProjectID.Value, apiKeyName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // This endpoint retrieves a specific API key for everywhere inference.
@@ -138,20 +138,20 @@ func (r *InferenceAPIKeyService) Get(ctx context.Context, apiKeyName string, que
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if apiKeyName == "" {
 		err = errors.New("missing required api_key_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/api_keys/%s", query.ProjectID.Value, apiKeyName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type InferenceAPIKey struct {

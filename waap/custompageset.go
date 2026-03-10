@@ -43,7 +43,7 @@ func (r *CustomPageSetService) New(ctx context.Context, body CustomPageSetNewPar
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/custom-page-sets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a custom page set based on the provided parameters. To update a field,
@@ -56,7 +56,7 @@ func (r *CustomPageSetService) Update(ctx context.Context, setID int64, body Cus
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/custom-page-sets/%v", setID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve a list of custom page sets available for use
@@ -88,7 +88,7 @@ func (r *CustomPageSetService) Delete(ctx context.Context, setID int64, opts ...
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/custom-page-sets/%v", setID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve a custom page set based on the provided ID
@@ -96,7 +96,7 @@ func (r *CustomPageSetService) Get(ctx context.Context, setID int64, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/custom-page-sets/%v", setID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Allows to preview a custom page without creating it based on the provided type
@@ -105,7 +105,7 @@ func (r *CustomPageSetService) Preview(ctx context.Context, params CustomPageSet
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/preview-custom-page"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type WaapCustomPagePreview struct {

@@ -50,16 +50,16 @@ func (r *InferenceDeploymentService) New(ctx context.Context, params InferenceDe
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/deployments", params.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Update inference deployment
@@ -67,20 +67,20 @@ func (r *InferenceDeploymentService) Update(ctx context.Context, deploymentName 
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if deploymentName == "" {
 		err = errors.New("missing required deployment_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/deployments/%s", params.ProjectID.Value, deploymentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // List inference deployments
@@ -90,12 +90,12 @@ func (r *InferenceDeploymentService) List(ctx context.Context, params InferenceD
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/deployments", params.ProjectID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -120,20 +120,20 @@ func (r *InferenceDeploymentService) Delete(ctx context.Context, deploymentName 
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if deploymentName == "" {
 		err = errors.New("missing required deployment_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/deployments/%s", body.ProjectID.Value, deploymentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get inference deployment
@@ -141,20 +141,20 @@ func (r *InferenceDeploymentService) Get(ctx context.Context, deploymentName str
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if deploymentName == "" {
 		err = errors.New("missing required deployment_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/deployments/%s", query.ProjectID.Value, deploymentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get inference deployment API key
@@ -164,20 +164,20 @@ func (r *InferenceDeploymentService) GetAPIKey(ctx context.Context, deploymentNa
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if deploymentName == "" {
 		err = errors.New("missing required deployment_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/deployments/%s/apikey", query.ProjectID.Value, deploymentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This operation initializes an inference deployment after it was stopped, making
@@ -193,20 +193,20 @@ func (r *InferenceDeploymentService) Start(ctx context.Context, deploymentName s
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return err
 	}
 	if deploymentName == "" {
 		err = errors.New("missing required deployment_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/deployments/%s/start", body.ProjectID.Value, deploymentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // This operation shuts down an inference deployment, making it unavailable for
@@ -222,20 +222,20 @@ func (r *InferenceDeploymentService) Stop(ctx context.Context, deploymentName st
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return err
 	}
 	if deploymentName == "" {
 		err = errors.New("missing required deployment_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("cloud/v3/inference/%v/deployments/%s/stop", body.ProjectID.Value, deploymentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type InferenceDeployment struct {

@@ -52,21 +52,21 @@ func (r *K8SClusterService) New(ctx context.Context, params K8SClusterNewParams,
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // NewAndPoll creates a new k8s cluster and polls for completion
@@ -107,25 +107,25 @@ func (r *K8SClusterService) Update(ctx context.Context, clusterName string, para
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // UpdateAndPoll updates a k8s cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
@@ -164,21 +164,21 @@ func (r *K8SClusterService) List(ctx context.Context, query K8SClusterListParams
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v", query.ProjectID.Value, query.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete k8s cluster
@@ -186,25 +186,25 @@ func (r *K8SClusterService) Delete(ctx context.Context, clusterName string, para
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // DeleteAndPoll deletes a k8s cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
@@ -229,25 +229,25 @@ func (r *K8SClusterService) Get(ctx context.Context, clusterName string, query K
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s", query.ProjectID.Value, query.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get k8s cluster CA certificate
@@ -255,25 +255,25 @@ func (r *K8SClusterService) GetCertificate(ctx context.Context, clusterName stri
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/certificates", query.ProjectID.Value, query.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get k8s cluster kubeconfig
@@ -281,25 +281,25 @@ func (r *K8SClusterService) GetKubeconfig(ctx context.Context, clusterName strin
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/config", query.ProjectID.Value, query.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List available k8s cluster versions for upgrade
@@ -307,25 +307,25 @@ func (r *K8SClusterService) ListVersionsForUpgrade(ctx context.Context, clusterN
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/upgrade_versions", query.ProjectID.Value, query.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upgrade k8s cluster
@@ -333,25 +333,25 @@ func (r *K8SClusterService) Upgrade(ctx context.Context, clusterName string, par
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/upgrade", params.ProjectID.Value, params.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // UpgradeAndPoll upgrades a k8s cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you

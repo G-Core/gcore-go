@@ -41,25 +41,25 @@ func (r *InstanceInterfaceService) List(ctx context.Context, instanceID string, 
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/interfaces", query.ProjectID.Value, query.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Attach interface to instance
@@ -67,25 +67,25 @@ func (r *InstanceInterfaceService) Attach(ctx context.Context, instanceID string
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/attach_interface", params.ProjectID.Value, params.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // AttachAndPoll attach interface to instance and poll for the completion of the first task. Use the [TaskService.Poll]
@@ -124,25 +124,25 @@ func (r *InstanceInterfaceService) Detach(ctx context.Context, instanceID string
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/detach_interface", params.ProjectID.Value, params.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // DetachAndPoll interface from instance and poll for the completion of the first task. Use the [TaskService.Poll]

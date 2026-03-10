@@ -41,25 +41,25 @@ func (r *LoadBalancerL7PolicyRuleService) New(ctx context.Context, l7policyID st
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if l7policyID == "" {
 		err = errors.New("missing required l7policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules", params.ProjectID.Value, params.RegionID.Value, l7policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // List load balancer L7 policy rules
@@ -67,25 +67,25 @@ func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID s
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if l7policyID == "" {
 		err = errors.New("missing required l7policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules", query.ProjectID.Value, query.RegionID.Value, l7policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete load balancer L7 rule
@@ -93,29 +93,29 @@ func (r *LoadBalancerL7PolicyRuleService) Delete(ctx context.Context, l7ruleID s
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if body.L7policyID == "" {
 		err = errors.New("missing required l7policy_id parameter")
-		return
+		return nil, err
 	}
 	if l7ruleID == "" {
 		err = errors.New("missing required l7rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules/%s", body.ProjectID.Value, body.RegionID.Value, body.L7policyID, l7ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get load balancer L7 rule
@@ -123,29 +123,29 @@ func (r *LoadBalancerL7PolicyRuleService) Get(ctx context.Context, l7ruleID stri
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if query.L7policyID == "" {
 		err = errors.New("missing required l7policy_id parameter")
-		return
+		return nil, err
 	}
 	if l7ruleID == "" {
 		err = errors.New("missing required l7rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules/%s", query.ProjectID.Value, query.RegionID.Value, query.L7policyID, l7ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Replace load balancer L7 rule properties
@@ -153,29 +153,29 @@ func (r *LoadBalancerL7PolicyRuleService) Replace(ctx context.Context, l7ruleID 
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if params.L7policyID == "" {
 		err = errors.New("missing required l7policy_id parameter")
-		return
+		return nil, err
 	}
 	if l7ruleID == "" {
 		err = errors.New("missing required l7rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules/%s", params.ProjectID.Value, params.RegionID.Value, params.L7policyID, l7ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // NewAndPoll creates a new L7 rule and polls for completion

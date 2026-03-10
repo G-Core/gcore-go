@@ -62,21 +62,21 @@ func (r *GPUVirtualClusterService) New(ctx context.Context, params GPUVirtualClu
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the name of an existing virtual GPU cluster.
@@ -88,25 +88,25 @@ func (r *GPUVirtualClusterService) Update(ctx context.Context, clusterID string,
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // List all virtual GPU clusters in the specified project and region.
@@ -116,17 +116,17 @@ func (r *GPUVirtualClusterService) List(ctx context.Context, params GPUVirtualCl
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters", params.ProjectID.Value, params.RegionID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -151,25 +151,25 @@ func (r *GPUVirtualClusterService) Delete(ctx context.Context, clusterID string,
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Perform a specific action on a virtual GPU cluster. Available actions: start,
@@ -178,25 +178,25 @@ func (r *GPUVirtualClusterService) Action(ctx context.Context, clusterID string,
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s/action", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Get detailed information about a specific virtual GPU cluster.
@@ -204,25 +204,25 @@ func (r *GPUVirtualClusterService) Get(ctx context.Context, clusterID string, qu
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s", query.ProjectID.Value, query.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // NewAndPoll creates a new virtual GPU cluster and polls for completion. Use the [TaskService.Poll] method if you

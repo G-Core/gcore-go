@@ -50,21 +50,21 @@ func (r *GPUBaremetalClusterServerService) List(ctx context.Context, clusterID s
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/servers", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -91,29 +91,29 @@ func (r *GPUBaremetalClusterServerService) Delete(ctx context.Context, instanceI
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if params.ClusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%v/%v/%s/node/%s", params.ProjectID.Value, params.RegionID.Value, params.ClusterID, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // DeleteAndPoll deletes a bare metal GPU server from cluster and polls for completion of the first task. Use the
@@ -137,25 +137,25 @@ func (r *GPUBaremetalClusterServerService) GetConsole(ctx context.Context, insta
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/ai/clusters/%v/%v/%s/get_console", query.ProjectID.Value, query.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Stops and then starts the server, effectively performing a hard reboot.
@@ -163,25 +163,25 @@ func (r *GPUBaremetalClusterServerService) Powercycle(ctx context.Context, insta
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/ai/clusters/%v/%v/%s/powercycle", body.ProjectID.Value, body.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Reboot one bare metal GPU cluster server
@@ -189,25 +189,25 @@ func (r *GPUBaremetalClusterServerService) Reboot(ctx context.Context, instanceI
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/ai/clusters/%v/%v/%s/reboot", body.ProjectID.Value, body.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Perform a rebuild operation on a bare metal GPU cluster server. During the
@@ -220,29 +220,29 @@ func (r *GPUBaremetalClusterServerService) Rebuild(ctx context.Context, serverID
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if body.ClusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	if serverID == "" {
 		err = errors.New("missing required server_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/servers/%s/rebuild", body.ProjectID.Value, body.RegionID.Value, body.ClusterID, serverID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type GPUBaremetalClusterServer struct {

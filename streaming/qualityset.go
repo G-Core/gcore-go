@@ -81,7 +81,7 @@ func (r *QualitySetService) List(ctx context.Context, opts ...option.RequestOpti
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/quality_sets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Method to set default quality set for VOD and Live transcoding.
@@ -107,7 +107,7 @@ func (r *QualitySetService) SetDefault(ctx context.Context, body QualitySetSetDe
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/quality_sets/default"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type QualitySets struct {

@@ -105,7 +105,7 @@ func (r *VideoSubtitleService) New(ctx context.Context, videoID int64, body Vide
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/videos/%v/subtitles", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Method to update subtitle of a video.
@@ -125,7 +125,7 @@ func (r *VideoSubtitleService) Update(ctx context.Context, id int64, params Vide
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/videos/%v/subtitles/%v", params.VideoID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Method returns a list of all subtitles that are already attached to a video.
@@ -133,7 +133,7 @@ func (r *VideoSubtitleService) List(ctx context.Context, videoID int64, opts ...
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/videos/%v/subtitles", videoID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete specified video subtitle
@@ -142,7 +142,7 @@ func (r *VideoSubtitleService) Delete(ctx context.Context, id int64, body VideoS
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/videos/%v/subtitles/%v", body.VideoID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Returns information about a specific subtitle for a video.
@@ -150,7 +150,7 @@ func (r *VideoSubtitleService) Get(ctx context.Context, id int64, query VideoSub
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/videos/%v/subtitles/%v", query.VideoID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type VideoSubtitleNewParams struct {
