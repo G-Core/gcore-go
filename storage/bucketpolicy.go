@@ -39,7 +39,7 @@ func NewBucketPolicyService(opts ...option.RequestOption) (r BucketPolicyService
 // objects without proper authentication.
 //
 // Deprecated: Use PATCH
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} with {"policy":
+// /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`} with {"policy":
 // {"public": true}} instead.
 //
 // Deprecated: deprecated
@@ -61,7 +61,7 @@ func (r *BucketPolicyService) New(ctx context.Context, bucketName string, body B
 // requests.
 //
 // Deprecated: Use PATCH
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} with {"policy":
+// /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`} with {"policy":
 // {"public": false}} instead.
 //
 // Deprecated: deprecated
@@ -80,9 +80,9 @@ func (r *BucketPolicyService) Delete(ctx context.Context, bucketName string, bod
 // Returns whether the S3 bucket is currently configured for public read access.
 // Shows if anonymous users can download objects from the bucket via HTTP requests.
 //
-// Deprecated: Use GET
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} instead, which
-// returns policy status along with CORS and lifecycle configuration.
+// Deprecated: Use GET /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`}
+// instead, which returns policy status along with CORS and lifecycle
+// configuration.
 //
 // Deprecated: deprecated
 func (r *BucketPolicyService) Get(ctx context.Context, bucketName string, query BucketPolicyGetParams, opts ...option.RequestOption) (res *bool, err error) {

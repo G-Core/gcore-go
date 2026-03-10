@@ -41,8 +41,8 @@ func NewBucketLifecycleService(opts ...option.RequestOption) (r BucketLifecycleS
 // the expiration policy.
 //
 // Deprecated: Use PATCH
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} with
-// {"lifecycle": {"expiration_days": N}} instead.
+// /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`} with {"lifecycle":
+// {"expiration_days": N}} instead.
 //
 // Deprecated: deprecated
 func (r *BucketLifecycleService) New(ctx context.Context, bucketName string, params BucketLifecycleNewParams, opts ...option.RequestOption) (err error) {
@@ -61,8 +61,8 @@ func (r *BucketLifecycleService) New(ctx context.Context, bucketName string, par
 // expiration. Objects will no longer be automatically deleted based on age.
 //
 // Deprecated: Use PATCH
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} with
-// {"lifecycle": {"expiration_days": null}} instead.
+// /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`} with {"lifecycle":
+// {"expiration_days": null}} instead.
 //
 // Deprecated: deprecated
 func (r *BucketLifecycleService) Delete(ctx context.Context, bucketName string, body BucketLifecycleDeleteParams, opts ...option.RequestOption) (err error) {
