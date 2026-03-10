@@ -44,7 +44,7 @@ func (r *QuotaRequestService) New(ctx context.Context, body QuotaRequestNewParam
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "cloud/v2/limits_request"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Get a list of sent requests to change current quotas and their statuses.
@@ -76,7 +76,7 @@ func (r *QuotaRequestService) Delete(ctx context.Context, requestID int64, opts 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cloud/v2/limits_request/%v", requestID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get detailed information about a specific quota limit request.
@@ -84,7 +84,7 @@ func (r *QuotaRequestService) Get(ctx context.Context, requestID int64, opts ...
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cloud/v2/limits_request/%v", requestID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type QuotaRequestListResponse struct {

@@ -67,11 +67,11 @@ func (r *DomainInsightService) Get(ctx context.Context, insightID string, query 
 	opts = slices.Concat(r.Options, opts)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("waap/v1/domains/%v/insights/%s", query.DomainID, insightID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the status of an insight for a specific domain.
@@ -79,11 +79,11 @@ func (r *DomainInsightService) Replace(ctx context.Context, insightID string, pa
 	opts = slices.Concat(r.Options, opts)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("waap/v1/domains/%v/insights/%s", params.DomainID, insightID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type WaapInsight struct {

@@ -54,7 +54,7 @@ func (r *DNSService) GetAccountOverview(ctx context.Context, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/platform/info"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the dns records from a specific domain or ip.
@@ -62,7 +62,7 @@ func (r *DNSService) Lookup(ctx context.Context, query DNSLookupParams, opts ...
 	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/lookup"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type DNSGetAccountOverviewResponse struct {

@@ -35,7 +35,7 @@ func (r *PickerPresetService) List(ctx context.Context, opts ...option.RequestOp
 	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/pickers/presets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PickerPresetListResponse map[string][]DNSLabelName

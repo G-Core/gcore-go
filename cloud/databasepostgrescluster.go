@@ -51,21 +51,21 @@ func (r *DatabasePostgresClusterService) New(ctx context.Context, params Databas
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/dbaas/postgres/clusters/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // NewAndPoll creates a new PostgreSQL cluster and polls for completion
@@ -108,25 +108,25 @@ func (r *DatabasePostgresClusterService) Update(ctx context.Context, clusterName
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/dbaas/postgres/clusters/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // UpdateAndPoll updates a PostgreSQL cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
@@ -168,17 +168,17 @@ func (r *DatabasePostgresClusterService) List(ctx context.Context, params Databa
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/dbaas/postgres/clusters/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -204,25 +204,25 @@ func (r *DatabasePostgresClusterService) Delete(ctx context.Context, clusterName
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/dbaas/postgres/clusters/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // DeleteAndPoll deletes a PostgreSQL cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
@@ -247,25 +247,25 @@ func (r *DatabasePostgresClusterService) Get(ctx context.Context, clusterName st
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/dbaas/postgres/clusters/%v/%v/%s", query.ProjectID.Value, query.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PostgresCluster struct {

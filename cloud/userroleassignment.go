@@ -43,7 +43,7 @@ func (r *UserRoleAssignmentService) New(ctx context.Context, body UserRoleAssign
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v1/users/assignments"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify an existing role assignment for a user.
@@ -51,7 +51,7 @@ func (r *UserRoleAssignmentService) Update(ctx context.Context, assignmentID int
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cloud/v1/users/assignments/%v", assignmentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all role assignments in the specified scope.
@@ -82,7 +82,7 @@ func (r *UserRoleAssignmentService) Delete(ctx context.Context, assignmentID int
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cloud/v1/users/assignments/%v", assignmentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type RoleAssignment struct {

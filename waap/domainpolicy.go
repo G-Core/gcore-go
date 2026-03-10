@@ -39,11 +39,11 @@ func (r *DomainPolicyService) Toggle(ctx context.Context, policyID string, body 
 	opts = slices.Concat(r.Options, opts)
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("waap/v1/domains/%v/policies/%s/toggle", body.DomainID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Represents the mode of a security rule.

@@ -45,7 +45,7 @@ func (r *UsageReportService) Get(ctx context.Context, body UsageReportGetParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v1/usage_report"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type UsageReport struct {

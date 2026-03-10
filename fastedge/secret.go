@@ -46,7 +46,7 @@ func (r *SecretService) New(ctx context.Context, body SecretNewParams, opts ...o
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/secrets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a secret
@@ -54,7 +54,7 @@ func (r *SecretService) Update(ctx context.Context, id int64, body SecretUpdateP
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List available secrets
@@ -62,7 +62,7 @@ func (r *SecretService) List(ctx context.Context, query SecretListParams, opts .
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/secrets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a secret
@@ -71,7 +71,7 @@ func (r *SecretService) Delete(ctx context.Context, id int64, body SecretDeleteP
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Get secret by id
@@ -79,7 +79,7 @@ func (r *SecretService) Get(ctx context.Context, id int64, opts ...option.Reques
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a secret
@@ -87,7 +87,7 @@ func (r *SecretService) Replace(ctx context.Context, id int64, body SecretReplac
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Secret struct {

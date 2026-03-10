@@ -39,33 +39,33 @@ func (r *RegistryTagService) Delete(ctx context.Context, tagName string, body Re
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return err
 	}
 	if body.RepositoryName == "" {
 		err = errors.New("missing required repository_name parameter")
-		return
+		return err
 	}
 	if body.Digest == "" {
 		err = errors.New("missing required digest parameter")
-		return
+		return err
 	}
 	if tagName == "" {
 		err = errors.New("missing required tag_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories/%s/artifacts/%s/tags/%s", body.ProjectID.Value, body.RegionID.Value, body.RegistryID, body.RepositoryName, body.Digest, tagName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type RegistryTagDeleteParams struct {

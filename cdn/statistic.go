@@ -47,7 +47,7 @@ func (r *StatisticService) GetLogsUsageAggregated(ctx context.Context, query Sta
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/statistics/raw_logs_usage/aggregated"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Logs uploader usage statistics for up to 90 days starting today.
@@ -57,7 +57,7 @@ func (r *StatisticService) GetLogsUsageSeries(ctx context.Context, query Statist
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/statistics/raw_logs_usage/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get aggregated CDN resources statistics.
@@ -69,7 +69,7 @@ func (r *StatisticService) GetResourceUsageAggregated(ctx context.Context, query
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/statistics/aggregate/stats"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get CDN resources statistics for up to 365 days starting today.
@@ -77,7 +77,7 @@ func (r *StatisticService) GetResourceUsageSeries(ctx context.Context, query Sta
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/statistics/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // The number of CDN resources that use origin shielding.
@@ -87,7 +87,7 @@ func (r *StatisticService) GetShieldUsageAggregated(ctx context.Context, query S
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/statistics/shield_usage/aggregated"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get origin shielding usage statistics for up to 365 days starting from today.
@@ -97,7 +97,7 @@ func (r *StatisticService) GetShieldUsageSeries(ctx context.Context, query Stati
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/statistics/shield_usage/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type LogsAggregatedStats struct {

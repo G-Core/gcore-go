@@ -51,7 +51,7 @@ func (r *CredentialService) Recreate(ctx context.Context, storageID int64, body 
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/credentials", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CredentialRecreateParams struct {

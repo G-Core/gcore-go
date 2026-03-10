@@ -40,25 +40,25 @@ func (r *ReservedFixedIPVipCandidatePortService) List(ctx context.Context, portI
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if portID == "" {
 		err = errors.New("missing required port_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/reserved_fixed_ips/%v/%v/%s/available_devices", query.ProjectID.Value, query.RegionID.Value, portID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CandidatePort struct {

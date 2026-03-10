@@ -42,7 +42,7 @@ func (r *CDNResourceRuleService) New(ctx context.Context, resourceID int64, body
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v/rules", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Change rule
@@ -50,7 +50,7 @@ func (r *CDNResourceRuleService) Update(ctx context.Context, ruleID int64, param
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v/rules/%v", params.ResourceID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Get rules list
@@ -58,7 +58,7 @@ func (r *CDNResourceRuleService) List(ctx context.Context, resourceID int64, opt
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v/rules", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete the rule from the system permanently.
@@ -74,7 +74,7 @@ func (r *CDNResourceRuleService) Delete(ctx context.Context, ruleID int64, body 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/rules/%v", body.ResourceID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get rule details
@@ -82,7 +82,7 @@ func (r *CDNResourceRuleService) Get(ctx context.Context, ruleID int64, query CD
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v/rules/%v", query.ResourceID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Change rule
@@ -90,7 +90,7 @@ func (r *CDNResourceRuleService) Replace(ctx context.Context, ruleID int64, para
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v/rules/%v", params.ResourceID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type CDNResourceRule struct {

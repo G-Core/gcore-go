@@ -150,19 +150,19 @@ func (r *ZoneRrsetService) New(ctx context.Context, rrsetType string, params Zon
 	opts = slices.Concat(r.Options, opts)
 	if params.ZoneName == "" {
 		err = errors.New("missing required zoneName parameter")
-		return
+		return nil, err
 	}
 	if params.RrsetName == "" {
 		err = errors.New("missing required rrsetName parameter")
-		return
+		return nil, err
 	}
 	if rrsetType == "" {
 		err = errors.New("missing required rrsetType parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/%s/%s", params.ZoneName, params.RrsetName, rrsetType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // List of RRset.
@@ -170,11 +170,11 @@ func (r *ZoneRrsetService) List(ctx context.Context, zoneName string, query Zone
 	opts = slices.Concat(r.Options, opts)
 	if zoneName == "" {
 		err = errors.New("missing required zoneName parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/rrsets", zoneName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete RRset.
@@ -182,19 +182,19 @@ func (r *ZoneRrsetService) Delete(ctx context.Context, rrsetType string, body Zo
 	opts = slices.Concat(r.Options, opts)
 	if body.ZoneName == "" {
 		err = errors.New("missing required zoneName parameter")
-		return
+		return nil, err
 	}
 	if body.RrsetName == "" {
 		err = errors.New("missing required rrsetName parameter")
-		return
+		return nil, err
 	}
 	if rrsetType == "" {
 		err = errors.New("missing required rrsetType parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/%s/%s", body.ZoneName, body.RrsetName, rrsetType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Particular RRset item info
@@ -202,19 +202,19 @@ func (r *ZoneRrsetService) Get(ctx context.Context, rrsetType string, query Zone
 	opts = slices.Concat(r.Options, opts)
 	if query.ZoneName == "" {
 		err = errors.New("missing required zoneName parameter")
-		return
+		return nil, err
 	}
 	if query.RrsetName == "" {
 		err = errors.New("missing required rrsetName parameter")
-		return
+		return nil, err
 	}
 	if rrsetType == "" {
 		err = errors.New("missing required rrsetType parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/%s/%s", query.ZoneName, query.RrsetName, rrsetType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get failover history for the RRset
@@ -222,19 +222,19 @@ func (r *ZoneRrsetService) GetFailoverLogs(ctx context.Context, rrsetType string
 	opts = slices.Concat(r.Options, opts)
 	if params.ZoneName == "" {
 		err = errors.New("missing required zoneName parameter")
-		return
+		return nil, err
 	}
 	if params.RrsetName == "" {
 		err = errors.New("missing required rrsetName parameter")
-		return
+		return nil, err
 	}
 	if rrsetType == "" {
 		err = errors.New("missing required rrsetType parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/%s/%s/failover/log", params.ZoneName, params.RrsetName, rrsetType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Create/update RRset.
@@ -242,19 +242,19 @@ func (r *ZoneRrsetService) Replace(ctx context.Context, rrsetType string, params
 	opts = slices.Concat(r.Options, opts)
 	if params.ZoneName == "" {
 		err = errors.New("missing required zoneName parameter")
-		return
+		return nil, err
 	}
 	if params.RrsetName == "" {
 		err = errors.New("missing required rrsetName parameter")
-		return
+		return nil, err
 	}
 	if rrsetType == "" {
 		err = errors.New("missing required rrsetType parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/%s/%s", params.ZoneName, params.RrsetName, rrsetType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type DNSFailoverLog []DNSFailoverLogItem

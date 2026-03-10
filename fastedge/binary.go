@@ -43,7 +43,7 @@ func (r *BinaryService) New(ctx context.Context, body io.Reader, opts ...option.
 	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	path := "fastedge/v1/binaries/raw"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List binaries
@@ -51,7 +51,7 @@ func (r *BinaryService) List(ctx context.Context, opts ...option.RequestOption) 
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/binaries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a binary
@@ -60,7 +60,7 @@ func (r *BinaryService) Delete(ctx context.Context, id int64, opts ...option.Req
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("fastedge/v1/binaries/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get binary
@@ -68,7 +68,7 @@ func (r *BinaryService) Get(ctx context.Context, id int64, opts ...option.Reques
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("fastedge/v1/binaries/%v", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Binary struct {

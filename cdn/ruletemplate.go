@@ -39,7 +39,7 @@ func (r *RuleTemplateService) New(ctx context.Context, body RuleTemplateNewParam
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/resources/rule_templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Change rule template
@@ -47,7 +47,7 @@ func (r *RuleTemplateService) Update(ctx context.Context, ruleTemplateID int64, 
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/rule_templates/%v", ruleTemplateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get rule templates list
@@ -55,7 +55,7 @@ func (r *RuleTemplateService) List(ctx context.Context, opts ...option.RequestOp
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/resources/rule_templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete rule template
@@ -64,7 +64,7 @@ func (r *RuleTemplateService) Delete(ctx context.Context, ruleTemplateID int64, 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/resources/rule_templates/%v", ruleTemplateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get rule template details
@@ -72,7 +72,7 @@ func (r *RuleTemplateService) Get(ctx context.Context, ruleTemplateID int64, opt
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/rule_templates/%v", ruleTemplateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Change rule template
@@ -80,7 +80,7 @@ func (r *RuleTemplateService) Replace(ctx context.Context, ruleTemplateID int64,
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/rule_templates/%v", ruleTemplateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type RuleTemplate struct {

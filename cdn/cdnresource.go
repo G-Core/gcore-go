@@ -47,7 +47,7 @@ func (r *CDNResourceService) New(ctx context.Context, body CDNResourceNewParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/resources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Change CDN resource
@@ -55,7 +55,7 @@ func (r *CDNResourceService) Update(ctx context.Context, resourceID int64, body 
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get information about all CDN resources in your account.
@@ -63,7 +63,7 @@ func (r *CDNResourceService) List(ctx context.Context, query CDNResourceListPara
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/resources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete the CDN resource from the system permanently.
@@ -82,7 +82,7 @@ func (r *CDNResourceService) Delete(ctx context.Context, resourceID int64, opts 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // DeactivateAndDelete is a utility method that first deactivates the CDN resource
@@ -108,7 +108,7 @@ func (r *CDNResourceService) Get(ctx context.Context, resourceID int64, opts ...
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Pre-populate files to a CDN cache before users requests. Prefetch is recommended
@@ -126,7 +126,7 @@ func (r *CDNResourceService) Prefetch(ctx context.Context, resourceID int64, bod
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/prefetch", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Check whether a Let's Encrypt certificate can be issued for the CDN resource.
@@ -135,7 +135,7 @@ func (r *CDNResourceService) PrevalidateSslLeCertificate(ctx context.Context, re
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/ssl/le/pre-validate", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Delete cache from CDN servers. This is necessary to update CDN content.
@@ -152,7 +152,7 @@ func (r *CDNResourceService) Purge(ctx context.Context, resourceID int64, body C
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/purge", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Change CDN resource
@@ -160,7 +160,7 @@ func (r *CDNResourceService) Replace(ctx context.Context, resourceID int64, body
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CDNResource struct {

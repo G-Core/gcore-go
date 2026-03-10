@@ -42,25 +42,25 @@ func (r *LoadBalancerPoolHealthMonitorService) New(ctx context.Context, poolID s
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/lbpools/%v/%v/%s/healthmonitor", params.ProjectID.Value, params.RegionID.Value, poolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Removes the health monitor from a load balancer pool. After deletion, the pool
@@ -71,25 +71,25 @@ func (r *LoadBalancerPoolHealthMonitorService) Delete(ctx context.Context, poolI
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return err
 	}
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("cloud/v1/lbpools/%v/%v/%s/healthmonitor", body.ProjectID.Value, body.RegionID.Value, poolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type LoadBalancerPoolHealthMonitorNewParams struct {

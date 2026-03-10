@@ -41,25 +41,25 @@ func (r *GPUVirtualClusterInterfaceService) List(ctx context.Context, clusterID 
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s/interfaces", query.ProjectID.Value, query.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type GPUVirtualInterface struct {

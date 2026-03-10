@@ -43,7 +43,7 @@ func (r *RestreamService) New(ctx context.Context, body RestreamNewParams, opts 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "streaming/restreams"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Updates restream settings
@@ -51,7 +51,7 @@ func (r *RestreamService) Update(ctx context.Context, restreamID int64, body Res
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/restreams/%v", restreamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of created restreams
@@ -83,7 +83,7 @@ func (r *RestreamService) Delete(ctx context.Context, restreamID int64, opts ...
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/restreams/%v", restreamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Returns restream details
@@ -91,7 +91,7 @@ func (r *RestreamService) Get(ctx context.Context, restreamID int64, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/restreams/%v", restreamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Restream struct {

@@ -54,7 +54,7 @@ func (r *ZoneService) New(ctx context.Context, body ZoneNewParams, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/zones"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Show created zones with pagination managed by limit and offset params. All query
@@ -63,7 +63,7 @@ func (r *ZoneService) List(ctx context.Context, query ZoneListParams, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/zones"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete DNS zone and its records and raws.
@@ -71,11 +71,11 @@ func (r *ZoneService) Delete(ctx context.Context, name string, opts ...option.Re
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s", name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns delegation status for specified domain name. This endpoint has rate
@@ -84,11 +84,11 @@ func (r *ZoneService) CheckDelegationStatus(ctx context.Context, name string, op
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/analyze/%s/delegation-status", name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Disable DNS zone.
@@ -96,11 +96,11 @@ func (r *ZoneService) Disable(ctx context.Context, name string, opts ...option.R
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/disable", name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Enable DNS zone.
@@ -108,11 +108,11 @@ func (r *ZoneService) Enable(ctx context.Context, name string, opts ...option.Re
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/enable", name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Export zone to bind9 format.
@@ -120,11 +120,11 @@ func (r *ZoneService) Export(ctx context.Context, zoneName string, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	if zoneName == "" {
 		err = errors.New("missing required zoneName parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/export", zoneName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Zone info by zone name.
@@ -132,11 +132,11 @@ func (r *ZoneService) Get(ctx context.Context, name string, opts ...option.Reque
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s", name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Statistics of DNS zone in common and by record types.
@@ -152,11 +152,11 @@ func (r *ZoneService) GetStatistics(ctx context.Context, name string, query Zone
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/statistics", name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Import zone in bind9 format.
@@ -164,11 +164,11 @@ func (r *ZoneService) Import(ctx context.Context, zoneName string, body ZoneImpo
 	opts = slices.Concat(r.Options, opts)
 	if zoneName == "" {
 		err = errors.New("missing required zoneName parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/import", zoneName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Update DNS zone and SOA record.
@@ -176,11 +176,11 @@ func (r *ZoneService) Replace(ctx context.Context, name string, body ZoneReplace
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s", name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // NameServer

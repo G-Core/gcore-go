@@ -94,7 +94,7 @@ func (r *StreamClipService) New(ctx context.Context, streamID int64, body Stream
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v/clip_recording", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get list of non expired instant clips for a stream.
@@ -122,7 +122,7 @@ func (r *StreamClipService) List(ctx context.Context, streamID int64, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/streams/%v/clip_recording", streamID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Clip struct {

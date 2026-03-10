@@ -56,11 +56,11 @@ func (r *BucketService) New(ctx context.Context, bucketName string, body BucketN
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s", body.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Returns the list of buckets for the storage in a wrapped response.
@@ -114,11 +114,11 @@ func (r *BucketService) Delete(ctx context.Context, bucketName string, body Buck
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s", body.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // BucketDtoV2 for response

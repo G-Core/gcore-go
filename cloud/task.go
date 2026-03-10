@@ -68,7 +68,7 @@ func (r *TaskService) AcknowledgeAll(ctx context.Context, body TaskAcknowledgeAl
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "cloud/v1/tasks/acknowledge_all"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Acknowledge one task
@@ -76,11 +76,11 @@ func (r *TaskService) AcknowledgeOne(ctx context.Context, taskID string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/tasks/%s/acknowledge", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get task
@@ -88,11 +88,11 @@ func (r *TaskService) Get(ctx context.Context, taskID string, opts ...option.Req
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/tasks/%s", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Poll for task status until it is finished, an error occurs, or the context is done. It uses a default polling interval

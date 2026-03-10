@@ -50,11 +50,11 @@ func (r *BucketLifecycleService) New(ctx context.Context, bucketName string, par
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s/lifecycle", params.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
-	return
+	return err
 }
 
 // Removes all lifecycle rules from an S3 bucket, disabling automatic object
@@ -70,11 +70,11 @@ func (r *BucketLifecycleService) Delete(ctx context.Context, bucketName string, 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s/lifecycle", body.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type BucketLifecycleNewParams struct {

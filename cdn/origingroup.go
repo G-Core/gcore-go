@@ -45,7 +45,7 @@ func (r *OriginGroupService) New(ctx context.Context, body OriginGroupNewParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/origin_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Change origin group
@@ -53,7 +53,7 @@ func (r *OriginGroupService) Update(ctx context.Context, originGroupID int64, bo
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/origin_groups/%v", originGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all origin groups and related origin sources.
@@ -61,7 +61,7 @@ func (r *OriginGroupService) List(ctx context.Context, query OriginGroupListPara
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/origin_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete origin group
@@ -70,7 +70,7 @@ func (r *OriginGroupService) Delete(ctx context.Context, originGroupID int64, op
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("cdn/origin_groups/%v", originGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get origin group details
@@ -78,7 +78,7 @@ func (r *OriginGroupService) Get(ctx context.Context, originGroupID int64, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/origin_groups/%v", originGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Change origin group
@@ -86,7 +86,7 @@ func (r *OriginGroupService) Replace(ctx context.Context, originGroupID int64, b
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/origin_groups/%v", originGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // OriginGroupsUnion contains all possible properties and values from

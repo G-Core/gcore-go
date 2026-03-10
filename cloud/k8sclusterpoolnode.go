@@ -40,29 +40,29 @@ func (r *K8SClusterPoolNodeService) List(ctx context.Context, poolName string, p
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if params.ClusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return nil, err
 	}
 	if poolName == "" {
 		err = errors.New("missing required pool_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/pools/%s/instances", params.ProjectID.Value, params.RegionID.Value, params.ClusterName, poolName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // After deletion, the node will be automatically recreated to maintain the desired
@@ -72,33 +72,33 @@ func (r *K8SClusterPoolNodeService) Delete(ctx context.Context, instanceID strin
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return err
 	}
 	if body.ClusterName == "" {
 		err = errors.New("missing required cluster_name parameter")
-		return
+		return err
 	}
 	if body.PoolName == "" {
 		err = errors.New("missing required pool_name parameter")
-		return
+		return err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/pools/%s/instances/%s", body.ProjectID.Value, body.RegionID.Value, body.ClusterName, body.PoolName, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type K8SClusterPoolNodeListParams struct {

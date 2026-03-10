@@ -117,7 +117,7 @@ func (r *PlaylistService) New(ctx context.Context, body PlaylistNewParams, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/playlists"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Change playlist
@@ -125,7 +125,7 @@ func (r *PlaylistService) Update(ctx context.Context, playlistID int64, body Pla
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/playlists/%v", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of created playlists
@@ -157,7 +157,7 @@ func (r *PlaylistService) Delete(ctx context.Context, playlistID int64, opts ...
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("streaming/playlists/%v", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Returns a playlist details
@@ -165,7 +165,7 @@ func (r *PlaylistService) Get(ctx context.Context, playlistID int64, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/playlists/%v", playlistID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Playlist struct {

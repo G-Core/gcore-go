@@ -60,7 +60,7 @@ func (r *IamService) GetAccountOverview(ctx context.Context, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	path := "iam/clients/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountOverview struct {

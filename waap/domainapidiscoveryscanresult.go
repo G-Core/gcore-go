@@ -67,11 +67,11 @@ func (r *DomainAPIDiscoveryScanResultService) Get(ctx context.Context, scanID st
 	opts = slices.Concat(r.Options, opts)
 	if scanID == "" {
 		err = errors.New("missing required scan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("waap/v1/domains/%v/api-discovery/scan-results/%s", query.DomainID, scanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // The result of a scan

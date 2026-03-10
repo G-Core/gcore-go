@@ -37,7 +37,7 @@ func (r *AdvancedRuleService) List(ctx context.Context, opts ...option.RequestOp
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/advanced-rules/descriptor"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Advanced rules descriptor object

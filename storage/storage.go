@@ -56,7 +56,7 @@ func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/provisioning/v2/storage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates storage configuration such as expiration date and server alias. Used for
@@ -70,7 +70,7 @@ func (r *StorageService) Update(ctx context.Context, storageID int64, body Stora
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/provisioning/v2/storage/%v", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns storages with the same filtering and pagination as v2, but in a
@@ -127,7 +127,7 @@ func (r *StorageService) Delete(ctx context.Context, storageID int64, opts ...op
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Retrieves detailed information about a specific storage including its
@@ -141,7 +141,7 @@ func (r *StorageService) Get(ctx context.Context, storageID int64, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Associates an SSH public key with an SFTP storage, enabling passwordless
@@ -157,7 +157,7 @@ func (r *StorageService) LinkSSHKey(ctx context.Context, keyID int64, body Stora
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/key/%v/link", body.StorageID, keyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Restores a previously deleted S3 storage if it was deleted within the last 2
@@ -171,7 +171,7 @@ func (r *StorageService) Restore(ctx context.Context, storageID int64, body Stor
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/restore", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Removes SSH key association from an SFTP storage, disabling passwordless
@@ -187,7 +187,7 @@ func (r *StorageService) UnlinkSSHKey(ctx context.Context, keyID int64, body Sto
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/key/%v/unlink", body.StorageID, keyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type Storage struct {

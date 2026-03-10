@@ -45,25 +45,25 @@ func (r *GPUVirtualClusterServerService) List(ctx context.Context, clusterID str
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s/servers", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a server from a virtual GPU cluster and its associated resources.
@@ -71,29 +71,29 @@ func (r *GPUVirtualClusterServerService) Delete(ctx context.Context, serverID st
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if params.ClusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	if serverID == "" {
 		err = errors.New("missing required server_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s/servers/%s", params.ProjectID.Value, params.RegionID.Value, params.ClusterID, serverID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // DeleteAndPoll deletes a server from a virtual GPU cluster and polls for completion of the first task. Use the
