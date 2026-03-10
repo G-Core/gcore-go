@@ -39,7 +39,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Cloud.Projects.New(context.Background(), cloud.ProjectNewParams{
+	_, _ = client.Cloud.Projects.New(context.Background(), cloud.ProjectNewParams{
 		Name: "my-project",
 	})
 	if userAgent != fmt.Sprintf("Gcore/Go %s", internal.PackageVersion) {
