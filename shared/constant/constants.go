@@ -74,7 +74,6 @@ type Standard string                        // Always "standard"
 type Start string                           // Always "start"
 type Stop string                            // Always "stop"
 type Subnet string                          // Always "subnet"
-type UpdateTags string                      // Always "update_tags"
 type Vast string                            // Always "vast"
 type Volume string                          // Always "volume"
 
@@ -138,7 +137,6 @@ func (c Standard) Default() Standard                           { return "standar
 func (c Start) Default() Start                                 { return "start" }
 func (c Stop) Default() Stop                                   { return "stop" }
 func (c Subnet) Default() Subnet                               { return "subnet" }
-func (c UpdateTags) Default() UpdateTags                       { return "update_tags" }
 func (c Vast) Default() Vast                                   { return "vast" }
 func (c Volume) Default() Volume                               { return "volume" }
 
@@ -198,7 +196,6 @@ func (c Standard) MarshalJSON() ([]byte, error)                        { return 
 func (c Start) MarshalJSON() ([]byte, error)                           { return marshalString(c) }
 func (c Stop) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c Subnet) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
-func (c UpdateTags) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
 func (c Vast) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c Volume) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 

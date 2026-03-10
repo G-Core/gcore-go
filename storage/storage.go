@@ -48,8 +48,8 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 // Creates a new storage instance (S3 or SFTP) in the specified location and
 // returns the storage details including credentials.
 //
-// Deprecated: Use POST /provisioning/v3/storages/`s3_compatible` for S3 storage or
-// POST /provisioning/v3/storages/sftp for SFTP storage instead.
+// Deprecated: Use POST /v4/`object_storages` for S3 storage or POST
+// /v4/`sftp_storages` for SFTP storage instead.
 //
 // Deprecated: deprecated
 func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ...option.RequestOption) (res *Storage, err error) {
@@ -62,8 +62,8 @@ func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ..
 // Updates storage configuration such as expiration date and server alias. Used for
 // SFTP storages.
 //
-// Deprecated: Use PATCH /provisioning/v3/storages/sftp/{`storage_id`} for SFTP
-// storage updates instead.
+// Deprecated: Use PATCH /v4/`sftp_storages`/{`storage_id`} for SFTP storage
+// updates instead.
 //
 // Deprecated: deprecated
 func (r *StorageService) Update(ctx context.Context, storageID int64, body StorageUpdateParams, opts ...option.RequestOption) (res *Storage, err error) {
@@ -79,6 +79,11 @@ func (r *StorageService) Update(ctx context.Context, storageID int64, body Stora
 // Response format: count: total number of storages matching the filter
 // (independent of pagination) results: the current page of storages according to
 // limit/offset
+//
+// Deprecated: Use GET /v4/`object_storages` for S3 storages or GET
+// /v4/`sftp_storages` for SFTP storages instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) List(ctx context.Context, query StorageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Storage], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -102,14 +107,19 @@ func (r *StorageService) List(ctx context.Context, query StorageListParams, opts
 // Response format: count: total number of storages matching the filter
 // (independent of pagination) results: the current page of storages according to
 // limit/offset
+//
+// Deprecated: Use GET /v4/`object_storages` for S3 storages or GET
+// /v4/`sftp_storages` for SFTP storages instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) ListAutoPaging(ctx context.Context, query StorageListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Storage] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Permanently deletes a storage and all its data. This action cannot be undone.
 //
-// Deprecated: Use DELETE /provisioning/v3/storages/`s3_compatible`/{`storage_id`}
-// or DELETE /provisioning/v3/storages/sftp/{`storage_id`} instead.
+// Deprecated: Use DELETE /v4/`object_storages`/{`storage_id`} or DELETE
+// /v4/`sftp_storages`/{`storage_id`} instead.
 //
 // Deprecated: deprecated
 func (r *StorageService) Delete(ctx context.Context, storageID int64, opts ...option.RequestOption) (err error) {
@@ -122,6 +132,11 @@ func (r *StorageService) Delete(ctx context.Context, storageID int64, opts ...op
 
 // Retrieves detailed information about a specific storage including its
 // configuration, credentials, and current status.
+//
+// Deprecated: Use GET /v4/`object_storages`/{`storage_id`} for S3 storages or GET
+// /v4/`sftp_storages`/{`storage_id`} for SFTP storages instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) Get(ctx context.Context, storageID int64, opts ...option.RequestOption) (res *Storage, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v", storageID)
@@ -133,9 +148,7 @@ func (r *StorageService) Get(ctx context.Context, storageID int64, opts ...optio
 // authentication. Only works with SFTP storage types - not applicable to
 // S3-compatible storage.
 //
-// Deprecated: Use PATCH /provisioning/v3/storages/sftp/{`storage_id`} with
-// `ssh_key_ids` array or PATCH
-// /provisioning/v3/storages/sftp/{`storage_id`}/credentials with `ssh_key_ids`
+// Deprecated: Use PATCH /v4/`sftp_storages`/{`storage_id`} with `ssh_key_ids`
 // array instead.
 //
 // Deprecated: deprecated
@@ -149,6 +162,10 @@ func (r *StorageService) LinkSSHKey(ctx context.Context, keyID int64, body Stora
 
 // Restores a previously deleted S3 storage if it was deleted within the last 2
 // weeks. SFTP storages cannot be restored.
+//
+// Deprecated: Use POST /v4/`object_storages`/{`storage_id`}/restore instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) Restore(ctx context.Context, storageID int64, body StorageRestoreParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -161,9 +178,7 @@ func (r *StorageService) Restore(ctx context.Context, storageID int64, body Stor
 // authentication for that key. The key itself remains available for other
 // storages.
 //
-// Deprecated: Use PATCH /provisioning/v3/storages/sftp/{`storage_id`} with
-// `ssh_key_ids` array or PATCH
-// /provisioning/v3/storages/sftp/{`storage_id`}/credentials with `ssh_key_ids`
+// Deprecated: Use PATCH /v4/`sftp_storages`/{`storage_id`} with `ssh_key_ids`
 // array instead.
 //
 // Deprecated: deprecated

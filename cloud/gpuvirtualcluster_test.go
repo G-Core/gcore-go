@@ -78,7 +78,7 @@ func TestGPUVirtualClusterNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestGPUVirtualClusterUpdate(t *testing.T) {
+func TestGPUVirtualClusterUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -96,7 +96,10 @@ func TestGPUVirtualClusterUpdate(t *testing.T) {
 		cloud.GPUVirtualClusterUpdateParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(7),
-			Name:      "gpu-cluster-1",
+			Name:      gcore.String("gpu-cluster-1"),
+			Tags: cloud.TagUpdateMap{
+				"foo": "string",
+			},
 		},
 	)
 	if err != nil {

@@ -356,16 +356,16 @@ type LoadBalancerL7PolicyRuleReplaceParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// L7 policy ID
 	L7policyID string `path:"l7policy_id" api:"required" json:"-"`
-	// The comparison type for the L7 rule
-	//
-	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
-	CompareType LoadBalancerL7PolicyRuleReplaceParamsCompareType `json:"compare_type,omitzero" api:"required"`
 	// When true the logic of the rule is inverted.
 	Invert param.Opt[bool] `json:"invert,omitzero"`
 	// The key to use for the comparison. Required for COOKIE and HEADER `type` only.
 	Key param.Opt[string] `json:"key,omitzero"`
 	// The value to use for the comparison
 	Value param.Opt[string] `json:"value,omitzero"`
+	// The comparison type for the L7 rule
+	//
+	// Any of "CONTAINS", "ENDS_WITH", "EQUAL_TO", "REGEX", "STARTS_WITH".
+	CompareType LoadBalancerL7PolicyRuleReplaceParamsCompareType `json:"compare_type,omitzero"`
 	// A list of simple strings assigned to the l7 rule
 	Tags []string `json:"tags,omitzero"`
 	// The L7 rule type
