@@ -67,6 +67,39 @@ func TestGPUBaremetalClusterNewWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestGPUBaremetalClusterUpdateWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.GPUBaremetal.Clusters.Update(
+		context.TODO(),
+		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
+		cloud.GPUBaremetalClusterUpdateParams{
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
+			Name:      gcore.String("gpu-cluster-1"),
+			Tags: cloud.TagUpdateMap{
+				"foo": "string",
+			},
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestGPUBaremetalClusterListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
