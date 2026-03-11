@@ -74,6 +74,36 @@ func (r *GPUBaremetalClusterService) New(ctx context.Context, params GPUBaremeta
 	return res, err
 }
 
+// Update the name of an existing bare metal GPU cluster.
+//
+// Update tags for a bare metal GPU cluster (and apply to all its nodes) using JSON
+// Merge Patch semantics (RFC 7386). To add or update tags, provide key-value
+// pairs. To remove a tag, set its value to null.
+func (r *GPUBaremetalClusterService) Update(ctx context.Context, clusterID string, params GPUBaremetalClusterUpdateParams, opts ...option.RequestOption) (res *GPUBaremetalCluster, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	if clusterID == "" {
+		err = errors.New("missing required cluster_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s", params.ProjectID.Value, params.RegionID.Value, clusterID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return res, err
+}
+
 // List all bare metal GPU clusters in the specified project and region.
 func (r *GPUBaremetalClusterService) List(ctx context.Context, params GPUBaremetalClusterListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[GPUBaremetalCluster], err error) {
 	var raw *http.Response
@@ -1171,6 +1201,46 @@ func (r GPUBaremetalClusterNewParamsServersSettingsSecurityGroup) MarshalJSON() 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GPUBaremetalClusterNewParamsServersSettingsSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GPUBaremetalClusterUpdateParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Cluster name
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified.
+	//
+	// **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
+	//     adds/updates 'environment' and 'cost_center' while removing 'deprecated_tag',
+	//     preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
