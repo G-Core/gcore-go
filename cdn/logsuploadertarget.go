@@ -1625,6 +1625,22 @@ func (u *LogsUploaderTargetNewParamsConfigAzureBlobConfigAuthConfigUnion) asAny(
 	return nil
 }
 
+// GetAccountKey returns the account key if the AccountKey variant is set
+func (u *LogsUploaderTargetNewParamsConfigAzureBlobConfigAuthConfigUnion) GetAccountKey() *string {
+	if u.OfLogsUploaderTargetNewsConfigAzureBlobConfigAuthConfigAccountKey != nil {
+		return &u.OfLogsUploaderTargetNewsConfigAzureBlobConfigAuthConfigAccountKey.AccountKey
+	}
+	return nil
+}
+
+// GetToken returns the token if the Token variant is set
+func (u *LogsUploaderTargetNewParamsConfigAzureBlobConfigAuthConfigUnion) GetToken() *string {
+	if u.OfLogsUploaderTargetNewsConfigAzureBlobConfigAuthConfigToken != nil {
+		return (*string)(&u.OfLogsUploaderTargetNewsConfigAzureBlobConfigAuthConfigToken.Token)
+	}
+	return nil
+}
+
 // The property AccountKey is required.
 type LogsUploaderTargetNewParamsConfigAzureBlobConfigAuthConfigAccountKey struct {
 	// Azure Blob Storage account key.
@@ -2480,6 +2496,22 @@ func (u *LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuthConfigUnion) asA
 		return u.OfLogsUploaderTargetUpdatesConfigAzureBlobConfigAuthConfigAccountKey
 	} else if !param.IsOmitted(u.OfLogsUploaderTargetUpdatesConfigAzureBlobConfigAuthConfigToken) {
 		return u.OfLogsUploaderTargetUpdatesConfigAzureBlobConfigAuthConfigToken
+	}
+	return nil
+}
+
+// GetAccountKey returns the account key if the AccountKey variant is set
+func (u *LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuthConfigUnion) GetAccountKey() *string {
+	if u.OfLogsUploaderTargetUpdatesConfigAzureBlobConfigAuthConfigAccountKey != nil {
+		return &u.OfLogsUploaderTargetUpdatesConfigAzureBlobConfigAuthConfigAccountKey.AccountKey
+	}
+	return nil
+}
+
+// GetToken returns the token if the Token variant is set
+func (u *LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuthConfigUnion) GetToken() *string {
+	if u.OfLogsUploaderTargetUpdatesConfigAzureBlobConfigAuthConfigToken != nil {
+		return (*string)(&u.OfLogsUploaderTargetUpdatesConfigAzureBlobConfigAuthConfigToken.Token)
 	}
 	return nil
 }
@@ -3356,6 +3388,22 @@ func (u *LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuthConfigUnion) as
 		return u.OfLogsUploaderTargetReplacesConfigAzureBlobConfigAuthConfigAccountKey
 	} else if !param.IsOmitted(u.OfLogsUploaderTargetReplacesConfigAzureBlobConfigAuthConfigToken) {
 		return u.OfLogsUploaderTargetReplacesConfigAzureBlobConfigAuthConfigToken
+	}
+	return nil
+}
+
+// GetAccountKey returns the account key if the AccountKey variant is set
+func (u *LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuthConfigUnion) GetAccountKey() *string {
+	if u.OfLogsUploaderTargetReplacesConfigAzureBlobConfigAuthConfigAccountKey != nil {
+		return &u.OfLogsUploaderTargetReplacesConfigAzureBlobConfigAuthConfigAccountKey.AccountKey
+	}
+	return nil
+}
+
+// GetToken returns the token if the Token variant is set
+func (u *LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuthConfigUnion) GetToken() *string {
+	if u.OfLogsUploaderTargetReplacesConfigAzureBlobConfigAuthConfigToken != nil {
+		return (*string)(&u.OfLogsUploaderTargetReplacesConfigAzureBlobConfigAuthConfigToken.Token)
 	}
 	return nil
 }
