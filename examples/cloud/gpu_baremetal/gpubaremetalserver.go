@@ -9,14 +9,14 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
-func listGPUBaremetalClusterServers(client *gcore.Client, clusterID string) {
+func listGPUBaremetalClusterServers(client *gcore.Client, clusterID string) string {
 	fmt.Println("\n=== LIST GPU BAREMETAL CLUSTER SERVERS ===")
 
 	params := cloud.GPUBaremetalClusterServerListParams{}
 	servers, err := client.Cloud.GPUBaremetal.Clusters.Servers.List(context.Background(), clusterID, params)
 	if err != nil {
 		fmt.Printf("Error listing GPU baremetal cluster servers: %v\n", err)
-		return
+		return ""
 	}
 
 	displayCount := 3
@@ -32,6 +32,12 @@ func listGPUBaremetalClusterServers(client *gcore.Client, clusterID string) {
 
 	fmt.Printf("Total GPU baremetal cluster servers: %d\n", len(servers.Results))
 	fmt.Println("===============================")
+
+	// Return the first server ID for interface operations
+	if len(servers.Results) > 0 {
+		return servers.Results[0].ID
+	}
+	return ""
 }
 
 func getGPUBaremetalClusterServerConsole(client *gcore.Client, serverID string) {

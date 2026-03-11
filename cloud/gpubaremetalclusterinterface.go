@@ -23,6 +23,7 @@ import (
 // the [NewGPUBaremetalClusterInterfaceService] method instead.
 type GPUBaremetalClusterInterfaceService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewGPUBaremetalClusterInterfaceService generates a new service that applies the
@@ -31,6 +32,7 @@ type GPUBaremetalClusterInterfaceService struct {
 func NewGPUBaremetalClusterInterfaceService(opts ...option.RequestOption) (r GPUBaremetalClusterInterfaceService) {
 	r = GPUBaremetalClusterInterfaceService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -110,6 +112,38 @@ func (r *GPUBaremetalClusterInterfaceService) Detach(ctx context.Context, instan
 	path := fmt.Sprintf("cloud/v1/ai/clusters/%v/%v/%s/detach_interface", params.ProjectID.Value, params.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
+}
+
+// AttachAndPoll attaches an interface to a bare metal GPU cluster server and polls for completion of the first task.
+// Use the [TaskService.Poll] method if you need to poll for all tasks.
+func (r *GPUBaremetalClusterInterfaceService) AttachAndPoll(ctx context.Context, instanceID string, params GPUBaremetalClusterInterfaceAttachParams, opts ...option.RequestOption) error {
+	resource, err := r.Attach(ctx, instanceID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
+}
+
+// DetachAndPoll detaches an interface from a bare metal GPU cluster server and polls for completion of the first task.
+// Use the [TaskService.Poll] method if you need to poll for all tasks.
+func (r *GPUBaremetalClusterInterfaceService) DetachAndPoll(ctx context.Context, instanceID string, params GPUBaremetalClusterInterfaceDetachParams, opts ...option.RequestOption) error {
+	resource, err := r.Detach(ctx, instanceID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }
 
 type GPUBaremetalClusterInterfaceListParams struct {
