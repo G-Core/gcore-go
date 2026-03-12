@@ -425,7 +425,7 @@ type StorageListParams struct {
 	OrderDirection StorageListParamsOrderDirection `query:"order_direction,omitzero" json:"-"`
 	// Filter by storage status
 	//
-	// Any of "active", "suspended", "deleted", "pending".
+	// Any of "active", "creating", "ok", "updating", "deleting", "deleted".
 	Status StorageListParamsStatus `query:"status,omitzero" json:"-"`
 	// Filter by storage type
 	//
@@ -454,10 +454,12 @@ const (
 type StorageListParamsStatus string
 
 const (
-	StorageListParamsStatusActive    StorageListParamsStatus = "active"
-	StorageListParamsStatusSuspended StorageListParamsStatus = "suspended"
-	StorageListParamsStatusDeleted   StorageListParamsStatus = "deleted"
-	StorageListParamsStatusPending   StorageListParamsStatus = "pending"
+	StorageListParamsStatusActive   StorageListParamsStatus = "active"
+	StorageListParamsStatusCreating StorageListParamsStatus = "creating"
+	StorageListParamsStatusOk       StorageListParamsStatus = "ok"
+	StorageListParamsStatusUpdating StorageListParamsStatus = "updating"
+	StorageListParamsStatusDeleting StorageListParamsStatus = "deleting"
+	StorageListParamsStatusDeleted  StorageListParamsStatus = "deleted"
 )
 
 // Filter by storage type
