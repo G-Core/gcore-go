@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -198,7 +199,7 @@ type Storage struct {
 	// Client identifier who owns this storage
 	ClientID int64 `json:"client_id" api:"required"`
 	// ISO 8601 timestamp when the storage was created
-	CreatedAt string `json:"created_at" api:"required"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Geographic location code where the storage is provisioned
 	Location string `json:"location" api:"required"`
 	// User-defined name for the storage instance
@@ -222,11 +223,11 @@ type Storage struct {
 	CustomConfigFile bool `json:"custom_config_file"`
 	// ISO 8601 timestamp when the storage was deleted (only present for deleted
 	// storages)
-	DeletedAt string `json:"deleted_at"`
+	DeletedAt time.Time `json:"deleted_at" format:"date-time"`
 	// Whether HTTP access is disabled for this storage (HTTPS only)
 	DisableHTTP bool `json:"disable_http"`
 	// ISO 8601 timestamp when the storage will expire (if set)
-	Expires string `json:"expires"`
+	Expires time.Time `json:"expires" format:"date-time"`
 	// Custom URL rewrite rules for the storage (admin-configurable)
 	RewriteRules map[string]string `json:"rewrite_rules"`
 	// Custom domain alias for accessing the storage
@@ -308,7 +309,7 @@ type StorageCredentialsKey struct {
 	// Unique identifier for the SSH key
 	ID int64 `json:"id"`
 	// ISO 8601 timestamp when the SSH key was created
-	CreatedAt string `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// User-defined name for the SSH key
 	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

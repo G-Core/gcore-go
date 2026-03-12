@@ -55,7 +55,8 @@ func NewFastedgeService(opts ...option.RequestOption) (r FastedgeService) {
 	return
 }
 
-// Get status and limits for the client
+// Retrieve the authenticated client's account status, resource quotas, and usage
+// limits. Shows current plan, available resources, and any active restrictions.
 func (r *FastedgeService) GetAccountOverview(ctx context.Context, opts ...option.RequestOption) (res *Client, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/me"
@@ -79,8 +80,6 @@ type Client struct {
 	// Status code:
 	// 1 - enabled
 	// 2 - disabled
-	// 3 - hourly call limit exceeded
-	// 4 - daily call limit exceeded
 	// 5 - suspended
 	Status int64 `json:"status" api:"required"`
 	// Plan name

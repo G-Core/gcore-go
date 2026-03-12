@@ -30,8 +30,8 @@ func TestKvStoreNewWithOptionalParams(t *testing.T) {
 		KvStore: fastedge.KvStoreParam{
 			Name: "name",
 			Byod: fastedge.KvStoreByodParam{
-				Prefix: "prefix",
-				URL:    "url",
+				Prefix: "app:prod:",
+				URL:    "redis://redis.example.com:6379/0",
 			},
 			Comment: gcore.String("comment"),
 		},
@@ -58,89 +58,10 @@ func TestKvStoreListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Fastedge.KvStores.List(context.TODO(), fastedge.KvStoreListParams{
-		AppID:  gcore.Int(0),
-		Limit:  gcore.Int(0),
+		AppID:  gcore.Int(1),
+		Limit:  gcore.Int(1),
 		Offset: gcore.Int(0),
 	})
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestKvStoreDelete(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	err := client.Fastedge.KvStores.Delete(context.TODO(), 0)
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestKvStoreGet(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Fastedge.KvStores.Get(context.TODO(), 0)
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestKvStoreReplaceWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Fastedge.KvStores.Replace(
-		context.TODO(),
-		0,
-		fastedge.KvStoreReplaceParams{
-			KvStore: fastedge.KvStoreParam{
-				Name: "name",
-				Byod: fastedge.KvStoreByodParam{
-					Prefix: "prefix",
-					URL:    "url",
-				},
-				Comment: gcore.String("comment"),
-			},
-		},
-	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
