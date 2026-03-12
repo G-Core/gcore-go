@@ -4,7 +4,6 @@ package fastedge
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"net/http"
 	"slices"
@@ -37,7 +36,9 @@ func NewBinaryService(opts ...option.RequestOption) (r BinaryService) {
 	return
 }
 
-// Store compiled WASM binary
+// Upload a compiled WebAssembly binary to the edge platform. The binary is
+// automatically analyzed to detect its API type (WASI or Proxy-WASM) and stored
+// for use in applications. Maximum binary size is 100MB.
 func (r *BinaryService) New(ctx context.Context, body io.Reader, opts ...option.RequestOption) (res *BinaryShort, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
@@ -46,70 +47,14 @@ func (r *BinaryService) New(ctx context.Context, body io.Reader, opts ...option.
 	return res, err
 }
 
-// List binaries
+// Retrieve all WebAssembly binaries owned by the authenticated client. Binaries
+// can be shared across multiple applications and include both WASI and Proxy-WASM
+// formats.
 func (r *BinaryService) List(ctx context.Context, opts ...option.RequestOption) (res *BinaryListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/binaries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
-}
-
-// Delete a binary
-func (r *BinaryService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("fastedge/v1/binaries/%v", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return err
-}
-
-// Get binary
-func (r *BinaryService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *Binary, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/binaries/%v", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
-type Binary struct {
-	// Binary ID
-	ID int64 `json:"id" api:"required"`
-	// Wasm API type
-	APIType string `json:"api_type" api:"required"`
-	// Source language:
-	// 0 - unknown
-	// 1 - Rust
-	// 2 - JavaScript
-	Source int64 `json:"source" api:"required"`
-	// Status code:
-	// 0 - pending
-	// 1 - compiled
-	// 2 - compilation failed (errors available)
-	// 3 - compilation failed (errors not available)
-	// 4 - resulting binary exceeded the limit
-	// 5 - unsupported source language
-	Status int64 `json:"status" api:"required"`
-	// MD5 hash of the binary
-	Checksum string `json:"checksum"`
-	// Not used since (UTC)
-	UnrefSince string `json:"unref_since"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		APIType     respjson.Field
-		Source      respjson.Field
-		Status      respjson.Field
-		Checksum    respjson.Field
-		UnrefSince  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Binary) RawJSON() string { return r.JSON.raw }
-func (r *Binary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type BinaryShort struct {
@@ -127,6 +72,12 @@ type BinaryShort struct {
 	Status int64 `json:"status" api:"required"`
 	// MD5 hash of the binary
 	Checksum string `json:"checksum"`
+	// Source language:
+	// 0 - unknown
+	// 1 - Rust
+	// 2 - JavaScript
+	// 3 - Go
+	Source int64 `json:"source"`
 	// Not used since (UTC)
 	UnrefSince string `json:"unref_since"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -135,6 +86,7 @@ type BinaryShort struct {
 		APIType     respjson.Field
 		Status      respjson.Field
 		Checksum    respjson.Field
+		Source      respjson.Field
 		UnrefSince  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string

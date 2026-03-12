@@ -5,7 +5,6 @@ package fastedge
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 	"slices"
@@ -32,9 +31,7 @@ import (
 // the [NewAppService] method instead.
 type AppService struct {
 	Options []option.RequestOption
-	// Apps are descriptions of edge apps, that reference the binary and may contain
-	// app-specific settings, such as environment variables.
-	Logs AppLogService
+	Logs    AppLogService
 }
 
 // NewAppService generates a new service that applies the given options to each
@@ -47,7 +44,9 @@ func NewAppService(opts ...option.RequestOption) (r AppService) {
 	return
 }
 
-// Add a new app
+// Create a new edge application from a WebAssembly binary. The app is configured
+// with execution limits, environment variables, and network assignments. Apps
+// start in draft status (0) and must be explicitly enabled to receive traffic.
 func (r *AppService) New(ctx context.Context, body AppNewParams, opts ...option.RequestOption) (res *AppShort, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/apps"
@@ -55,15 +54,9 @@ func (r *AppService) New(ctx context.Context, body AppNewParams, opts ...option.
 	return res, err
 }
 
-// Update app
-func (r *AppService) Update(ctx context.Context, id int64, body AppUpdateParams, opts ...option.RequestOption) (res *AppShort, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return res, err
-}
-
-// List client's apps
+// Retrieve a paginated list of applications owned by the authenticated client.
+// Results can be filtered by name, API type, status, template, binary, or plan,
+// and sorted by various fields.
 func (r *AppService) List(ctx context.Context, query AppListParams, opts ...option.RequestOption) (res *pagination.OffsetPageFastedgeApps[AppShort], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -81,197 +74,33 @@ func (r *AppService) List(ctx context.Context, query AppListParams, opts ...opti
 	return res, nil
 }
 
-// List client's apps
+// Retrieve a paginated list of applications owned by the authenticated client.
+// Results can be filtered by name, API type, status, template, binary, or plan,
+// and sorted by various fields.
 func (r *AppService) ListAutoPaging(ctx context.Context, query AppListParams, opts ...option.RequestOption) *pagination.OffsetPageFastedgeAppsAutoPager[AppShort] {
 	return pagination.NewOffsetPageFastedgeAppsAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete app
-func (r *AppService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return err
-}
-
-// Get app details
-func (r *AppService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *App, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
-// Update an app
-func (r *AppService) Replace(ctx context.Context, id int64, body AppReplaceParams, opts ...option.RequestOption) (res *AppShort, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return res, err
-}
-
-type App struct {
-	// Wasm API type
-	APIType string `json:"api_type"`
-	// Binary ID
-	Binary int64 `json:"binary"`
-	// App description
-	Comment string `json:"comment"`
-	// Switch on logging for 30 minutes (switched off by default)
-	Debug bool `json:"debug"`
-	// When debugging finishes
-	DebugUntil time.Time `json:"debug_until" format:"date-time"`
-	// Environment variables
-	Env map[string]string `json:"env"`
-	// Logging channel (by default - kafka, which allows exploring logs with API)
-	//
-	// Any of "kafka", "none".
-	Log AppLog `json:"log" api:"nullable"`
-	// App name
-	Name string `json:"name"`
-	// Networks
-	Networks []string `json:"networks"`
-	// Plan name
-	Plan string `json:"plan"`
-	// Plan ID
-	PlanID int64 `json:"plan_id"`
-	// Extra headers to add to the response
-	RspHeaders map[string]string `json:"rsp_headers"`
-	// Application secrets
-	Secrets map[string]AppSecret `json:"secrets"`
-	// Status code:
-	// 0 - draft (inactive)
-	// 1 - enabled
-	// 2 - disabled
-	// 3 - hourly call limit exceeded
-	// 4 - daily call limit exceeded
-	// 5 - suspended
-	Status int64 `json:"status"`
-	// Application edge stores
-	Stores map[string]AppStore `json:"stores"`
-	// Template ID
-	Template int64 `json:"template"`
-	// Template name
-	TemplateName string `json:"template_name"`
-	// App URL
-	URL string `json:"url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		APIType      respjson.Field
-		Binary       respjson.Field
-		Comment      respjson.Field
-		Debug        respjson.Field
-		DebugUntil   respjson.Field
-		Env          respjson.Field
-		Log          respjson.Field
-		Name         respjson.Field
-		Networks     respjson.Field
-		Plan         respjson.Field
-		PlanID       respjson.Field
-		RspHeaders   respjson.Field
-		Secrets      respjson.Field
-		Status       respjson.Field
-		Stores       respjson.Field
-		Template     respjson.Field
-		TemplateName respjson.Field
-		URL          respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r App) RawJSON() string { return r.JSON.raw }
-func (r *App) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this App to a AppParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// AppParam.Overrides()
-func (r App) ToParam() AppParam {
-	return param.Override[AppParam](json.RawMessage(r.RawJSON()))
-}
-
-// Logging channel (by default - kafka, which allows exploring logs with API)
-type AppLog string
-
-const (
-	AppLogKafka AppLog = "kafka"
-	AppLogNone  AppLog = "none"
-)
-
-// Application secret short description
-type AppSecret struct {
-	// The unique identifier of the secret.
-	ID int64 `json:"id" api:"required"`
-	// A description or comment about the secret.
-	Comment string `json:"comment"`
-	// The unique name of the secret.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Comment     respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AppSecret) RawJSON() string { return r.JSON.raw }
-func (r *AppSecret) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Application stores
-type AppStore struct {
-	// The identifier of the store
-	ID int64 `json:"id" api:"required"`
-	// A description of the store
-	Comment string `json:"comment"`
-	// The name of the store
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Comment     respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AppStore) RawJSON() string { return r.JSON.raw }
-func (r *AppStore) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AppParam struct {
-	// Binary ID
+	// ID of the WebAssembly binary to deploy
 	Binary param.Opt[int64] `json:"binary,omitzero"`
-	// App description
+	// Optional human-readable description of the application's purpose
 	Comment param.Opt[string] `json:"comment,omitzero"`
-	// Switch on logging for 30 minutes (switched off by default)
+	// Enable verbose debug logging for 30 minutes. Automatically expires to prevent
+	// performance impact.
 	Debug param.Opt[bool] `json:"debug,omitzero"`
-	// App name
+	// Unique application name (alphanumeric, hyphens allowed)
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Status code:
 	// 0 - draft (inactive)
 	// 1 - enabled
 	// 2 - disabled
-	// 3 - hourly call limit exceeded
-	// 4 - daily call limit exceeded
 	// 5 - suspended
 	Status param.Opt[int64] `json:"status,omitzero"`
 	// Template ID
 	Template param.Opt[int64] `json:"template,omitzero"`
-	// Logging channel (by default - kafka, which allows exploring logs with API)
+	// Logging channel. Use 'kafka' to enable log collection (queryable via API), or
+	// 'none' to disable logging.
 	//
 	// Any of "kafka", "none".
 	Log AppLog `json:"log,omitzero"`
@@ -293,6 +122,15 @@ func (r AppParam) MarshalJSON() (data []byte, err error) {
 func (r *AppParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Logging channel. Use 'kafka' to enable log collection (queryable via API), or
+// 'none' to disable logging.
+type AppLog string
+
+const (
+	AppLogKafka AppLog = "kafka"
+	AppLogNone  AppLog = "none"
+)
 
 // Application secret short description
 //
@@ -405,28 +243,16 @@ func (r *AppNewParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.App)
 }
 
-type AppUpdateParams struct {
-	App AppParam
-	paramObj
-}
-
-func (r AppUpdateParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.App)
-}
-func (r *AppUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.App)
-}
-
 type AppListParams struct {
-	// Binary ID
+	// Filter by binary ID (shows apps using this binary)
 	Binary param.Opt[int64] `query:"binary,omitzero" json:"-"`
-	// Limit for pagination
+	// Maximum number of results to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Name of the app
+	// Filter by application name (case-insensitive partial match)
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
-	// Offset for pagination
+	// Number of results to skip for pagination
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Plan ID
+	// Filter by plan ID
 	Plan param.Opt[int64] `query:"plan,omitzero" json:"-"`
 	// Status code:
 	// 0 - draft (inactive)
@@ -436,7 +262,7 @@ type AppListParams struct {
 	// 4 - daily call limit exceeded
 	// 5 - suspended
 	Status param.Opt[int64] `query:"status,omitzero" json:"-"`
-	// Template ID
+	// Filter by template ID (shows apps created from this template)
 	Template param.Opt[int64] `query:"template,omitzero" json:"-"`
 	// API type:
 	// wasi-http - WASI with HTTP entry point
@@ -444,7 +270,7 @@ type AppListParams struct {
 	//
 	// Any of "wasi-http", "proxy-wasm".
 	APIType AppListParamsAPIType `query:"api_type,omitzero" json:"-"`
-	// Ordering
+	// Sort order. Use - prefix for descending (e.g., -name sorts by name descending)
 	//
 	// Any of "name", "-name", "status", "-status", "id", "-id", "template",
 	// "-template", "binary", "-binary", "plan", "-plan".
@@ -470,7 +296,7 @@ const (
 	AppListParamsAPITypeProxyWasm AppListParamsAPIType = "proxy-wasm"
 )
 
-// Ordering
+// Sort order. Use - prefix for descending (e.g., -name sorts by name descending)
 type AppListParamsOrdering string
 
 const (
@@ -487,27 +313,3 @@ const (
 	AppListParamsOrderingPlan          AppListParamsOrdering = "plan"
 	AppListParamsOrderingMinusPlan     AppListParamsOrdering = "-plan"
 )
-
-type AppReplaceParams struct {
-	Body AppReplaceParamsBody
-	paramObj
-}
-
-func (r AppReplaceParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.Body)
-}
-func (r *AppReplaceParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Body)
-}
-
-type AppReplaceParamsBody struct {
-	AppParam
-}
-
-func (r AppReplaceParamsBody) MarshalJSON() (data []byte, err error) {
-	type shadow struct {
-		*AppReplaceParamsBody
-		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
-	}
-	return param.MarshalObject(r, shadow{&r, false})
-}
