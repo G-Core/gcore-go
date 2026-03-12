@@ -47,7 +47,6 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 			ProfileTemplate: 123,
 			Fields: []cloud.BaremetalServerNewParamsDDOSProfileField{{
 				BaseField: gcore.Int(10),
-				FieldName: param.Null[string](),
 				FieldValue: []float64{
 					45046,
 					45047,

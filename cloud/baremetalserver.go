@@ -1169,8 +1169,6 @@ func (r *BaremetalServerNewParamsDDOSProfile) UnmarshalJSON(data []byte) error {
 type BaremetalServerNewParamsDDOSProfileField struct {
 	// Unique identifier of the DDoS protection field being configured
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// Human-readable name of the DDoS protection field being configured
-	FieldName param.Opt[string] `json:"field_name,omitzero"`
 	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	//
 	// Deprecated: deprecated
