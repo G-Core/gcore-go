@@ -77,3 +77,94 @@ func TestTemplateListWithOptionalParams(t *testing.T) {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }
+
+func TestTemplateDeleteWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	err := client.Fastedge.Templates.Delete(
+		context.TODO(),
+		0,
+		fastedge.TemplateDeleteParams{
+			Force: gcore.Bool(true),
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestTemplateGet(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Fastedge.Templates.Get(context.TODO(), 0)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestTemplateReplaceWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Fastedge.Templates.Replace(
+		context.TODO(),
+		0,
+		fastedge.TemplateReplaceParams{
+			Template: fastedge.TemplateParam{
+				BinaryID: 12345,
+				Name:     "api-gateway-template",
+				Owned:    true,
+				Params: []fastedge.TemplateParameter{{
+					DataType:  fastedge.TemplateParameterDataTypeString,
+					Mandatory: true,
+					Name:      "api_key",
+					Descr:     gcore.String("API key for external service authentication"),
+					Metadata:  gcore.String("metadata"),
+				}},
+				LongDescr:  gcore.String("Complete API gateway solution with JWT authentication, rate limiting, and request transformation capabilities."),
+				ShortDescr: gcore.String("HTTP API gateway with authentication"),
+			},
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
