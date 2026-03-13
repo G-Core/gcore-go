@@ -5,6 +5,7 @@ package fastedge
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"slices"
@@ -49,12 +50,48 @@ func (r *SecretService) New(ctx context.Context, body SecretNewParams, opts ...o
 	return res, err
 }
 
+// Partially updates secret metadata and/or modifies specific slots
+func (r *SecretService) Update(ctx context.Context, secretID int64, body SecretUpdateParams, opts ...option.RequestOption) (res *Secret, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("fastedge/v1/secrets/%v", secretID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	return res, err
+}
+
 // Retrieve encrypted secrets available to the authenticated client. Secrets can be
 // filtered by application ID or name. Values are encrypted and require decryption.
 func (r *SecretService) List(ctx context.Context, query SecretListParams, opts ...option.RequestOption) (res *SecretListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/secrets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Permanently delete a secret and all its slot values. Secrets in use by
+// applications require force=true to delete.
+func (r *SecretService) Delete(ctx context.Context, secretID int64, body SecretDeleteParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	path := fmt.Sprintf("fastedge/v1/secrets/%v", secretID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
+	return err
+}
+
+// Retrieve complete metadata for a specific secret including all time-based slots.
+// Secret values remain encrypted; use the encryption service to decrypt when
+// needed.
+func (r *SecretService) Get(ctx context.Context, secretID int64, opts ...option.RequestOption) (res *Secret, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("fastedge/v1/secrets/%v", secretID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+// Updates secret metadata and/or adds new time-based slots with encrypted values
+func (r *SecretService) Replace(ctx context.Context, secretID int64, body SecretReplaceParams, opts ...option.RequestOption) (res *Secret, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("fastedge/v1/secrets/%v", secretID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
 
@@ -228,6 +265,18 @@ func (r *SecretNewParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.Secret)
 }
 
+type SecretUpdateParams struct {
+	Secret SecretParam
+	paramObj
+}
+
+func (r SecretUpdateParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.Secret)
+}
+func (r *SecretUpdateParams) UnmarshalJSON(data []byte) error {
+	return json.Unmarshal(data, &r.Secret)
+}
+
 type SecretListParams struct {
 	// App ID
 	AppID param.Opt[int64] `query:"app_id,omitzero" json:"-"`
@@ -242,4 +291,42 @@ func (r SecretListParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
+}
+
+type SecretDeleteParams struct {
+	// When true, deletes secret even if used by applications. Defaults to false.
+	Force param.Opt[bool] `query:"force,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [SecretDeleteParams]'s query parameters as `url.Values`.
+func (r SecretDeleteParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+type SecretReplaceParams struct {
+	Body SecretReplaceParamsBody
+	paramObj
+}
+
+func (r SecretReplaceParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.Body)
+}
+func (r *SecretReplaceParams) UnmarshalJSON(data []byte) error {
+	return json.Unmarshal(data, &r.Body)
+}
+
+type SecretReplaceParamsBody struct {
+	SecretParam
+}
+
+func (r SecretReplaceParamsBody) MarshalJSON() (data []byte, err error) {
+	type shadow struct {
+		*SecretReplaceParamsBody
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }

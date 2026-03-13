@@ -121,6 +121,7 @@ TEST_PATHS=(
 	fastedge/binary_test.go
 	fastedge/statistic_test.go
 	fastedge/app_test.go
+	fastedge/applog_test.go
 	fastedge/kvstore_test.go
 	streaming/aitask_test.go
 	streaming/broadcast_test.go

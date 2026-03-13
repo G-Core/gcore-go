@@ -4,6 +4,7 @@ package fastedge
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"slices"
@@ -55,6 +56,68 @@ func (r *BinaryService) List(ctx context.Context, opts ...option.RequestOption) 
 	path := "fastedge/v1/binaries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
+}
+
+// Delete a WebAssembly binary from the platform. Note: Binaries currently in use
+// by applications cannot be deleted. Remove all application associations first.
+func (r *BinaryService) Delete(ctx context.Context, binaryID int64, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	path := fmt.Sprintf("fastedge/v1/binaries/%v", binaryID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return err
+}
+
+// Retrieve complete information about a specific WebAssembly binary including
+// metadata and compiled content. Use this to download or inspect binaries before
+// using them in applications.
+func (r *BinaryService) Get(ctx context.Context, binaryID int64, opts ...option.RequestOption) (res *Binary, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("fastedge/v1/binaries/%v", binaryID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+type Binary struct {
+	// Binary ID
+	ID int64 `json:"id" api:"required"`
+	// Wasm API type
+	APIType string `json:"api_type" api:"required"`
+	// Source language:
+	// 0 - unknown
+	// 1 - Rust
+	// 2 - JavaScript
+	// 3 - Go
+	Source int64 `json:"source" api:"required"`
+	// Status code:
+	// 0 - pending
+	// 1 - compiled
+	// 2 - compilation failed (errors available)
+	// 3 - compilation failed (errors not available)
+	// 4 - resulting binary exceeded the limit
+	// 5 - unsupported source language
+	Status int64 `json:"status" api:"required"`
+	// MD5 hash of the binary
+	Checksum string `json:"checksum"`
+	// Not used since (UTC)
+	UnrefSince string `json:"unref_since"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		APIType     respjson.Field
+		Source      respjson.Field
+		Status      respjson.Field
+		Checksum    respjson.Field
+		UnrefSince  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Binary) RawJSON() string { return r.JSON.raw }
+func (r *Binary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type BinaryShort struct {
