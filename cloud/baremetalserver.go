@@ -1575,3 +1575,19 @@ func (r *BaremetalServerService) RebuildAndPoll(ctx context.Context, serverID st
 
 	return &servers.Results[0], nil
 }
+
+// DeleteAndPoll deletes a bare metal server and polls for the completion of the first task.
+// Use the [TaskService.Poll] method if you need to poll for all tasks.
+func (r *BaremetalServerService) DeleteAndPoll(ctx context.Context, serverID string, params BaremetalServerDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, serverID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
+}
