@@ -5,6 +5,7 @@ package fastedge
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"slices"
@@ -55,6 +56,34 @@ func (r *KvStoreService) List(ctx context.Context, query KvStoreListParams, opts
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/kv"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Permanently delete an edge storage store and all its data. This action cannot be
+// undone; all keys and values will be lost.
+func (r *KvStoreService) Delete(ctx context.Context, storeID int64, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	path := fmt.Sprintf("fastedge/v1/kv/%v", storeID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return err
+}
+
+// Retrieve complete configuration and metadata for a specific edge storage store.
+// Includes store type, size limits, and associated applications.
+func (r *KvStoreService) Get(ctx context.Context, storeID int64, opts ...option.RequestOption) (res *KvStore, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("fastedge/v1/kv/%v", storeID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+// Modify edge store configuration including name, description, and application
+// associations. Store type cannot be changed after creation.
+func (r *KvStoreService) Replace(ctx context.Context, storeID int64, body KvStoreReplaceParams, opts ...option.RequestOption) (res *KvStore, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("fastedge/v1/kv/%v", storeID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
 
@@ -255,4 +284,16 @@ func (r KvStoreListParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
+}
+
+type KvStoreReplaceParams struct {
+	KvStore KvStoreParam
+	paramObj
+}
+
+func (r KvStoreReplaceParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.KvStore)
+}
+func (r *KvStoreReplaceParams) UnmarshalJSON(data []byte) error {
+	return json.Unmarshal(data, &r.KvStore)
 }

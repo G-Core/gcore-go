@@ -5,6 +5,7 @@ package fastedge
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"slices"
@@ -77,6 +78,78 @@ func (r *TemplateService) ListAutoPaging(ctx context.Context, query TemplateList
 	return pagination.NewOffsetPageFastedgeTemplatesAutoPager(r.List(ctx, query, opts...))
 }
 
+// Remove a template from the platform. Templates shared with groups require
+// force=true parameter to delete.
+func (r *TemplateService) Delete(ctx context.Context, templateID int64, body TemplateDeleteParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	path := fmt.Sprintf("fastedge/v1/template/%v", templateID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
+	return err
+}
+
+// Retrieve complete configuration and metadata for a specific template. Use this
+// to inspect template parameters before creating applications from it.
+func (r *TemplateService) Get(ctx context.Context, templateID int64, opts ...option.RequestOption) (res *Template, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("fastedge/v1/template/%v", templateID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+// Modify an existing template's configuration. Updates affect future applications
+// created from this template; existing apps are not changed.
+func (r *TemplateService) Replace(ctx context.Context, templateID int64, body TemplateReplaceParams, opts ...option.RequestOption) (res *TemplateShort, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("fastedge/v1/template/%v", templateID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	return res, err
+}
+
+type Template struct {
+	// Wasm API type
+	APIType string `json:"api_type" api:"required"`
+	// ID of the WebAssembly binary to use for this template
+	BinaryID int64 `json:"binary_id" api:"required"`
+	// Unique name for the template (used for identification and searching)
+	Name string `json:"name" api:"required"`
+	// Is the template owned by user?
+	Owned bool `json:"owned" api:"required"`
+	// Parameters
+	Params []TemplateParameterResp `json:"params" api:"required"`
+	// Detailed markdown description explaining template features and usage
+	LongDescr string `json:"long_descr"`
+	// Brief one-line description displayed in template listings
+	ShortDescr string `json:"short_descr"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIType     respjson.Field
+		BinaryID    respjson.Field
+		Name        respjson.Field
+		Owned       respjson.Field
+		Params      respjson.Field
+		LongDescr   respjson.Field
+		ShortDescr  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Template) RawJSON() string { return r.JSON.raw }
+func (r *Template) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this Template to a TemplateParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// TemplateParam.Overrides()
+func (r Template) ToParam() TemplateParam {
+	return param.Override[TemplateParam](json.RawMessage(r.RawJSON()))
+}
+
 // The properties APIType, BinaryID, Name, Owned, Params are required.
 type TemplateParam struct {
 	// ID of the WebAssembly binary to use for this template
@@ -101,6 +174,82 @@ func (r TemplateParam) MarshalJSON() (data []byte, err error) {
 func (r *TemplateParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type TemplateParameterResp struct {
+	// Parameter type determines validation and UI rendering:
+	// string - text input
+	// number - numeric input
+	// date - date picker
+	// time - time picker
+	// secret - references a secret
+	// store - references an edge store
+	// bool - boolean toggle
+	// json - JSON editor or multiline text area with JSON validation
+	// enum - dropdown/select with allowed values defined via parameter metadata
+	//
+	// Any of "string", "number", "date", "time", "secret", "store", "bool", "json",
+	// "enum".
+	DataType TemplateParameterDataType `json:"data_type" api:"required"`
+	// If true, this parameter must be provided when instantiating the template
+	Mandatory bool `json:"mandatory" api:"required"`
+	// Parameter name used as a placeholder in template (e.g., `API_KEY`,
+	// `DATABASE_URL`)
+	Name string `json:"name" api:"required"`
+	// Human-readable explanation of what this parameter controls
+	Descr string `json:"descr"`
+	// Optional JSON-encoded string for additional parameter metadata, such as allowed
+	// values for enum types
+	Metadata string `json:"metadata"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DataType    respjson.Field
+		Mandatory   respjson.Field
+		Name        respjson.Field
+		Descr       respjson.Field
+		Metadata    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TemplateParameterResp) RawJSON() string { return r.JSON.raw }
+func (r *TemplateParameterResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this TemplateParameterResp to a TemplateParameter.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// TemplateParameter.Overrides()
+func (r TemplateParameterResp) ToParam() TemplateParameter {
+	return param.Override[TemplateParameter](json.RawMessage(r.RawJSON()))
+}
+
+// Parameter type determines validation and UI rendering:
+// string - text input
+// number - numeric input
+// date - date picker
+// time - time picker
+// secret - references a secret
+// store - references an edge store
+// bool - boolean toggle
+// json - JSON editor or multiline text area with JSON validation
+// enum - dropdown/select with allowed values defined via parameter metadata
+type TemplateParameterDataType string
+
+const (
+	TemplateParameterDataTypeString TemplateParameterDataType = "string"
+	TemplateParameterDataTypeNumber TemplateParameterDataType = "number"
+	TemplateParameterDataTypeDate   TemplateParameterDataType = "date"
+	TemplateParameterDataTypeTime   TemplateParameterDataType = "time"
+	TemplateParameterDataTypeSecret TemplateParameterDataType = "secret"
+	TemplateParameterDataTypeStore  TemplateParameterDataType = "store"
+	TemplateParameterDataTypeBool   TemplateParameterDataType = "bool"
+	TemplateParameterDataTypeJson   TemplateParameterDataType = "json"
+	TemplateParameterDataTypeEnum   TemplateParameterDataType = "enum"
+)
 
 // The properties DataType, Mandatory, Name are required.
 type TemplateParameter struct {
@@ -138,30 +287,6 @@ func (r TemplateParameter) MarshalJSON() (data []byte, err error) {
 func (r *TemplateParameter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Parameter type determines validation and UI rendering:
-// string - text input
-// number - numeric input
-// date - date picker
-// time - time picker
-// secret - references a secret
-// store - references an edge store
-// bool - boolean toggle
-// json - JSON editor or multiline text area with JSON validation
-// enum - dropdown/select with allowed values defined via parameter metadata
-type TemplateParameterDataType string
-
-const (
-	TemplateParameterDataTypeString TemplateParameterDataType = "string"
-	TemplateParameterDataTypeNumber TemplateParameterDataType = "number"
-	TemplateParameterDataTypeDate   TemplateParameterDataType = "date"
-	TemplateParameterDataTypeTime   TemplateParameterDataType = "time"
-	TemplateParameterDataTypeSecret TemplateParameterDataType = "secret"
-	TemplateParameterDataTypeStore  TemplateParameterDataType = "store"
-	TemplateParameterDataTypeBool   TemplateParameterDataType = "bool"
-	TemplateParameterDataTypeJson   TemplateParameterDataType = "json"
-	TemplateParameterDataTypeEnum   TemplateParameterDataType = "enum"
-)
 
 type TemplateShort struct {
 	// Template ID
@@ -241,3 +366,29 @@ const (
 	TemplateListParamsAPITypeWasiHTTP  TemplateListParamsAPIType = "wasi-http"
 	TemplateListParamsAPITypeProxyWasm TemplateListParamsAPIType = "proxy-wasm"
 )
+
+type TemplateDeleteParams struct {
+	// When true, deletes template even if shared with groups. Defaults to false.
+	Force param.Opt[bool] `query:"force,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [TemplateDeleteParams]'s query parameters as `url.Values`.
+func (r TemplateDeleteParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+type TemplateReplaceParams struct {
+	Template TemplateParam
+	paramObj
+}
+
+func (r TemplateReplaceParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.Template)
+}
+func (r *TemplateReplaceParams) UnmarshalJSON(data []byte) error {
+	return json.Unmarshal(data, &r.Template)
+}
