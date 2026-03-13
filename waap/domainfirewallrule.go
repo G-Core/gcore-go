@@ -42,7 +42,7 @@ func (r *DomainFirewallRuleService) New(ctx context.Context, domainID int64, bod
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Only properties present in the request will be updated
@@ -51,7 +51,7 @@ func (r *DomainFirewallRuleService) Update(ctx context.Context, ruleID int64, pa
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/%v", params.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
-	return
+	return err
 }
 
 // Extracts a list of firewall rules assigned to a domain, offering filter,
@@ -85,7 +85,7 @@ func (r *DomainFirewallRuleService) Delete(ctx context.Context, ruleID int64, bo
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/%v", body.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Delete multiple WAAP rules
@@ -94,7 +94,7 @@ func (r *DomainFirewallRuleService) DeleteMultiple(ctx context.Context, domainID
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/bulk_delete", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Extracts a specific firewall rule assigned to a domain
@@ -102,7 +102,7 @@ func (r *DomainFirewallRuleService) Get(ctx context.Context, ruleID int64, query
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/%v", query.DomainID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Toggle a firewall rule
@@ -111,7 +111,7 @@ func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action DomainFir
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/%v/%v", body.DomainID, body.RuleID, action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type WaapFirewallRule struct {

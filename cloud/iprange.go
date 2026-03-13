@@ -54,7 +54,7 @@ func (r *IPRangeService) List(ctx context.Context, opts ...option.RequestOption)
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/public/v1/ipranges/egress"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type IPRanges struct {

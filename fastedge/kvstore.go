@@ -41,45 +41,50 @@ func NewKvStoreService(opts ...option.RequestOption) (r KvStoreService) {
 	return
 }
 
-// Add a new Edge store
+// Create a new key-value storage store for edge applications. Stores support
+// multiple data types: simple KV, sorted sets, and bloom filters.
 func (r *KvStoreService) New(ctx context.Context, body KvStoreNewParams, opts ...option.RequestOption) (res *KvStoreNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/kv"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
-// List available edge stores
+// Retrieve key-value storage stores available to the authenticated client. Stores
+// can contain KV pairs, sorted sets, or bloom filters for edge application data.
 func (r *KvStoreService) List(ctx context.Context, query KvStoreListParams, opts ...option.RequestOption) (res *KvStoreListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/kv"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
-// Delete a store
-func (r *KvStoreService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
+// Permanently delete an edge storage store and all its data. This action cannot be
+// undone; all keys and values will be lost.
+func (r *KvStoreService) Delete(ctx context.Context, storeID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("fastedge/v1/kv/%v", id)
+	path := fmt.Sprintf("fastedge/v1/kv/%v", storeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
-// Get the edge store by id
-func (r *KvStoreService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *KvStore, err error) {
+// Retrieve complete configuration and metadata for a specific edge storage store.
+// Includes store type, size limits, and associated applications.
+func (r *KvStoreService) Get(ctx context.Context, storeID int64, opts ...option.RequestOption) (res *KvStore, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/kv/%v", id)
+	path := fmt.Sprintf("fastedge/v1/kv/%v", storeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
-// Update a store
-func (r *KvStoreService) Replace(ctx context.Context, id int64, body KvStoreReplaceParams, opts ...option.RequestOption) (res *KvStore, err error) {
+// Modify edge store configuration including name, description, and application
+// associations. Store type cannot be changed after creation.
+func (r *KvStoreService) Replace(ctx context.Context, storeID int64, body KvStoreReplaceParams, opts ...option.RequestOption) (res *KvStore, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/kv/%v", id)
+	path := fmt.Sprintf("fastedge/v1/kv/%v", storeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type KvStore struct {
@@ -128,9 +133,9 @@ func (r KvStore) ToParam() KvStoreParam {
 
 // BYOD (Bring Your Own Data) settings
 type KvStoreByod struct {
-	// Key prefix
+	// Key prefix to namespace your data within the external store
 	Prefix string `json:"prefix" api:"required"`
-	// URL to connect to
+	// Connection URL for external storage service (Redis, PostgreSQL, etc.)
 	URL string `json:"url" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -170,9 +175,9 @@ func (r *KvStoreParam) UnmarshalJSON(data []byte) error {
 //
 // The properties Prefix, URL are required.
 type KvStoreByodParam struct {
-	// Key prefix
+	// Key prefix to namespace your data within the external store
 	Prefix string `json:"prefix" api:"required"`
-	// URL to connect to
+	// Connection URL for external storage service (Redis, PostgreSQL, etc.)
 	URL string `json:"url" api:"required"`
 	paramObj
 }
@@ -264,11 +269,11 @@ func (r *KvStoreNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type KvStoreListParams struct {
-	// App ID
+	// Filter stores by application ID. Returns only stores associated with this app.
 	AppID param.Opt[int64] `query:"app_id,omitzero" json:"-"`
-	// Limit for pagination
+	// Maximum number of stores to return per page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset for pagination
+	// Number of stores to skip for pagination
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }

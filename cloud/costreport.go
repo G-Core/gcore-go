@@ -53,7 +53,7 @@ func (r *CostReportService) GetAggregated(ctx context.Context, body CostReportGe
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v1/cost_report/totals"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a detailed cost report totals for a specified month, which includes
@@ -70,7 +70,7 @@ func (r *CostReportService) GetAggregatedMonthly(ctx context.Context, body CostR
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v1/reservation_cost_report/totals"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a detailed cost report for a given period and specific resources. Requested
@@ -90,7 +90,7 @@ func (r *CostReportService) GetDetailed(ctx context.Context, body CostReportGetD
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v1/cost_report/resources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CostReportAggregated struct {

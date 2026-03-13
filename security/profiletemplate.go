@@ -39,7 +39,7 @@ func (r *ProfileTemplateService) List(ctx context.Context, opts ...option.Reques
 	opts = slices.Concat(r.Options, opts)
 	path := "security/iaas/profile-templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ClientProfileTemplate struct {

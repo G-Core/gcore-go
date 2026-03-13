@@ -64,14 +64,25 @@ func main() {
 	getGPUBaremetalCluster(&client, clusterID)
 
 	// Server operations
-	listGPUBaremetalClusterServers(&client, clusterID)
+	serverID := listGPUBaremetalClusterServers(&client, clusterID)
 	rebootAllServers(&client, clusterID)
 	powercycleAllServers(&client, clusterID)
+
+	// Interface operations (if we have a server)
+	//
+	// Note: attach/detach are not demonstrated here because GPU baremetal flavors
+	// restrict which networks can be attached, a second external interface is not
+	// allowed, and the last interface cannot be detached. See the instance example
+	// for a full attach/detach round-trip.
+	if serverID != "" {
+		listGPUBaremetalClusterInterfaces(&client, clusterID)
+	}
 
 	// Cluster operations
 	resizeGPUBaremetalCluster(&client, clusterID, 2)
 	rebuildGPUBaremetalCluster(&client, clusterID)
 	updateGPUBaremetalClusterTags(&client, clusterID)
+	updateGPUBaremetalClusterName(&client, clusterID, "gcore-go-gpu-baremetal-renamed")
 
 	// Cleanup
 	fmt.Println("\nCleaning up...")
@@ -264,20 +275,37 @@ func powercycleAllServers(client *gcore.Client, clusterID string) {
 func updateGPUBaremetalClusterTags(client *gcore.Client, clusterID string) {
 	fmt.Println("\n=== UPDATE GPU BAREMETAL CLUSTER TAGS ===")
 
-	params := cloud.GPUBaremetalClusterActionParams{
+	params := cloud.GPUBaremetalClusterUpdateParams{
 		Tags: cloud.TagUpdateMap{
 			"environment": "production",
 			"team":        "gpu-infra",
 		},
 	}
 
-	cluster, err := client.Cloud.GPUBaremetal.Clusters.ActionAndPoll(context.Background(), clusterID, params)
+	cluster, err := client.Cloud.GPUBaremetal.Clusters.Update(context.Background(), clusterID, params)
 	if err != nil {
 		fmt.Printf("Error updating GPU baremetal cluster tags: %v\n", err)
 		return
 	}
 
 	fmt.Printf("Updated tags for GPU baremetal cluster: ID=%s, name=%s\n", cluster.ID, cluster.Name)
+	fmt.Println("===============================")
+}
+
+func updateGPUBaremetalClusterName(client *gcore.Client, clusterID string, newName string) {
+	fmt.Println("\n=== UPDATE GPU BAREMETAL CLUSTER NAME ===")
+
+	params := cloud.GPUBaremetalClusterUpdateParams{
+		Name: gcore.String(newName),
+	}
+
+	cluster, err := client.Cloud.GPUBaremetal.Clusters.Update(context.Background(), clusterID, params)
+	if err != nil {
+		fmt.Printf("Error updating GPU baremetal cluster name: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Updated name for GPU baremetal cluster: ID=%s, new name=%s\n", cluster.ID, cluster.Name)
 	fmt.Println("===============================")
 }
 

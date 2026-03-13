@@ -69,21 +69,47 @@ func (r *BaremetalServerService) New(ctx context.Context, params BaremetalServer
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/bminstances/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
+}
+
+// Rename bare metal server or update tags
+func (r *BaremetalServerService) Update(ctx context.Context, serverID string, params BaremetalServerUpdateParams, opts ...option.RequestOption) (res *BaremetalServer, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	if serverID == "" {
+		err = errors.New("missing required server_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v1/bminstances/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, serverID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return res, err
 }
 
 // List all bare metal servers in the specified project and region. Results can be
@@ -94,17 +120,17 @@ func (r *BaremetalServerService) List(ctx context.Context, params BaremetalServe
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/bminstances/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -125,30 +151,82 @@ func (r *BaremetalServerService) ListAutoPaging(ctx context.Context, params Bare
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Rebuild a bare metal server with a new image while preserving its configuration.
-func (r *BaremetalServerService) Rebuild(ctx context.Context, serverID string, params BaremetalServerRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+// Delete a bare metal server and it's associated resources
+func (r *BaremetalServerService) Delete(ctx context.Context, serverID string, params BaremetalServerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if serverID == "" {
 		err = errors.New("missing required server_id parameter")
-		return
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v1/bminstances/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, serverID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
+	return res, err
+}
+
+// Retrieve detailed information about a specific baremetal instance.
+func (r *BaremetalServerService) Get(ctx context.Context, serverID string, query BaremetalServerGetParams, opts ...option.RequestOption) (res *BaremetalServer, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
+	if !query.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !query.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	if serverID == "" {
+		err = errors.New("missing required server_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v1/bminstances/%v/%v/%s", query.ProjectID.Value, query.RegionID.Value, serverID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+// Rebuild a bare metal server with a new image while preserving its configuration.
+func (r *BaremetalServerService) Rebuild(ctx context.Context, serverID string, params BaremetalServerRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	if serverID == "" {
+		err = errors.New("missing required server_id parameter")
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/bminstances/%v/%v/%s/rebuild", params.ProjectID.Value, params.RegionID.Value, serverID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // IP addresses of the trunk port and its subports.
@@ -1171,8 +1249,6 @@ func (r *BaremetalServerNewParamsDDOSProfile) UnmarshalJSON(data []byte) error {
 type BaremetalServerNewParamsDDOSProfileField struct {
 	// Unique identifier of the DDoS protection field being configured
 	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// Human-readable name of the DDoS protection field being configured
-	FieldName param.Opt[string] `json:"field_name,omitzero"`
 	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	//
 	// Deprecated: deprecated
@@ -1186,6 +1262,46 @@ func (r BaremetalServerNewParamsDDOSProfileField) MarshalJSON() (data []byte, er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *BaremetalServerNewParamsDDOSProfileField) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type BaremetalServerUpdateParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Name
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified.
+	//
+	// **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
+	//     adds/updates 'environment' and 'cost_center' while removing 'deprecated_tag',
+	//     preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero"`
+	paramObj
+}
+
+func (r BaremetalServerUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BaremetalServerUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1315,6 +1431,39 @@ const (
 	BaremetalServerListParamsTypeDDOSProfileAdvanced BaremetalServerListParamsTypeDDOSProfile = "advanced"
 )
 
+type BaremetalServerDeleteParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// True if it is required to delete floating IPs assigned to the instance. Can't be
+	// used with `floating_ip_ids`.
+	AllFloatingIPs param.Opt[bool] `query:"all_floating_ips,omitzero" json:"-"`
+	// Comma separated list of floating ids that should be deleted. Can't be used with
+	// `all_floating_ips`.
+	FloatingIPIDs param.Opt[string] `query:"floating_ip_ids,omitzero" json:"-"`
+	// Comma separated list of port IDs to be deleted with the instance
+	ReservedFixedIPIDs param.Opt[string] `query:"reserved_fixed_ip_ids,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [BaremetalServerDeleteParams]'s query parameters as
+// `url.Values`.
+func (r BaremetalServerDeleteParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+type BaremetalServerGetParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	paramObj
+}
+
 type BaremetalServerRebuildParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
@@ -1425,4 +1574,20 @@ func (r *BaremetalServerService) RebuildAndPoll(ctx context.Context, serverID st
 	}
 
 	return &servers.Results[0], nil
+}
+
+// DeleteAndPoll deletes a bare metal server and polls for the completion of the first task.
+// Use the [TaskService.Poll] method if you need to poll for all tasks.
+func (r *BaremetalServerService) DeleteAndPoll(ctx context.Context, serverID string, params BaremetalServerDeleteParams, opts ...option.RequestOption) error {
+	resource, err := r.Delete(ctx, serverID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }

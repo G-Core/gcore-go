@@ -47,8 +47,8 @@ func NewBucketService(opts ...option.RequestOption) (r BucketService) {
 // Creates a new bucket within an S3 storage. Only applicable to S3-compatible
 // storages.
 //
-// Deprecated: Use POST /provisioning/v3/storages/{`storage_id`}/buckets with
-// {"name": "bucket-name"} instead.
+// Deprecated: Use POST /v4/`object_storages`/{`storage_id`}/buckets with {"name":
+// "bucket-name"} instead.
 //
 // Deprecated: deprecated
 func (r *BucketService) New(ctx context.Context, bucketName string, body BucketNewParams, opts ...option.RequestOption) (err error) {
@@ -56,11 +56,11 @@ func (r *BucketService) New(ctx context.Context, bucketName string, body BucketN
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s", body.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Returns the list of buckets for the storage in a wrapped response.
@@ -68,9 +68,8 @@ func (r *BucketService) New(ctx context.Context, bucketName string, body BucketN
 // Response format: count: total number of buckets (independent of pagination)
 // results: current page of buckets according to limit/offset
 //
-// Deprecated: Use GET
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} for individual
-// bucket details instead.
+// Deprecated: Use GET /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`}
+// for individual bucket details instead.
 //
 // Deprecated: deprecated
 func (r *BucketService) List(ctx context.Context, storageID int64, query BucketListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Bucket], err error) {
@@ -95,9 +94,8 @@ func (r *BucketService) List(ctx context.Context, storageID int64, query BucketL
 // Response format: count: total number of buckets (independent of pagination)
 // results: current page of buckets according to limit/offset
 //
-// Deprecated: Use GET
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} for individual
-// bucket details instead.
+// Deprecated: Use GET /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`}
+// for individual bucket details instead.
 //
 // Deprecated: deprecated
 func (r *BucketService) ListAutoPaging(ctx context.Context, storageID int64, query BucketListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Bucket] {
@@ -108,7 +106,7 @@ func (r *BucketService) ListAutoPaging(ctx context.Context, storageID int64, que
 // automatically deleted before the bucket is removed.
 //
 // Deprecated: Use DELETE
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} instead.
+// /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`} instead.
 //
 // Deprecated: deprecated
 func (r *BucketService) Delete(ctx context.Context, bucketName string, body BucketDeleteParams, opts ...option.RequestOption) (err error) {
@@ -116,11 +114,11 @@ func (r *BucketService) Delete(ctx context.Context, bucketName string, body Buck
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s", body.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // BucketDtoV2 for response

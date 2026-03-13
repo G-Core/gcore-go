@@ -31,8 +31,8 @@ func TestSecretNewWithOptionalParams(t *testing.T) {
 			Comment: gcore.String("comment"),
 			Name:    gcore.String("name"),
 			SecretSlots: []fastedge.SecretSecretSlotParam{{
-				Slot:  0,
-				Value: gcore.String("value"),
+				Slot:  1704067200,
+				Value: gcore.String("P@ssw0rd123!"),
 			}},
 		},
 	})
@@ -65,8 +65,8 @@ func TestSecretUpdateWithOptionalParams(t *testing.T) {
 				Comment: gcore.String("comment"),
 				Name:    gcore.String("name"),
 				SecretSlots: []fastedge.SecretSecretSlotParam{{
-					Slot:  0,
-					Value: gcore.String("value"),
+					Slot:  1704067200,
+					Value: gcore.String("P@ssw0rd123!"),
 				}},
 			},
 		},
@@ -93,8 +93,8 @@ func TestSecretListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Fastedge.Secrets.List(context.TODO(), fastedge.SecretListParams{
-		AppID:      gcore.Int(0),
-		SecretName: gcore.String("secret_name"),
+		AppID:      gcore.Int(1),
+		SecretName: gcore.String("x"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -171,13 +171,15 @@ func TestSecretReplaceWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		fastedge.SecretReplaceParams{
-			Secret: fastedge.SecretParam{
-				Comment: gcore.String("comment"),
-				Name:    gcore.String("name"),
-				SecretSlots: []fastedge.SecretSecretSlotParam{{
-					Slot:  0,
-					Value: gcore.String("value"),
-				}},
+			Body: fastedge.SecretReplaceParamsBody{
+				SecretParam: fastedge.SecretParam{
+					Comment: gcore.String("comment"),
+					Name:    gcore.String("name"),
+					SecretSlots: []fastedge.SecretSecretSlotParam{{
+						Slot:  1704067200,
+						Value: gcore.String("P@ssw0rd123!"),
+					}},
+				},
 			},
 		},
 	)

@@ -45,7 +45,7 @@ func (r *DomainInsightSilenceService) New(ctx context.Context, domainID int64, b
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/insight-silences", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an insight silence for a specific domain.
@@ -53,11 +53,11 @@ func (r *DomainInsightSilenceService) Update(ctx context.Context, silenceID stri
 	opts = slices.Concat(r.Options, opts)
 	if silenceID == "" {
 		err = errors.New("missing required silence_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("waap/v1/domains/%v/insight-silences/%s", params.DomainID, silenceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a list of insight silences for a specific domain
@@ -89,11 +89,11 @@ func (r *DomainInsightSilenceService) Delete(ctx context.Context, silenceID stri
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if silenceID == "" {
 		err = errors.New("missing required silence_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("waap/v1/domains/%v/insight-silences/%s", body.DomainID, silenceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve a specific insight silence for a specific domain
@@ -101,11 +101,11 @@ func (r *DomainInsightSilenceService) Get(ctx context.Context, silenceID string,
 	opts = slices.Concat(r.Options, opts)
 	if silenceID == "" {
 		err = errors.New("missing required silence_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("waap/v1/domains/%v/insight-silences/%s", query.DomainID, silenceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type WaapInsightSilence struct {

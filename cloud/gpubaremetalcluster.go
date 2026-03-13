@@ -35,7 +35,7 @@ type GPUBaremetalClusterService struct {
 	Flavors    GPUBaremetalClusterFlavorService
 	// GPU bare metal images are custom boot images for bare metal GPU servers.
 	Images GPUBaremetalClusterImageService
-	tasks      TaskService
+	tasks  TaskService
 }
 
 // NewGPUBaremetalClusterService generates a new service that applies the given
@@ -57,21 +57,51 @@ func (r *GPUBaremetalClusterService) New(ctx context.Context, params GPUBaremeta
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
+}
+
+// Update the name of an existing bare metal GPU cluster.
+//
+// Update tags for a bare metal GPU cluster (and apply to all its nodes) using JSON
+// Merge Patch semantics (RFC 7386). To add or update tags, provide key-value
+// pairs. To remove a tag, set its value to null.
+func (r *GPUBaremetalClusterService) Update(ctx context.Context, clusterID string, params GPUBaremetalClusterUpdateParams, opts ...option.RequestOption) (res *GPUBaremetalCluster, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	if clusterID == "" {
+		err = errors.New("missing required cluster_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s", params.ProjectID.Value, params.RegionID.Value, clusterID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return res, err
 }
 
 // List all bare metal GPU clusters in the specified project and region.
@@ -81,17 +111,17 @@ func (r *GPUBaremetalClusterService) List(ctx context.Context, params GPUBaremet
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters", params.ProjectID.Value, params.RegionID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -116,52 +146,25 @@ func (r *GPUBaremetalClusterService) Delete(ctx context.Context, clusterID strin
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
-	return
-}
-
-// Perform a specific action on a baremetal GPU cluster. Available actions: update
-// tags.
-func (r *GPUBaremetalClusterService) Action(ctx context.Context, clusterID string, params GPUBaremetalClusterActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return
-	}
-	if clusterID == "" {
-		err = errors.New("missing required cluster_id parameter")
-		return
-	}
-	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/action", params.ProjectID.Value, params.RegionID.Value, clusterID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Get detailed information about a specific bare metal GPU cluster.
@@ -169,25 +172,25 @@ func (r *GPUBaremetalClusterService) Get(ctx context.Context, clusterID string, 
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s", query.ProjectID.Value, query.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Stops and then starts all cluster servers, effectively performing a hard reboot.
@@ -195,25 +198,25 @@ func (r *GPUBaremetalClusterService) PowercycleAllServers(ctx context.Context, c
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/ai/clusters/%v/%v/%s/powercycle", body.ProjectID.Value, body.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Reboot all bare metal GPU cluster servers
@@ -221,25 +224,25 @@ func (r *GPUBaremetalClusterService) RebootAllServers(ctx context.Context, clust
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/ai/clusters/%v/%v/%s/reboot", body.ProjectID.Value, body.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Perform a rebuild operation on a bare metal GPU cluster. During the rebuild
@@ -252,25 +255,25 @@ func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID stri
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/rebuild", body.ProjectID.Value, body.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Change the number of nodes in a GPU cluster. The cluster can be scaled up or
@@ -279,25 +282,25 @@ func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID strin
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/ai/clusters/gpu/%v/%v/%s/resize", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // NewAndPoll creates a new GPU bare metal cluster and polls for completion. Use the [TaskService.Poll] method if you
@@ -408,25 +411,25 @@ func (r *GPUBaremetalClusterService) UpdateServersSettings(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/servers_settings", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // DeleteAndPoll deletes a bare metal GPU cluster and polls for completion of the first task. Use the [TaskService.Poll]
@@ -444,37 +447,6 @@ func (r *GPUBaremetalClusterService) DeleteAndPoll(ctx context.Context, clusterI
 	taskID := resource.Tasks[0]
 	_, err = r.tasks.Poll(ctx, taskID, opts...)
 	return err
-}
-
-// ActionAndPoll performs an action on a bare metal GPU cluster and polls for completion of the first task. Use the
-// [TaskService.Poll] method if you need to poll for all tasks.
-func (r *GPUBaremetalClusterService) ActionAndPoll(ctx context.Context, clusterID string, params GPUBaremetalClusterActionParams, opts ...option.RequestOption) (v *GPUBaremetalCluster, err error) {
-	resource, err := r.Action(ctx, clusterID, params, opts...)
-	if err != nil {
-		return
-	}
-
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	var getParams GPUBaremetalClusterGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) == 0 {
-		return nil, errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.Get(ctx, clusterID, getParams, opts...)
 }
 
 type GPUBaremetalCluster struct {
@@ -1232,6 +1204,46 @@ func (r *GPUBaremetalClusterNewParamsServersSettingsSecurityGroup) UnmarshalJSON
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type GPUBaremetalClusterUpdateParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Cluster name
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified.
+	//
+	// **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
+	//     adds/updates 'environment' and 'cost_center' while removing 'deprecated_tag',
+	//     preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type GPUBaremetalClusterListParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
@@ -1286,48 +1298,6 @@ func (r GPUBaremetalClusterDeleteParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
-}
-
-type GPUBaremetalClusterActionParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
-	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
-	// Unspecified tags remain unchanged. Read-only tags are always preserved and
-	// cannot be modified.
-	//
-	// **Examples:**
-	//
-	//   - **Add/update tags:**
-	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
-	//     updates existing ones.
-	//   - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
-	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
-	//     tags are preserved).
-	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
-	//     specified tags.
-	//   - **Mixed operations:**
-	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
-	//     adds/updates 'environment' and 'cost_center' while removing 'deprecated_tag',
-	//     preserving other existing tags.
-	//   - **Replace all:** first delete existing tags with null values, then add new
-	//     ones in the same request.
-	Tags TagUpdateMap `json:"tags,omitzero" api:"required"`
-	// Action name
-	//
-	// This field can be elided, and will marshal its zero value as "update_tags".
-	Action constant.UpdateTags `json:"action" api:"required"`
-	paramObj
-}
-
-func (r GPUBaremetalClusterActionParams) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterActionParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *GPUBaremetalClusterActionParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type GPUBaremetalClusterGetParams struct {

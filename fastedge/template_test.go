@@ -28,17 +28,18 @@ func TestTemplateNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Fastedge.Templates.New(context.TODO(), fastedge.TemplateNewParams{
 		Template: fastedge.TemplateParam{
-			BinaryID: 0,
-			Name:     "name",
+			BinaryID: 12345,
+			Name:     "api-gateway-template",
 			Owned:    true,
 			Params: []fastedge.TemplateParameter{{
 				DataType:  fastedge.TemplateParameterDataTypeString,
 				Mandatory: true,
-				Name:      "name",
-				Descr:     gcore.String("descr"),
+				Name:      "api_key",
+				Descr:     gcore.String("API key for external service authentication"),
+				Metadata:  gcore.String("metadata"),
 			}},
-			LongDescr:  gcore.String("long_descr"),
-			ShortDescr: gcore.String("short_descr"),
+			LongDescr:  gcore.String("Complete API gateway solution with JWT authentication, rate limiting, and request transformation capabilities."),
+			ShortDescr: gcore.String("HTTP API gateway with authentication"),
 		},
 	})
 	if err != nil {
@@ -64,7 +65,7 @@ func TestTemplateListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Fastedge.Templates.List(context.TODO(), fastedge.TemplateListParams{
 		APIType:  fastedge.TemplateListParamsAPITypeWasiHTTP,
-		Limit:    gcore.Int(0),
+		Limit:    gcore.Int(1),
 		Offset:   gcore.Int(0),
 		OnlyMine: gcore.Bool(true),
 	})
@@ -144,17 +145,18 @@ func TestTemplateReplaceWithOptionalParams(t *testing.T) {
 		0,
 		fastedge.TemplateReplaceParams{
 			Template: fastedge.TemplateParam{
-				BinaryID: 0,
-				Name:     "name",
+				BinaryID: 12345,
+				Name:     "api-gateway-template",
 				Owned:    true,
 				Params: []fastedge.TemplateParameter{{
 					DataType:  fastedge.TemplateParameterDataTypeString,
 					Mandatory: true,
-					Name:      "name",
-					Descr:     gcore.String("descr"),
+					Name:      "api_key",
+					Descr:     gcore.String("API key for external service authentication"),
+					Metadata:  gcore.String("metadata"),
 				}},
-				LongDescr:  gcore.String("long_descr"),
-				ShortDescr: gcore.String("short_descr"),
+				LongDescr:  gcore.String("Complete API gateway solution with JWT authentication, rate limiting, and request transformation capabilities."),
+				ShortDescr: gcore.String("HTTP API gateway with authentication"),
 			},
 		},
 	)

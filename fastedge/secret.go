@@ -41,53 +41,58 @@ func NewSecretService(opts ...option.RequestOption) (r SecretService) {
 	return
 }
 
-// Add a new secret
+// Create a new encrypted secret for use in edge applications. Secrets are
+// encrypted with AES-256-GCM and can have multiple time-based slots for rotation.
 func (r *SecretService) New(ctx context.Context, body SecretNewParams, opts ...option.RequestOption) (res *SecretNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/secrets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
-// Update a secret
-func (r *SecretService) Update(ctx context.Context, id int64, body SecretUpdateParams, opts ...option.RequestOption) (res *Secret, err error) {
+// Partially updates secret metadata and/or modifies specific slots
+func (r *SecretService) Update(ctx context.Context, secretID int64, body SecretUpdateParams, opts ...option.RequestOption) (res *Secret, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
+	path := fmt.Sprintf("fastedge/v1/secrets/%v", secretID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
-// List available secrets
+// Retrieve encrypted secrets available to the authenticated client. Secrets can be
+// filtered by application ID or name. Values are encrypted and require decryption.
 func (r *SecretService) List(ctx context.Context, query SecretListParams, opts ...option.RequestOption) (res *SecretListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/secrets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
-// Delete a secret
-func (r *SecretService) Delete(ctx context.Context, id int64, body SecretDeleteParams, opts ...option.RequestOption) (err error) {
+// Permanently delete a secret and all its slot values. Secrets in use by
+// applications require force=true to delete.
+func (r *SecretService) Delete(ctx context.Context, secretID int64, body SecretDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
+	path := fmt.Sprintf("fastedge/v1/secrets/%v", secretID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
-	return
+	return err
 }
 
-// Get secret by id
-func (r *SecretService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *Secret, err error) {
+// Retrieve complete metadata for a specific secret including all time-based slots.
+// Secret values remain encrypted; use the encryption service to decrypt when
+// needed.
+func (r *SecretService) Get(ctx context.Context, secretID int64, opts ...option.RequestOption) (res *Secret, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
+	path := fmt.Sprintf("fastedge/v1/secrets/%v", secretID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
-// Update a secret
-func (r *SecretService) Replace(ctx context.Context, id int64, body SecretReplaceParams, opts ...option.RequestOption) (res *Secret, err error) {
+// Updates secret metadata and/or adds new time-based slots with encrypted values
+func (r *SecretService) Replace(ctx context.Context, secretID int64, body SecretReplaceParams, opts ...option.RequestOption) (res *Secret, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/secrets/%v", id)
+	path := fmt.Sprintf("fastedge/v1/secrets/%v", secretID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Secret struct {
@@ -126,11 +131,12 @@ func (r Secret) ToParam() SecretParam {
 }
 
 type SecretSecretSlot struct {
-	// Secret slot ID.
+	// Unix timestamp (seconds since epoch) indicating when this secret version becomes
+	// active. Use for time-based secret rotation.
 	Slot int64 `json:"slot" api:"required"`
-	// A checksum of the secret value for integrity verification.
+	// SHA-256 hash of the decrypted value for integrity verification (auto-generated)
 	Checksum string `json:"checksum"`
-	// The value of the secret.
+	// The plaintext secret value. Will be encrypted with AES-256-GCM before storage.
 	Value string `json:"value"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -168,9 +174,10 @@ func (r *SecretParam) UnmarshalJSON(data []byte) error {
 
 // The property Slot is required.
 type SecretSecretSlotParam struct {
-	// Secret slot ID.
+	// Unix timestamp (seconds since epoch) indicating when this secret version becomes
+	// active. Use for time-based secret rotation.
 	Slot int64 `json:"slot" api:"required"`
-	// The value of the secret.
+	// The plaintext secret value. Will be encrypted with AES-256-GCM before storage.
 	Value param.Opt[string] `json:"value,omitzero"`
 	paramObj
 }
@@ -228,9 +235,12 @@ func (r *SecretNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type SecretListResponse struct {
+	// Total number of secrets matching the filters
+	Count   int64         `json:"count" api:"required"`
 	Secrets []SecretShort `json:"secrets" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Count       respjson.Field
 		Secrets     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -284,7 +294,7 @@ func (r SecretListParams) URLQuery() (v url.Values, err error) {
 }
 
 type SecretDeleteParams struct {
-	// Force delete secret even if it is used in slots
+	// When true, deletes secret even if used by applications. Defaults to false.
 	Force param.Opt[bool] `query:"force,omitzero" json:"-"`
 	paramObj
 }
@@ -298,13 +308,25 @@ func (r SecretDeleteParams) URLQuery() (v url.Values, err error) {
 }
 
 type SecretReplaceParams struct {
-	Secret SecretParam
+	Body SecretReplaceParamsBody
 	paramObj
 }
 
 func (r SecretReplaceParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.Secret)
+	return shimjson.Marshal(r.Body)
 }
 func (r *SecretReplaceParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Secret)
+	return json.Unmarshal(data, &r.Body)
+}
+
+type SecretReplaceParamsBody struct {
+	SecretParam
+}
+
+func (r SecretReplaceParamsBody) MarshalJSON() (data []byte, err error) {
+	type shadow struct {
+		*SecretReplaceParamsBody
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }

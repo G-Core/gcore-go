@@ -38,20 +38,24 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 	return
 }
 
-// Call statistics
+// Retrieve aggregated call statistics for applications within a specified time
+// period. Data is aggregated by the specified step interval and can be filtered by
+// application ID and network.
 func (r *StatisticService) GetCallSeries(ctx context.Context, query StatisticGetCallSeriesParams, opts ...option.RequestOption) (res *StatisticGetCallSeriesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/stats/calls"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
-// Execution duration statistics
+// Retrieve execution time statistics showing how long applications took to process
+// requests. Results are aggregated by the specified time interval and can be
+// filtered by app and network.
 func (r *StatisticService) GetDurationSeries(ctx context.Context, query StatisticGetDurationSeriesParams, opts ...option.RequestOption) (res *StatisticGetDurationSeriesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/stats/app_duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Edge app call statistics
@@ -164,15 +168,16 @@ func (r *StatisticGetDurationSeriesResponse) UnmarshalJSON(data []byte) error {
 }
 
 type StatisticGetCallSeriesParams struct {
-	// Reporting period start time, RFC3339 format
+	// Reporting period start time in RFC3339 format
 	From time.Time `query:"from" api:"required" format:"date-time" json:"-"`
-	// Reporting granularity, in seconds
+	// Reporting time granularity in seconds. Common values are 60 (1 minute), 300 (5
+	// minutes), 3600 (1 hour).
 	Step int64 `query:"step" api:"required" json:"-"`
-	// Reporting period end time (not included into reporting period), RFC3339 format
+	// Reporting period end time in RFC3339 format (exclusive)
 	To time.Time `query:"to" api:"required" format:"date-time" json:"-"`
-	// App ID
+	// Filter statistics by specific application ID
 	ID param.Opt[int64] `query:"id,omitzero" json:"-"`
-	// Network name
+	// Filter statistics by edge network name
 	Network param.Opt[string] `query:"network,omitzero" format:"string" json:"-"`
 	paramObj
 }
@@ -187,15 +192,16 @@ func (r StatisticGetCallSeriesParams) URLQuery() (v url.Values, err error) {
 }
 
 type StatisticGetDurationSeriesParams struct {
-	// Reporting period start time, RFC3339 format
+	// Reporting period start time in RFC3339 format
 	From time.Time `query:"from" api:"required" format:"date-time" json:"-"`
-	// Reporting granularity, in seconds
+	// Reporting time granularity in seconds. Common values are 60 (1 minute), 300 (5
+	// minutes), 3600 (1 hour).
 	Step int64 `query:"step" api:"required" json:"-"`
-	// Reporting period end time (not included into reporting period), RFC3339 format
+	// Reporting period end time in RFC3339 format (exclusive)
 	To time.Time `query:"to" api:"required" format:"date-time" json:"-"`
-	// App ID
+	// Filter statistics by specific application ID
 	ID param.Opt[int64] `query:"id,omitzero" json:"-"`
-	// Network name
+	// Filter statistics by edge network name
 	Network param.Opt[string] `query:"network,omitzero" format:"string" json:"-"`
 	paramObj
 }

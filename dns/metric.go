@@ -46,7 +46,7 @@ func (r *MetricService) List(ctx context.Context, query MetricListParams, opts .
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "plain/text")}, opts...)
 	path := "dns/v2/monitor/metrics"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type MetricListParams struct {

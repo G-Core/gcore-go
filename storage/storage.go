@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -48,29 +49,29 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 // Creates a new storage instance (S3 or SFTP) in the specified location and
 // returns the storage details including credentials.
 //
-// Deprecated: Use POST /provisioning/v3/storages/`s3_compatible` for S3 storage or
-// POST /provisioning/v3/storages/sftp for SFTP storage instead.
+// Deprecated: Use POST /v4/`object_storages` for S3 storage or POST
+// /v4/`sftp_storages` for SFTP storage instead.
 //
 // Deprecated: deprecated
 func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ...option.RequestOption) (res *Storage, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/provisioning/v2/storage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates storage configuration such as expiration date and server alias. Used for
 // SFTP storages.
 //
-// Deprecated: Use PATCH /provisioning/v3/storages/sftp/{`storage_id`} for SFTP
-// storage updates instead.
+// Deprecated: Use PATCH /v4/`sftp_storages`/{`storage_id`} for SFTP storage
+// updates instead.
 //
 // Deprecated: deprecated
 func (r *StorageService) Update(ctx context.Context, storageID int64, body StorageUpdateParams, opts ...option.RequestOption) (res *Storage, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/provisioning/v2/storage/%v", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns storages with the same filtering and pagination as v2, but in a
@@ -79,6 +80,11 @@ func (r *StorageService) Update(ctx context.Context, storageID int64, body Stora
 // Response format: count: total number of storages matching the filter
 // (independent of pagination) results: the current page of storages according to
 // limit/offset
+//
+// Deprecated: Use GET /v4/`object_storages` for S3 storages or GET
+// /v4/`sftp_storages` for SFTP storages instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) List(ctx context.Context, query StorageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Storage], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -102,14 +108,19 @@ func (r *StorageService) List(ctx context.Context, query StorageListParams, opts
 // Response format: count: total number of storages matching the filter
 // (independent of pagination) results: the current page of storages according to
 // limit/offset
+//
+// Deprecated: Use GET /v4/`object_storages` for S3 storages or GET
+// /v4/`sftp_storages` for SFTP storages instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) ListAutoPaging(ctx context.Context, query StorageListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Storage] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Permanently deletes a storage and all its data. This action cannot be undone.
 //
-// Deprecated: Use DELETE /provisioning/v3/storages/`s3_compatible`/{`storage_id`}
-// or DELETE /provisioning/v3/storages/sftp/{`storage_id`} instead.
+// Deprecated: Use DELETE /v4/`object_storages`/{`storage_id`} or DELETE
+// /v4/`sftp_storages`/{`storage_id`} instead.
 //
 // Deprecated: deprecated
 func (r *StorageService) Delete(ctx context.Context, storageID int64, opts ...option.RequestOption) (err error) {
@@ -117,25 +128,28 @@ func (r *StorageService) Delete(ctx context.Context, storageID int64, opts ...op
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Retrieves detailed information about a specific storage including its
 // configuration, credentials, and current status.
+//
+// Deprecated: Use GET /v4/`object_storages`/{`storage_id`} for S3 storages or GET
+// /v4/`sftp_storages`/{`storage_id`} for SFTP storages instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) Get(ctx context.Context, storageID int64, opts ...option.RequestOption) (res *Storage, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Associates an SSH public key with an SFTP storage, enabling passwordless
 // authentication. Only works with SFTP storage types - not applicable to
 // S3-compatible storage.
 //
-// Deprecated: Use PATCH /provisioning/v3/storages/sftp/{`storage_id`} with
-// `ssh_key_ids` array or PATCH
-// /provisioning/v3/storages/sftp/{`storage_id`}/credentials with `ssh_key_ids`
+// Deprecated: Use PATCH /v4/`sftp_storages`/{`storage_id`} with `ssh_key_ids`
 // array instead.
 //
 // Deprecated: deprecated
@@ -144,26 +158,28 @@ func (r *StorageService) LinkSSHKey(ctx context.Context, keyID int64, body Stora
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/key/%v/link", body.StorageID, keyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Restores a previously deleted S3 storage if it was deleted within the last 2
 // weeks. SFTP storages cannot be restored.
+//
+// Deprecated: Use POST /v4/`object_storages`/{`storage_id`}/restore instead.
+//
+// Deprecated: deprecated
 func (r *StorageService) Restore(ctx context.Context, storageID int64, body StorageRestoreParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/restore", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Removes SSH key association from an SFTP storage, disabling passwordless
 // authentication for that key. The key itself remains available for other
 // storages.
 //
-// Deprecated: Use PATCH /provisioning/v3/storages/sftp/{`storage_id`} with
-// `ssh_key_ids` array or PATCH
-// /provisioning/v3/storages/sftp/{`storage_id`}/credentials with `ssh_key_ids`
+// Deprecated: Use PATCH /v4/`sftp_storages`/{`storage_id`} with `ssh_key_ids`
 // array instead.
 //
 // Deprecated: deprecated
@@ -172,7 +188,7 @@ func (r *StorageService) UnlinkSSHKey(ctx context.Context, keyID int64, body Sto
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/key/%v/unlink", body.StorageID, keyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type Storage struct {
@@ -183,7 +199,7 @@ type Storage struct {
 	// Client identifier who owns this storage
 	ClientID int64 `json:"client_id" api:"required"`
 	// ISO 8601 timestamp when the storage was created
-	CreatedAt string `json:"created_at" api:"required"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Geographic location code where the storage is provisioned
 	Location string `json:"location" api:"required"`
 	// User-defined name for the storage instance
@@ -207,11 +223,11 @@ type Storage struct {
 	CustomConfigFile bool `json:"custom_config_file"`
 	// ISO 8601 timestamp when the storage was deleted (only present for deleted
 	// storages)
-	DeletedAt string `json:"deleted_at"`
+	DeletedAt time.Time `json:"deleted_at" format:"date-time"`
 	// Whether HTTP access is disabled for this storage (HTTPS only)
 	DisableHTTP bool `json:"disable_http"`
 	// ISO 8601 timestamp when the storage will expire (if set)
-	Expires string `json:"expires"`
+	Expires time.Time `json:"expires" format:"date-time"`
 	// Custom URL rewrite rules for the storage (admin-configurable)
 	RewriteRules map[string]string `json:"rewrite_rules"`
 	// Custom domain alias for accessing the storage
@@ -293,7 +309,7 @@ type StorageCredentialsKey struct {
 	// Unique identifier for the SSH key
 	ID int64 `json:"id"`
 	// ISO 8601 timestamp when the SSH key was created
-	CreatedAt string `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// User-defined name for the SSH key
 	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -410,7 +426,7 @@ type StorageListParams struct {
 	OrderDirection StorageListParamsOrderDirection `query:"order_direction,omitzero" json:"-"`
 	// Filter by storage status
 	//
-	// Any of "active", "suspended", "deleted", "pending".
+	// Any of "active", "creating", "ok", "updating", "deleting", "deleted".
 	Status StorageListParamsStatus `query:"status,omitzero" json:"-"`
 	// Filter by storage type
 	//
@@ -439,10 +455,12 @@ const (
 type StorageListParamsStatus string
 
 const (
-	StorageListParamsStatusActive    StorageListParamsStatus = "active"
-	StorageListParamsStatusSuspended StorageListParamsStatus = "suspended"
-	StorageListParamsStatusDeleted   StorageListParamsStatus = "deleted"
-	StorageListParamsStatusPending   StorageListParamsStatus = "pending"
+	StorageListParamsStatusActive   StorageListParamsStatus = "active"
+	StorageListParamsStatusCreating StorageListParamsStatus = "creating"
+	StorageListParamsStatusOk       StorageListParamsStatus = "ok"
+	StorageListParamsStatusUpdating StorageListParamsStatus = "updating"
+	StorageListParamsStatusDeleting StorageListParamsStatus = "deleting"
+	StorageListParamsStatusDeleted  StorageListParamsStatus = "deleted"
 )
 
 // Filter by storage type

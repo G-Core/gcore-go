@@ -39,7 +39,7 @@ func NewBucketPolicyService(opts ...option.RequestOption) (r BucketPolicyService
 // objects without proper authentication.
 //
 // Deprecated: Use PATCH
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} with {"policy":
+// /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`} with {"policy":
 // {"public": true}} instead.
 //
 // Deprecated: deprecated
@@ -48,11 +48,11 @@ func (r *BucketPolicyService) New(ctx context.Context, bucketName string, body B
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s/policy", body.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Removes the public read policy from an S3 bucket, making all objects private and
@@ -61,7 +61,7 @@ func (r *BucketPolicyService) New(ctx context.Context, bucketName string, body B
 // requests.
 //
 // Deprecated: Use PATCH
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} with {"policy":
+// /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`} with {"policy":
 // {"public": false}} instead.
 //
 // Deprecated: deprecated
@@ -70,30 +70,30 @@ func (r *BucketPolicyService) Delete(ctx context.Context, bucketName string, bod
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s/policy", body.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Returns whether the S3 bucket is currently configured for public read access.
 // Shows if anonymous users can download objects from the bucket via HTTP requests.
 //
-// Deprecated: Use GET
-// /provisioning/v3/storages/{`storage_id`}/buckets/{`bucket_name`} instead, which
-// returns policy status along with CORS and lifecycle configuration.
+// Deprecated: Use GET /v4/`object_storages`/{`storage_id`}/buckets/{`bucket_name`}
+// instead, which returns policy status along with CORS and lifecycle
+// configuration.
 //
 // Deprecated: deprecated
 func (r *BucketPolicyService) Get(ctx context.Context, bucketName string, query BucketPolicyGetParams, opts ...option.RequestOption) (res *bool, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/provisioning/v1/storage/%v/s3/bucket/%s/policy", query.StorageID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type BucketPolicyNewParams struct {

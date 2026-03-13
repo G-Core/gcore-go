@@ -41,15 +41,19 @@ func NewTemplateService(opts ...option.RequestOption) (r TemplateService) {
 	return
 }
 
-// Add template
+// Create a new application template from an existing binary and configuration.
+// Templates can be shared with groups to enable collaborative application
+// development.
 func (r *TemplateService) New(ctx context.Context, body TemplateNewParams, opts ...option.RequestOption) (res *TemplateShort, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/template"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
-// List app templates
+// Retrieve available application templates including system templates and
+// user-created templates. Templates provide pre-configured application settings
+// that can be reused for quick deployment.
 func (r *TemplateService) List(ctx context.Context, query TemplateListParams, opts ...option.RequestOption) (res *pagination.OffsetPageFastedgeTemplates[TemplateShort], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -67,50 +71,55 @@ func (r *TemplateService) List(ctx context.Context, query TemplateListParams, op
 	return res, nil
 }
 
-// List app templates
+// Retrieve available application templates including system templates and
+// user-created templates. Templates provide pre-configured application settings
+// that can be reused for quick deployment.
 func (r *TemplateService) ListAutoPaging(ctx context.Context, query TemplateListParams, opts ...option.RequestOption) *pagination.OffsetPageFastedgeTemplatesAutoPager[TemplateShort] {
 	return pagination.NewOffsetPageFastedgeTemplatesAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete template
-func (r *TemplateService) Delete(ctx context.Context, id int64, body TemplateDeleteParams, opts ...option.RequestOption) (err error) {
+// Remove a template from the platform. Templates shared with groups require
+// force=true parameter to delete.
+func (r *TemplateService) Delete(ctx context.Context, templateID int64, body TemplateDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("fastedge/v1/template/%v", id)
+	path := fmt.Sprintf("fastedge/v1/template/%v", templateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
-	return
+	return err
 }
 
-// Get template details
-func (r *TemplateService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *Template, err error) {
+// Retrieve complete configuration and metadata for a specific template. Use this
+// to inspect template parameters before creating applications from it.
+func (r *TemplateService) Get(ctx context.Context, templateID int64, opts ...option.RequestOption) (res *Template, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/template/%v", id)
+	path := fmt.Sprintf("fastedge/v1/template/%v", templateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
-// Update template
-func (r *TemplateService) Replace(ctx context.Context, id int64, body TemplateReplaceParams, opts ...option.RequestOption) (res *TemplateShort, err error) {
+// Modify an existing template's configuration. Updates affect future applications
+// created from this template; existing apps are not changed.
+func (r *TemplateService) Replace(ctx context.Context, templateID int64, body TemplateReplaceParams, opts ...option.RequestOption) (res *TemplateShort, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/template/%v", id)
+	path := fmt.Sprintf("fastedge/v1/template/%v", templateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Template struct {
 	// Wasm API type
 	APIType string `json:"api_type" api:"required"`
-	// Binary ID
+	// ID of the WebAssembly binary to use for this template
 	BinaryID int64 `json:"binary_id" api:"required"`
-	// Name of the template
+	// Unique name for the template (used for identification and searching)
 	Name string `json:"name" api:"required"`
 	// Is the template owned by user?
 	Owned bool `json:"owned" api:"required"`
 	// Parameters
 	Params []TemplateParameterResp `json:"params" api:"required"`
-	// Long description of the template
+	// Detailed markdown description explaining template features and usage
 	LongDescr string `json:"long_descr"`
-	// Short description of the template
+	// Brief one-line description displayed in template listings
 	ShortDescr string `json:"short_descr"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -143,17 +152,17 @@ func (r Template) ToParam() TemplateParam {
 
 // The properties APIType, BinaryID, Name, Owned, Params are required.
 type TemplateParam struct {
-	// Binary ID
+	// ID of the WebAssembly binary to use for this template
 	BinaryID int64 `json:"binary_id" api:"required"`
-	// Name of the template
+	// Unique name for the template (used for identification and searching)
 	Name string `json:"name" api:"required"`
 	// Is the template owned by user?
 	Owned bool `json:"owned" api:"required"`
 	// Parameters
 	Params []TemplateParameter `json:"params,omitzero" api:"required"`
-	// Long description of the template
+	// Detailed markdown description explaining template features and usage
 	LongDescr param.Opt[string] `json:"long_descr,omitzero"`
-	// Short description of the template
+	// Brief one-line description displayed in template listings
 	ShortDescr param.Opt[string] `json:"short_descr,omitzero"`
 	paramObj
 }
@@ -167,22 +176,37 @@ func (r *TemplateParam) UnmarshalJSON(data []byte) error {
 }
 
 type TemplateParameterResp struct {
-	// Parameter type
+	// Parameter type determines validation and UI rendering:
+	// string - text input
+	// number - numeric input
+	// date - date picker
+	// time - time picker
+	// secret - references a secret
+	// store - references an edge store
+	// bool - boolean toggle
+	// json - JSON editor or multiline text area with JSON validation
+	// enum - dropdown/select with allowed values defined via parameter metadata
 	//
-	// Any of "string", "number", "date", "time", "secret", "store".
+	// Any of "string", "number", "date", "time", "secret", "store", "bool", "json",
+	// "enum".
 	DataType TemplateParameterDataType `json:"data_type" api:"required"`
-	// Is this field mandatory?
+	// If true, this parameter must be provided when instantiating the template
 	Mandatory bool `json:"mandatory" api:"required"`
-	// Parameter name
+	// Parameter name used as a placeholder in template (e.g., `API_KEY`,
+	// `DATABASE_URL`)
 	Name string `json:"name" api:"required"`
-	// Parameter description
+	// Human-readable explanation of what this parameter controls
 	Descr string `json:"descr"`
+	// Optional JSON-encoded string for additional parameter metadata, such as allowed
+	// values for enum types
+	Metadata string `json:"metadata"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DataType    respjson.Field
 		Mandatory   respjson.Field
 		Name        respjson.Field
 		Descr       respjson.Field
+		Metadata    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -203,7 +227,16 @@ func (r TemplateParameterResp) ToParam() TemplateParameter {
 	return param.Override[TemplateParameter](json.RawMessage(r.RawJSON()))
 }
 
-// Parameter type
+// Parameter type determines validation and UI rendering:
+// string - text input
+// number - numeric input
+// date - date picker
+// time - time picker
+// secret - references a secret
+// store - references an edge store
+// bool - boolean toggle
+// json - JSON editor or multiline text area with JSON validation
+// enum - dropdown/select with allowed values defined via parameter metadata
 type TemplateParameterDataType string
 
 const (
@@ -213,20 +246,37 @@ const (
 	TemplateParameterDataTypeTime   TemplateParameterDataType = "time"
 	TemplateParameterDataTypeSecret TemplateParameterDataType = "secret"
 	TemplateParameterDataTypeStore  TemplateParameterDataType = "store"
+	TemplateParameterDataTypeBool   TemplateParameterDataType = "bool"
+	TemplateParameterDataTypeJson   TemplateParameterDataType = "json"
+	TemplateParameterDataTypeEnum   TemplateParameterDataType = "enum"
 )
 
 // The properties DataType, Mandatory, Name are required.
 type TemplateParameter struct {
-	// Parameter type
+	// Parameter type determines validation and UI rendering:
+	// string - text input
+	// number - numeric input
+	// date - date picker
+	// time - time picker
+	// secret - references a secret
+	// store - references an edge store
+	// bool - boolean toggle
+	// json - JSON editor or multiline text area with JSON validation
+	// enum - dropdown/select with allowed values defined via parameter metadata
 	//
-	// Any of "string", "number", "date", "time", "secret", "store".
+	// Any of "string", "number", "date", "time", "secret", "store", "bool", "json",
+	// "enum".
 	DataType TemplateParameterDataType `json:"data_type,omitzero" api:"required"`
-	// Is this field mandatory?
+	// If true, this parameter must be provided when instantiating the template
 	Mandatory bool `json:"mandatory" api:"required"`
-	// Parameter name
+	// Parameter name used as a placeholder in template (e.g., `API_KEY`,
+	// `DATABASE_URL`)
 	Name string `json:"name" api:"required"`
-	// Parameter description
+	// Human-readable explanation of what this parameter controls
 	Descr param.Opt[string] `json:"descr,omitzero"`
+	// Optional JSON-encoded string for additional parameter metadata, such as allowed
+	// values for enum types
+	Metadata param.Opt[string] `json:"metadata,omitzero"`
 	paramObj
 }
 
@@ -283,11 +333,12 @@ func (r *TemplateNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type TemplateListParams struct {
-	// Limit for pagination
+	// Maximum number of results to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset for pagination
+	// Number of results to skip for pagination
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Only my templates
+	// When true, returns only templates created by the client. When false, includes
+	// shared templates.
 	OnlyMine param.Opt[bool] `query:"only_mine,omitzero" json:"-"`
 	// API type:
 	// wasi-http - WASI with HTTP entry point
@@ -317,7 +368,7 @@ const (
 )
 
 type TemplateDeleteParams struct {
-	// Force template deletion even if it is shared to groups
+	// When true, deletes template even if shared with groups. Defaults to false.
 	Force param.Opt[bool] `query:"force,omitzero" json:"-"`
 	paramObj
 }

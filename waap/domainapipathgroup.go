@@ -38,7 +38,7 @@ func (r *DomainAPIPathGroupService) List(ctx context.Context, domainID int64, op
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-path-groups", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Response model for the API path groups

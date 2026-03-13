@@ -62,47 +62,51 @@ func (r *GPUVirtualClusterService) New(ctx context.Context, params GPUVirtualClu
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the name of an existing virtual GPU cluster.
+//
+// Update tags for a virtual GPU cluster (and apply to all its nodes) using JSON
+// Merge Patch semantics (RFC 7386). To add or update tags, provide key-value
+// pairs. To remove a tag, set its value to null.
 func (r *GPUVirtualClusterService) Update(ctx context.Context, clusterID string, params GPUVirtualClusterUpdateParams, opts ...option.RequestOption) (res *GPUVirtualCluster, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // List all virtual GPU clusters in the specified project and region.
@@ -112,17 +116,17 @@ func (r *GPUVirtualClusterService) List(ctx context.Context, params GPUVirtualCl
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters", params.ProjectID.Value, params.RegionID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -147,52 +151,52 @@ func (r *GPUVirtualClusterService) Delete(ctx context.Context, clusterID string,
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Perform a specific action on a virtual GPU cluster. Available actions: start,
-// stop, soft reboot, hard reboot, resize, update tags.
+// stop, soft reboot, hard reboot, resize
 func (r *GPUVirtualClusterService) Action(ctx context.Context, clusterID string, params GPUVirtualClusterActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s/action", params.ProjectID.Value, params.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Get detailed information about a specific virtual GPU cluster.
@@ -200,25 +204,25 @@ func (r *GPUVirtualClusterService) Get(ctx context.Context, clusterID string, qu
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s", query.ProjectID.Value, query.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // NewAndPoll creates a new virtual GPU cluster and polls for completion. Use the [TaskService.Poll] method if you
@@ -1273,7 +1277,29 @@ type GPUVirtualClusterUpdateParams struct {
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster name
-	Name string `json:"name" api:"required"`
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
+	// Unspecified tags remain unchanged. Read-only tags are always preserved and
+	// cannot be modified.
+	//
+	// **Examples:**
+	//
+	//   - **Add/update tags:**
+	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
+	//     updates existing ones.
+	//   - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
+	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
+	//     tags are preserved).
+	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
+	//     specified tags.
+	//   - **Mixed operations:**
+	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
+	//     adds/updates 'environment' and 'cost_center' while removing 'deprecated_tag',
+	//     preserving other existing tags.
+	//   - **Replace all:** first delete existing tags with null values, then add new
+	//     ones in the same request.
+	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -1356,8 +1382,6 @@ type GPUVirtualClusterActionParams struct {
 	// This field is a request body variant, only one variant field can be set.
 	OfHardReboot *GPUVirtualClusterActionParamsBodyHardReboot `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfUpdateTags *GPUVirtualClusterActionParamsBodyUpdateTags `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
 	OfResize *GPUVirtualClusterActionParamsBodyResize `json:",inline"`
 
 	paramObj
@@ -1368,7 +1392,6 @@ func (u GPUVirtualClusterActionParams) MarshalJSON() ([]byte, error) {
 		u.OfStop,
 		u.OfSoftReboot,
 		u.OfHardReboot,
-		u.OfUpdateTags,
 		u.OfResize)
 }
 func (r *GPUVirtualClusterActionParams) UnmarshalJSON(data []byte) error {
@@ -1460,45 +1483,6 @@ func (r GPUVirtualClusterActionParamsBodyHardReboot) MarshalJSON() (data []byte,
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GPUVirtualClusterActionParamsBodyHardReboot) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Action, Tags are required.
-type GPUVirtualClusterActionParamsBodyUpdateTags struct {
-	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
-	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
-	// Unspecified tags remain unchanged. Read-only tags are always preserved and
-	// cannot be modified.
-	//
-	// **Examples:**
-	//
-	//   - **Add/update tags:**
-	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
-	//     updates existing ones.
-	//   - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
-	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
-	//     tags are preserved).
-	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
-	//     specified tags.
-	//   - **Mixed operations:**
-	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
-	//     adds/updates 'environment' and 'cost_center' while removing 'deprecated_tag',
-	//     preserving other existing tags.
-	//   - **Replace all:** first delete existing tags with null values, then add new
-	//     ones in the same request.
-	Tags TagUpdateMap `json:"tags,omitzero" api:"required"`
-	// Action name
-	//
-	// This field can be elided, and will marshal its zero value as "update_tags".
-	Action constant.UpdateTags `json:"action" api:"required"`
-	paramObj
-}
-
-func (r GPUVirtualClusterActionParamsBodyUpdateTags) MarshalJSON() (data []byte, err error) {
-	type shadow GPUVirtualClusterActionParamsBodyUpdateTags
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *GPUVirtualClusterActionParamsBodyUpdateTags) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

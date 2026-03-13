@@ -41,7 +41,7 @@ func (r *DomainAPIDiscoveryOpenAPIService) Scan(ctx context.Context, domainID in
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-discovery/scan", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // An API description file must adhere to the OpenAPI specification and be written
@@ -52,7 +52,7 @@ func (r *DomainAPIDiscoveryOpenAPIService) Upload(ctx context.Context, domainID 
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/api-discovery/upload", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Response model for the task result ID

@@ -42,11 +42,11 @@ func NewAppLogService(opts ...option.RequestOption) (r AppLogService) {
 }
 
 // List logs for the app
-func (r *AppLogService) List(ctx context.Context, id int64, query AppLogListParams, opts ...option.RequestOption) (res *pagination.OffsetPageFastedgeAppLogs[Log], err error) {
+func (r *AppLogService) List(ctx context.Context, appID int64, query AppLogListParams, opts ...option.RequestOption) (res *pagination.OffsetPageFastedgeAppLogs[Log], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := fmt.Sprintf("fastedge/v1/apps/%v/logs", id)
+	path := fmt.Sprintf("fastedge/v1/apps/%v/logs", appID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -60,22 +60,22 @@ func (r *AppLogService) List(ctx context.Context, id int64, query AppLogListPara
 }
 
 // List logs for the app
-func (r *AppLogService) ListAutoPaging(ctx context.Context, id int64, query AppLogListParams, opts ...option.RequestOption) *pagination.OffsetPageFastedgeAppLogsAutoPager[Log] {
-	return pagination.NewOffsetPageFastedgeAppLogsAutoPager(r.List(ctx, id, query, opts...))
+func (r *AppLogService) ListAutoPaging(ctx context.Context, appID int64, query AppLogListParams, opts ...option.RequestOption) *pagination.OffsetPageFastedgeAppLogsAutoPager[Log] {
+	return pagination.NewOffsetPageFastedgeAppLogsAutoPager(r.List(ctx, appID, query, opts...))
 }
 
 type Log struct {
-	// Id of the log
+	// Unique identifier for this log entry
 	ID string `json:"id"`
-	// Name of the application
+	// Name of the application that generated this log
 	AppName string `json:"app_name"`
-	// Client IP
+	// IP address of the client that triggered the log
 	ClientIP string `json:"client_ip"`
-	// Edge name
+	// Edge location where the log originated
 	Edge string `json:"edge"`
-	// Log message
+	// The actual log message content
 	Log string `json:"log"`
-	// Timestamp of a log in RFC3339 format
+	// When the log was generated (RFC3339 format)
 	Timestamp time.Time `json:"timestamp" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -101,7 +101,8 @@ type AppLogListParams struct {
 	ClientIP param.Opt[string] `query:"client_ip,omitzero" format:"ipv4" json:"-"`
 	// Edge name
 	Edge param.Opt[string] `query:"edge,omitzero" format:"string" json:"-"`
-	// Reporting period start time, RFC3339 format. Default 1 hour ago.
+	// Start of log retrieval period in RFC3339 format. Defaults to 1 hour ago if not
+	// specified.
 	From param.Opt[time.Time] `query:"from,omitzero" format:"date-time" json:"-"`
 	// Limit for pagination
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`

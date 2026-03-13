@@ -23,6 +23,7 @@ import (
 // the [NewGPUBaremetalClusterInterfaceService] method instead.
 type GPUBaremetalClusterInterfaceService struct {
 	Options []option.RequestOption
+	tasks   TaskService
 }
 
 // NewGPUBaremetalClusterInterfaceService generates a new service that applies the
@@ -31,6 +32,7 @@ type GPUBaremetalClusterInterfaceService struct {
 func NewGPUBaremetalClusterInterfaceService(opts ...option.RequestOption) (r GPUBaremetalClusterInterfaceService) {
 	r = GPUBaremetalClusterInterfaceService{}
 	r.Options = opts
+	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -39,25 +41,25 @@ func (r *GPUBaremetalClusterInterfaceService) List(ctx context.Context, clusterI
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if clusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/ai/clusters/%v/%v/%s/interfaces", query.ProjectID.Value, query.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Attach interface to bare metal GPU cluster server
@@ -65,25 +67,25 @@ func (r *GPUBaremetalClusterInterfaceService) Attach(ctx context.Context, instan
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/ai/clusters/%v/%v/%s/attach_interface", params.ProjectID.Value, params.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Detach interface from bare metal GPU cluster server
@@ -91,25 +93,57 @@ func (r *GPUBaremetalClusterInterfaceService) Detach(ctx context.Context, instan
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/ai/clusters/%v/%v/%s/detach_interface", params.ProjectID.Value, params.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
+}
+
+// AttachAndPoll attaches an interface to a bare metal GPU cluster server and polls for completion of the first task.
+// Use the [TaskService.Poll] method if you need to poll for all tasks.
+func (r *GPUBaremetalClusterInterfaceService) AttachAndPoll(ctx context.Context, instanceID string, params GPUBaremetalClusterInterfaceAttachParams, opts ...option.RequestOption) error {
+	resource, err := r.Attach(ctx, instanceID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
+}
+
+// DetachAndPoll detaches an interface from a bare metal GPU cluster server and polls for completion of the first task.
+// Use the [TaskService.Poll] method if you need to poll for all tasks.
+func (r *GPUBaremetalClusterInterfaceService) DetachAndPoll(ctx context.Context, instanceID string, params GPUBaremetalClusterInterfaceDetachParams, opts ...option.RequestOption) error {
+	resource, err := r.Detach(ctx, instanceID, params, opts...)
+	if err != nil {
+		return err
+	}
+
+	if len(resource.Tasks) == 0 {
+		return errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	return err
 }
 
 type GPUBaremetalClusterInterfaceListParams struct {

@@ -41,25 +41,25 @@ func (r *RegistryArtifactService) List(ctx context.Context, repositoryName strin
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return nil, err
 	}
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	if repositoryName == "" {
 		err = errors.New("missing required repository_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories/%s/artifacts", query.ProjectID.Value, query.RegionID.Value, query.RegistryID, repositoryName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a specific artifact from a repository.
@@ -68,29 +68,29 @@ func (r *RegistryArtifactService) Delete(ctx context.Context, digest string, bod
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return err
 	}
 	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
 	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
 	if !body.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return
+		return err
 	}
 	if !body.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return err
 	}
 	if body.RepositoryName == "" {
 		err = errors.New("missing required repository_name parameter")
-		return
+		return err
 	}
 	if digest == "" {
 		err = errors.New("missing required digest parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories/%s/artifacts/%s", body.ProjectID.Value, body.RegionID.Value, body.RegistryID, body.RepositoryName, digest)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type RegistryArtifact struct {

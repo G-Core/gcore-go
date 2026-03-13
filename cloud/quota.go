@@ -42,7 +42,7 @@ func (r *QuotaService) GetAll(ctx context.Context, opts ...option.RequestOption)
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v2/client_quotas"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get quotas for a specific region and client.
@@ -50,16 +50,16 @@ func (r *QuotaService) GetByRegion(ctx context.Context, query QuotaGetByRegionPa
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/regional_quotas/%v/%v", query.ClientID, query.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get global quotas for a specific client.
@@ -67,7 +67,7 @@ func (r *QuotaService) GetGlobal(ctx context.Context, clientID int64, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cloud/v2/global_quotas/%v", clientID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type QuotaGetAllResponse struct {

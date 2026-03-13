@@ -96,7 +96,7 @@ func (r *CDNService) GetAccountLimits(ctx context.Context, opts ...option.Reques
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/clients/me/limits"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get information about CDN service.
@@ -104,7 +104,7 @@ func (r *CDNService) GetAccountOverview(ctx context.Context, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/clients/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get information about available CDN features.
@@ -112,7 +112,7 @@ func (r *CDNService) GetAvailableFeatures(ctx context.Context, opts ...option.Re
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/clients/me/features"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the list of Alibaba Cloud regions.
@@ -120,7 +120,7 @@ func (r *CDNService) ListAlibabaRegions(ctx context.Context, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/alibaba_regions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the list of Amazon AWS regions.
@@ -128,7 +128,7 @@ func (r *CDNService) ListAwsRegions(ctx context.Context, opts ...option.RequestO
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/aws_regions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get purges history.
@@ -136,7 +136,7 @@ func (r *CDNService) ListPurgeStatuses(ctx context.Context, query CDNListPurgeSt
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/purge_statuses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Change information about CDN service.
@@ -144,7 +144,7 @@ func (r *CDNService) UpdateAccount(ctx context.Context, body CDNUpdateAccountPar
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/clients/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AlibabaRegions []AlibabaRegion

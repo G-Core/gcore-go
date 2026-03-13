@@ -42,7 +42,7 @@ func (r *IPInfoService) GetAttackTimeSeries(ctx context.Context, query IPInfoGet
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/ip-info/attack-time-series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve metrics, which enumerate blocked requests originating from a specific
@@ -53,7 +53,7 @@ func (r *IPInfoService) GetBlockedRequests(ctx context.Context, query IPInfoGetB
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/ip-info/blocked-requests"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch and analyze DDoS (Distributed Denial of Service) attack metrics for a
@@ -65,7 +65,7 @@ func (r *IPInfoService) GetDDOSAttackSeries(ctx context.Context, query IPInfoGet
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/ip-info/ddos"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch details about a particular IP address, including WHOIS data, risk score,
@@ -74,7 +74,7 @@ func (r *IPInfoService) GetIPInfo(ctx context.Context, query IPInfoGetIPInfoPara
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/ip-info/ip-info"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of the top 10 URLs accessed by a specified IP address within a
@@ -85,7 +85,7 @@ func (r *IPInfoService) GetTopURLs(ctx context.Context, query IPInfoGetTopURLsPa
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/ip-info/top-urls"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve the top 10 user agents interacting with a specified domain, filtered by
@@ -94,7 +94,7 @@ func (r *IPInfoService) GetTopUserAgents(ctx context.Context, query IPInfoGetTop
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/ip-info/top-user-agents"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Obtain the top 10 user sessions interfacing with a particular domain, identified
@@ -103,7 +103,7 @@ func (r *IPInfoService) GetTopUserSessions(ctx context.Context, query IPInfoGetT
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/ip-info/top-sessions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a list of countries attacked by the specified IP address
@@ -111,7 +111,7 @@ func (r *IPInfoService) ListAttackedCountries(ctx context.Context, query IPInfoL
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/ip-info/attack-map"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type WaapIPCountryAttack struct {

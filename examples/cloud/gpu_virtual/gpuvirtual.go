@@ -205,7 +205,7 @@ func updateGPUVirtualCluster(client *gcore.Client, clusterID string) {
 	fmt.Println("\n=== UPDATE GPU VIRTUAL CLUSTER ===")
 
 	params := cloud.GPUVirtualClusterUpdateParams{
-		Name: "gcore-go-gpu-virtual-updated",
+		Name: gcore.String("gcore-go-gpu-virtual-updated"),
 	}
 
 	cluster, err := client.Cloud.GPUVirtual.Clusters.Update(context.Background(), clusterID, params)

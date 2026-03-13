@@ -28,15 +28,15 @@ func TestAppNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Fastedge.Apps.New(context.TODO(), fastedge.AppNewParams{
 		App: fastedge.AppParam{
-			Binary:  gcore.Int(0),
-			Comment: gcore.String("comment"),
-			Debug:   gcore.Bool(true),
+			Binary:  gcore.Int(12345),
+			Comment: gcore.String("Production API gateway for customer portal"),
+			Debug:   gcore.Bool(false),
 			Env: map[string]string{
 				"var1": "value1",
 				"var2": "value2",
 			},
 			Log:  fastedge.AppLogKafka,
-			Name: gcore.String("name"),
+			Name: gcore.String("my-edge-app"),
 			RspHeaders: map[string]string{
 				"header1": "value1",
 				"header2": "value2",
@@ -46,7 +46,7 @@ func TestAppNewWithOptionalParams(t *testing.T) {
 					ID: 0,
 				},
 			},
-			Status: gcore.Int(0),
+			Status: gcore.Int(1),
 			Stores: map[string]fastedge.AppStoreParam{
 				"foo": {
 					ID: 0,
@@ -81,15 +81,15 @@ func TestAppUpdateWithOptionalParams(t *testing.T) {
 		0,
 		fastedge.AppUpdateParams{
 			App: fastedge.AppParam{
-				Binary:  gcore.Int(0),
-				Comment: gcore.String("comment"),
-				Debug:   gcore.Bool(true),
+				Binary:  gcore.Int(12345),
+				Comment: gcore.String("Production API gateway for customer portal"),
+				Debug:   gcore.Bool(false),
 				Env: map[string]string{
 					"var1": "value1",
 					"var2": "value2",
 				},
 				Log:  fastedge.AppLogKafka,
-				Name: gcore.String("name"),
+				Name: gcore.String("my-edge-app"),
 				RspHeaders: map[string]string{
 					"header1": "value1",
 					"header2": "value2",
@@ -99,7 +99,7 @@ func TestAppUpdateWithOptionalParams(t *testing.T) {
 						ID: 0,
 					},
 				},
-				Status: gcore.Int(0),
+				Status: gcore.Int(1),
 				Stores: map[string]fastedge.AppStoreParam{
 					"foo": {
 						ID: 0,
@@ -132,14 +132,14 @@ func TestAppListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Fastedge.Apps.List(context.TODO(), fastedge.AppListParams{
 		APIType:  fastedge.AppListParamsAPITypeWasiHTTP,
-		Binary:   gcore.Int(0),
-		Limit:    gcore.Int(0),
-		Name:     gcore.String("name"),
+		Binary:   gcore.Int(1),
+		Limit:    gcore.Int(1),
+		Name:     gcore.String("x"),
 		Offset:   gcore.Int(0),
 		Ordering: fastedge.AppListParamsOrderingName,
-		Plan:     gcore.Int(0),
+		Plan:     gcore.Int(1),
 		Status:   gcore.Int(0),
-		Template: gcore.Int(0),
+		Template: gcore.Int(1),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -212,15 +212,15 @@ func TestAppReplaceWithOptionalParams(t *testing.T) {
 		fastedge.AppReplaceParams{
 			Body: fastedge.AppReplaceParamsBody{
 				AppParam: fastedge.AppParam{
-					Binary:  gcore.Int(0),
-					Comment: gcore.String("comment"),
-					Debug:   gcore.Bool(true),
+					Binary:  gcore.Int(12345),
+					Comment: gcore.String("Production API gateway for customer portal"),
+					Debug:   gcore.Bool(false),
 					Env: map[string]string{
 						"var1": "value1",
 						"var2": "value2",
 					},
 					Log:  fastedge.AppLogKafka,
-					Name: gcore.String("name"),
+					Name: gcore.String("my-edge-app"),
 					RspHeaders: map[string]string{
 						"header1": "value1",
 						"header2": "value2",
@@ -230,7 +230,7 @@ func TestAppReplaceWithOptionalParams(t *testing.T) {
 							ID: 0,
 						},
 					},
-					Status: gcore.Int(0),
+					Status: gcore.Int(1),
 					Stores: map[string]fastedge.AppStoreParam{
 						"foo": {
 							ID: 0,

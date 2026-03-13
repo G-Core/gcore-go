@@ -47,23 +47,28 @@ func NewAppService(opts ...option.RequestOption) (r AppService) {
 	return
 }
 
-// Add a new app
+// Create a new edge application from a WebAssembly binary. The app is configured
+// with execution limits, environment variables, and network assignments. Apps
+// start in draft status (0) and must be explicitly enabled to receive traffic.
 func (r *AppService) New(ctx context.Context, body AppNewParams, opts ...option.RequestOption) (res *AppShort, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fastedge/v1/apps"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
-// Update app
-func (r *AppService) Update(ctx context.Context, id int64, body AppUpdateParams, opts ...option.RequestOption) (res *AppShort, err error) {
+// Partially update an application's configuration. Only the fields provided in the
+// request body will be modified; others remain unchanged.
+func (r *AppService) Update(ctx context.Context, appID int64, body AppUpdateParams, opts ...option.RequestOption) (res *AppShort, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
+	path := fmt.Sprintf("fastedge/v1/apps/%v", appID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
-// List client's apps
+// Retrieve a paginated list of applications owned by the authenticated client.
+// Results can be filtered by name, API type, status, template, binary, or plan,
+// and sorted by various fields.
 func (r *AppService) List(ctx context.Context, query AppListParams, opts ...option.RequestOption) (res *pagination.OffsetPageFastedgeApps[AppShort], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -81,54 +86,62 @@ func (r *AppService) List(ctx context.Context, query AppListParams, opts ...opti
 	return res, nil
 }
 
-// List client's apps
+// Retrieve a paginated list of applications owned by the authenticated client.
+// Results can be filtered by name, API type, status, template, binary, or plan,
+// and sorted by various fields.
 func (r *AppService) ListAutoPaging(ctx context.Context, query AppListParams, opts ...option.RequestOption) *pagination.OffsetPageFastedgeAppsAutoPager[AppShort] {
 	return pagination.NewOffsetPageFastedgeAppsAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete app
-func (r *AppService) Delete(ctx context.Context, id int64, opts ...option.RequestOption) (err error) {
+// Permanently delete an application and remove it from all edge networks. This
+// action cannot be undone. The associated binary is not deleted and can be reused.
+func (r *AppService) Delete(ctx context.Context, appID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
+	path := fmt.Sprintf("fastedge/v1/apps/%v", appID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
-// Get app details
-func (r *AppService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *App, err error) {
+// Retrieve complete configuration and metadata for a specific application.
+// Includes binary reference, plan limits, environment variables, and current
+// status.
+func (r *AppService) Get(ctx context.Context, appID int64, opts ...option.RequestOption) (res *App, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
+	path := fmt.Sprintf("fastedge/v1/apps/%v", appID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
-// Update an app
-func (r *AppService) Replace(ctx context.Context, id int64, body AppReplaceParams, opts ...option.RequestOption) (res *AppShort, err error) {
+// Replace the complete configuration of an existing application. All fields must
+// be provided - use PATCH for partial updates.
+func (r *AppService) Replace(ctx context.Context, appID int64, body AppReplaceParams, opts ...option.RequestOption) (res *AppShort, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("fastedge/v1/apps/%v", id)
+	path := fmt.Sprintf("fastedge/v1/apps/%v", appID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type App struct {
 	// Wasm API type
 	APIType string `json:"api_type"`
-	// Binary ID
+	// ID of the WebAssembly binary to deploy
 	Binary int64 `json:"binary"`
-	// App description
+	// Optional human-readable description of the application's purpose
 	Comment string `json:"comment"`
-	// Switch on logging for 30 minutes (switched off by default)
+	// Enable verbose debug logging for 30 minutes. Automatically expires to prevent
+	// performance impact.
 	Debug bool `json:"debug"`
 	// When debugging finishes
 	DebugUntil time.Time `json:"debug_until" format:"date-time"`
 	// Environment variables
 	Env map[string]string `json:"env"`
-	// Logging channel (by default - kafka, which allows exploring logs with API)
+	// Logging channel. Use 'kafka' to enable log collection (queryable via API), or
+	// 'none' to disable logging.
 	//
 	// Any of "kafka", "none".
 	Log AppLog `json:"log" api:"nullable"`
-	// App name
+	// Unique application name (alphanumeric, hyphens allowed)
 	Name string `json:"name"`
 	// Networks
 	Networks []string `json:"networks"`
@@ -144,8 +157,6 @@ type App struct {
 	// 0 - draft (inactive)
 	// 1 - enabled
 	// 2 - disabled
-	// 3 - hourly call limit exceeded
-	// 4 - daily call limit exceeded
 	// 5 - suspended
 	Status int64 `json:"status"`
 	// Application edge stores
@@ -154,7 +165,7 @@ type App struct {
 	Template int64 `json:"template"`
 	// Template name
 	TemplateName string `json:"template_name"`
-	// App URL
+	// Auto-generated URL where the application is accessible
 	URL string `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -196,7 +207,8 @@ func (r App) ToParam() AppParam {
 	return param.Override[AppParam](json.RawMessage(r.RawJSON()))
 }
 
-// Logging channel (by default - kafka, which allows exploring logs with API)
+// Logging channel. Use 'kafka' to enable log collection (queryable via API), or
+// 'none' to disable logging.
 type AppLog string
 
 const (
@@ -253,25 +265,25 @@ func (r *AppStore) UnmarshalJSON(data []byte) error {
 }
 
 type AppParam struct {
-	// Binary ID
+	// ID of the WebAssembly binary to deploy
 	Binary param.Opt[int64] `json:"binary,omitzero"`
-	// App description
+	// Optional human-readable description of the application's purpose
 	Comment param.Opt[string] `json:"comment,omitzero"`
-	// Switch on logging for 30 minutes (switched off by default)
+	// Enable verbose debug logging for 30 minutes. Automatically expires to prevent
+	// performance impact.
 	Debug param.Opt[bool] `json:"debug,omitzero"`
-	// App name
+	// Unique application name (alphanumeric, hyphens allowed)
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Status code:
 	// 0 - draft (inactive)
 	// 1 - enabled
 	// 2 - disabled
-	// 3 - hourly call limit exceeded
-	// 4 - daily call limit exceeded
 	// 5 - suspended
 	Status param.Opt[int64] `json:"status,omitzero"`
 	// Template ID
 	Template param.Opt[int64] `json:"template,omitzero"`
-	// Logging channel (by default - kafka, which allows exploring logs with API)
+	// Logging channel. Use 'kafka' to enable log collection (queryable via API), or
+	// 'none' to disable logging.
 	//
 	// Any of "kafka", "none".
 	Log AppLog `json:"log,omitzero"`
@@ -418,15 +430,15 @@ func (r *AppUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type AppListParams struct {
-	// Binary ID
+	// Filter by binary ID (shows apps using this binary)
 	Binary param.Opt[int64] `query:"binary,omitzero" json:"-"`
-	// Limit for pagination
+	// Maximum number of results to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Name of the app
+	// Filter by application name (case-insensitive partial match)
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
-	// Offset for pagination
+	// Number of results to skip for pagination
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Plan ID
+	// Filter by plan ID
 	Plan param.Opt[int64] `query:"plan,omitzero" json:"-"`
 	// Status code:
 	// 0 - draft (inactive)
@@ -436,7 +448,7 @@ type AppListParams struct {
 	// 4 - daily call limit exceeded
 	// 5 - suspended
 	Status param.Opt[int64] `query:"status,omitzero" json:"-"`
-	// Template ID
+	// Filter by template ID (shows apps created from this template)
 	Template param.Opt[int64] `query:"template,omitzero" json:"-"`
 	// API type:
 	// wasi-http - WASI with HTTP entry point
@@ -444,7 +456,7 @@ type AppListParams struct {
 	//
 	// Any of "wasi-http", "proxy-wasm".
 	APIType AppListParamsAPIType `query:"api_type,omitzero" json:"-"`
-	// Ordering
+	// Sort order. Use - prefix for descending (e.g., -name sorts by name descending)
 	//
 	// Any of "name", "-name", "status", "-status", "id", "-id", "template",
 	// "-template", "binary", "-binary", "plan", "-plan".
@@ -470,7 +482,7 @@ const (
 	AppListParamsAPITypeProxyWasm AppListParamsAPIType = "proxy-wasm"
 )
 
-// Ordering
+// Sort order. Use - prefix for descending (e.g., -name sorts by name descending)
 type AppListParamsOrdering string
 
 const (

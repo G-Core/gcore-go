@@ -37,7 +37,7 @@ func (r *LocationService) List(ctx context.Context, opts ...option.RequestOption
 	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List of All locations continents.
@@ -45,7 +45,7 @@ func (r *LocationService) ListContinents(ctx context.Context, opts ...option.Req
 	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/locations/continents"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List of All locations countries.
@@ -53,7 +53,7 @@ func (r *LocationService) ListCountries(ctx context.Context, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/locations/countries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List of All locations regions.
@@ -61,7 +61,7 @@ func (r *LocationService) ListRegions(ctx context.Context, opts ...option.Reques
 	opts = slices.Concat(r.Options, opts)
 	path := "dns/v2/locations/regions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type DNSLocationTranslations struct {

@@ -41,7 +41,7 @@ func (r *BgpAnnounceService) List(ctx context.Context, query BgpAnnounceListPara
 	opts = slices.Concat(r.Options, opts)
 	path := "security/sifter/v2/protected_addresses/announces"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Enable or disable BGP announces for a client.
@@ -49,7 +49,7 @@ func (r *BgpAnnounceService) Toggle(ctx context.Context, params BgpAnnounceToggl
 	opts = slices.Concat(r.Options, opts)
 	path := "security/sifter/v2/protected_addresses/announces"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type ClientAnnounce struct {
