@@ -77,7 +77,7 @@ func getStorage(client *gcore.Client, storageID int64) {
 	fmt.Printf("Address: %s, Created: %s, Can Restore: %t\n",
 		storageDetails.Address, storageDetails.CreatedAt, storageDetails.CanRestore)
 
-	if storageDetails.Expires != "" {
+	if !storageDetails.Expires.IsZero() {
 		fmt.Printf("Expires: %s\n", storageDetails.Expires)
 	}
 
