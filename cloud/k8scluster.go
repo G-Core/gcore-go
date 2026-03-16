@@ -30,8 +30,11 @@ import (
 // the [NewK8SClusterService] method instead.
 type K8SClusterService struct {
 	Options []option.RequestOption
-	Nodes   K8SClusterNodeService
-	Pools   K8SClusterPoolService
+	// Kubeconfig provides the necessary configuration and credentials to access a
+	// Kubernetes cluster using kubectl or other Kubernetes clients.
+	Kubeconfig K8SClusterKubeconfigService
+	Nodes      K8SClusterNodeService
+	Pools      K8SClusterPoolService
 	tasks   TaskService
 }
 
@@ -41,6 +44,7 @@ type K8SClusterService struct {
 func NewK8SClusterService(opts ...option.RequestOption) (r K8SClusterService) {
 	r = K8SClusterService{}
 	r.Options = opts
+	r.Kubeconfig = NewK8SClusterKubeconfigService(opts...)
 	r.Nodes = NewK8SClusterNodeService(opts...)
 	r.Pools = NewK8SClusterPoolService(opts...)
 	r.tasks = NewTaskService(opts...)
@@ -272,32 +276,6 @@ func (r *K8SClusterService) GetCertificate(ctx context.Context, clusterName stri
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/certificates", query.ProjectID.Value, query.RegionID.Value, clusterName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
-// Get k8s cluster kubeconfig
-func (r *K8SClusterService) GetKubeconfig(ctx context.Context, clusterName string, query K8SClusterGetKubeconfigParams, opts ...option.RequestOption) (res *K8SClusterKubeconfig, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return nil, err
-	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !query.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	if clusterName == "" {
-		err = errors.New("missing required cluster_name parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/config", query.ProjectID.Value, query.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -1000,6 +978,68 @@ func init() {
 	)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterNewParamsAddOnsSlurm](
+		"enabled", true,
+	)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterNewParamsCni](
+		"provider", "calico", "cilium",
+	)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
+		"lb_mode", "dsr", "hybrid", "snat",
+	)
+	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
+		"routing_mode", "native", "tunnel",
+	)
+	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
+		"tunnel", "", "geneve", "vxlan",
+	)
+}
+
+func init() {
+	apijson.RegisterUnion[K8SClusterUpdateParamsAddOnsSlurmUnion](
+		"enabled",
+		apijson.Discriminator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer](true),
+		apijson.Discriminator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer](false),
+	)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer](
+		"enabled", true,
+	)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer](
+		"enabled", false,
+	)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCni](
+		"provider", "calico", "cilium",
+	)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
+		"lb_mode", "dsr", "hybrid", "snat",
+	)
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
+		"routing_mode", "native", "tunnel",
+	)
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
+		"tunnel", "", "geneve", "vxlan",
+	)
+}
+
 // Cluster add-ons configuration
 type K8SClusterNewParamsAddOns struct {
 	// Slurm add-on configuration
@@ -1052,12 +1092,6 @@ func (r K8SClusterNewParamsAddOnsSlurm) MarshalJSON() (data []byte, err error) {
 }
 func (r *K8SClusterNewParamsAddOnsSlurm) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterNewParamsAddOnsSlurm](
-		"enabled", true,
-	)
 }
 
 // Authentication settings
@@ -1126,12 +1160,6 @@ func (r *K8SClusterNewParamsCni) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterNewParamsCni](
-		"provider", "calico", "cilium",
-	)
-}
-
 // Cilium settings
 type K8SClusterNewParamsCniCilium struct {
 	// Wireguard encryption
@@ -1167,18 +1195,6 @@ func (r K8SClusterNewParamsCniCilium) MarshalJSON() (data []byte, err error) {
 }
 func (r *K8SClusterNewParamsCniCilium) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
-		"lb_mode", "dsr", "hybrid", "snat",
-	)
-	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
-		"routing_mode", "native", "tunnel",
-	)
-	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
-		"tunnel", "", "geneve", "vxlan",
-	)
 }
 
 // Container Storage Interface (CSI) driver settings
@@ -1435,14 +1451,6 @@ func (u K8SClusterUpdateParamsAddOnsSlurmUnion) GetEnabled() *bool {
 	return nil
 }
 
-func init() {
-	apijson.RegisterUnion[K8SClusterUpdateParamsAddOnsSlurmUnion](
-		"enabled",
-		apijson.Discriminator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer](true),
-		apijson.Discriminator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer](false),
-	)
-}
-
 // The properties Enabled, FileShareID, SSHKeyIDs, WorkerCount are required.
 type K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer struct {
 	// ID of a VAST file share to be used as Slurm storage.
@@ -1480,12 +1488,6 @@ func (r *K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer](
-		"enabled", true,
-	)
-}
-
 func NewK8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer() K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer {
 	return K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer{
 		Enabled: false,
@@ -1506,12 +1508,6 @@ func (r K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer
 }
 func (r *K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer](
-		"enabled", false,
-	)
 }
 
 // Authentication settings
@@ -1580,12 +1576,6 @@ func (r *K8SClusterUpdateParamsCni) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCni](
-		"provider", "calico", "cilium",
-	)
-}
-
 // Cilium settings
 type K8SClusterUpdateParamsCniCilium struct {
 	// Wireguard encryption
@@ -1621,18 +1611,6 @@ func (r K8SClusterUpdateParamsCniCilium) MarshalJSON() (data []byte, err error) 
 }
 func (r *K8SClusterUpdateParamsCniCilium) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
-		"lb_mode", "dsr", "hybrid", "snat",
-	)
-	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
-		"routing_mode", "native", "tunnel",
-	)
-	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
-		"tunnel", "", "geneve", "vxlan",
-	)
 }
 
 // Advanced DDoS Protection profile
@@ -1732,14 +1710,6 @@ type K8SClusterGetParams struct {
 }
 
 type K8SClusterGetCertificateParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	paramObj
-}
-
-type K8SClusterGetKubeconfigParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
