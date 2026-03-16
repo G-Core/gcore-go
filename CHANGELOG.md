@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.38.0 (2026-03-16)
+
+Full Changelog: [v0.37.0...v0.38.0](https://github.com/G-Core/gcore-go/compare/v0.37.0...v0.38.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** make kubeconfig as k8s cluster subresource
+
+### Features
+
+* **api:** aggregated API specs update ([c41ad08](https://github.com/G-Core/gcore-go/commit/c41ad0843c3f3c47214847490ea574fe81e8eb40))
+* **api:** aggregated API specs update ([50bbf88](https://github.com/G-Core/gcore-go/commit/50bbf88484996b3938049a3386ae4eb06ffa52fa))
+* **api:** aggregated API specs update ([97ee3d3](https://github.com/G-Core/gcore-go/commit/97ee3d3960d465f564452e744f7f379e70fc7027))
+* **api:** aggregated API specs update ([67bb5c7](https://github.com/G-Core/gcore-go/commit/67bb5c7fe42a7f7ba75cbe8c4b933b7facb683e3))
+* **api:** aggregated API specs update ([99e63d0](https://github.com/G-Core/gcore-go/commit/99e63d08673282ca8874a5f01271213b69b436cd))
+* **api:** aggregated API specs update ([a5136d3](https://github.com/G-Core/gcore-go/commit/a5136d3494372bb884b67920046ea32e2ecc59f7))
+* **cloud:** add AttachAndPoll/DetachAndPoll to GPU baremetal interfaces ([e031bba](https://github.com/G-Core/gcore-go/commit/e031bbaa23b14251fa71bac4439cfc2a4577f83b))
+* **cloud:** add DeleteAndPoll to BaremetalServerService ([95de999](https://github.com/G-Core/gcore-go/commit/95de99989cddebc0522e0e3c143766ee7e8e07cc))
+* **cloud:** add get, update, delete methods to baremetal servers ([dbd7174](https://github.com/G-Core/gcore-go/commit/dbd717437a2a860a466331239587ce0e754ebf3b))
+* **cloud:** add update method to GPU Baremetal clusters ([a737317](https://github.com/G-Core/gcore-go/commit/a73731784be7a52ef48242cf6b774ba2634aafb7))
+* **cloud:** make kubeconfig as k8s cluster subresource ([49ef00c](https://github.com/G-Core/gcore-go/commit/49ef00c9bc53cb31746b7ddcbd430cdf532a3739))
+
+
+### Bug Fixes
+
+* **cdn:** add missing getter methods on AzureBlobConfigAuthConfigUnion param types ([7d40020](https://github.com/G-Core/gcore-go/commit/7d4002029adb1f2328ac6ce58fc00f657d76acfa))
+* **fastedge:** rename path parameters to match updated OpenAPI spec ([fa1889d](https://github.com/G-Core/gcore-go/commit/fa1889d3e9791d6c29ade69f730fe2fae421866d))
+
+
+### Chores
+
+* **internal:** minor cleanup ([4b77f41](https://github.com/G-Core/gcore-go/commit/4b77f411a6382d850077874996c0f9cc36e9f464))
+* **internal:** use explicit returns ([d09ce75](https://github.com/G-Core/gcore-go/commit/d09ce751060a51e7e687f15b66b28b73052b29fa))
+* **internal:** use explicit returns in more places ([5644f63](https://github.com/G-Core/gcore-go/commit/5644f6397ec7880a10381bbe4904844158a83346))
+
 ## 0.37.0 (2026-03-09)
 
 Full Changelog: [v0.36.0...v0.37.0](https://github.com/G-Core/gcore-go/compare/v0.36.0...v0.37.0)
