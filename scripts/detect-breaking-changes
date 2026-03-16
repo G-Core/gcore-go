@@ -78,6 +78,7 @@ TEST_PATHS=(
 	cloud/k8s_test.go
 	cloud/k8sflavor_test.go
 	cloud/k8scluster_test.go
+	cloud/k8sclusterkubeconfig_test.go
 	cloud/k8sclusternode_test.go
 	cloud/k8sclusterpool_test.go
 	cloud/k8sclusterpoolnode_test.go
