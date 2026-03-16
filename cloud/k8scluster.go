@@ -30,8 +30,11 @@ import (
 // the [NewK8SClusterService] method instead.
 type K8SClusterService struct {
 	Options []option.RequestOption
-	Nodes   K8SClusterNodeService
-	Pools   K8SClusterPoolService
+	// Kubeconfig provides the necessary configuration and credentials to access a
+	// Kubernetes cluster using kubectl or other Kubernetes clients.
+	Kubeconfig K8SClusterKubeconfigService
+	Nodes      K8SClusterNodeService
+	Pools      K8SClusterPoolService
 }
 
 // NewK8SClusterService generates a new service that applies the given options to
@@ -40,6 +43,7 @@ type K8SClusterService struct {
 func NewK8SClusterService(opts ...option.RequestOption) (r K8SClusterService) {
 	r = K8SClusterService{}
 	r.Options = opts
+	r.Kubeconfig = NewK8SClusterKubeconfigService(opts...)
 	r.Nodes = NewK8SClusterNodeService(opts...)
 	r.Pools = NewK8SClusterPoolService(opts...)
 	return
@@ -189,32 +193,6 @@ func (r *K8SClusterService) GetCertificate(ctx context.Context, clusterName stri
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/certificates", query.ProjectID.Value, query.RegionID.Value, clusterName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
-// Get k8s cluster kubeconfig
-func (r *K8SClusterService) GetKubeconfig(ctx context.Context, clusterName string, query K8SClusterGetKubeconfigParams, opts ...option.RequestOption) (res *K8SClusterKubeconfig, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return nil, err
-	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !query.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	if clusterName == "" {
-		err = errors.New("missing required cluster_name parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/config", query.ProjectID.Value, query.RegionID.Value, clusterName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -1618,14 +1596,6 @@ type K8SClusterGetParams struct {
 }
 
 type K8SClusterGetCertificateParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	paramObj
-}
-
-type K8SClusterGetKubeconfigParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
