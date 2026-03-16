@@ -193,7 +193,11 @@ func (r *GPUBaremetalClusterService) Get(ctx context.Context, clusterID string, 
 	return res, err
 }
 
-// Stops and then starts all cluster servers, effectively performing a hard reboot.
+// Please use the
+// `/v3/gpu/baremetal/{project_id}/{region_id}/clusters/{cluster_id}/action`
+// instead.
+//
+// Deprecated: deprecated
 func (r *GPUBaremetalClusterService) PowercycleAllServers(ctx context.Context, clusterID string, body GPUBaremetalClusterPowercycleAllServersParams, opts ...option.RequestOption) (res *GPUBaremetalClusterServerV1List, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -219,7 +223,11 @@ func (r *GPUBaremetalClusterService) PowercycleAllServers(ctx context.Context, c
 	return res, err
 }
 
-// Reboot all bare metal GPU cluster servers
+// Please use the
+// `/v3/gpu/baremetal/{project_id}/{region_id}/clusters/{cluster_id}/action`
+// instead.
+//
+// Deprecated: deprecated
 func (r *GPUBaremetalClusterService) RebootAllServers(ctx context.Context, clusterID string, body GPUBaremetalClusterRebootAllServersParams, opts ...option.RequestOption) (res *GPUBaremetalClusterServerV1List, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

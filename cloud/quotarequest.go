@@ -211,7 +211,7 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	CaasCPUCountLimit int64 `json:"caas_cpu_count_limit"`
 	// Containers gpu count limit
 	CaasGPUCountLimit int64 `json:"caas_gpu_count_limit"`
-	// MB memory count for containers limit
+	// MiB memory count for containers limit
 	CaasRamSizeLimit int64 `json:"caas_ram_size_limit"`
 	// K8s clusters count limit
 	ClusterCountLimit int64 `json:"cluster_count_limit"`
@@ -227,7 +227,7 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	FaasFunctionCountLimit int64 `json:"faas_function_count_limit"`
 	// Functions namespace count limit
 	FaasNamespaceCountLimit int64 `json:"faas_namespace_count_limit"`
-	// MB memory count for functions limit
+	// MiB memory count for functions limit
 	FaasRamSizeLimit int64 `json:"faas_ram_size_limit"`
 	// Firewalls Count limit
 	FirewallCountLimit int64 `json:"firewall_count_limit"`
@@ -245,7 +245,7 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	GPUVirtualL40sCountLimit int64 `json:"gpu_virtual_l40s_count_limit"`
 	// Images Count limit
 	ImageCountLimit int64 `json:"image_count_limit"`
-	// Images Size, GiB limit
+	// Images Size, bytes limit
 	ImageSizeLimit int64 `json:"image_size_limit"`
 	// IPU Count limit
 	IpuCountLimit int64 `json:"ipu_count_limit"`
@@ -255,7 +255,7 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	LoadbalancerCountLimit int64 `json:"loadbalancer_count_limit"`
 	// Networks Count limit
 	NetworkCountLimit int64 `json:"network_count_limit"`
-	// RAM Size, GiB limit
+	// RAM Size, MiB limit
 	RamLimit int64 `json:"ram_limit"`
 	// Region ID
 	RegionID int64 `json:"region_id"`
@@ -478,7 +478,7 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	CaasCPUCountLimit int64 `json:"caas_cpu_count_limit"`
 	// Containers gpu count limit
 	CaasGPUCountLimit int64 `json:"caas_gpu_count_limit"`
-	// MB memory count for containers limit
+	// MiB memory count for containers limit
 	CaasRamSizeLimit int64 `json:"caas_ram_size_limit"`
 	// K8s clusters count limit
 	ClusterCountLimit int64 `json:"cluster_count_limit"`
@@ -494,7 +494,7 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	FaasFunctionCountLimit int64 `json:"faas_function_count_limit"`
 	// Functions namespace count limit
 	FaasNamespaceCountLimit int64 `json:"faas_namespace_count_limit"`
-	// MB memory count for functions limit
+	// MiB memory count for functions limit
 	FaasRamSizeLimit int64 `json:"faas_ram_size_limit"`
 	// Firewalls Count limit
 	FirewallCountLimit int64 `json:"firewall_count_limit"`
@@ -512,7 +512,7 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	GPUVirtualL40sCountLimit int64 `json:"gpu_virtual_l40s_count_limit"`
 	// Images Count limit
 	ImageCountLimit int64 `json:"image_count_limit"`
-	// Images Size, GiB limit
+	// Images Size, bytes limit
 	ImageSizeLimit int64 `json:"image_size_limit"`
 	// IPU Count limit
 	IpuCountLimit int64 `json:"ipu_count_limit"`
@@ -522,7 +522,7 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	LoadbalancerCountLimit int64 `json:"loadbalancer_count_limit"`
 	// Networks Count limit
 	NetworkCountLimit int64 `json:"network_count_limit"`
-	// RAM Size, GiB limit
+	// RAM Size, MiB limit
 	RamLimit int64 `json:"ram_limit"`
 	// Region ID
 	RegionID int64 `json:"region_id"`
@@ -713,7 +713,7 @@ type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
 	CaasCPUCountLimit param.Opt[int64] `json:"caas_cpu_count_limit,omitzero"`
 	// Containers gpu count limit
 	CaasGPUCountLimit param.Opt[int64] `json:"caas_gpu_count_limit,omitzero"`
-	// MB memory count for containers limit
+	// MiB memory count for containers limit
 	CaasRamSizeLimit param.Opt[int64] `json:"caas_ram_size_limit,omitzero"`
 	// K8s clusters count limit
 	ClusterCountLimit param.Opt[int64] `json:"cluster_count_limit,omitzero"`
@@ -729,7 +729,7 @@ type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
 	FaasFunctionCountLimit param.Opt[int64] `json:"faas_function_count_limit,omitzero"`
 	// Functions namespace count limit
 	FaasNamespaceCountLimit param.Opt[int64] `json:"faas_namespace_count_limit,omitzero"`
-	// MB memory count for functions limit
+	// MiB memory count for functions limit
 	FaasRamSizeLimit param.Opt[int64] `json:"faas_ram_size_limit,omitzero"`
 	// Firewalls Count limit
 	FirewallCountLimit param.Opt[int64] `json:"firewall_count_limit,omitzero"`
@@ -747,7 +747,7 @@ type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
 	GPUVirtualL40sCountLimit param.Opt[int64] `json:"gpu_virtual_l40s_count_limit,omitzero"`
 	// Images Count limit
 	ImageCountLimit param.Opt[int64] `json:"image_count_limit,omitzero"`
-	// Images Size, GiB limit
+	// Images Size, bytes limit
 	ImageSizeLimit param.Opt[int64] `json:"image_size_limit,omitzero"`
 	// IPU Count limit
 	IpuCountLimit param.Opt[int64] `json:"ipu_count_limit,omitzero"`
@@ -757,7 +757,7 @@ type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
 	LoadbalancerCountLimit param.Opt[int64] `json:"loadbalancer_count_limit,omitzero"`
 	// Networks Count limit
 	NetworkCountLimit param.Opt[int64] `json:"network_count_limit,omitzero"`
-	// RAM Size, GiB limit
+	// RAM Size, MiB limit
 	RamLimit param.Opt[int64] `json:"ram_limit,omitzero"`
 	// Region ID
 	RegionID param.Opt[int64] `json:"region_id,omitzero"`

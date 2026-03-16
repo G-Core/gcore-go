@@ -308,25 +308,13 @@ func (r SecretDeleteParams) URLQuery() (v url.Values, err error) {
 }
 
 type SecretReplaceParams struct {
-	Body SecretReplaceParamsBody
+	Secret SecretParam
 	paramObj
 }
 
 func (r SecretReplaceParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.Body)
+	return shimjson.Marshal(r.Secret)
 }
 func (r *SecretReplaceParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Body)
-}
-
-type SecretReplaceParamsBody struct {
-	SecretParam
-}
-
-func (r SecretReplaceParamsBody) MarshalJSON() (data []byte, err error) {
-	type shadow struct {
-		*SecretReplaceParamsBody
-		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
-	}
-	return param.MarshalObject(r, shadow{&r, false})
+	return json.Unmarshal(data, &r.Secret)
 }

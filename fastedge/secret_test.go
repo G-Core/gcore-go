@@ -171,15 +171,13 @@ func TestSecretReplaceWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		fastedge.SecretReplaceParams{
-			Body: fastedge.SecretReplaceParamsBody{
-				SecretParam: fastedge.SecretParam{
-					Comment: gcore.String("comment"),
-					Name:    gcore.String("name"),
-					SecretSlots: []fastedge.SecretSecretSlotParam{{
-						Slot:  1704067200,
-						Value: gcore.String("P@ssw0rd123!"),
-					}},
-				},
+			Secret: fastedge.SecretParam{
+				Comment: gcore.String("comment"),
+				Name:    gcore.String("name"),
+				SecretSlots: []fastedge.SecretSecretSlotParam{{
+					Slot:  1704067200,
+					Value: gcore.String("P@ssw0rd123!"),
+				}},
 			},
 		},
 	)

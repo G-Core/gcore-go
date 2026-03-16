@@ -210,9 +210,9 @@ type QuotaGetAllResponseRegionalQuota struct {
 	CaasGPUCountLimit int64 `json:"caas_gpu_count_limit"`
 	// Containers gpu count usage
 	CaasGPUCountUsage int64 `json:"caas_gpu_count_usage"`
-	// MB memory count for containers limit
+	// MiB memory count for containers limit
 	CaasRamSizeLimit int64 `json:"caas_ram_size_limit"`
-	// MB memory count for containers usage
+	// MiB memory count for containers usage
 	CaasRamSizeUsage int64 `json:"caas_ram_size_usage"`
 	// K8s clusters count limit
 	ClusterCountLimit int64 `json:"cluster_count_limit"`
@@ -242,9 +242,9 @@ type QuotaGetAllResponseRegionalQuota struct {
 	FaasNamespaceCountLimit int64 `json:"faas_namespace_count_limit"`
 	// Functions namespace count usage
 	FaasNamespaceCountUsage int64 `json:"faas_namespace_count_usage"`
-	// MB memory count for functions limit
+	// MiB memory count for functions limit
 	FaasRamSizeLimit int64 `json:"faas_ram_size_limit"`
-	// MB memory count for functions usage
+	// MiB memory count for functions usage
 	FaasRamSizeUsage int64 `json:"faas_ram_size_usage"`
 	// Firewalls Count limit
 	FirewallCountLimit int64 `json:"firewall_count_limit"`
@@ -278,9 +278,9 @@ type QuotaGetAllResponseRegionalQuota struct {
 	ImageCountLimit int64 `json:"image_count_limit"`
 	// Images Count usage
 	ImageCountUsage int64 `json:"image_count_usage"`
-	// Images Size, GiB limit
+	// Images Size, bytes limit
 	ImageSizeLimit int64 `json:"image_size_limit"`
-	// Images Size, GiB usage
+	// Images Size, bytes usage
 	ImageSizeUsage int64 `json:"image_size_usage"`
 	// IPU Count limit
 	IpuCountLimit int64 `json:"ipu_count_limit"`
@@ -298,9 +298,9 @@ type QuotaGetAllResponseRegionalQuota struct {
 	NetworkCountLimit int64 `json:"network_count_limit"`
 	// Networks Count usage
 	NetworkCountUsage int64 `json:"network_count_usage"`
-	// RAM Size, GiB limit
+	// RAM Size, MiB limit
 	RamLimit int64 `json:"ram_limit"`
-	// RAM Size, GiB usage
+	// RAM Size, MiB usage
 	RamUsage int64 `json:"ram_usage"`
 	// Region ID
 	RegionID int64 `json:"region_id"`
@@ -543,9 +543,9 @@ type QuotaGetByRegionResponse struct {
 	CaasGPUCountLimit int64 `json:"caas_gpu_count_limit"`
 	// Containers gpu count usage
 	CaasGPUCountUsage int64 `json:"caas_gpu_count_usage"`
-	// MB memory count for containers limit
+	// MiB memory count for containers limit
 	CaasRamSizeLimit int64 `json:"caas_ram_size_limit"`
-	// MB memory count for containers usage
+	// MiB memory count for containers usage
 	CaasRamSizeUsage int64 `json:"caas_ram_size_usage"`
 	// K8s clusters count limit
 	ClusterCountLimit int64 `json:"cluster_count_limit"`
@@ -575,9 +575,9 @@ type QuotaGetByRegionResponse struct {
 	FaasNamespaceCountLimit int64 `json:"faas_namespace_count_limit"`
 	// Functions namespace count usage
 	FaasNamespaceCountUsage int64 `json:"faas_namespace_count_usage"`
-	// MB memory count for functions limit
+	// MiB memory count for functions limit
 	FaasRamSizeLimit int64 `json:"faas_ram_size_limit"`
-	// MB memory count for functions usage
+	// MiB memory count for functions usage
 	FaasRamSizeUsage int64 `json:"faas_ram_size_usage"`
 	// Firewalls Count limit
 	FirewallCountLimit int64 `json:"firewall_count_limit"`
@@ -611,9 +611,9 @@ type QuotaGetByRegionResponse struct {
 	ImageCountLimit int64 `json:"image_count_limit"`
 	// Images Count usage
 	ImageCountUsage int64 `json:"image_count_usage"`
-	// Images Size, GiB limit
+	// Images Size, bytes limit
 	ImageSizeLimit int64 `json:"image_size_limit"`
-	// Images Size, GiB usage
+	// Images Size, bytes usage
 	ImageSizeUsage int64 `json:"image_size_usage"`
 	// IPU Count limit
 	IpuCountLimit int64 `json:"ipu_count_limit"`
@@ -631,9 +631,9 @@ type QuotaGetByRegionResponse struct {
 	NetworkCountLimit int64 `json:"network_count_limit"`
 	// Networks Count usage
 	NetworkCountUsage int64 `json:"network_count_usage"`
-	// RAM Size, GiB limit
+	// RAM Size, MiB limit
 	RamLimit int64 `json:"ram_limit"`
-	// RAM Size, GiB usage
+	// RAM Size, MiB usage
 	RamUsage int64 `json:"ram_usage"`
 	// Region ID
 	RegionID int64 `json:"region_id"`
