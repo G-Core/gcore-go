@@ -229,8 +229,6 @@ func (r *ProjectUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type ProjectListParams struct {
-	// Client ID filter for administrators.
-	ClientID param.Opt[int64] `query:"client_id,omitzero" json:"-"`
 	// Whether to include deleted projects in the response.
 	IncludeDeleted param.Opt[bool] `query:"include_deleted,omitzero" json:"-"`
 	// Limit value is used to limit the number of records in the result
