@@ -78,7 +78,6 @@ func TestProjectListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Projects.List(context.TODO(), cloud.ProjectListParams{
-		ClientID:       gcore.Int(1),
 		IncludeDeleted: gcore.Bool(false),
 		Limit:          gcore.Int(100),
 		Name:           gcore.String("my-project"),
