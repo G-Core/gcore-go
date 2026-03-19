@@ -15,10 +15,6 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
-// CDN rule templates define reusable rule configurations that can be applied
-// across multiple CDN resources for consistent caching, delivery, and security
-// policies.
-//
 // RuleTemplateService contains methods and other services that help with
 // interacting with the gcore API.
 //
