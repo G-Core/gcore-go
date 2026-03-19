@@ -28,10 +28,7 @@ type CDNService struct {
 	Shields      ShieldService
 	// CDN origin groups aggregate one or more origin servers with failover and load
 	// balancing for content delivery.
-	OriginGroups OriginGroupService
-	// CDN rule templates define reusable rule configurations that can be applied
-	// across multiple CDN resources for consistent caching, delivery, and security
-	// policies.
+	OriginGroups  OriginGroupService
 	RuleTemplates RuleTemplateService
 	// CDN SSL certificates enable HTTPS content delivery, supporting both uploaded
 	// certificates and automated Let's Encrypt provisioning.
