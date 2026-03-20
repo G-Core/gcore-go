@@ -333,7 +333,6 @@ func (r *InstanceService) EnablePortSecurity(ctx context.Context, portID string,
 //     `ddos_profile` field. Supported values:
 //   - `'en'` (default)
 //   - `'de'`
-//   - `'ru'`
 func (r *InstanceService) Get(ctx context.Context, instanceID string, query InstanceGetParams, opts ...option.RequestOption) (res *Instance, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
