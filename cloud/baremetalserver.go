@@ -177,7 +177,9 @@ func (r *BaremetalServerService) Delete(ctx context.Context, serverID string, pa
 	return res, err
 }
 
-// Retrieve detailed information about a specific baremetal instance.
+// Retrieve detailed information about a specific baremetal instance. This endpoint
+// always returns `ddos_profile` (if present) and therefore always requires
+// `DDOS_READ`.
 func (r *BaremetalServerService) Get(ctx context.Context, serverID string, query BaremetalServerGetParams, opts ...option.RequestOption) (res *BaremetalServer, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

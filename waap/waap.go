@@ -22,6 +22,7 @@ import (
 type WaapService struct {
 	Options    []option.RequestOption
 	Statistics StatisticService
+	Analytics  AnalyticsService
 	// WAAP domains enable Web Application and API Protection for monitoring and
 	// defending web applications against security threats.
 	Domains        DomainService
@@ -40,6 +41,7 @@ func NewWaapService(opts ...option.RequestOption) (r WaapService) {
 	r = WaapService{}
 	r.Options = opts
 	r.Statistics = NewStatisticService(opts...)
+	r.Analytics = NewAnalyticsService(opts...)
 	r.Domains = NewDomainService(opts...)
 	r.CustomPageSets = NewCustomPageSetService(opts...)
 	r.AdvancedRules = NewAdvancedRuleService(opts...)

@@ -265,6 +265,117 @@ func (r *WaapDomainSettingsModel) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Request summary used when displaying a list of requests
+type WaapRequestSummary struct {
+	// Request's unique id
+	ID string `json:"id" api:"required"`
+	// Action of the triggered rule
+	Action string `json:"action" api:"required"`
+	// Client's IP address.
+	ClientIP string `json:"client_ip" api:"required"`
+	// Country code
+	Country string `json:"country" api:"required"`
+	// The decision made for processing the request through the WAAP.
+	//
+	// Any of "passed", "allowed", "monitored", "blocked", "".
+	Decision WaapRequestSummaryDecision `json:"decision" api:"required"`
+	// Domain name
+	Domain string `json:"domain" api:"required"`
+	// Domain ID
+	DomainID int64 `json:"domain_id" api:"required"`
+	// HTTP method
+	Method string `json:"method" api:"required"`
+	// An optional action that may be applied in addition to the primary decision.
+	//
+	// Any of "captcha", "challenge", "".
+	OptionalAction WaapRequestSummaryOptionalAction `json:"optional_action" api:"required"`
+	// Organization
+	Organization string `json:"organization" api:"required"`
+	// Request path
+	Path string `json:"path" api:"required"`
+	// The reference ID to a sanction that was given to a user.
+	ReferenceID string `json:"reference_id" api:"required"`
+	// The UNIX timestamp in ms of the date a set of traffic counters was recorded
+	RequestTime int64 `json:"request_time" api:"required"`
+	// Any of "passed", "blocked", "suppressed", "".
+	Result WaapRequestSummaryResult `json:"result" api:"required"`
+	// The ID of the triggered rule.
+	RuleID string `json:"rule_id" api:"required"`
+	// Name of the triggered rule
+	RuleName string `json:"rule_name" api:"required"`
+	// Status code for http request
+	StatusCode int64 `json:"status_code" api:"required"`
+	// Comma separated list of traffic types.
+	TrafficTypes string `json:"traffic_types" api:"required"`
+	// User agent
+	UserAgent string `json:"user_agent" api:"required"`
+	// Client from parsed User agent header
+	UserAgentClient string `json:"user_agent_client" api:"required"`
+	// The session ID associated with the request.
+	SessionID string `json:"session_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		Action          respjson.Field
+		ClientIP        respjson.Field
+		Country         respjson.Field
+		Decision        respjson.Field
+		Domain          respjson.Field
+		DomainID        respjson.Field
+		Method          respjson.Field
+		OptionalAction  respjson.Field
+		Organization    respjson.Field
+		Path            respjson.Field
+		ReferenceID     respjson.Field
+		RequestTime     respjson.Field
+		Result          respjson.Field
+		RuleID          respjson.Field
+		RuleName        respjson.Field
+		StatusCode      respjson.Field
+		TrafficTypes    respjson.Field
+		UserAgent       respjson.Field
+		UserAgentClient respjson.Field
+		SessionID       respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapRequestSummary) RawJSON() string { return r.JSON.raw }
+func (r *WaapRequestSummary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The decision made for processing the request through the WAAP.
+type WaapRequestSummaryDecision string
+
+const (
+	WaapRequestSummaryDecisionPassed    WaapRequestSummaryDecision = "passed"
+	WaapRequestSummaryDecisionAllowed   WaapRequestSummaryDecision = "allowed"
+	WaapRequestSummaryDecisionMonitored WaapRequestSummaryDecision = "monitored"
+	WaapRequestSummaryDecisionBlocked   WaapRequestSummaryDecision = "blocked"
+	WaapRequestSummaryDecisionEmpty     WaapRequestSummaryDecision = ""
+)
+
+// An optional action that may be applied in addition to the primary decision.
+type WaapRequestSummaryOptionalAction string
+
+const (
+	WaapRequestSummaryOptionalActionCaptcha   WaapRequestSummaryOptionalAction = "captcha"
+	WaapRequestSummaryOptionalActionChallenge WaapRequestSummaryOptionalAction = "challenge"
+	WaapRequestSummaryOptionalActionEmpty     WaapRequestSummaryOptionalAction = ""
+)
+
+type WaapRequestSummaryResult string
+
+const (
+	WaapRequestSummaryResultPassed     WaapRequestSummaryResult = "passed"
+	WaapRequestSummaryResultBlocked    WaapRequestSummaryResult = "blocked"
+	WaapRequestSummaryResultSuppressed WaapRequestSummaryResult = "suppressed"
+	WaapRequestSummaryResultEmpty      WaapRequestSummaryResult = ""
+)
+
 // Represents a custom rule set.
 type WaapRuleSet struct {
 	// Identifier of the rule set.
@@ -404,6 +515,78 @@ const (
 	WaapSummaryDomainStatusMonitor WaapSummaryDomainStatus = "monitor"
 	WaapSummaryDomainStatusLocked  WaapSummaryDomainStatus = "locked"
 )
+
+// Represents the traffic metrics for a domain at a given time window
+type WaapTrafficMetrics struct {
+	// UNIX timestamp indicating when the traffic data was recorded
+	Timestamp int64 `json:"timestamp" api:"required"`
+	// Number of AJAX requests made
+	Ajax int64 `json:"ajax"`
+	// Number of API requests made
+	API int64 `json:"api"`
+	// Number of requests allowed through custom rules
+	CustomAllowed int64 `json:"customAllowed"`
+	// Number of requests blocked due to custom rules
+	CustomBlocked int64 `json:"customBlocked"`
+	// Number of DDoS attack attempts successfully blocked
+	DDOSBlocked int64 `json:"ddosBlocked"`
+	// Number of requests triggering monitoring actions
+	Monitored int64 `json:"monitored"`
+	// Number of successful HTTP 2xx responses from the origin server
+	Origin2xx int64 `json:"origin2xx"`
+	// Number of HTTP 3xx redirects issued by the origin server
+	Origin3xx int64 `json:"origin3xx"`
+	// Number of HTTP 4xx errors from the origin server
+	OriginError4xx int64 `json:"originError4xx"`
+	// Number of HTTP 5xx errors from the origin server
+	OriginError5xx int64 `json:"originError5xx"`
+	// Number of timeouts experienced at the origin server
+	OriginTimeout int64 `json:"originTimeout"`
+	// Number of requests served directly by the origin server
+	PassedToOrigin int64 `json:"passedToOrigin"`
+	// Number of requests allowed by security policies
+	PolicyAllowed int64 `json:"policyAllowed"`
+	// Number of requests blocked by security policies
+	PolicyBlocked int64 `json:"policyBlocked"`
+	// Average origin server response time in milliseconds
+	ResponseTime int64 `json:"responseTime"`
+	// Number of static asset requests
+	Static int64 `json:"static"`
+	// Total number of requests
+	Total int64 `json:"total"`
+	// Requests resulting in neither blocks nor sanctions
+	Uncategorized int64 `json:"uncategorized"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Timestamp      respjson.Field
+		Ajax           respjson.Field
+		API            respjson.Field
+		CustomAllowed  respjson.Field
+		CustomBlocked  respjson.Field
+		DDOSBlocked    respjson.Field
+		Monitored      respjson.Field
+		Origin2xx      respjson.Field
+		Origin3xx      respjson.Field
+		OriginError4xx respjson.Field
+		OriginError5xx respjson.Field
+		OriginTimeout  respjson.Field
+		PassedToOrigin respjson.Field
+		PolicyAllowed  respjson.Field
+		PolicyBlocked  respjson.Field
+		ResponseTime   respjson.Field
+		Static         respjson.Field
+		Total          respjson.Field
+		Uncategorized  respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapTrafficMetrics) RawJSON() string { return r.JSON.raw }
+func (r *WaapTrafficMetrics) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type DomainUpdateParams struct {
 	// The current status of the domain
