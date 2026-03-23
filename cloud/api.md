@@ -123,6 +123,18 @@ Methods:
 - <code title="delete /cloud/v2/limits_request/{request_id}">client.Cloud.Quotas.Requests.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaRequestService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, requestID <a href="https://pkg.go.dev/builtin#int64">int64</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 - <code title="get /cloud/v2/limits_request/{request_id}">client.Cloud.Quotas.Requests.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaRequestService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, requestID <a href="https://pkg.go.dev/builtin#int64">int64</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaRequestGetResponse">QuotaRequestGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+### NotificationThreshold
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#NotificationThreshold">NotificationThreshold</a>
+
+Methods:
+
+- <code title="put /cloud/v2/client_quotas/{client_id}/notification_threshold">client.Cloud.Quotas.NotificationThreshold.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaNotificationThresholdService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, clientID <a href="https://pkg.go.dev/builtin#int64">int64</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaNotificationThresholdUpdateParams">QuotaNotificationThresholdUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#NotificationThreshold">NotificationThreshold</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /cloud/v2/client_quotas/{client_id}/notification_threshold">client.Cloud.Quotas.NotificationThreshold.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaNotificationThresholdService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, clientID <a href="https://pkg.go.dev/builtin#int64">int64</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="get /cloud/v2/client_quotas/{client_id}/notification_threshold">client.Cloud.Quotas.NotificationThreshold.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaNotificationThresholdService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, clientID <a href="https://pkg.go.dev/builtin#int64">int64</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#NotificationThreshold">NotificationThreshold</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## Secrets
 
 Response Types:
