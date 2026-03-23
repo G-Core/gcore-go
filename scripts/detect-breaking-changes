@@ -13,6 +13,7 @@ TEST_PATHS=(
 	cloud/region_test.go
 	cloud/quota_test.go
 	cloud/quotarequest_test.go
+	cloud/quotanotificationthreshold_test.go
 	cloud/secret_test.go
 	cloud/sshkey_test.go
 	cloud/iprange_test.go
