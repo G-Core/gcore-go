@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.39.0 (2026-03-23)
+
+Full Changelog: [v0.38.0...v0.39.0](https://github.com/G-Core/gcore-go/compare/v0.38.0...v0.39.0)
+
+### ⚠ BREAKING CHANGES
+
+* **waap:** replace deprecated domain-scoped traffic/requests endpoints with account-scoped analytics
+
+### Features
+
+* **api:** aggregated API specs update ([5a42ce7](https://github.com/G-Core/gcore-go/commit/5a42ce7ce1aeaae94b6cc789be06a507f65bc98e))
+* **api:** aggregated API specs update ([612f567](https://github.com/G-Core/gcore-go/commit/612f5676ff53d995b3b4d88d40885bcb5e4c7dcb))
+* **api:** aggregated API specs update ([ff3b842](https://github.com/G-Core/gcore-go/commit/ff3b842ea47ed14fc16a18769b66ddda6305b6da))
+* **api:** Revert "feat(cdn): enable terraform support for cdn_rule_template" ([0737e56](https://github.com/G-Core/gcore-go/commit/0737e565c1e53da027ab66a1ba971cc9b150a694))
+* **cdn:** enable terraform support for cdn_rule_template ([73ff4a1](https://github.com/G-Core/gcore-go/commit/73ff4a10d67b486d45d348e6a795bfffb2f29fe0))
+* **cloud:** add notification_threshold subresource to quotas ([32a0a9d](https://github.com/G-Core/gcore-go/commit/32a0a9dc9ff8a3874fb22088fb1d7dee4b5b9902))
+* **waap:** replace deprecated domain-scoped traffic/requests endpoints with account-scoped analytics ([190f5c1](https://github.com/G-Core/gcore-go/commit/190f5c1277236c107e4cf2b886812f05e6a26ac5))
+
+
+### Chores
+
+* **internal:** tweak CI branches ([ac30425](https://github.com/G-Core/gcore-go/commit/ac3042580dfa91ca8b4e41965a9e2721ee6755f8))
+* **internal:** update gitignore ([8abb1e1](https://github.com/G-Core/gcore-go/commit/8abb1e1987de9cb95623ff20e1f38eb4951817bb))
+* **tests:** bump steady to v0.19.4 ([63bb07e](https://github.com/G-Core/gcore-go/commit/63bb07e8f4f9f2698f69e80752c6ec904adbb9d4))
+* **tests:** bump steady to v0.19.5 ([d064aac](https://github.com/G-Core/gcore-go/commit/d064aac5510ac0263bc51408ffa473e7d658e98c))
+
+
+### Refactors
+
+* **tests:** switch from prism to steady ([68de6a7](https://github.com/G-Core/gcore-go/commit/68de6a7f079a1a9b7d7b5fb7fc04e8e85582b8a4))
+
 ## 0.38.0 (2026-03-16)
 
 Full Changelog: [v0.37.0...v0.38.0](https://github.com/G-Core/gcore-go/compare/v0.37.0...v0.38.0)
