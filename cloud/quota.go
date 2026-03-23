@@ -23,8 +23,9 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewQuotaService] method instead.
 type QuotaService struct {
-	Options  []option.RequestOption
-	Requests QuotaRequestService
+	Options               []option.RequestOption
+	Requests              QuotaRequestService
+	NotificationThreshold QuotaNotificationThresholdService
 }
 
 // NewQuotaService generates a new service that applies the given options to each
@@ -34,6 +35,7 @@ func NewQuotaService(opts ...option.RequestOption) (r QuotaService) {
 	r = QuotaService{}
 	r.Options = opts
 	r.Requests = NewQuotaRequestService(opts...)
+	r.NotificationThreshold = NewQuotaNotificationThresholdService(opts...)
 	return
 }
 
