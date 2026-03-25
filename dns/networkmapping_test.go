@@ -117,6 +117,7 @@ func TestNetworkMappingGet(t *testing.T) {
 }
 
 func TestNetworkMappingGetByName(t *testing.T) {
+	t.Skip("skipped: ambiguous overlapping paths in OpenAPI spec, see DNS-2948")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
