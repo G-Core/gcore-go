@@ -23,7 +23,9 @@ import (
 // the [NewFastedgeService] method instead.
 type FastedgeService struct {
 	Options []option.RequestOption
-	// Application templates
+	// FastEdge templates encapsulate reusable configurations for FastEdge
+	// applications, including a WebAssembly binary reference and configurable
+	// parameters.
 	Templates TemplateService
 	// FastEdge secrets store sensitive values such as API keys and tokens that can be
 	// referenced by FastEdge applications.
