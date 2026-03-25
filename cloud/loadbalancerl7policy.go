@@ -292,7 +292,7 @@ type LoadBalancerL7PolicyNewParamsBodyRedirectToURL struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REDIRECT_TO_URL".
-	Action constant.RedirectToURL `json:"action" api:"required"`
+	Action constant.RedirectToURL `json:"action" default:"REDIRECT_TO_URL"`
 	paramObj
 }
 
@@ -323,7 +323,7 @@ type LoadBalancerL7PolicyNewParamsBodyRedirectPrefix struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REDIRECT_PREFIX".
-	Action constant.RedirectPrefix `json:"action" api:"required"`
+	Action constant.RedirectPrefix `json:"action" default:"REDIRECT_PREFIX"`
 	paramObj
 }
 
@@ -350,7 +350,7 @@ type LoadBalancerL7PolicyNewParamsBodyRedirectToPool struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REDIRECT_TO_POOL".
-	Action constant.RedirectToPool `json:"action" api:"required"`
+	Action constant.RedirectToPool `json:"action" default:"REDIRECT_TO_POOL"`
 	paramObj
 }
 
@@ -375,7 +375,7 @@ type LoadBalancerL7PolicyNewParamsBodyReject struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REJECT".
-	Action constant.Reject `json:"action" api:"required"`
+	Action constant.Reject `json:"action" default:"REJECT"`
 	paramObj
 }
 
@@ -434,7 +434,7 @@ type LoadBalancerL7PolicyUpdateParamsBodyRedirectToURL struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REDIRECT_TO_URL".
-	Action constant.RedirectToURL `json:"action" api:"required"`
+	Action constant.RedirectToURL `json:"action" default:"REDIRECT_TO_URL"`
 	paramObj
 }
 
@@ -463,7 +463,7 @@ type LoadBalancerL7PolicyUpdateParamsBodyRedirectPrefix struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REDIRECT_PREFIX".
-	Action constant.RedirectPrefix `json:"action" api:"required"`
+	Action constant.RedirectPrefix `json:"action" default:"REDIRECT_PREFIX"`
 	paramObj
 }
 
@@ -488,7 +488,7 @@ type LoadBalancerL7PolicyUpdateParamsBodyRedirectToPool struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REDIRECT_TO_POOL".
-	Action constant.RedirectToPool `json:"action" api:"required"`
+	Action constant.RedirectToPool `json:"action" default:"REDIRECT_TO_POOL"`
 	paramObj
 }
 
@@ -511,7 +511,7 @@ type LoadBalancerL7PolicyUpdateParamsBodyReject struct {
 	// Action
 	//
 	// This field can be elided, and will marshal its zero value as "REJECT".
-	Action constant.Reject `json:"action" api:"required"`
+	Action constant.Reject `json:"action" default:"REJECT"`
 	paramObj
 }
 

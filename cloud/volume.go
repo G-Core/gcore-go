@@ -668,7 +668,7 @@ type VolumeNewParamsBodyImage struct {
 	// Volume source type
 	//
 	// This field can be elided, and will marshal its zero value as "image".
-	Source constant.Image `json:"source" api:"required"`
+	Source constant.Image `json:"source" default:"image"`
 	paramObj
 }
 
@@ -718,7 +718,7 @@ type VolumeNewParamsBodySnapshot struct {
 	// Volume source type
 	//
 	// This field can be elided, and will marshal its zero value as "snapshot".
-	Source constant.Snapshot `json:"source" api:"required"`
+	Source constant.Snapshot `json:"source" default:"snapshot"`
 	paramObj
 }
 
@@ -765,7 +765,7 @@ type VolumeNewParamsBodyNewVolume struct {
 	// Volume source type
 	//
 	// This field can be elided, and will marshal its zero value as "new-volume".
-	Source constant.NewVolume `json:"source" api:"required"`
+	Source constant.NewVolume `json:"source" default:"new-volume"`
 	paramObj
 }
 

@@ -454,7 +454,7 @@ type CostReportAggregatedResultAICluster struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -467,7 +467,7 @@ type CostReportAggregatedResultAICluster struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64              `json:"region_id" api:"required"`
-	Type     constant.AICluster `json:"type" api:"required"`
+	Type     constant.AICluster `json:"type" default:"ai_cluster"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -499,7 +499,7 @@ type CostReportAggregatedResultAIVirtualCluster struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -512,7 +512,7 @@ type CostReportAggregatedResultAIVirtualCluster struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                     `json:"region_id" api:"required"`
-	Type     constant.AIVirtualCluster `json:"type" api:"required"`
+	Type     constant.AIVirtualCluster `json:"type" default:"ai_virtual_cluster"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -544,7 +544,7 @@ type CostReportAggregatedResultBaremetal struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -557,7 +557,7 @@ type CostReportAggregatedResultBaremetal struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64              `json:"region_id" api:"required"`
-	Type     constant.Baremetal `json:"type" api:"required"`
+	Type     constant.Baremetal `json:"type" default:"baremetal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -589,7 +589,7 @@ type CostReportAggregatedResultBasicVm struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -602,7 +602,7 @@ type CostReportAggregatedResultBasicVm struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64            `json:"region_id" api:"required"`
-	Type     constant.BasicVm `json:"type" api:"required"`
+	Type     constant.BasicVm `json:"type" default:"basic_vm"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -634,7 +634,7 @@ type CostReportAggregatedResultBackup struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -647,7 +647,7 @@ type CostReportAggregatedResultBackup struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64           `json:"region_id" api:"required"`
-	Type     constant.Backup `json:"type" api:"required"`
+	Type     constant.Backup `json:"type" default:"backup"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -679,7 +679,7 @@ type CostReportAggregatedResultContainers struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GBs `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.GBs `json:"billing_value_unit" default:"GBS"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -690,7 +690,7 @@ type CostReportAggregatedResultContainers struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64               `json:"region_id" api:"required"`
-	Type     constant.Containers `json:"type" api:"required"`
+	Type     constant.Containers `json:"type" default:"containers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -721,7 +721,7 @@ type CostReportAggregatedResultEgressTraffic struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Bytes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Bytes `json:"billing_value_unit" default:"bytes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -736,7 +736,7 @@ type CostReportAggregatedResultEgressTraffic struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                  `json:"region_id" api:"required"`
-	Type     constant.EgressTraffic `json:"type" api:"required"`
+	Type     constant.EgressTraffic `json:"type" default:"egress_traffic"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -768,7 +768,7 @@ type CostReportAggregatedResultExternalIP struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -779,7 +779,7 @@ type CostReportAggregatedResultExternalIP struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64               `json:"region_id" api:"required"`
-	Type     constant.ExternalIP `json:"type" api:"required"`
+	Type     constant.ExternalIP `json:"type" default:"external_ip"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -810,7 +810,7 @@ type CostReportAggregatedResultFileShare struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -823,7 +823,7 @@ type CostReportAggregatedResultFileShare struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64              `json:"region_id" api:"required"`
-	Type     constant.FileShare `json:"type" api:"required"`
+	Type     constant.FileShare `json:"type" default:"file_share"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -855,7 +855,7 @@ type CostReportAggregatedResultFloatingip struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -866,7 +866,7 @@ type CostReportAggregatedResultFloatingip struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64               `json:"region_id" api:"required"`
-	Type     constant.Floatingip `json:"type" api:"required"`
+	Type     constant.Floatingip `json:"type" default:"floatingip"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -897,7 +897,7 @@ type CostReportAggregatedResultFunctions struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GBs `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.GBs `json:"billing_value_unit" default:"GBS"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -908,7 +908,7 @@ type CostReportAggregatedResultFunctions struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64              `json:"region_id" api:"required"`
-	Type     constant.Functions `json:"type" api:"required"`
+	Type     constant.Functions `json:"type" default:"functions"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -939,7 +939,7 @@ type CostReportAggregatedResultFunctionsCalls struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Mls `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Mls `json:"billing_value_unit" default:"MLS"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -950,7 +950,7 @@ type CostReportAggregatedResultFunctionsCalls struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                   `json:"region_id" api:"required"`
-	Type     constant.FunctionsCalls `json:"type" api:"required"`
+	Type     constant.FunctionsCalls `json:"type" default:"functions_calls"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -981,7 +981,7 @@ type CostReportAggregatedResultFunctionsTraffic struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GB `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.GB `json:"billing_value_unit" default:"GB"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -992,7 +992,7 @@ type CostReportAggregatedResultFunctionsTraffic struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                     `json:"region_id" api:"required"`
-	Type     constant.FunctionsTraffic `json:"type" api:"required"`
+	Type     constant.FunctionsTraffic `json:"type" default:"functions_traffic"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -1023,7 +1023,7 @@ type CostReportAggregatedResultImage struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1034,7 +1034,7 @@ type CostReportAggregatedResultImage struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64          `json:"region_id" api:"required"`
-	Type     constant.Image `json:"type" api:"required"`
+	Type     constant.Image `json:"type" default:"image"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -1076,7 +1076,7 @@ type CostReportAggregatedResultInference struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64              `json:"region_id" api:"required"`
-	Type     constant.Inference `json:"type" api:"required"`
+	Type     constant.Inference `json:"type" default:"inference"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -1107,7 +1107,7 @@ type CostReportAggregatedResultInstance struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1120,7 +1120,7 @@ type CostReportAggregatedResultInstance struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64             `json:"region_id" api:"required"`
-	Type     constant.Instance `json:"type" api:"required"`
+	Type     constant.Instance `json:"type" default:"instance"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -1152,7 +1152,7 @@ type CostReportAggregatedResultLoadBalancer struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1165,7 +1165,7 @@ type CostReportAggregatedResultLoadBalancer struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                 `json:"region_id" api:"required"`
-	Type     constant.LoadBalancer `json:"type" api:"required"`
+	Type     constant.LoadBalancer `json:"type" default:"load_balancer"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -1197,7 +1197,7 @@ type CostReportAggregatedResultLogIndex struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1208,7 +1208,7 @@ type CostReportAggregatedResultLogIndex struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64             `json:"region_id" api:"required"`
-	Type     constant.LogIndex `json:"type" api:"required"`
+	Type     constant.LogIndex `json:"type" default:"log_index"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -1239,7 +1239,7 @@ type CostReportAggregatedResultSnapshot struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1250,7 +1250,7 @@ type CostReportAggregatedResultSnapshot struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64             `json:"region_id" api:"required"`
-	Type     constant.Snapshot `json:"type" api:"required"`
+	Type     constant.Snapshot `json:"type" default:"snapshot"`
 	// Type of the volume
 	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1284,7 +1284,7 @@ type CostReportAggregatedResultVolume struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1295,7 +1295,7 @@ type CostReportAggregatedResultVolume struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64           `json:"region_id" api:"required"`
-	Type     constant.Volume `json:"type" api:"required"`
+	Type     constant.Volume `json:"type" default:"volume"`
 	// Type of the volume
 	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1329,7 +1329,7 @@ type CostReportAggregatedResultDbaasPostgreSQLConnectionPooler struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1340,7 +1340,7 @@ type CostReportAggregatedResultDbaasPostgreSQLConnectionPooler struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                                    `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLConnectionPooler `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLConnectionPooler `json:"type" default:"dbaas_postgresql_connection_pooler"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -1373,7 +1373,7 @@ type CostReportAggregatedResultDbaasPostgreSQLMemory struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1384,7 +1384,7 @@ type CostReportAggregatedResultDbaasPostgreSQLMemory struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                          `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLMemory `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLMemory `json:"type" default:"dbaas_postgresql_memory"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -1415,7 +1415,7 @@ type CostReportAggregatedResultDbaasPostgreSQLPublicNetwork struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1426,7 +1426,7 @@ type CostReportAggregatedResultDbaasPostgreSQLPublicNetwork struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                                 `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLPublicNetwork `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLPublicNetwork `json:"type" default:"dbaas_postgresql_public_network"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -1457,7 +1457,7 @@ type CostReportAggregatedResultDbaasPostgreSQLCPU struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1468,7 +1468,7 @@ type CostReportAggregatedResultDbaasPostgreSQLCPU struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                       `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLCPU `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLCPU `json:"type" default:"dbaas_postgresql_cpu"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -1499,7 +1499,7 @@ type CostReportAggregatedResultDbaasPostgreSQLVolume struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1510,7 +1510,7 @@ type CostReportAggregatedResultDbaasPostgreSQLVolume struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                          `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLVolume `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLVolume `json:"type" default:"dbaas_postgresql_volume"`
 	// Type of the volume
 	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1913,7 +1913,7 @@ type CostReportAggregatedMonthlyResultAICluster struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1926,7 +1926,7 @@ type CostReportAggregatedMonthlyResultAICluster struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64              `json:"region_id" api:"required"`
-	Type     constant.AICluster `json:"type" api:"required"`
+	Type     constant.AICluster `json:"type" default:"ai_cluster"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -1958,7 +1958,7 @@ type CostReportAggregatedMonthlyResultAIVirtualCluster struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -1971,7 +1971,7 @@ type CostReportAggregatedMonthlyResultAIVirtualCluster struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                     `json:"region_id" api:"required"`
-	Type     constant.AIVirtualCluster `json:"type" api:"required"`
+	Type     constant.AIVirtualCluster `json:"type" default:"ai_virtual_cluster"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2003,7 +2003,7 @@ type CostReportAggregatedMonthlyResultBaremetal struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2016,7 +2016,7 @@ type CostReportAggregatedMonthlyResultBaremetal struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64              `json:"region_id" api:"required"`
-	Type     constant.Baremetal `json:"type" api:"required"`
+	Type     constant.Baremetal `json:"type" default:"baremetal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2048,7 +2048,7 @@ type CostReportAggregatedMonthlyResultBasicVm struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2061,7 +2061,7 @@ type CostReportAggregatedMonthlyResultBasicVm struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64            `json:"region_id" api:"required"`
-	Type     constant.BasicVm `json:"type" api:"required"`
+	Type     constant.BasicVm `json:"type" default:"basic_vm"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2093,7 +2093,7 @@ type CostReportAggregatedMonthlyResultBackup struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2106,7 +2106,7 @@ type CostReportAggregatedMonthlyResultBackup struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64           `json:"region_id" api:"required"`
-	Type     constant.Backup `json:"type" api:"required"`
+	Type     constant.Backup `json:"type" default:"backup"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2138,7 +2138,7 @@ type CostReportAggregatedMonthlyResultContainers struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GBs `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.GBs `json:"billing_value_unit" default:"GBS"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2149,7 +2149,7 @@ type CostReportAggregatedMonthlyResultContainers struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64               `json:"region_id" api:"required"`
-	Type     constant.Containers `json:"type" api:"required"`
+	Type     constant.Containers `json:"type" default:"containers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2180,7 +2180,7 @@ type CostReportAggregatedMonthlyResultEgressTraffic struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Bytes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Bytes `json:"billing_value_unit" default:"bytes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2195,7 +2195,7 @@ type CostReportAggregatedMonthlyResultEgressTraffic struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                  `json:"region_id" api:"required"`
-	Type     constant.EgressTraffic `json:"type" api:"required"`
+	Type     constant.EgressTraffic `json:"type" default:"egress_traffic"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2227,7 +2227,7 @@ type CostReportAggregatedMonthlyResultExternalIP struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2238,7 +2238,7 @@ type CostReportAggregatedMonthlyResultExternalIP struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64               `json:"region_id" api:"required"`
-	Type     constant.ExternalIP `json:"type" api:"required"`
+	Type     constant.ExternalIP `json:"type" default:"external_ip"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2269,7 +2269,7 @@ type CostReportAggregatedMonthlyResultFileShare struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2282,7 +2282,7 @@ type CostReportAggregatedMonthlyResultFileShare struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64              `json:"region_id" api:"required"`
-	Type     constant.FileShare `json:"type" api:"required"`
+	Type     constant.FileShare `json:"type" default:"file_share"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2314,7 +2314,7 @@ type CostReportAggregatedMonthlyResultFloatingip struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2325,7 +2325,7 @@ type CostReportAggregatedMonthlyResultFloatingip struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64               `json:"region_id" api:"required"`
-	Type     constant.Floatingip `json:"type" api:"required"`
+	Type     constant.Floatingip `json:"type" default:"floatingip"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2356,7 +2356,7 @@ type CostReportAggregatedMonthlyResultFunctions struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GBs `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.GBs `json:"billing_value_unit" default:"GBS"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2367,7 +2367,7 @@ type CostReportAggregatedMonthlyResultFunctions struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64              `json:"region_id" api:"required"`
-	Type     constant.Functions `json:"type" api:"required"`
+	Type     constant.Functions `json:"type" default:"functions"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2398,7 +2398,7 @@ type CostReportAggregatedMonthlyResultFunctionsCalls struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Mls `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Mls `json:"billing_value_unit" default:"MLS"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2409,7 +2409,7 @@ type CostReportAggregatedMonthlyResultFunctionsCalls struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                   `json:"region_id" api:"required"`
-	Type     constant.FunctionsCalls `json:"type" api:"required"`
+	Type     constant.FunctionsCalls `json:"type" default:"functions_calls"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2440,7 +2440,7 @@ type CostReportAggregatedMonthlyResultFunctionsTraffic struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GB `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.GB `json:"billing_value_unit" default:"GB"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2451,7 +2451,7 @@ type CostReportAggregatedMonthlyResultFunctionsTraffic struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                     `json:"region_id" api:"required"`
-	Type     constant.FunctionsTraffic `json:"type" api:"required"`
+	Type     constant.FunctionsTraffic `json:"type" default:"functions_traffic"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2482,7 +2482,7 @@ type CostReportAggregatedMonthlyResultImage struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2493,7 +2493,7 @@ type CostReportAggregatedMonthlyResultImage struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64          `json:"region_id" api:"required"`
-	Type     constant.Image `json:"type" api:"required"`
+	Type     constant.Image `json:"type" default:"image"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2535,7 +2535,7 @@ type CostReportAggregatedMonthlyResultInference struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64              `json:"region_id" api:"required"`
-	Type     constant.Inference `json:"type" api:"required"`
+	Type     constant.Inference `json:"type" default:"inference"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2566,7 +2566,7 @@ type CostReportAggregatedMonthlyResultInstance struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2579,7 +2579,7 @@ type CostReportAggregatedMonthlyResultInstance struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64             `json:"region_id" api:"required"`
-	Type     constant.Instance `json:"type" api:"required"`
+	Type     constant.Instance `json:"type" default:"instance"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2611,7 +2611,7 @@ type CostReportAggregatedMonthlyResultLoadBalancer struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2624,7 +2624,7 @@ type CostReportAggregatedMonthlyResultLoadBalancer struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                 `json:"region_id" api:"required"`
-	Type     constant.LoadBalancer `json:"type" api:"required"`
+	Type     constant.LoadBalancer `json:"type" default:"load_balancer"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2656,7 +2656,7 @@ type CostReportAggregatedMonthlyResultLogIndex struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2667,7 +2667,7 @@ type CostReportAggregatedMonthlyResultLogIndex struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64             `json:"region_id" api:"required"`
-	Type     constant.LogIndex `json:"type" api:"required"`
+	Type     constant.LogIndex `json:"type" default:"log_index"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2698,7 +2698,7 @@ type CostReportAggregatedMonthlyResultSnapshot struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2709,7 +2709,7 @@ type CostReportAggregatedMonthlyResultSnapshot struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64             `json:"region_id" api:"required"`
-	Type     constant.Snapshot `json:"type" api:"required"`
+	Type     constant.Snapshot `json:"type" default:"snapshot"`
 	// Type of the volume
 	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2743,7 +2743,7 @@ type CostReportAggregatedMonthlyResultVolume struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2754,7 +2754,7 @@ type CostReportAggregatedMonthlyResultVolume struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64           `json:"region_id" api:"required"`
-	Type     constant.Volume `json:"type" api:"required"`
+	Type     constant.Volume `json:"type" default:"volume"`
 	// Type of the volume
 	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2788,7 +2788,7 @@ type CostReportAggregatedMonthlyResultDbaasPostgreSQLConnectionPooler struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2799,7 +2799,7 @@ type CostReportAggregatedMonthlyResultDbaasPostgreSQLConnectionPooler struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                                    `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLConnectionPooler `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLConnectionPooler `json:"type" default:"dbaas_postgresql_connection_pooler"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2832,7 +2832,7 @@ type CostReportAggregatedMonthlyResultDbaasPostgreSQLMemory struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2843,7 +2843,7 @@ type CostReportAggregatedMonthlyResultDbaasPostgreSQLMemory struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                          `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLMemory `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLMemory `json:"type" default:"dbaas_postgresql_memory"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2874,7 +2874,7 @@ type CostReportAggregatedMonthlyResultDbaasPostgreSQLPublicNetwork struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2885,7 +2885,7 @@ type CostReportAggregatedMonthlyResultDbaasPostgreSQLPublicNetwork struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                                 `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLPublicNetwork `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLPublicNetwork `json:"type" default:"dbaas_postgresql_public_network"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2918,7 +2918,7 @@ type CostReportAggregatedMonthlyResultDbaasPostgreSQLCPU struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2929,7 +2929,7 @@ type CostReportAggregatedMonthlyResultDbaasPostgreSQLCPU struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                       `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLCPU `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLCPU `json:"type" default:"dbaas_postgresql_cpu"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingFeatureName respjson.Field
@@ -2960,7 +2960,7 @@ type CostReportAggregatedMonthlyResultDbaasPostgreSQLVolume struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -2971,7 +2971,7 @@ type CostReportAggregatedMonthlyResultDbaasPostgreSQLVolume struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                          `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLVolume `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLVolume `json:"type" default:"dbaas_postgresql_volume"`
 	// Type of the volume
 	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3392,7 +3392,7 @@ type CostReportDetailedResultAICluster struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -3415,7 +3415,7 @@ type CostReportDetailedResultAICluster struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
 	Tags []map[string]string `json:"tags" api:"required"`
-	Type constant.AICluster  `json:"type" api:"required"`
+	Type constant.AICluster  `json:"type" default:"ai_cluster"`
 	// UUID of the Baremetal GPU cluster
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3455,7 +3455,7 @@ type CostReportDetailedResultAIVirtualCluster struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -3478,7 +3478,7 @@ type CostReportDetailedResultAIVirtualCluster struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
 	Tags []map[string]string       `json:"tags" api:"required"`
-	Type constant.AIVirtualCluster `json:"type" api:"required"`
+	Type constant.AIVirtualCluster `json:"type" default:"ai_virtual_cluster"`
 	// UUID of the Virtual GPU cluster
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3518,7 +3518,7 @@ type CostReportDetailedResultBaremetal struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -3541,7 +3541,7 @@ type CostReportDetailedResultBaremetal struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
 	Tags []map[string]string `json:"tags" api:"required"`
-	Type constant.Baremetal  `json:"type" api:"required"`
+	Type constant.Baremetal  `json:"type" default:"baremetal"`
 	// UUID of the bare metal server
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3581,7 +3581,7 @@ type CostReportDetailedResultBasicVm struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -3604,7 +3604,7 @@ type CostReportDetailedResultBasicVm struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
 	Tags []map[string]string `json:"tags" api:"required"`
-	Type constant.BasicVm    `json:"type" api:"required"`
+	Type constant.BasicVm    `json:"type" default:"basic_vm"`
 	// UUID of the basic VM
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3644,7 +3644,7 @@ type CostReportDetailedResultBackup struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -3669,7 +3669,7 @@ type CostReportDetailedResultBackup struct {
 	ScheduleID string `json:"schedule_id" api:"required" format:"uuid"`
 	// UUID of the source volume
 	SourceVolumeUuid string          `json:"source_volume_uuid" api:"required" format:"uuid"`
-	Type             constant.Backup `json:"type" api:"required"`
+	Type             constant.Backup `json:"type" default:"backup"`
 	// UUID of the backup
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3710,7 +3710,7 @@ type CostReportDetailedResultContainers struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GBs `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.GBs `json:"billing_value_unit" default:"GBS"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -3729,7 +3729,7 @@ type CostReportDetailedResultContainers struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64               `json:"region_id" api:"required"`
-	Type     constant.Containers `json:"type" api:"required"`
+	Type     constant.Containers `json:"type" default:"containers"`
 	// UUID of the container
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3767,7 +3767,7 @@ type CostReportDetailedResultEgressTraffic struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Bytes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Bytes `json:"billing_value_unit" default:"bytes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -3796,7 +3796,7 @@ type CostReportDetailedResultEgressTraffic struct {
 	SizeUnit string `json:"size_unit" api:"required"`
 	// List of tags
 	Tags []map[string]string    `json:"tags" api:"required"`
-	Type constant.EgressTraffic `json:"type" api:"required"`
+	Type constant.EgressTraffic `json:"type" default:"egress_traffic"`
 	// ID of the bare metal server the traffic is associated with
 	VmID string `json:"vm_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3840,7 +3840,7 @@ type CostReportDetailedResultExternalIP struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -3865,7 +3865,7 @@ type CostReportDetailedResultExternalIP struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// ID of the subnet the IP is attached to
 	SubnetID string              `json:"subnet_id" api:"required" format:"uuid"`
-	Type     constant.ExternalIP `json:"type" api:"required"`
+	Type     constant.ExternalIP `json:"type" default:"external_ip"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AttachedToVm       respjson.Field
@@ -3904,7 +3904,7 @@ type CostReportDetailedResultFileShare struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -3928,10 +3928,10 @@ type CostReportDetailedResultFileShare struct {
 	// Region ID
 	RegionID int64 `json:"region_id" api:"required"`
 	// Unit of size
-	SizeUnit constant.GiB `json:"size_unit" api:"required"`
+	SizeUnit constant.GiB `json:"size_unit" default:"GiB"`
 	// List of tags
 	Tags []map[string]string `json:"tags" api:"required"`
-	Type constant.FileShare  `json:"type" api:"required"`
+	Type constant.FileShare  `json:"type" default:"file_share"`
 	// UUID of the file share
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3973,7 +3973,7 @@ type CostReportDetailedResultFloatingip struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -3996,7 +3996,7 @@ type CostReportDetailedResultFloatingip struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
 	Tags []map[string]string `json:"tags" api:"required"`
-	Type constant.Floatingip `json:"type" api:"required"`
+	Type constant.Floatingip `json:"type" default:"floatingip"`
 	// UUID of the floating IP
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4036,7 +4036,7 @@ type CostReportDetailedResultFunctions struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GBs `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.GBs `json:"billing_value_unit" default:"GBS"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4055,7 +4055,7 @@ type CostReportDetailedResultFunctions struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64              `json:"region_id" api:"required"`
-	Type     constant.Functions `json:"type" api:"required"`
+	Type     constant.Functions `json:"type" default:"functions"`
 	// UUID of the function
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4093,7 +4093,7 @@ type CostReportDetailedResultFunctionsCalls struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Mls `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Mls `json:"billing_value_unit" default:"MLS"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4112,7 +4112,7 @@ type CostReportDetailedResultFunctionsCalls struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                   `json:"region_id" api:"required"`
-	Type     constant.FunctionsCalls `json:"type" api:"required"`
+	Type     constant.FunctionsCalls `json:"type" default:"functions_calls"`
 	// UUID of the function call
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4150,7 +4150,7 @@ type CostReportDetailedResultFunctionsTraffic struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.GB `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.GB `json:"billing_value_unit" default:"GB"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4169,7 +4169,7 @@ type CostReportDetailedResultFunctionsTraffic struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                     `json:"region_id" api:"required"`
-	Type     constant.FunctionsTraffic `json:"type" api:"required"`
+	Type     constant.FunctionsTraffic `json:"type" default:"functions_traffic"`
 	// UUID of the function egress traffic
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4207,7 +4207,7 @@ type CostReportDetailedResultImage struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4229,10 +4229,10 @@ type CostReportDetailedResultImage struct {
 	// Region ID
 	RegionID int64 `json:"region_id" api:"required"`
 	// Unit of size
-	SizeUnit constant.Bytes `json:"size_unit" api:"required"`
+	SizeUnit constant.Bytes `json:"size_unit" default:"bytes"`
 	// List of tags
 	Tags []map[string]string `json:"tags" api:"required"`
-	Type constant.Image      `json:"type" api:"required"`
+	Type constant.Image      `json:"type" default:"image"`
 	// UUID of the image
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4294,7 +4294,7 @@ type CostReportDetailedResultInference struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64              `json:"region_id" api:"required"`
-	Type     constant.Inference `json:"type" api:"required"`
+	Type     constant.Inference `json:"type" default:"inference"`
 	// UUID of the inference deployment
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4333,7 +4333,7 @@ type CostReportDetailedResultInstance struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4356,7 +4356,7 @@ type CostReportDetailedResultInstance struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
 	Tags []map[string]string `json:"tags" api:"required"`
-	Type constant.Instance   `json:"type" api:"required"`
+	Type constant.Instance   `json:"type" default:"instance"`
 	// UUID of the instance
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4396,7 +4396,7 @@ type CostReportDetailedResultLoadBalancer struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4419,7 +4419,7 @@ type CostReportDetailedResultLoadBalancer struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// List of tags
 	Tags []map[string]string   `json:"tags" api:"required"`
-	Type constant.LoadBalancer `json:"type" api:"required"`
+	Type constant.LoadBalancer `json:"type" default:"load_balancer"`
 	// UUID of the load balancer
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4459,7 +4459,7 @@ type CostReportDetailedResultLogIndex struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4482,7 +4482,7 @@ type CostReportDetailedResultLogIndex struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// Unit of size
 	SizeUnit string            `json:"size_unit" api:"required"`
-	Type     constant.LogIndex `json:"type" api:"required"`
+	Type     constant.LogIndex `json:"type" default:"log_index"`
 	// UUID of the log index
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4522,7 +4522,7 @@ type CostReportDetailedResultSnapshot struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4549,7 +4549,7 @@ type CostReportDetailedResultSnapshot struct {
 	SourceVolumeUuid string `json:"source_volume_uuid" api:"required" format:"uuid"`
 	// List of tags
 	Tags []map[string]string `json:"tags" api:"required"`
-	Type constant.Snapshot   `json:"type" api:"required"`
+	Type constant.Snapshot   `json:"type" default:"snapshot"`
 	// UUID of the snapshot
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// Type of the volume
@@ -4596,7 +4596,7 @@ type CostReportDetailedResultVolume struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4621,7 +4621,7 @@ type CostReportDetailedResultVolume struct {
 	SizeUnit string `json:"size_unit" api:"required"`
 	// List of tags
 	Tags []map[string]string `json:"tags" api:"required"`
-	Type constant.Volume     `json:"type" api:"required"`
+	Type constant.Volume     `json:"type" default:"volume"`
 	// UUID of the volume
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// Type of the volume
@@ -4666,7 +4666,7 @@ type CostReportDetailedResultDbaasPostgreSQLConnectionPooler struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4685,7 +4685,7 @@ type CostReportDetailedResultDbaasPostgreSQLConnectionPooler struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                                    `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLConnectionPooler `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLConnectionPooler `json:"type" default:"dbaas_postgresql_connection_pooler"`
 	// UUID of the cluster
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4723,7 +4723,7 @@ type CostReportDetailedResultDbaasPostgreSQLMemory struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4742,7 +4742,7 @@ type CostReportDetailedResultDbaasPostgreSQLMemory struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                          `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLMemory `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLMemory `json:"type" default:"dbaas_postgresql_memory"`
 	// UUID of the cluster
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4780,7 +4780,7 @@ type CostReportDetailedResultDbaasPostgreSQLPublicNetwork struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4799,7 +4799,7 @@ type CostReportDetailedResultDbaasPostgreSQLPublicNetwork struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                                 `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLPublicNetwork `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLPublicNetwork `json:"type" default:"dbaas_postgresql_public_network"`
 	// UUID of the cluster
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4837,7 +4837,7 @@ type CostReportDetailedResultDbaasPostgreSQLCPU struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Minutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Minutes `json:"billing_value_unit" default:"minutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4856,7 +4856,7 @@ type CostReportDetailedResultDbaasPostgreSQLCPU struct {
 	Region int64 `json:"region" api:"required"`
 	// Region ID
 	RegionID int64                       `json:"region_id" api:"required"`
-	Type     constant.DbaasPostgreSQLCPU `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLCPU `json:"type" default:"dbaas_postgresql_cpu"`
 	// UUID of the cluster
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4894,7 +4894,7 @@ type CostReportDetailedResultDbaasPostgreSQLVolume struct {
 	// Value of the billing metric
 	BillingValue float64 `json:"billing_value" api:"required"`
 	// Unit of billing value
-	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" api:"required"`
+	BillingValueUnit constant.Gbminutes `json:"billing_value_unit" default:"gbminutes"`
 	// Cost for requested period
 	Cost float64 `json:"cost" api:"required"`
 	// Currency of the cost
@@ -4915,7 +4915,7 @@ type CostReportDetailedResultDbaasPostgreSQLVolume struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// Unit of size
 	SizeUnit string                         `json:"size_unit" api:"required"`
-	Type     constant.DbaasPostgreSQLVolume `json:"type" api:"required"`
+	Type     constant.DbaasPostgreSQLVolume `json:"type" default:"dbaas_postgresql_volume"`
 	// UUID of the cluster
 	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// Type of the volume
@@ -5329,7 +5329,7 @@ type CostReportGetAggregatedParamsSchemaFilterSnapshot struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "snapshot".
-	Type constant.Snapshot `json:"type" api:"required"`
+	Type constant.Snapshot `json:"type" default:"snapshot"`
 	paramObj
 }
 
@@ -5356,7 +5356,7 @@ type CostReportGetAggregatedParamsSchemaFilterInstance struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "instance".
-	Type constant.Instance `json:"type" api:"required"`
+	Type constant.Instance `json:"type" default:"instance"`
 	paramObj
 }
 
@@ -5383,7 +5383,7 @@ type CostReportGetAggregatedParamsSchemaFilterAICluster struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "ai_cluster".
-	Type constant.AICluster `json:"type" api:"required"`
+	Type constant.AICluster `json:"type" default:"ai_cluster"`
 	paramObj
 }
 
@@ -5411,7 +5411,7 @@ type CostReportGetAggregatedParamsSchemaFilterAIVirtualCluster struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "ai_virtual_cluster".
-	Type constant.AIVirtualCluster `json:"type" api:"required"`
+	Type constant.AIVirtualCluster `json:"type" default:"ai_virtual_cluster"`
 	paramObj
 }
 
@@ -5438,7 +5438,7 @@ type CostReportGetAggregatedParamsSchemaFilterBasicVm struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "basic_vm".
-	Type constant.BasicVm `json:"type" api:"required"`
+	Type constant.BasicVm `json:"type" default:"basic_vm"`
 	paramObj
 }
 
@@ -5465,7 +5465,7 @@ type CostReportGetAggregatedParamsSchemaFilterBaremetal struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "baremetal".
-	Type constant.Baremetal `json:"type" api:"required"`
+	Type constant.Baremetal `json:"type" default:"baremetal"`
 	paramObj
 }
 
@@ -5493,7 +5493,7 @@ type CostReportGetAggregatedParamsSchemaFilterVolume struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "volume".
-	Type constant.Volume `json:"type" api:"required"`
+	Type constant.Volume `json:"type" default:"volume"`
 	paramObj
 }
 
@@ -5520,7 +5520,7 @@ type CostReportGetAggregatedParamsSchemaFilterFileShare struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "file_share".
-	Type constant.FileShare `json:"type" api:"required"`
+	Type constant.FileShare `json:"type" default:"file_share"`
 	paramObj
 }
 
@@ -5547,7 +5547,7 @@ type CostReportGetAggregatedParamsSchemaFilterImage struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "image".
-	Type constant.Image `json:"type" api:"required"`
+	Type constant.Image `json:"type" default:"image"`
 	paramObj
 }
 
@@ -5574,7 +5574,7 @@ type CostReportGetAggregatedParamsSchemaFilterFloatingip struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "floatingip".
-	Type constant.Floatingip `json:"type" api:"required"`
+	Type constant.Floatingip `json:"type" default:"floatingip"`
 	paramObj
 }
 
@@ -5601,7 +5601,7 @@ type CostReportGetAggregatedParamsSchemaFilterEgressTraffic struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "egress_traffic".
-	Type constant.EgressTraffic `json:"type" api:"required"`
+	Type constant.EgressTraffic `json:"type" default:"egress_traffic"`
 	paramObj
 }
 
@@ -5628,7 +5628,7 @@ type CostReportGetAggregatedParamsSchemaFilterLoadBalancer struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "load_balancer".
-	Type constant.LoadBalancer `json:"type" api:"required"`
+	Type constant.LoadBalancer `json:"type" default:"load_balancer"`
 	paramObj
 }
 
@@ -5656,7 +5656,7 @@ type CostReportGetAggregatedParamsSchemaFilterExternalIP struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "external_ip".
-	Type constant.ExternalIP `json:"type" api:"required"`
+	Type constant.ExternalIP `json:"type" default:"external_ip"`
 	paramObj
 }
 
@@ -5684,7 +5684,7 @@ type CostReportGetAggregatedParamsSchemaFilterBackup struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "backup".
-	Type constant.Backup `json:"type" api:"required"`
+	Type constant.Backup `json:"type" default:"backup"`
 	paramObj
 }
 
@@ -5711,7 +5711,7 @@ type CostReportGetAggregatedParamsSchemaFilterLogIndex struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "log_index".
-	Type constant.LogIndex `json:"type" api:"required"`
+	Type constant.LogIndex `json:"type" default:"log_index"`
 	paramObj
 }
 
@@ -5738,7 +5738,7 @@ type CostReportGetAggregatedParamsSchemaFilterFunctions struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "functions".
-	Type constant.Functions `json:"type" api:"required"`
+	Type constant.Functions `json:"type" default:"functions"`
 	paramObj
 }
 
@@ -5765,7 +5765,7 @@ type CostReportGetAggregatedParamsSchemaFilterFunctionsCalls struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "functions_calls".
-	Type constant.FunctionsCalls `json:"type" api:"required"`
+	Type constant.FunctionsCalls `json:"type" default:"functions_calls"`
 	paramObj
 }
 
@@ -5793,7 +5793,7 @@ type CostReportGetAggregatedParamsSchemaFilterFunctionsTraffic struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "functions_traffic".
-	Type constant.FunctionsTraffic `json:"type" api:"required"`
+	Type constant.FunctionsTraffic `json:"type" default:"functions_traffic"`
 	paramObj
 }
 
@@ -5820,7 +5820,7 @@ type CostReportGetAggregatedParamsSchemaFilterContainers struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "containers".
-	Type constant.Containers `json:"type" api:"required"`
+	Type constant.Containers `json:"type" default:"containers"`
 	paramObj
 }
 
@@ -5847,7 +5847,7 @@ type CostReportGetAggregatedParamsSchemaFilterInference struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "inference".
-	Type constant.Inference `json:"type" api:"required"`
+	Type constant.Inference `json:"type" default:"inference"`
 	paramObj
 }
 
@@ -5875,7 +5875,7 @@ type CostReportGetAggregatedParamsSchemaFilterDbaasPostgreSQLVolume struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_volume".
-	Type constant.DbaasPostgreSQLVolume `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLVolume `json:"type" default:"dbaas_postgresql_volume"`
 	paramObj
 }
 
@@ -5903,7 +5903,7 @@ type CostReportGetAggregatedParamsSchemaFilterDbaasPostgreSQLPublicNetwork struc
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_public_network".
-	Type constant.DbaasPostgreSQLPublicNetwork `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLPublicNetwork `json:"type" default:"dbaas_postgresql_public_network"`
 	paramObj
 }
 
@@ -5931,7 +5931,7 @@ type CostReportGetAggregatedParamsSchemaFilterDbaasPostgreSQLCPU struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_cpu".
-	Type constant.DbaasPostgreSQLCPU `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLCPU `json:"type" default:"dbaas_postgresql_cpu"`
 	paramObj
 }
 
@@ -5959,7 +5959,7 @@ type CostReportGetAggregatedParamsSchemaFilterDbaasPostgreSQLMemory struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_memory".
-	Type constant.DbaasPostgreSQLMemory `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLMemory `json:"type" default:"dbaas_postgresql_memory"`
 	paramObj
 }
 
@@ -5987,7 +5987,7 @@ type CostReportGetAggregatedParamsSchemaFilterDbaasPostgreSQLConnectionPooler st
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_connection_pooler".
-	Type constant.DbaasPostgreSQLConnectionPooler `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLConnectionPooler `json:"type" default:"dbaas_postgresql_connection_pooler"`
 	paramObj
 }
 
@@ -6426,7 +6426,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterSnapshot struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "snapshot".
-	Type constant.Snapshot `json:"type" api:"required"`
+	Type constant.Snapshot `json:"type" default:"snapshot"`
 	paramObj
 }
 
@@ -6453,7 +6453,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterInstance struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "instance".
-	Type constant.Instance `json:"type" api:"required"`
+	Type constant.Instance `json:"type" default:"instance"`
 	paramObj
 }
 
@@ -6480,7 +6480,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterAICluster struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "ai_cluster".
-	Type constant.AICluster `json:"type" api:"required"`
+	Type constant.AICluster `json:"type" default:"ai_cluster"`
 	paramObj
 }
 
@@ -6508,7 +6508,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterAIVirtualCluster struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "ai_virtual_cluster".
-	Type constant.AIVirtualCluster `json:"type" api:"required"`
+	Type constant.AIVirtualCluster `json:"type" default:"ai_virtual_cluster"`
 	paramObj
 }
 
@@ -6535,7 +6535,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterBasicVm struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "basic_vm".
-	Type constant.BasicVm `json:"type" api:"required"`
+	Type constant.BasicVm `json:"type" default:"basic_vm"`
 	paramObj
 }
 
@@ -6562,7 +6562,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterBaremetal struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "baremetal".
-	Type constant.Baremetal `json:"type" api:"required"`
+	Type constant.Baremetal `json:"type" default:"baremetal"`
 	paramObj
 }
 
@@ -6590,7 +6590,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterVolume struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "volume".
-	Type constant.Volume `json:"type" api:"required"`
+	Type constant.Volume `json:"type" default:"volume"`
 	paramObj
 }
 
@@ -6617,7 +6617,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterFileShare struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "file_share".
-	Type constant.FileShare `json:"type" api:"required"`
+	Type constant.FileShare `json:"type" default:"file_share"`
 	paramObj
 }
 
@@ -6644,7 +6644,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterImage struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "image".
-	Type constant.Image `json:"type" api:"required"`
+	Type constant.Image `json:"type" default:"image"`
 	paramObj
 }
 
@@ -6671,7 +6671,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterFloatingip struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "floatingip".
-	Type constant.Floatingip `json:"type" api:"required"`
+	Type constant.Floatingip `json:"type" default:"floatingip"`
 	paramObj
 }
 
@@ -6698,7 +6698,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterEgressTraffic struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "egress_traffic".
-	Type constant.EgressTraffic `json:"type" api:"required"`
+	Type constant.EgressTraffic `json:"type" default:"egress_traffic"`
 	paramObj
 }
 
@@ -6725,7 +6725,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterLoadBalancer struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "load_balancer".
-	Type constant.LoadBalancer `json:"type" api:"required"`
+	Type constant.LoadBalancer `json:"type" default:"load_balancer"`
 	paramObj
 }
 
@@ -6753,7 +6753,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterExternalIP struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "external_ip".
-	Type constant.ExternalIP `json:"type" api:"required"`
+	Type constant.ExternalIP `json:"type" default:"external_ip"`
 	paramObj
 }
 
@@ -6781,7 +6781,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterBackup struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "backup".
-	Type constant.Backup `json:"type" api:"required"`
+	Type constant.Backup `json:"type" default:"backup"`
 	paramObj
 }
 
@@ -6808,7 +6808,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterLogIndex struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "log_index".
-	Type constant.LogIndex `json:"type" api:"required"`
+	Type constant.LogIndex `json:"type" default:"log_index"`
 	paramObj
 }
 
@@ -6835,7 +6835,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterFunctions struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "functions".
-	Type constant.Functions `json:"type" api:"required"`
+	Type constant.Functions `json:"type" default:"functions"`
 	paramObj
 }
 
@@ -6862,7 +6862,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterFunctionsCalls struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "functions_calls".
-	Type constant.FunctionsCalls `json:"type" api:"required"`
+	Type constant.FunctionsCalls `json:"type" default:"functions_calls"`
 	paramObj
 }
 
@@ -6890,7 +6890,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterFunctionsTraffic struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "functions_traffic".
-	Type constant.FunctionsTraffic `json:"type" api:"required"`
+	Type constant.FunctionsTraffic `json:"type" default:"functions_traffic"`
 	paramObj
 }
 
@@ -6917,7 +6917,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterContainers struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "containers".
-	Type constant.Containers `json:"type" api:"required"`
+	Type constant.Containers `json:"type" default:"containers"`
 	paramObj
 }
 
@@ -6944,7 +6944,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterInference struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "inference".
-	Type constant.Inference `json:"type" api:"required"`
+	Type constant.Inference `json:"type" default:"inference"`
 	paramObj
 }
 
@@ -6972,7 +6972,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterDbaasPostgreSQLVolume struc
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_volume".
-	Type constant.DbaasPostgreSQLVolume `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLVolume `json:"type" default:"dbaas_postgresql_volume"`
 	paramObj
 }
 
@@ -7000,7 +7000,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterDbaasPostgreSQLPublicNetwor
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_public_network".
-	Type constant.DbaasPostgreSQLPublicNetwork `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLPublicNetwork `json:"type" default:"dbaas_postgresql_public_network"`
 	paramObj
 }
 
@@ -7028,7 +7028,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterDbaasPostgreSQLCPU struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_cpu".
-	Type constant.DbaasPostgreSQLCPU `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLCPU `json:"type" default:"dbaas_postgresql_cpu"`
 	paramObj
 }
 
@@ -7056,7 +7056,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterDbaasPostgreSQLMemory struc
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_memory".
-	Type constant.DbaasPostgreSQLMemory `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLMemory `json:"type" default:"dbaas_postgresql_memory"`
 	paramObj
 }
 
@@ -7084,7 +7084,7 @@ type CostReportGetAggregatedMonthlyParamsSchemaFilterDbaasPostgreSQLConnectionPo
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_connection_pooler".
-	Type constant.DbaasPostgreSQLConnectionPooler `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLConnectionPooler `json:"type" default:"dbaas_postgresql_connection_pooler"`
 	paramObj
 }
 
@@ -7542,7 +7542,7 @@ type CostReportGetDetailedParamsSchemaFilterSnapshot struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "snapshot".
-	Type constant.Snapshot `json:"type" api:"required"`
+	Type constant.Snapshot `json:"type" default:"snapshot"`
 	paramObj
 }
 
@@ -7569,7 +7569,7 @@ type CostReportGetDetailedParamsSchemaFilterInstance struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "instance".
-	Type constant.Instance `json:"type" api:"required"`
+	Type constant.Instance `json:"type" default:"instance"`
 	paramObj
 }
 
@@ -7596,7 +7596,7 @@ type CostReportGetDetailedParamsSchemaFilterAICluster struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "ai_cluster".
-	Type constant.AICluster `json:"type" api:"required"`
+	Type constant.AICluster `json:"type" default:"ai_cluster"`
 	paramObj
 }
 
@@ -7624,7 +7624,7 @@ type CostReportGetDetailedParamsSchemaFilterAIVirtualCluster struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "ai_virtual_cluster".
-	Type constant.AIVirtualCluster `json:"type" api:"required"`
+	Type constant.AIVirtualCluster `json:"type" default:"ai_virtual_cluster"`
 	paramObj
 }
 
@@ -7651,7 +7651,7 @@ type CostReportGetDetailedParamsSchemaFilterBasicVm struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "basic_vm".
-	Type constant.BasicVm `json:"type" api:"required"`
+	Type constant.BasicVm `json:"type" default:"basic_vm"`
 	paramObj
 }
 
@@ -7678,7 +7678,7 @@ type CostReportGetDetailedParamsSchemaFilterBaremetal struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "baremetal".
-	Type constant.Baremetal `json:"type" api:"required"`
+	Type constant.Baremetal `json:"type" default:"baremetal"`
 	paramObj
 }
 
@@ -7706,7 +7706,7 @@ type CostReportGetDetailedParamsSchemaFilterVolume struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "volume".
-	Type constant.Volume `json:"type" api:"required"`
+	Type constant.Volume `json:"type" default:"volume"`
 	paramObj
 }
 
@@ -7733,7 +7733,7 @@ type CostReportGetDetailedParamsSchemaFilterFileShare struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "file_share".
-	Type constant.FileShare `json:"type" api:"required"`
+	Type constant.FileShare `json:"type" default:"file_share"`
 	paramObj
 }
 
@@ -7760,7 +7760,7 @@ type CostReportGetDetailedParamsSchemaFilterImage struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "image".
-	Type constant.Image `json:"type" api:"required"`
+	Type constant.Image `json:"type" default:"image"`
 	paramObj
 }
 
@@ -7787,7 +7787,7 @@ type CostReportGetDetailedParamsSchemaFilterFloatingip struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "floatingip".
-	Type constant.Floatingip `json:"type" api:"required"`
+	Type constant.Floatingip `json:"type" default:"floatingip"`
 	paramObj
 }
 
@@ -7814,7 +7814,7 @@ type CostReportGetDetailedParamsSchemaFilterEgressTraffic struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "egress_traffic".
-	Type constant.EgressTraffic `json:"type" api:"required"`
+	Type constant.EgressTraffic `json:"type" default:"egress_traffic"`
 	paramObj
 }
 
@@ -7841,7 +7841,7 @@ type CostReportGetDetailedParamsSchemaFilterLoadBalancer struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "load_balancer".
-	Type constant.LoadBalancer `json:"type" api:"required"`
+	Type constant.LoadBalancer `json:"type" default:"load_balancer"`
 	paramObj
 }
 
@@ -7869,7 +7869,7 @@ type CostReportGetDetailedParamsSchemaFilterExternalIP struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "external_ip".
-	Type constant.ExternalIP `json:"type" api:"required"`
+	Type constant.ExternalIP `json:"type" default:"external_ip"`
 	paramObj
 }
 
@@ -7897,7 +7897,7 @@ type CostReportGetDetailedParamsSchemaFilterBackup struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "backup".
-	Type constant.Backup `json:"type" api:"required"`
+	Type constant.Backup `json:"type" default:"backup"`
 	paramObj
 }
 
@@ -7924,7 +7924,7 @@ type CostReportGetDetailedParamsSchemaFilterLogIndex struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "log_index".
-	Type constant.LogIndex `json:"type" api:"required"`
+	Type constant.LogIndex `json:"type" default:"log_index"`
 	paramObj
 }
 
@@ -7951,7 +7951,7 @@ type CostReportGetDetailedParamsSchemaFilterFunctions struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "functions".
-	Type constant.Functions `json:"type" api:"required"`
+	Type constant.Functions `json:"type" default:"functions"`
 	paramObj
 }
 
@@ -7978,7 +7978,7 @@ type CostReportGetDetailedParamsSchemaFilterFunctionsCalls struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "functions_calls".
-	Type constant.FunctionsCalls `json:"type" api:"required"`
+	Type constant.FunctionsCalls `json:"type" default:"functions_calls"`
 	paramObj
 }
 
@@ -8006,7 +8006,7 @@ type CostReportGetDetailedParamsSchemaFilterFunctionsTraffic struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "functions_traffic".
-	Type constant.FunctionsTraffic `json:"type" api:"required"`
+	Type constant.FunctionsTraffic `json:"type" default:"functions_traffic"`
 	paramObj
 }
 
@@ -8033,7 +8033,7 @@ type CostReportGetDetailedParamsSchemaFilterContainers struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "containers".
-	Type constant.Containers `json:"type" api:"required"`
+	Type constant.Containers `json:"type" default:"containers"`
 	paramObj
 }
 
@@ -8060,7 +8060,7 @@ type CostReportGetDetailedParamsSchemaFilterInference struct {
 	// List of field values to filter
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "inference".
-	Type constant.Inference `json:"type" api:"required"`
+	Type constant.Inference `json:"type" default:"inference"`
 	paramObj
 }
 
@@ -8088,7 +8088,7 @@ type CostReportGetDetailedParamsSchemaFilterDbaasPostgreSQLVolume struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_volume".
-	Type constant.DbaasPostgreSQLVolume `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLVolume `json:"type" default:"dbaas_postgresql_volume"`
 	paramObj
 }
 
@@ -8116,7 +8116,7 @@ type CostReportGetDetailedParamsSchemaFilterDbaasPostgreSQLPublicNetwork struct 
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_public_network".
-	Type constant.DbaasPostgreSQLPublicNetwork `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLPublicNetwork `json:"type" default:"dbaas_postgresql_public_network"`
 	paramObj
 }
 
@@ -8144,7 +8144,7 @@ type CostReportGetDetailedParamsSchemaFilterDbaasPostgreSQLCPU struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_cpu".
-	Type constant.DbaasPostgreSQLCPU `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLCPU `json:"type" default:"dbaas_postgresql_cpu"`
 	paramObj
 }
 
@@ -8172,7 +8172,7 @@ type CostReportGetDetailedParamsSchemaFilterDbaasPostgreSQLMemory struct {
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_memory".
-	Type constant.DbaasPostgreSQLMemory `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLMemory `json:"type" default:"dbaas_postgresql_memory"`
 	paramObj
 }
 
@@ -8200,7 +8200,7 @@ type CostReportGetDetailedParamsSchemaFilterDbaasPostgreSQLConnectionPooler stru
 	Values []string `json:"values,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "dbaas_postgresql_connection_pooler".
-	Type constant.DbaasPostgreSQLConnectionPooler `json:"type" api:"required"`
+	Type constant.DbaasPostgreSQLConnectionPooler `json:"type" default:"dbaas_postgresql_connection_pooler"`
 	paramObj
 }
 

@@ -525,7 +525,7 @@ func (r *FileShareShareSettingsUnion) UnmarshalJSON(data []byte) error {
 
 type FileShareShareSettingsStandard struct {
 	// Standard file share type
-	TypeName constant.Standard `json:"type_name" api:"required"`
+	TypeName constant.Standard `json:"type_name" default:"standard"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		TypeName    respjson.Field
@@ -553,7 +553,7 @@ type FileShareShareSettingsVast struct {
 	//     privileges.
 	RootSquash bool `json:"root_squash" api:"required"`
 	// Vast file share type
-	TypeName constant.Vast `json:"type_name" api:"required"`
+	TypeName constant.Vast `json:"type_name" default:"vast"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedCharacters respjson.Field
@@ -676,7 +676,7 @@ type FileShareNewParamsBodyCreateStandardFileShareSerializer struct {
 	// File share protocol
 	//
 	// This field can be elided, and will marshal its zero value as "NFS".
-	Protocol constant.Nfs `json:"protocol" api:"required"`
+	Protocol constant.Nfs `json:"protocol" default:"NFS"`
 	paramObj
 }
 
@@ -769,7 +769,7 @@ type FileShareNewParamsBodyCreateVastFileShareSerializer struct {
 	// File share protocol
 	//
 	// This field can be elided, and will marshal its zero value as "NFS".
-	Protocol constant.Nfs `json:"protocol" api:"required"`
+	Protocol constant.Nfs `json:"protocol" default:"NFS"`
 	paramObj
 }
 

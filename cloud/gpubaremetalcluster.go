@@ -693,7 +693,7 @@ type GPUBaremetalClusterServersSettingsInterfaceExternal struct {
 	IPFamily string `json:"ip_family" api:"required"`
 	// Interface name
 	Name string            `json:"name" api:"required"`
-	Type constant.External `json:"type" api:"required"`
+	Type constant.External `json:"type" default:"external"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPFamily    respjson.Field
@@ -719,7 +719,7 @@ type GPUBaremetalClusterServersSettingsInterfaceSubnet struct {
 	NetworkID string `json:"network_id" api:"required"`
 	// Port is assigned an IP address from this subnet
 	SubnetID string          `json:"subnet_id" api:"required" format:"uuid4"`
-	Type     constant.Subnet `json:"type" api:"required"`
+	Type     constant.Subnet `json:"type" default:"subnet"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FloatingIP  respjson.Field
@@ -740,7 +740,7 @@ func (r *GPUBaremetalClusterServersSettingsInterfaceSubnet) UnmarshalJSON(data [
 
 // Floating IP config for this subnet attachment
 type GPUBaremetalClusterServersSettingsInterfaceSubnetFloatingIP struct {
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Source      respjson.Field
@@ -770,7 +770,7 @@ type GPUBaremetalClusterServersSettingsInterfaceAnySubnet struct {
 	Name string `json:"name" api:"required"`
 	// Network ID the subnet belongs to. Port will be plugged in this network
 	NetworkID string             `json:"network_id" api:"required"`
-	Type      constant.AnySubnet `json:"type" api:"required"`
+	Type      constant.AnySubnet `json:"type" default:"any_subnet"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FloatingIP  respjson.Field
@@ -792,7 +792,7 @@ func (r *GPUBaremetalClusterServersSettingsInterfaceAnySubnet) UnmarshalJSON(dat
 
 // Floating IP config for this subnet attachment
 type GPUBaremetalClusterServersSettingsInterfaceAnySubnetFloatingIP struct {
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Source      respjson.Field
@@ -1052,7 +1052,7 @@ type GPUBaremetalClusterNewParamsServersSettingsInterfaceExternal struct {
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
 	// This field can be elided, and will marshal its zero value as "external".
-	Type constant.External `json:"type" api:"required"`
+	Type constant.External `json:"type" default:"external"`
 	paramObj
 }
 
@@ -1075,7 +1075,7 @@ type GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnet struct {
 	// Floating IP config for this subnet attachment
 	FloatingIP GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetFloatingIP `json:"floating_ip,omitzero"`
 	// This field can be elided, and will marshal its zero value as "subnet".
-	Type constant.Subnet `json:"type" api:"required"`
+	Type constant.Subnet `json:"type" default:"subnet"`
 	paramObj
 }
 
@@ -1098,7 +1098,7 @@ func NewGPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetFloatingIP() G
 // This struct has a constant value, construct it with
 // [NewGPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetFloatingIP].
 type GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetFloatingIP struct {
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	paramObj
 }
 
@@ -1123,7 +1123,7 @@ type GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnet struct {
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
 	// This field can be elided, and will marshal its zero value as "any_subnet".
-	Type constant.AnySubnet `json:"type" api:"required"`
+	Type constant.AnySubnet `json:"type" default:"any_subnet"`
 	paramObj
 }
 
@@ -1146,7 +1146,7 @@ func NewGPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP(
 // This struct has a constant value, construct it with
 // [NewGPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP].
 type GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP struct {
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	paramObj
 }
 

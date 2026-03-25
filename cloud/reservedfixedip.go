@@ -402,7 +402,7 @@ type ReservedFixedIPNewParamsBodyExternal struct {
 	// Must be 'external'
 	//
 	// This field can be elided, and will marshal its zero value as "external".
-	Type constant.External `json:"type" api:"required"`
+	Type constant.External `json:"type" default:"external"`
 	paramObj
 }
 
@@ -423,7 +423,7 @@ type ReservedFixedIPNewParamsBodySubnet struct {
 	// Must be 'subnet'.
 	//
 	// This field can be elided, and will marshal its zero value as "subnet".
-	Type constant.Subnet `json:"type" api:"required"`
+	Type constant.Subnet `json:"type" default:"subnet"`
 	paramObj
 }
 
@@ -448,7 +448,7 @@ type ReservedFixedIPNewParamsBodyAnySubnet struct {
 	// Must be 'any_subnet'.
 	//
 	// This field can be elided, and will marshal its zero value as "any_subnet".
-	Type constant.AnySubnet `json:"type" api:"required"`
+	Type constant.AnySubnet `json:"type" default:"any_subnet"`
 	paramObj
 }
 
@@ -471,7 +471,7 @@ type ReservedFixedIPNewParamsBodyIPAddress struct {
 	// Must be 'ip_address'.
 	//
 	// This field can be elided, and will marshal its zero value as "ip_address".
-	Type constant.IPAddress `json:"type" api:"required"`
+	Type constant.IPAddress `json:"type" default:"ip_address"`
 	paramObj
 }
 
@@ -491,7 +491,7 @@ type ReservedFixedIPNewParamsBodyPort struct {
 	// Must be 'port'.
 	//
 	// This field can be elided, and will marshal its zero value as "port".
-	Type constant.Port `json:"type" api:"required"`
+	Type constant.Port `json:"type" default:"port"`
 	paramObj
 }
 
