@@ -20,7 +20,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
-// Application templates
+// FastEdge templates encapsulate reusable configurations for FastEdge
+// applications, including a WebAssembly binary reference and configurable
+// parameters.
 //
 // TemplateService contains methods and other services that help with interacting
 // with the gcore API.
