@@ -592,10 +592,10 @@ func (r *NetworkRouterNewParamsInterface) UnmarshalJSON(data []byte) error {
 
 // The properties Destination, Nexthop are required.
 type NetworkRouterNewParamsRoute struct {
-	// CIDR of destination IPv4 subnet.
+	// CIDR of destination IPv4 or IPv6 subnet.
 	Destination string `json:"destination" api:"required" format:"ipvanynetwork"`
-	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
-	// CIDR.
+	// IPv4 or IPv6 address to forward traffic to if it's destination IP matches
+	// 'destination' CIDR.
 	Nexthop string `json:"nexthop" api:"required" format:"ipvanyaddress"`
 	paramObj
 }
@@ -653,10 +653,10 @@ func (r *NetworkRouterUpdateParamsExternalGatewayInfo) UnmarshalJSON(data []byte
 
 // The properties Destination, Nexthop are required.
 type NetworkRouterUpdateParamsRoute struct {
-	// CIDR of destination IPv4 subnet.
+	// CIDR of destination IPv4 or IPv6 subnet.
 	Destination string `json:"destination" api:"required" format:"ipvanynetwork"`
-	// IPv4 address to forward traffic to if it's destination IP matches 'destination'
-	// CIDR.
+	// IPv4 or IPv6 address to forward traffic to if it's destination IP matches
+	// 'destination' CIDR.
 	Nexthop string `json:"nexthop" api:"required" format:"ipvanyaddress"`
 	paramObj
 }
