@@ -1716,7 +1716,7 @@ type LoadBalancerNewParamsFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	paramObj
 }
 
@@ -1739,7 +1739,7 @@ type LoadBalancerNewParamsFloatingIPExisting struct {
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" api:"required"`
+	Source constant.Existing `json:"source" default:"existing"`
 	paramObj
 }
 

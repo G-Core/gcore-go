@@ -295,7 +295,7 @@ type PostgresClusterNetwork struct {
 	// database hostname
 	Host string `json:"host" api:"required"`
 	// Network Type
-	NetworkType constant.Public `json:"network_type" api:"required"`
+	NetworkType constant.Public `json:"network_type" default:"public"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ACL              respjson.Field
@@ -535,7 +535,7 @@ type DatabasePostgresClusterNewParamsNetwork struct {
 	// Network Type
 	//
 	// This field can be elided, and will marshal its zero value as "public".
-	NetworkType constant.Public `json:"network_type" api:"required"`
+	NetworkType constant.Public `json:"network_type" default:"public"`
 	paramObj
 }
 
@@ -741,7 +741,7 @@ type DatabasePostgresClusterUpdateParamsNetwork struct {
 	// Network Type
 	//
 	// This field can be elided, and will marshal its zero value as "public".
-	NetworkType constant.Public `json:"network_type" api:"required"`
+	NetworkType constant.Public `json:"network_type" default:"public"`
 	paramObj
 }
 

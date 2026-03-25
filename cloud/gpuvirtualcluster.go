@@ -444,7 +444,7 @@ type GPUVirtualClusterServersSettingsInterfaceExternal struct {
 	IPFamily string `json:"ip_family" api:"required"`
 	// Interface name
 	Name string            `json:"name" api:"required"`
-	Type constant.External `json:"type" api:"required"`
+	Type constant.External `json:"type" default:"external"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPFamily    respjson.Field
@@ -470,7 +470,7 @@ type GPUVirtualClusterServersSettingsInterfaceSubnet struct {
 	NetworkID string `json:"network_id" api:"required"`
 	// Port is assigned an IP address from this subnet
 	SubnetID string          `json:"subnet_id" api:"required" format:"uuid4"`
-	Type     constant.Subnet `json:"type" api:"required"`
+	Type     constant.Subnet `json:"type" default:"subnet"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FloatingIP  respjson.Field
@@ -491,7 +491,7 @@ func (r *GPUVirtualClusterServersSettingsInterfaceSubnet) UnmarshalJSON(data []b
 
 // Floating IP config for this subnet attachment
 type GPUVirtualClusterServersSettingsInterfaceSubnetFloatingIP struct {
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Source      respjson.Field
@@ -521,7 +521,7 @@ type GPUVirtualClusterServersSettingsInterfaceAnySubnet struct {
 	Name string `json:"name" api:"required"`
 	// Network ID the subnet belongs to. Port will be plugged in this network
 	NetworkID string             `json:"network_id" api:"required"`
-	Type      constant.AnySubnet `json:"type" api:"required"`
+	Type      constant.AnySubnet `json:"type" default:"any_subnet"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FloatingIP  respjson.Field
@@ -543,7 +543,7 @@ func (r *GPUVirtualClusterServersSettingsInterfaceAnySubnet) UnmarshalJSON(data 
 
 // Floating IP config for this subnet attachment
 type GPUVirtualClusterServersSettingsInterfaceAnySubnetFloatingIP struct {
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Source      respjson.Field
@@ -830,7 +830,7 @@ type GPUVirtualClusterNewParamsServersSettingsInterfaceExternal struct {
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
 	// This field can be elided, and will marshal its zero value as "external".
-	Type constant.External `json:"type" api:"required"`
+	Type constant.External `json:"type" default:"external"`
 	paramObj
 }
 
@@ -859,7 +859,7 @@ type GPUVirtualClusterNewParamsServersSettingsInterfaceSubnet struct {
 	// Floating IP config for this subnet attachment
 	FloatingIP GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetFloatingIP `json:"floating_ip,omitzero"`
 	// This field can be elided, and will marshal its zero value as "subnet".
-	Type constant.Subnet `json:"type" api:"required"`
+	Type constant.Subnet `json:"type" default:"subnet"`
 	paramObj
 }
 
@@ -882,7 +882,7 @@ func NewGPUVirtualClusterNewParamsServersSettingsInterfaceSubnetFloatingIP() GPU
 // This struct has a constant value, construct it with
 // [NewGPUVirtualClusterNewParamsServersSettingsInterfaceSubnetFloatingIP].
 type GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetFloatingIP struct {
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	paramObj
 }
 
@@ -907,7 +907,7 @@ type GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnet struct {
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
 	// This field can be elided, and will marshal its zero value as "any_subnet".
-	Type constant.AnySubnet `json:"type" api:"required"`
+	Type constant.AnySubnet `json:"type" default:"any_subnet"`
 	paramObj
 }
 
@@ -936,7 +936,7 @@ func NewGPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP() 
 // This struct has a constant value, construct it with
 // [NewGPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP].
 type GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP struct {
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	paramObj
 }
 
@@ -1076,7 +1076,7 @@ type GPUVirtualClusterNewParamsServersSettingsVolumeNew struct {
 	// Tags associated with the volume
 	Tags map[string]string `json:"tags,omitzero"`
 	// This field can be elided, and will marshal its zero value as "new".
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	paramObj
 }
 
@@ -1113,7 +1113,7 @@ type GPUVirtualClusterNewParamsServersSettingsVolumeImage struct {
 	// Tags associated with the volume
 	Tags map[string]string `json:"tags,omitzero"`
 	// This field can be elided, and will marshal its zero value as "image".
-	Source constant.Image `json:"source" api:"required"`
+	Source constant.Image `json:"source" default:"image"`
 	paramObj
 }
 
@@ -1322,7 +1322,7 @@ func NewGPUVirtualClusterActionParamsBodyStart() GPUVirtualClusterActionParamsBo
 // [NewGPUVirtualClusterActionParamsBodyStart].
 type GPUVirtualClusterActionParamsBodyStart struct {
 	// Action name
-	Action constant.Start `json:"action" api:"required"`
+	Action constant.Start `json:"action" default:"start"`
 	paramObj
 }
 
@@ -1344,7 +1344,7 @@ func NewGPUVirtualClusterActionParamsBodyStop() GPUVirtualClusterActionParamsBod
 // [NewGPUVirtualClusterActionParamsBodyStop].
 type GPUVirtualClusterActionParamsBodyStop struct {
 	// Action name
-	Action constant.Stop `json:"action" api:"required"`
+	Action constant.Stop `json:"action" default:"stop"`
 	paramObj
 }
 
@@ -1366,7 +1366,7 @@ func NewGPUVirtualClusterActionParamsBodySoftReboot() GPUVirtualClusterActionPar
 // [NewGPUVirtualClusterActionParamsBodySoftReboot].
 type GPUVirtualClusterActionParamsBodySoftReboot struct {
 	// Action name
-	Action constant.SoftReboot `json:"action" api:"required"`
+	Action constant.SoftReboot `json:"action" default:"soft_reboot"`
 	paramObj
 }
 
@@ -1388,7 +1388,7 @@ func NewGPUVirtualClusterActionParamsBodyHardReboot() GPUVirtualClusterActionPar
 // [NewGPUVirtualClusterActionParamsBodyHardReboot].
 type GPUVirtualClusterActionParamsBodyHardReboot struct {
 	// Action name
-	Action constant.HardReboot `json:"action" api:"required"`
+	Action constant.HardReboot `json:"action" default:"hard_reboot"`
 	paramObj
 }
 
@@ -1407,7 +1407,7 @@ type GPUVirtualClusterActionParamsBodyResize struct {
 	// Action name
 	//
 	// This field can be elided, and will marshal its zero value as "resize".
-	Action constant.Resize `json:"action" api:"required"`
+	Action constant.Resize `json:"action" default:"resize"`
 	paramObj
 }
 

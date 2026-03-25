@@ -243,7 +243,7 @@ type BaremetalFixedAddress struct {
 	// The name of the subnet associated with this address.
 	SubnetName string `json:"subnet_name" api:"required"`
 	// Type of the address
-	Type constant.Fixed `json:"type" api:"required"`
+	Type constant.Fixed `json:"type" default:"fixed"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Addr          respjson.Field
@@ -266,7 +266,7 @@ type BaremetalFloatingAddress struct {
 	// Address
 	Addr string `json:"addr" api:"required"`
 	// Type of the address
-	Type constant.Floating `json:"type" api:"required"`
+	Type constant.Floating `json:"type" default:"floating"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Addr        respjson.Field
@@ -816,7 +816,7 @@ type BaremetalServerNewParamsInterfaceExternal struct {
 	// A public IP address will be assigned to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "external".
-	Type constant.External `json:"type" api:"required"`
+	Type constant.External `json:"type" default:"external"`
 	paramObj
 }
 
@@ -852,7 +852,7 @@ type BaremetalServerNewParamsInterfaceSubnet struct {
 	// it will only have a private IP within the network.
 	//
 	// This field can be elided, and will marshal its zero value as "subnet".
-	Type constant.Subnet `json:"type" api:"required"`
+	Type constant.Subnet `json:"type" default:"subnet"`
 	paramObj
 }
 
@@ -928,7 +928,7 @@ type BaremetalServerNewParamsInterfaceSubnetFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	paramObj
 }
 
@@ -951,7 +951,7 @@ type BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting struct {
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" api:"required"`
+	Source constant.Existing `json:"source" default:"existing"`
 	paramObj
 }
 
@@ -985,7 +985,7 @@ type BaremetalServerNewParamsInterfaceAnySubnet struct {
 	// Instance will be attached to a subnet with the largest count of free IPs.
 	//
 	// This field can be elided, and will marshal its zero value as "any_subnet".
-	Type constant.AnySubnet `json:"type" api:"required"`
+	Type constant.AnySubnet `json:"type" default:"any_subnet"`
 	paramObj
 }
 
@@ -1061,7 +1061,7 @@ type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	paramObj
 }
 
@@ -1084,7 +1084,7 @@ type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting struct {
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" api:"required"`
+	Source constant.Existing `json:"source" default:"existing"`
 	paramObj
 }
 
@@ -1115,7 +1115,7 @@ type BaremetalServerNewParamsInterfaceReservedFixedIP struct {
 	//
 	// This field can be elided, and will marshal its zero value as
 	// "reserved_fixed_ip".
-	Type constant.ReservedFixedIP `json:"type" api:"required"`
+	Type constant.ReservedFixedIP `json:"type" default:"reserved_fixed_ip"`
 	paramObj
 }
 
@@ -1191,7 +1191,7 @@ type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	paramObj
 }
 
@@ -1214,7 +1214,7 @@ type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" api:"required"`
+	Source constant.Existing `json:"source" default:"existing"`
 	paramObj
 }
 
