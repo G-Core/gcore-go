@@ -575,7 +575,7 @@ type FixedAddress struct {
 	// field is always set.
 	SubnetName string `json:"subnet_name" api:"required"`
 	// Type of the address
-	Type constant.Fixed `json:"type" api:"required"`
+	Type constant.Fixed `json:"type" default:"fixed"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Addr          respjson.Field
@@ -605,7 +605,7 @@ type FixedAddressShort struct {
 	// the interface.
 	InterfaceName string `json:"interface_name" api:"required"`
 	// Type of the address
-	Type constant.Fixed `json:"type" api:"required"`
+	Type constant.Fixed `json:"type" default:"fixed"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Addr          respjson.Field
@@ -627,7 +627,7 @@ type FloatingAddress struct {
 	// Address
 	Addr string `json:"addr" api:"required"`
 	// Type of the address
-	Type constant.Floating `json:"type" api:"required"`
+	Type constant.Floating `json:"type" default:"floating"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Addr        respjson.Field

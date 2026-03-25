@@ -1049,7 +1049,7 @@ type InstanceNewParamsInterfaceExternal struct {
 	// A public IP address will be assigned to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "external".
-	Type constant.External `json:"type" api:"required"`
+	Type constant.External `json:"type" default:"external"`
 	paramObj
 }
 
@@ -1098,7 +1098,7 @@ type InstanceNewParamsInterfaceSubnet struct {
 	// it will only have a private IP within the network.
 	//
 	// This field can be elided, and will marshal its zero value as "subnet".
-	Type constant.Subnet `json:"type" api:"required"`
+	Type constant.Subnet `json:"type" default:"subnet"`
 	paramObj
 }
 
@@ -1166,7 +1166,7 @@ type InstanceNewParamsInterfaceSubnetFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	paramObj
 }
 
@@ -1189,7 +1189,7 @@ type InstanceNewParamsInterfaceSubnetFloatingIPExisting struct {
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" api:"required"`
+	Source constant.Existing `json:"source" default:"existing"`
 	paramObj
 }
 
@@ -1236,7 +1236,7 @@ type InstanceNewParamsInterfaceAnySubnet struct {
 	// Instance will be attached to a subnet with the largest count of free IPs.
 	//
 	// This field can be elided, and will marshal its zero value as "any_subnet".
-	Type constant.AnySubnet `json:"type" api:"required"`
+	Type constant.AnySubnet `json:"type" default:"any_subnet"`
 	paramObj
 }
 
@@ -1304,7 +1304,7 @@ type InstanceNewParamsInterfaceAnySubnetFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	paramObj
 }
 
@@ -1327,7 +1327,7 @@ type InstanceNewParamsInterfaceAnySubnetFloatingIPExisting struct {
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" api:"required"`
+	Source constant.Existing `json:"source" default:"existing"`
 	paramObj
 }
 
@@ -1371,7 +1371,7 @@ type InstanceNewParamsInterfaceReservedFixedIP struct {
 	//
 	// This field can be elided, and will marshal its zero value as
 	// "reserved_fixed_ip".
-	Type constant.ReservedFixedIP `json:"type" api:"required"`
+	Type constant.ReservedFixedIP `json:"type" default:"reserved_fixed_ip"`
 	paramObj
 }
 
@@ -1439,7 +1439,7 @@ type InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
 	// a public IP that makes the instance accessible from the internet, even if it
 	// only has a private IP. It works like SNAT, allowing outgoing and incoming
 	// traffic.
-	Source constant.New `json:"source" api:"required"`
+	Source constant.New `json:"source" default:"new"`
 	paramObj
 }
 
@@ -1462,7 +1462,7 @@ type InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
 	// traffic.
 	//
 	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" api:"required"`
+	Source constant.Existing `json:"source" default:"existing"`
 	paramObj
 }
 
@@ -1714,7 +1714,7 @@ type InstanceNewParamsVolumeNewVolume struct {
 	// New volume will be created from scratch and attached to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "new-volume".
-	Source constant.NewVolume `json:"source" api:"required"`
+	Source constant.NewVolume `json:"source" default:"new-volume"`
 	paramObj
 }
 
@@ -1771,7 +1771,7 @@ type InstanceNewParamsVolumeImage struct {
 	// `boot_index=0` to boot from this volume.
 	//
 	// This field can be elided, and will marshal its zero value as "image".
-	Source constant.Image `json:"source" api:"required"`
+	Source constant.Image `json:"source" default:"image"`
 	paramObj
 }
 
@@ -1815,7 +1815,7 @@ type InstanceNewParamsVolumeSnapshot struct {
 	// New volume will be created from the snapshot and attached to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "snapshot".
-	Source constant.Snapshot `json:"source" api:"required"`
+	Source constant.Snapshot `json:"source" default:"snapshot"`
 	paramObj
 }
 
@@ -1868,7 +1868,7 @@ type InstanceNewParamsVolumeApptemplate struct {
 	// New volume will be created from the app template and attached to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "apptemplate".
-	Source constant.Apptemplate `json:"source" api:"required"`
+	Source constant.Apptemplate `json:"source" default:"apptemplate"`
 	paramObj
 }
 
@@ -1902,7 +1902,7 @@ type InstanceNewParamsVolumeExistingVolume struct {
 	// Existing available volume will be attached to the instance.
 	//
 	// This field can be elided, and will marshal its zero value as "existing-volume".
-	Source constant.ExistingVolume `json:"source" api:"required"`
+	Source constant.ExistingVolume `json:"source" default:"existing-volume"`
 	paramObj
 }
 
@@ -2167,7 +2167,7 @@ type InstanceActionParamsBodyStartActionInstanceSerializer struct {
 	// Instance action name
 	//
 	// This field can be elided, and will marshal its zero value as "start".
-	Action constant.Start `json:"action" api:"required"`
+	Action constant.Start `json:"action" default:"start"`
 	paramObj
 }
 
