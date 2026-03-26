@@ -87,7 +87,7 @@ func (r *UserService) Delete(ctx context.Context, userID int64, body UserDeleteP
 }
 
 // Get user's details
-func (r *UserService) Get(ctx context.Context, userID int64, opts ...option.RequestOption) (res *User, err error) {
+func (r *UserService) Get(ctx context.Context, userID int64, opts ...option.RequestOption) (res *UserGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("iam/users/%v", userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -243,6 +243,88 @@ const (
 	UserTypeReseller UserType = "reseller"
 	UserTypeSeller   UserType = "seller"
 )
+
+type UserGetResponse struct {
+	// User's ID.
+	ID int64 `json:"id" api:"required"`
+	// Email confirmation:
+	//
+	// - `true` – user confirmed the email;
+	// - `false` – user did not confirm the email.
+	Activated bool `json:"activated" api:"required"`
+	// System field. List of auth types available for the account.
+	AuthTypes []AuthType `json:"auth_types" api:"required"`
+	// User's account ID.
+	Client float64 `json:"client" api:"required"`
+	// User's company.
+	Company string `json:"company" api:"required"`
+	// Deletion flag. If `true` then user was deleted.
+	Deleted bool `json:"deleted" api:"required"`
+	// User's email address.
+	Email string `json:"email" api:"required" format:"email"`
+	// User's group in the current account.
+	//
+	// IAM supports 5 groups:
+	//
+	// - Users
+	// - Administrators
+	// - Engineers
+	// - Purge and Prefetch only (API)
+	// - Purge and Prefetch only (API+Web)
+	Groups []UserGroup `json:"groups" api:"required"`
+	// User activity flag.
+	IsActive bool `json:"is_active" api:"required"`
+	// User's language.
+	//
+	// Defines language of the control panel and email messages.
+	//
+	// Any of "de", "en", "ru", "zh", "az".
+	Lang UserLanguage `json:"lang" api:"required"`
+	// User's name.
+	Name string `json:"name" api:"required"`
+	// User's phone.
+	Phone string `json:"phone" api:"required"`
+	// Services provider ID.
+	Reseller int64 `json:"reseller" api:"required"`
+	// SSO authentication flag. If `true` then user can login via SAML SSO.
+	SSOAuth bool `json:"sso_auth" api:"required"`
+	// Two-step verification:
+	//
+	// - `true` – user enabled two-step verification;
+	// - `false` – user disabled two-step verification.
+	TwoFa bool `json:"two_fa" api:"required"`
+	// User's type.
+	//
+	// Any of "common", "reseller", "seller".
+	UserType UserType `json:"user_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Activated   respjson.Field
+		AuthTypes   respjson.Field
+		Client      respjson.Field
+		Company     respjson.Field
+		Deleted     respjson.Field
+		Email       respjson.Field
+		Groups      respjson.Field
+		IsActive    respjson.Field
+		Lang        respjson.Field
+		Name        respjson.Field
+		Phone       respjson.Field
+		Reseller    respjson.Field
+		SSOAuth     respjson.Field
+		TwoFa       respjson.Field
+		UserType    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UserGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *UserGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type UserUpdateParams struct {
 	// User's name.
