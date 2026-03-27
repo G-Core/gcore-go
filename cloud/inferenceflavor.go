@@ -19,6 +19,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Inference flavors define the GPU and CPU resource configurations available for
+// inference deployments.
+//
 // InferenceFlavorService contains methods and other services that help with
 // interacting with the gcore API.
 //
