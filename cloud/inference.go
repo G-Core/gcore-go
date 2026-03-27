@@ -21,6 +21,8 @@ import (
 // the [NewInferenceService] method instead.
 type InferenceService struct {
 	Options []option.RequestOption
+	// Inference flavors define the GPU and CPU resource configurations available for
+	// inference deployments.
 	Flavors InferenceFlavorService
 	// Inference deployments run containerized ML models with configurable scaling,
 	// health probes, and GPU flavors.
