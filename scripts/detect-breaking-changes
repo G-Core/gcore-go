@@ -153,14 +153,13 @@ TEST_PATHS=(
 	dns/zonednssec_test.go
 	dns/zonerrset_test.go
 	dns/networkmapping_test.go
-	storage/storage_test.go
 	storage/location_test.go
+	storage/objectstorage_test.go
+	storage/objectstorageaccesskey_test.go
+	storage/objectstoragebucket_test.go
+	storage/sftpstorage_test.go
+	storage/sshkey_test.go
 	storage/statistic_test.go
-	storage/credential_test.go
-	storage/bucket_test.go
-	storage/bucketcor_test.go
-	storage/bucketlifecycle_test.go
-	storage/bucketpolicy_test.go
 	cdn/cdn_test.go
 	cdn/cdnresource_test.go
 	cdn/cdnresourceshield_test.go
