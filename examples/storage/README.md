@@ -11,6 +11,7 @@ examples/storage/
 ├── basic/        # Basic storage operations example
 ├── s3buckets/    # S3 bucket management example
 ├── credentials/  # Credential management example
+├── sshkeys/      # SSH key management example
 └── README.md
 ```
 
@@ -63,10 +64,8 @@ go run main.go
 ### 3. Credentials Management (`credentials/`)
 
 Advanced credential management operations:
-- S3 access key regeneration
-- SFTP password management (generate, set custom, remove)
-- SSH key reset operations
-- Credential security best practices
+- S3 access key creation, listing, and deletion
+- SFTP password management (generate, remove, re-enable)
 
 **Run the example:**
 ```bash
@@ -75,10 +74,30 @@ go run main.go
 ```
 
 **Key Features Demonstrated:**
-- S3 access and secret key regeneration
+- S3 access key lifecycle (create, list, delete)
 - SFTP password lifecycle management
 - Disabling/enabling password authentication
-- SSH key management operations
+
+### 4. SSH Key Management (`sshkeys/`)
+
+SSH key management for SFTP storage access:
+- Creating and listing SSH keys
+- Retrieving SSH key details
+- Creating SFTP storage with SSH-key-only authentication
+- Updating which SSH keys are associated with a storage
+- Proper cleanup of keys and storage
+
+**Run the example:**
+```bash
+cd examples/storage/sshkeys
+go run main.go
+```
+
+**Key Features Demonstrated:**
+- SSH key CRUD operations
+- Associating SSH keys with SFTP storage at creation time
+- Updating SSH key associations on existing storage
+- SSH-key-only authentication (no password)
 
 ## Storage Types
 

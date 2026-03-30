@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/G-Core/gcore-go"
-	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/storage"
 )
 
@@ -26,9 +25,11 @@ func main() {
 	sftpStorageID := createSFTPStorage(&client)
 	waitForStorageProvisioning(&client, s3StorageID, sftpStorageID)
 	getStorageDetails(&client, s3StorageID, sftpStorageID)
-	regenerateS3Credentials(&client, s3StorageID)
+	newAccessKey := regenerateS3Credentials(&client, s3StorageID)
+	listS3AccessKeys(&client, s3StorageID)
+	deleteS3AccessKey(&client, s3StorageID, newAccessKey)
+	listS3AccessKeys(&client, s3StorageID)
 	regenerateSFTPPassword(&client, sftpStorageID)
-	setCustomSFTPPassword(&client, sftpStorageID)
 	removeSFTPPassword(&client, sftpStorageID)
 	reenableSFTPPassword(&client, sftpStorageID)
 	getStorageDetails(&client, s3StorageID, sftpStorageID)
@@ -38,28 +39,27 @@ func main() {
 func createS3Storage(client *gcore.Client) int64 {
 	fmt.Println("\n=== CREATE S3 STORAGE ===")
 
-	s3Name := fmt.Sprintf("s3-creds-example-%d", time.Now().Unix())
+	s3Name := fmt.Sprintf("s3-creds-%d", time.Now().Unix())
 
-	params := storage.StorageNewParams{
-		Name:     s3Name,
-		Type:     storage.StorageNewParamsTypeS3Compatible,
-		Location: "s-ed1",
+	params := storage.ObjectStorageNewParams{
+		Name:         s3Name,
+		LocationName: "s-ed1",
 	}
 
-	newStorage, err := client.Storage.New(context.Background(), params)
+	newStorage, err := client.Storage.ObjectStorages.New(context.Background(), params)
 	if err != nil {
-		fmt.Printf("Error creating %s storage: %v\n", storage.StorageTypeS3Compatible, err)
+		fmt.Printf("Error creating S3 storage: %v\n", err)
 		log.Fatalf("Failed to create S3 storage")
 	}
 
-	fmt.Printf("Created Storage: ID=%d, Name=%s, Type=%s, Location=%s\n",
-		newStorage.ID, newStorage.Name, newStorage.Type, newStorage.Location)
+	fmt.Printf("Created Storage: ID=%d, Name=%s, Location=%s\n",
+		newStorage.ID, newStorage.Name, newStorage.LocationName)
 	fmt.Printf("Storage address: %s\n", newStorage.Address)
 
 	// Display S3 credentials
-	if newStorage.Credentials.S3.AccessKey != "" {
-		fmt.Printf("S3 Access Key: %s\n", newStorage.Credentials.S3.AccessKey)
-		fmt.Printf("S3 Secret Key: %s\n", newStorage.Credentials.S3.SecretKey)
+	if len(newStorage.AccessKeys) > 0 {
+		fmt.Printf("S3 Access Key: %s\n", newStorage.AccessKeys[0].AccessKey)
+		fmt.Printf("S3 Secret Key: %s\n", newStorage.AccessKeys[0].SecretKey)
 	}
 
 	fmt.Println("=========================")
@@ -69,28 +69,27 @@ func createS3Storage(client *gcore.Client) int64 {
 func createSFTPStorage(client *gcore.Client) int64 {
 	fmt.Println("\n=== CREATE SFTP STORAGE ===")
 
-	sftpName := fmt.Sprintf("sftp-creds-example-%d", time.Now().Unix())
+	sftpName := fmt.Sprintf("sftp-creds-%d", time.Now().Unix())
 
-	params := storage.StorageNewParams{
-		Name:                 sftpName,
-		Type:                 storage.StorageNewParamsTypeSftp,
-		Location:             "s-ed1",
-		GenerateSftpPassword: param.NewOpt(true),
+	params := storage.SftpStorageNewParams{
+		Name:         sftpName,
+		LocationName: "ams",
+		PasswordMode: storage.SftpStorageNewParamsPasswordModeAuto,
 	}
 
-	newStorage, err := client.Storage.New(context.Background(), params)
+	newStorage, err := client.Storage.SftpStorages.New(context.Background(), params)
 	if err != nil {
-		fmt.Printf("Error creating %s storage: %v\n", storage.StorageNewParamsTypeSftp, err)
+		fmt.Printf("Error creating SFTP storage: %v\n", err)
 		log.Fatalf("Failed to create SFTP storage")
 	}
 
-	fmt.Printf("Created Storage: ID=%d, Name=%s, Type=%s, Location=%s\n",
-		newStorage.ID, newStorage.Name, newStorage.Type, newStorage.Location)
+	fmt.Printf("Created Storage: ID=%d, Name=%s, Location=%s\n",
+		newStorage.ID, newStorage.Name, newStorage.LocationName)
 	fmt.Printf("Storage address: %s\n", newStorage.Address)
 
 	// Display SFTP credentials
-	if newStorage.Credentials.SftpPassword != "" {
-		fmt.Printf("SFTP Password: %s\n", newStorage.Credentials.SftpPassword)
+	if newStorage.Password != "" {
+		fmt.Printf("SFTP Password: %s\n", newStorage.Password)
 	}
 
 	fmt.Println("==========================")
@@ -106,32 +105,32 @@ func waitForStorageProvisioning(client *gcore.Client, s3StorageID, sftpStorageID
 	// Wait for S3 storage
 	start := time.Now()
 	for time.Since(start) < maxWait {
-		storage, err := client.Storage.Get(ctx, s3StorageID)
+		s, err := client.Storage.ObjectStorages.Get(ctx, s3StorageID)
 		if err != nil {
 			fmt.Printf("Error checking storage status: %v\n", err)
 			break
 		}
-		if storage.ProvisioningStatus == "ok" {
+		if s.ProvisioningStatus == storage.S3StorageProvisioningStatusActive {
 			fmt.Printf("Storage %d is ready\n", s3StorageID)
 			break
 		}
-		fmt.Printf("Storage %d status: %s, waiting...\n", s3StorageID, storage.ProvisioningStatus)
+		fmt.Printf("Storage %d status: %s, waiting...\n", s3StorageID, s.ProvisioningStatus)
 		time.Sleep(2 * time.Second)
 	}
 
 	// Wait for SFTP storage
 	start = time.Now()
 	for time.Since(start) < maxWait {
-		storage, err := client.Storage.Get(ctx, sftpStorageID)
+		s, err := client.Storage.SftpStorages.Get(ctx, sftpStorageID)
 		if err != nil {
 			fmt.Printf("Error checking storage status: %v\n", err)
 			break
 		}
-		if storage.ProvisioningStatus == "ok" {
+		if s.ProvisioningStatus == storage.SftpStorageProvisioningStatusActive {
 			fmt.Printf("Storage %d is ready\n", sftpStorageID)
 			break
 		}
-		fmt.Printf("Storage %d status: %s, waiting...\n", sftpStorageID, storage.ProvisioningStatus)
+		fmt.Printf("Storage %d status: %s, waiting...\n", sftpStorageID, s.ProvisioningStatus)
 		time.Sleep(2 * time.Second)
 	}
 
@@ -144,108 +143,125 @@ func getStorageDetails(client *gcore.Client, s3StorageID, sftpStorageID int64) {
 	ctx := context.Background()
 
 	// Get S3 storage details
-	storageDetails, err := client.Storage.Get(ctx, s3StorageID)
+	s3Details, err := client.Storage.ObjectStorages.Get(ctx, s3StorageID)
 	if err != nil {
-		fmt.Printf("Error getting storage details: %v\n", err)
+		fmt.Printf("Error getting S3 storage details: %v\n", err)
 	} else {
-		fmt.Printf("Storage: ID=%d, Name=%s, Type=%s, Location=%s, Status=%s\n",
-			storageDetails.ID, storageDetails.Name, storageDetails.Type, storageDetails.Location, storageDetails.ProvisioningStatus)
-		fmt.Printf("Address: %s, Created: %s, Can Restore: %t\n",
-			storageDetails.Address, storageDetails.CreatedAt, storageDetails.CanRestore)
+		fmt.Printf("S3 Storage: ID=%d, Name=%s, Location=%s, Status=%s\n",
+			s3Details.ID, s3Details.Name, s3Details.LocationName, s3Details.ProvisioningStatus)
+		fmt.Printf("Address: %s, Created: %s\n",
+			s3Details.Address, s3Details.CreatedAt)
 	}
 
 	// Get SFTP storage details
-	storageDetails, err = client.Storage.Get(ctx, sftpStorageID)
+	sftpDetails, err := client.Storage.SftpStorages.Get(ctx, sftpStorageID)
 	if err != nil {
-		fmt.Printf("Error getting storage details: %v\n", err)
+		fmt.Printf("Error getting SFTP storage details: %v\n", err)
 	} else {
-		fmt.Printf("Storage: ID=%d, Name=%s, Type=%s, Location=%s, Status=%s\n",
-			storageDetails.ID, storageDetails.Name, storageDetails.Type, storageDetails.Location, storageDetails.ProvisioningStatus)
-		fmt.Printf("Address: %s, Created: %s, Can Restore: %t\n",
-			storageDetails.Address, storageDetails.CreatedAt, storageDetails.CanRestore)
+		fmt.Printf("SFTP Storage: ID=%d, Name=%s, Location=%s, Status=%s\n",
+			sftpDetails.ID, sftpDetails.Name, sftpDetails.LocationName, sftpDetails.ProvisioningStatus)
+		fmt.Printf("Address: %s, Created: %s, HasPassword: %t\n",
+			sftpDetails.Address, sftpDetails.CreatedAt, sftpDetails.HasPassword)
 	}
 
 	fmt.Println("==========================")
 }
 
-func regenerateS3Credentials(client *gcore.Client, s3StorageID int64) {
+func regenerateS3Credentials(client *gcore.Client, s3StorageID int64) string {
 	fmt.Println("\n=== REGENERATE S3 CREDENTIALS ===")
 
-	params := storage.CredentialRecreateParams{
-		GenerateS3Keys: param.NewOpt(true),
+	// Create a new access key for the S3 storage (max 2 per storage)
+	newKey, err := client.Storage.ObjectStorages.AccessKeys.New(context.Background(), s3StorageID)
+	if err != nil {
+		fmt.Printf("Error creating new access key: %v\n", err)
+		fmt.Println("================================")
+		return ""
 	}
 
-	updatedStorage, err := client.Storage.Credentials.Recreate(context.Background(), s3StorageID, params)
+	fmt.Printf("Created new S3 access key for storage %d:\n", s3StorageID)
+	fmt.Printf("New Access Key: %s\n", newKey.AccessKey)
+	fmt.Printf("New Secret Key: %s\n", newKey.SecretKey)
+
+	fmt.Println("================================")
+	return newKey.AccessKey
+}
+
+func listS3AccessKeys(client *gcore.Client, s3StorageID int64) {
+	fmt.Println("\n=== LIST S3 ACCESS KEYS ===")
+
+	keys, err := client.Storage.ObjectStorages.AccessKeys.List(context.Background(), s3StorageID, storage.ObjectStorageAccessKeyListParams{})
 	if err != nil {
-		fmt.Printf("Error performing credential operation: %v\n", err)
-		fmt.Println("================================")
+		fmt.Printf("Error listing access keys: %v\n", err)
+		fmt.Println("===========================")
 		return
 	}
 
-	fmt.Printf("Generated new S3 credentials for storage %d:\n", s3StorageID)
-	fmt.Printf("New Access Key: %s\n", updatedStorage.Credentials.S3.AccessKey)
-	fmt.Printf("New Secret Key: %s\n", updatedStorage.Credentials.S3.SecretKey)
+	for i, key := range keys.Results {
+		fmt.Printf("  %d. Access Key: %s, Created: %s\n", i+1, key.AccessKey, key.CreatedAt)
+	}
 
-	fmt.Println("================================")
+	fmt.Println("===========================")
+}
+
+func deleteS3AccessKey(client *gcore.Client, s3StorageID int64, accessKey string) {
+	fmt.Println("\n=== DELETE S3 ACCESS KEY ===")
+
+	if accessKey == "" {
+		fmt.Println("No access key to delete")
+		fmt.Println("===========================")
+		return
+	}
+
+	params := storage.ObjectStorageAccessKeyDeleteParams{
+		StorageID: s3StorageID,
+	}
+
+	err := client.Storage.ObjectStorages.AccessKeys.Delete(context.Background(), accessKey, params)
+	if err != nil {
+		fmt.Printf("Error deleting access key %s: %v\n", accessKey, err)
+		fmt.Println("===========================")
+		return
+	}
+
+	fmt.Printf("Deleted access key: %s\n", accessKey)
+	fmt.Println("===========================")
 }
 
 func regenerateSFTPPassword(client *gcore.Client, sftpStorageID int64) {
 	fmt.Println("\n=== REGENERATE SFTP PASSWORD ===")
 
-	params := storage.CredentialRecreateParams{
-		GenerateSftpPassword: param.NewOpt(true),
+	params := storage.SftpStorageUpdateParams{
+		PasswordMode: storage.SftpStorageUpdateParamsPasswordModeAuto,
 	}
 
-	updatedStorage, err := client.Storage.Credentials.Recreate(context.Background(), sftpStorageID, params)
+	updatedStorage, err := client.Storage.SftpStorages.Update(context.Background(), sftpStorageID, params)
 	if err != nil {
-		fmt.Printf("Error performing credential operation: %v\n", err)
+		fmt.Printf("Error regenerating SFTP password: %v\n", err)
 		fmt.Println("===============================")
 		return
 	}
 
-	fmt.Printf("Generated new SFTP password for storage %d: %s\n", sftpStorageID, updatedStorage.Credentials.SftpPassword)
+	fmt.Printf("Generated new SFTP password for storage %d: %s\n", sftpStorageID, updatedStorage.Password)
 
 	fmt.Println("===============================")
-}
-
-func setCustomSFTPPassword(client *gcore.Client, sftpStorageID int64) {
-	fmt.Println("\n=== SET CUSTOM SFTP PASSWORD ===")
-
-	params := storage.CredentialRecreateParams{
-		SftpPassword: param.NewOpt("MyNewSecurePassword456!"),
-	}
-
-	updatedStorage, err := client.Storage.Credentials.Recreate(context.Background(), sftpStorageID, params)
-	if err != nil {
-		fmt.Printf("Error performing credential operation: %v\n", err)
-		fmt.Println("=================================")
-		return
-	}
-
-	fmt.Printf("Set custom SFTP password for storage %d: %s\n", sftpStorageID, updatedStorage.Credentials.SftpPassword)
-
-	fmt.Println("=================================")
 }
 
 func removeSFTPPassword(client *gcore.Client, sftpStorageID int64) {
 	fmt.Println("\n=== REMOVE SFTP PASSWORD ===")
 
-	params := storage.CredentialRecreateParams{
-		DeleteSftpPassword: param.NewOpt(true),
+	params := storage.SftpStorageUpdateParams{
+		PasswordMode: storage.SftpStorageUpdateParamsPasswordModeNone,
 	}
 
-	updatedStorage, err := client.Storage.Credentials.Recreate(context.Background(), sftpStorageID, params)
+	updatedStorage, err := client.Storage.SftpStorages.Update(context.Background(), sftpStorageID, params)
 	if err != nil {
-		fmt.Printf("Error performing credential operation: %v\n", err)
+		fmt.Printf("Error removing SFTP password: %v\n", err)
 		fmt.Println("============================")
 		return
 	}
 
 	fmt.Printf("Removed SFTP password for storage %d\n", sftpStorageID)
-	fmt.Printf("Password authentication is now disabled\n")
-	if updatedStorage.Credentials.SftpPassword == "" {
-		fmt.Printf("Confirmed: SFTP password is empty\n")
-	}
+	fmt.Printf("Password authentication is now disabled (HasPassword: %t)\n", updatedStorage.HasPassword)
 
 	fmt.Println("============================")
 }
@@ -253,18 +269,18 @@ func removeSFTPPassword(client *gcore.Client, sftpStorageID int64) {
 func reenableSFTPPassword(client *gcore.Client, sftpStorageID int64) {
 	fmt.Println("\n=== RE-ENABLE SFTP PASSWORD ===")
 
-	params := storage.CredentialRecreateParams{
-		GenerateSftpPassword: param.NewOpt(true),
+	params := storage.SftpStorageUpdateParams{
+		PasswordMode: storage.SftpStorageUpdateParamsPasswordModeAuto,
 	}
 
-	updatedStorage, err := client.Storage.Credentials.Recreate(context.Background(), sftpStorageID, params)
+	updatedStorage, err := client.Storage.SftpStorages.Update(context.Background(), sftpStorageID, params)
 	if err != nil {
-		fmt.Printf("Error performing credential operation: %v\n", err)
+		fmt.Printf("Error re-enabling SFTP password: %v\n", err)
 		fmt.Println("==============================")
 		return
 	}
 
-	fmt.Printf("Generated new SFTP password for storage %d: %s\n", sftpStorageID, updatedStorage.Credentials.SftpPassword)
+	fmt.Printf("Generated new SFTP password for storage %d: %s\n", sftpStorageID, updatedStorage.Password)
 
 	fmt.Println("==============================")
 }
@@ -275,7 +291,7 @@ func cleanup(client *gcore.Client, s3StorageID, sftpStorageID int64) {
 	ctx := context.Background()
 
 	// Delete S3 storage
-	err := client.Storage.Delete(ctx, s3StorageID)
+	err := client.Storage.ObjectStorages.Delete(ctx, s3StorageID)
 	if err != nil {
 		fmt.Printf("Error deleting storage %d: %v\n", s3StorageID, err)
 	} else {
@@ -283,7 +299,7 @@ func cleanup(client *gcore.Client, s3StorageID, sftpStorageID int64) {
 	}
 
 	// Delete SFTP storage
-	err = client.Storage.Delete(ctx, sftpStorageID)
+	err = client.Storage.SftpStorages.Delete(ctx, sftpStorageID)
 	if err != nil {
 		fmt.Printf("Error deleting storage %d: %v\n", sftpStorageID, err)
 	} else {
