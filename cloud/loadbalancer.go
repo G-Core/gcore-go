@@ -265,6 +265,14 @@ type HealthMonitor struct {
 	AdminStateUp bool `json:"admin_state_up" api:"required"`
 	// The time, in seconds, between sending probes to members
 	Delay int64 `json:"delay" api:"required"`
+	// Domain name for HTTP host header. Can only be used together with `HTTP` or
+	// `HTTPS` health monitor type.
+	DomainName string `json:"domain_name" api:"required"`
+	// HTTP version. Can only be used together with `HTTP` or `HTTPS` health monitor
+	// type.
+	//
+	// Any of "1.0", "1.1".
+	HTTPVersion HealthMonitorHTTPVersion `json:"http_version" api:"required"`
 	// Number of successes before the member is switched to ONLINE state
 	MaxRetries int64 `json:"max_retries" api:"required"`
 	// Number of failures before the member is switched to ERROR state
@@ -300,6 +308,8 @@ type HealthMonitor struct {
 		ID                 respjson.Field
 		AdminStateUp       respjson.Field
 		Delay              respjson.Field
+		DomainName         respjson.Field
+		HTTPVersion        respjson.Field
 		MaxRetries         respjson.Field
 		MaxRetriesDown     respjson.Field
 		OperatingStatus    respjson.Field
@@ -319,6 +329,15 @@ func (r HealthMonitor) RawJSON() string { return r.JSON.raw }
 func (r *HealthMonitor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// HTTP version. Can only be used together with `HTTP` or `HTTPS` health monitor
+// type.
+type HealthMonitorHTTPVersion string
+
+const (
+	HealthMonitorHTTPVersion1_0 HealthMonitorHTTPVersion = "1.0"
+	HealthMonitorHTTPVersion1_1 HealthMonitorHTTPVersion = "1.1"
+)
 
 type HealthMonitorStatus struct {
 	// UUID of the entity
@@ -1868,6 +1887,9 @@ type LoadBalancerNewParamsListenerPoolHealthmonitor struct {
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type LbHealthMonitorType `json:"type,omitzero" api:"required"`
+	// Domain name for HTTP host header. Can only be used together with `HTTP` or
+	// `HTTPS` health monitor type.
+	DomainName param.Opt[string] `json:"domain_name,omitzero"`
 	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
 	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
 	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
@@ -1881,6 +1903,11 @@ type LoadBalancerNewParamsListenerPoolHealthmonitor struct {
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Number of failures before the member is switched to ERROR state.
 	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
+	// HTTP version. Can only be used together with `HTTP` or `HTTPS` health monitor
+	// type. Supported values: 1.0, 1.1.
+	//
+	// Any of "1.0", "1.1".
+	HTTPVersion string `json:"http_version,omitzero"`
 	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
 	// type.
 	//
@@ -1896,6 +1923,12 @@ func (r LoadBalancerNewParamsListenerPoolHealthmonitor) MarshalJSON() (data []by
 }
 func (r *LoadBalancerNewParamsListenerPoolHealthmonitor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[LoadBalancerNewParamsListenerPoolHealthmonitor](
+		"http_version", "1.0", "1.1",
+	)
 }
 
 // The properties Address, ProtocolPort are required.

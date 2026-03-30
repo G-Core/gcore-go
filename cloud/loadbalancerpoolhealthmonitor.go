@@ -107,6 +107,9 @@ type LoadBalancerPoolHealthMonitorNewParams struct {
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type LbHealthMonitorType `json:"type,omitzero" api:"required"`
+	// Domain name for HTTP host header. Can only be used together with `HTTP` or
+	// `HTTPS` health monitor type.
+	DomainName param.Opt[string] `json:"domain_name,omitzero"`
 	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
 	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
 	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
@@ -120,6 +123,11 @@ type LoadBalancerPoolHealthMonitorNewParams struct {
 	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
 	// Number of failures before the member is switched to ERROR state.
 	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
+	// HTTP version. Can only be used together with `HTTP` or `HTTPS` health monitor
+	// type. Supported values: 1.0, 1.1.
+	//
+	// Any of "1.0", "1.1".
+	HTTPVersion LoadBalancerPoolHealthMonitorNewParamsHTTPVersion `json:"http_version,omitzero"`
 	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
 	// type.
 	//
@@ -136,6 +144,15 @@ func (r LoadBalancerPoolHealthMonitorNewParams) MarshalJSON() (data []byte, err 
 func (r *LoadBalancerPoolHealthMonitorNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// HTTP version. Can only be used together with `HTTP` or `HTTPS` health monitor
+// type. Supported values: 1.0, 1.1.
+type LoadBalancerPoolHealthMonitorNewParamsHTTPVersion string
+
+const (
+	LoadBalancerPoolHealthMonitorNewParamsHTTPVersion1_0 LoadBalancerPoolHealthMonitorNewParamsHTTPVersion = "1.0"
+	LoadBalancerPoolHealthMonitorNewParamsHTTPVersion1_1 LoadBalancerPoolHealthMonitorNewParamsHTTPVersion = "1.1"
+)
 
 type LoadBalancerPoolHealthMonitorDeleteParams struct {
 	// Project ID
