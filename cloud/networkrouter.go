@@ -438,7 +438,11 @@ type NetworkRouterNewParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// name of router
-	Name                string                                         `json:"name" api:"required"`
+	Name string `json:"name" api:"required"`
+	// External gateway configuration. Use type 'default' to let the platform
+	// automatically select the external network, or type 'manual' to specify a
+	// particular external network via `network_id`. If omitted, the router is created
+	// without an external gateway.
 	ExternalGatewayInfo NetworkRouterNewParamsExternalGatewayInfoUnion `json:"external_gateway_info,omitzero"`
 	// List of interfaces to attach to router immediately after creation.
 	Interfaces []NetworkRouterNewParamsInterface `json:"interfaces,omitzero"`
@@ -510,11 +514,12 @@ func (u NetworkRouterNewParamsExternalGatewayInfoUnion) GetType() *string {
 
 // The property NetworkID is required.
 type NetworkRouterNewParamsExternalGatewayInfoRouterExternalManualGwSerializer struct {
-	// id of the external network.
+	// ID of the external network to connect the router to.
 	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Is SNAT enabled. Defaults to true.
 	EnableSnat param.Opt[bool] `json:"enable_snat,omitzero"`
-	// must be 'manual'.
+	// Gateway type. Use 'manual' to explicitly specify which external network the
+	// router connects to via `network_id`. Required for PATCH/update operations.
 	//
 	// Any of "manual".
 	Type string `json:"type,omitzero"`
@@ -556,7 +561,9 @@ func init() {
 type NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer struct {
 	// Is SNAT enabled. Defaults to true.
 	EnableSnat param.Opt[bool] `json:"enable_snat,omitzero"`
-	// must be 'default'.
+	// Gateway type. Use 'default' to let the platform automatically select the
+	// external network for the router's region. No `network_id` is needed. Only valid
+	// on create.
 	//
 	// Any of "default".
 	Type string `json:"type,omitzero"`
@@ -613,7 +620,9 @@ type NetworkRouterUpdateParams struct {
 	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// New name of router
 	Name param.Opt[string] `json:"name,omitzero"`
-	// New external gateway.
+	// New external gateway configuration. Only type 'manual' is accepted on update, so
+	// you must provide the `network_id` of the external network. Set to null to remove
+	// the external gateway.
 	ExternalGatewayInfo NetworkRouterUpdateParamsExternalGatewayInfo `json:"external_gateway_info,omitzero"`
 	// List of custom routes.
 	Routes []NetworkRouterUpdateParamsRoute `json:"routes,omitzero"`
@@ -628,15 +637,18 @@ func (r *NetworkRouterUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// New external gateway.
+// New external gateway configuration. Only type 'manual' is accepted on update, so
+// you must provide the `network_id` of the external network. Set to null to remove
+// the external gateway.
 //
 // The property NetworkID is required.
 type NetworkRouterUpdateParamsExternalGatewayInfo struct {
-	// id of the external network.
+	// ID of the external network to connect the router to.
 	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Is SNAT enabled. Defaults to true.
 	EnableSnat param.Opt[bool] `json:"enable_snat,omitzero"`
-	// must be 'manual'.
+	// Gateway type. Use 'manual' to explicitly specify which external network the
+	// router connects to via `network_id`. Required for PATCH/update operations.
 	//
 	// Any of "manual".
 	Type string `json:"type,omitzero"`
