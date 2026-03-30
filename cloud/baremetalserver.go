@@ -22,6 +22,10 @@ import (
 	"github.com/G-Core/gcore-go/shared/constant"
 )
 
+// Bare metal servers are dedicated physical machines with direct hardware access,
+// supporting provisioning, rebuilding, and network configuration within a cloud
+// region.
+//
 // BaremetalServerService contains methods and other services that help with
 // interacting with the gcore API.
 //
