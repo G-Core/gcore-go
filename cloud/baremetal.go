@@ -16,6 +16,9 @@ type BaremetalService struct {
 	Options []option.RequestOption
 	Images  BaremetalImageService
 	Flavors BaremetalFlavorService
+	// Bare metal servers are dedicated physical machines with direct hardware access,
+	// supporting provisioning, rebuilding, and network configuration within a cloud
+	// region.
 	Servers BaremetalServerService
 }
 
