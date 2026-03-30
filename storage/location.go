@@ -36,16 +36,13 @@ func NewLocationService(opts ...option.RequestOption) (r LocationService) {
 	return
 }
 
-// Returns available storage locations where you can create storages. Each location
-// represents a geographic region with specific data center facilities. Deprecated:
-// Use GET /v4/locations instead.
-//
-// Deprecated: deprecated
+// Returns storage locations where you can create new storages. Only locations
+// currently accepting new storage creation are returned.
 func (r *LocationService) List(ctx context.Context, query LocationListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Location], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "storage/provisioning/v2/locations"
+	path := "storage/v4/locations"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -58,40 +55,34 @@ func (r *LocationService) List(ctx context.Context, query LocationListParams, op
 	return res, nil
 }
 
-// Returns available storage locations where you can create storages. Each location
-// represents a geographic region with specific data center facilities. Deprecated:
-// Use GET /v4/locations instead.
-//
-// Deprecated: deprecated
+// Returns storage locations where you can create new storages. Only locations
+// currently accepting new storage creation are returned.
 func (r *LocationService) ListAutoPaging(ctx context.Context, query LocationListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Location] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
-// LocationV2 represents location data for v2 API where title is a string
 type Location struct {
-	// Full hostname/address for accessing the storage endpoint in this location
+	// Full hostname/address for accessing the storage endpoint.
 	Address string `json:"address" api:"required"`
-	// Indicates whether new storage can be created in this location
-	//
-	// Any of "deny", "allow".
-	AllowForNewStorage LocationAllowForNewStorage `json:"allow_for_new_storage" api:"required"`
-	// Location code (region identifier)
+	// Human-readable display name for the location.
 	Name string `json:"name" api:"required"`
-	// Human-readable title for the location
+	// Internal technical identifier for the location
+	TechnicalName string `json:"technical_name" api:"required"`
+	// Display title for the location (English). Null if no title is set.
 	Title string `json:"title" api:"required"`
-	// Storage protocol type supported in this location
+	// Storage type supported by this location
 	//
 	// Any of "s3_compatible", "sftp".
 	Type LocationType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Address            respjson.Field
-		AllowForNewStorage respjson.Field
-		Name               respjson.Field
-		Title              respjson.Field
-		Type               respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		Address       respjson.Field
+		Name          respjson.Field
+		TechnicalName respjson.Field
+		Title         respjson.Field
+		Type          respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -101,15 +92,7 @@ func (r *Location) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Indicates whether new storage can be created in this location
-type LocationAllowForNewStorage string
-
-const (
-	LocationAllowForNewStorageDeny  LocationAllowForNewStorage = "deny"
-	LocationAllowForNewStorageAllow LocationAllowForNewStorage = "allow"
-)
-
-// Storage protocol type supported in this location
+// Storage type supported by this location
 type LocationType string
 
 const (
@@ -118,8 +101,11 @@ const (
 )
 
 type LocationListParams struct {
-	Limit  param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Max number of records in response
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of records to skip before beginning to return results
+	Offset  param.Opt[int64]  `query:"offset,omitzero" json:"-"`
+	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
 	paramObj
 }
 

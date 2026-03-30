@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/storage"
 )
 
-func TestBucketNew(t *testing.T) {
+func TestObjectStorageAccessKeyNew(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,13 +26,7 @@ func TestBucketNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Storage.Buckets.New(
-		context.TODO(),
-		"bucket_name",
-		storage.BucketNewParams{
-			StorageID: 0,
-		},
-	)
+	_, err := client.Storage.ObjectStorages.AccessKeys.New(context.TODO(), 0)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -42,7 +36,7 @@ func TestBucketNew(t *testing.T) {
 	}
 }
 
-func TestBucketListWithOptionalParams(t *testing.T) {
+func TestObjectStorageAccessKeyListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -54,12 +48,13 @@ func TestBucketListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Storage.Buckets.List(
+	_, err := client.Storage.ObjectStorages.AccessKeys.List(
 		context.TODO(),
 		0,
-		storage.BucketListParams{
-			Limit:  gcore.Int(1),
-			Offset: gcore.Int(0),
+		storage.ObjectStorageAccessKeyListParams{
+			Limit:   gcore.Int(1),
+			Offset:  gcore.Int(0),
+			OrderBy: gcore.String("order_by"),
 		},
 	)
 	if err != nil {
@@ -71,7 +66,7 @@ func TestBucketListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBucketDelete(t *testing.T) {
+func TestObjectStorageAccessKeyDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -83,10 +78,10 @@ func TestBucketDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Storage.Buckets.Delete(
+	err := client.Storage.ObjectStorages.AccessKeys.Delete(
 		context.TODO(),
-		"bucket_name",
-		storage.BucketDeleteParams{
+		"access_key",
+		storage.ObjectStorageAccessKeyDeleteParams{
 			StorageID: 0,
 		},
 	)
