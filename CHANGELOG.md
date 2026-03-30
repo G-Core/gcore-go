@@ -1,5 +1,43 @@
 # Changelog
 
+## 0.40.0 (2026-03-30)
+
+Full Changelog: [v0.39.0...v0.40.0](https://github.com/G-Core/gcore-go/compare/v0.39.0...v0.40.0)
+
+### ⚠ BREAKING CHANGES
+
+* **api:** storage resource restructured — methods moved from storage.* to storage.object_storages.* and storage.sftp_storages.*, credentials.recreate replaced by access_keys CRUD, bucket subresources (cors, lifecycle, policy) removed in favor of buckets.update, link_ssh_key/unlink_ssh_key removed in favor of ssh_keys resource.
+
+### Features
+
+* **api:** aggregated API specs update ([7bc66a7](https://github.com/G-Core/gcore-go/commit/7bc66a7f000a2fc0843ec2be0579d2233703c87d))
+* **api:** aggregated API specs update ([1489c9e](https://github.com/G-Core/gcore-go/commit/1489c9e71715f8b270e99df1154e81c4399527fa))
+* **api:** aggregated API specs update ([e4d6f4e](https://github.com/G-Core/gcore-go/commit/e4d6f4e8532856c619b811f151bda04c9edbde01))
+* **api:** feat(storage)!: migrate storage endpoints from v1-v3 to v4 ([e111f1b](https://github.com/G-Core/gcore-go/commit/e111f1b3d58e765e401e98b42dc9cce050870dd3))
+* **cdn:** enable terraform support for cdn_rule_template ([fd7dadb](https://github.com/G-Core/gcore-go/commit/fd7dadba0a6ea98efe07a6065bd8223b60589c43))
+* **cloud:** enable Terraform data source for inference flavors ([b2a6211](https://github.com/G-Core/gcore-go/commit/b2a6211f84aeb439c2d2732e05c6b7b155e102ab))
+* **examples:** update storage examples for v4 API ([0687694](https://github.com/G-Core/gcore-go/commit/0687694994bb9152c85251bf2a79eb414e704489))
+* **fastedge:** enable fastedge_template for Terraform ([8793e38](https://github.com/G-Core/gcore-go/commit/8793e38c0e060e52f4e4f7b44fb9861b92ad676f))
+* **internal:** support comma format in multipart form encoding ([8f65d38](https://github.com/G-Core/gcore-go/commit/8f65d38015abe574069abe5b3b23233b3670fba9))
+
+
+### Bug Fixes
+
+* prevent duplicate ? in query params ([d166054](https://github.com/G-Core/gcore-go/commit/d1660547d64459861b89b07e1e1c948cb099ff67))
+* **tests:** skip tests failing due to OpenAPI spec issues ([09b189d](https://github.com/G-Core/gcore-go/commit/09b189dc42a7d869c810b48acfc8e99c2ea57b2e))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([82b1635](https://github.com/G-Core/gcore-go/commit/82b1635ad0b2cbada162131af771c53b1bdfdc7f))
+* **ci:** support opting out of skipping builds on metadata-only commits ([16f8b53](https://github.com/G-Core/gcore-go/commit/16f8b5368278dc341d0c0d99eaa40c7a57043b17))
+* **client:** fix multipart serialisation of Default() fields ([b7c0a12](https://github.com/G-Core/gcore-go/commit/b7c0a12eb5246386e01ff59ee4e71b950d5c587c))
+* **internal:** support default value struct tag ([784d813](https://github.com/G-Core/gcore-go/commit/784d813cd86043998fb2e3b6e8fa9daee8340029))
+* remove unnecessary error check for url parsing ([54c3490](https://github.com/G-Core/gcore-go/commit/54c34902e740bce49b0db86f289dd8642f149bed))
+* **tests:** bump steady to v0.19.6 ([1a04229](https://github.com/G-Core/gcore-go/commit/1a042293233061520c8d4ce320bc5f184d3200cb))
+* **tests:** bump steady to v0.19.7 ([c683c6d](https://github.com/G-Core/gcore-go/commit/c683c6dc4e2e0fd1ef28b597dfa75f99ae59a594))
+* update docs for api:"required" ([e3c2235](https://github.com/G-Core/gcore-go/commit/e3c22359c00d2284c0d20cc57e98c27f9b47b015))
+
 ## 0.39.0 (2026-03-23)
 
 Full Changelog: [v0.38.0...v0.39.0](https://github.com/G-Core/gcore-go/compare/v0.38.0...v0.39.0)
