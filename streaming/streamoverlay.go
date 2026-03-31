@@ -4,7 +4,6 @@ package streaming
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"slices"
@@ -199,7 +198,7 @@ func (r StreamOverlayNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Body)
 }
 func (r *StreamOverlayNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Body)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property URL is required.
@@ -273,7 +272,7 @@ func (r StreamOverlayUpdateMultipleParams) MarshalJSON() (data []byte, err error
 	return shimjson.Marshal(r.Body)
 }
 func (r *StreamOverlayUpdateMultipleParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Body)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property ID is required.
