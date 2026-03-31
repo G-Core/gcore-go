@@ -403,7 +403,7 @@ func (r VideoUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.CreateVideo)
 }
 func (r *VideoUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.CreateVideo)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type VideoListParams struct {

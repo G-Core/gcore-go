@@ -424,7 +424,7 @@ func (r NetworkMappingNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.DNSNetworkMapping)
 }
 func (r *NetworkMappingNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.DNSNetworkMapping)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NetworkMappingListParams struct {
@@ -467,5 +467,5 @@ func (r NetworkMappingReplaceParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.DNSNetworkMapping)
 }
 func (r *NetworkMappingReplaceParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.DNSNetworkMapping)
+	return apijson.UnmarshalRoot(data, r)
 }

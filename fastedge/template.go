@@ -331,7 +331,7 @@ func (r TemplateNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Template)
 }
 func (r *TemplateNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Template)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type TemplateListParams struct {
@@ -392,5 +392,5 @@ func (r TemplateReplaceParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Template)
 }
 func (r *TemplateReplaceParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Template)
+	return apijson.UnmarshalRoot(data, r)
 }

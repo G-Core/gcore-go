@@ -4,7 +4,6 @@ package cloud
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -738,7 +737,7 @@ func (r NetworkRouterDetachSubnetParams) MarshalJSON() (data []byte, err error) 
 	return shimjson.Marshal(r.SubnetID)
 }
 func (r *NetworkRouterDetachSubnetParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.SubnetID)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NetworkRouterGetParams struct {

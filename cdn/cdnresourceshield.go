@@ -107,5 +107,5 @@ func (r CDNResourceShieldReplaceParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.OriginShielding)
 }
 func (r *CDNResourceShieldReplaceParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.OriginShielding)
+	return apijson.UnmarshalRoot(data, r)
 }
