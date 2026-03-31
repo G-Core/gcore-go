@@ -265,7 +265,7 @@ func (r KvStoreNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.KvStore)
 }
 func (r *KvStoreNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.KvStore)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type KvStoreListParams struct {
@@ -295,5 +295,5 @@ func (r KvStoreReplaceParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.KvStore)
 }
 func (r *KvStoreReplaceParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.KvStore)
+	return apijson.UnmarshalRoot(data, r)
 }

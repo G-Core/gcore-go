@@ -700,7 +700,7 @@ func (r PlaylistNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Playlist)
 }
 func (r *PlaylistNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Playlist)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type PlaylistUpdateParams struct {
@@ -712,7 +712,7 @@ func (r PlaylistUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Playlist)
 }
 func (r *PlaylistUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Playlist)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type PlaylistListParams struct {

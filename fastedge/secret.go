@@ -262,7 +262,7 @@ func (r SecretNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Secret)
 }
 func (r *SecretNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Secret)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type SecretUpdateParams struct {
@@ -274,7 +274,7 @@ func (r SecretUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Secret)
 }
 func (r *SecretUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Secret)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type SecretListParams struct {
@@ -316,5 +316,5 @@ func (r SecretReplaceParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Secret)
 }
 func (r *SecretReplaceParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Secret)
+	return apijson.UnmarshalRoot(data, r)
 }

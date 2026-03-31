@@ -4,11 +4,11 @@ package streaming
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"slices"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
@@ -162,7 +162,7 @@ func (r VideoSubtitleNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Body)
 }
 func (r *VideoSubtitleNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Body)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type VideoSubtitleNewParamsBody struct {
@@ -187,7 +187,7 @@ func (r VideoSubtitleUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.SubtitleBase)
 }
 func (r *VideoSubtitleUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.SubtitleBase)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type VideoSubtitleDeleteParams struct {

@@ -410,7 +410,7 @@ func (r AppNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.App)
 }
 func (r *AppNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.App)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AppUpdateParams struct {
@@ -422,7 +422,7 @@ func (r AppUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.App)
 }
 func (r *AppUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.App)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AppListParams struct {
@@ -505,7 +505,7 @@ func (r AppReplaceParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Body)
 }
 func (r *AppReplaceParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Body)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AppReplaceParamsBody struct {
