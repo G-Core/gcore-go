@@ -75,6 +75,8 @@ type Log struct {
 	Edge string `json:"edge"`
 	// The actual log message content
 	Log string `json:"log"`
+	// Request ID
+	RequestID string `json:"request_id"`
 	// When the log was generated (RFC3339 format)
 	Timestamp time.Time `json:"timestamp" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -84,6 +86,7 @@ type Log struct {
 		ClientIP    respjson.Field
 		Edge        respjson.Field
 		Log         respjson.Field
+		RequestID   respjson.Field
 		Timestamp   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -97,8 +100,8 @@ func (r *Log) UnmarshalJSON(data []byte) error {
 }
 
 type AppLogListParams struct {
-	// Search by client IP
-	ClientIP param.Opt[string] `query:"client_ip,omitzero" format:"ipv4" json:"-"`
+	// Search by client IP address
+	ClientIP param.Opt[string] `query:"client_ip,omitzero" json:"-"`
 	// Edge name
 	Edge param.Opt[string] `query:"edge,omitzero" format:"string" json:"-"`
 	// Start of log retrieval period in RFC3339 format. Defaults to 1 hour ago if not
@@ -108,6 +111,8 @@ type AppLogListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Offset for pagination
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Search by request ID
+	RequestID param.Opt[string] `query:"request_id,omitzero" json:"-"`
 	// Search string
 	Search param.Opt[string] `query:"search,omitzero" format:"string" json:"-"`
 	// Reporting period end time, RFC3339 format. Default current time in UTC.
