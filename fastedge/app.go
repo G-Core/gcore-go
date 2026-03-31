@@ -136,10 +136,9 @@ type App struct {
 	DebugUntil time.Time `json:"debug_until" format:"date-time"`
 	// Environment variables
 	Env map[string]string `json:"env"`
-	// Logging channel. Use 'kafka' to enable log collection (queryable via API), or
-	// 'none' to disable logging.
-	//
 	// Any of "kafka", "none".
+	//
+	// Deprecated: deprecated
 	Log AppLog `json:"log" api:"nullable"`
 	// Unique application name (alphanumeric, hyphens allowed)
 	Name string `json:"name"`
@@ -207,8 +206,6 @@ func (r App) ToParam() AppParam {
 	return param.Override[AppParam](json.RawMessage(r.RawJSON()))
 }
 
-// Logging channel. Use 'kafka' to enable log collection (queryable via API), or
-// 'none' to disable logging.
 type AppLog string
 
 const (
@@ -282,10 +279,9 @@ type AppParam struct {
 	Status param.Opt[int64] `json:"status,omitzero"`
 	// Template ID
 	Template param.Opt[int64] `json:"template,omitzero"`
-	// Logging channel. Use 'kafka' to enable log collection (queryable via API), or
-	// 'none' to disable logging.
-	//
 	// Any of "kafka", "none".
+	//
+	// Deprecated: deprecated
 	Log AppLog `json:"log,omitzero"`
 	// Environment variables
 	Env map[string]string `json:"env,omitzero"`

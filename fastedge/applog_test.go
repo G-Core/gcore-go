@@ -31,14 +31,15 @@ func TestAppLogListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		fastedge.AppLogListParams{
-			ClientIP: gcore.String("192.168.1.1"),
-			Edge:     gcore.String("edge"),
-			From:     gcore.Time(time.Now()),
-			Limit:    gcore.Int(0),
-			Offset:   gcore.Int(0),
-			Search:   gcore.String("search"),
-			Sort:     fastedge.AppLogListParamsSortDesc,
-			To:       gcore.Time(time.Now()),
+			ClientIP:  gcore.String("client_ip"),
+			Edge:      gcore.String("edge"),
+			From:      gcore.Time(time.Now()),
+			Limit:     gcore.Int(0),
+			Offset:    gcore.Int(0),
+			RequestID: gcore.String("request_id"),
+			Search:    gcore.String("search"),
+			Sort:      fastedge.AppLogListParamsSortDesc,
+			To:        gcore.Time(time.Now()),
 		},
 	)
 	if err != nil {
