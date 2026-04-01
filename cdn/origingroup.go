@@ -101,8 +101,8 @@ type OriginGroupsUnion struct {
 	Path                string   `json:"path"`
 	ProxyNextUpstream   []string `json:"proxy_next_upstream"`
 	// This field is from variant [OriginGroupsNoneAuth].
-	Sources []OriginGroupsNoneAuthSource `json:"sources"`
-	UseNext bool                         `json:"use_next"`
+	Sources []OriginGroupsNoneAuthSourceUnion `json:"sources"`
+	UseNext bool                              `json:"use_next"`
 	// This field is from variant [OriginGroupsAwsSignatureV4].
 	Auth OriginGroupsAwsSignatureV4Auth `json:"auth"`
 	JSON struct {
@@ -136,6 +136,8 @@ func (r *OriginGroupsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Origin group with host origins, or mixed host and S3 origins using inline
+// `origin_type` and `config` in sources.
 type OriginGroupsNoneAuth struct {
 	// Origin group ID.
 	ID int64 `json:"id"`
@@ -174,8 +176,13 @@ type OriginGroupsNoneAuth struct {
 	//   - **`http_503`** - a origin returned a response with the code 503
 	//   - **`http_504`** - a origin returned a response with the code 504
 	ProxyNextUpstream []string `json:"proxy_next_upstream"`
-	// List of origin sources in the origin group.
-	Sources []OriginGroupsNoneAuthSource `json:"sources"`
+	// List of origin sources in the origin group. Each entry can be a host origin or
+	// an S3 origin.
+	//
+	// Host origins have a `source` field with the hostname or IP. S3 origins have
+	// `origin_type: s3` and a `config` object with S3 credentials. Both types can be
+	// mixed in the same origin group.
+	Sources []OriginGroupsNoneAuthSourceUnion `json:"sources"`
 	// Defines whether to use the next origin from the origin group if origin responds
 	// with the cases specified in `proxy_next_upstream`. If you enable it, you must
 	// specify cases in `proxy_next_upstream`.
@@ -206,7 +213,54 @@ func (r *OriginGroupsNoneAuth) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OriginGroupsNoneAuthSource struct {
+// OriginGroupsNoneAuthSourceUnion contains all possible properties and values from
+// [OriginGroupsNoneAuthSourceHostSource], [OriginGroupsNoneAuthSourceS3Source].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type OriginGroupsNoneAuthSourceUnion struct {
+	// This field is from variant [OriginGroupsNoneAuthSourceHostSource].
+	Source             string `json:"source"`
+	Backup             bool   `json:"backup"`
+	Enabled            bool   `json:"enabled"`
+	HostHeaderOverride string `json:"host_header_override"`
+	Tag                string `json:"tag"`
+	// This field is from variant [OriginGroupsNoneAuthSourceS3Source].
+	Config OriginGroupsNoneAuthSourceS3SourceConfig `json:"config"`
+	// This field is from variant [OriginGroupsNoneAuthSourceS3Source].
+	OriginType string `json:"origin_type"`
+	JSON       struct {
+		Source             respjson.Field
+		Backup             respjson.Field
+		Enabled            respjson.Field
+		HostHeaderOverride respjson.Field
+		Tag                respjson.Field
+		Config             respjson.Field
+		OriginType         respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+func (u OriginGroupsNoneAuthSourceUnion) AsHostSource() (v OriginGroupsNoneAuthSourceHostSource) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u OriginGroupsNoneAuthSourceUnion) AsS3Source() (v OriginGroupsNoneAuthSourceS3Source) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u OriginGroupsNoneAuthSourceUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *OriginGroupsNoneAuthSourceUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A host origin source.
+type OriginGroupsNoneAuthSourceHostSource struct {
+	// IP address or domain name of the origin and the port, if custom port is used.
+	Source string `json:"source" api:"required"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
 	//
@@ -224,21 +278,138 @@ type OriginGroupsNoneAuthSource struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled bool `json:"enabled"`
-	// IP address or domain name of the origin and the port, if custom port is used.
-	Source string `json:"source"`
+	// Per-origin Host header override. When set, the CDN sends this value as the Host
+	// header when requesting content from this origin instead of the default.
+	HostHeaderOverride string `json:"host_header_override" api:"nullable"`
+	// Tag for the origin source.
+	Tag string `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Backup      respjson.Field
-		Enabled     respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Source             respjson.Field
+		Backup             respjson.Field
+		Enabled            respjson.Field
+		HostHeaderOverride respjson.Field
+		Tag                respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r OriginGroupsNoneAuthSource) RawJSON() string { return r.JSON.raw }
-func (r *OriginGroupsNoneAuthSource) UnmarshalJSON(data []byte) error {
+func (r OriginGroupsNoneAuthSourceHostSource) RawJSON() string { return r.JSON.raw }
+func (r *OriginGroupsNoneAuthSourceHostSource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An S3 origin source.
+type OriginGroupsNoneAuthSourceS3Source struct {
+	// S3 storage configuration. Required when `origin_type` is `s3`.
+	Config OriginGroupsNoneAuthSourceS3SourceConfig `json:"config" api:"required"`
+	// Origin type. Present in responses only for S3 sources.
+	//
+	// Possible values:
+	//
+	// - **host** - A source server or endpoint from which content is fetched.
+	// - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//
+	// Any of "host", "s3".
+	OriginType string `json:"origin_type" api:"required"`
+	// Defines whether the origin is a backup, meaning that it will not be used until
+	// one of active origins become unavailable.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is a backup.
+	// - **false** - Origin is not a backup.
+	Backup bool `json:"backup"`
+	// Enables or disables an origin source in the origin group.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is enabled and the CDN uses it to pull content.
+	// - **false** - Origin is disabled and the CDN does not use it to pull content.
+	//
+	// Origin group must contain at least one enabled origin.
+	Enabled bool `json:"enabled"`
+	// Per-origin Host header override. When set, the CDN sends this value as the Host
+	// header when requesting content from this origin instead of the default.
+	HostHeaderOverride string `json:"host_header_override" api:"nullable"`
+	// Tag for the origin source.
+	Tag string `json:"tag"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Config             respjson.Field
+		OriginType         respjson.Field
+		Backup             respjson.Field
+		Enabled            respjson.Field
+		HostHeaderOverride respjson.Field
+		Tag                respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OriginGroupsNoneAuthSourceS3Source) RawJSON() string { return r.JSON.raw }
+func (r *OriginGroupsNoneAuthSourceS3Source) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// S3 storage configuration. Required when `origin_type` is `s3`.
+type OriginGroupsNoneAuthSourceS3SourceConfig struct {
+	// Access key ID for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// Restrictions:
+	//
+	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
+	// - From 4 to 255 characters.
+	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
+	// S3 bucket name.
+	S3BucketName string `json:"s3_bucket_name" api:"required"`
+	// Secret access key for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// Restrictions:
+	//
+	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
+	//     underscores.
+	//   - From 16 to 255 characters.
+	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
+	// Storage type compatible with S3.
+	//
+	// Possible values:
+	//
+	// - **amazon** - AWS S3 storage.
+	// - **other** - Other (not AWS) S3 compatible storage.
+	//
+	// Any of "amazon", "other".
+	S3Type string `json:"s3_type" api:"required"`
+	// S3 authentication type.
+	S3AuthType string `json:"s3_auth_type"`
+	// S3 storage region.
+	//
+	// The parameter is required if `s3_type` is `amazon`.
+	S3Region string `json:"s3_region" api:"nullable"`
+	// S3 storage hostname.
+	//
+	// The parameter is required if `s3_type` is `other`.
+	S3StorageHostname string `json:"s3_storage_hostname" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		S3AccessKeyID     respjson.Field
+		S3BucketName      respjson.Field
+		S3SecretAccessKey respjson.Field
+		S3Type            respjson.Field
+		S3AuthType        respjson.Field
+		S3Region          respjson.Field
+		S3StorageHostname respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OriginGroupsNoneAuthSourceS3SourceConfig) RawJSON() string { return r.JSON.raw }
+func (r *OriginGroupsNoneAuthSourceS3SourceConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -319,10 +490,6 @@ type OriginGroupsAwsSignatureV4Auth struct {
 	// - From 3 to 512 characters.
 	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
 	// S3 bucket name.
-	//
-	// Restrictions:
-	//
-	// - Maximum 128 characters.
 	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Secret access key for the S3 account.
 	//
@@ -375,7 +542,8 @@ type OriginGroupNewParams struct {
 	// Request body variants
 	//
 
-	// This field is a request body variant, only one variant field can be set.
+	// This field is a request body variant, only one variant field can be set. Create
+	// an origin group with host origins, or mixed host and S3 origins.
 	OfNoneAuth *OriginGroupNewParamsBodyNoneAuth `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
 	OfAwsSignatureV4 *OriginGroupNewParamsBodyAwsSignatureV4 `json:",inline"`
@@ -390,12 +558,13 @@ func (r *OriginGroupNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Create an origin group with host origins, or mixed host and S3 origins.
+//
 // The properties Name, Sources are required.
 type OriginGroupNewParamsBodyNoneAuth struct {
 	// Origin group name.
-	Name string `json:"name" api:"required"`
-	// List of origin sources in the origin group.
-	Sources []OriginGroupNewParamsBodyNoneAuthSource `json:"sources,omitzero" api:"required"`
+	Name    string                                        `json:"name" api:"required"`
+	Sources []OriginGroupNewParamsBodyNoneAuthSourceUnion `json:"sources,omitzero" api:"required"`
 	// Origin authentication type.
 	//
 	// Possible values:
@@ -440,7 +609,102 @@ func (r *OriginGroupNewParamsBodyNoneAuth) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OriginGroupNewParamsBodyNoneAuthSource struct {
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type OriginGroupNewParamsBodyNoneAuthSourceUnion struct {
+	OfHostSource *OriginGroupNewParamsBodyNoneAuthSourceHostSource `json:",omitzero,inline"`
+	OfS3Source   *OriginGroupNewParamsBodyNoneAuthSourceS3Source   `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfHostSource, u.OfS3Source)
+}
+func (u *OriginGroupNewParamsBodyNoneAuthSourceUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *OriginGroupNewParamsBodyNoneAuthSourceUnion) asAny() any {
+	if !param.IsOmitted(u.OfHostSource) {
+		return u.OfHostSource
+	} else if !param.IsOmitted(u.OfS3Source) {
+		return u.OfS3Source
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetSource() *string {
+	if vt := u.OfHostSource; vt != nil {
+		return &vt.Source
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetConfig() *OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig {
+	if vt := u.OfS3Source; vt != nil {
+		return &vt.Config
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetOriginType() *string {
+	if vt := u.OfS3Source; vt != nil {
+		return &vt.OriginType
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetBackup() *bool {
+	if vt := u.OfHostSource; vt != nil && vt.Backup.Valid() {
+		return &vt.Backup.Value
+	} else if vt := u.OfS3Source; vt != nil && vt.Backup.Valid() {
+		return &vt.Backup.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetEnabled() *bool {
+	if vt := u.OfHostSource; vt != nil && vt.Enabled.Valid() {
+		return &vt.Enabled.Value
+	} else if vt := u.OfS3Source; vt != nil && vt.Enabled.Valid() {
+		return &vt.Enabled.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetHostHeaderOverride() *string {
+	if vt := u.OfHostSource; vt != nil && vt.HostHeaderOverride.Valid() {
+		return &vt.HostHeaderOverride.Value
+	} else if vt := u.OfS3Source; vt != nil && vt.HostHeaderOverride.Valid() {
+		return &vt.HostHeaderOverride.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetTag() *string {
+	if vt := u.OfHostSource; vt != nil && vt.Tag.Valid() {
+		return &vt.Tag.Value
+	} else if vt := u.OfS3Source; vt != nil && vt.Tag.Valid() {
+		return &vt.Tag.Value
+	}
+	return nil
+}
+
+// The property Source is required.
+type OriginGroupNewParamsBodyNoneAuthSourceHostSource struct {
+	// IP address or domain name of the origin and the port, if custom port is used.
+	Source string `json:"source" api:"required"`
+	// Per-origin Host header override. When set, the CDN sends this value as the Host
+	// header when requesting content from this origin instead of the default.
+	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
 	//
@@ -458,17 +722,127 @@ type OriginGroupNewParamsBodyNoneAuthSource struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// IP address or domain name of the origin and the port, if custom port is used.
-	Source param.Opt[string] `json:"source,omitzero"`
+	// Tag for the origin source.
+	Tag param.Opt[string] `json:"tag,omitzero"`
 	paramObj
 }
 
-func (r OriginGroupNewParamsBodyNoneAuthSource) MarshalJSON() (data []byte, err error) {
-	type shadow OriginGroupNewParamsBodyNoneAuthSource
+func (r OriginGroupNewParamsBodyNoneAuthSourceHostSource) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupNewParamsBodyNoneAuthSourceHostSource
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OriginGroupNewParamsBodyNoneAuthSource) UnmarshalJSON(data []byte) error {
+func (r *OriginGroupNewParamsBodyNoneAuthSourceHostSource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Config is required.
+type OriginGroupNewParamsBodyNoneAuthSourceS3Source struct {
+	// S3 storage configuration. Required when `origin_type` is `s3`.
+	Config OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig `json:"config,omitzero" api:"required"`
+	// Per-origin Host header override. When set, the CDN sends this value as the Host
+	// header when requesting content from this origin instead of the default.
+	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
+	// Defines whether the origin is a backup, meaning that it will not be used until
+	// one of active origins become unavailable.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is a backup.
+	// - **false** - Origin is not a backup.
+	Backup param.Opt[bool] `json:"backup,omitzero"`
+	// Enables or disables an origin source in the origin group.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is enabled and the CDN uses it to pull content.
+	// - **false** - Origin is disabled and the CDN does not use it to pull content.
+	//
+	// Origin group must contain at least one enabled origin.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Tag for the origin source.
+	Tag param.Opt[string] `json:"tag,omitzero"`
+	// Origin type. Present in responses only for S3 sources.
+	//
+	// Possible values:
+	//
+	// - **host** - A source server or endpoint from which content is fetched.
+	// - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//
+	// Any of "host", "s3".
+	OriginType string `json:"origin_type,omitzero"`
+	paramObj
+}
+
+func (r OriginGroupNewParamsBodyNoneAuthSourceS3Source) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupNewParamsBodyNoneAuthSourceS3Source
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OriginGroupNewParamsBodyNoneAuthSourceS3Source) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[OriginGroupNewParamsBodyNoneAuthSourceS3Source](
+		"origin_type", "host", "s3",
+	)
+}
+
+// S3 storage configuration. Required when `origin_type` is `s3`.
+//
+// The properties S3AccessKeyID, S3BucketName, S3SecretAccessKey, S3Type are
+// required.
+type OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig struct {
+	// Access key ID for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// Restrictions:
+	//
+	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
+	// - From 4 to 255 characters.
+	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
+	// S3 bucket name.
+	S3BucketName string `json:"s3_bucket_name" api:"required"`
+	// Secret access key for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// Restrictions:
+	//
+	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
+	//     underscores.
+	//   - From 16 to 255 characters.
+	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
+	// Storage type compatible with S3.
+	//
+	// Possible values:
+	//
+	// - **amazon** - AWS S3 storage.
+	// - **other** - Other (not AWS) S3 compatible storage.
+	//
+	// Any of "amazon", "other".
+	S3Type string `json:"s3_type,omitzero" api:"required"`
+	// S3 storage region.
+	//
+	// The parameter is required if `s3_type` is `amazon`.
+	S3Region param.Opt[string] `json:"s3_region,omitzero"`
+	// S3 storage hostname.
+	//
+	// The parameter is required if `s3_type` is `other`.
+	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
+	// S3 authentication type.
+	S3AuthType param.Opt[string] `json:"s3_auth_type,omitzero"`
+	paramObj
+}
+
+func (r OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig](
+		"s3_type", "amazon", "other",
+	)
 }
 
 // The properties Auth, AuthType, Name are required.
@@ -531,10 +905,6 @@ type OriginGroupNewParamsBodyAwsSignatureV4Auth struct {
 	// - From 3 to 512 characters.
 	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
 	// S3 bucket name.
-	//
-	// Restrictions:
-	//
-	// - Maximum 128 characters.
 	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Secret access key for the S3 account.
 	//
@@ -630,9 +1000,8 @@ type OriginGroupUpdateParamsBodyNoneAuth struct {
 	//   - **`http_502`** - a origin returned a response with the code 502
 	//   - **`http_503`** - a origin returned a response with the code 503
 	//   - **`http_504`** - a origin returned a response with the code 504
-	ProxyNextUpstream []string `json:"proxy_next_upstream,omitzero"`
-	// List of origin sources in the origin group.
-	Sources []OriginGroupUpdateParamsBodyNoneAuthSource `json:"sources,omitzero"`
+	ProxyNextUpstream []string                                         `json:"proxy_next_upstream,omitzero"`
+	Sources           []OriginGroupUpdateParamsBodyNoneAuthSourceUnion `json:"sources,omitzero"`
 	paramObj
 }
 
@@ -644,7 +1013,102 @@ func (r *OriginGroupUpdateParamsBodyNoneAuth) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OriginGroupUpdateParamsBodyNoneAuthSource struct {
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type OriginGroupUpdateParamsBodyNoneAuthSourceUnion struct {
+	OfHostSource *OriginGroupUpdateParamsBodyNoneAuthSourceHostSource `json:",omitzero,inline"`
+	OfS3Source   *OriginGroupUpdateParamsBodyNoneAuthSourceS3Source   `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfHostSource, u.OfS3Source)
+}
+func (u *OriginGroupUpdateParamsBodyNoneAuthSourceUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *OriginGroupUpdateParamsBodyNoneAuthSourceUnion) asAny() any {
+	if !param.IsOmitted(u.OfHostSource) {
+		return u.OfHostSource
+	} else if !param.IsOmitted(u.OfS3Source) {
+		return u.OfS3Source
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetSource() *string {
+	if vt := u.OfHostSource; vt != nil {
+		return &vt.Source
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetConfig() *OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig {
+	if vt := u.OfS3Source; vt != nil {
+		return &vt.Config
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetOriginType() *string {
+	if vt := u.OfS3Source; vt != nil {
+		return &vt.OriginType
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetBackup() *bool {
+	if vt := u.OfHostSource; vt != nil && vt.Backup.Valid() {
+		return &vt.Backup.Value
+	} else if vt := u.OfS3Source; vt != nil && vt.Backup.Valid() {
+		return &vt.Backup.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetEnabled() *bool {
+	if vt := u.OfHostSource; vt != nil && vt.Enabled.Valid() {
+		return &vt.Enabled.Value
+	} else if vt := u.OfS3Source; vt != nil && vt.Enabled.Valid() {
+		return &vt.Enabled.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetHostHeaderOverride() *string {
+	if vt := u.OfHostSource; vt != nil && vt.HostHeaderOverride.Valid() {
+		return &vt.HostHeaderOverride.Value
+	} else if vt := u.OfS3Source; vt != nil && vt.HostHeaderOverride.Valid() {
+		return &vt.HostHeaderOverride.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetTag() *string {
+	if vt := u.OfHostSource; vt != nil && vt.Tag.Valid() {
+		return &vt.Tag.Value
+	} else if vt := u.OfS3Source; vt != nil && vt.Tag.Valid() {
+		return &vt.Tag.Value
+	}
+	return nil
+}
+
+// The property Source is required.
+type OriginGroupUpdateParamsBodyNoneAuthSourceHostSource struct {
+	// IP address or domain name of the origin and the port, if custom port is used.
+	Source string `json:"source" api:"required"`
+	// Per-origin Host header override. When set, the CDN sends this value as the Host
+	// header when requesting content from this origin instead of the default.
+	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
 	//
@@ -662,17 +1126,127 @@ type OriginGroupUpdateParamsBodyNoneAuthSource struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// IP address or domain name of the origin and the port, if custom port is used.
-	Source param.Opt[string] `json:"source,omitzero"`
+	// Tag for the origin source.
+	Tag param.Opt[string] `json:"tag,omitzero"`
 	paramObj
 }
 
-func (r OriginGroupUpdateParamsBodyNoneAuthSource) MarshalJSON() (data []byte, err error) {
-	type shadow OriginGroupUpdateParamsBodyNoneAuthSource
+func (r OriginGroupUpdateParamsBodyNoneAuthSourceHostSource) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupUpdateParamsBodyNoneAuthSourceHostSource
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OriginGroupUpdateParamsBodyNoneAuthSource) UnmarshalJSON(data []byte) error {
+func (r *OriginGroupUpdateParamsBodyNoneAuthSourceHostSource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Config is required.
+type OriginGroupUpdateParamsBodyNoneAuthSourceS3Source struct {
+	// S3 storage configuration. Required when `origin_type` is `s3`.
+	Config OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig `json:"config,omitzero" api:"required"`
+	// Per-origin Host header override. When set, the CDN sends this value as the Host
+	// header when requesting content from this origin instead of the default.
+	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
+	// Defines whether the origin is a backup, meaning that it will not be used until
+	// one of active origins become unavailable.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is a backup.
+	// - **false** - Origin is not a backup.
+	Backup param.Opt[bool] `json:"backup,omitzero"`
+	// Enables or disables an origin source in the origin group.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is enabled and the CDN uses it to pull content.
+	// - **false** - Origin is disabled and the CDN does not use it to pull content.
+	//
+	// Origin group must contain at least one enabled origin.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Tag for the origin source.
+	Tag param.Opt[string] `json:"tag,omitzero"`
+	// Origin type. Present in responses only for S3 sources.
+	//
+	// Possible values:
+	//
+	// - **host** - A source server or endpoint from which content is fetched.
+	// - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//
+	// Any of "host", "s3".
+	OriginType string `json:"origin_type,omitzero"`
+	paramObj
+}
+
+func (r OriginGroupUpdateParamsBodyNoneAuthSourceS3Source) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupUpdateParamsBodyNoneAuthSourceS3Source
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OriginGroupUpdateParamsBodyNoneAuthSourceS3Source) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[OriginGroupUpdateParamsBodyNoneAuthSourceS3Source](
+		"origin_type", "host", "s3",
+	)
+}
+
+// S3 storage configuration. Required when `origin_type` is `s3`.
+//
+// The properties S3AccessKeyID, S3BucketName, S3SecretAccessKey, S3Type are
+// required.
+type OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig struct {
+	// Access key ID for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// Restrictions:
+	//
+	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
+	// - From 4 to 255 characters.
+	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
+	// S3 bucket name.
+	S3BucketName string `json:"s3_bucket_name" api:"required"`
+	// Secret access key for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// Restrictions:
+	//
+	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
+	//     underscores.
+	//   - From 16 to 255 characters.
+	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
+	// Storage type compatible with S3.
+	//
+	// Possible values:
+	//
+	// - **amazon** - AWS S3 storage.
+	// - **other** - Other (not AWS) S3 compatible storage.
+	//
+	// Any of "amazon", "other".
+	S3Type string `json:"s3_type,omitzero" api:"required"`
+	// S3 storage region.
+	//
+	// The parameter is required if `s3_type` is `amazon`.
+	S3Region param.Opt[string] `json:"s3_region,omitzero"`
+	// S3 storage hostname.
+	//
+	// The parameter is required if `s3_type` is `other`.
+	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
+	// S3 authentication type.
+	S3AuthType param.Opt[string] `json:"s3_auth_type,omitzero"`
+	paramObj
+}
+
+func (r OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig](
+		"s3_type", "amazon", "other",
+	)
 }
 
 type OriginGroupUpdateParamsBodyAwsSignatureV4 struct {
@@ -736,10 +1310,6 @@ type OriginGroupUpdateParamsBodyAwsSignatureV4Auth struct {
 	// - From 3 to 512 characters.
 	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
 	// S3 bucket name.
-	//
-	// Restrictions:
-	//
-	// - Maximum 128 characters.
 	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Secret access key for the S3 account.
 	//
@@ -832,9 +1402,8 @@ type OriginGroupReplaceParamsBodyNoneAuth struct {
 	// Origin group name.
 	Name string `json:"name" api:"required"`
 	// Parameter is **deprecated**.
-	Path string `json:"path" api:"required"`
-	// List of origin sources in the origin group.
-	Sources []OriginGroupReplaceParamsBodyNoneAuthSource `json:"sources,omitzero" api:"required"`
+	Path    string                                            `json:"path" api:"required"`
+	Sources []OriginGroupReplaceParamsBodyNoneAuthSourceUnion `json:"sources,omitzero" api:"required"`
 	// Defines whether to use the next origin from the origin group if origin responds
 	// with the cases specified in `proxy_next_upstream`. If you enable it, you must
 	// specify cases in `proxy_next_upstream`.
@@ -872,7 +1441,102 @@ func (r *OriginGroupReplaceParamsBodyNoneAuth) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OriginGroupReplaceParamsBodyNoneAuthSource struct {
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type OriginGroupReplaceParamsBodyNoneAuthSourceUnion struct {
+	OfHostSource *OriginGroupReplaceParamsBodyNoneAuthSourceHostSource `json:",omitzero,inline"`
+	OfS3Source   *OriginGroupReplaceParamsBodyNoneAuthSourceS3Source   `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfHostSource, u.OfS3Source)
+}
+func (u *OriginGroupReplaceParamsBodyNoneAuthSourceUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *OriginGroupReplaceParamsBodyNoneAuthSourceUnion) asAny() any {
+	if !param.IsOmitted(u.OfHostSource) {
+		return u.OfHostSource
+	} else if !param.IsOmitted(u.OfS3Source) {
+		return u.OfS3Source
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetSource() *string {
+	if vt := u.OfHostSource; vt != nil {
+		return &vt.Source
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetConfig() *OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig {
+	if vt := u.OfS3Source; vt != nil {
+		return &vt.Config
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetOriginType() *string {
+	if vt := u.OfS3Source; vt != nil {
+		return &vt.OriginType
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetBackup() *bool {
+	if vt := u.OfHostSource; vt != nil && vt.Backup.Valid() {
+		return &vt.Backup.Value
+	} else if vt := u.OfS3Source; vt != nil && vt.Backup.Valid() {
+		return &vt.Backup.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetEnabled() *bool {
+	if vt := u.OfHostSource; vt != nil && vt.Enabled.Valid() {
+		return &vt.Enabled.Value
+	} else if vt := u.OfS3Source; vt != nil && vt.Enabled.Valid() {
+		return &vt.Enabled.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetHostHeaderOverride() *string {
+	if vt := u.OfHostSource; vt != nil && vt.HostHeaderOverride.Valid() {
+		return &vt.HostHeaderOverride.Value
+	} else if vt := u.OfS3Source; vt != nil && vt.HostHeaderOverride.Valid() {
+		return &vt.HostHeaderOverride.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetTag() *string {
+	if vt := u.OfHostSource; vt != nil && vt.Tag.Valid() {
+		return &vt.Tag.Value
+	} else if vt := u.OfS3Source; vt != nil && vt.Tag.Valid() {
+		return &vt.Tag.Value
+	}
+	return nil
+}
+
+// The property Source is required.
+type OriginGroupReplaceParamsBodyNoneAuthSourceHostSource struct {
+	// IP address or domain name of the origin and the port, if custom port is used.
+	Source string `json:"source" api:"required"`
+	// Per-origin Host header override. When set, the CDN sends this value as the Host
+	// header when requesting content from this origin instead of the default.
+	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
 	//
@@ -890,17 +1554,127 @@ type OriginGroupReplaceParamsBodyNoneAuthSource struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// IP address or domain name of the origin and the port, if custom port is used.
-	Source param.Opt[string] `json:"source,omitzero"`
+	// Tag for the origin source.
+	Tag param.Opt[string] `json:"tag,omitzero"`
 	paramObj
 }
 
-func (r OriginGroupReplaceParamsBodyNoneAuthSource) MarshalJSON() (data []byte, err error) {
-	type shadow OriginGroupReplaceParamsBodyNoneAuthSource
+func (r OriginGroupReplaceParamsBodyNoneAuthSourceHostSource) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupReplaceParamsBodyNoneAuthSourceHostSource
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OriginGroupReplaceParamsBodyNoneAuthSource) UnmarshalJSON(data []byte) error {
+func (r *OriginGroupReplaceParamsBodyNoneAuthSourceHostSource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Config is required.
+type OriginGroupReplaceParamsBodyNoneAuthSourceS3Source struct {
+	// S3 storage configuration. Required when `origin_type` is `s3`.
+	Config OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig `json:"config,omitzero" api:"required"`
+	// Per-origin Host header override. When set, the CDN sends this value as the Host
+	// header when requesting content from this origin instead of the default.
+	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
+	// Defines whether the origin is a backup, meaning that it will not be used until
+	// one of active origins become unavailable.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is a backup.
+	// - **false** - Origin is not a backup.
+	Backup param.Opt[bool] `json:"backup,omitzero"`
+	// Enables or disables an origin source in the origin group.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is enabled and the CDN uses it to pull content.
+	// - **false** - Origin is disabled and the CDN does not use it to pull content.
+	//
+	// Origin group must contain at least one enabled origin.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Tag for the origin source.
+	Tag param.Opt[string] `json:"tag,omitzero"`
+	// Origin type. Present in responses only for S3 sources.
+	//
+	// Possible values:
+	//
+	// - **host** - A source server or endpoint from which content is fetched.
+	// - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//
+	// Any of "host", "s3".
+	OriginType string `json:"origin_type,omitzero"`
+	paramObj
+}
+
+func (r OriginGroupReplaceParamsBodyNoneAuthSourceS3Source) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupReplaceParamsBodyNoneAuthSourceS3Source
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OriginGroupReplaceParamsBodyNoneAuthSourceS3Source) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[OriginGroupReplaceParamsBodyNoneAuthSourceS3Source](
+		"origin_type", "host", "s3",
+	)
+}
+
+// S3 storage configuration. Required when `origin_type` is `s3`.
+//
+// The properties S3AccessKeyID, S3BucketName, S3SecretAccessKey, S3Type are
+// required.
+type OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig struct {
+	// Access key ID for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// Restrictions:
+	//
+	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
+	// - From 4 to 255 characters.
+	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
+	// S3 bucket name.
+	S3BucketName string `json:"s3_bucket_name" api:"required"`
+	// Secret access key for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// Restrictions:
+	//
+	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
+	//     underscores.
+	//   - From 16 to 255 characters.
+	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
+	// Storage type compatible with S3.
+	//
+	// Possible values:
+	//
+	// - **amazon** - AWS S3 storage.
+	// - **other** - Other (not AWS) S3 compatible storage.
+	//
+	// Any of "amazon", "other".
+	S3Type string `json:"s3_type,omitzero" api:"required"`
+	// S3 storage region.
+	//
+	// The parameter is required if `s3_type` is `amazon`.
+	S3Region param.Opt[string] `json:"s3_region,omitzero"`
+	// S3 storage hostname.
+	//
+	// The parameter is required if `s3_type` is `other`.
+	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
+	// S3 authentication type.
+	S3AuthType param.Opt[string] `json:"s3_auth_type,omitzero"`
+	paramObj
+}
+
+func (r OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig](
+		"s3_type", "amazon", "other",
+	)
 }
 
 // The properties Auth, AuthType, Name, Path, UseNext are required.
@@ -965,10 +1739,6 @@ type OriginGroupReplaceParamsBodyAwsSignatureV4Auth struct {
 	// - From 3 to 512 characters.
 	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
 	// S3 bucket name.
-	//
-	// Restrictions:
-	//
-	// - Maximum 128 characters.
 	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Secret access key for the S3 account.
 	//

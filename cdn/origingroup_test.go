@@ -12,6 +12,7 @@ import (
 	"github.com/G-Core/gcore-go/cdn"
 	"github.com/G-Core/gcore-go/internal/testutil"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/param"
 )
 
 func TestOriginGroupNewWithOptionalParams(t *testing.T) {
@@ -29,14 +30,14 @@ func TestOriginGroupNewWithOptionalParams(t *testing.T) {
 	_, err := client.CDN.OriginGroups.New(context.TODO(), cdn.OriginGroupNewParams{
 		OfNoneAuth: &cdn.OriginGroupNewParamsBodyNoneAuth{
 			Name: "YourOriginGroup",
-			Sources: []cdn.OriginGroupNewParamsBodyNoneAuthSource{{
-				Backup:  gcore.Bool(false),
-				Enabled: gcore.Bool(true),
-				Source:  gcore.String("yourwebsite.com"),
-			}, {
-				Backup:  gcore.Bool(true),
-				Enabled: gcore.Bool(true),
-				Source:  gcore.String("1.2.3.4:5500"),
+			Sources: []cdn.OriginGroupNewParamsBodyNoneAuthSourceUnion{{
+				OfHostSource: &cdn.OriginGroupNewParamsBodyNoneAuthSourceHostSource{
+					Source:             "yourwebsite.com",
+					Backup:             gcore.Bool(false),
+					Enabled:            gcore.Bool(true),
+					HostHeaderOverride: param.Null[string](),
+					Tag:                gcore.String("default"),
+				},
 			}},
 			AuthType:          gcore.String("none"),
 			ProxyNextUpstream: []string{"error", "timeout", "invalid_header", "http_500", "http_502", "http_503", "http_504"},
@@ -73,10 +74,14 @@ func TestOriginGroupUpdateWithOptionalParams(t *testing.T) {
 				AuthType:          gcore.String("none"),
 				Path:              gcore.String(""),
 				ProxyNextUpstream: []string{"error", "timeout", "invalid_header", "http_500", "http_502", "http_503", "http_504"},
-				Sources: []cdn.OriginGroupUpdateParamsBodyNoneAuthSource{{
-					Backup:  gcore.Bool(false),
-					Enabled: gcore.Bool(true),
-					Source:  gcore.String("yourdomain.com"),
+				Sources: []cdn.OriginGroupUpdateParamsBodyNoneAuthSourceUnion{{
+					OfHostSource: &cdn.OriginGroupUpdateParamsBodyNoneAuthSourceHostSource{
+						Source:             "yourdomain.com",
+						Backup:             gcore.Bool(false),
+						Enabled:            gcore.Bool(true),
+						HostHeaderOverride: param.Null[string](),
+						Tag:                gcore.String("default"),
+					},
 				}},
 				UseNext: gcore.Bool(true),
 			},
@@ -181,10 +186,14 @@ func TestOriginGroupReplaceWithOptionalParams(t *testing.T) {
 				AuthType: "none",
 				Name:     "YourOriginGroup",
 				Path:     "",
-				Sources: []cdn.OriginGroupReplaceParamsBodyNoneAuthSource{{
-					Backup:  gcore.Bool(false),
-					Enabled: gcore.Bool(true),
-					Source:  gcore.String("yourdomain.com"),
+				Sources: []cdn.OriginGroupReplaceParamsBodyNoneAuthSourceUnion{{
+					OfHostSource: &cdn.OriginGroupReplaceParamsBodyNoneAuthSourceHostSource{
+						Source:             "yourdomain.com",
+						Backup:             gcore.Bool(false),
+						Enabled:            gcore.Bool(true),
+						HostHeaderOverride: param.Null[string](),
+						Tag:                gcore.String("default"),
+					},
 				}},
 				UseNext:           true,
 				ProxyNextUpstream: []string{"error", "timeout", "invalid_header", "http_500", "http_502", "http_503", "http_504"},
