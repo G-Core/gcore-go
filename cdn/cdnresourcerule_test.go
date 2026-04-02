@@ -596,7 +596,7 @@ func TestCDNResourceRuleUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCDNResourceRuleList(t *testing.T) {
+func TestCDNResourceRuleListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -608,7 +608,14 @@ func TestCDNResourceRuleList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CDN.CDNResources.Rules.List(context.TODO(), 0)
+	_, err := client.CDN.CDNResources.Rules.List(
+		context.TODO(),
+		0,
+		cdn.CDNResourceRuleListParams{
+			Limit:  gcore.Int(1),
+			Offset: gcore.Int(0),
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

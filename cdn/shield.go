@@ -5,11 +5,15 @@ package cdn
 import (
 	"context"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
+	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
@@ -33,11 +37,26 @@ func NewShieldService(opts ...option.RequestOption) (r ShieldService) {
 }
 
 // Get information about all origin shielding locations available in the account.
-func (r *ShieldService) List(ctx context.Context, opts ...option.RequestOption) (res *[]ShieldListResponse, err error) {
+func (r *ShieldService) List(ctx context.Context, query ShieldListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[ShieldListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cdn/shieldingpop_v2"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get information about all origin shielding locations available in the account.
+func (r *ShieldService) ListAutoPaging(ctx context.Context, query ShieldListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[ShieldListResponse] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 type ShieldListResponse struct {
@@ -64,4 +83,20 @@ type ShieldListResponse struct {
 func (r ShieldListResponse) RawJSON() string { return r.JSON.raw }
 func (r *ShieldListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type ShieldListParams struct {
+	// Maximum number of items to return in the response. Cannot exceed 1000.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of items to skip from the beginning of the list.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ShieldListParams]'s query parameters as `url.Values`.
+func (r ShieldListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }

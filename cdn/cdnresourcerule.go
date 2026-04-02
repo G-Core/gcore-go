@@ -4,13 +4,17 @@ package cdn
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -54,11 +58,26 @@ func (r *CDNResourceRuleService) Update(ctx context.Context, ruleID int64, param
 }
 
 // Get rules list
-func (r *CDNResourceRuleService) List(ctx context.Context, resourceID int64, opts ...option.RequestOption) (res *CDNResourceRuleList, err error) {
+func (r *CDNResourceRuleService) List(ctx context.Context, resourceID int64, query CDNResourceRuleListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[CDNResourceRule], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/rules", resourceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get rules list
+func (r *CDNResourceRuleService) ListAutoPaging(ctx context.Context, resourceID int64, query CDNResourceRuleListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[CDNResourceRule] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, resourceID, query, opts...))
 }
 
 // Delete the rule from the system permanently.
@@ -2457,7 +2476,76 @@ const (
 	CDNResourceRuleOverrideOriginProtocolMatch CDNResourceRuleOverrideOriginProtocol = "MATCH"
 )
 
-type CDNResourceRuleList []CDNResourceRule
+// CDNResourceRuleListUnion contains all possible properties and values from
+// [[]CDNResourceRule], [CDNResourceRuleListPaginatedList].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfPlainList]
+type CDNResourceRuleListUnion struct {
+	// This field will be present if the value is a [[]CDNResourceRule] instead of an
+	// object.
+	OfPlainList []CDNResourceRule `json:",inline"`
+	// This field is from variant [CDNResourceRuleListPaginatedList].
+	Count int64 `json:"count"`
+	// This field is from variant [CDNResourceRuleListPaginatedList].
+	Next string `json:"next"`
+	// This field is from variant [CDNResourceRuleListPaginatedList].
+	Previous string `json:"previous"`
+	// This field is from variant [CDNResourceRuleListPaginatedList].
+	Results []CDNResourceRule `json:"results"`
+	JSON    struct {
+		OfPlainList respjson.Field
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (u CDNResourceRuleListUnion) AsPlainList() (v []CDNResourceRule) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u CDNResourceRuleListUnion) AsPaginatedList() (v CDNResourceRuleListPaginatedList) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u CDNResourceRuleListUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *CDNResourceRuleListUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CDNResourceRuleListPaginatedList struct {
+	// Total number of items.
+	Count int64 `json:"count" api:"required"`
+	// URL to the next page of results. Null if current page is the last one.
+	Next string `json:"next" api:"required"`
+	// URL to the previous page of results. Null if current page is the first one.
+	Previous string            `json:"previous" api:"required"`
+	Results  []CDNResourceRule `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CDNResourceRuleListPaginatedList) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleListPaginatedList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type CDNResourceRuleNewParams struct {
 	// Rule name.
@@ -6783,6 +6871,23 @@ const (
 	CDNResourceRuleUpdateParamsOverrideOriginProtocolHTTP  CDNResourceRuleUpdateParamsOverrideOriginProtocol = "HTTP"
 	CDNResourceRuleUpdateParamsOverrideOriginProtocolMatch CDNResourceRuleUpdateParamsOverrideOriginProtocol = "MATCH"
 )
+
+type CDNResourceRuleListParams struct {
+	// Maximum number of items to return in the response. Cannot exceed 1000.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of items to skip from the beginning of the list.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [CDNResourceRuleListParams]'s query parameters as
+// `url.Values`.
+func (r CDNResourceRuleListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
 
 type CDNResourceRuleDeleteParams struct {
 	ResourceID int64 `path:"resource_id" api:"required" json:"-"`

@@ -106,6 +106,8 @@ func TestLogsUploaderTargetListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.CDN.LogsUploader.Targets.List(context.TODO(), cdn.LogsUploaderTargetListParams{
 		ConfigIDs: []int64{0},
+		Limit:     gcore.Int(1),
+		Offset:    gcore.Int(0),
 		Search:    gcore.String("search"),
 	})
 	if err != nil {

@@ -57,6 +57,8 @@ func TestCertificateListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.CDN.Certificates.List(context.TODO(), cdn.CertificateListParams{
 		Automated:           gcore.Bool(true),
+		Limit:               gcore.Int(1),
+		Offset:              gcore.Int(0),
 		ResourceID:          gcore.Int(0),
 		ValidityNotAfterLte: gcore.String("validity_not_after_lte"),
 	})

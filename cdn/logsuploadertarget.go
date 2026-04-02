@@ -65,7 +65,7 @@ func (r *LogsUploaderTargetService) Update(ctx context.Context, id int64, body L
 }
 
 // Get list of logs uploader targets.
-func (r *LogsUploaderTargetService) List(ctx context.Context, query LogsUploaderTargetListParams, opts ...option.RequestOption) (res *LogsUploaderTargetList, err error) {
+func (r *LogsUploaderTargetService) List(ctx context.Context, query LogsUploaderTargetListParams, opts ...option.RequestOption) (res *LogsUploaderTargetListUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/logs_uploader/targets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -810,7 +810,76 @@ const (
 	LogsUploaderTargetStorageTypeAzureBlob LogsUploaderTargetStorageType = "azure_blob"
 )
 
-type LogsUploaderTargetList []LogsUploaderTarget
+// LogsUploaderTargetListUnion contains all possible properties and values from
+// [[]LogsUploaderTarget], [LogsUploaderTargetListPaginatedList].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfPlainList]
+type LogsUploaderTargetListUnion struct {
+	// This field will be present if the value is a [[]LogsUploaderTarget] instead of
+	// an object.
+	OfPlainList []LogsUploaderTarget `json:",inline"`
+	// This field is from variant [LogsUploaderTargetListPaginatedList].
+	Count int64 `json:"count"`
+	// This field is from variant [LogsUploaderTargetListPaginatedList].
+	Next string `json:"next"`
+	// This field is from variant [LogsUploaderTargetListPaginatedList].
+	Previous string `json:"previous"`
+	// This field is from variant [LogsUploaderTargetListPaginatedList].
+	Results []LogsUploaderTarget `json:"results"`
+	JSON    struct {
+		OfPlainList respjson.Field
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (u LogsUploaderTargetListUnion) AsPlainList() (v []LogsUploaderTarget) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u LogsUploaderTargetListUnion) AsPaginatedList() (v LogsUploaderTargetListPaginatedList) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u LogsUploaderTargetListUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *LogsUploaderTargetListUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LogsUploaderTargetListPaginatedList struct {
+	// Total number of items.
+	Count int64 `json:"count" api:"required"`
+	// URL to the next page of results. Null if current page is the last one.
+	Next string `json:"next" api:"required"`
+	// URL to the previous page of results. Null if current page is the first one.
+	Previous string               `json:"previous" api:"required"`
+	Results  []LogsUploaderTarget `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LogsUploaderTargetListPaginatedList) RawJSON() string { return r.JSON.raw }
+func (r *LogsUploaderTargetListPaginatedList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type LogsUploaderTargetNewParams struct {
 	// Config for specific storage type.
@@ -2530,6 +2599,10 @@ const (
 )
 
 type LogsUploaderTargetListParams struct {
+	// Maximum number of items to return in the response. Cannot exceed 1000.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of items to skip from the beginning of the list.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Search by target name or id.
 	Search param.Opt[string] `query:"search,omitzero" json:"-"`
 	// Filter by ids of related logs uploader configs that use given target.

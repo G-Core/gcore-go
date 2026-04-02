@@ -4,13 +4,17 @@ package cdn
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -55,11 +59,26 @@ func (r *RuleTemplateService) Update(ctx context.Context, ruleTemplateID int64, 
 }
 
 // Get rule templates list
-func (r *RuleTemplateService) List(ctx context.Context, opts ...option.RequestOption) (res *RuleTemplateList, err error) {
+func (r *RuleTemplateService) List(ctx context.Context, query RuleTemplateListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[RuleTemplate], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cdn/resources/rule_templates"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get rule templates list
+func (r *RuleTemplateService) ListAutoPaging(ctx context.Context, query RuleTemplateListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[RuleTemplate] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete rule template
@@ -2407,7 +2426,76 @@ const (
 	RuleTemplateOverrideOriginProtocolMatch RuleTemplateOverrideOriginProtocol = "MATCH"
 )
 
-type RuleTemplateList []RuleTemplate
+// RuleTemplateListUnion contains all possible properties and values from
+// [[]RuleTemplate], [RuleTemplateListPaginatedList].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfPlainList]
+type RuleTemplateListUnion struct {
+	// This field will be present if the value is a [[]RuleTemplate] instead of an
+	// object.
+	OfPlainList []RuleTemplate `json:",inline"`
+	// This field is from variant [RuleTemplateListPaginatedList].
+	Count int64 `json:"count"`
+	// This field is from variant [RuleTemplateListPaginatedList].
+	Next string `json:"next"`
+	// This field is from variant [RuleTemplateListPaginatedList].
+	Previous string `json:"previous"`
+	// This field is from variant [RuleTemplateListPaginatedList].
+	Results []RuleTemplate `json:"results"`
+	JSON    struct {
+		OfPlainList respjson.Field
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (u RuleTemplateListUnion) AsPlainList() (v []RuleTemplate) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u RuleTemplateListUnion) AsPaginatedList() (v RuleTemplateListPaginatedList) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u RuleTemplateListUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *RuleTemplateListUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RuleTemplateListPaginatedList struct {
+	// Total number of items.
+	Count int64 `json:"count" api:"required"`
+	// URL to the next page of results. Null if current page is the last one.
+	Next string `json:"next" api:"required"`
+	// URL to the previous page of results. Null if current page is the first one.
+	Previous string         `json:"previous" api:"required"`
+	Results  []RuleTemplate `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RuleTemplateListPaginatedList) RawJSON() string { return r.JSON.raw }
+func (r *RuleTemplateListPaginatedList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type RuleTemplateNewParams struct {
 	// Path to the file or folder for which the rule will be applied.
@@ -6708,6 +6796,22 @@ const (
 	RuleTemplateUpdateParamsOverrideOriginProtocolHTTP  RuleTemplateUpdateParamsOverrideOriginProtocol = "HTTP"
 	RuleTemplateUpdateParamsOverrideOriginProtocolMatch RuleTemplateUpdateParamsOverrideOriginProtocol = "MATCH"
 )
+
+type RuleTemplateListParams struct {
+	// Maximum number of items to return in the response. Cannot exceed 1000.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of items to skip from the beginning of the list.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [RuleTemplateListParams]'s query parameters as `url.Values`.
+func (r RuleTemplateListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
 
 type RuleTemplateReplaceParams struct {
 	// Path to the file or folder for which the rule will be applied.
