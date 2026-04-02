@@ -4,6 +4,7 @@ package cdn
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -64,7 +65,7 @@ func (r *LogsUploaderPolicyService) Update(ctx context.Context, id int64, body L
 }
 
 // Get list of logs uploader policies.
-func (r *LogsUploaderPolicyService) List(ctx context.Context, query LogsUploaderPolicyListParams, opts ...option.RequestOption) (res *LogsUploaderPolicyList, err error) {
+func (r *LogsUploaderPolicyService) List(ctx context.Context, query LogsUploaderPolicyListParams, opts ...option.RequestOption) (res *LogsUploaderPolicyListUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/logs_uploader/policies"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -227,7 +228,76 @@ const (
 	LogsUploaderPolicyFormatTypeEmpty LogsUploaderPolicyFormatType = ""
 )
 
-type LogsUploaderPolicyList []LogsUploaderPolicy
+// LogsUploaderPolicyListUnion contains all possible properties and values from
+// [[]LogsUploaderPolicy], [LogsUploaderPolicyListPaginatedList].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfPlainList]
+type LogsUploaderPolicyListUnion struct {
+	// This field will be present if the value is a [[]LogsUploaderPolicy] instead of
+	// an object.
+	OfPlainList []LogsUploaderPolicy `json:",inline"`
+	// This field is from variant [LogsUploaderPolicyListPaginatedList].
+	Count int64 `json:"count"`
+	// This field is from variant [LogsUploaderPolicyListPaginatedList].
+	Next string `json:"next"`
+	// This field is from variant [LogsUploaderPolicyListPaginatedList].
+	Previous string `json:"previous"`
+	// This field is from variant [LogsUploaderPolicyListPaginatedList].
+	Results []LogsUploaderPolicy `json:"results"`
+	JSON    struct {
+		OfPlainList respjson.Field
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (u LogsUploaderPolicyListUnion) AsPlainList() (v []LogsUploaderPolicy) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u LogsUploaderPolicyListUnion) AsPaginatedList() (v LogsUploaderPolicyListPaginatedList) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u LogsUploaderPolicyListUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *LogsUploaderPolicyListUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LogsUploaderPolicyListPaginatedList struct {
+	// Total number of items.
+	Count int64 `json:"count" api:"required"`
+	// URL to the next page of results. Null if current page is the last one.
+	Next string `json:"next" api:"required"`
+	// URL to the previous page of results. Null if current page is the first one.
+	Previous string               `json:"previous" api:"required"`
+	Results  []LogsUploaderPolicy `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LogsUploaderPolicyListPaginatedList) RawJSON() string { return r.JSON.raw }
+func (r *LogsUploaderPolicyListPaginatedList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type LogsUploaderPolicyNewParams struct {
 	// Threshold in MB to rotate logs.
@@ -400,6 +470,10 @@ const (
 )
 
 type LogsUploaderPolicyListParams struct {
+	// Maximum number of items to return in the response. Cannot exceed 1000.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of items to skip from the beginning of the list.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Search by policy name or id.
 	Search param.Opt[string] `query:"search,omitzero" json:"-"`
 	// Filter by ids of related logs uploader configs that use given policy.

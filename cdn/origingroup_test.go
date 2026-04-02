@@ -110,7 +110,9 @@ func TestOriginGroupListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.CDN.OriginGroups.List(context.TODO(), cdn.OriginGroupListParams{
 		HasRelatedResources: gcore.Bool(true),
+		Limit:               gcore.Int(1),
 		Name:                gcore.String("name"),
+		Offset:              gcore.Int(0),
 		Sources:             gcore.String("sources"),
 	})
 	if err != nil {

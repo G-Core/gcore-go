@@ -89,6 +89,8 @@ func TestLogsUploaderConfigListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.CDN.LogsUploader.Configs.List(context.TODO(), cdn.LogsUploaderConfigListParams{
+		Limit:       gcore.Int(1),
+		Offset:      gcore.Int(0),
 		ResourceIDs: []int64{0},
 		Search:      gcore.String("search"),
 	})

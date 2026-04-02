@@ -586,7 +586,7 @@ func TestRuleTemplateUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestRuleTemplateList(t *testing.T) {
+func TestRuleTemplateListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -598,7 +598,10 @@ func TestRuleTemplateList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CDN.RuleTemplates.List(context.TODO())
+	_, err := client.CDN.RuleTemplates.List(context.TODO(), cdn.RuleTemplateListParams{
+		Limit:  gcore.Int(1),
+		Offset: gcore.Int(0),
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

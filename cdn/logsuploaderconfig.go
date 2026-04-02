@@ -4,6 +4,7 @@ package cdn
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -64,7 +65,7 @@ func (r *LogsUploaderConfigService) Update(ctx context.Context, id int64, body L
 }
 
 // Get list of logs uploader configs.
-func (r *LogsUploaderConfigService) List(ctx context.Context, query LogsUploaderConfigListParams, opts ...option.RequestOption) (res *LogsUploaderConfigList, err error) {
+func (r *LogsUploaderConfigService) List(ctx context.Context, query LogsUploaderConfigListParams, opts ...option.RequestOption) (res *LogsUploaderConfigListUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/logs_uploader/configs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -173,7 +174,76 @@ func (r *LogsUploaderConfigStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LogsUploaderConfigList []LogsUploaderConfig
+// LogsUploaderConfigListUnion contains all possible properties and values from
+// [[]LogsUploaderConfig], [LogsUploaderConfigListPaginatedList].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfPlainList]
+type LogsUploaderConfigListUnion struct {
+	// This field will be present if the value is a [[]LogsUploaderConfig] instead of
+	// an object.
+	OfPlainList []LogsUploaderConfig `json:",inline"`
+	// This field is from variant [LogsUploaderConfigListPaginatedList].
+	Count int64 `json:"count"`
+	// This field is from variant [LogsUploaderConfigListPaginatedList].
+	Next string `json:"next"`
+	// This field is from variant [LogsUploaderConfigListPaginatedList].
+	Previous string `json:"previous"`
+	// This field is from variant [LogsUploaderConfigListPaginatedList].
+	Results []LogsUploaderConfig `json:"results"`
+	JSON    struct {
+		OfPlainList respjson.Field
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (u LogsUploaderConfigListUnion) AsPlainList() (v []LogsUploaderConfig) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u LogsUploaderConfigListUnion) AsPaginatedList() (v LogsUploaderConfigListPaginatedList) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u LogsUploaderConfigListUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *LogsUploaderConfigListUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LogsUploaderConfigListPaginatedList struct {
+	// Total number of items.
+	Count int64 `json:"count" api:"required"`
+	// URL to the next page of results. Null if current page is the last one.
+	Next string `json:"next" api:"required"`
+	// URL to the previous page of results. Null if current page is the first one.
+	Previous string               `json:"previous" api:"required"`
+	Results  []LogsUploaderConfig `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LogsUploaderConfigListPaginatedList) RawJSON() string { return r.JSON.raw }
+func (r *LogsUploaderConfigListPaginatedList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type LogsUploaderConfigNewParams struct {
 	// Name of the config.
@@ -228,6 +298,10 @@ func (r *LogsUploaderConfigUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type LogsUploaderConfigListParams struct {
+	// Maximum number of items to return in the response. Cannot exceed 1000.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of items to skip from the beginning of the list.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Search by config name or id.
 	Search param.Opt[string] `query:"search,omitzero" json:"-"`
 	// Filter by ids of CDN resources that are assigned to given config.
