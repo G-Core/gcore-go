@@ -57,7 +57,7 @@ func (r *OriginGroupService) Update(ctx context.Context, originGroupID int64, bo
 }
 
 // Get all origin groups and related origin sources.
-func (r *OriginGroupService) List(ctx context.Context, query OriginGroupListParams, opts ...option.RequestOption) (res *OriginGroupsList, err error) {
+func (r *OriginGroupService) List(ctx context.Context, query OriginGroupListParams, opts ...option.RequestOption) (res *OriginGroupsListUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/origin_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -94,25 +94,25 @@ func (r *OriginGroupService) Replace(ctx context.Context, originGroupID int64, b
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type OriginGroupsUnion struct {
-	ID                  int64    `json:"id"`
-	AuthType            string   `json:"auth_type"`
-	HasRelatedResources bool     `json:"has_related_resources"`
-	Name                string   `json:"name"`
-	Path                string   `json:"path"`
-	ProxyNextUpstream   []string `json:"proxy_next_upstream"`
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
 	// This field is from variant [OriginGroupsNoneAuth].
-	Sources []OriginGroupsNoneAuthSourceUnion `json:"sources"`
-	UseNext bool                              `json:"use_next"`
+	Sources             []OriginGroupsNoneAuthSourceUnion `json:"sources"`
+	AuthType            string                            `json:"auth_type"`
+	HasRelatedResources bool                              `json:"has_related_resources"`
+	Path                string                            `json:"path"`
+	ProxyNextUpstream   []string                          `json:"proxy_next_upstream"`
+	UseNext             bool                              `json:"use_next"`
 	// This field is from variant [OriginGroupsAwsSignatureV4].
 	Auth OriginGroupsAwsSignatureV4Auth `json:"auth"`
 	JSON struct {
 		ID                  respjson.Field
+		Name                respjson.Field
+		Sources             respjson.Field
 		AuthType            respjson.Field
 		HasRelatedResources respjson.Field
-		Name                respjson.Field
 		Path                respjson.Field
 		ProxyNextUpstream   respjson.Field
-		Sources             respjson.Field
 		UseNext             respjson.Field
 		Auth                respjson.Field
 		raw                 string
@@ -140,7 +140,16 @@ func (r *OriginGroupsUnion) UnmarshalJSON(data []byte) error {
 // `origin_type` and `config` in sources.
 type OriginGroupsNoneAuth struct {
 	// Origin group ID.
-	ID int64 `json:"id"`
+	ID int64 `json:"id" api:"required"`
+	// Origin group name.
+	Name string `json:"name" api:"required"`
+	// List of origin sources in the origin group. Each entry can be a host origin or
+	// an S3 origin.
+	//
+	// Host origins have a `source` field with the hostname or IP. S3 origins have
+	// `origin_type: s3` and a `config` object with S3 credentials. Both types can be
+	// mixed in the same origin group.
+	Sources []OriginGroupsNoneAuthSourceUnion `json:"sources" api:"required"`
 	// Origin authentication type.
 	//
 	// Possible values:
@@ -155,8 +164,6 @@ type OriginGroupsNoneAuth struct {
 	// - **true** - Origin group has related CDN resources.
 	// - **false** - Origin group does not have related CDN resources.
 	HasRelatedResources bool `json:"has_related_resources"`
-	// Origin group name.
-	Name string `json:"name"`
 	// Parameter is **deprecated**.
 	Path string `json:"path"`
 	// Defines cases when the request should be passed on to the next origin.
@@ -176,13 +183,6 @@ type OriginGroupsNoneAuth struct {
 	//   - **`http_503`** - a origin returned a response with the code 503
 	//   - **`http_504`** - a origin returned a response with the code 504
 	ProxyNextUpstream []string `json:"proxy_next_upstream"`
-	// List of origin sources in the origin group. Each entry can be a host origin or
-	// an S3 origin.
-	//
-	// Host origins have a `source` field with the hostname or IP. S3 origins have
-	// `origin_type: s3` and a `config` object with S3 credentials. Both types can be
-	// mixed in the same origin group.
-	Sources []OriginGroupsNoneAuthSourceUnion `json:"sources"`
 	// Defines whether to use the next origin from the origin group if origin responds
 	// with the cases specified in `proxy_next_upstream`. If you enable it, you must
 	// specify cases in `proxy_next_upstream`.
@@ -195,12 +195,12 @@ type OriginGroupsNoneAuth struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
+		Name                respjson.Field
+		Sources             respjson.Field
 		AuthType            respjson.Field
 		HasRelatedResources respjson.Field
-		Name                respjson.Field
 		Path                respjson.Field
 		ProxyNextUpstream   respjson.Field
-		Sources             respjson.Field
 		UseNext             respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
@@ -415,13 +415,15 @@ func (r *OriginGroupsNoneAuthSourceS3SourceConfig) UnmarshalJSON(data []byte) er
 
 type OriginGroupsAwsSignatureV4 struct {
 	// Origin group ID.
-	ID int64 `json:"id"`
+	ID int64 `json:"id" api:"required"`
 	// Credentials to access the private bucket.
-	Auth OriginGroupsAwsSignatureV4Auth `json:"auth"`
+	Auth OriginGroupsAwsSignatureV4Auth `json:"auth" api:"required"`
 	// Authentication type.
 	//
 	// **awsSignatureV4** value is used for S3 storage.
-	AuthType string `json:"auth_type"`
+	AuthType string `json:"auth_type" api:"required"`
+	// Origin group name.
+	Name string `json:"name" api:"required"`
 	// Defines whether the origin group has related CDN resources.
 	//
 	// Possible values:
@@ -429,8 +431,6 @@ type OriginGroupsAwsSignatureV4 struct {
 	// - **true** - Origin group has related CDN resources.
 	// - **false** - Origin group does not have related CDN resources.
 	HasRelatedResources bool `json:"has_related_resources"`
-	// Origin group name.
-	Name string `json:"name"`
 	// Parameter is **deprecated**.
 	Path string `json:"path"`
 	// Defines cases when the request should be passed on to the next origin.
@@ -464,8 +464,8 @@ type OriginGroupsAwsSignatureV4 struct {
 		ID                  respjson.Field
 		Auth                respjson.Field
 		AuthType            respjson.Field
-		HasRelatedResources respjson.Field
 		Name                respjson.Field
+		HasRelatedResources respjson.Field
 		Path                respjson.Field
 		ProxyNextUpstream   respjson.Field
 		UseNext             respjson.Field
@@ -534,7 +534,76 @@ func (r *OriginGroupsAwsSignatureV4Auth) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OriginGroupsList []OriginGroupsUnion
+// OriginGroupsListUnion contains all possible properties and values from
+// [[]OriginGroupsUnion], [OriginGroupsListPaginatedList].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfPlainList]
+type OriginGroupsListUnion struct {
+	// This field will be present if the value is a [[]OriginGroupsUnion] instead of an
+	// object.
+	OfPlainList []OriginGroupsUnion `json:",inline"`
+	// This field is from variant [OriginGroupsListPaginatedList].
+	Count int64 `json:"count"`
+	// This field is from variant [OriginGroupsListPaginatedList].
+	Next string `json:"next"`
+	// This field is from variant [OriginGroupsListPaginatedList].
+	Previous string `json:"previous"`
+	// This field is from variant [OriginGroupsListPaginatedList].
+	Results []OriginGroupsUnion `json:"results"`
+	JSON    struct {
+		OfPlainList respjson.Field
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (u OriginGroupsListUnion) AsPlainList() (v []OriginGroupsUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u OriginGroupsListUnion) AsPaginatedList() (v OriginGroupsListPaginatedList) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u OriginGroupsListUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *OriginGroupsListUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type OriginGroupsListPaginatedList struct {
+	// Total number of items.
+	Count int64 `json:"count" api:"required"`
+	// URL to the next page of results. Null if current page is the last one.
+	Next string `json:"next" api:"required"`
+	// URL to the previous page of results. Null if current page is the first one.
+	Previous string              `json:"previous" api:"required"`
+	Results  []OriginGroupsUnion `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OriginGroupsListPaginatedList) RawJSON() string { return r.JSON.raw }
+func (r *OriginGroupsListPaginatedList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type OriginGroupNewParams struct {
 
@@ -1354,8 +1423,12 @@ type OriginGroupListParams struct {
 	// - **true** – Origin group has related CDN resources.
 	// - **false** – Origin group does not have related CDN resources.
 	HasRelatedResources param.Opt[bool] `query:"has_related_resources,omitzero" json:"-"`
+	// Maximum number of items to return in the response. Cannot exceed 1000.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Origin group name.
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
+	// Number of items to skip from the beginning of the list.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Origin sources (IP addresses or domains) in the origin group.
 	Sources param.Opt[string] `query:"sources,omitzero" json:"-"`
 	paramObj

@@ -4,6 +4,7 @@ package cdn
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -59,7 +60,7 @@ func (r *CDNResourceService) Update(ctx context.Context, resourceID int64, body 
 }
 
 // Get information about all CDN resources in your account.
-func (r *CDNResourceService) List(ctx context.Context, query CDNResourceListParams, opts ...option.RequestOption) (res *CDNResourceList, err error) {
+func (r *CDNResourceService) List(ctx context.Context, query CDNResourceListParams, opts ...option.RequestOption) (res *CDNResourceListUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/resources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -2882,7 +2883,76 @@ const (
 	CDNResourceStatusDeleted   CDNResourceStatus = "deleted"
 )
 
-type CDNResourceList []CDNResource
+// CDNResourceListUnion contains all possible properties and values from
+// [[]CDNResource], [CDNResourceListPaginatedList].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfPlainList]
+type CDNResourceListUnion struct {
+	// This field will be present if the value is a [[]CDNResource] instead of an
+	// object.
+	OfPlainList []CDNResource `json:",inline"`
+	// This field is from variant [CDNResourceListPaginatedList].
+	Count int64 `json:"count"`
+	// This field is from variant [CDNResourceListPaginatedList].
+	Next string `json:"next"`
+	// This field is from variant [CDNResourceListPaginatedList].
+	Previous string `json:"previous"`
+	// This field is from variant [CDNResourceListPaginatedList].
+	Results []CDNResource `json:"results"`
+	JSON    struct {
+		OfPlainList respjson.Field
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (u CDNResourceListUnion) AsPlainList() (v []CDNResource) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u CDNResourceListUnion) AsPaginatedList() (v CDNResourceListPaginatedList) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u CDNResourceListUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *CDNResourceListUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CDNResourceListPaginatedList struct {
+	// Total number of items.
+	Count int64 `json:"count" api:"required"`
+	// URL to the next page of results. Null if current page is the last one.
+	Next string `json:"next" api:"required"`
+	// URL to the previous page of results. Null if current page is the first one.
+	Previous string        `json:"previous" api:"required"`
+	Results  []CDNResource `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CDNResourceListPaginatedList) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceListPaginatedList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type CDNResourceNewParams struct {
 	// Delivery domains that will be used for content delivery through a CDN.
@@ -7663,12 +7733,16 @@ type CDNResourceListParams struct {
 	// - **true** - CDN resource is enabled.
 	// - **false** - CDN resource is disabled.
 	Enabled param.Opt[bool] `query:"enabled,omitzero" json:"-"`
+	// Maximum number of items to return in the response. Cannot exceed 1000.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Most recent date of CDN resource creation for which CDN resources should be
 	// returned (ISO 8601/RFC 3339 format, UTC.)
 	MaxCreated param.Opt[string] `query:"max_created,omitzero" json:"-"`
 	// Earliest date of CDN resource creation for which CDN resources should be
 	// returned (ISO 8601/RFC 3339 format, UTC.)
 	MinCreated param.Opt[string] `query:"min_created,omitzero" json:"-"`
+	// Number of items to skip from the beginning of the list.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Origin group ID.
 	OriginGroup param.Opt[int64] `query:"originGroup,omitzero" json:"-"`
 	// Rule name or pattern.

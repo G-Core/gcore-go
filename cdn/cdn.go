@@ -4,6 +4,7 @@ package cdn
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/url"
 	"slices"
@@ -119,23 +120,23 @@ func (r *CDNService) GetAvailableFeatures(ctx context.Context, opts ...option.Re
 }
 
 // Get the list of Alibaba Cloud regions.
-func (r *CDNService) ListAlibabaRegions(ctx context.Context, opts ...option.RequestOption) (res *AlibabaRegions, err error) {
+func (r *CDNService) ListAlibabaRegions(ctx context.Context, query CDNListAlibabaRegionsParams, opts ...option.RequestOption) (res *AlibabaRegionsUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/alibaba_regions"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
 // Get the list of Amazon AWS regions.
-func (r *CDNService) ListAwsRegions(ctx context.Context, opts ...option.RequestOption) (res *AwsRegions, err error) {
+func (r *CDNService) ListAwsRegions(ctx context.Context, query CDNListAwsRegionsParams, opts ...option.RequestOption) (res *AwsRegionsUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/aws_regions"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
 // Get purges history.
-func (r *CDNService) ListPurgeStatuses(ctx context.Context, query CDNListPurgeStatusesParams, opts ...option.RequestOption) (res *[]PurgeStatus, err error) {
+func (r *CDNService) ListPurgeStatuses(ctx context.Context, query CDNListPurgeStatusesParams, opts ...option.RequestOption) (res *CDNListPurgeStatusesResponseUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/purge_statuses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -150,34 +151,53 @@ func (r *CDNService) UpdateAccount(ctx context.Context, body CDNUpdateAccountPar
 	return res, err
 }
 
-type AlibabaRegions []AlibabaRegion
-
-type AlibabaRegion struct {
-	// Region ID.
-	ID int64 `json:"id"`
-	// Region code.
-	Code string `json:"code"`
-	// Region name.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Code        respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
+// AlibabaRegionsUnion contains all possible properties and values from
+// [[]AlibabaRegionsPlainListItem], [AlibabaRegionsPaginatedList].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfPlainList]
+type AlibabaRegionsUnion struct {
+	// This field will be present if the value is a [[]AlibabaRegionsPlainListItem]
+	// instead of an object.
+	OfPlainList []AlibabaRegionsPlainListItem `json:",inline"`
+	// This field is from variant [AlibabaRegionsPaginatedList].
+	Count int64 `json:"count"`
+	// This field is from variant [AlibabaRegionsPaginatedList].
+	Next string `json:"next"`
+	// This field is from variant [AlibabaRegionsPaginatedList].
+	Previous string `json:"previous"`
+	// This field is from variant [AlibabaRegionsPaginatedList].
+	Results []AlibabaRegionsPaginatedListResult `json:"results"`
+	JSON    struct {
+		OfPlainList respjson.Field
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
+func (u AlibabaRegionsUnion) AsPlainList() (v []AlibabaRegionsPlainListItem) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AlibabaRegionsUnion) AsPaginatedList() (v AlibabaRegionsPaginatedList) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
-func (r AlibabaRegion) RawJSON() string { return r.JSON.raw }
-func (r *AlibabaRegion) UnmarshalJSON(data []byte) error {
+func (u AlibabaRegionsUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *AlibabaRegionsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AwsRegions []AwsRegion
-
-type AwsRegion struct {
+type AlibabaRegionsPlainListItem struct {
 	// Region ID.
 	ID int64 `json:"id"`
 	// Region code.
@@ -195,8 +215,173 @@ type AwsRegion struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AwsRegion) RawJSON() string { return r.JSON.raw }
-func (r *AwsRegion) UnmarshalJSON(data []byte) error {
+func (r AlibabaRegionsPlainListItem) RawJSON() string { return r.JSON.raw }
+func (r *AlibabaRegionsPlainListItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AlibabaRegionsPaginatedList struct {
+	// Total number of items.
+	Count int64 `json:"count" api:"required"`
+	// URL to the next page of results. Null if current page is the last one.
+	Next string `json:"next" api:"required"`
+	// URL to the previous page of results. Null if current page is the first one.
+	Previous string                              `json:"previous" api:"required"`
+	Results  []AlibabaRegionsPaginatedListResult `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AlibabaRegionsPaginatedList) RawJSON() string { return r.JSON.raw }
+func (r *AlibabaRegionsPaginatedList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AlibabaRegionsPaginatedListResult struct {
+	// Region ID.
+	ID int64 `json:"id"`
+	// Region code.
+	Code string `json:"code"`
+	// Region name.
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Code        respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AlibabaRegionsPaginatedListResult) RawJSON() string { return r.JSON.raw }
+func (r *AlibabaRegionsPaginatedListResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// AwsRegionsUnion contains all possible properties and values from
+// [[]AwsRegionsPlainListItem], [AwsRegionsPaginatedList].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfPlainList]
+type AwsRegionsUnion struct {
+	// This field will be present if the value is a [[]AwsRegionsPlainListItem] instead
+	// of an object.
+	OfPlainList []AwsRegionsPlainListItem `json:",inline"`
+	// This field is from variant [AwsRegionsPaginatedList].
+	Count int64 `json:"count"`
+	// This field is from variant [AwsRegionsPaginatedList].
+	Next string `json:"next"`
+	// This field is from variant [AwsRegionsPaginatedList].
+	Previous string `json:"previous"`
+	// This field is from variant [AwsRegionsPaginatedList].
+	Results []AwsRegionsPaginatedListResult `json:"results"`
+	JSON    struct {
+		OfPlainList respjson.Field
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (u AwsRegionsUnion) AsPlainList() (v []AwsRegionsPlainListItem) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AwsRegionsUnion) AsPaginatedList() (v AwsRegionsPaginatedList) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u AwsRegionsUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *AwsRegionsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AwsRegionsPlainListItem struct {
+	// Region ID.
+	ID int64 `json:"id"`
+	// Region code.
+	Code string `json:"code"`
+	// Region name.
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Code        respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AwsRegionsPlainListItem) RawJSON() string { return r.JSON.raw }
+func (r *AwsRegionsPlainListItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AwsRegionsPaginatedList struct {
+	// Total number of items.
+	Count int64 `json:"count" api:"required"`
+	// URL to the next page of results. Null if current page is the last one.
+	Next string `json:"next" api:"required"`
+	// URL to the previous page of results. Null if current page is the first one.
+	Previous string                          `json:"previous" api:"required"`
+	Results  []AwsRegionsPaginatedListResult `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AwsRegionsPaginatedList) RawJSON() string { return r.JSON.raw }
+func (r *AwsRegionsPaginatedList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AwsRegionsPaginatedListResult struct {
+	// Region ID.
+	ID int64 `json:"id"`
+	// Region code.
+	Code string `json:"code"`
+	// Region name.
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Code        respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AwsRegionsPaginatedListResult) RawJSON() string { return r.JSON.raw }
+func (r *AwsRegionsPaginatedListResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -503,6 +688,111 @@ const (
 	PurgeStatusStatusSuccessful PurgeStatusStatus = "Successful"
 	PurgeStatusStatusFailed     PurgeStatusStatus = "Failed"
 )
+
+// CDNListPurgeStatusesResponseUnion contains all possible properties and values
+// from [[]PurgeStatus], [CDNListPurgeStatusesResponsePaginatedList].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfPlainList]
+type CDNListPurgeStatusesResponseUnion struct {
+	// This field will be present if the value is a [[]PurgeStatus] instead of an
+	// object.
+	OfPlainList []PurgeStatus `json:",inline"`
+	// This field is from variant [CDNListPurgeStatusesResponsePaginatedList].
+	Count int64 `json:"count"`
+	// This field is from variant [CDNListPurgeStatusesResponsePaginatedList].
+	Next string `json:"next"`
+	// This field is from variant [CDNListPurgeStatusesResponsePaginatedList].
+	Previous string `json:"previous"`
+	// This field is from variant [CDNListPurgeStatusesResponsePaginatedList].
+	Results []PurgeStatus `json:"results"`
+	JSON    struct {
+		OfPlainList respjson.Field
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (u CDNListPurgeStatusesResponseUnion) AsPlainList() (v []PurgeStatus) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u CDNListPurgeStatusesResponseUnion) AsPaginatedList() (v CDNListPurgeStatusesResponsePaginatedList) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u CDNListPurgeStatusesResponseUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *CDNListPurgeStatusesResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CDNListPurgeStatusesResponsePaginatedList struct {
+	// Total number of items.
+	Count int64 `json:"count" api:"required"`
+	// URL to the next page of results. Null if current page is the last one.
+	Next string `json:"next" api:"required"`
+	// URL to the previous page of results. Null if current page is the first one.
+	Previous string        `json:"previous" api:"required"`
+	Results  []PurgeStatus `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CDNListPurgeStatusesResponsePaginatedList) RawJSON() string { return r.JSON.raw }
+func (r *CDNListPurgeStatusesResponsePaginatedList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CDNListAlibabaRegionsParams struct {
+	// Maximum number of items to return in the response. Cannot exceed 1000.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of items to skip from the beginning of the list.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [CDNListAlibabaRegionsParams]'s query parameters as
+// `url.Values`.
+func (r CDNListAlibabaRegionsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+type CDNListAwsRegionsParams struct {
+	// Maximum number of items to return in the response. Cannot exceed 1000.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of items to skip from the beginning of the list.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [CDNListAwsRegionsParams]'s query parameters as
+// `url.Values`.
+func (r CDNListAwsRegionsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
 
 type CDNListPurgeStatusesParams struct {
 	// Purges associated with a specific resource CNAME.

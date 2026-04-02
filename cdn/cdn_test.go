@@ -80,7 +80,7 @@ func TestCDNGetAvailableFeatures(t *testing.T) {
 	}
 }
 
-func TestCDNListAlibabaRegions(t *testing.T) {
+func TestCDNListAlibabaRegionsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -92,7 +92,10 @@ func TestCDNListAlibabaRegions(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CDN.ListAlibabaRegions(context.TODO())
+	_, err := client.CDN.ListAlibabaRegions(context.TODO(), cdn.CDNListAlibabaRegionsParams{
+		Limit:  gcore.Int(1),
+		Offset: gcore.Int(0),
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -102,7 +105,7 @@ func TestCDNListAlibabaRegions(t *testing.T) {
 	}
 }
 
-func TestCDNListAwsRegions(t *testing.T) {
+func TestCDNListAwsRegionsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -114,7 +117,10 @@ func TestCDNListAwsRegions(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CDN.ListAwsRegions(context.TODO())
+	_, err := client.CDN.ListAwsRegions(context.TODO(), cdn.CDNListAwsRegionsParams{
+		Limit:  gcore.Int(1),
+		Offset: gcore.Int(0),
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

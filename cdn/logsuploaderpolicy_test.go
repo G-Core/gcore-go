@@ -112,6 +112,8 @@ func TestLogsUploaderPolicyListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.CDN.LogsUploader.Policies.List(context.TODO(), cdn.LogsUploaderPolicyListParams{
 		ConfigIDs: []int64{0},
+		Limit:     gcore.Int(1),
+		Offset:    gcore.Int(0),
 		Search:    gcore.String("search"),
 	})
 	if err != nil {
