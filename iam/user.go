@@ -59,6 +59,10 @@ func (r *UserService) List(ctx context.Context, query UserListParams, opts ...op
 	if err != nil {
 		return nil, err
 	}
+	// Ensure limit is always sent so the API returns the paginated envelope
+	if !cfg.Request.URL.Query().Has("limit") {
+		cfg.Apply(option.WithQuery("limit", "50"))
+	}
 	err = cfg.Execute()
 	if err != nil {
 		return nil, err
