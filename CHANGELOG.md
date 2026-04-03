@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.41.0 (2026-04-03)
+
+Full Changelog: [v0.40.0...v0.41.0](https://github.com/G-Core/gcore-go/compare/v0.40.0...v0.41.0)
+
+### Features
+
+* **api:** aggregated API specs update ([5725eb4](https://github.com/G-Core/gcore-go/commit/5725eb4f1f1ea81bf579f6be222619f3b7910aa2))
+* **api:** aggregated API specs update ([2f51a60](https://github.com/G-Core/gcore-go/commit/2f51a60add64559e2cd7c24f5dc137359e084ef6))
+* **api:** aggregated API specs update ([7449391](https://github.com/G-Core/gcore-go/commit/7449391e8616f00628668c300970c281d459a417))
+* **api:** aggregated API specs update ([540adb6](https://github.com/G-Core/gcore-go/commit/540adb64ee18f4fe6e576c0fd358c0c352f16596))
+* **cloud:** add support for Baremetal servers in Terraform ([7b89861](https://github.com/G-Core/gcore-go/commit/7b89861f329ffb7074f2341f19c2bdac1f6c9c9c))
+
+
+### Bug Fixes
+
+* fix issue with unmarshaling in some cases ([266fced](https://github.com/G-Core/gcore-go/commit/266fced335270f469763ef23383a8d434cd30091))
+* **iam:** inject default limit on users list to ensure paginated response ([bd37033](https://github.com/G-Core/gcore-go/commit/bd370338cf8117c3794bb2f57ee316034e3572e1))
+
+
+### Chores
+
+* **tests:** bump steady to v0.20.1 ([0234a45](https://github.com/G-Core/gcore-go/commit/0234a45c38cda2258631d92c06a78101d1aeedb8))
+* **tests:** bump steady to v0.20.2 ([ecf2289](https://github.com/G-Core/gcore-go/commit/ecf2289da516103388a7b27a1be99bcf828f7e53))
+
 ## 0.40.0 (2026-03-30)
 
 Full Changelog: [v0.39.0...v0.40.0](https://github.com/G-Core/gcore-go/compare/v0.39.0...v0.40.0)
