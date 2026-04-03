@@ -42,11 +42,13 @@ func TestInstanceNewWithOptionalParams(t *testing.T) {
 			},
 		}},
 		Volumes: []cloud.InstanceNewParamsVolumeUnion{{
-			OfNewVolume: &cloud.InstanceNewParamsVolumeNewVolume{
-				Size:                20,
+			OfImage: &cloud.InstanceNewParamsVolumeImage{
+				ImageID:             "e460e48c-6836-447e-bc9c-16fc4225d318",
 				AttachmentTag:       gcore.String("boot"),
+				BootIndex:           gcore.Int(0),
 				DeleteOnTermination: gcore.Bool(false),
 				Name:                gcore.String("boot-volume"),
+				Size:                gcore.Int(50),
 				Tags: map[string]string{
 					"my-tag": "my-tag-value",
 				},
