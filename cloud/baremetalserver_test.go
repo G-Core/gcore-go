@@ -54,7 +54,7 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 				Value: param.Null[string](),
 			}},
 		},
-		ImageID:      gcore.String("image_id"),
+		ImageID:      gcore.String("b5b4d65d-945f-4b98-ab6f-332319c724ef"),
 		Name:         gcore.String("my-bare-metal"),
 		NameTemplate: gcore.String("name_template"),
 		Password:     gcore.String("password"),
