@@ -5,7 +5,6 @@ package dns
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -130,27 +129,6 @@ func (r *NetworkMappingService) Delete(ctx context.Context, id int64, opts ...op
 func (r *NetworkMappingService) Get(ctx context.Context, id int64, opts ...option.RequestOption) (res *DNSNetworkMapping, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("dns/v2/network-mappings/%v", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
-// Get network mapping by name.
-//
-// # Particular network mapping item info
-//
-// Example of request:
-//
-// ```
-// curl --location --request GET 'https://api.gcore.com/dns/v2/network-mappings/test-mapping' \
-// --header 'Authorization: Bearer ...'
-// ```
-func (r *NetworkMappingService) GetByName(ctx context.Context, name string, opts ...option.RequestOption) (res *DNSNetworkMapping, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if name == "" {
-		err = errors.New("missing required name parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("dns/v2/network-mappings/%s", name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

@@ -116,29 +116,6 @@ func TestNetworkMappingGet(t *testing.T) {
 	}
 }
 
-func TestNetworkMappingGetByName(t *testing.T) {
-	t.Skip("skipped: ambiguous overlapping paths in OpenAPI spec, see DNS-2948")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.DNS.NetworkMappings.GetByName(context.TODO(), "name")
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
 func TestNetworkMappingImport(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
