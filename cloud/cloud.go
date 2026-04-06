@@ -416,11 +416,9 @@ type DDOSProfileField struct {
 	Default string `json:"default" api:"required"`
 	// Detailed description explaining the field's purpose and usage guidelines
 	Description string `json:"description" api:"required"`
-	// Name of DDoS profile field
-	FieldName string `json:"field_name" api:"required"`
 	// Data type classification of the field (e.g., string, integer, array)
 	FieldType string `json:"field_type" api:"required"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified.
+	// Complex value for the DDoS profile field
 	FieldValue any `json:"field_value" api:"required"`
 	// Human-readable name of the protection field
 	Name string `json:"name" api:"required"`
@@ -428,21 +426,17 @@ type DDOSProfileField struct {
 	Required bool `json:"required" api:"required"`
 	// JSON schema defining validation rules and constraints for the field value
 	ValidationSchema any `json:"validation_schema" api:"required"`
-	// Basic type value. Only one of 'value' or 'field_value' must be specified.
-	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
 		BaseField        respjson.Field
 		Default          respjson.Field
 		Description      respjson.Field
-		FieldName        respjson.Field
 		FieldType        respjson.Field
 		FieldValue       respjson.Field
 		Name             respjson.Field
 		Required         respjson.Field
 		ValidationSchema respjson.Field
-		Value            respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -831,10 +825,37 @@ const (
 type Image struct {
 	// Image ID
 	ID string `json:"id" api:"required"`
+	// An image architecture type: aarch64, `x86_64`.
+	//
+	// Any of "aarch64", "x86_64".
+	Architecture ImageArchitecture `json:"architecture" api:"required"`
 	// Datetime when the image was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Task that created this entity
+	CreatorTaskID string `json:"creator_task_id" api:"required"`
+	// Currency code. Shown if the `include_prices` query parameter if set to true
+	CurrencyCode string `json:"currency_code" api:"required"`
+	// Image description
+	Description string `json:"description" api:"required"`
 	// Disk format
-	DiskFormat string `json:"disk_format" api:"required"`
+	DiskFormat   string `json:"disk_format" api:"required"`
+	DisplayOrder int64  `json:"display_order" api:"required"`
+	// Name of the GPU driver vendor
+	GPUDriver string `json:"gpu_driver" api:"required"`
+	// Type of the GPU driver
+	GPUDriverType string `json:"gpu_driver_type" api:"required"`
+	// Version of the installed GPU driver
+	GPUDriverVersion string `json:"gpu_driver_version" api:"required"`
+	// Specifies the type of firmware with which to boot the guest.
+	//
+	// Any of "bios", "uefi".
+	HwFirmwareType ImageHwFirmwareType `json:"hw_firmware_type" api:"required"`
+	// A virtual chipset type.
+	//
+	// Any of "pc", "q35".
+	HwMachineType ImageHwMachineType `json:"hw_machine_type" api:"required"`
+	// Set to true if the image will be used by bare metal servers.
+	IsBaremetal bool `json:"is_baremetal" api:"required"`
 	// Minimal boot volume required
 	MinDisk int64 `json:"min_disk" api:"required"`
 	// Minimal VM RAM required
@@ -849,6 +870,14 @@ type Image struct {
 	OsType ImageOsType `json:"os_type" api:"required"`
 	// OS version, i.e. 19.04 (for Ubuntu) or 9.4 for Debian
 	OsVersion string `json:"os_version" api:"required"`
+	// Price per hour. Shown if the `include_prices` query parameter if set to true
+	PricePerHour float64 `json:"price_per_hour" api:"required"`
+	// Price per month. Shown if the `include_prices` query parameter if set to true
+	PricePerMonth float64 `json:"price_per_month" api:"required"`
+	// Price status for the UI
+	//
+	// Any of "error", "hide", "show".
+	PriceStatus ImagePriceStatus `json:"price_status" api:"required"`
 	// Project ID
 	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
@@ -857,6 +886,10 @@ type Image struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// Image size in bytes
 	Size int64 `json:"size" api:"required"`
+	// Whether the image supports SSH key or not
+	//
+	// Any of "allow", "deny", "required".
+	SSHKey ImageSSHKey `json:"ssh_key" api:"required"`
 	// Image status, i.e. active
 	Status string `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
@@ -865,65 +898,23 @@ type Image struct {
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags" api:"required"`
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
+	TaskID string `json:"task_id" api:"required"`
 	// Datetime when the image was updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Image visibility. Globally visible images are public
 	Visibility string `json:"visibility" api:"required"`
-	// An image architecture type: aarch64, `x86_64`
-	//
-	// Any of "aarch64", "x86_64".
-	Architecture ImageArchitecture `json:"architecture"`
-	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id" api:"nullable"`
-	// Image description
-	Description  string `json:"description" api:"nullable"`
-	DisplayOrder int64  `json:"display_order" api:"nullable"`
-	// Name of the GPU driver vendor
-	GPUDriver string `json:"gpu_driver" api:"nullable"`
-	// Type of the GPU driver
-	GPUDriverType string `json:"gpu_driver_type" api:"nullable"`
-	// Version of the installed GPU driver
-	GPUDriverVersion string `json:"gpu_driver_version" api:"nullable"`
-	// Specifies the type of firmware with which to boot the guest.
-	//
-	// Any of "bios", "uefi".
-	HwFirmwareType ImageHwFirmwareType `json:"hw_firmware_type" api:"nullable"`
-	// A virtual chipset type.
-	//
-	// Any of "pc", "q35".
-	HwMachineType ImageHwMachineType `json:"hw_machine_type" api:"nullable"`
-	// Set to true if the image will be used by bare metal servers. Defaults to false.
-	IsBaremetal bool `json:"is_baremetal" api:"nullable"`
-	// Whether the image supports SSH key or not
-	//
-	// Any of "allow", "deny", "required".
-	SSHKey ImageSSHKey `json:"ssh_key" api:"nullable"`
-	// The UUID of the active task that currently holds a lock on the resource. This
-	// lock prevents concurrent modifications to ensure consistency. If `null`, the
-	// resource is not locked.
-	TaskID string `json:"task_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
-		CreatedAt        respjson.Field
-		DiskFormat       respjson.Field
-		MinDisk          respjson.Field
-		MinRam           respjson.Field
-		Name             respjson.Field
-		OsDistro         respjson.Field
-		OsType           respjson.Field
-		OsVersion        respjson.Field
-		ProjectID        respjson.Field
-		Region           respjson.Field
-		RegionID         respjson.Field
-		Size             respjson.Field
-		Status           respjson.Field
-		Tags             respjson.Field
-		UpdatedAt        respjson.Field
-		Visibility       respjson.Field
 		Architecture     respjson.Field
+		CreatedAt        respjson.Field
 		CreatorTaskID    respjson.Field
+		CurrencyCode     respjson.Field
 		Description      respjson.Field
+		DiskFormat       respjson.Field
 		DisplayOrder     respjson.Field
 		GPUDriver        respjson.Field
 		GPUDriverType    respjson.Field
@@ -931,8 +922,25 @@ type Image struct {
 		HwFirmwareType   respjson.Field
 		HwMachineType    respjson.Field
 		IsBaremetal      respjson.Field
+		MinDisk          respjson.Field
+		MinRam           respjson.Field
+		Name             respjson.Field
+		OsDistro         respjson.Field
+		OsType           respjson.Field
+		OsVersion        respjson.Field
+		PricePerHour     respjson.Field
+		PricePerMonth    respjson.Field
+		PriceStatus      respjson.Field
+		ProjectID        respjson.Field
+		Region           respjson.Field
+		RegionID         respjson.Field
+		Size             respjson.Field
 		SSHKey           respjson.Field
+		Status           respjson.Field
+		Tags             respjson.Field
 		TaskID           respjson.Field
+		UpdatedAt        respjson.Field
+		Visibility       respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -944,15 +952,7 @@ func (r *Image) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The operating system installed on the image.
-type ImageOsType string
-
-const (
-	ImageOsTypeLinux   ImageOsType = "linux"
-	ImageOsTypeWindows ImageOsType = "windows"
-)
-
-// An image architecture type: aarch64, `x86_64`
+// An image architecture type: aarch64, `x86_64`.
 type ImageArchitecture string
 
 const (
@@ -974,6 +974,23 @@ type ImageHwMachineType string
 const (
 	ImageHwMachineTypePc  ImageHwMachineType = "pc"
 	ImageHwMachineTypeQ35 ImageHwMachineType = "q35"
+)
+
+// The operating system installed on the image.
+type ImageOsType string
+
+const (
+	ImageOsTypeLinux   ImageOsType = "linux"
+	ImageOsTypeWindows ImageOsType = "windows"
+)
+
+// Price status for the UI
+type ImagePriceStatus string
+
+const (
+	ImagePriceStatusError ImagePriceStatus = "error"
+	ImagePriceStatusHide  ImagePriceStatus = "hide"
+	ImagePriceStatusShow  ImagePriceStatus = "show"
 )
 
 // Whether the image supports SSH key or not

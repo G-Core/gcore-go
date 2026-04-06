@@ -12,7 +12,6 @@ import (
 	"github.com/G-Core/gcore-go/cloud"
 	"github.com/G-Core/gcore-go/internal/testutil"
 	"github.com/G-Core/gcore-go/option"
-	"github.com/G-Core/gcore-go/packages/param"
 )
 
 func TestInstanceInterfaceList(t *testing.T) {
@@ -66,13 +65,12 @@ func TestInstanceInterfaceAttachWithOptionalParams(t *testing.T) {
 				DDOSProfile: cloud.InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile{
 					ProfileTemplate: 29,
 					Fields: []cloud.InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField{{
-						BaseField: gcore.Int(10),
-						FieldName: gcore.String("field_name"),
+						BaseField: 10,
 						FieldValue: []float64{
 							45046,
 							45047,
 						},
-						Value: param.Null[string](),
+						Value: gcore.String("value"),
 					}},
 					ProfileTemplateName: gcore.String("profile_template_name"),
 				},
