@@ -723,15 +723,12 @@ func (r *K8SClusterDDOSProfile) UnmarshalJSON(data []byte) error {
 
 type K8SClusterDDOSProfileField struct {
 	BaseField int64 `json:"base_field" api:"required"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified
+	// Complex value for the DDoS profile field
 	FieldValue any `json:"field_value"`
-	// Basic value. Only one of 'value' or 'field_value' must be specified
-	Value string `json:"value" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BaseField   respjson.Field
 		FieldValue  respjson.Field
-		Value       respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1257,9 +1254,7 @@ func (r *K8SClusterNewParamsDDOSProfile) UnmarshalJSON(data []byte) error {
 // The property BaseField is required.
 type K8SClusterNewParamsDDOSProfileField struct {
 	BaseField int64 `json:"base_field" api:"required"`
-	// Basic value. Only one of 'value' or 'field_value' must be specified
-	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified
+	// Complex value for the DDoS profile field
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
@@ -1639,9 +1634,7 @@ func (r *K8SClusterUpdateParamsDDOSProfile) UnmarshalJSON(data []byte) error {
 // The property BaseField is required.
 type K8SClusterUpdateParamsDDOSProfileField struct {
 	BaseField int64 `json:"base_field" api:"required"`
-	// Basic value. Only one of 'value' or 'field_value' must be specified
-	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified
+	// Complex value for the DDoS profile field
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }

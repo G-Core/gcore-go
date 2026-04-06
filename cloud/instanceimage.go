@@ -354,15 +354,17 @@ const (
 )
 
 type InstanceImageListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Show price
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Show price.
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	// Any value to show private images
 	Private param.Opt[string] `query:"private,omitzero" json:"-"`
-	// Filter by tag key-value pairs. Must be a valid JSON string.
+	// Optional. Filter by tag key-value pairs.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// Filter by tag keys.
+	// Optional. Filter by tag keys. ?`tag_key`=key1&`tag_key`=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	// Image visibility. Globally visible images are public
 	//
@@ -396,8 +398,10 @@ type InstanceImageDeleteParams struct {
 }
 
 type InstanceImageNewFromVolumeParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Image name
 	Name string `json:"name" api:"required"`
 	// Required if source is volume. Volume id

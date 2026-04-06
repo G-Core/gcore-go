@@ -27,11 +27,11 @@ func TestBaremetalImageListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Baremetal.Images.List(context.TODO(), cloud.BaremetalImageListParams{
-		ProjectID:     gcore.Int(0),
-		RegionID:      gcore.Int(0),
+		ProjectID:     gcore.Int(1),
+		RegionID:      gcore.Int(7),
 		IncludePrices: gcore.Bool(true),
 		Private:       gcore.String("private"),
-		TagKey:        []string{"string"},
+		TagKey:        []string{"key1", "key2"},
 		TagKeyValue:   gcore.String("tag_key_value"),
 		Visibility:    cloud.BaremetalImageListParamsVisibilityPrivate,
 	})

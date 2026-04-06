@@ -269,14 +269,13 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDD
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property BaseField is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField struct {
 	// ID of DDoS profile field
-	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// Name of DDoS profile field
-	FieldName param.Opt[string] `json:"field_name,omitzero"`
+	BaseField int64 `json:"base_field" api:"required"`
 	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified.
+	// Complex value for the DDoS profile field
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
@@ -354,14 +353,13 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSPr
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property BaseField is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField struct {
 	// ID of DDoS profile field
-	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// Name of DDoS profile field
-	FieldName param.Opt[string] `json:"field_name,omitzero"`
+	BaseField int64 `json:"base_field" api:"required"`
 	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified.
+	// Complex value for the DDoS profile field
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
@@ -450,14 +448,13 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property BaseField is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField struct {
 	// ID of DDoS profile field
-	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// Name of DDoS profile field
-	FieldName param.Opt[string] `json:"field_name,omitzero"`
+	BaseField int64 `json:"base_field" api:"required"`
 	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified.
+	// Complex value for the DDoS profile field
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
@@ -536,14 +533,13 @@ func (r *InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSP
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property BaseField is required.
 type InstanceInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField struct {
 	// ID of DDoS profile field
-	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// Name of DDoS profile field
-	FieldName param.Opt[string] `json:"field_name,omitzero"`
+	BaseField int64 `json:"base_field" api:"required"`
 	// Basic type value. Only one of 'value' or 'field_value' must be specified.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value. Only one of 'value' or 'field_value' must be specified.
+	// Complex value for the DDoS profile field
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
