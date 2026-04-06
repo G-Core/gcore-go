@@ -65,11 +65,11 @@ func TestInstanceImageListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Instances.Images.List(context.TODO(), cloud.InstanceImageListParams{
-		ProjectID:     gcore.Int(0),
-		RegionID:      gcore.Int(0),
+		ProjectID:     gcore.Int(1),
+		RegionID:      gcore.Int(7),
 		IncludePrices: gcore.Bool(true),
 		Private:       gcore.String("private"),
-		TagKey:        []string{"string"},
+		TagKey:        []string{"key1", "key2"},
 		TagKeyValue:   gcore.String("tag_key_value"),
 		Visibility:    cloud.InstanceImageListParamsVisibilityPrivate,
 	})
@@ -124,8 +124,8 @@ func TestInstanceImageNewFromVolumeWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Instances.Images.NewFromVolume(context.TODO(), cloud.InstanceImageNewFromVolumeParams{
-		ProjectID:      gcore.Int(0),
-		RegionID:       gcore.Int(0),
+		ProjectID:      gcore.Int(1),
+		RegionID:       gcore.Int(7),
 		Name:           "my-image",
 		VolumeID:       "d478ae29-dedc-4869-82f0-96104425f565",
 		Architecture:   cloud.InstanceImageNewFromVolumeParamsArchitectureX86_64,

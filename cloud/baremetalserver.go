@@ -1250,14 +1250,11 @@ func (r *BaremetalServerNewParamsDDOSProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property BaseField is required.
 type BaremetalServerNewParamsDDOSProfileField struct {
 	// Unique identifier of the DDoS protection field being configured
-	BaseField param.Opt[int64] `json:"base_field,omitzero"`
-	// Basic type value. Only one of 'value' or 'field_value' must be specified.
-	//
-	// Deprecated: deprecated
-	Value      param.Opt[string] `json:"value,omitzero"`
-	FieldValue any               `json:"field_value,omitzero"`
+	BaseField  int64 `json:"base_field" api:"required"`
+	FieldValue any   `json:"field_value,omitzero"`
 	paramObj
 }
 

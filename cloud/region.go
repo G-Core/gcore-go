@@ -137,6 +137,8 @@ type Region struct {
 	KeystoneName string `json:"keystone_name" api:"required"`
 	// Foreign key to Metrics database entity
 	MetricsDatabaseID int64 `json:"metrics_database_id" api:"required"`
+	// Short, human-readable region identifier (e.g. luxembourg-2, santa-clara-1).
+	Slug string `json:"slug" api:"required"`
 	// Region state
 	//
 	// Any of "ACTIVE", "DELETED", "DELETING", "DELETION_FAILED", "INACTIVE",
@@ -181,6 +183,7 @@ type Region struct {
 		KeystoneID           respjson.Field
 		KeystoneName         respjson.Field
 		MetricsDatabaseID    respjson.Field
+		Slug                 respjson.Field
 		State                respjson.Field
 		TaskID               respjson.Field
 		VlanPhysicalNetwork  respjson.Field

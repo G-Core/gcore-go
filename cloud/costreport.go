@@ -730,7 +730,7 @@ type CostReportAggregatedResultEgressTraffic struct {
 	Err string `json:"err" api:"required"`
 	// Type of the instance
 	//
-	// Any of "baremetal", "vm".
+	// Any of "baremetal", "router", "vm".
 	InstanceType string `json:"instance_type" api:"required"`
 	// Region ID
 	Region int64 `json:"region" api:"required"`
@@ -2189,7 +2189,7 @@ type CostReportAggregatedMonthlyResultEgressTraffic struct {
 	Err string `json:"err" api:"required"`
 	// Type of the instance
 	//
-	// Any of "baremetal", "vm".
+	// Any of "baremetal", "router", "vm".
 	InstanceType string `json:"instance_type" api:"required"`
 	// Region ID
 	Region int64 `json:"region" api:"required"`
@@ -3780,7 +3780,7 @@ type CostReportDetailedResultEgressTraffic struct {
 	InstanceName string `json:"instance_name" api:"required"`
 	// Type of the instance
 	//
-	// Any of "baremetal", "vm".
+	// Any of "baremetal", "router", "vm".
 	InstanceType string `json:"instance_type" api:"required"`
 	// Last time the resource was seen in the given period
 	LastSeen time.Time `json:"last_seen" api:"required" format:"date-time"`

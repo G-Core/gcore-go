@@ -13,7 +13,6 @@ import (
 	"github.com/G-Core/gcore-go/cloud"
 	"github.com/G-Core/gcore-go/internal/testutil"
 	"github.com/G-Core/gcore-go/option"
-	"github.com/G-Core/gcore-go/packages/param"
 )
 
 func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
@@ -46,12 +45,11 @@ func TestBaremetalServerNewWithOptionalParams(t *testing.T) {
 		DDOSProfile: cloud.BaremetalServerNewParamsDDOSProfile{
 			ProfileTemplate: 123,
 			Fields: []cloud.BaremetalServerNewParamsDDOSProfileField{{
-				BaseField: gcore.Int(10),
+				BaseField: 10,
 				FieldValue: []float64{
 					45046,
 					45047,
 				},
-				Value: param.Null[string](),
 			}},
 		},
 		ImageID:      gcore.String("b5b4d65d-945f-4b98-ab6f-332319c724ef"),
