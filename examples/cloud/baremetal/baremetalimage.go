@@ -10,7 +10,7 @@ import (
 	"github.com/G-Core/gcore-go/cloud"
 )
 
-func listBaremetalImages(client *gcore.Client) []cloud.Image {
+func listBaremetalImages(client *gcore.Client) []cloud.BaremetalImage {
 	fmt.Println("\n=== LIST BAREMETAL IMAGES ===")
 
 	params := cloud.BaremetalImageListParams{
@@ -71,16 +71,16 @@ func listBaremetalImagesWithFilters(client *gcore.Client) {
 	fmt.Println()
 }
 
-func getUbuntuImage(images []cloud.Image) string {
+func getUbuntuImage(images []cloud.BaremetalImage) string {
 	return getOSImage(images, "ubuntu")
 }
 
-func getDebianImage(images []cloud.Image) string {
+func getDebianImage(images []cloud.BaremetalImage) string {
 	return getOSImage(images, "debian")
 }
 
-func getOSImage(images []cloud.Image, osName string) string {
-	var osImages []cloud.Image
+func getOSImage(images []cloud.BaremetalImage, osName string) string {
+	var osImages []cloud.BaremetalImage
 	for _, img := range images {
 		if strings.Contains(img.Name, osName) {
 			osImages = append(osImages, img)
@@ -88,7 +88,7 @@ func getOSImage(images []cloud.Image, osName string) string {
 	}
 
 	if len(osImages) == 0 {
-		var linuxImages []cloud.Image
+		var linuxImages []cloud.BaremetalImage
 		for _, img := range images {
 			if img.OsType == "linux" {
 				linuxImages = append(linuxImages, img)
@@ -117,7 +117,7 @@ func getOSImage(images []cloud.Image, osName string) string {
 	return ""
 }
 
-func printImageDetails(image cloud.Image, index int) {
+func printImageDetails(image cloud.BaremetalImage, index int) {
 	fmt.Printf("  %d. Image: ID=%s, name=%s\n", index, image.ID, image.Name)
 	fmt.Printf("     OS Type: %s, Status: %s\n", image.OsType, image.Status)
 	fmt.Printf("     Architecture: %s, Size: %d MB\n", image.Architecture, image.Size)
