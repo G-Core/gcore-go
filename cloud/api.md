@@ -32,8 +32,6 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUImage">GPUImage</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUImageList">GPUImageList</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#HTTPMethod">HTTPMethod</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#Image">Image</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#ImageList">ImageList</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#Instance">Instance</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceIsolation">InstanceIsolation</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceList">InstanceList</a>
@@ -607,11 +605,12 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageListResponse">BaremetalImageListResponse</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImage">BaremetalImage</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageList">BaremetalImageList</a>
 
 Methods:
 
-- <code title="get /cloud/v1/bmimages/{project_id}/{region_id}">client.Cloud.Baremetal.Images.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageListParams">BaremetalImageListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageListResponse">BaremetalImageListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /cloud/v1/bmimages/{project_id}/{region_id}">client.Cloud.Baremetal.Images.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageListParams">BaremetalImageListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageList">BaremetalImageList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ### Flavors
 
@@ -919,6 +918,11 @@ Methods:
 - <code title="post /cloud/v1/instances/{project_id}/{region_id}/{instance_id}/detach_interface">client.Cloud.Instances.Interfaces.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceInterfaceService.Detach">Detach</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, instanceID <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#InstanceInterfaceDetachParams">InstanceInterfaceDetachParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#TaskIDList">TaskIDList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ### Images
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#Image">Image</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#ImageList">ImageList</a>
 
 Methods:
 
