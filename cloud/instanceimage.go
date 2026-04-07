@@ -9,12 +9,14 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // Instance images are operating system images (public, private, or shared) used to
@@ -277,6 +279,206 @@ func (r *InstanceImageService) UploadAndPoll(ctx context.Context, params Instanc
 	resourceID := task.CreatedResources.Images[0]
 
 	return r.Get(ctx, resourceID, getParams, opts...)
+}
+
+type Image struct {
+	// Image ID
+	ID string `json:"id" api:"required"`
+	// An image architecture type: aarch64, `x86_64`.
+	//
+	// Any of "aarch64", "x86_64".
+	Architecture ImageArchitecture `json:"architecture" api:"required"`
+	// Datetime when the image was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Task that created this entity
+	CreatorTaskID string `json:"creator_task_id" api:"required"`
+	// Currency code. Shown if the `include_prices` query parameter if set to true
+	CurrencyCode string `json:"currency_code" api:"required"`
+	// Image description
+	Description string `json:"description" api:"required"`
+	// Disk format
+	DiskFormat   string `json:"disk_format" api:"required"`
+	DisplayOrder int64  `json:"display_order" api:"required"`
+	// Name of the GPU driver vendor
+	GPUDriver string `json:"gpu_driver" api:"required"`
+	// Type of the GPU driver
+	GPUDriverType string `json:"gpu_driver_type" api:"required"`
+	// Version of the installed GPU driver
+	GPUDriverVersion string `json:"gpu_driver_version" api:"required"`
+	// Specifies the type of firmware with which to boot the guest.
+	//
+	// Any of "bios", "uefi".
+	HwFirmwareType ImageHwFirmwareType `json:"hw_firmware_type" api:"required"`
+	// A virtual chipset type.
+	//
+	// Any of "pc", "q35".
+	HwMachineType ImageHwMachineType `json:"hw_machine_type" api:"required"`
+	// Set to true if the image will be used by bare metal servers.
+	IsBaremetal bool `json:"is_baremetal" api:"required"`
+	// Minimal boot volume required
+	MinDisk int64 `json:"min_disk" api:"required"`
+	// Minimal VM RAM required
+	MinRam int64 `json:"min_ram" api:"required"`
+	// Image display name
+	Name string `json:"name" api:"required"`
+	// OS Distribution, i.e. Debian, CentOS, Ubuntu, CoreOS etc.
+	OsDistro string `json:"os_distro" api:"required"`
+	// The operating system installed on the image.
+	//
+	// Any of "linux", "windows".
+	OsType ImageOsType `json:"os_type" api:"required"`
+	// OS version, i.e. 19.04 (for Ubuntu) or 9.4 for Debian
+	OsVersion string `json:"os_version" api:"required"`
+	// Price per hour. Shown if the `include_prices` query parameter if set to true
+	PricePerHour float64 `json:"price_per_hour" api:"required"`
+	// Price per month. Shown if the `include_prices` query parameter if set to true
+	PricePerMonth float64 `json:"price_per_month" api:"required"`
+	// Price status for the UI
+	//
+	// Any of "error", "hide", "show".
+	PriceStatus ImagePriceStatus `json:"price_status" api:"required"`
+	// Project ID
+	ProjectID int64 `json:"project_id" api:"required"`
+	// Region name
+	Region string `json:"region" api:"required"`
+	// Region ID
+	RegionID int64 `json:"region_id" api:"required"`
+	// Image size in bytes
+	Size int64 `json:"size" api:"required"`
+	// Whether the image supports SSH key or not
+	//
+	// Any of "allow", "deny", "required".
+	SSHKey ImageSSHKey `json:"ssh_key" api:"required"`
+	// Image status, i.e. active
+	Status string `json:"status" api:"required"`
+	// List of key-value tags associated with the resource. A tag is a key-value pair
+	// that can be associated with a resource, enabling efficient filtering and
+	// grouping for better organization and management. Some tags are read-only and
+	// cannot be modified by the user. Tags are also integrated with cost reports,
+	// allowing cost data to be filtered based on tag keys or values.
+	Tags []Tag `json:"tags" api:"required"`
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
+	TaskID string `json:"task_id" api:"required"`
+	// Datetime when the image was updated
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// Image visibility. Globally visible images are public
+	Visibility string `json:"visibility" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		Architecture     respjson.Field
+		CreatedAt        respjson.Field
+		CreatorTaskID    respjson.Field
+		CurrencyCode     respjson.Field
+		Description      respjson.Field
+		DiskFormat       respjson.Field
+		DisplayOrder     respjson.Field
+		GPUDriver        respjson.Field
+		GPUDriverType    respjson.Field
+		GPUDriverVersion respjson.Field
+		HwFirmwareType   respjson.Field
+		HwMachineType    respjson.Field
+		IsBaremetal      respjson.Field
+		MinDisk          respjson.Field
+		MinRam           respjson.Field
+		Name             respjson.Field
+		OsDistro         respjson.Field
+		OsType           respjson.Field
+		OsVersion        respjson.Field
+		PricePerHour     respjson.Field
+		PricePerMonth    respjson.Field
+		PriceStatus      respjson.Field
+		ProjectID        respjson.Field
+		Region           respjson.Field
+		RegionID         respjson.Field
+		Size             respjson.Field
+		SSHKey           respjson.Field
+		Status           respjson.Field
+		Tags             respjson.Field
+		TaskID           respjson.Field
+		UpdatedAt        respjson.Field
+		Visibility       respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Image) RawJSON() string { return r.JSON.raw }
+func (r *Image) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An image architecture type: aarch64, `x86_64`.
+type ImageArchitecture string
+
+const (
+	ImageArchitectureAarch64 ImageArchitecture = "aarch64"
+	ImageArchitectureX86_64  ImageArchitecture = "x86_64"
+)
+
+// Specifies the type of firmware with which to boot the guest.
+type ImageHwFirmwareType string
+
+const (
+	ImageHwFirmwareTypeBios ImageHwFirmwareType = "bios"
+	ImageHwFirmwareTypeUefi ImageHwFirmwareType = "uefi"
+)
+
+// A virtual chipset type.
+type ImageHwMachineType string
+
+const (
+	ImageHwMachineTypePc  ImageHwMachineType = "pc"
+	ImageHwMachineTypeQ35 ImageHwMachineType = "q35"
+)
+
+// The operating system installed on the image.
+type ImageOsType string
+
+const (
+	ImageOsTypeLinux   ImageOsType = "linux"
+	ImageOsTypeWindows ImageOsType = "windows"
+)
+
+// Price status for the UI
+type ImagePriceStatus string
+
+const (
+	ImagePriceStatusError ImagePriceStatus = "error"
+	ImagePriceStatusHide  ImagePriceStatus = "hide"
+	ImagePriceStatusShow  ImagePriceStatus = "show"
+)
+
+// Whether the image supports SSH key or not
+type ImageSSHKey string
+
+const (
+	ImageSSHKeyAllow    ImageSSHKey = "allow"
+	ImageSSHKeyDeny     ImageSSHKey = "deny"
+	ImageSSHKeyRequired ImageSSHKey = "required"
+)
+
+type ImageList struct {
+	// Number of objects
+	Count int64 `json:"count" api:"required"`
+	// Objects
+	Results []Image `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageList) RawJSON() string { return r.JSON.raw }
+func (r *ImageList) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type InstanceImageUpdateParams struct {

@@ -41,7 +41,7 @@ func NewBaremetalImageService(opts ...option.RequestOption) (r BaremetalImageSer
 // Retrieve a list of available images for bare metal servers. The list can be
 // filtered by visibility, tags, and other parameters. Returned entities may or may
 // not be owned by the project.
-func (r *BaremetalImageService) List(ctx context.Context, params BaremetalImageListParams, opts ...option.RequestOption) (res *BaremetalImageListResponse, err error) {
+func (r *BaremetalImageService) List(ctx context.Context, params BaremetalImageListParams, opts ...option.RequestOption) (res *BaremetalImageList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -62,33 +62,13 @@ func (r *BaremetalImageService) List(ctx context.Context, params BaremetalImageL
 	return res, err
 }
 
-type BaremetalImageListResponse struct {
-	// Number of objects
-	Count int64 `json:"count" api:"required"`
-	// Objects
-	Results []BaremetalImageListResponseResult `json:"results" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BaremetalImageListResponse) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalImageListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BaremetalImageListResponseResult struct {
+type BaremetalImage struct {
 	// Image ID
 	ID string `json:"id" api:"required"`
 	// An image architecture type: aarch64, `x86_64`.
 	//
 	// Any of "aarch64", "x86_64".
-	Architecture string `json:"architecture" api:"required"`
+	Architecture BaremetalImageArchitecture `json:"architecture" api:"required"`
 	// Datetime when the image was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Task that created this entity
@@ -109,11 +89,11 @@ type BaremetalImageListResponseResult struct {
 	// Specifies the type of firmware with which to boot the guest.
 	//
 	// Any of "bios", "uefi".
-	HwFirmwareType string `json:"hw_firmware_type" api:"required"`
+	HwFirmwareType BaremetalImageHwFirmwareType `json:"hw_firmware_type" api:"required"`
 	// A virtual chipset type.
 	//
 	// Any of "pc", "q35".
-	HwMachineType string `json:"hw_machine_type" api:"required"`
+	HwMachineType BaremetalImageHwMachineType `json:"hw_machine_type" api:"required"`
 	// For bare metal servers this value is always set to true
 	IsBaremetal bool `json:"is_baremetal" api:"required"`
 	// Minimal boot volume required
@@ -127,7 +107,7 @@ type BaremetalImageListResponseResult struct {
 	// The operating system installed on the image.
 	//
 	// Any of "linux", "windows".
-	OsType string `json:"os_type" api:"required"`
+	OsType BaremetalImageOsType `json:"os_type" api:"required"`
 	// OS version, i.e. 19.04 (for Ubuntu) or 9.4 for Debian
 	OsVersion string `json:"os_version" api:"required"`
 	// Price per hour. Shown if the `include_prices` query parameter if set to true
@@ -137,7 +117,7 @@ type BaremetalImageListResponseResult struct {
 	// Price status for the UI
 	//
 	// Any of "error", "hide", "show".
-	PriceStatus string `json:"price_status" api:"required"`
+	PriceStatus BaremetalImagePriceStatus `json:"price_status" api:"required"`
 	// Project ID
 	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
@@ -149,7 +129,7 @@ type BaremetalImageListResponseResult struct {
 	// Whether the image supports SSH key or not
 	//
 	// Any of "allow", "deny", "required".
-	SSHKey string `json:"ssh_key" api:"required"`
+	SSHKey BaremetalImageSSHKey `json:"ssh_key" api:"required"`
 	// Image status, i.e. active
 	Status string `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
@@ -207,8 +187,78 @@ type BaremetalImageListResponseResult struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BaremetalImageListResponseResult) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalImageListResponseResult) UnmarshalJSON(data []byte) error {
+func (r BaremetalImage) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An image architecture type: aarch64, `x86_64`.
+type BaremetalImageArchitecture string
+
+const (
+	BaremetalImageArchitectureAarch64 BaremetalImageArchitecture = "aarch64"
+	BaremetalImageArchitectureX86_64  BaremetalImageArchitecture = "x86_64"
+)
+
+// Specifies the type of firmware with which to boot the guest.
+type BaremetalImageHwFirmwareType string
+
+const (
+	BaremetalImageHwFirmwareTypeBios BaremetalImageHwFirmwareType = "bios"
+	BaremetalImageHwFirmwareTypeUefi BaremetalImageHwFirmwareType = "uefi"
+)
+
+// A virtual chipset type.
+type BaremetalImageHwMachineType string
+
+const (
+	BaremetalImageHwMachineTypePc  BaremetalImageHwMachineType = "pc"
+	BaremetalImageHwMachineTypeQ35 BaremetalImageHwMachineType = "q35"
+)
+
+// The operating system installed on the image.
+type BaremetalImageOsType string
+
+const (
+	BaremetalImageOsTypeLinux   BaremetalImageOsType = "linux"
+	BaremetalImageOsTypeWindows BaremetalImageOsType = "windows"
+)
+
+// Price status for the UI
+type BaremetalImagePriceStatus string
+
+const (
+	BaremetalImagePriceStatusError BaremetalImagePriceStatus = "error"
+	BaremetalImagePriceStatusHide  BaremetalImagePriceStatus = "hide"
+	BaremetalImagePriceStatusShow  BaremetalImagePriceStatus = "show"
+)
+
+// Whether the image supports SSH key or not
+type BaremetalImageSSHKey string
+
+const (
+	BaremetalImageSSHKeyAllow    BaremetalImageSSHKey = "allow"
+	BaremetalImageSSHKeyDeny     BaremetalImageSSHKey = "deny"
+	BaremetalImageSSHKeyRequired BaremetalImageSSHKey = "required"
+)
+
+type BaremetalImageList struct {
+	// Number of objects
+	Count int64 `json:"count" api:"required"`
+	// Objects
+	Results []BaremetalImage `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BaremetalImageList) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalImageList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
