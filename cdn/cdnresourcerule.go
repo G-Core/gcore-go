@@ -14,7 +14,6 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
-	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -58,26 +57,11 @@ func (r *CDNResourceRuleService) Update(ctx context.Context, ruleID int64, param
 }
 
 // Get rules list
-func (r *CDNResourceRuleService) List(ctx context.Context, resourceID int64, query CDNResourceRuleListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[CDNResourceRule], err error) {
-	var raw *http.Response
+func (r *CDNResourceRuleService) List(ctx context.Context, resourceID int64, query CDNResourceRuleListParams, opts ...option.RequestOption) (res *CDNResourceRuleListUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("cdn/resources/%v/rules", resourceID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Get rules list
-func (r *CDNResourceRuleService) ListAutoPaging(ctx context.Context, resourceID int64, query CDNResourceRuleListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[CDNResourceRule] {
-	return pagination.NewOffsetPageAutoPager(r.List(ctx, resourceID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
 }
 
 // Delete the rule from the system permanently.
