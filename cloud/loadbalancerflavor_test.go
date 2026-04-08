@@ -30,6 +30,8 @@ func TestLoadBalancerFlavorListWithOptionalParams(t *testing.T) {
 		ProjectID:     gcore.Int(1),
 		RegionID:      gcore.Int(7),
 		IncludePrices: gcore.Bool(true),
+		Limit:         gcore.Int(1000),
+		Offset:        gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error

@@ -649,10 +649,15 @@ type LoadBalancerPoolListParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Show members and Health Monitor details
 	Details param.Opt[bool] `query:"details,omitzero" json:"-"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Listener ID
 	ListenerID param.Opt[string] `query:"listener_id,omitzero" format:"uuid4" json:"-"`
 	// Load Balancer ID
 	LoadBalancerID param.Opt[string] `query:"load_balancer_id,omitzero" format:"uuid4" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
 

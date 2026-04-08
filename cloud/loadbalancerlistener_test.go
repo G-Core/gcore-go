@@ -114,7 +114,9 @@ func TestLoadBalancerListenerListWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.LoadBalancers.Listeners.List(context.TODO(), cloud.LoadBalancerListenerListParams{
 		ProjectID:      gcore.Int(1),
 		RegionID:       gcore.Int(1),
+		Limit:          gcore.Int(1000),
 		LoadBalancerID: gcore.String("00000000-0000-4000-8000-000000000000"),
+		Offset:         gcore.Int(0),
 		ShowStats:      gcore.Bool(true),
 	})
 	if err != nil {
