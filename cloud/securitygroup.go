@@ -532,16 +532,16 @@ type SecurityGroupNewParamsRule struct {
 	Description param.Opt[string] `json:"description,omitzero"`
 	// The remote group UUID to associate with this security group
 	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
+	// V2 protocol enum without 'any'. Use null for all protocols instead.
+	//
+	// Any of "ah", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip",
+	// "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route",
+	// "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp".
+	Protocol string `json:"protocol,omitzero"`
 	// Ether type
 	//
 	// Any of "IPv4", "IPv6".
 	Ethertype string `json:"ethertype,omitzero"`
-	// Protocol
-	//
-	// Any of "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap",
-	// "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts",
-	// "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp".
-	Protocol string `json:"protocol,omitzero"`
 	paramObj
 }
 
@@ -561,7 +561,7 @@ func init() {
 		"ethertype", "IPv4", "IPv6",
 	)
 	apijson.RegisterFieldValidator[SecurityGroupNewParamsRule](
-		"protocol", "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp",
+		"protocol", "ah", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp",
 	)
 }
 
@@ -632,6 +632,12 @@ type SecurityGroupUpdateParamsRule struct {
 	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
 	// The remote IP prefix that is matched by this security group rule
 	RemoteIPPrefix param.Opt[string] `json:"remote_ip_prefix,omitzero" format:"ipvanynetwork"`
+	// V2 protocol enum without 'any'. Use null for all protocols instead.
+	//
+	// Any of "ah", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip",
+	// "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route",
+	// "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp".
+	Protocol string `json:"protocol,omitzero"`
 	// Ingress or egress, which is the direction in which the security group rule is
 	// applied
 	//
@@ -642,12 +648,6 @@ type SecurityGroupUpdateParamsRule struct {
 	//
 	// Any of "IPv4", "IPv6".
 	Ethertype string `json:"ethertype,omitzero"`
-	// Protocol
-	//
-	// Any of "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap",
-	// "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts",
-	// "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp".
-	Protocol string `json:"protocol,omitzero"`
 	paramObj
 }
 
@@ -657,6 +657,18 @@ func (r SecurityGroupUpdateParamsRule) MarshalJSON() (data []byte, err error) {
 }
 func (r *SecurityGroupUpdateParamsRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
+		"direction", "egress", "ingress",
+	)
+	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
+		"ethertype", "IPv4", "IPv6",
+	)
+	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
+		"protocol", "ah", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp",
+	)
 }
 
 type SecurityGroupListParams struct {

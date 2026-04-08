@@ -1737,13 +1737,10 @@ type LoadBalancerNewParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Load balancer name.
+	Name string `json:"name" api:"required"`
 	// Load balancer flavor name
 	Flavor param.Opt[string] `json:"flavor,omitzero"`
-	// Load balancer name. Either `name` or `name_template` should be specified.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Load balancer name which will be changed by template. Either `name` or
-	// `name_template` should be specified.
-	NameTemplate param.Opt[string] `json:"name_template,omitzero"`
 	// Network ID for load balancer. If not specified, default external network will be
 	// used. Mutually exclusive with `vip_port_id`
 	VipNetworkID param.Opt[string] `json:"vip_network_id,omitzero" format:"uuid4"`

@@ -7,9 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -63,19 +65,19 @@ func (r *LoadBalancerL7PolicyRuleService) New(ctx context.Context, l7policyID st
 }
 
 // List load balancer L7 policy rules
-func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID string, query LoadBalancerL7PolicyRuleListParams, opts ...option.RequestOption) (res *LoadBalancerL7RuleList, err error) {
+func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyRuleListParams, opts ...option.RequestOption) (res *LoadBalancerL7RuleList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !query.RegionID.Valid() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
@@ -83,8 +85,8 @@ func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID s
 		err = errors.New("missing required l7policy_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules", query.ProjectID.Value, query.RegionID.Value, l7policyID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules", params.ProjectID.Value, params.RegionID.Value, l7policyID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
 
@@ -326,7 +328,21 @@ type LoadBalancerL7PolicyRuleListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
+}
+
+// URLQuery serializes [LoadBalancerL7PolicyRuleListParams]'s query parameters as
+// `url.Values`.
+func (r LoadBalancerL7PolicyRuleListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }
 
 type LoadBalancerL7PolicyRuleDeleteParams struct {

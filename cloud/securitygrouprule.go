@@ -215,16 +215,16 @@ type SecurityGroupRuleNewParams struct {
 	Description param.Opt[string] `json:"description,omitzero"`
 	// The remote group UUID to associate with this security group
 	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
+	// V2 protocol enum without 'any'. Use null for all protocols instead.
+	//
+	// Any of "ah", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip",
+	// "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route",
+	// "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp".
+	Protocol SecurityGroupRuleNewParamsProtocol `json:"protocol,omitzero"`
 	// Ether type
 	//
 	// Any of "IPv4", "IPv6".
 	Ethertype SecurityGroupRuleNewParamsEthertype `json:"ethertype,omitzero"`
-	// Protocol
-	//
-	// Any of "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap",
-	// "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts",
-	// "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp".
-	Protocol SecurityGroupRuleNewParamsProtocol `json:"protocol,omitzero"`
 	paramObj
 }
 
@@ -252,12 +252,11 @@ const (
 	SecurityGroupRuleNewParamsEthertypeIPv6 SecurityGroupRuleNewParamsEthertype = "IPv6"
 )
 
-// Protocol
+// V2 protocol enum without 'any'. Use null for all protocols instead.
 type SecurityGroupRuleNewParamsProtocol string
 
 const (
 	SecurityGroupRuleNewParamsProtocolAh        SecurityGroupRuleNewParamsProtocol = "ah"
-	SecurityGroupRuleNewParamsProtocolAny       SecurityGroupRuleNewParamsProtocol = "any"
 	SecurityGroupRuleNewParamsProtocolDccp      SecurityGroupRuleNewParamsProtocol = "dccp"
 	SecurityGroupRuleNewParamsProtocolEgp       SecurityGroupRuleNewParamsProtocol = "egp"
 	SecurityGroupRuleNewParamsProtocolEsp       SecurityGroupRuleNewParamsProtocol = "esp"
