@@ -955,7 +955,7 @@ type AITaskGetResponseProcessingTime struct {
 	// Video processing start time. Format is date time in ISO 8601
 	StartedAt string `json:"started_at"`
 	// Duration of video processing in seconds
-	TotalTimeSec float64 `json:"total_time_sec"`
+	TotalTimeSec float64 `json:"total_time_sec" format:"decimal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CompletedAt  respjson.Field
@@ -1200,7 +1200,7 @@ func (r *AITaskGetResponseResultAIResultsContentmoderationSport) UnmarshalJSON(d
 
 type AITaskGetResponseResultAIResultsContentmoderationSportFrame struct {
 	// Percentage of probability of identifying the activity
-	Confidence float64 `json:"confidence"`
+	Confidence float64 `json:"confidence" format:"decimal"`
 	// Video frame number where activity was found
 	FrameNumber int64 `json:"frame-number"`
 	// Type of detected activity
@@ -1247,7 +1247,7 @@ func (r *AITaskGetResponseResultAIResultsContentmoderationNsfw) UnmarshalJSON(da
 
 type AITaskGetResponseResultAIResultsContentmoderationNsfwFrame struct {
 	// Percentage of probability of identifying the object
-	Confidence float64 `json:"confidence"`
+	Confidence float64 `json:"confidence" format:"decimal"`
 	// Video frame number where object was found
 	FrameNumber int64 `json:"frame-number"`
 	// Type of detected object
@@ -1297,7 +1297,7 @@ func (r *AITaskGetResponseResultAIResultsContentmoderationHardnudity) UnmarshalJ
 
 type AITaskGetResponseResultAIResultsContentmoderationHardnudityFrame struct {
 	// Percentage of probability of identifying the object
-	Confidence float64 `json:"confidence"`
+	Confidence float64 `json:"confidence" format:"decimal"`
 	// Video frame number where object was found
 	FrameNumber int64 `json:"frame-number"`
 	// Type of detected object
@@ -1350,7 +1350,7 @@ func (r *AITaskGetResponseResultAIResultsContentmoderationSoftnudity) UnmarshalJ
 
 type AITaskGetResponseResultAIResultsContentmoderationSoftnudityFrame struct {
 	// Percentage of probability of identifying the object
-	Confidence float64 `json:"confidence"`
+	Confidence float64 `json:"confidence" format:"decimal"`
 	// Video frame number where object was found
 	FrameNumber int64 `json:"frame-number"`
 	// Type of detected object

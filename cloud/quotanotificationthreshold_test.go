@@ -7,7 +7,6 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
@@ -497,7 +496,7 @@ func TestQuotaNotificationThresholdUpdateWithOptionalParams(t *testing.T) {
 					},
 				}},
 			},
-			LastSending: param.Null[time.Time](),
+			LastSending: param.Null[string](),
 		},
 	)
 	if err != nil {
