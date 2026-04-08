@@ -160,19 +160,18 @@ func (r *LogsUploaderTarget) UnmarshalJSON(data []byte) error {
 // LogsUploaderTargetConfigUnion contains all possible properties and values from
 // [LogsUploaderTargetConfigS3GcoreConfig],
 // [LogsUploaderTargetConfigS3AmazonConfig], [LogsUploaderTargetConfigObject],
-// [LogsUploaderTargetConfigS3GcoreConfig],
-// [LogsUploaderTargetConfigS3GcoreConfig], [LogsUploaderTargetConfigFtpConfig],
+// [LogsUploaderTargetConfigS3GcoreConfig2],
+// [LogsUploaderTargetConfigS3GcoreConfig3], [LogsUploaderTargetConfigFtpConfig],
 // [LogsUploaderTargetConfigSftpConfig], [LogsUploaderTargetConfigHTTPConfig],
 // [LogsUploaderTargetConfigAzureBlobConfig].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type LogsUploaderTargetConfigUnion struct {
-	AccessKeyID string `json:"access_key_id"`
-	BucketName  string `json:"bucket_name"`
-	Directory   string `json:"directory"`
-	Endpoint    string `json:"endpoint"`
-	Region      string `json:"region"`
-	// This field is from variant [LogsUploaderTargetConfigS3GcoreConfig].
+	AccessKeyID    string `json:"access_key_id"`
+	BucketName     string `json:"bucket_name"`
+	Directory      string `json:"directory"`
+	Endpoint       string `json:"endpoint"`
+	Region         string `json:"region"`
 	UsePathStyle   bool   `json:"use_path_style"`
 	Hostname       string `json:"hostname"`
 	TimeoutSeconds int64  `json:"timeout_seconds"`
@@ -237,12 +236,12 @@ func (u LogsUploaderTargetConfigUnion) AsLogsUploaderTargetConfigObject() (v Log
 	return
 }
 
-func (u LogsUploaderTargetConfigUnion) AsLogsUploaderTargetConfigS3GcoreConfig() (v LogsUploaderTargetConfigS3GcoreConfig) {
+func (u LogsUploaderTargetConfigUnion) AsLogsUploaderTargetConfigS3GcoreConfig2() (v LogsUploaderTargetConfigS3GcoreConfig2) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u LogsUploaderTargetConfigUnion) AsVariant2() (v LogsUploaderTargetConfigS3GcoreConfig) {
+func (u LogsUploaderTargetConfigUnion) AsLogsUploaderTargetConfigS3GcoreConfig3() (v LogsUploaderTargetConfigS3GcoreConfig3) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -390,6 +389,58 @@ type LogsUploaderTargetConfigObject struct {
 // Returns the unmodified JSON received from the API
 func (r LogsUploaderTargetConfigObject) RawJSON() string { return r.JSON.raw }
 func (r *LogsUploaderTargetConfigObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LogsUploaderTargetConfigS3GcoreConfig2 struct {
+	AccessKeyID  string `json:"access_key_id"`
+	BucketName   string `json:"bucket_name"`
+	Directory    string `json:"directory" api:"nullable"`
+	Endpoint     string `json:"endpoint"`
+	Region       string `json:"region"`
+	UsePathStyle bool   `json:"use_path_style"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AccessKeyID  respjson.Field
+		BucketName   respjson.Field
+		Directory    respjson.Field
+		Endpoint     respjson.Field
+		Region       respjson.Field
+		UsePathStyle respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LogsUploaderTargetConfigS3GcoreConfig2) RawJSON() string { return r.JSON.raw }
+func (r *LogsUploaderTargetConfigS3GcoreConfig2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LogsUploaderTargetConfigS3GcoreConfig3 struct {
+	AccessKeyID  string `json:"access_key_id"`
+	BucketName   string `json:"bucket_name"`
+	Directory    string `json:"directory" api:"nullable"`
+	Endpoint     string `json:"endpoint"`
+	Region       string `json:"region"`
+	UsePathStyle bool   `json:"use_path_style"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AccessKeyID  respjson.Field
+		BucketName   respjson.Field
+		Directory    respjson.Field
+		Endpoint     respjson.Field
+		Region       respjson.Field
+		UsePathStyle respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LogsUploaderTargetConfigS3GcoreConfig3) RawJSON() string { return r.JSON.raw }
+func (r *LogsUploaderTargetConfigS3GcoreConfig3) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
