@@ -345,7 +345,7 @@ type Stream struct {
 	// /streaming/statistics/ffprobe?interval=6000&`date_from`=2023-10-01&`date_to`=2023-10-11&`stream_id`=12345
 	FinishedAtPrimary string `json:"finished_at_primary"`
 	// Current FPS of the original stream, if stream is transcoding
-	FrameRate float64 `json:"frame_rate"`
+	FrameRate float64 `json:"frame_rate" format:"decimal"`
 	// HLS output. URL for transcoded result of stream in HLS CMAF format, with .m3u8
 	// link. Recommended for use for all HLS streams.
 	//
@@ -638,7 +638,7 @@ type Stream struct {
 	// stream has problems in delivery due to your local internet provider's
 	// conditions, or the stream does not meet stream inbound requirements. See
 	// Knowledge Base for details.
-	TranscodingSpeed float64 `json:"transcoding_speed"`
+	TranscodingSpeed float64 `json:"transcoding_speed" format:"decimal"`
 	// When using PULL method, this is the URL to pull a stream from.
 	//
 	// You can specify multiple addresses separated by a space (" "), so you can
