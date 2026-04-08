@@ -305,8 +305,13 @@ type LoadBalancerListenerListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Load Balancer ID
 	LoadBalancerID param.Opt[string] `query:"load_balancer_id,omitzero" format:"uuid4" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Show stats
 	ShowStats param.Opt[bool] `query:"show_stats,omitzero" json:"-"`
 	paramObj

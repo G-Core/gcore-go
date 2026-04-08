@@ -30,6 +30,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.LoadBalancers.New(context.TODO(), cloud.LoadBalancerNewParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(7),
+		Name:      "new_load_balancer",
 		Flavor:    gcore.String("lb1-1-2"),
 		FloatingIP: cloud.LoadBalancerNewParamsFloatingIPUnion{
 			OfExisting: &cloud.LoadBalancerNewParamsFloatingIPExisting{
@@ -112,8 +113,6 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 			},
 			TopicName: gcore.String("my-log-name"),
 		},
-		Name:                  gcore.String("new_load_balancer"),
-		NameTemplate:          gcore.String("lb_name_template"),
 		PreferredConnectivity: cloud.LoadBalancerMemberConnectivityL2,
 		Tags: map[string]string{
 			"my-tag": "my-tag-value",

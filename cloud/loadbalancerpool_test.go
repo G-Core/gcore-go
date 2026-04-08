@@ -175,8 +175,10 @@ func TestLoadBalancerPoolListWithOptionalParams(t *testing.T) {
 		ProjectID:      gcore.Int(1),
 		RegionID:       gcore.Int(1),
 		Details:        gcore.Bool(true),
+		Limit:          gcore.Int(1000),
 		ListenerID:     gcore.String("00000000-0000-4000-8000-000000000000"),
 		LoadBalancerID: gcore.String("00000000-0000-4000-8000-000000000000"),
+		Offset:         gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error
