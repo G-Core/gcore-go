@@ -185,9 +185,7 @@ func TestOriginGroupReplaceWithOptionalParams(t *testing.T) {
 		0,
 		cdn.OriginGroupReplaceParams{
 			OfNoneAuth: &cdn.OriginGroupReplaceParamsBodyNoneAuth{
-				AuthType: "none",
-				Name:     "YourOriginGroup",
-				Path:     "",
+				Name: "YourOriginGroup",
 				Sources: []cdn.OriginGroupReplaceParamsBodyNoneAuthSourceUnion{{
 					OfHostSource: &cdn.OriginGroupReplaceParamsBodyNoneAuthSourceHostSource{
 						Source:             "yourdomain.com",
@@ -198,6 +196,8 @@ func TestOriginGroupReplaceWithOptionalParams(t *testing.T) {
 					},
 				}},
 				UseNext:           true,
+				AuthType:          gcore.String("none"),
+				Path:              gcore.String(""),
 				ProxyNextUpstream: []string{"error", "timeout", "invalid_header", "http_500", "http_502", "http_503", "http_504"},
 			},
 		},

@@ -150,12 +150,16 @@ type OriginGroupsNoneAuth struct {
 	// `origin_type: s3` and a `config` object with S3 credentials. Both types can be
 	// mixed in the same origin group.
 	Sources []OriginGroupsNoneAuthSourceUnion `json:"sources" api:"required"`
+	// **Deprecated.** No longer necessary. Defaults to `none`.
+	//
 	// Origin authentication type.
 	//
 	// Possible values:
 	//
 	// - **none** - Used for public origins.
 	// - **awsSignatureV4** - Used for S3 storage.
+	//
+	// Deprecated: deprecated
 	AuthType string `json:"auth_type"`
 	// Defines whether the origin group has related CDN resources.
 	//
@@ -164,7 +168,12 @@ type OriginGroupsNoneAuth struct {
 	// - **true** - Origin group has related CDN resources.
 	// - **false** - Origin group does not have related CDN resources.
 	HasRelatedResources bool `json:"has_related_resources"`
-	// Parameter is **deprecated**.
+	// **Deprecated.** No longer necessary. Omit this field and the default origin path
+	// behavior will be used.
+	//
+	// Origin path prefix.
+	//
+	// Deprecated: deprecated
 	Path string `json:"path"`
 	// Defines cases when the request should be passed on to the next origin.
 	//
@@ -413,14 +422,28 @@ func (r *OriginGroupsNoneAuthSourceS3SourceConfig) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// **Deprecated.** To create S3 origins, configure them directly in sources with
+// `origin_type` and `config` instead.
+//
+// Deprecated: deprecated
 type OriginGroupsAwsSignatureV4 struct {
 	// Origin group ID.
 	ID int64 `json:"id" api:"required"`
+	// **Deprecated.** To create S3 origins, configure them directly in sources with
+	// `origin_type` and `config` instead.
+	//
 	// Credentials to access the private bucket.
+	//
+	// Deprecated: deprecated
 	Auth OriginGroupsAwsSignatureV4Auth `json:"auth" api:"required"`
+	// **Deprecated.** To create S3 origins, configure them directly in sources with
+	// `origin_type` and `config` instead.
+	//
 	// Authentication type.
 	//
 	// **awsSignatureV4** value is used for S3 storage.
+	//
+	// Deprecated: deprecated
 	AuthType string `json:"auth_type" api:"required"`
 	// Origin group name.
 	Name string `json:"name" api:"required"`
@@ -431,7 +454,12 @@ type OriginGroupsAwsSignatureV4 struct {
 	// - **true** - Origin group has related CDN resources.
 	// - **false** - Origin group does not have related CDN resources.
 	HasRelatedResources bool `json:"has_related_resources"`
-	// Parameter is **deprecated**.
+	// **Deprecated.** No longer necessary. Omit this field and the default origin path
+	// behavior will be used.
+	//
+	// Origin path prefix.
+	//
+	// Deprecated: deprecated
 	Path string `json:"path"`
 	// Defines cases when the request should be passed on to the next origin.
 	//
@@ -480,7 +508,12 @@ func (r *OriginGroupsAwsSignatureV4) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// **Deprecated.** To create S3 origins, configure them directly in sources with
+// `origin_type` and `config` instead.
+//
 // Credentials to access the private bucket.
+//
+// Deprecated: deprecated
 type OriginGroupsAwsSignatureV4Auth struct {
 	// Access key ID for the S3 account.
 	//
@@ -615,6 +648,8 @@ type OriginGroupNewParams struct {
 	// an origin group with host origins, or mixed host and S3 origins.
 	OfNoneAuth *OriginGroupNewParamsBodyNoneAuth `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
+	// **Deprecated.** To create S3 origins, configure them directly in sources with
+	// `origin_type` and `config` instead.
 	OfAwsSignatureV4 *OriginGroupNewParamsBodyAwsSignatureV4 `json:",inline"`
 
 	paramObj
@@ -634,12 +669,16 @@ type OriginGroupNewParamsBodyNoneAuth struct {
 	// Origin group name.
 	Name    string                                        `json:"name" api:"required"`
 	Sources []OriginGroupNewParamsBodyNoneAuthSourceUnion `json:"sources,omitzero" api:"required"`
+	// **Deprecated.** No longer necessary. Defaults to `none`.
+	//
 	// Origin authentication type.
 	//
 	// Possible values:
 	//
 	// - **none** - Used for public origins.
 	// - **awsSignatureV4** - Used for S3 storage.
+	//
+	// Deprecated: deprecated
 	AuthType param.Opt[string] `json:"auth_type,omitzero"`
 	// Defines whether to use the next origin from the origin group if origin responds
 	// with the cases specified in `proxy_next_upstream`. If you enable it, you must
@@ -914,13 +953,28 @@ func init() {
 	)
 }
 
+// **Deprecated.** To create S3 origins, configure them directly in sources with
+// `origin_type` and `config` instead.
+//
+// Deprecated: deprecated
+//
 // The properties Auth, AuthType, Name are required.
 type OriginGroupNewParamsBodyAwsSignatureV4 struct {
+	// **Deprecated.** To create S3 origins, configure them directly in sources with
+	// `origin_type` and `config` instead.
+	//
 	// Credentials to access the private bucket.
+	//
+	// Deprecated: deprecated
 	Auth OriginGroupNewParamsBodyAwsSignatureV4Auth `json:"auth,omitzero" api:"required"`
+	// **Deprecated.** To create S3 origins, configure them directly in sources with
+	// `origin_type` and `config` instead.
+	//
 	// Authentication type.
 	//
 	// **awsSignatureV4** value is used for S3 storage.
+	//
+	// Deprecated: deprecated
 	AuthType string `json:"auth_type" api:"required"`
 	// Origin group name.
 	Name string `json:"name" api:"required"`
@@ -961,7 +1015,12 @@ func (r *OriginGroupNewParamsBodyAwsSignatureV4) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// **Deprecated.** To create S3 origins, configure them directly in sources with
+// `origin_type` and `config` instead.
+//
 // Credentials to access the private bucket.
+//
+// Deprecated: deprecated
 //
 // The properties S3AccessKeyID, S3BucketName, S3SecretAccessKey, S3Type are
 // required.
@@ -1019,6 +1078,8 @@ type OriginGroupUpdateParams struct {
 	// This field is a request body variant, only one variant field can be set.
 	OfNoneAuth *OriginGroupUpdateParamsBodyNoneAuth `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
+	// **Deprecated.** To create S3 origins, configure them directly in sources with
+	// `origin_type` and `config` instead.
 	OfAwsSignatureV4 *OriginGroupUpdateParamsBodyAwsSignatureV4 `json:",inline"`
 
 	paramObj
@@ -1035,14 +1096,23 @@ func (r *OriginGroupUpdateParams) UnmarshalJSON(data []byte) error {
 type OriginGroupUpdateParamsBodyNoneAuth struct {
 	// Origin group name.
 	Name string `json:"name" api:"required"`
+	// **Deprecated.** No longer necessary. Defaults to `none`.
+	//
 	// Origin authentication type.
 	//
 	// Possible values:
 	//
 	// - **none** - Used for public origins.
 	// - **awsSignatureV4** - Used for S3 storage.
+	//
+	// Deprecated: deprecated
 	AuthType param.Opt[string] `json:"auth_type,omitzero"`
-	// Parameter is **deprecated**.
+	// **Deprecated.** No longer necessary. Omit this field and the default origin path
+	// behavior will be used.
+	//
+	// Origin path prefix.
+	//
+	// Deprecated: deprecated
 	Path param.Opt[string] `json:"path,omitzero"`
 	// Defines whether to use the next origin from the origin group if origin responds
 	// with the cases specified in `proxy_next_upstream`. If you enable it, you must
@@ -1318,14 +1388,28 @@ func init() {
 	)
 }
 
+// **Deprecated.** To create S3 origins, configure them directly in sources with
+// `origin_type` and `config` instead.
+//
+// Deprecated: deprecated
 type OriginGroupUpdateParamsBodyAwsSignatureV4 struct {
+	// **Deprecated.** To create S3 origins, configure them directly in sources with
+	// `origin_type` and `config` instead.
+	//
 	// Authentication type.
 	//
 	// **awsSignatureV4** value is used for S3 storage.
+	//
+	// Deprecated: deprecated
 	AuthType param.Opt[string] `json:"auth_type,omitzero"`
 	// Origin group name.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Parameter is **deprecated**.
+	// **Deprecated.** No longer necessary. Omit this field and the default origin path
+	// behavior will be used.
+	//
+	// Origin path prefix.
+	//
+	// Deprecated: deprecated
 	Path param.Opt[string] `json:"path,omitzero"`
 	// Defines whether to use the next origin from the origin group if origin responds
 	// with the cases specified in `proxy_next_upstream`. If you enable it, you must
@@ -1336,7 +1420,12 @@ type OriginGroupUpdateParamsBodyAwsSignatureV4 struct {
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
 	UseNext param.Opt[bool] `json:"use_next,omitzero"`
+	// **Deprecated.** To create S3 origins, configure them directly in sources with
+	// `origin_type` and `config` instead.
+	//
 	// Credentials to access the private bucket.
+	//
+	// Deprecated: deprecated
 	Auth OriginGroupUpdateParamsBodyAwsSignatureV4Auth `json:"auth,omitzero"`
 	// Defines cases when the request should be passed on to the next origin.
 	//
@@ -1366,7 +1455,12 @@ func (r *OriginGroupUpdateParamsBodyAwsSignatureV4) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// **Deprecated.** To create S3 origins, configure them directly in sources with
+// `origin_type` and `config` instead.
+//
 // Credentials to access the private bucket.
+//
+// Deprecated: deprecated
 //
 // The properties S3AccessKeyID, S3BucketName, S3SecretAccessKey, S3Type are
 // required.
@@ -1451,6 +1545,8 @@ type OriginGroupReplaceParams struct {
 	// This field is a request body variant, only one variant field can be set.
 	OfNoneAuth *OriginGroupReplaceParamsBodyNoneAuth `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
+	// **Deprecated.** To create S3 origins, configure them directly in sources with
+	// `origin_type` and `config` instead.
 	OfAwsSignatureV4 *OriginGroupReplaceParamsBodyAwsSignatureV4 `json:",inline"`
 
 	paramObj
@@ -1463,19 +1559,10 @@ func (r *OriginGroupReplaceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties AuthType, Name, Path, Sources, UseNext are required.
+// The properties Name, Sources, UseNext are required.
 type OriginGroupReplaceParamsBodyNoneAuth struct {
-	// Origin authentication type.
-	//
-	// Possible values:
-	//
-	// - **none** - Used for public origins.
-	// - **awsSignatureV4** - Used for S3 storage.
-	AuthType string `json:"auth_type" api:"required"`
 	// Origin group name.
-	Name string `json:"name" api:"required"`
-	// Parameter is **deprecated**.
-	Path    string                                            `json:"path" api:"required"`
+	Name    string                                            `json:"name" api:"required"`
 	Sources []OriginGroupReplaceParamsBodyNoneAuthSourceUnion `json:"sources,omitzero" api:"required"`
 	// Defines whether to use the next origin from the origin group if origin responds
 	// with the cases specified in `proxy_next_upstream`. If you enable it, you must
@@ -1486,6 +1573,24 @@ type OriginGroupReplaceParamsBodyNoneAuth struct {
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
 	UseNext bool `json:"use_next" api:"required"`
+	// **Deprecated.** No longer necessary. Defaults to `none`.
+	//
+	// Origin authentication type.
+	//
+	// Possible values:
+	//
+	// - **none** - Used for public origins.
+	// - **awsSignatureV4** - Used for S3 storage.
+	//
+	// Deprecated: deprecated
+	AuthType param.Opt[string] `json:"auth_type,omitzero"`
+	// **Deprecated.** No longer necessary. Omit this field and the default origin path
+	// behavior will be used.
+	//
+	// Origin path prefix.
+	//
+	// Deprecated: deprecated
+	Path param.Opt[string] `json:"path,omitzero"`
 	// Defines cases when the request should be passed on to the next origin.
 	//
 	// Possible values:
@@ -1750,18 +1855,31 @@ func init() {
 	)
 }
 
-// The properties Auth, AuthType, Name, Path, UseNext are required.
+// **Deprecated.** To create S3 origins, configure them directly in sources with
+// `origin_type` and `config` instead.
+//
+// Deprecated: deprecated
+//
+// The properties Auth, AuthType, Name, UseNext are required.
 type OriginGroupReplaceParamsBodyAwsSignatureV4 struct {
+	// **Deprecated.** To create S3 origins, configure them directly in sources with
+	// `origin_type` and `config` instead.
+	//
 	// Credentials to access the private bucket.
+	//
+	// Deprecated: deprecated
 	Auth OriginGroupReplaceParamsBodyAwsSignatureV4Auth `json:"auth,omitzero" api:"required"`
+	// **Deprecated.** To create S3 origins, configure them directly in sources with
+	// `origin_type` and `config` instead.
+	//
 	// Authentication type.
 	//
 	// **awsSignatureV4** value is used for S3 storage.
+	//
+	// Deprecated: deprecated
 	AuthType string `json:"auth_type" api:"required"`
 	// Origin group name.
 	Name string `json:"name" api:"required"`
-	// Parameter is **deprecated**.
-	Path string `json:"path" api:"required"`
 	// Defines whether to use the next origin from the origin group if origin responds
 	// with the cases specified in `proxy_next_upstream`. If you enable it, you must
 	// specify cases in `proxy_next_upstream`.
@@ -1771,6 +1889,13 @@ type OriginGroupReplaceParamsBodyAwsSignatureV4 struct {
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
 	UseNext bool `json:"use_next" api:"required"`
+	// **Deprecated.** No longer necessary. Omit this field and the default origin path
+	// behavior will be used.
+	//
+	// Origin path prefix.
+	//
+	// Deprecated: deprecated
+	Path param.Opt[string] `json:"path,omitzero"`
 	// Defines cases when the request should be passed on to the next origin.
 	//
 	// Possible values:
@@ -1799,7 +1924,12 @@ func (r *OriginGroupReplaceParamsBodyAwsSignatureV4) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// **Deprecated.** To create S3 origins, configure them directly in sources with
+// `origin_type` and `config` instead.
+//
 // Credentials to access the private bucket.
+//
+// Deprecated: deprecated
 //
 // The properties S3AccessKeyID, S3BucketName, S3SecretAccessKey, S3Type are
 // required.
