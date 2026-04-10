@@ -33,7 +33,7 @@ func TestLoadBalancerMetricList(t *testing.T) {
 			ProjectID:    gcore.Int(1),
 			RegionID:     gcore.Int(7),
 			TimeInterval: 6,
-			TimeUnit:     cloud.InstanceMetricsTimeUnitDay,
+			TimeUnit:     cloud.InstanceMetricsTimeUnitHour,
 		},
 	)
 	if err != nil {

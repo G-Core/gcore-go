@@ -92,7 +92,8 @@ func TestBaremetalServerUpdateWithOptionalParams(t *testing.T) {
 			RegionID:  gcore.Int(1),
 			Name:      gcore.String("server_name"),
 			Tags: cloud.TagUpdateMap{
-				"foo": "string",
+				"my-tag":           "my-tag-value",
+				"my-tag-to-remove": nil,
 			},
 		},
 	)

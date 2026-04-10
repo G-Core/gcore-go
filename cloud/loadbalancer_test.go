@@ -117,7 +117,7 @@ func TestLoadBalancerNewWithOptionalParams(t *testing.T) {
 		Tags: map[string]string{
 			"my-tag": "my-tag-value",
 		},
-		VipIPFamily:  cloud.InterfaceIPFamilyDual,
+		VipIPFamily:  cloud.InterfaceIPFamilyIpv4,
 		VipNetworkID: gcore.String("ac307687-31a4-4a11-a949-6bea1b2878f5"),
 		VipPortID:    gcore.String("ff83e13a-b256-4be2-ba5d-028d3f0ab450"),
 		VipSubnetID:  gcore.String("4e7802d3-5023-44b8-b298-7726558fddf4"),
@@ -160,7 +160,8 @@ func TestLoadBalancerUpdateWithOptionalParams(t *testing.T) {
 			Name:                  gcore.String("some_name"),
 			PreferredConnectivity: cloud.LoadBalancerMemberConnectivityL2,
 			Tags: cloud.TagUpdateMap{
-				"foo": "string",
+				"my-tag":           "my-tag-value",
+				"my-tag-to-remove": nil,
 			},
 		},
 	)
