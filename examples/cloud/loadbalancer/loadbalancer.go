@@ -62,7 +62,7 @@ func createLoadBalancer(client *gcore.Client) *cloud.LoadBalancer {
 
 	params := cloud.LoadBalancerNewParams{
 		Flavor: param.NewOpt("lb1-1-2"),
-		Name:   param.NewOpt("gcore-go-example"),
+		Name:   "gcore-go-example",
 		Tags:   map[string]string{"name": "gcore-go-example"},
 	}
 
