@@ -98,7 +98,8 @@ func TestGPUVirtualClusterUpdateWithOptionalParams(t *testing.T) {
 			RegionID:  gcore.Int(7),
 			Name:      gcore.String("gpu-cluster-1"),
 			Tags: cloud.TagUpdateMap{
-				"foo": "string",
+				"my-tag":           "my-tag-value",
+				"my-tag-to-remove": nil,
 			},
 		},
 	)

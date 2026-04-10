@@ -29,7 +29,7 @@ func TestLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.LoadBalancers.Pools.New(context.TODO(), cloud.LoadBalancerPoolNewParams{
 		ProjectID:   gcore.Int(1),
 		RegionID:    gcore.Int(1),
-		LbAlgorithm: cloud.LbAlgorithmLeastConnections,
+		LbAlgorithm: cloud.LbAlgorithmRoundRobin,
 		Name:        "pool_name",
 		Protocol:    cloud.LbPoolProtocolHTTP,
 		CaSecretID:  gcore.String("ca_secret_id"),
@@ -124,7 +124,7 @@ func TestLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
 				Type:           cloud.LbHealthMonitorTypeHTTP,
 				URLPath:        gcore.String("/"),
 			},
-			LbAlgorithm: cloud.LbAlgorithmLeastConnections,
+			LbAlgorithm: cloud.LbAlgorithmRoundRobin,
 			Members: []cloud.LoadBalancerPoolUpdateParamsMember{{
 				Address:        "192.168.40.33",
 				ProtocolPort:   80,
