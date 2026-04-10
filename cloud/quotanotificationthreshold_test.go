@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
@@ -496,7 +497,8 @@ func TestQuotaNotificationThresholdUpdateWithOptionalParams(t *testing.T) {
 					},
 				}},
 			},
-			LastSending: param.Null[string](),
+			// GCLOUD2-25166: manually fixed — codegen incorrectly generates param.Null[string]() for date-time fields
+			LastSending: param.Null[time.Time](),
 		},
 	)
 	if err != nil {
