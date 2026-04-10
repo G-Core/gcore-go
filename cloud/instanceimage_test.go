@@ -39,7 +39,7 @@ func TestInstanceImageUpdateWithOptionalParams(t *testing.T) {
 			OsType:         cloud.InstanceImageUpdateParamsOsTypeLinux,
 			SSHKey:         cloud.InstanceImageUpdateParamsSSHKeyAllow,
 			Tags: cloud.TagUpdateMap{
-				"foo": "string",
+				"my-tag": "my-tag-value",
 			},
 		},
 	)
