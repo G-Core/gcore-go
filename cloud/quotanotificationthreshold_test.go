@@ -497,7 +497,6 @@ func TestQuotaNotificationThresholdUpdateWithOptionalParams(t *testing.T) {
 					},
 				}},
 			},
-			// GCLOUD2-25166: manually fixed — codegen incorrectly generates param.Null[string]() for date-time fields
 			LastSending: param.Null[time.Time](),
 		},
 	)
