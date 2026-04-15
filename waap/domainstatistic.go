@@ -579,7 +579,7 @@ type WaapRequestDetails struct {
 	RuleID string `json:"rule_id" api:"required"`
 	// Name of the triggered rule
 	RuleName string `json:"rule_name" api:"required"`
-	// The HTTP scheme of the request that generated an event
+	// The URI scheme of the request that generated an event
 	Scheme string `json:"scheme" api:"required"`
 	// The session ID associated with the request.
 	SessionID string `json:"session_id" api:"required"`
