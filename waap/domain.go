@@ -311,6 +311,10 @@ type WaapRequestSummary struct {
 	UserAgent string `json:"user_agent" api:"required"`
 	// Client from parsed User agent header
 	UserAgentClient string `json:"user_agent_client" api:"required"`
+	// HTTP version of request
+	HTTPVersion string `json:"http_version"`
+	// The URI scheme of the request that generated an event
+	Scheme string `json:"scheme"`
 	// The session ID associated with the request.
 	SessionID string `json:"session_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -335,6 +339,8 @@ type WaapRequestSummary struct {
 		TrafficTypes    respjson.Field
 		UserAgent       respjson.Field
 		UserAgentClient respjson.Field
+		HTTPVersion     respjson.Field
+		Scheme          respjson.Field
 		SessionID       respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
