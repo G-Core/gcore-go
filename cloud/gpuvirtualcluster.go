@@ -230,6 +230,8 @@ type GPUVirtualCluster struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Cluster flavor name
 	Flavor string `json:"flavor" api:"required"`
+	// True if any server in the cluster has pending (not yet applied) settings changes
+	HasPendingChanges bool `json:"has_pending_changes" api:"required"`
 	// Cluster name
 	Name string `json:"name" api:"required"`
 	// Cluster servers count
@@ -252,18 +254,19 @@ type GPUVirtualCluster struct {
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID              respjson.Field
-		CreatedAt       respjson.Field
-		Flavor          respjson.Field
-		Name            respjson.Field
-		ServersCount    respjson.Field
-		ServersIDs      respjson.Field
-		ServersSettings respjson.Field
-		Status          respjson.Field
-		Tags            respjson.Field
-		UpdatedAt       respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
+		ID                respjson.Field
+		CreatedAt         respjson.Field
+		Flavor            respjson.Field
+		HasPendingChanges respjson.Field
+		Name              respjson.Field
+		ServersCount      respjson.Field
+		ServersIDs        respjson.Field
+		ServersSettings   respjson.Field
+		Status            respjson.Field
+		Tags              respjson.Field
+		UpdatedAt         respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 

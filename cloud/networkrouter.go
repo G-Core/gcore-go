@@ -379,8 +379,10 @@ func (r *SubnetIDParam) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkRouterNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// name of router
 	Name string `json:"name" api:"required"`
 	// External gateway configuration. Use type 'default' to let the platform
@@ -626,11 +628,15 @@ func (r *NetworkRouterUpdateParamsRoute) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkRouterListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Limit the number of returned routers
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Limit of items on a single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result
+	// Optional. Filter routers by name
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
+	// Offset in results list
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
