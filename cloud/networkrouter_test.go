@@ -27,8 +27,8 @@ func TestNetworkRouterNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Networks.Routers.New(context.TODO(), cloud.NetworkRouterNewParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(1),
 		Name:      "my_wonderful_router",
 		ExternalGatewayInfo: cloud.NetworkRouterNewParamsExternalGatewayInfoUnion{
 			OfRouterExternalDefaultGwSerializer: &cloud.NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer{
@@ -106,9 +106,10 @@ func TestNetworkRouterListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Networks.Routers.List(context.TODO(), cloud.NetworkRouterListParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
-		Limit:     gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(1),
+		Limit:     gcore.Int(10),
+		Name:      gcore.String("router-name"),
 		Offset:    gcore.Int(0),
 	})
 	if err != nil {

@@ -252,6 +252,8 @@ type GPUBaremetalClusterServer struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Unique flavor identifier
 	Flavor string `json:"flavor" api:"required"`
+	// True if there are pending (not yet applied) server settings changes
+	HasPendingChanges bool `json:"has_pending_changes" api:"required"`
 	// Server's image UUID
 	ImageID string `json:"image_id" api:"required" format:"uuid4"`
 	// List of IP addresses
@@ -277,20 +279,21 @@ type GPUBaremetalClusterServer struct {
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID             respjson.Field
-		CreatedAt      respjson.Field
-		Flavor         respjson.Field
-		ImageID        respjson.Field
-		IPAddresses    respjson.Field
-		Name           respjson.Field
-		SecurityGroups respjson.Field
-		SSHKeyName     respjson.Field
-		Status         respjson.Field
-		Tags           respjson.Field
-		TaskID         respjson.Field
-		UpdatedAt      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		ID                respjson.Field
+		CreatedAt         respjson.Field
+		Flavor            respjson.Field
+		HasPendingChanges respjson.Field
+		ImageID           respjson.Field
+		IPAddresses       respjson.Field
+		Name              respjson.Field
+		SecurityGroups    respjson.Field
+		SSHKeyName        respjson.Field
+		Status            respjson.Field
+		Tags              respjson.Field
+		TaskID            respjson.Field
+		UpdatedAt         respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
