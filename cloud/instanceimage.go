@@ -123,18 +123,24 @@ func (r *InstanceImageService) Delete(ctx context.Context, imageID string, body 
 // DeleteAndPoll delete the image and poll for completion of the first task. Use the [TaskService.Poll] method if you
 // need to poll for all tasks.
 func (r *InstanceImageService) DeleteAndPoll(ctx context.Context, imageID string, body InstanceImageDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, imageID, body, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, imageID, body, actionOpts...)
 	if err != nil {
 		return err
 	}
 
-	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
 
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 
@@ -163,13 +169,14 @@ func (r *InstanceImageService) NewFromVolume(ctx context.Context, params Instanc
 
 // NewFromVolumeAndPoll create image from volume and poll for the result
 func (r *InstanceImageService) NewFromVolumeAndPoll(ctx context.Context, params InstanceImageNewFromVolumeParams, opts ...option.RequestOption) (v *Image, err error) {
-	resource, err := r.NewFromVolume(ctx, params, opts...)
+	// Exclude WithResponseBodyInto for the action (NewFromVolume returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.NewFromVolume(ctx, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -183,7 +190,12 @@ func (r *InstanceImageService) NewFromVolumeAndPoll(ctx context.Context, params 
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -193,7 +205,9 @@ func (r *InstanceImageService) NewFromVolumeAndPoll(ctx context.Context, params 
 	}
 	resourceID := task.CreatedResources.Images[0]
 
-	return r.Get(ctx, resourceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // Retrieve detailed information about a specific image.
@@ -248,13 +262,14 @@ func (r *InstanceImageService) Upload(ctx context.Context, params InstanceImageU
 // UploadAndPoll upload image and poll for the task completion. Use the [TaskService.Poll] method if you need to poll
 // for all tasks.
 func (r *InstanceImageService) UploadAndPoll(ctx context.Context, params InstanceImageUploadParams, opts ...option.RequestOption) (v *Image, err error) {
-	resource, err := r.Upload(ctx, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Upload returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Upload(ctx, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -268,7 +283,12 @@ func (r *InstanceImageService) UploadAndPoll(ctx context.Context, params Instanc
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -278,7 +298,9 @@ func (r *InstanceImageService) UploadAndPoll(ctx context.Context, params Instanc
 	}
 	resourceID := task.CreatedResources.Images[0]
 
-	return r.Get(ctx, resourceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 type Image struct {

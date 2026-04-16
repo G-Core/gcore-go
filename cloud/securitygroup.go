@@ -75,13 +75,14 @@ func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewP
 // NewAndPoll creates a security group and polls for completion of the first task. Use the [TaskService.Poll] method if
 // you need to poll for all tasks.
 func (r *SecurityGroupService) NewAndPoll(ctx context.Context, params SecurityGroupNewParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
-	resource, err := r.New(ctx, params, opts...)
+	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.New(ctx, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -95,7 +96,12 @@ func (r *SecurityGroupService) NewAndPoll(ctx context.Context, params SecurityGr
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -105,7 +111,9 @@ func (r *SecurityGroupService) NewAndPoll(ctx context.Context, params SecurityGr
 	}
 	resourceID := task.CreatedResources.SecurityGroups[0]
 
-	return r.Get(ctx, resourceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // Updates the specified security group with the provided changes.
@@ -155,7 +163,9 @@ func (r *SecurityGroupService) Update(ctx context.Context, groupID string, param
 // UpdateAndPoll updates a security group and polls for completion of the first task. Use the [TaskService.Poll] method if
 // you need to poll for all tasks.
 func (r *SecurityGroupService) UpdateAndPoll(ctx context.Context, groupID string, params SecurityGroupUpdateParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
-	resource, err := r.Update(ctx, groupID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Update returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Update(ctx, groupID, params, actionOpts...)
 	if err != nil {
 		return
 	}
@@ -175,12 +185,19 @@ func (r *SecurityGroupService) UpdateAndPoll(ctx context.Context, groupID string
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.Get(ctx, groupID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, groupID, getParams, getOpts...)
 }
 
 // List all security groups in the specified project and region.

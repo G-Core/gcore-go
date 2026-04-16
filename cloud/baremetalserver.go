@@ -1491,13 +1491,14 @@ func (r *BaremetalServerRebuildParams) UnmarshalJSON(data []byte) error {
 
 // NewAndPoll create bare metal server and poll for the result
 func (r *BaremetalServerService) NewAndPoll(ctx context.Context, params BaremetalServerNewParams, opts ...option.RequestOption) (v *BaremetalServer, err error) {
-	resource, err := r.New(ctx, params, opts...)
+	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.New(ctx, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -1506,7 +1507,12 @@ func (r *BaremetalServerService) NewAndPoll(ctx context.Context, params Baremeta
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -1524,7 +1530,9 @@ func (r *BaremetalServerService) NewAndPoll(ctx context.Context, params Baremeta
 	listParams.RegionID = params.RegionID
 	listParams.Uuid = param.NewOpt(resourceID)
 
-	servers, err := r.List(ctx, listParams, opts...)
+	// Clear request body for List
+	listOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	servers, err := r.List(ctx, listParams, listOpts...)
 	if err != nil {
 		return
 	}
@@ -1539,13 +1547,14 @@ func (r *BaremetalServerService) NewAndPoll(ctx context.Context, params Baremeta
 // RebuildAndPoll rebuild bare metal server and poll for the completion of the first task.  Use the [TaskService.Poll]
 // method if you need to poll for all tasks.
 func (r *BaremetalServerService) RebuildAndPoll(ctx context.Context, serverID string, params BaremetalServerRebuildParams, opts ...option.RequestOption) (v *BaremetalServer, err error) {
-	resource, err := r.Rebuild(ctx, serverID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Rebuild returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Rebuild(ctx, serverID, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -1554,7 +1563,12 @@ func (r *BaremetalServerService) RebuildAndPoll(ctx context.Context, serverID st
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -1567,7 +1581,9 @@ func (r *BaremetalServerService) RebuildAndPoll(ctx context.Context, serverID st
 	listParams.RegionID = params.RegionID
 	listParams.Uuid = param.NewOpt(serverID)
 
-	servers, err := r.List(ctx, listParams, opts...)
+	// Clear request body for List
+	listOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	servers, err := r.List(ctx, listParams, listOpts...)
 	if err != nil {
 		return
 	}
@@ -1582,7 +1598,9 @@ func (r *BaremetalServerService) RebuildAndPoll(ctx context.Context, serverID st
 // DeleteAndPoll deletes a bare metal server and polls for the completion of the first task.
 // Use the [TaskService.Poll] method if you need to poll for all tasks.
 func (r *BaremetalServerService) DeleteAndPoll(ctx context.Context, serverID string, params BaremetalServerDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, serverID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, serverID, params, actionOpts...)
 	if err != nil {
 		return err
 	}
@@ -1591,6 +1609,11 @@ func (r *BaremetalServerService) DeleteAndPoll(ctx context.Context, serverID str
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }

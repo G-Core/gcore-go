@@ -110,7 +110,9 @@ func (r *SecretService) Delete(ctx context.Context, secretID string, body Secret
 // DeleteAndPoll deletes a secret and polls the corresponding task until it is completed.
 // Use the [TaskService.Poll] method if you need to poll for all tasks.
 func (r *SecretService) DeleteAndPoll(ctx context.Context, secretID string, params SecretDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, secretID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, secretID, params, actionOpts...)
 	if err != nil {
 		return err
 	}
@@ -119,7 +121,12 @@ func (r *SecretService) DeleteAndPoll(ctx context.Context, secretID string, para
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 
@@ -173,13 +180,14 @@ func (r *SecretService) UploadTlsCertificate(ctx context.Context, params SecretU
 
 // Create secret and poll for the result
 func (r *SecretService) UploadTlsCertificateAndPoll(ctx context.Context, params SecretUploadTlsCertificateParams, opts ...option.RequestOption) (v *Secret, err error) {
-	resource, err := r.UploadTlsCertificate(ctx, params, opts...)
+	// Exclude WithResponseBodyInto for the action (UploadTlsCertificate returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.UploadTlsCertificate(ctx, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -193,7 +201,12 @@ func (r *SecretService) UploadTlsCertificateAndPoll(ctx context.Context, params 
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -203,7 +216,9 @@ func (r *SecretService) UploadTlsCertificateAndPoll(ctx context.Context, params 
 	}
 	resourceID := task.CreatedResources.Secrets[0]
 
-	return r.Get(ctx, resourceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 type Secret struct {

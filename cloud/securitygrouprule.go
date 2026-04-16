@@ -100,13 +100,14 @@ func (r *SecurityGroupRuleService) Delete(ctx context.Context, ruleID string, bo
 // NewAndPoll creates a security group rule and polls for completion of the task.
 // After the task completes, it fetches the parent security group and returns the created rule.
 func (r *SecurityGroupRuleService) NewAndPoll(ctx context.Context, groupID string, params SecurityGroupRuleNewParams, opts ...option.RequestOption) (res *SecurityGroupRule, err error) {
-	resource, err := r.New(ctx, groupID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.New(ctx, groupID, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -121,7 +122,12 @@ func (r *SecurityGroupRuleService) NewAndPoll(ctx context.Context, groupID strin
 	}
 	taskID := resource.Tasks[0]
 
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -131,8 +137,10 @@ func (r *SecurityGroupRuleService) NewAndPoll(ctx context.Context, groupID strin
 	}
 	ruleID := task.CreatedResources.SecurityGroupRules[0]
 
-	sgService := NewSecurityGroupService(opts...)
-	sg, err := sgService.Get(ctx, groupID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	sgService := NewSecurityGroupService(getOpts...)
+	sg, err := sgService.Get(ctx, groupID, getParams, getOpts...)
 	if err != nil {
 		return
 	}
@@ -148,18 +156,24 @@ func (r *SecurityGroupRuleService) NewAndPoll(ctx context.Context, groupID strin
 
 // DeleteAndPoll deletes a security group rule and polls for completion.
 func (r *SecurityGroupRuleService) DeleteAndPoll(ctx context.Context, ruleID string, params SecurityGroupRuleDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, ruleID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, ruleID, params, actionOpts...)
 	if err != nil {
 		return err
 	}
 
-	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
 
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 

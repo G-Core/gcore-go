@@ -67,13 +67,14 @@ func (r *K8SClusterPoolService) New(ctx context.Context, clusterName string, par
 
 // NewAndPoll creates a new k8s cluster pool and polls for completion
 func (r *K8SClusterPoolService) NewAndPoll(ctx context.Context, clusterName string, params K8SClusterPoolNewParams, opts ...option.RequestOption) (v *K8SClusterPool, err error) {
-	resource, err := r.New(ctx, clusterName, params, opts...)
+	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.New(ctx, clusterName, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -88,7 +89,12 @@ func (r *K8SClusterPoolService) NewAndPoll(ctx context.Context, clusterName stri
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -96,7 +102,9 @@ func (r *K8SClusterPoolService) NewAndPoll(ctx context.Context, clusterName stri
 	// for k8s cluster pool creation the task.CreatedResources.K8SPools only contains the cluster pool ID and not the
 	// cluster pool name, which is the path parameter required to retrieve the created cluster pool. Therefore, we use
 	// the params.Name instead.
-	return r.Get(ctx, params.Name, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, params.Name, getParams, getOpts...)
 }
 
 // Update k8s cluster pool
@@ -188,17 +196,23 @@ func (r *K8SClusterPoolService) Delete(ctx context.Context, poolName string, bod
 // DeleteAndPoll deletes a k8s cluster pool and polls for completion of the first task. Use the [TaskService.Poll] method if you
 // need to poll for all tasks.
 func (r *K8SClusterPoolService) DeleteAndPoll(ctx context.Context, poolName string, body K8SClusterPoolDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, poolName, body, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, poolName, body, actionOpts...)
 	if err != nil {
 		return err
 	}
 
-	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 
@@ -290,7 +304,9 @@ func (r *K8SClusterPoolService) Resize(ctx context.Context, poolName string, par
 // ResizeAndPoll resizes a k8s cluster pool and polls for completion of the first task. Use the [TaskService.Poll] method if you
 // need to poll for all tasks.
 func (r *K8SClusterPoolService) ResizeAndPoll(ctx context.Context, poolName string, params K8SClusterPoolResizeParams, opts ...option.RequestOption) (v *K8SClusterPool, err error) {
-	resource, err := r.Resize(ctx, poolName, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Resize returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Resize(ctx, poolName, params, actionOpts...)
 	if err != nil {
 		return
 	}
@@ -311,12 +327,19 @@ func (r *K8SClusterPoolService) ResizeAndPoll(ctx context.Context, poolName stri
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.Get(ctx, poolName, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, poolName, getParams, getOpts...)
 }
 
 type K8SClusterPool struct {

@@ -97,13 +97,14 @@ func (r *LoadBalancerPoolMemberService) Delete(ctx context.Context, memberID str
 
 // NewAndPoll creates a load balancer pool member and polls until the operation completes
 func (r *LoadBalancerPoolMemberService) NewAndPoll(ctx context.Context, poolID string, params LoadBalancerPoolMemberNewParams, opts ...option.RequestOption) (v *Member, err error) {
-	resource, err := r.New(ctx, poolID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.New(ctx, poolID, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -117,7 +118,12 @@ func (r *LoadBalancerPoolMemberService) NewAndPoll(ctx context.Context, poolID s
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -127,8 +133,10 @@ func (r *LoadBalancerPoolMemberService) NewAndPoll(ctx context.Context, poolID s
 	}
 	memberID := task.CreatedResources.Members[0]
 
-	poolService := NewLoadBalancerPoolService(opts...)
-	pool, err := poolService.Get(ctx, poolID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	poolService := NewLoadBalancerPoolService(getOpts...)
+	pool, err := poolService.Get(ctx, poolID, getParams, getOpts...)
 	if err != nil {
 		return
 	}
@@ -144,17 +152,23 @@ func (r *LoadBalancerPoolMemberService) NewAndPoll(ctx context.Context, poolID s
 
 // DeleteAndPoll deletes a load balancer pool member and polls for completion
 func (r *LoadBalancerPoolMemberService) DeleteAndPoll(ctx context.Context, memberID string, params LoadBalancerPoolMemberDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, memberID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, memberID, params, actionOpts...)
 	if err != nil {
 		return err
 	}
 
-	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 

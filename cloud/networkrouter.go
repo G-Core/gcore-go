@@ -71,13 +71,14 @@ func (r *NetworkRouterService) New(ctx context.Context, params NetworkRouterNewP
 // created Router. Use the [TaskService.Poll] method if you need more control over
 // task polling.
 func (r *NetworkRouterService) NewAndPoll(ctx context.Context, params NetworkRouterNewParams, opts ...option.RequestOption) (res *Router, err error) {
-	resource, err := r.New(ctx, params, opts...)
+	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.New(ctx, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -91,7 +92,12 @@ func (r *NetworkRouterService) NewAndPoll(ctx context.Context, params NetworkRou
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -101,7 +107,9 @@ func (r *NetworkRouterService) NewAndPoll(ctx context.Context, params NetworkRou
 	}
 	resourceID := task.CreatedResources.Routers[0]
 
-	return r.Get(ctx, resourceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // Update the configuration of an existing router. **Deprecated**: Use
@@ -199,7 +207,9 @@ func (r *NetworkRouterService) Delete(ctx context.Context, routerID string, body
 // DeleteAndPoll deletes a router and polls for completion of the first task. Use the
 // [TaskService.Poll] method if you need to poll for all tasks.
 func (r *NetworkRouterService) DeleteAndPoll(ctx context.Context, routerID string, body NetworkRouterDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, routerID, body, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, routerID, body, actionOpts...)
 	if err != nil {
 		return err
 	}
@@ -208,7 +218,12 @@ func (r *NetworkRouterService) DeleteAndPoll(ctx context.Context, routerID strin
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 
