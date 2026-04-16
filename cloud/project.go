@@ -119,7 +119,9 @@ func (r *ProjectService) Delete(ctx context.Context, body ProjectDeleteParams, o
 // DeleteAndPoll deletes a project and polls for completion of the first task. Use the
 // [TaskService.Poll] method if you need to poll for all tasks.
 func (r *ProjectService) DeleteAndPoll(ctx context.Context, body ProjectDeleteParams, opts ...option.RequestOption) (err error) {
-	resource, err := r.Delete(ctx, body, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, body, actionOpts...)
 	if err != nil {
 		return err
 	}
@@ -128,7 +130,12 @@ func (r *ProjectService) DeleteAndPoll(ctx context.Context, body ProjectDeletePa
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 

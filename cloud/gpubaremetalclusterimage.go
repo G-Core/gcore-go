@@ -137,13 +137,14 @@ func (r *GPUBaremetalClusterImageService) Upload(ctx context.Context, params GPU
 // UploadAndPoll uploads a new bare metal GPU image and polls for completion of the first task. Use the
 // [TaskService.Poll] method if you need to poll for all tasks.
 func (r *GPUBaremetalClusterImageService) UploadAndPoll(ctx context.Context, params GPUBaremetalClusterImageUploadParams, opts ...option.RequestOption) (v *GPUImage, err error) {
-	resource, err := r.Upload(ctx, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Upload returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Upload(ctx, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -157,7 +158,12 @@ func (r *GPUBaremetalClusterImageService) UploadAndPoll(ctx context.Context, par
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -167,13 +173,17 @@ func (r *GPUBaremetalClusterImageService) UploadAndPoll(ctx context.Context, par
 	}
 	resourceID := task.CreatedResources.Images[0]
 
-	return r.Get(ctx, resourceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // DeleteAndPoll deletes a bare metal GPU image and polls for completion of the first task. Use the [TaskService.Poll]
 // method if you need to poll for all tasks.
 func (r *GPUBaremetalClusterImageService) DeleteAndPoll(ctx context.Context, imageID string, params GPUBaremetalClusterImageDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, imageID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, imageID, params, actionOpts...)
 	if err != nil {
 		return err
 	}
@@ -182,7 +192,12 @@ func (r *GPUBaremetalClusterImageService) DeleteAndPoll(ctx context.Context, ima
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 

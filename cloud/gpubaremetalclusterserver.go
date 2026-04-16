@@ -119,7 +119,9 @@ func (r *GPUBaremetalClusterServerService) Delete(ctx context.Context, instanceI
 // DeleteAndPoll deletes a bare metal GPU server from cluster and polls for completion of the first task. Use the
 // [TaskService.Poll] method if you need to poll for all tasks.
 func (r *GPUBaremetalClusterServerService) DeleteAndPoll(ctx context.Context, instanceID string, params GPUBaremetalClusterServerDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, instanceID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, instanceID, params, actionOpts...)
 	if err != nil {
 		return err
 	}
@@ -128,7 +130,12 @@ func (r *GPUBaremetalClusterServerService) DeleteAndPoll(ctx context.Context, in
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 

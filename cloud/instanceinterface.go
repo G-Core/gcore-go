@@ -91,13 +91,14 @@ func (r *InstanceInterfaceService) Attach(ctx context.Context, instanceID string
 // AttachAndPoll attach interface to instance and poll for the completion of the first task. Use the [TaskService.Poll]
 // method if you need to poll for all tasks.
 func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID string, params InstanceInterfaceAttachParams, opts ...option.RequestOption) (v *NetworkInterfaceList, err error) {
-	resource, err := r.Attach(ctx, instanceID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Attach returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Attach(ctx, instanceID, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -111,12 +112,19 @@ func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
 
-	return r.List(ctx, instanceID, listParams, opts...)
+	// Clear request body for List
+	listOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.List(ctx, instanceID, listParams, listOpts...)
 }
 
 // Detach interface from instance
@@ -148,13 +156,14 @@ func (r *InstanceInterfaceService) Detach(ctx context.Context, instanceID string
 // DetachAndPoll interface from instance and poll for the completion of the first task. Use the [TaskService.Poll]
 // method if you need to poll for all tasks.
 func (r *InstanceInterfaceService) DetachAndPoll(ctx context.Context, instanceID string, params InstanceInterfaceDetachParams, opts ...option.RequestOption) (v *NetworkInterfaceList, err error) {
-	resource, err := r.Detach(ctx, instanceID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Detach returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Detach(ctx, instanceID, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -168,12 +177,19 @@ func (r *InstanceInterfaceService) DetachAndPoll(ctx context.Context, instanceID
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
 
-	return r.List(ctx, instanceID, listParams, opts...)
+	// Clear request body for List
+	listOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.List(ctx, instanceID, listParams, listOpts...)
 }
 
 type InstanceInterfaceListParams struct {

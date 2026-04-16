@@ -102,13 +102,14 @@ func (r *InstanceService) New(ctx context.Context, params InstanceNewParams, opt
 
 // NewAndPoll create instance and poll for the result
 func (r *InstanceService) NewAndPoll(ctx context.Context, params InstanceNewParams, opts ...option.RequestOption) (v *Instance, err error) {
-	resource, err := r.New(ctx, params, opts...)
+	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.New(ctx, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -122,7 +123,12 @@ func (r *InstanceService) NewAndPoll(ctx context.Context, params InstanceNewPara
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -132,7 +138,9 @@ func (r *InstanceService) NewAndPoll(ctx context.Context, params InstanceNewPara
 	}
 	resourceID := task.CreatedResources.Instances[0]
 
-	return r.Get(ctx, resourceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // Rename instance or update tags
@@ -229,17 +237,23 @@ func (r *InstanceService) Delete(ctx context.Context, instanceID string, params 
 // DeleteAndPoll delete instance and poll for completion of the first task. Use the [TaskService.Poll] method if you
 // need to poll for all tasks.
 func (r *InstanceService) DeleteAndPoll(ctx context.Context, instanceID string, params InstanceDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, instanceID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, instanceID, params, actionOpts...)
 	if err != nil {
 		return err
 	}
 
-	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 
@@ -272,13 +286,14 @@ func (r *InstanceService) Action(ctx context.Context, instanceID string, params 
 
 // ActionAndPoll perform an action on the instance and poll for completion
 func (r *InstanceService) ActionAndPoll(ctx context.Context, instanceID string, params InstanceActionParams, opts ...option.RequestOption) (v *Instance, err error) {
-	resource, err := r.Action(ctx, instanceID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Action returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Action(ctx, instanceID, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -292,12 +307,19 @@ func (r *InstanceService) ActionAndPoll(ctx context.Context, instanceID string, 
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
 
-	return r.Get(ctx, instanceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, instanceID, getParams, getOpts...)
 }
 
 // Add an instance to a server group. The instance must not already be in a server
@@ -330,13 +352,14 @@ func (r *InstanceService) AddToPlacementGroup(ctx context.Context, instanceID st
 // AddToPlacementGroupAndPoll add instance to placement group and poll for completion of the first task. Use the
 // [TaskService.Poll] method if you need to poll for all tasks.
 func (r *InstanceService) AddToPlacementGroupAndPoll(ctx context.Context, instanceID string, params InstanceAddToPlacementGroupParams, opts ...option.RequestOption) (v *Instance, err error) {
-	resource, err := r.AddToPlacementGroup(ctx, instanceID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (AddToPlacementGroup returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.AddToPlacementGroup(ctx, instanceID, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -350,12 +373,19 @@ func (r *InstanceService) AddToPlacementGroupAndPoll(ctx context.Context, instan
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
 
-	return r.Get(ctx, instanceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, instanceID, getParams, getOpts...)
 }
 
 // Assign the security group to the server. To assign multiple security groups to
@@ -529,13 +559,14 @@ func (r *InstanceService) RemoveFromPlacementGroup(ctx context.Context, instance
 // RemoveFromPlacementGroupAndPoll remove instance from placement group and poll for completion of the first task. Use
 // the [TaskService.Poll] method if you need to poll for all tasks.
 func (r *InstanceService) RemoveFromPlacementGroupAndPoll(ctx context.Context, instanceID string, body InstanceRemoveFromPlacementGroupParams, opts ...option.RequestOption) (v *Instance, err error) {
-	resource, err := r.RemoveFromPlacementGroup(ctx, instanceID, body, opts...)
+	// Exclude WithResponseBodyInto for the action (RemoveFromPlacementGroup returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.RemoveFromPlacementGroup(ctx, instanceID, body, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -549,12 +580,19 @@ func (r *InstanceService) RemoveFromPlacementGroupAndPoll(ctx context.Context, i
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
 
-	return r.Get(ctx, instanceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, instanceID, getParams, getOpts...)
 }
 
 // Change flavor of the instance
@@ -586,13 +624,14 @@ func (r *InstanceService) Resize(ctx context.Context, instanceID string, params 
 // ResizeAndPoll change flavor of the instance and poll for completion of the first task. Use the [TaskService.Poll]
 // method if you need to poll for all tasks.
 func (r *InstanceService) ResizeAndPoll(ctx context.Context, instanceID string, params InstanceResizeParams, opts ...option.RequestOption) (v *Instance, err error) {
-	resource, err := r.Resize(ctx, instanceID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Resize returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Resize(ctx, instanceID, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -606,12 +645,19 @@ func (r *InstanceService) ResizeAndPoll(ctx context.Context, instanceID string, 
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
 
-	return r.Get(ctx, instanceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, instanceID, getParams, getOpts...)
 }
 
 // Un-assign the security group to the server. To un-assign multiple security

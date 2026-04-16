@@ -182,13 +182,14 @@ func (r *LoadBalancerL7PolicyRuleService) Replace(ctx context.Context, l7ruleID 
 
 // NewAndPoll creates a new L7 rule and polls for completion
 func (r *LoadBalancerL7PolicyRuleService) NewAndPoll(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyRuleNewParams, opts ...option.RequestOption) (v *LoadBalancerL7Rule, err error) {
-	resource, err := r.New(ctx, l7policyID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.New(ctx, l7policyID, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -203,7 +204,12 @@ func (r *LoadBalancerL7PolicyRuleService) NewAndPoll(ctx context.Context, l7poli
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	task, err := r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -213,30 +219,40 @@ func (r *LoadBalancerL7PolicyRuleService) NewAndPoll(ctx context.Context, l7poli
 	}
 	resourceID := task.CreatedResources.L7rules[0]
 
-	return r.Get(ctx, resourceID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // DeleteAndPoll deletes an L7 rule and polls for completion of the first task. Use the [TaskService.Poll] method if you
 // need to poll for all tasks.
 func (r *LoadBalancerL7PolicyRuleService) DeleteAndPoll(ctx context.Context, l7ruleID string, body LoadBalancerL7PolicyRuleDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, l7ruleID, body, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, l7ruleID, body, actionOpts...)
 	if err != nil {
 		return err
 	}
 
-	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 
 // ReplaceAndPoll replaces an L7 rule and polls for completion of the first task. Use the [TaskService.Poll] method if you
 // need to poll for all tasks.
 func (r *LoadBalancerL7PolicyRuleService) ReplaceAndPoll(ctx context.Context, l7ruleID string, params LoadBalancerL7PolicyRuleReplaceParams, opts ...option.RequestOption) (v *LoadBalancerL7Rule, err error) {
-	resource, err := r.Replace(ctx, l7ruleID, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Replace returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Replace(ctx, l7ruleID, params, actionOpts...)
 	if err != nil {
 		return
 	}
@@ -257,12 +273,19 @@ func (r *LoadBalancerL7PolicyRuleService) ReplaceAndPoll(ctx context.Context, l7
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
 
-	return r.Get(ctx, l7ruleID, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, l7ruleID, getParams, getOpts...)
 }
 
 type LoadBalancerL7PolicyRuleNewParams struct {

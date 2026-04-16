@@ -75,13 +75,14 @@ func (r *K8SClusterService) New(ctx context.Context, params K8SClusterNewParams,
 
 // NewAndPoll creates a new k8s cluster and polls for completion
 func (r *K8SClusterService) NewAndPoll(ctx context.Context, params K8SClusterNewParams, opts ...option.RequestOption) (v *K8SCluster, err error) {
-	resource, err := r.New(ctx, params, opts...)
+	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.New(ctx, params, actionOpts...)
 	if err != nil {
 		return
 	}
 
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
 		return
 	}
@@ -95,7 +96,12 @@ func (r *K8SClusterService) NewAndPoll(ctx context.Context, params K8SClusterNew
 		return nil, errors.New("expected exactly one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return
 	}
@@ -103,7 +109,9 @@ func (r *K8SClusterService) NewAndPoll(ctx context.Context, params K8SClusterNew
 	// for k8s cluster creation the task.CreatedResources.K8SClusters only contains the cluster ID and not the cluster
 	// name, which is the path parameter required to retrieve the created cluster. Therefore, we use the params.Name
 	// instead.
-	return r.Get(ctx, params.Name, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, params.Name, getParams, getOpts...)
 }
 
 // Update k8s cluster
@@ -135,7 +143,9 @@ func (r *K8SClusterService) Update(ctx context.Context, clusterName string, para
 // UpdateAndPoll updates a k8s cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
 // need to poll for all tasks.
 func (r *K8SClusterService) UpdateAndPoll(ctx context.Context, clusterName string, params K8SClusterUpdateParams, opts ...option.RequestOption) (v *K8SCluster, err error) {
-	resource, err := r.Update(ctx, clusterName, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Update returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Update(ctx, clusterName, params, actionOpts...)
 	if err != nil {
 		return
 	}
@@ -155,12 +165,19 @@ func (r *K8SClusterService) UpdateAndPoll(ctx context.Context, clusterName strin
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.Get(ctx, clusterName, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, clusterName, getParams, getOpts...)
 }
 
 // List k8s clusters
@@ -214,17 +231,23 @@ func (r *K8SClusterService) Delete(ctx context.Context, clusterName string, para
 // DeleteAndPoll deletes a k8s cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
 // need to poll for all tasks.
 func (r *K8SClusterService) DeleteAndPoll(ctx context.Context, clusterName string, params K8SClusterDeleteParams, opts ...option.RequestOption) error {
-	resource, err := r.Delete(ctx, clusterName, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Delete(ctx, clusterName, params, actionOpts...)
 	if err != nil {
 		return err
 	}
 
-	opts = slices.Concat(r.Options, opts)
 	if len(resource.Tasks) == 0 {
 		return errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	return err
 }
 
@@ -335,7 +358,9 @@ func (r *K8SClusterService) Upgrade(ctx context.Context, clusterName string, par
 // UpgradeAndPoll upgrades a k8s cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
 // need to poll for all tasks.
 func (r *K8SClusterService) UpgradeAndPoll(ctx context.Context, clusterName string, params K8SClusterUpgradeParams, opts ...option.RequestOption) (v *K8SCluster, err error) {
-	resource, err := r.Upgrade(ctx, clusterName, params, opts...)
+	// Exclude WithResponseBodyInto for the action (Upgrade returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Upgrade(ctx, clusterName, params, actionOpts...)
 	if err != nil {
 		return
 	}
@@ -355,12 +380,19 @@ func (r *K8SClusterService) UpgradeAndPoll(ctx context.Context, clusterName stri
 		return nil, errors.New("expected at least one task to be created")
 	}
 	taskID := resource.Tasks[0]
-	_, err = r.tasks.Poll(ctx, taskID, opts...)
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.Get(ctx, clusterName, getParams, opts...)
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, clusterName, getParams, getOpts...)
 }
 
 type K8SCluster struct {
