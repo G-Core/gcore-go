@@ -155,29 +155,6 @@ func (r *InferenceDeploymentService) Get(ctx context.Context, deploymentName str
 	return res, err
 }
 
-// Get inference deployment API key
-//
-// Deprecated: deprecated
-func (r *InferenceDeploymentService) GetAPIKey(ctx context.Context, deploymentName string, query InferenceDeploymentGetAPIKeyParams, opts ...option.RequestOption) (res *InferenceDeploymentAPIKey, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return nil, err
-	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	if !query.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if deploymentName == "" {
-		err = errors.New("missing required deployment_name parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v3/inference/%v/deployments/%s/apikey", query.ProjectID.Value, deploymentName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
 // This operation initializes an inference deployment after it was stopped, making
 // it available to handle inference requests again. The instance will launch with
 // the **minimum** number of replicas defined in the scaling settings.
@@ -678,36 +655,6 @@ const (
 	InferenceDeploymentStatusDisabled          InferenceDeploymentStatus = "DISABLED"
 	InferenceDeploymentStatusPartiallydeployed InferenceDeploymentStatus = "PARTIALLYDEPLOYED"
 	InferenceDeploymentStatusPending           InferenceDeploymentStatus = "PENDING"
-)
-
-type InferenceDeploymentAPIKey struct {
-	// API key secret
-	Secret string `json:"secret" api:"required"`
-	// API key status
-	//
-	// Any of "PENDING", "READY".
-	Status InferenceDeploymentAPIKeyStatus `json:"status" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Secret      respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceDeploymentAPIKey) RawJSON() string { return r.JSON.raw }
-func (r *InferenceDeploymentAPIKey) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// API key status
-type InferenceDeploymentAPIKeyStatus string
-
-const (
-	InferenceDeploymentAPIKeyStatusPending InferenceDeploymentAPIKeyStatus = "PENDING"
-	InferenceDeploymentAPIKeyStatusReady   InferenceDeploymentAPIKeyStatus = "READY"
 )
 
 type Probe struct {
@@ -2091,12 +2038,6 @@ type InferenceDeploymentDeleteParams struct {
 }
 
 type InferenceDeploymentGetParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	paramObj
-}
-
-type InferenceDeploymentGetAPIKeyParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	paramObj
