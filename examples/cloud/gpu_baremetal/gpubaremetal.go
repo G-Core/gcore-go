@@ -277,8 +277,8 @@ func updateGPUBaremetalClusterTags(client *gcore.Client, clusterID string) {
 
 	params := cloud.GPUBaremetalClusterUpdateParams{
 		Tags: cloud.TagUpdateMap{
-			"environment": "production",
-			"team":        "gpu-infra",
+			"environment": gcore.StringPtr("production"),
+			"team":        gcore.StringPtr("gpu-infra"),
 		},
 	}
 
