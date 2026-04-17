@@ -160,7 +160,7 @@ func TestLoadBalancerUpdateWithOptionalParams(t *testing.T) {
 			Name:                  gcore.String("some_name"),
 			PreferredConnectivity: cloud.LoadBalancerMemberConnectivityL2,
 			Tags: cloud.TagUpdateMap{
-				"my-tag":           "my-tag-value",
+				"my-tag":           gcore.Ptr("my-tag-value"),
 				"my-tag-to-remove": nil,
 			},
 		},

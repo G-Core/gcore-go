@@ -85,7 +85,7 @@ func TestSecurityGroupUpdateWithOptionalParams(t *testing.T) {
 				RemoteIPPrefix: gcore.String("10.0.0.0/8"),
 			}},
 			Tags: cloud.TagUpdateMap{
-				"my-tag":           "my-tag-value",
+				"my-tag":           gcore.Ptr("my-tag-value"),
 				"my-tag-to-remove": nil,
 			},
 		},

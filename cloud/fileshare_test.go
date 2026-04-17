@@ -81,7 +81,7 @@ func TestFileShareUpdateWithOptionalParams(t *testing.T) {
 				RootSquash:        gcore.Bool(true),
 			},
 			Tags: cloud.TagUpdateMap{
-				"my-tag":           "my-tag-value",
+				"my-tag":           gcore.Ptr("my-tag-value"),
 				"my-tag-to-remove": nil,
 			},
 		},

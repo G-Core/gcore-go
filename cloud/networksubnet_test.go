@@ -82,7 +82,7 @@ func TestNetworkSubnetUpdateWithOptionalParams(t *testing.T) {
 			}},
 			Name: gcore.String("some_name"),
 			Tags: cloud.TagUpdateMap{
-				"my-tag":           "my-tag-value",
+				"my-tag":           gcore.Ptr("my-tag-value"),
 				"my-tag-to-remove": nil,
 			},
 		},

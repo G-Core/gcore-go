@@ -75,11 +75,11 @@ func TestInferenceApplicationDeploymentUpdateWithOptionalParams(t *testing.T) {
 		cloud.InferenceApplicationDeploymentUpdateParams{
 			ProjectID: gcore.Int(1),
 			APIKeys:   []string{"key1", "key2"},
-			ComponentsConfiguration: map[string]cloud.InferenceApplicationDeploymentUpdateParamsComponentsConfiguration{
+			ComponentsConfiguration: map[string]*cloud.InferenceApplicationDeploymentUpdateParamsComponentsConfiguration{
 				"model": {
 					Exposed: gcore.Bool(true),
 					Flavor:  gcore.String("flavor"),
-					ParameterOverrides: map[string]cloud.InferenceApplicationDeploymentUpdateParamsComponentsConfigurationParameterOverride{
+					ParameterOverrides: map[string]*cloud.InferenceApplicationDeploymentUpdateParamsComponentsConfigurationParameterOverride{
 						"foo": {
 							Value: "value",
 						},

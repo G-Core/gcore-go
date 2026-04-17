@@ -65,7 +65,7 @@ func TestVolumeSnapshotUpdateWithOptionalParams(t *testing.T) {
 			RegionID:  gcore.Int(1),
 			Name:      gcore.String("my-backup-snapshot"),
 			Tags: cloud.TagUpdateMap{
-				"my-tag":           "my-tag-value",
+				"my-tag":           gcore.Ptr("my-tag-value"),
 				"my-tag-to-remove": nil,
 			},
 		},
