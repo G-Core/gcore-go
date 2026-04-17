@@ -461,7 +461,7 @@ type InferenceApplicationDeploymentUpdateParams struct {
 	// List of API keys for the application
 	APIKeys []string `json:"api_keys,omitzero"`
 	// Mapping of component names to their configuration (e.g., `"model": {...}`)
-	ComponentsConfiguration map[string]InferenceApplicationDeploymentUpdateParamsComponentsConfiguration `json:"components_configuration,omitzero"`
+	ComponentsConfiguration map[string]*InferenceApplicationDeploymentUpdateParamsComponentsConfiguration `json:"components_configuration,omitzero"`
 	// Geographical regions to be updated for the deployment
 	Regions []int64 `json:"regions,omitzero"`
 	paramObj
@@ -483,7 +483,7 @@ type InferenceApplicationDeploymentUpdateParamsComponentsConfiguration struct {
 	// component.
 	Flavor param.Opt[string] `json:"flavor,omitzero"`
 	// Map of parameter overrides for customization
-	ParameterOverrides map[string]InferenceApplicationDeploymentUpdateParamsComponentsConfigurationParameterOverride `json:"parameter_overrides,omitzero"`
+	ParameterOverrides map[string]*InferenceApplicationDeploymentUpdateParamsComponentsConfigurationParameterOverride `json:"parameter_overrides,omitzero"`
 	// Scaling parameters of the component
 	Scale InferenceApplicationDeploymentUpdateParamsComponentsConfigurationScale `json:"scale,omitzero"`
 	paramObj

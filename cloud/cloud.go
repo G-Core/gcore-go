@@ -2156,7 +2156,7 @@ func (r *Tag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TagUpdateMap map[string]string
+type TagUpdateMap map[string]*string
 
 type TaskIDList struct {
 	// List of task IDs representing asynchronous operations. Use these IDs to monitor
