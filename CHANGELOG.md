@@ -1,5 +1,54 @@
 # Changelog
 
+## 0.42.0 (2026-04-17)
+
+Full Changelog: [v0.41.0...v0.42.0](https://github.com/G-Core/gcore-go/compare/v0.41.0...v0.42.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** remove deprecated cloud.inference.deployments.get_api_key
+* **cloud:** support nullable map items
+
+### Features
+
+* **api:** aggregated API specs update ([98761fb](https://github.com/G-Core/gcore-go/commit/98761fb8f462caf95612d56d32a329c3d6c6c5ab))
+* **api:** aggregated API specs update ([6099abb](https://github.com/G-Core/gcore-go/commit/6099abb5028d18b11eedc9a07cd3f228ff06bce2))
+* **api:** aggregated API specs update ([5fe08f0](https://github.com/G-Core/gcore-go/commit/5fe08f0218ed170b8a8b5bcf0b34be3f02155979))
+* **api:** aggregated API specs update ([8ec1756](https://github.com/G-Core/gcore-go/commit/8ec17568dce60d5b760921231cad624a8db14097))
+* **api:** aggregated API specs update ([6ffcc6a](https://github.com/G-Core/gcore-go/commit/6ffcc6ab42c6f53090918d48d3018d54b4a5fdbf))
+* **api:** aggregated API specs update ([86a2262](https://github.com/G-Core/gcore-go/commit/86a226284ebd2583f07e73515660fe881b09bb3c))
+* **api:** aggregated API specs update ([a8ad9c6](https://github.com/G-Core/gcore-go/commit/a8ad9c643e86c29baadc4eeeba1067cb70e2f839))
+* **api:** fix(cdn): harmonize pagination across CDN list endpoints ([16ac69b](https://github.com/G-Core/gcore-go/commit/16ac69b5e9f133ab2c5fb259f2f29bd1800173be))
+* **cloud:** support nullable map items ([8521173](https://github.com/G-Core/gcore-go/commit/8521173ab71ca95ecd27a89c2fcc3c312fdac595))
+
+
+### Bug Fixes
+
+* better respect format tags from the spec ([20ff268](https://github.com/G-Core/gcore-go/commit/20ff2681bd89343c8b54219f6f20eec49db1e775))
+* **cloud:** filter options correctly in all polling methods ([be6f19c](https://github.com/G-Core/gcore-go/commit/be6f19c841e6e698e621ef9f79f84246db9f664d))
+* **cloud:** update baremetal image example to use BaremetalImage type ([31d6e71](https://github.com/G-Core/gcore-go/commit/31d6e710f86b8b5dfdb2784d1e67abc3c44c22fd))
+* correct test type mismatch and loadbalancer example ([b2e618e](https://github.com/G-Core/gcore-go/commit/b2e618e47074f99112883b755332e300c34b1eac))
+* **dns:** update network-mappings get_by_name to new endpoint path ([2da2571](https://github.com/G-Core/gcore-go/commit/2da25710db204d5225d6218853cedf3d203f5759))
+* fix bug that mixed up time.Time and string types ([a722b7b](https://github.com/G-Core/gcore-go/commit/a722b7b8b46beead96691b2d7804eac0c3559889))
+* fix for union type names ([ba1f39a](https://github.com/G-Core/gcore-go/commit/ba1f39a8e9b97f90a957b2b5f1601b3e8a370372))
+* pass tag values as pointers in examples ([eb1a4a7](https://github.com/G-Core/gcore-go/commit/eb1a4a7e7bb4e3c633601b89dff12b5571f75496))
+
+
+### Chores
+
+* **cloud:** remove deprecated cloud.inference.deployments.get_api_key ([0368c37](https://github.com/G-Core/gcore-go/commit/0368c37af03d37f4e2d564a5c2e1051bd171d0bc))
+* remove resolved codegen workaround comment ([4c97efb](https://github.com/G-Core/gcore-go/commit/4c97efb2cdab4c522b433f62e7e88566a64daa98))
+
+
+### Documentation
+
+* update examples ([00be485](https://github.com/G-Core/gcore-go/commit/00be48558e7bcfd9d555126a9b8ae7675ce71670))
+
+
+### Refactors
+
+* **cloud:** split instance and baremetal image models ([e0f8f99](https://github.com/G-Core/gcore-go/commit/e0f8f99039253c6773eb6730334f493d12ba01c9))
+
 ## 0.41.0 (2026-04-03)
 
 Full Changelog: [v0.40.0...v0.41.0](https://github.com/G-Core/gcore-go/compare/v0.40.0...v0.41.0)
