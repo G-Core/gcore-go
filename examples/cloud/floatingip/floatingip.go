@@ -124,7 +124,7 @@ func updateFloatingIP(client *gcore.Client, floatingIPID string) {
 	fmt.Println("\n=== UPDATE FLOATING IP (TAGS ONLY) ===")
 
 	params := cloud.FloatingIPUpdateParams{
-		Tags: map[string]string{"env": "prod"},
+		Tags: map[string]*string{"env": gcore.StringPtr("prod")},
 	}
 	floatingIP, err := client.Cloud.FloatingIPs.UpdateAndPoll(context.Background(), floatingIPID, params)
 	if err != nil {
@@ -141,7 +141,7 @@ func updateAndAssignFloatingIP(client *gcore.Client, floatingIPID string, portID
 
 	params := cloud.FloatingIPUpdateParams{
 		PortID: param.Opt[string]{Value: portID},
-		Tags:   map[string]string{"status": "assigned"},
+		Tags:   map[string]*string{"status": gcore.StringPtr("assigned")},
 	}
 	floatingIP, err := client.Cloud.FloatingIPs.UpdateAndPoll(context.Background(), floatingIPID, params)
 	if err != nil {
@@ -159,7 +159,7 @@ func updateAndUnassignFloatingIP(client *gcore.Client, floatingIPID string) {
 	// Setting PortID to null unassigns the floating IP
 	params := cloud.FloatingIPUpdateParams{
 		PortID: param.Null[string](),
-		Tags:   map[string]string{"status": "unassigned"},
+		Tags:   map[string]*string{"status": gcore.StringPtr("unassigned")},
 	}
 	floatingIP, err := client.Cloud.FloatingIPs.UpdateAndPoll(context.Background(), floatingIPID, params)
 	if err != nil {
