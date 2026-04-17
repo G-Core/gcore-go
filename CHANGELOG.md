@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.42.1 (2026-04-17)
+
+Full Changelog: [v0.42.0...v0.42.1](https://github.com/G-Core/gcore-go/compare/v0.42.0...v0.42.1)
+
+### Chores
+
+* **tests:** bump steady to v0.22.1 ([81c0c45](https://github.com/G-Core/gcore-go/commit/81c0c45b914f78b294b95fbf0180e1c928fe869a))
+
 ## 0.42.0 (2026-04-17)
 
 Full Changelog: [v0.41.0...v0.42.0](https://github.com/G-Core/gcore-go/compare/v0.41.0...v0.42.0)
