@@ -65,7 +65,7 @@ func TestFloatingIPUpdateWithOptionalParams(t *testing.T) {
 			FixedIPAddress: gcore.String("192.168.10.15"),
 			PortID:         gcore.String("ee2402d0-f0cd-4503-9b75-69be1d11c5f1"),
 			Tags: cloud.TagUpdateMap{
-				"my-tag":           "my-tag-value",
+				"my-tag":           gcore.Ptr("my-tag-value"),
 				"my-tag-to-remove": nil,
 			},
 		},

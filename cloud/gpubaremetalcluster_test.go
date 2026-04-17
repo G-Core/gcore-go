@@ -87,7 +87,7 @@ func TestGPUBaremetalClusterUpdateWithOptionalParams(t *testing.T) {
 			RegionID:  gcore.Int(7),
 			Name:      gcore.String("gpu-cluster-1"),
 			Tags: cloud.TagUpdateMap{
-				"my-tag":           "my-tag-value",
+				"my-tag":           gcore.Ptr("my-tag-value"),
 				"my-tag-to-remove": nil,
 			},
 		},
