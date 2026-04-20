@@ -36,6 +36,56 @@ func listGPUBaremetalClusterImages(client *gcore.Client) []cloud.GPUImage {
 	return images.Results
 }
 
+func uploadGPUBaremetalClusterImage(client *gcore.Client) string {
+	fmt.Println("\n=== UPLOAD GPU BAREMETAL CLUSTER IMAGE ===")
+
+	params := cloud.GPUBaremetalClusterImageUploadParams{
+		Name:         "gcore-go-example-gpu-baremetal-image",
+		URL:          "http://mirror.noris.net/cirros/0.4.0/cirros-0.4.0-x86_64-disk.img",
+		Architecture: cloud.GPUBaremetalClusterImageUploadParamsArchitectureX86_64,
+		OsType:       cloud.GPUBaremetalClusterImageUploadParamsOsTypeLinux,
+		SSHKey:       cloud.GPUBaremetalClusterImageUploadParamsSSHKeyAllow,
+		Tags: map[string]string{
+			"name": "gcore-go-example",
+		},
+	}
+
+	image, err := client.Cloud.GPUBaremetal.Clusters.Images.UploadAndPoll(context.Background(), params)
+	if err != nil {
+		log.Fatalf("Error uploading GPU baremetal cluster image: %v", err)
+	}
+
+	fmt.Printf("Uploaded image: ID=%s, name=%s, status=%s\n", image.ID, image.Name, image.Status)
+	fmt.Println("===============================")
+	return image.ID
+}
+
+func getGPUBaremetalClusterImage(client *gcore.Client, imageID string) {
+	fmt.Println("\n=== GET GPU BAREMETAL CLUSTER IMAGE ===")
+
+	image, err := client.Cloud.GPUBaremetal.Clusters.Images.Get(context.Background(), imageID, cloud.GPUBaremetalClusterImageGetParams{})
+	if err != nil {
+		fmt.Printf("Error getting GPU baremetal cluster image: %v\n", err)
+		return
+	}
+
+	printGPUImageDetails(*image, 1)
+	fmt.Println("===============================")
+}
+
+func deleteGPUBaremetalClusterImage(client *gcore.Client, imageID string) {
+	fmt.Println("\n=== DELETE GPU BAREMETAL CLUSTER IMAGE ===")
+
+	err := client.Cloud.GPUBaremetal.Clusters.Images.DeleteAndPoll(context.Background(), imageID, cloud.GPUBaremetalClusterImageDeleteParams{})
+	if err != nil {
+		fmt.Printf("Error deleting GPU baremetal cluster image: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Deleted image: ID=%s\n", imageID)
+	fmt.Println("===============================")
+}
+
 func getUbuntuImage(images []cloud.GPUImage) string {
 	for _, img := range images {
 		if strings.Contains(strings.ToLower(img.Name), "ubuntu") &&

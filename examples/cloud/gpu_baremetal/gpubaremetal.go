@@ -37,6 +37,11 @@ func main() {
 	images := listGPUBaremetalClusterImages(&client)
 	imageID := getUbuntuImage(images)
 
+	// Image lifecycle: upload a new image, fetch it, then delete it
+	uploadedImageID := uploadGPUBaremetalClusterImage(&client)
+	getGPUBaremetalClusterImage(&client, uploadedImageID)
+	deleteGPUBaremetalClusterImage(&client, uploadedImageID)
+
 	// Check if we have GPU flavors available
 	if len(flavors) == 0 {
 		fmt.Println("\nWARNING: No GPU baremetal cluster flavors available in this region.")
