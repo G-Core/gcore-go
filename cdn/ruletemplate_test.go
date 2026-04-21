@@ -35,12 +35,6 @@ func TestRuleTemplateNewWithOptionalParams(t *testing.T) {
 				Enabled: true,
 				Value:   []string{"GET", "POST"},
 			},
-			BotProtection: cdn.RuleTemplateNewParamsOptionsBotProtection{
-				BotChallenge: cdn.RuleTemplateNewParamsOptionsBotProtectionBotChallenge{
-					Enabled: gcore.Bool(true),
-				},
-				Enabled: true,
-			},
 			BrotliCompression: cdn.RuleTemplateNewParamsOptionsBrotliCompression{
 				Enabled: true,
 				Value:   []string{"text/html", "text/plain"},
@@ -319,12 +313,6 @@ func TestRuleTemplateUpdateWithOptionalParams(t *testing.T) {
 				AllowedHTTPMethods: cdn.RuleTemplateUpdateParamsOptionsAllowedHTTPMethods{
 					Enabled: true,
 					Value:   []string{"GET", "POST"},
-				},
-				BotProtection: cdn.RuleTemplateUpdateParamsOptionsBotProtection{
-					BotChallenge: cdn.RuleTemplateUpdateParamsOptionsBotProtectionBotChallenge{
-						Enabled: gcore.Bool(true),
-					},
-					Enabled: true,
 				},
 				BrotliCompression: cdn.RuleTemplateUpdateParamsOptionsBrotliCompression{
 					Enabled: true,
@@ -678,12 +666,6 @@ func TestRuleTemplateReplaceWithOptionalParams(t *testing.T) {
 				AllowedHTTPMethods: cdn.RuleTemplateReplaceParamsOptionsAllowedHTTPMethods{
 					Enabled: true,
 					Value:   []string{"GET", "POST"},
-				},
-				BotProtection: cdn.RuleTemplateReplaceParamsOptionsBotProtection{
-					BotChallenge: cdn.RuleTemplateReplaceParamsOptionsBotProtectionBotChallenge{
-						Enabled: gcore.Bool(true),
-					},
-					Enabled: true,
 				},
 				BrotliCompression: cdn.RuleTemplateReplaceParamsOptionsBrotliCompression{
 					Enabled: true,
