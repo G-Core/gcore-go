@@ -37,12 +37,6 @@ func TestCDNResourceNewWithOptionalParams(t *testing.T) {
 				Enabled: true,
 				Value:   []string{"GET", "POST"},
 			},
-			BotProtection: cdn.CDNResourceNewParamsOptionsBotProtection{
-				BotChallenge: cdn.CDNResourceNewParamsOptionsBotProtectionBotChallenge{
-					Enabled: gcore.Bool(true),
-				},
-				Enabled: true,
-			},
 			BrotliCompression: cdn.CDNResourceNewParamsOptionsBrotliCompression{
 				Enabled: true,
 				Value:   []string{"text/html", "text/plain"},
@@ -357,12 +351,6 @@ func TestCDNResourceUpdateWithOptionalParams(t *testing.T) {
 				AllowedHTTPMethods: cdn.CDNResourceUpdateParamsOptionsAllowedHTTPMethods{
 					Enabled: true,
 					Value:   []string{"GET", "POST"},
-				},
-				BotProtection: cdn.CDNResourceUpdateParamsOptionsBotProtection{
-					BotChallenge: cdn.CDNResourceUpdateParamsOptionsBotProtectionBotChallenge{
-						Enabled: gcore.Bool(true),
-					},
-					Enabled: true,
 				},
 				BrotliCompression: cdn.CDNResourceUpdateParamsOptionsBrotliCompression{
 					Enabled: true,
@@ -841,12 +829,6 @@ func TestCDNResourceReplaceWithOptionalParams(t *testing.T) {
 				AllowedHTTPMethods: cdn.CDNResourceReplaceParamsOptionsAllowedHTTPMethods{
 					Enabled: true,
 					Value:   []string{"GET", "POST"},
-				},
-				BotProtection: cdn.CDNResourceReplaceParamsOptionsBotProtection{
-					BotChallenge: cdn.CDNResourceReplaceParamsOptionsBotProtectionBotChallenge{
-						Enabled: gcore.Bool(true),
-					},
-					Enabled: true,
 				},
 				BrotliCompression: cdn.CDNResourceReplaceParamsOptionsBrotliCompression{
 					Enabled: true,

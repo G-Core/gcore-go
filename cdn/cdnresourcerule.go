@@ -219,9 +219,6 @@ func (r *CDNResourceRule) UnmarshalJSON(data []byte) error {
 type CDNResourceRuleOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
 	AllowedHTTPMethods CDNResourceRuleOptionsAllowedHTTPMethods `json:"allowedHttpMethods" api:"nullable"`
-	// Allows to prevent online services from overloading and ensure your business
-	// workflow running smoothly.
-	BotProtection CDNResourceRuleOptionsBotProtection `json:"bot_protection" api:"nullable"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -455,7 +452,6 @@ type CDNResourceRuleOptions struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedHTTPMethods          respjson.Field
-		BotProtection               respjson.Field
 		BrotliCompression           respjson.Field
 		BrowserCacheSettings        respjson.Field
 		CacheHTTPHeaders            respjson.Field
@@ -533,54 +529,6 @@ type CDNResourceRuleOptionsAllowedHTTPMethods struct {
 // Returns the unmodified JSON received from the API
 func (r CDNResourceRuleOptionsAllowedHTTPMethods) RawJSON() string { return r.JSON.raw }
 func (r *CDNResourceRuleOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to prevent online services from overloading and ensure your business
-// workflow running smoothly.
-type CDNResourceRuleOptionsBotProtection struct {
-	// Controls the bot challenge module state.
-	BotChallenge CDNResourceRuleOptionsBotProtectionBotChallenge `json:"bot_challenge" api:"required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BotChallenge respjson.Field
-		Enabled      respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CDNResourceRuleOptionsBotProtection) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceRuleOptionsBotProtection) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls the bot challenge module state.
-type CDNResourceRuleOptionsBotProtectionBotChallenge struct {
-	// Possible values:
-	//
-	// - **true** - Bot challenge is enabled.
-	// - **false** - Bot challenge is disabled.
-	Enabled bool `json:"enabled"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CDNResourceRuleOptionsBotProtectionBotChallenge) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceRuleOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2605,9 +2553,6 @@ func (r *CDNResourceRuleNewParams) UnmarshalJSON(data []byte) error {
 type CDNResourceRuleNewParamsOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
 	AllowedHTTPMethods CDNResourceRuleNewParamsOptionsAllowedHTTPMethods `json:"allowedHttpMethods,omitzero"`
-	// Allows to prevent online services from overloading and ensure your business
-	// workflow running smoothly.
-	BotProtection CDNResourceRuleNewParamsOptionsBotProtection `json:"bot_protection,omitzero"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -2870,49 +2815,6 @@ func (r CDNResourceRuleNewParamsOptionsAllowedHTTPMethods) MarshalJSON() (data [
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CDNResourceRuleNewParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to prevent online services from overloading and ensure your business
-// workflow running smoothly.
-//
-// The properties BotChallenge, Enabled are required.
-type CDNResourceRuleNewParamsOptionsBotProtection struct {
-	// Controls the bot challenge module state.
-	BotChallenge CDNResourceRuleNewParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero" api:"required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	paramObj
-}
-
-func (r CDNResourceRuleNewParamsOptionsBotProtection) MarshalJSON() (data []byte, err error) {
-	type shadow CDNResourceRuleNewParamsOptionsBotProtection
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CDNResourceRuleNewParamsOptionsBotProtection) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls the bot challenge module state.
-type CDNResourceRuleNewParamsOptionsBotProtectionBotChallenge struct {
-	// Possible values:
-	//
-	// - **true** - Bot challenge is enabled.
-	// - **false** - Bot challenge is disabled.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	paramObj
-}
-
-func (r CDNResourceRuleNewParamsOptionsBotProtectionBotChallenge) MarshalJSON() (data []byte, err error) {
-	type shadow CDNResourceRuleNewParamsOptionsBotProtectionBotChallenge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CDNResourceRuleNewParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4768,9 +4670,6 @@ func (r *CDNResourceRuleUpdateParams) UnmarshalJSON(data []byte) error {
 type CDNResourceRuleUpdateParamsOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
 	AllowedHTTPMethods CDNResourceRuleUpdateParamsOptionsAllowedHTTPMethods `json:"allowedHttpMethods,omitzero"`
-	// Allows to prevent online services from overloading and ensure your business
-	// workflow running smoothly.
-	BotProtection CDNResourceRuleUpdateParamsOptionsBotProtection `json:"bot_protection,omitzero"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -5033,49 +4932,6 @@ func (r CDNResourceRuleUpdateParamsOptionsAllowedHTTPMethods) MarshalJSON() (dat
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CDNResourceRuleUpdateParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to prevent online services from overloading and ensure your business
-// workflow running smoothly.
-//
-// The properties BotChallenge, Enabled are required.
-type CDNResourceRuleUpdateParamsOptionsBotProtection struct {
-	// Controls the bot challenge module state.
-	BotChallenge CDNResourceRuleUpdateParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero" api:"required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	paramObj
-}
-
-func (r CDNResourceRuleUpdateParamsOptionsBotProtection) MarshalJSON() (data []byte, err error) {
-	type shadow CDNResourceRuleUpdateParamsOptionsBotProtection
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CDNResourceRuleUpdateParamsOptionsBotProtection) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls the bot challenge module state.
-type CDNResourceRuleUpdateParamsOptionsBotProtectionBotChallenge struct {
-	// Possible values:
-	//
-	// - **true** - Bot challenge is enabled.
-	// - **false** - Bot challenge is disabled.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	paramObj
-}
-
-func (r CDNResourceRuleUpdateParamsOptionsBotProtectionBotChallenge) MarshalJSON() (data []byte, err error) {
-	type shadow CDNResourceRuleUpdateParamsOptionsBotProtectionBotChallenge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CDNResourceRuleUpdateParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6958,9 +6814,6 @@ func (r *CDNResourceRuleReplaceParams) UnmarshalJSON(data []byte) error {
 type CDNResourceRuleReplaceParamsOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
 	AllowedHTTPMethods CDNResourceRuleReplaceParamsOptionsAllowedHTTPMethods `json:"allowedHttpMethods,omitzero"`
-	// Allows to prevent online services from overloading and ensure your business
-	// workflow running smoothly.
-	BotProtection CDNResourceRuleReplaceParamsOptionsBotProtection `json:"bot_protection,omitzero"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -7223,49 +7076,6 @@ func (r CDNResourceRuleReplaceParamsOptionsAllowedHTTPMethods) MarshalJSON() (da
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CDNResourceRuleReplaceParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to prevent online services from overloading and ensure your business
-// workflow running smoothly.
-//
-// The properties BotChallenge, Enabled are required.
-type CDNResourceRuleReplaceParamsOptionsBotProtection struct {
-	// Controls the bot challenge module state.
-	BotChallenge CDNResourceRuleReplaceParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero" api:"required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	paramObj
-}
-
-func (r CDNResourceRuleReplaceParamsOptionsBotProtection) MarshalJSON() (data []byte, err error) {
-	type shadow CDNResourceRuleReplaceParamsOptionsBotProtection
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CDNResourceRuleReplaceParamsOptionsBotProtection) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls the bot challenge module state.
-type CDNResourceRuleReplaceParamsOptionsBotProtectionBotChallenge struct {
-	// Possible values:
-	//
-	// - **true** - Bot challenge is enabled.
-	// - **false** - Bot challenge is disabled.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	paramObj
-}
-
-func (r CDNResourceRuleReplaceParamsOptionsBotProtectionBotChallenge) MarshalJSON() (data []byte, err error) {
-	type shadow CDNResourceRuleReplaceParamsOptionsBotProtectionBotChallenge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CDNResourceRuleReplaceParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
