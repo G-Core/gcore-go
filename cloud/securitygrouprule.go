@@ -137,9 +137,9 @@ func (r *SecurityGroupRuleService) NewAndPoll(ctx context.Context, groupID strin
 	}
 	ruleID := task.CreatedResources.SecurityGroupRules[0]
 
+	sgService := NewSecurityGroupService(r.Options...)
 	// Clear request body for Get
 	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	sgService := NewSecurityGroupService(getOpts...)
 	sg, err := sgService.Get(ctx, groupID, getParams, getOpts...)
 	if err != nil {
 		return
