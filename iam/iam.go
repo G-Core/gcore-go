@@ -26,6 +26,10 @@ import (
 // the [NewIamService] method instead.
 type IamService struct {
 	Options []option.RequestOption
+	// **Deprecated:** All endpoints in this section will be removed on **2026-07-17**.
+	// Use the [API Tokens V2](#tag/API-Tokens-V2) endpoints instead. Existing tokens
+	// issued by V1 endpoints continue to authenticate after the removal date.
+	//
 	// Use permanent API tokens for regular automated requests to services. You can
 	// either set its validity period when creating it or issue a token for an
 	// unlimited time. Please address the API documentation of the specific product in
