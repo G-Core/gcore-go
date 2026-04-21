@@ -186,9 +186,6 @@ func (r *RuleTemplate) UnmarshalJSON(data []byte) error {
 type RuleTemplateOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
 	AllowedHTTPMethods RuleTemplateOptionsAllowedHTTPMethods `json:"allowedHttpMethods" api:"nullable"`
-	// Allows to prevent online services from overloading and ensure your business
-	// workflow running smoothly.
-	BotProtection RuleTemplateOptionsBotProtection `json:"bot_protection" api:"nullable"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -422,7 +419,6 @@ type RuleTemplateOptions struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedHTTPMethods          respjson.Field
-		BotProtection               respjson.Field
 		BrotliCompression           respjson.Field
 		BrowserCacheSettings        respjson.Field
 		CacheHTTPHeaders            respjson.Field
@@ -500,54 +496,6 @@ type RuleTemplateOptionsAllowedHTTPMethods struct {
 // Returns the unmodified JSON received from the API
 func (r RuleTemplateOptionsAllowedHTTPMethods) RawJSON() string { return r.JSON.raw }
 func (r *RuleTemplateOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to prevent online services from overloading and ensure your business
-// workflow running smoothly.
-type RuleTemplateOptionsBotProtection struct {
-	// Controls the bot challenge module state.
-	BotChallenge RuleTemplateOptionsBotProtectionBotChallenge `json:"bot_challenge" api:"required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BotChallenge respjson.Field
-		Enabled      respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RuleTemplateOptionsBotProtection) RawJSON() string { return r.JSON.raw }
-func (r *RuleTemplateOptionsBotProtection) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls the bot challenge module state.
-type RuleTemplateOptionsBotProtectionBotChallenge struct {
-	// Possible values:
-	//
-	// - **true** - Bot challenge is enabled.
-	// - **false** - Bot challenge is disabled.
-	Enabled bool `json:"enabled"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RuleTemplateOptionsBotProtectionBotChallenge) RawJSON() string { return r.JSON.raw }
-func (r *RuleTemplateOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2543,9 +2491,6 @@ func (r *RuleTemplateNewParams) UnmarshalJSON(data []byte) error {
 type RuleTemplateNewParamsOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
 	AllowedHTTPMethods RuleTemplateNewParamsOptionsAllowedHTTPMethods `json:"allowedHttpMethods,omitzero"`
-	// Allows to prevent online services from overloading and ensure your business
-	// workflow running smoothly.
-	BotProtection RuleTemplateNewParamsOptionsBotProtection `json:"bot_protection,omitzero"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -2808,49 +2753,6 @@ func (r RuleTemplateNewParamsOptionsAllowedHTTPMethods) MarshalJSON() (data []by
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *RuleTemplateNewParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to prevent online services from overloading and ensure your business
-// workflow running smoothly.
-//
-// The properties BotChallenge, Enabled are required.
-type RuleTemplateNewParamsOptionsBotProtection struct {
-	// Controls the bot challenge module state.
-	BotChallenge RuleTemplateNewParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero" api:"required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	paramObj
-}
-
-func (r RuleTemplateNewParamsOptionsBotProtection) MarshalJSON() (data []byte, err error) {
-	type shadow RuleTemplateNewParamsOptionsBotProtection
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RuleTemplateNewParamsOptionsBotProtection) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls the bot challenge module state.
-type RuleTemplateNewParamsOptionsBotProtectionBotChallenge struct {
-	// Possible values:
-	//
-	// - **true** - Bot challenge is enabled.
-	// - **false** - Bot challenge is disabled.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	paramObj
-}
-
-func (r RuleTemplateNewParamsOptionsBotProtectionBotChallenge) MarshalJSON() (data []byte, err error) {
-	type shadow RuleTemplateNewParamsOptionsBotProtectionBotChallenge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RuleTemplateNewParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4693,9 +4595,6 @@ func (r *RuleTemplateUpdateParams) UnmarshalJSON(data []byte) error {
 type RuleTemplateUpdateParamsOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
 	AllowedHTTPMethods RuleTemplateUpdateParamsOptionsAllowedHTTPMethods `json:"allowedHttpMethods,omitzero"`
-	// Allows to prevent online services from overloading and ensure your business
-	// workflow running smoothly.
-	BotProtection RuleTemplateUpdateParamsOptionsBotProtection `json:"bot_protection,omitzero"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -4958,49 +4857,6 @@ func (r RuleTemplateUpdateParamsOptionsAllowedHTTPMethods) MarshalJSON() (data [
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *RuleTemplateUpdateParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to prevent online services from overloading and ensure your business
-// workflow running smoothly.
-//
-// The properties BotChallenge, Enabled are required.
-type RuleTemplateUpdateParamsOptionsBotProtection struct {
-	// Controls the bot challenge module state.
-	BotChallenge RuleTemplateUpdateParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero" api:"required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	paramObj
-}
-
-func (r RuleTemplateUpdateParamsOptionsBotProtection) MarshalJSON() (data []byte, err error) {
-	type shadow RuleTemplateUpdateParamsOptionsBotProtection
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RuleTemplateUpdateParamsOptionsBotProtection) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls the bot challenge module state.
-type RuleTemplateUpdateParamsOptionsBotProtectionBotChallenge struct {
-	// Possible values:
-	//
-	// - **true** - Bot challenge is enabled.
-	// - **false** - Bot challenge is disabled.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	paramObj
-}
-
-func (r RuleTemplateUpdateParamsOptionsBotProtectionBotChallenge) MarshalJSON() (data []byte, err error) {
-	type shadow RuleTemplateUpdateParamsOptionsBotProtectionBotChallenge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RuleTemplateUpdateParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6859,9 +6715,6 @@ func (r *RuleTemplateReplaceParams) UnmarshalJSON(data []byte) error {
 type RuleTemplateReplaceParamsOptions struct {
 	// HTTP methods allowed for content requests from the CDN.
 	AllowedHTTPMethods RuleTemplateReplaceParamsOptionsAllowedHTTPMethods `json:"allowedHttpMethods,omitzero"`
-	// Allows to prevent online services from overloading and ensure your business
-	// workflow running smoothly.
-	BotProtection RuleTemplateReplaceParamsOptionsBotProtection `json:"bot_protection,omitzero"`
 	// Compresses content with Brotli on the CDN side. CDN servers will request only
 	// uncompressed content from the origin.
 	//
@@ -7124,49 +6977,6 @@ func (r RuleTemplateReplaceParamsOptionsAllowedHTTPMethods) MarshalJSON() (data 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *RuleTemplateReplaceParamsOptionsAllowedHTTPMethods) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Allows to prevent online services from overloading and ensure your business
-// workflow running smoothly.
-//
-// The properties BotChallenge, Enabled are required.
-type RuleTemplateReplaceParamsOptionsBotProtection struct {
-	// Controls the bot challenge module state.
-	BotChallenge RuleTemplateReplaceParamsOptionsBotProtectionBotChallenge `json:"bot_challenge,omitzero" api:"required"`
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	paramObj
-}
-
-func (r RuleTemplateReplaceParamsOptionsBotProtection) MarshalJSON() (data []byte, err error) {
-	type shadow RuleTemplateReplaceParamsOptionsBotProtection
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RuleTemplateReplaceParamsOptionsBotProtection) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls the bot challenge module state.
-type RuleTemplateReplaceParamsOptionsBotProtectionBotChallenge struct {
-	// Possible values:
-	//
-	// - **true** - Bot challenge is enabled.
-	// - **false** - Bot challenge is disabled.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	paramObj
-}
-
-func (r RuleTemplateReplaceParamsOptionsBotProtectionBotChallenge) MarshalJSON() (data []byte, err error) {
-	type shadow RuleTemplateReplaceParamsOptionsBotProtectionBotChallenge
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RuleTemplateReplaceParamsOptionsBotProtectionBotChallenge) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
