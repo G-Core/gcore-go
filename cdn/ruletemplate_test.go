@@ -204,11 +204,6 @@ func TestRuleTemplateNewWithOptionalParams(t *testing.T) {
 				ExceptedValues: []string{"example.com", "*.example.net"},
 				PolicyType:     "deny",
 			},
-			RequestLimiter: cdn.RuleTemplateNewParamsOptionsRequestLimiter{
-				Enabled:  true,
-				Rate:     5,
-				RateUnit: "r/s",
-			},
 			ResponseHeadersHidingPolicy: cdn.RuleTemplateNewParamsOptionsResponseHeadersHidingPolicy{
 				Enabled:  true,
 				Excepted: []string{"my-header"},
@@ -482,11 +477,6 @@ func TestRuleTemplateUpdateWithOptionalParams(t *testing.T) {
 					Enabled:        true,
 					ExceptedValues: []string{"example.com", "*.example.net"},
 					PolicyType:     "deny",
-				},
-				RequestLimiter: cdn.RuleTemplateUpdateParamsOptionsRequestLimiter{
-					Enabled:  true,
-					Rate:     5,
-					RateUnit: "r/s",
 				},
 				ResponseHeadersHidingPolicy: cdn.RuleTemplateUpdateParamsOptionsResponseHeadersHidingPolicy{
 					Enabled:  true,
@@ -835,11 +825,6 @@ func TestRuleTemplateReplaceWithOptionalParams(t *testing.T) {
 					Enabled:        true,
 					ExceptedValues: []string{"example.com", "*.example.net"},
 					PolicyType:     "deny",
-				},
-				RequestLimiter: cdn.RuleTemplateReplaceParamsOptionsRequestLimiter{
-					Enabled:  true,
-					Rate:     5,
-					RateUnit: "r/s",
 				},
 				ResponseHeadersHidingPolicy: cdn.RuleTemplateReplaceParamsOptionsResponseHeadersHidingPolicy{
 					Enabled:  true,

@@ -606,8 +606,6 @@ type CDNResourceOptions struct {
 	RedirectHTTPSToHTTP CDNResourceOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http" api:"nullable"`
 	// Controls access to the CDN resource content for specified domain names.
 	ReferrerACL CDNResourceOptionsReferrerACL `json:"referrer_acl" api:"nullable"`
-	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter CDNResourceOptionsRequestLimiter `json:"request_limiter" api:"nullable"`
 	// Hides HTTP headers from an origin server in the CDN response.
 	ResponseHeadersHidingPolicy CDNResourceOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy" api:"nullable"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
@@ -714,7 +712,6 @@ type CDNResourceOptions struct {
 		RedirectHTTPToHTTPS         respjson.Field
 		RedirectHTTPSToHTTP         respjson.Field
 		ReferrerACL                 respjson.Field
-		RequestLimiter              respjson.Field
 		ResponseHeadersHidingPolicy respjson.Field
 		Rewrite                     respjson.Field
 		SecureKey                   respjson.Field
@@ -2118,49 +2115,6 @@ func (r *CDNResourceOptionsReferrerACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Option allows to limit the amount of HTTP requests.
-type CDNResourceOptionsRequestLimiter struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	// Maximum request rate.
-	Rate  int64 `json:"rate" api:"required"`
-	Burst int64 `json:"burst"`
-	Delay int64 `json:"delay"`
-	// Units of measurement for the `rate` field.
-	//
-	// Possible values:
-	//
-	// - **r/s** - Requests per second.
-	// - **r/m** - Requests per minute.
-	//
-	// If the rate is less than one request per second, it is specified in request per
-	// minute (r/m.)
-	//
-	// Any of "r/s", "r/m".
-	RateUnit string `json:"rate_unit"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Rate        respjson.Field
-		Burst       respjson.Field
-		Delay       respjson.Field
-		RateUnit    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CDNResourceOptionsRequestLimiter) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Hides HTTP headers from an origin server in the CDN response.
 type CDNResourceOptionsResponseHeadersHidingPolicy struct {
 	// Controls the option state.
@@ -3192,8 +3146,6 @@ type CDNResourceNewParamsOptions struct {
 	RedirectHTTPSToHTTP CDNResourceNewParamsOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,omitzero"`
 	// Controls access to the CDN resource content for specified domain names.
 	ReferrerACL CDNResourceNewParamsOptionsReferrerACL `json:"referrer_acl,omitzero"`
-	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter CDNResourceNewParamsOptionsRequestLimiter `json:"request_limiter,omitzero"`
 	// Hides HTTP headers from an origin server in the CDN response.
 	ResponseHeadersHidingPolicy CDNResourceNewParamsOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,omitzero"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
@@ -4568,48 +4520,6 @@ func init() {
 	)
 }
 
-// Option allows to limit the amount of HTTP requests.
-//
-// The properties Enabled, Rate are required.
-type CDNResourceNewParamsOptionsRequestLimiter struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	// Maximum request rate.
-	Rate int64 `json:"rate" api:"required"`
-	// Units of measurement for the `rate` field.
-	//
-	// Possible values:
-	//
-	// - **r/s** - Requests per second.
-	// - **r/m** - Requests per minute.
-	//
-	// If the rate is less than one request per second, it is specified in request per
-	// minute (r/m.)
-	//
-	// Any of "r/s", "r/m".
-	RateUnit string `json:"rate_unit,omitzero"`
-	paramObj
-}
-
-func (r CDNResourceNewParamsOptionsRequestLimiter) MarshalJSON() (data []byte, err error) {
-	type shadow CDNResourceNewParamsOptionsRequestLimiter
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CDNResourceNewParamsOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CDNResourceNewParamsOptionsRequestLimiter](
-		"rate_unit", "r/s", "r/m",
-	)
-}
-
 // Hides HTTP headers from an origin server in the CDN response.
 //
 // The properties Enabled, Excepted, Mode are required.
@@ -5514,8 +5424,6 @@ type CDNResourceUpdateParamsOptions struct {
 	RedirectHTTPSToHTTP CDNResourceUpdateParamsOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,omitzero"`
 	// Controls access to the CDN resource content for specified domain names.
 	ReferrerACL CDNResourceUpdateParamsOptionsReferrerACL `json:"referrer_acl,omitzero"`
-	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter CDNResourceUpdateParamsOptionsRequestLimiter `json:"request_limiter,omitzero"`
 	// Hides HTTP headers from an origin server in the CDN response.
 	ResponseHeadersHidingPolicy CDNResourceUpdateParamsOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,omitzero"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
@@ -6890,48 +6798,6 @@ func init() {
 	)
 }
 
-// Option allows to limit the amount of HTTP requests.
-//
-// The properties Enabled, Rate are required.
-type CDNResourceUpdateParamsOptionsRequestLimiter struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	// Maximum request rate.
-	Rate int64 `json:"rate" api:"required"`
-	// Units of measurement for the `rate` field.
-	//
-	// Possible values:
-	//
-	// - **r/s** - Requests per second.
-	// - **r/m** - Requests per minute.
-	//
-	// If the rate is less than one request per second, it is specified in request per
-	// minute (r/m.)
-	//
-	// Any of "r/s", "r/m".
-	RateUnit string `json:"rate_unit,omitzero"`
-	paramObj
-}
-
-func (r CDNResourceUpdateParamsOptionsRequestLimiter) MarshalJSON() (data []byte, err error) {
-	type shadow CDNResourceUpdateParamsOptionsRequestLimiter
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CDNResourceUpdateParamsOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CDNResourceUpdateParamsOptionsRequestLimiter](
-		"rate_unit", "r/s", "r/m",
-	)
-}
-
 // Hides HTTP headers from an origin server in the CDN response.
 //
 // The properties Enabled, Excepted, Mode are required.
@@ -8060,8 +7926,6 @@ type CDNResourceReplaceParamsOptions struct {
 	RedirectHTTPSToHTTP CDNResourceReplaceParamsOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,omitzero"`
 	// Controls access to the CDN resource content for specified domain names.
 	ReferrerACL CDNResourceReplaceParamsOptionsReferrerACL `json:"referrer_acl,omitzero"`
-	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter CDNResourceReplaceParamsOptionsRequestLimiter `json:"request_limiter,omitzero"`
 	// Hides HTTP headers from an origin server in the CDN response.
 	ResponseHeadersHidingPolicy CDNResourceReplaceParamsOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,omitzero"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
@@ -9433,48 +9297,6 @@ func (r *CDNResourceReplaceParamsOptionsReferrerACL) UnmarshalJSON(data []byte) 
 func init() {
 	apijson.RegisterFieldValidator[CDNResourceReplaceParamsOptionsReferrerACL](
 		"policy_type", "allow", "deny",
-	)
-}
-
-// Option allows to limit the amount of HTTP requests.
-//
-// The properties Enabled, Rate are required.
-type CDNResourceReplaceParamsOptionsRequestLimiter struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	// Maximum request rate.
-	Rate int64 `json:"rate" api:"required"`
-	// Units of measurement for the `rate` field.
-	//
-	// Possible values:
-	//
-	// - **r/s** - Requests per second.
-	// - **r/m** - Requests per minute.
-	//
-	// If the rate is less than one request per second, it is specified in request per
-	// minute (r/m.)
-	//
-	// Any of "r/s", "r/m".
-	RateUnit string `json:"rate_unit,omitzero"`
-	paramObj
-}
-
-func (r CDNResourceReplaceParamsOptionsRequestLimiter) MarshalJSON() (data []byte, err error) {
-	type shadow CDNResourceReplaceParamsOptionsRequestLimiter
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CDNResourceReplaceParamsOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CDNResourceReplaceParamsOptionsRequestLimiter](
-		"rate_unit", "r/s", "r/m",
 	)
 }
 

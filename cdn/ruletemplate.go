@@ -362,8 +362,6 @@ type RuleTemplateOptions struct {
 	RedirectHTTPSToHTTP RuleTemplateOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http" api:"nullable"`
 	// Controls access to the CDN resource content for specified domain names.
 	ReferrerACL RuleTemplateOptionsReferrerACL `json:"referrer_acl" api:"nullable"`
-	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter RuleTemplateOptionsRequestLimiter `json:"request_limiter" api:"nullable"`
 	// Hides HTTP headers from an origin server in the CDN response.
 	ResponseHeadersHidingPolicy RuleTemplateOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy" api:"nullable"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
@@ -449,7 +447,6 @@ type RuleTemplateOptions struct {
 		RedirectHTTPToHTTPS         respjson.Field
 		RedirectHTTPSToHTTP         respjson.Field
 		ReferrerACL                 respjson.Field
-		RequestLimiter              respjson.Field
 		ResponseHeadersHidingPolicy respjson.Field
 		Rewrite                     respjson.Field
 		SecureKey                   respjson.Field
@@ -1789,49 +1786,6 @@ func (r *RuleTemplateOptionsReferrerACL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Option allows to limit the amount of HTTP requests.
-type RuleTemplateOptionsRequestLimiter struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	// Maximum request rate.
-	Rate  int64 `json:"rate" api:"required"`
-	Burst int64 `json:"burst"`
-	Delay int64 `json:"delay"`
-	// Units of measurement for the `rate` field.
-	//
-	// Possible values:
-	//
-	// - **r/s** - Requests per second.
-	// - **r/m** - Requests per minute.
-	//
-	// If the rate is less than one request per second, it is specified in request per
-	// minute (r/m.)
-	//
-	// Any of "r/s", "r/m".
-	RateUnit string `json:"rate_unit"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		Rate        respjson.Field
-		Burst       respjson.Field
-		Delay       respjson.Field
-		RateUnit    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RuleTemplateOptionsRequestLimiter) RawJSON() string { return r.JSON.raw }
-func (r *RuleTemplateOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Hides HTTP headers from an origin server in the CDN response.
 type RuleTemplateOptionsResponseHeadersHidingPolicy struct {
 	// Controls the option state.
@@ -2667,8 +2621,6 @@ type RuleTemplateNewParamsOptions struct {
 	RedirectHTTPSToHTTP RuleTemplateNewParamsOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,omitzero"`
 	// Controls access to the CDN resource content for specified domain names.
 	ReferrerACL RuleTemplateNewParamsOptionsReferrerACL `json:"referrer_acl,omitzero"`
-	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter RuleTemplateNewParamsOptionsRequestLimiter `json:"request_limiter,omitzero"`
 	// Hides HTTP headers from an origin server in the CDN response.
 	ResponseHeadersHidingPolicy RuleTemplateNewParamsOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,omitzero"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
@@ -3968,48 +3920,6 @@ func init() {
 	)
 }
 
-// Option allows to limit the amount of HTTP requests.
-//
-// The properties Enabled, Rate are required.
-type RuleTemplateNewParamsOptionsRequestLimiter struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	// Maximum request rate.
-	Rate int64 `json:"rate" api:"required"`
-	// Units of measurement for the `rate` field.
-	//
-	// Possible values:
-	//
-	// - **r/s** - Requests per second.
-	// - **r/m** - Requests per minute.
-	//
-	// If the rate is less than one request per second, it is specified in request per
-	// minute (r/m.)
-	//
-	// Any of "r/s", "r/m".
-	RateUnit string `json:"rate_unit,omitzero"`
-	paramObj
-}
-
-func (r RuleTemplateNewParamsOptionsRequestLimiter) MarshalJSON() (data []byte, err error) {
-	type shadow RuleTemplateNewParamsOptionsRequestLimiter
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RuleTemplateNewParamsOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[RuleTemplateNewParamsOptionsRequestLimiter](
-		"rate_unit", "r/s", "r/m",
-	)
-}
-
 // Hides HTTP headers from an origin server in the CDN response.
 //
 // The properties Enabled, Excepted, Mode are required.
@@ -4771,8 +4681,6 @@ type RuleTemplateUpdateParamsOptions struct {
 	RedirectHTTPSToHTTP RuleTemplateUpdateParamsOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,omitzero"`
 	// Controls access to the CDN resource content for specified domain names.
 	ReferrerACL RuleTemplateUpdateParamsOptionsReferrerACL `json:"referrer_acl,omitzero"`
-	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter RuleTemplateUpdateParamsOptionsRequestLimiter `json:"request_limiter,omitzero"`
 	// Hides HTTP headers from an origin server in the CDN response.
 	ResponseHeadersHidingPolicy RuleTemplateUpdateParamsOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,omitzero"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
@@ -6072,48 +5980,6 @@ func init() {
 	)
 }
 
-// Option allows to limit the amount of HTTP requests.
-//
-// The properties Enabled, Rate are required.
-type RuleTemplateUpdateParamsOptionsRequestLimiter struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	// Maximum request rate.
-	Rate int64 `json:"rate" api:"required"`
-	// Units of measurement for the `rate` field.
-	//
-	// Possible values:
-	//
-	// - **r/s** - Requests per second.
-	// - **r/m** - Requests per minute.
-	//
-	// If the rate is less than one request per second, it is specified in request per
-	// minute (r/m.)
-	//
-	// Any of "r/s", "r/m".
-	RateUnit string `json:"rate_unit,omitzero"`
-	paramObj
-}
-
-func (r RuleTemplateUpdateParamsOptionsRequestLimiter) MarshalJSON() (data []byte, err error) {
-	type shadow RuleTemplateUpdateParamsOptionsRequestLimiter
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RuleTemplateUpdateParamsOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[RuleTemplateUpdateParamsOptionsRequestLimiter](
-		"rate_unit", "r/s", "r/m",
-	)
-}
-
 // Hides HTTP headers from an origin server in the CDN response.
 //
 // The properties Enabled, Excepted, Mode are required.
@@ -6891,8 +6757,6 @@ type RuleTemplateReplaceParamsOptions struct {
 	RedirectHTTPSToHTTP RuleTemplateReplaceParamsOptionsRedirectHTTPSToHTTP `json:"redirect_https_to_http,omitzero"`
 	// Controls access to the CDN resource content for specified domain names.
 	ReferrerACL RuleTemplateReplaceParamsOptionsReferrerACL `json:"referrer_acl,omitzero"`
-	// Option allows to limit the amount of HTTP requests.
-	RequestLimiter RuleTemplateReplaceParamsOptionsRequestLimiter `json:"request_limiter,omitzero"`
 	// Hides HTTP headers from an origin server in the CDN response.
 	ResponseHeadersHidingPolicy RuleTemplateReplaceParamsOptionsResponseHeadersHidingPolicy `json:"response_headers_hiding_policy,omitzero"`
 	// Changes and redirects requests from the CDN to the origin. It operates according
@@ -8189,48 +8053,6 @@ func (r *RuleTemplateReplaceParamsOptionsReferrerACL) UnmarshalJSON(data []byte)
 func init() {
 	apijson.RegisterFieldValidator[RuleTemplateReplaceParamsOptionsReferrerACL](
 		"policy_type", "allow", "deny",
-	)
-}
-
-// Option allows to limit the amount of HTTP requests.
-//
-// The properties Enabled, Rate are required.
-type RuleTemplateReplaceParamsOptionsRequestLimiter struct {
-	// Controls the option state.
-	//
-	// Possible values:
-	//
-	// - **true** - Option is enabled.
-	// - **false** - Option is disabled.
-	Enabled bool `json:"enabled" api:"required"`
-	// Maximum request rate.
-	Rate int64 `json:"rate" api:"required"`
-	// Units of measurement for the `rate` field.
-	//
-	// Possible values:
-	//
-	// - **r/s** - Requests per second.
-	// - **r/m** - Requests per minute.
-	//
-	// If the rate is less than one request per second, it is specified in request per
-	// minute (r/m.)
-	//
-	// Any of "r/s", "r/m".
-	RateUnit string `json:"rate_unit,omitzero"`
-	paramObj
-}
-
-func (r RuleTemplateReplaceParamsOptionsRequestLimiter) MarshalJSON() (data []byte, err error) {
-	type shadow RuleTemplateReplaceParamsOptionsRequestLimiter
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RuleTemplateReplaceParamsOptionsRequestLimiter) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[RuleTemplateReplaceParamsOptionsRequestLimiter](
-		"rate_unit", "r/s", "r/m",
 	)
 }
 
