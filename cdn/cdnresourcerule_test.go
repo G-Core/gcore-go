@@ -209,11 +209,6 @@ func TestCDNResourceRuleNewWithOptionalParams(t *testing.T) {
 					ExceptedValues: []string{"example.com", "*.example.net"},
 					PolicyType:     "deny",
 				},
-				RequestLimiter: cdn.CDNResourceRuleNewParamsOptionsRequestLimiter{
-					Enabled:  true,
-					Rate:     5,
-					RateUnit: "r/s",
-				},
 				ResponseHeadersHidingPolicy: cdn.CDNResourceRuleNewParamsOptionsResponseHeadersHidingPolicy{
 					Enabled:  true,
 					Excepted: []string{"my-header"},
@@ -491,11 +486,6 @@ func TestCDNResourceRuleUpdateWithOptionalParams(t *testing.T) {
 					Enabled:        true,
 					ExceptedValues: []string{"example.com", "*.example.net"},
 					PolicyType:     "deny",
-				},
-				RequestLimiter: cdn.CDNResourceRuleUpdateParamsOptionsRequestLimiter{
-					Enabled:  true,
-					Rate:     5,
-					RateUnit: "r/s",
 				},
 				ResponseHeadersHidingPolicy: cdn.CDNResourceRuleUpdateParamsOptionsResponseHeadersHidingPolicy{
 					Enabled:  true,
@@ -863,11 +853,6 @@ func TestCDNResourceRuleReplaceWithOptionalParams(t *testing.T) {
 					Enabled:        true,
 					ExceptedValues: []string{"example.com", "*.example.net"},
 					PolicyType:     "deny",
-				},
-				RequestLimiter: cdn.CDNResourceRuleReplaceParamsOptionsRequestLimiter{
-					Enabled:  true,
-					Rate:     5,
-					RateUnit: "r/s",
 				},
 				ResponseHeadersHidingPolicy: cdn.CDNResourceRuleReplaceParamsOptionsResponseHeadersHidingPolicy{
 					Enabled:  true,
