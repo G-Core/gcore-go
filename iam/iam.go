@@ -26,19 +26,21 @@ import (
 // the [NewIamService] method instead.
 type IamService struct {
 	Options []option.RequestOption
-	// **Deprecated:** All endpoints in this section will be removed on **2026-07-17**.
-	// Use the [API Tokens V2](#tag/API-Tokens-V2) endpoints instead. Existing tokens
-	// issued by V1 endpoints continue to authenticate after the removal date.
-	//
 	// Use permanent API tokens for regular automated requests to services. You can
 	// either set its validity period when creating it or issue a token for an
 	// unlimited time. Please address the API documentation of the specific product in
 	// order to check if it supports API tokens.
 	//
+	// Newer endpoints under `/v2/…` issue tokens using `_` (underscore) as the
+	// separator (for example `42_a1b2c3d4e5f6...`) and are the recommended way to
+	// create new tokens. Legacy endpoints that issue `$`-separated tokens are marked
+	// deprecated and will be removed on **2026-07-17**; tokens that were already
+	// issued keep authenticating.
+	//
 	// Provide your APIKey in the Authorization header.
 	//
 	// Example:
-	// `curl -H "Authorization: APIKey 123$61b8e1e7a68c" https://api.gcore.com/iam/users/me`
+	// `curl -H "Authorization: APIKey 42_a1b2c3d4e5f6..." https://api.gcore.com/iam/users/me`
 	//
 	// Please note: When authorizing via SAML SSO, our system does not have any
 	// information about permissions given to the user by the identity provider. Even
