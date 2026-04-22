@@ -13,7 +13,8 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewStorageService] method instead.
 type StorageService struct {
-	Options        []option.RequestOption
+	Options []option.RequestOption
+	// Locations represent cloud regions where new storages can be created.
 	Locations      LocationService
 	ObjectStorages ObjectStorageService
 	SftpStorages   SftpStorageService
