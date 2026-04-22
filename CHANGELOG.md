@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.43.0 (2026-04-22)
+
+Full Changelog: [v0.42.0...v0.43.0](https://github.com/G-Core/gcore-go/compare/v0.42.0...v0.43.0)
+
+### Features
+
+* **api:** aggregated API specs update ([d3fb428](https://github.com/G-Core/gcore-go/commit/d3fb428a7a3a56360baa1e55e138392680752a09))
+* **api:** aggregated API specs update ([10db90d](https://github.com/G-Core/gcore-go/commit/10db90dbe4bbc55aee56219856d0202e45610aad))
+* **api:** aggregated API specs update ([e601c13](https://github.com/G-Core/gcore-go/commit/e601c1344e79b71fef59088868165d05f29ae429))
+* **api:** aggregated API specs update ([e753962](https://github.com/G-Core/gcore-go/commit/e7539623f827fbfe52bd2050f3905eab355ba9ac))
+* **cloud:** add runnable K8s cluster example ([3e7df8a](https://github.com/G-Core/gcore-go/commit/3e7df8a680cca68ae85185587988dc6c4350ab3c))
+* **cloud:** add upload/get/delete to GPU baremetal cluster image example ([43e9e67](https://github.com/G-Core/gcore-go/commit/43e9e67545830c28e03bb4439ce366d0c64f0341))
+* **storage:** support Terraform generation for locations ([15ee9c4](https://github.com/G-Core/gcore-go/commit/15ee9c437a95e52e4b1e906a7c7e60dd887fd5d9))
+
+
+### Bug Fixes
+
+* **cloud:** handle empty tasks in SecurityGroup UpdateAndPoll ([36ca505](https://github.com/G-Core/gcore-go/commit/36ca505ce285c101ed8b8c0108d73eb51327857f))
+* **cloud:** initialize SecurityGroupService with base r.Options in NewAndPoll ([8b72114](https://github.com/G-Core/gcore-go/commit/8b721140dd1b07b799b134525e4368bb9c3dc579))
+* omit doc-only changes from release notes ([b64ccda](https://github.com/G-Core/gcore-go/commit/b64ccda88b11286af8f28f9ecdc611ed3708720a))
+
+
+### Chores
+
+* **tests:** bump steady to v0.22.1 ([81c0c45](https://github.com/G-Core/gcore-go/commit/81c0c45b914f78b294b95fbf0180e1c928fe869a))
+
 ## 0.42.0 (2026-04-17)
 
 Full Changelog: [v0.41.0...v0.42.0](https://github.com/G-Core/gcore-go/compare/v0.41.0...v0.42.0)
