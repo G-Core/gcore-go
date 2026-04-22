@@ -17,6 +17,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Locations represent cloud regions where new storages can be created.
+//
 // LocationService contains methods and other services that help with interacting
 // with the gcore API.
 //
