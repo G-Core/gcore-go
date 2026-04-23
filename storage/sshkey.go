@@ -19,6 +19,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// SSH keys enable secure access to SFTP storage by associating public keys with
+// user accounts for authentication.
+//
 // SSHKeyService contains methods and other services that help with interacting
 // with the gcore API.
 //
