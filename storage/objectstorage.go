@@ -110,9 +110,13 @@ type S3Storage struct {
 	Address string `json:"address" api:"required"`
 	// ISO 8601 timestamp when the storage was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Read-only internal full name of the storage, composed as "{`client_id`}-{name}".
+	// Used internally by the backend. Clients should continue to identify the storage
+	// by `name`.
+	FullName string `json:"full_name" api:"required"`
 	// Geographic location code where the storage is provisioned
 	LocationName string `json:"location_name" api:"required"`
-	// User-defined name for the storage instance
+	// User-defined name for the storage instance, as supplied at creation time.
 	Name string `json:"name" api:"required"`
 	// Lifecycle status of the storage. Use this to check readiness before operations.
 	//
@@ -123,6 +127,7 @@ type S3Storage struct {
 		ID                 respjson.Field
 		Address            respjson.Field
 		CreatedAt          respjson.Field
+		FullName           respjson.Field
 		LocationName       respjson.Field
 		Name               respjson.Field
 		ProvisioningStatus respjson.Field
@@ -157,9 +162,13 @@ type S3StorageCreated struct {
 	Address string `json:"address" api:"required"`
 	// ISO 8601 timestamp when the storage was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Read-only internal full name of the storage, composed as "{`client_id`}-{name}".
+	// Used internally by the backend. Clients should continue to identify the storage
+	// by `name`.
+	FullName string `json:"full_name" api:"required"`
 	// Geographic location code where the storage is provisioned
 	LocationName string `json:"location_name" api:"required"`
-	// User-defined name for the storage instance
+	// User-defined name for the storage instance, as supplied at creation time.
 	Name string `json:"name" api:"required"`
 	// Lifecycle status of the storage. Use this to check readiness before operations.
 	//
@@ -171,6 +180,7 @@ type S3StorageCreated struct {
 		AccessKeys         respjson.Field
 		Address            respjson.Field
 		CreatedAt          respjson.Field
+		FullName           respjson.Field
 		LocationName       respjson.Field
 		Name               respjson.Field
 		ProvisioningStatus respjson.Field

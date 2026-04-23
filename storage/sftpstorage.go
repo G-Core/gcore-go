@@ -106,6 +106,11 @@ type SftpStorage struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Duration when the storage will expire. Null if no expiration is set.
 	Expires string `json:"expires" api:"required"`
+	// Read-only internal full name of the storage, composed as "{`client_id`}-{name}".
+	// Used by the SFTP backend as the login username. Clients should use this value
+	// when connecting but should continue to identify the storage by `name` in their
+	// own configuration.
+	FullName string `json:"full_name" api:"required"`
 	// Whether this storage uses a custom configuration file
 	HasCustomConfigFile bool `json:"has_custom_config_file" api:"required"`
 	// Whether password authentication is configured for this storage
@@ -114,7 +119,7 @@ type SftpStorage struct {
 	IsHTTPDisabled bool `json:"is_http_disabled" api:"required"`
 	// Geographic location code where the storage is provisioned
 	LocationName string `json:"location_name" api:"required"`
-	// User-defined name for the storage instance
+	// User-defined name for the storage instance, as supplied at creation time.
 	Name string `json:"name" api:"required"`
 	// Lifecycle status of the storage. Use this to check readiness before operations.
 	//
@@ -133,6 +138,7 @@ type SftpStorage struct {
 		Address             respjson.Field
 		CreatedAt           respjson.Field
 		Expires             respjson.Field
+		FullName            respjson.Field
 		HasCustomConfigFile respjson.Field
 		HasPassword         respjson.Field
 		IsHTTPDisabled      respjson.Field

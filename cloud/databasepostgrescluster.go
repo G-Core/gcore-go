@@ -458,8 +458,10 @@ const (
 )
 
 type DatabasePostgresClusterNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// High Availability settings
 	HighAvailability DatabasePostgresClusterNewParamsHighAvailability `json:"high_availability,omitzero" api:"required"`
 	// PostgreSQL cluster name
@@ -649,8 +651,10 @@ func (r *DatabasePostgresClusterNewParamsUser) UnmarshalJSON(data []byte) error 
 }
 
 type DatabasePostgresClusterUpdateParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// New instance RAM and CPU
 	Flavor DatabasePostgresClusterUpdateParamsFlavor `json:"flavor,omitzero"`
 	// New High Availability settings
@@ -834,10 +838,14 @@ func (r *DatabasePostgresClusterUpdateParamsUser) UnmarshalJSON(data []byte) err
 }
 
 type DatabasePostgresClusterListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Maximum number of clusters to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter clusters by name
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Number of clusters to skip
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
@@ -853,13 +861,17 @@ func (r DatabasePostgresClusterListParams) URLQuery() (v url.Values, err error) 
 }
 
 type DatabasePostgresClusterDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type DatabasePostgresClusterGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

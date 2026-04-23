@@ -570,6 +570,8 @@ type LoadBalancerPoolListParams struct {
 	ListenerID param.Opt[string] `query:"listener_id,omitzero" format:"uuid4" json:"-"`
 	// Load Balancer ID
 	LoadBalancerID param.Opt[string] `query:"load_balancer_id,omitzero" format:"uuid4" json:"-"`
+	// Filter by name
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
