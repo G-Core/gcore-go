@@ -144,6 +144,7 @@ func TestDatabasePostgresClusterListWithOptionalParams(t *testing.T) {
 		ProjectID: gcore.Int(0),
 		RegionID:  gcore.Int(0),
 		Limit:     gcore.Int(0),
+		Name:      gcore.String("name"),
 		Offset:    gcore.Int(0),
 	})
 	if err != nil {

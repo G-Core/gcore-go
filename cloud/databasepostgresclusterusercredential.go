@@ -118,15 +118,21 @@ func (r *PostgresUserCredentials) UnmarshalJSON(data []byte) error {
 }
 
 type DatabasePostgresClusterUserCredentialGetParams struct {
-	ProjectID   param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID    param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	ClusterName string           `path:"cluster_name" api:"required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Cluster name
+	ClusterName string `path:"cluster_name" api:"required" json:"-"`
 	paramObj
 }
 
 type DatabasePostgresClusterUserCredentialRegenerateParams struct {
-	ProjectID   param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID    param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	ClusterName string           `path:"cluster_name" api:"required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Cluster name
+	ClusterName string `path:"cluster_name" api:"required" json:"-"`
 	paramObj
 }

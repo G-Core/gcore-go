@@ -178,6 +178,7 @@ func TestLoadBalancerPoolListWithOptionalParams(t *testing.T) {
 		Limit:          gcore.Int(1000),
 		ListenerID:     gcore.String("00000000-0000-4000-8000-000000000000"),
 		LoadBalancerID: gcore.String("00000000-0000-4000-8000-000000000000"),
+		Name:           gcore.String("lb-pool-name"),
 		Offset:         gcore.Int(0),
 	})
 	if err != nil {
