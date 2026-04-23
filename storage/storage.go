@@ -18,8 +18,10 @@ type StorageService struct {
 	Locations      LocationService
 	ObjectStorages ObjectStorageService
 	SftpStorages   SftpStorageService
-	SSHKeys        SSHKeyService
-	Statistics     StatisticService
+	// SSH keys enable secure access to SFTP storage by associating public keys with
+	// user accounts for authentication.
+	SSHKeys    SSHKeyService
+	Statistics StatisticService
 }
 
 // NewStorageService generates a new service that applies the given options to each
