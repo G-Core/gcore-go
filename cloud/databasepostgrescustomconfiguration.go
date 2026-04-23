@@ -37,7 +37,7 @@ func NewDatabasePostgresCustomConfigurationService(opts ...option.RequestOption)
 }
 
 // Validate a custom PostgreSQL configuration file.
-func (r *DatabasePostgresCustomConfigurationService) Validate(ctx context.Context, params DatabasePostgresCustomConfigurationValidateParams, opts ...option.RequestOption) (res *PgConfValidation, err error) {
+func (r *DatabasePostgresCustomConfigurationService) Validate(ctx context.Context, params DatabasePostgresCustomConfigurationValidateParams, opts ...option.RequestOption) (res *DatabasePostgresCustomConfigurationValidateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -58,7 +58,7 @@ func (r *DatabasePostgresCustomConfigurationService) Validate(ctx context.Contex
 	return res, err
 }
 
-type PgConfValidation struct {
+type DatabasePostgresCustomConfigurationValidateResponse struct {
 	// Errors list
 	Errors []string `json:"errors" api:"required"`
 	// Validity of pg.conf file
@@ -73,14 +73,16 @@ type PgConfValidation struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PgConfValidation) RawJSON() string { return r.JSON.raw }
-func (r *PgConfValidation) UnmarshalJSON(data []byte) error {
+func (r DatabasePostgresCustomConfigurationValidateResponse) RawJSON() string { return r.JSON.raw }
+func (r *DatabasePostgresCustomConfigurationValidateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type DatabasePostgresCustomConfigurationValidateParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// PostgreSQL configuration
 	PgConf string `json:"pg_conf" api:"required"`
 	// PostgreSQL version

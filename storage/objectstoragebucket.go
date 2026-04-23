@@ -39,7 +39,7 @@ func NewObjectStorageBucketService(opts ...option.RequestOption) (r ObjectStorag
 }
 
 // Creates a new bucket within an S3-compatible storage.
-func (r *ObjectStorageBucketService) New(ctx context.Context, storageID int64, body ObjectStorageBucketNewParams, opts ...option.RequestOption) (res *BucketCreated, err error) {
+func (r *ObjectStorageBucketService) New(ctx context.Context, storageID int64, body ObjectStorageBucketNewParams, opts ...option.RequestOption) (res *Bucket, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/v4/object_storages/%v/buckets", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -197,88 +197,6 @@ type BucketPolicy struct {
 // Returns the unmodified JSON received from the API
 func (r BucketPolicy) RawJSON() string { return r.JSON.raw }
 func (r *BucketPolicy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BucketCreated struct {
-	Cors      BucketCreatedCors      `json:"cors" api:"required"`
-	Lifecycle BucketCreatedLifecycle `json:"lifecycle" api:"required"`
-	// Globally unique bucket name within the storage. Used as the path prefix when
-	// accessing objects via S3 API.
-	Name   string              `json:"name" api:"required"`
-	Policy BucketCreatedPolicy `json:"policy" api:"required"`
-	// Parent storage this bucket belongs to. Use this ID in the URL path for bucket
-	// operations.
-	StorageID int64 `json:"storage_id" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Cors        respjson.Field
-		Lifecycle   respjson.Field
-		Name        respjson.Field
-		Policy      respjson.Field
-		StorageID   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BucketCreated) RawJSON() string { return r.JSON.raw }
-func (r *BucketCreated) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BucketCreatedCors struct {
-	// Web domains allowed to make direct browser requests to this bucket (e.g.,
-	// "https://myapp.com"). Use "\*" to allow any origin.
-	AllowedOrigins []string `json:"allowed_origins" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AllowedOrigins respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BucketCreatedCors) RawJSON() string { return r.JSON.raw }
-func (r *BucketCreatedCors) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BucketCreatedLifecycle struct {
-	// Days after upload before objects are automatically deleted. For example, 30
-	// means files are removed 30 days after creation.
-	ExpirationDays int64 `json:"expiration_days" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ExpirationDays respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BucketCreatedLifecycle) RawJSON() string { return r.JSON.raw }
-func (r *BucketCreatedLifecycle) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BucketCreatedPolicy struct {
-	// When true, anyone can download objects without credentials. When false, all
-	// requests require valid S3 authentication.
-	IsPublic bool `json:"is_public" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		IsPublic    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BucketCreatedPolicy) RawJSON() string { return r.JSON.raw }
-func (r *BucketCreatedPolicy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
