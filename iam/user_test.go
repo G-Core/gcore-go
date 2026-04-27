@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestUserUpdate(t *testing.T) {
+func TestUserUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: PutUser schema requires read-only fields on PATCH, see IMP-1903")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -32,7 +32,7 @@ func TestUserUpdate(t *testing.T) {
 		0,
 		iam.UserUpdateParams{
 			AuthTypes: []iam.AuthType{iam.AuthTypePassword},
-			Email:     "dev@stainless.com",
+			Email:     gcore.String("dev@stainless.com"),
 			Lang:      iam.UserLanguageDe,
 			Name:      gcore.String("name"),
 			Phone:     gcore.String("phone"),
