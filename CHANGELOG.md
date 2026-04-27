@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.44.0 (2026-04-27)
+
+Full Changelog: [v0.43.0...v0.44.0](https://github.com/G-Core/gcore-go/compare/v0.43.0...v0.44.0)
+
+### Features
+
+* **api:** aggregated API specs update ([6ccf2d9](https://github.com/G-Core/gcore-go/commit/6ccf2d9b6b09929f4263ef9cb852da3263fd63f7))
+* **api:** aggregated API specs update ([57e9f6c](https://github.com/G-Core/gcore-go/commit/57e9f6cca6fca71a4a6943c99b2fd7117225850f))
+* **go:** add default http client with timeout ([f1faaf7](https://github.com/G-Core/gcore-go/commit/f1faaf7fdc53e194d8d9e9891fc7c7f03ded5b3a))
+* **storage:** support TF for ssh keys ([10bd55a](https://github.com/G-Core/gcore-go/commit/10bd55ae6569d32d0645350b0265d040b4f8bb71))
+
+
+### Chores
+
+* **internal:** more robust bootstrap script ([75728a0](https://github.com/G-Core/gcore-go/commit/75728a052de21ca8e28d85a3145f56f793100490))
+
 ## 0.43.0 (2026-04-22)
 
 Full Changelog: [v0.42.0...v0.43.0](https://github.com/G-Core/gcore-go/compare/v0.42.0...v0.43.0)
