@@ -37,7 +37,7 @@ func NewDatabasePostgresCustomConfigurationService(opts ...option.RequestOption)
 }
 
 // Validate a custom PostgreSQL configuration file.
-func (r *DatabasePostgresCustomConfigurationService) Validate(ctx context.Context, params DatabasePostgresCustomConfigurationValidateParams, opts ...option.RequestOption) (res *DatabasePostgresCustomConfigurationValidateResponse, err error) {
+func (r *DatabasePostgresCustomConfigurationService) Validate(ctx context.Context, params DatabasePostgresCustomConfigurationValidateParams, opts ...option.RequestOption) (res *PgConfValidation, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -58,7 +58,7 @@ func (r *DatabasePostgresCustomConfigurationService) Validate(ctx context.Contex
 	return res, err
 }
 
-type DatabasePostgresCustomConfigurationValidateResponse struct {
+type PgConfValidation struct {
 	// Errors list
 	Errors []string `json:"errors" api:"required"`
 	// Validity of pg.conf file
@@ -73,8 +73,8 @@ type DatabasePostgresCustomConfigurationValidateResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DatabasePostgresCustomConfigurationValidateResponse) RawJSON() string { return r.JSON.raw }
-func (r *DatabasePostgresCustomConfigurationValidateResponse) UnmarshalJSON(data []byte) error {
+func (r PgConfValidation) RawJSON() string { return r.JSON.raw }
+func (r *PgConfValidation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
