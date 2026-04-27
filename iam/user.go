@@ -332,19 +332,19 @@ func (r *UserGetResponse) UnmarshalJSON(data []byte) error {
 
 type UserUpdateParams struct {
 	// User's name.
-	Name param.Opt[string] `json:"name,omitzero" api:"required"`
+	Name param.Opt[string] `json:"name,omitzero"`
 	// User's phone.
-	Phone param.Opt[string] `json:"phone,omitzero" api:"required"`
-	// System field. List of auth types available for the account.
-	AuthTypes []AuthType `json:"auth_types,omitzero" api:"required"`
+	Phone param.Opt[string] `json:"phone,omitzero"`
 	// User's email address.
-	Email string `json:"email" api:"required" format:"email"`
+	Email param.Opt[string] `json:"email,omitzero" format:"email"`
+	// System field. List of auth types available for the account.
+	AuthTypes []AuthType `json:"auth_types,omitzero"`
 	// User's language.
 	//
 	// Defines language of the control panel and email messages.
 	//
 	// Any of "de", "en", "ru", "zh", "az".
-	Lang UserLanguage `json:"lang,omitzero" api:"required"`
+	Lang UserLanguage `json:"lang,omitzero"`
 	paramObj
 }
 
