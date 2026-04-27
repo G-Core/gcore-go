@@ -8,6 +8,7 @@ import (
 	"os"
 	"slices"
 	"strconv"
+	"strings"
 
 	"github.com/G-Core/gcore-go/cdn"
 	"github.com/G-Core/gcore-go/cloud"
@@ -67,6 +68,14 @@ func DefaultClientOptions() []option.RequestOption {
 			panic(err)
 		}
 		defaults = append(defaults, option.WithCloudRegionID(parsed))
+	}
+	if o, ok := os.LookupEnv("GCORE_CUSTOM_HEADERS"); ok {
+		for _, line := range strings.Split(o, "\n") {
+			colon := strings.Index(line, ":")
+			if colon >= 0 {
+				defaults = append(defaults, option.WithHeader(strings.TrimSpace(line[:colon]), strings.TrimSpace(line[colon+1:])))
+			}
+		}
 	}
 	return defaults
 }
