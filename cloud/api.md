@@ -1097,11 +1097,11 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresCustomConfigurationValidateResponse">DatabasePostgresCustomConfigurationValidateResponse</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PgConfValidation">PgConfValidation</a>
 
 Methods:
 
-- <code title="post /cloud/v1/dbaas/postgres/validate_pg_conf/{project_id}/{region_id}">client.Cloud.Databases.Postgres.CustomConfigurations.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresCustomConfigurationService.Validate">Validate</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresCustomConfigurationValidateParams">DatabasePostgresCustomConfigurationValidateParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresCustomConfigurationValidateResponse">DatabasePostgresCustomConfigurationValidateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /cloud/v1/dbaas/postgres/validate_pg_conf/{project_id}/{region_id}">client.Cloud.Databases.Postgres.CustomConfigurations.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresCustomConfigurationService.Validate">Validate</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DatabasePostgresCustomConfigurationValidateParams">DatabasePostgresCustomConfigurationValidateParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PgConfValidation">PgConfValidation</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## VolumeSnapshots
 
