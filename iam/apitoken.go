@@ -57,59 +57,52 @@ func NewAPITokenService(opts ...option.RequestOption) (r APITokenService) {
 	return
 }
 
-// **Deprecated:** This endpoint will be removed on **2026-07-17**. Use
-// [`POST /v2/clients/{clientId}/tokens`](#operation/iamCreateApiTokenV2) instead.
-//
 // Create an API token in the current account.
 //
-// Deprecated: deprecated
+// This V2 endpoint generates tokens that use `_` (underscore) as the separator
+// between the token ID and the secret string, instead of the `$` separator used by
+// the V1 endpoint. For example: `42_a1b2c3d4...`
+//
+// Tokens created via this endpoint are fully compatible with all existing
+// authentication mechanisms.
 func (r *APITokenService) New(ctx context.Context, clientID int64, body APITokenNewParams, opts ...option.RequestOption) (res *APITokenCreated, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("iam/clients/%v/tokens", clientID)
+	path := fmt.Sprintf("iam/v2/clients/%v/tokens", clientID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
-// **Deprecated:** This endpoint will be removed on **2026-07-17**. Use
-// [`GET /v2/clients/{clientId}/tokens`](#operation/iamGetApiTokensV2) instead.
-//
 // Get information about your permanent API tokens in the account. A user with the
 // Administrators role gets information about all API tokens in the account.
 //
-// Deprecated: deprecated
+// This endpoint is identical to the V1 endpoint.
 func (r *APITokenService) List(ctx context.Context, clientID int64, query APITokenListParams, opts ...option.RequestOption) (res *APITokenList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("iam/clients/%v/tokens", clientID)
+	path := fmt.Sprintf("iam/v2/clients/%v/tokens", clientID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
-// **Deprecated:** This endpoint will be removed on **2026-07-17**. Use
-// [`DELETE /v2/clients/{clientId}/tokens/{tokenId}`](#operation/iamDeleteApiTokenV2)
-// instead.
-//
 // Delete API token from current account. Ensure that the API token is not being
 // used by an active application. After deleting the token, all applications that
 // use this token will not be able to get access to your account via API. The
 // action cannot be reversed.
 //
-// Deprecated: deprecated
+// This endpoint is identical to the V1 endpoint.
 func (r *APITokenService) Delete(ctx context.Context, tokenID int64, body APITokenDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("iam/clients/%v/tokens/%v", body.ClientID, tokenID)
+	path := fmt.Sprintf("iam/v2/clients/%v/tokens/%v", body.ClientID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
 
-// **Deprecated:** This endpoint will be removed on **2026-07-17**. Use
-// [`GET /v2/clients/{clientId}/tokens/{tokenId}`](#operation/iamGetApiTokenV2)
-// instead.
+// Get information about a specific API token.
 //
-// Deprecated: deprecated
+// This endpoint is identical to the V1 endpoint.
 func (r *APITokenService) Get(ctx context.Context, tokenID int64, query APITokenGetParams, opts ...option.RequestOption) (res *APIToken, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("iam/clients/%v/tokens/%v", query.ClientID, tokenID)
+	path := fmt.Sprintf("iam/v2/clients/%v/tokens/%v", query.ClientID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -214,8 +207,9 @@ func (r *APITokenClientUserRole) UnmarshalJSON(data []byte) error {
 }
 
 type APITokenCreated struct {
-	// API token. Copy it, because you will not be able to get it again. We do not
-	// store tokens. All responsibility for token storage and usage is on the issuer.
+	// API token with `_` separator. Copy it, because you will not be able to get it
+	// again. We do not store tokens. All responsibility for token storage and usage is
+	// on the issuer.
 	Token string `json:"token"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
