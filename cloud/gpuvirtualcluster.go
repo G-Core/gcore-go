@@ -792,7 +792,8 @@ type GPUVirtualClusterNewParamsServersSettings struct {
 	Credentials GPUVirtualClusterNewParamsServersSettingsCredentials `json:"credentials,omitzero"`
 	// List of file shares to be mounted across the cluster.
 	FileShares []GPUVirtualClusterNewParamsServersSettingsFileShare `json:"file_shares,omitzero"`
-	// List of security groups UUIDs
+	// List of security group UUIDs. If omitted or an empty list, the default security
+	// group will be used.
 	SecurityGroups []GPUVirtualClusterNewParamsServersSettingsSecurityGroup `json:"security_groups,omitzero"`
 	paramObj
 }

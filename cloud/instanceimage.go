@@ -333,7 +333,7 @@ type Image struct {
 	HwFirmwareType ImageHwFirmwareType `json:"hw_firmware_type" api:"required"`
 	// A virtual chipset type.
 	//
-	// Any of "pc", "q35".
+	// Any of "i440", "q35".
 	HwMachineType ImageHwMachineType `json:"hw_machine_type" api:"required"`
 	// Set to true if the image will be used by bare metal servers.
 	IsBaremetal bool `json:"is_baremetal" api:"required"`
@@ -453,8 +453,8 @@ const (
 type ImageHwMachineType string
 
 const (
-	ImageHwMachineTypePc  ImageHwMachineType = "pc"
-	ImageHwMachineTypeQ35 ImageHwMachineType = "q35"
+	ImageHwMachineTypeI440 ImageHwMachineType = "i440"
+	ImageHwMachineTypeQ35  ImageHwMachineType = "q35"
 )
 
 // The operating system installed on the image.
@@ -504,8 +504,10 @@ func (r *ImageList) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceImageUpdateParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Set to true if the image will be used by bare metal servers.
 	IsBaremetal param.Opt[bool] `json:"is_baremetal,omitzero"`
 	// Image display name
@@ -516,7 +518,7 @@ type InstanceImageUpdateParams struct {
 	HwFirmwareType InstanceImageUpdateParamsHwFirmwareType `json:"hw_firmware_type,omitzero"`
 	// A virtual chipset type.
 	//
-	// Any of "pc", "q35".
+	// Any of "i440", "q35".
 	HwMachineType InstanceImageUpdateParamsHwMachineType `json:"hw_machine_type,omitzero"`
 	// The operating system installed on the image.
 	//
@@ -556,8 +558,8 @@ const (
 type InstanceImageUpdateParamsHwMachineType string
 
 const (
-	InstanceImageUpdateParamsHwMachineTypePc  InstanceImageUpdateParamsHwMachineType = "pc"
-	InstanceImageUpdateParamsHwMachineTypeQ35 InstanceImageUpdateParamsHwMachineType = "q35"
+	InstanceImageUpdateParamsHwMachineTypeI440 InstanceImageUpdateParamsHwMachineType = "i440"
+	InstanceImageUpdateParamsHwMachineTypeQ35  InstanceImageUpdateParamsHwMachineType = "q35"
 )
 
 // The operating system installed on the image.
@@ -616,8 +618,10 @@ const (
 )
 
 type InstanceImageDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
@@ -638,7 +642,7 @@ type InstanceImageNewFromVolumeParams struct {
 	HwFirmwareType InstanceImageNewFromVolumeParamsHwFirmwareType `json:"hw_firmware_type,omitzero"`
 	// A virtual chipset type.
 	//
-	// Any of "pc", "q35".
+	// Any of "i440", "q35".
 	HwMachineType InstanceImageNewFromVolumeParamsHwMachineType `json:"hw_machine_type,omitzero"`
 	// Image CPU architecture type: `aarch64`, `x86_64`
 	//
@@ -694,8 +698,8 @@ const (
 type InstanceImageNewFromVolumeParamsHwMachineType string
 
 const (
-	InstanceImageNewFromVolumeParamsHwMachineTypePc  InstanceImageNewFromVolumeParamsHwMachineType = "pc"
-	InstanceImageNewFromVolumeParamsHwMachineTypeQ35 InstanceImageNewFromVolumeParamsHwMachineType = "q35"
+	InstanceImageNewFromVolumeParamsHwMachineTypeI440 InstanceImageNewFromVolumeParamsHwMachineType = "i440"
+	InstanceImageNewFromVolumeParamsHwMachineTypeQ35  InstanceImageNewFromVolumeParamsHwMachineType = "q35"
 )
 
 // The operating system installed on the image.
@@ -723,8 +727,10 @@ const (
 )
 
 type InstanceImageGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Show price
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	paramObj
@@ -739,8 +745,10 @@ func (r InstanceImageGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type InstanceImageUploadParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Image name
 	Name string `json:"name" api:"required"`
 	// URL
@@ -760,7 +768,7 @@ type InstanceImageUploadParams struct {
 	HwFirmwareType InstanceImageUploadParamsHwFirmwareType `json:"hw_firmware_type,omitzero"`
 	// A virtual chipset type.
 	//
-	// Any of "pc", "q35".
+	// Any of "i440", "q35".
 	HwMachineType InstanceImageUploadParamsHwMachineType `json:"hw_machine_type,omitzero"`
 	// Image CPU architecture type: `aarch64`, `x86_64`
 	//
@@ -812,8 +820,8 @@ const (
 type InstanceImageUploadParamsHwMachineType string
 
 const (
-	InstanceImageUploadParamsHwMachineTypePc  InstanceImageUploadParamsHwMachineType = "pc"
-	InstanceImageUploadParamsHwMachineTypeQ35 InstanceImageUploadParamsHwMachineType = "q35"
+	InstanceImageUploadParamsHwMachineTypeI440 InstanceImageUploadParamsHwMachineType = "i440"
+	InstanceImageUploadParamsHwMachineTypeQ35  InstanceImageUploadParamsHwMachineType = "q35"
 )
 
 // The operating system installed on the image.

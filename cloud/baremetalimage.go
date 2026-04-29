@@ -92,7 +92,7 @@ type BaremetalImage struct {
 	HwFirmwareType BaremetalImageHwFirmwareType `json:"hw_firmware_type" api:"required"`
 	// A virtual chipset type.
 	//
-	// Any of "pc", "q35".
+	// Any of "i440", "q35".
 	HwMachineType BaremetalImageHwMachineType `json:"hw_machine_type" api:"required"`
 	// For bare metal servers this value is always set to true
 	IsBaremetal bool `json:"is_baremetal" api:"required"`
@@ -212,8 +212,8 @@ const (
 type BaremetalImageHwMachineType string
 
 const (
-	BaremetalImageHwMachineTypePc  BaremetalImageHwMachineType = "pc"
-	BaremetalImageHwMachineTypeQ35 BaremetalImageHwMachineType = "q35"
+	BaremetalImageHwMachineTypeI440 BaremetalImageHwMachineType = "i440"
+	BaremetalImageHwMachineTypeQ35  BaremetalImageHwMachineType = "q35"
 )
 
 // The operating system installed on the image.
