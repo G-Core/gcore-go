@@ -775,7 +775,8 @@ type GPUBaremetalClusterNewParamsServersSettings struct {
 	Credentials GPUBaremetalClusterNewParamsServersSettingsCredentials `json:"credentials,omitzero"`
 	// List of file shares to be mounted across the cluster.
 	FileShares []GPUBaremetalClusterNewParamsServersSettingsFileShare `json:"file_shares,omitzero"`
-	// List of security groups UUIDs
+	// List of security group UUIDs. If omitted or an empty list, the default security
+	// group will be used.
 	SecurityGroups []GPUBaremetalClusterNewParamsServersSettingsSecurityGroup `json:"security_groups,omitzero"`
 	paramObj
 }

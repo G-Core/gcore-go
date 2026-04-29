@@ -28,10 +28,10 @@ func TestInstanceImageUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.Images.Update(
 		context.TODO(),
-		"image_id",
+		"8cab6f28-09ca-4201-b3f7-23c7893f4bd6",
 		cloud.InstanceImageUpdateParams{
-			ProjectID:      gcore.Int(0),
-			RegionID:       gcore.Int(0),
+			ProjectID:      gcore.Int(1),
+			RegionID:       gcore.Int(7),
 			HwFirmwareType: cloud.InstanceImageUpdateParamsHwFirmwareTypeBios,
 			HwMachineType:  cloud.InstanceImageUpdateParamsHwMachineTypeQ35,
 			IsBaremetal:    gcore.Bool(false),
@@ -96,10 +96,10 @@ func TestInstanceImageDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.Images.Delete(
 		context.TODO(),
-		"image_id",
+		"8cab6f28-09ca-4201-b3f7-23c7893f4bd6",
 		cloud.InstanceImageDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 		},
 	)
 	if err != nil {
@@ -162,11 +162,11 @@ func TestInstanceImageGetWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.Images.Get(
 		context.TODO(),
-		"image_id",
+		"8cab6f28-09ca-4201-b3f7-23c7893f4bd6",
 		cloud.InstanceImageGetParams{
-			ProjectID:     gcore.Int(0),
-			RegionID:      gcore.Int(0),
-			IncludePrices: gcore.Bool(true),
+			ProjectID:     gcore.Int(1),
+			RegionID:      gcore.Int(7),
+			IncludePrices: gcore.Bool(false),
 		},
 	)
 	if err != nil {
@@ -191,8 +191,8 @@ func TestInstanceImageUploadWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Instances.Images.Upload(context.TODO(), cloud.InstanceImageUploadParams{
-		ProjectID:      gcore.Int(0),
-		RegionID:       gcore.Int(0),
+		ProjectID:      gcore.Int(1),
+		RegionID:       gcore.Int(7),
 		Name:           "my-image",
 		URL:            "http://mirror.noris.net/cirros/0.4.0/cirros-0.4.0-x86_64-disk.img",
 		Architecture:   cloud.InstanceImageUploadParamsArchitectureX86_64,
