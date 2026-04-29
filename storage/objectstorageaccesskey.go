@@ -84,6 +84,18 @@ func (r *ObjectStorageAccessKeyService) Delete(ctx context.Context, accessKey st
 	return err
 }
 
+// Returns details of a specific access key for an S3-compatible storage.
+func (r *ObjectStorageAccessKeyService) Get(ctx context.Context, accessKey string, query ObjectStorageAccessKeyGetParams, opts ...option.RequestOption) (res *AccessKey, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if accessKey == "" {
+		err = errors.New("missing required access_key parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("storage/v4/object_storages/%v/access_keys/%s", query.StorageID, accessKey)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 type AccessKey struct {
 	// Access key ID used as the username in S3 authentication. Pass this in the
 	// `AWS_ACCESS_KEY_ID` field of your S3 client configuration.
@@ -149,6 +161,11 @@ func (r ObjectStorageAccessKeyListParams) URLQuery() (v url.Values, err error) {
 }
 
 type ObjectStorageAccessKeyDeleteParams struct {
+	StorageID int64 `path:"storage_id" api:"required" json:"-"`
+	paramObj
+}
+
+type ObjectStorageAccessKeyGetParams struct {
 	StorageID int64 `path:"storage_id" api:"required" json:"-"`
 	paramObj
 }
