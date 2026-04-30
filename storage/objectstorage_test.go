@@ -27,7 +27,7 @@ func TestObjectStorageNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Storage.ObjectStorages.New(context.TODO(), storage.ObjectStorageNewParams{
-		LocationName: "s-ed1",
+		LocationName: "s-region-1",
 		Name:         "my-storage-prod",
 	})
 	if err != nil {
