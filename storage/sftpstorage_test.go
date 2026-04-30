@@ -27,7 +27,7 @@ func TestSftpStorageNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Storage.SftpStorages.New(context.TODO(), storage.SftpStorageNewParams{
-		LocationName:        "mia",
+		LocationName:        "s-region-1",
 		Name:                "my-sftp-storage",
 		PasswordMode:        storage.SftpStorageNewParamsPasswordModeAuto,
 		Expires:             gcore.String("2 years 6 months"),
