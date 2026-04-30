@@ -294,6 +294,19 @@ type AnalyticsGetRequestsParams struct {
 	// List of domain IDs. Empty list means all domains belonging to the current
 	// account.
 	Domains []int64 `query:"domains,omitzero" json:"-"`
+	// Exclude data by a country code of the originating IP address in ISO 3166-1
+	// alpha-2 format.
+	ExcludeCountries []string `query:"exclude_countries,omitzero" json:"-"`
+	// Exclude data by domain ID.
+	ExcludeDomains []int64 `query:"exclude_domains,omitzero" json:"-"`
+	// Exclude traffic data by client IP.
+	ExcludeIPs []string `query:"exclude_ips,omitzero" format:"ipvanyaddress" json:"-"`
+	// Exclude data by reference IDs.
+	ExcludeReferenceIDs []string `query:"exclude_reference_ids,omitzero" json:"-"`
+	// Exclude data by name of a security rule matched the request.
+	ExcludeSecurityRuleNames []string `query:"exclude_security_rule_names,omitzero" json:"-"`
+	// Exclude data by session IDs.
+	ExcludeSessionIDs []string `query:"exclude_session_ids,omitzero" json:"-"`
 	// Filter by HTTP methods
 	//
 	// Any of "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE".
@@ -336,6 +349,11 @@ type AnalyticsGetTrafficParams struct {
 	// Filter data items up to a specified end date in ISO 8601 format. If not
 	// provided, defaults to the current date and time.
 	End param.Opt[string] `query:"end,omitzero" json:"-"`
+	// Optional explicit aggregation bucket width in seconds. When supplied,
+	// `bucket_size` supersedes `resolution` for aggregation granularity.
+	//
+	// Any of 60, 300, 600, 900, 1800, 3600, 7200, 10800, 21600, 43200, 86400.
+	BucketSize int64 `query:"bucket_size,omitzero" json:"-"`
 	// List of domain IDs. Empty list means all domains belonging to the current
 	// account.
 	Domains []int64 `query:"domains,omitzero" json:"-"`
@@ -372,6 +390,11 @@ type AnalyticsGetTrafficFilteredParams struct {
 	End param.Opt[string] `query:"end,omitzero" json:"-"`
 	// Filter by URL path with a glob-like pattern.
 	Path param.Opt[string] `query:"path,omitzero" json:"-"`
+	// Optional explicit aggregation bucket width in seconds. When supplied,
+	// `bucket_size` supersedes `resolution` for aggregation granularity.
+	//
+	// Any of 60, 300, 600, 900, 1800, 3600, 7200, 10800, 21600, 43200, 86400.
+	BucketSize int64 `query:"bucket_size,omitzero" json:"-"`
 	// Filter data by a country code of the originating IP address in ISO 3166-1
 	// alpha-2 format.
 	Countries []string `query:"countries,omitzero" json:"-"`
@@ -382,6 +405,19 @@ type AnalyticsGetTrafficFilteredParams struct {
 	// List of domain IDs. Empty list means all domains belonging to the current
 	// account.
 	Domains []int64 `query:"domains,omitzero" json:"-"`
+	// Exclude data by a country code of the originating IP address in ISO 3166-1
+	// alpha-2 format.
+	ExcludeCountries []string `query:"exclude_countries,omitzero" json:"-"`
+	// Exclude data by domain ID.
+	ExcludeDomains []int64 `query:"exclude_domains,omitzero" json:"-"`
+	// Exclude traffic data by client IP.
+	ExcludeIPs []string `query:"exclude_ips,omitzero" format:"ipvanyaddress" json:"-"`
+	// Exclude data by reference IDs.
+	ExcludeReferenceIDs []string `query:"exclude_reference_ids,omitzero" json:"-"`
+	// Exclude data by name of a security rule matched the request.
+	ExcludeSecurityRuleNames []string `query:"exclude_security_rule_names,omitzero" json:"-"`
+	// Exclude data by session IDs.
+	ExcludeSessionIDs []string `query:"exclude_session_ids,omitzero" json:"-"`
 	// Filter by HTTP methods
 	//
 	// Any of "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE".
