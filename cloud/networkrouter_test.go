@@ -68,10 +68,10 @@ func TestNetworkRouterUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Networks.Routers.Update(
 		context.TODO(),
-		"router_id",
+		"ccd5b925-e35c-4611-a511-67ab503104c8",
 		cloud.NetworkRouterUpdateParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			ExternalGatewayInfo: cloud.NetworkRouterUpdateParamsExternalGatewayInfo{
 				NetworkID:  "d7745dcf-b302-4795-9d61-6cc52487af48",
 				EnableSnat: gcore.Bool(false),
