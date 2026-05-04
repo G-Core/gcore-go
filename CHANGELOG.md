@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.45.0 (2026-05-04)
+
+Full Changelog: [v0.44.0...v0.45.0](https://github.com/G-Core/gcore-go/compare/v0.44.0...v0.45.0)
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** switch routers update from v1 to v2
+* **cloud:** correct pg conf validation response model name
+
+### Features
+
+* **api:** aggregated API specs update ([96df4b3](https://github.com/G-Core/gcore-go/commit/96df4b3db2ed1bb54103b3765cfe296ceae375ca))
+* **api:** aggregated API specs update ([f77488d](https://github.com/G-Core/gcore-go/commit/f77488d68b253ba3e3ef102bfacfc2512e189e28))
+* **api:** aggregated API specs update ([b5c7b61](https://github.com/G-Core/gcore-go/commit/b5c7b6161fdba15121bf939efd3e03fa8bcddf0b))
+* **api:** aggregated API specs update ([4715b80](https://github.com/G-Core/gcore-go/commit/4715b8008543c14155a8f01be503c0f83d9ff7a1))
+* **api:** aggregated API specs update ([c536a90](https://github.com/G-Core/gcore-go/commit/c536a908d4a5673f016230e49dfb90831758e66c))
+* **cloud:** add UpdateAndPoll method for routers ([293c472](https://github.com/G-Core/gcore-go/commit/293c472a4b08df962f54ea04d8720e1b374b0cc9))
+* **cloud:** switch routers update from v1 to v2 ([f58ce59](https://github.com/G-Core/gcore-go/commit/f58ce5991d5e70689f6e19602a8703254a6e5a4f))
+* **cloud:** use routers UpdateAndPoll in network example ([fb3c17f](https://github.com/G-Core/gcore-go/commit/fb3c17f398ca990e9cbafa0839544e8026b22e60))
+* **iam:** migrate api_tokens to v2 endpoints ([18aa4e0](https://github.com/G-Core/gcore-go/commit/18aa4e013515d2b5cc3bd5e442c57515ee523a7e))
+* **storage:** add get method for access keys ([8e08812](https://github.com/G-Core/gcore-go/commit/8e0881239596f0715fc16aa56b8a0ff714dccd1b))
+* support setting headers via env ([1750401](https://github.com/G-Core/gcore-go/commit/1750401ec1d057da03e609f1e2bdf45bae05beca))
+
+
+### Bug Fixes
+
+* **cloud:** correct pg conf validation response model name ([3d91401](https://github.com/G-Core/gcore-go/commit/3d914010734b8d893821c1ad8a4105c91c94e7f8))
+
+
+### Chores
+
+* avoid embedding reflect.Type for dead code elimination ([86e3d9d](https://github.com/G-Core/gcore-go/commit/86e3d9d53b09f43cc42091924a254468f5e3e0f4))
+
 ## 0.44.0 (2026-04-27)
 
 Full Changelog: [v0.43.0...v0.44.0](https://github.com/G-Core/gcore-go/compare/v0.43.0...v0.44.0)
