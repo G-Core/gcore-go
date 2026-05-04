@@ -65,11 +65,8 @@ func (r *NetworkRouterService) New(ctx context.Context, params NetworkRouterNewP
 	return res, err
 }
 
-// Update the configuration of an existing router. **Deprecated**: Use
-// `PATCH /v2/routers/{project_id}/{region_id}/{router_id}` instead.
-//
-// Deprecated: deprecated
-func (r *NetworkRouterService) Update(ctx context.Context, routerID string, params NetworkRouterUpdateParams, opts ...option.RequestOption) (res *Router, err error) {
+// Update the configuration of an existing router.
+func (r *NetworkRouterService) Update(ctx context.Context, routerID string, params NetworkRouterUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -89,7 +86,7 @@ func (r *NetworkRouterService) Update(ctx context.Context, routerID string, para
 		err = errors.New("missing required router_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/routers/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, routerID)
+	path := fmt.Sprintf("cloud/v2/routers/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, routerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }
@@ -556,8 +553,10 @@ func (r *NetworkRouterNewParamsRoute) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkRouterUpdateParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// New name of router
 	Name param.Opt[string] `json:"name,omitzero"`
 	// New external gateway configuration. Only type 'manual' is accepted on update, so
