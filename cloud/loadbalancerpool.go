@@ -257,12 +257,14 @@ type LoadBalancerPoolNewParamsHealthmonitor struct {
 	// The HTTP path the health monitor requests on each member. Defaults to `/` if not
 	// set. Can only be used with `HTTP` or `HTTPS` health monitor type.
 	//
-	// Must start with `/`. Examples of valid paths:
+	// Must start with `/` and contain only plain path segments. Query strings (`?`),
+	// fragments (`#`), percent-encoding (`%`), and consecutive slashes (`//`) are not
+	// allowed.
+	//
+	// Examples of valid paths:
 	//
 	// - `/` — check the root (most common, default)
 	// - `/healthz` — a dedicated health endpoint
-	//
-	// Paths starting with `//` are not valid URL paths and will be rejected.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
@@ -447,12 +449,14 @@ type LoadBalancerPoolUpdateParamsHealthmonitor struct {
 	// The HTTP path the health monitor requests on each member. Defaults to `/` if not
 	// set. Can only be used with `HTTP` or `HTTPS` health monitor type.
 	//
-	// Must start with `/`. Examples of valid paths:
+	// Must start with `/` and contain only plain path segments. Query strings (`?`),
+	// fragments (`#`), percent-encoding (`%`), and consecutive slashes (`//`) are not
+	// allowed.
+	//
+	// Examples of valid paths:
 	//
 	// - `/` — check the root (most common, default)
 	// - `/healthz` — a dedicated health endpoint
-	//
-	// Paths starting with `//` are not valid URL paths and will be rejected.
 	URLPath param.Opt[string] `json:"url_path,omitzero"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not

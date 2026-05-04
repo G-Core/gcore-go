@@ -74,9 +74,9 @@ type AuditLogEntry struct {
 	// "delete_metadata", "detach", "disable_logging", "disable_portsecurity",
 	// "download", "enable_logging", "enable_portsecurity", "failover",
 	// "put_into_servergroup", "reboot", "reboot_hard", "rebuild",
-	// "regenerate_credentials", "remove_from_servergroup", "replace_metadata",
-	// "resize", "resume", "retype", "revert", "scale_down", "scale_up", "start",
-	// "stop", "suspend", "update", "update_metadata", "upgrade".
+	// "regenerate_credentials", "remove_from_servergroup", "replace",
+	// "replace_metadata", "resize", "resume", "retype", "revert", "scale_down",
+	// "scale_up", "start", "stop", "suspend", "update", "update_metadata", "upgrade".
 	ActionType AuditLogEntryActionType `json:"action_type" api:"required"`
 	// API group
 	//
@@ -179,6 +179,7 @@ const (
 	AuditLogEntryActionTypeRebuild                AuditLogEntryActionType = "rebuild"
 	AuditLogEntryActionTypeRegenerateCredentials  AuditLogEntryActionType = "regenerate_credentials"
 	AuditLogEntryActionTypeRemoveFromServergroup  AuditLogEntryActionType = "remove_from_servergroup"
+	AuditLogEntryActionTypeReplace                AuditLogEntryActionType = "replace"
 	AuditLogEntryActionTypeReplaceMetadata        AuditLogEntryActionType = "replace_metadata"
 	AuditLogEntryActionTypeResize                 AuditLogEntryActionType = "resize"
 	AuditLogEntryActionTypeResume                 AuditLogEntryActionType = "resume"
@@ -346,9 +347,9 @@ type AuditLogListParams struct {
 	// "delete_metadata", "detach", "disable_logging", "disable_portsecurity",
 	// "download", "enable_logging", "enable_portsecurity", "failover",
 	// "put_into_servergroup", "reboot", "reboot_hard", "rebuild",
-	// "regenerate_credentials", "remove_from_servergroup", "replace_metadata",
-	// "resize", "resume", "retype", "revert", "scale_down", "scale_up", "start",
-	// "stop", "suspend", "update", "update_metadata", "upgrade".
+	// "regenerate_credentials", "remove_from_servergroup", "replace",
+	// "replace_metadata", "resize", "resume", "retype", "revert", "scale_down",
+	// "scale_up", "start", "stop", "suspend", "update", "update_metadata", "upgrade".
 	ActionType []string `query:"action_type,omitzero" json:"-"`
 	// API group that requested action belongs to. Several options can be specified.
 	//
