@@ -138,6 +138,46 @@ func (r *NetworkRouterService) Update(ctx context.Context, routerID string, para
 	return res, err
 }
 
+// UpdateAndPoll updates a router and polls for completion of the first task. Use the [TaskService.Poll] method if
+// you need to poll for all tasks.
+func (r *NetworkRouterService) UpdateAndPoll(ctx context.Context, routerID string, params NetworkRouterUpdateParams, opts ...option.RequestOption) (res *Router, err error) {
+	// Exclude WithResponseBodyInto for the action (Update returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Update(ctx, routerID, params, actionOpts...)
+	if err != nil {
+		return
+	}
+
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return
+	}
+	var getParams NetworkRouterGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
+	if err != nil {
+		return nil, err
+	}
+
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, routerID, getParams, getOpts...)
+}
+
 // List all routers in the specified project and region.
 func (r *NetworkRouterService) List(ctx context.Context, params NetworkRouterListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Router], err error) {
 	var raw *http.Response
