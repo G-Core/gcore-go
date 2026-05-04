@@ -105,7 +105,7 @@ func updateRouter(client *gcore.Client, routerID string) {
 		Name: gcore.String("gcore-go-example-updated"),
 	}
 
-	router, err := client.Cloud.Networks.Routers.Update(context.Background(), routerID, params)
+	router, err := client.Cloud.Networks.Routers.UpdateAndPoll(context.Background(), routerID, params)
 	if err != nil {
 		log.Fatalf("Error updating router: %v", err)
 	}
