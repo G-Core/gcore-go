@@ -313,6 +313,9 @@ type WaapRequestSummary struct {
 	UserAgentClient string `json:"user_agent_client" api:"required"`
 	// HTTP version of request
 	HTTPVersion string `json:"http_version"`
+	// JA3 TLS client fingerprint as a 32-character lowercase hexadecimal MD5 hash, or
+	// an empty string when the record has no JA3 value.
+	Ja3 string `json:"ja3"`
 	// The URI scheme of the request that generated an event
 	Scheme string `json:"scheme"`
 	// The session ID associated with the request.
@@ -340,6 +343,7 @@ type WaapRequestSummary struct {
 		UserAgent       respjson.Field
 		UserAgentClient respjson.Field
 		HTTPVersion     respjson.Field
+		Ja3             respjson.Field
 		Scheme          respjson.Field
 		SessionID       respjson.Field
 		ExtraFields     map[string]respjson.Field
