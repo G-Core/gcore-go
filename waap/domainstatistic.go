@@ -593,6 +593,9 @@ type WaapRequestDetails struct {
 	//
 	// Any of "passed", "allowed", "monitored", "blocked", "".
 	Decision WaapRequestDetailsDecision `json:"decision"`
+	// JA3 TLS client fingerprint as a 32-character lowercase hexadecimal MD5 hash, or
+	// an empty string when the record has no JA3 value.
+	Ja3 string `json:"ja3"`
 	// An optional action that may be applied in addition to the primary decision.
 	//
 	// Any of "captcha", "challenge", "".
@@ -627,6 +630,7 @@ type WaapRequestDetails struct {
 		TrafficTypes        respjson.Field
 		UserAgent           respjson.Field
 		Decision            respjson.Field
+		Ja3                 respjson.Field
 		OptionalAction      respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
