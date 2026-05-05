@@ -276,8 +276,23 @@ type AnalyticsGetRequestsParams struct {
 	// Filter data items up to a specified end date in ISO 8601 format. If not
 	// provided, defaults to the current date and time.
 	End param.Opt[string] `query:"end,omitzero" json:"-"`
+	// Exclude entries whose JA3 TLS client fingerprint equals the supplied value. Must
+	// be exactly 32 hexadecimal characters (mixed case allowed) and is case-folded to
+	// lowercase when the backend filter is built. Omit the parameter to apply no JA3
+	// exclusion.
+	ExcludeJa3 param.Opt[string] `query:"exclude_ja3,omitzero" json:"-"`
+	// Exclude entries whose user agent contains the supplied text, case-insensitive
+	// partial match. Omit the parameter to apply no user agent text exclusion.
+	ExcludeUserAgent param.Opt[string] `query:"exclude_user_agent,omitzero" json:"-"`
+	// Filter by JA3 TLS client fingerprint. When present, the value must be exactly 32
+	// hexadecimal characters (mixed case allowed) and is case-folded to lowercase when
+	// the backend filter is built. Omit the parameter entirely to apply no JA3 filter.
+	Ja3 param.Opt[string] `query:"ja3,omitzero" json:"-"`
 	// Filter by URL path with a glob-like pattern.
 	Path param.Opt[string] `query:"path,omitzero" json:"-"`
+	// Include entries whose user agent contains the supplied text, case-insensitive
+	// partial match. Omit the parameter to apply no user agent text filter.
+	UserAgent param.Opt[string] `query:"user_agent,omitzero" json:"-"`
 	// Number of items to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Number of items to skip
@@ -301,12 +316,24 @@ type AnalyticsGetRequestsParams struct {
 	ExcludeDomains []int64 `query:"exclude_domains,omitzero" json:"-"`
 	// Exclude traffic data by client IP.
 	ExcludeIPs []string `query:"exclude_ips,omitzero" format:"ipvanyaddress" json:"-"`
+	// Exclude entries whose organization exactly equals any supplied value. Omit or
+	// provide an empty list to apply no organization exclusion.
+	ExcludeOrganizations []string `query:"exclude_organizations,omitzero" json:"-"`
 	// Exclude data by reference IDs.
 	ExcludeReferenceIDs []string `query:"exclude_reference_ids,omitzero" json:"-"`
 	// Exclude data by name of a security rule matched the request.
 	ExcludeSecurityRuleNames []string `query:"exclude_security_rule_names,omitzero" json:"-"`
 	// Exclude data by session IDs.
 	ExcludeSessionIDs []string `query:"exclude_session_ids,omitzero" json:"-"`
+	// Exclude entries whose tag exactly equals any supplied value. Omit or provide an
+	// empty list to apply no tag exclusion.
+	ExcludeTags []string `query:"exclude_tags,omitzero" json:"-"`
+	// Exclude entries whose parsed user agent client exactly equals any supplied
+	// value. Omit or provide an empty list to apply no user agent client exclusion.
+	ExcludeUserAgentClients []string `query:"exclude_user_agent_clients,omitzero" json:"-"`
+	// Exclude entries whose parsed user agent device exactly equals any supplied
+	// value. Omit or provide an empty list to apply no user agent device exclusion.
+	ExcludeUserAgentDevices []string `query:"exclude_user_agent_devices,omitzero" json:"-"`
 	// Filter by HTTP methods
 	//
 	// Any of "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE".
@@ -317,6 +344,9 @@ type AnalyticsGetRequestsParams struct {
 	//
 	// Any of "captcha", "challenge".
 	OptionalAction []string `query:"optional_action,omitzero" json:"-"`
+	// Include entries whose organization exactly equals any supplied value. Omit or
+	// provide an empty list to apply no organization filter.
+	Organizations []string `query:"organizations,omitzero" json:"-"`
 	// Filter data by reference IDs.
 	ReferenceIDs []string `query:"reference_ids,omitzero" json:"-"`
 	// Filter data by request IDs.
@@ -327,6 +357,15 @@ type AnalyticsGetRequestsParams struct {
 	SessionIDs []string `query:"session_ids,omitzero" json:"-"`
 	// Filter data by HTTP response status code.
 	StatusCodes []int64 `query:"status_codes,omitzero" json:"-"`
+	// Include entries whose tag exactly equals any supplied value. Omit or provide an
+	// empty list to apply no tag filter.
+	Tags []string `query:"tags,omitzero" json:"-"`
+	// Include entries whose parsed user agent client exactly equals any supplied
+	// value. Omit or provide an empty list to apply no user agent client filter.
+	UserAgentClients []string `query:"user_agent_clients,omitzero" json:"-"`
+	// Include entries whose parsed user agent device exactly equals any supplied
+	// value. Omit or provide an empty list to apply no user agent device filter.
+	UserAgentDevices []string `query:"user_agent_devices,omitzero" json:"-"`
 	paramObj
 }
 
@@ -388,8 +427,23 @@ type AnalyticsGetTrafficFilteredParams struct {
 	// Filter data items up to a specified end date in ISO 8601 format. If not
 	// provided, defaults to the current date and time.
 	End param.Opt[string] `query:"end,omitzero" json:"-"`
+	// Exclude entries whose JA3 TLS client fingerprint equals the supplied value. Must
+	// be exactly 32 hexadecimal characters (mixed case allowed) and is case-folded to
+	// lowercase when the backend filter is built. Omit the parameter to apply no JA3
+	// exclusion.
+	ExcludeJa3 param.Opt[string] `query:"exclude_ja3,omitzero" json:"-"`
+	// Exclude entries whose user agent contains the supplied text, case-insensitive
+	// partial match. Omit the parameter to apply no user agent text exclusion.
+	ExcludeUserAgent param.Opt[string] `query:"exclude_user_agent,omitzero" json:"-"`
+	// Filter by JA3 TLS client fingerprint. When present, the value must be exactly 32
+	// hexadecimal characters (mixed case allowed) and is case-folded to lowercase when
+	// the backend filter is built. Omit the parameter entirely to apply no JA3 filter.
+	Ja3 param.Opt[string] `query:"ja3,omitzero" json:"-"`
 	// Filter by URL path with a glob-like pattern.
 	Path param.Opt[string] `query:"path,omitzero" json:"-"`
+	// Include entries whose user agent contains the supplied text, case-insensitive
+	// partial match. Omit the parameter to apply no user agent text filter.
+	UserAgent param.Opt[string] `query:"user_agent,omitzero" json:"-"`
 	// Optional explicit aggregation bucket width in seconds. When supplied,
 	// `bucket_size` supersedes `resolution` for aggregation granularity.
 	//
@@ -412,12 +466,24 @@ type AnalyticsGetTrafficFilteredParams struct {
 	ExcludeDomains []int64 `query:"exclude_domains,omitzero" json:"-"`
 	// Exclude traffic data by client IP.
 	ExcludeIPs []string `query:"exclude_ips,omitzero" format:"ipvanyaddress" json:"-"`
+	// Exclude entries whose organization exactly equals any supplied value. Omit or
+	// provide an empty list to apply no organization exclusion.
+	ExcludeOrganizations []string `query:"exclude_organizations,omitzero" json:"-"`
 	// Exclude data by reference IDs.
 	ExcludeReferenceIDs []string `query:"exclude_reference_ids,omitzero" json:"-"`
 	// Exclude data by name of a security rule matched the request.
 	ExcludeSecurityRuleNames []string `query:"exclude_security_rule_names,omitzero" json:"-"`
 	// Exclude data by session IDs.
 	ExcludeSessionIDs []string `query:"exclude_session_ids,omitzero" json:"-"`
+	// Exclude entries whose tag exactly equals any supplied value. Omit or provide an
+	// empty list to apply no tag exclusion.
+	ExcludeTags []string `query:"exclude_tags,omitzero" json:"-"`
+	// Exclude entries whose parsed user agent client exactly equals any supplied
+	// value. Omit or provide an empty list to apply no user agent client exclusion.
+	ExcludeUserAgentClients []string `query:"exclude_user_agent_clients,omitzero" json:"-"`
+	// Exclude entries whose parsed user agent device exactly equals any supplied
+	// value. Omit or provide an empty list to apply no user agent device exclusion.
+	ExcludeUserAgentDevices []string `query:"exclude_user_agent_devices,omitzero" json:"-"`
 	// Filter by HTTP methods
 	//
 	// Any of "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE".
@@ -428,6 +494,9 @@ type AnalyticsGetTrafficFilteredParams struct {
 	//
 	// Any of "captcha", "challenge".
 	OptionalAction []string `query:"optional_action,omitzero" json:"-"`
+	// Include entries whose organization exactly equals any supplied value. Omit or
+	// provide an empty list to apply no organization filter.
+	Organizations []string `query:"organizations,omitzero" json:"-"`
 	// Filter data by reference IDs.
 	ReferenceIDs []string `query:"reference_ids,omitzero" json:"-"`
 	// Filter data by request IDs.
@@ -438,6 +507,15 @@ type AnalyticsGetTrafficFilteredParams struct {
 	SessionIDs []string `query:"session_ids,omitzero" json:"-"`
 	// Filter data by HTTP response status code.
 	StatusCodes []int64 `query:"status_codes,omitzero" json:"-"`
+	// Include entries whose tag exactly equals any supplied value. Omit or provide an
+	// empty list to apply no tag filter.
+	Tags []string `query:"tags,omitzero" json:"-"`
+	// Include entries whose parsed user agent client exactly equals any supplied
+	// value. Omit or provide an empty list to apply no user agent client filter.
+	UserAgentClients []string `query:"user_agent_clients,omitzero" json:"-"`
+	// Include entries whose parsed user agent device exactly equals any supplied
+	// value. Omit or provide an empty list to apply no user agent device filter.
+	UserAgentDevices []string `query:"user_agent_devices,omitzero" json:"-"`
 	paramObj
 }
 
