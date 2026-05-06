@@ -15,6 +15,8 @@ allowed-tools: >
   Bash(gh pr merge * --repo G-Core/gcore-go *),
   Bash(gh release view --repo G-Core/gcore-go *),
   Bash(gh release edit * --repo G-Core/gcore-go *),
+  Bash(gh release view * --repo G-Core/gcore-python *),
+  Bash(gh release list --repo G-Core/gcore-python *),
   Bash(sleep *)
 ---
 
@@ -23,7 +25,8 @@ allowed-tools: >
 ## Constraints
 
 - **Repository**: `G-Core/gcore-go` (hardcoded, do not use for other repos)
-- **Allowed tools**: `gh` CLI (scoped to `G-Core/gcore-go`) and `Read`
+- **Allowed tools**: `gh` CLI (scoped to `G-Core/gcore-go` + read-only
+  `G-Core/gcore-python` releases) and `Read`
 - **Never**: modify source code, force-push, delete branches, or merge without
   explicit user confirmation
 - **Release PRs** are created by `stainless-app[bot]` with title `release: {version}`
@@ -97,19 +100,41 @@ Fetch all three in parallel:
    Within a product area, split into distinct **sub-areas** by resource type.
    Do not lump unrelated resources into a single sub-area.
 
+### Step 2.5 — Check Python SDK Release (Cross-SDK Sync)
+
+Check whether `G-Core/gcore-python` already has a release for the same
+version. Both SDKs are generated from the same API specs and share version
+numbers, so matching releases cover the same underlying API changes.
+
+```bash
+gh release view v{VERSION} --repo G-Core/gcore-python --json tagName,body
+```
+
+- If a matching release **exists**, extract its Part 1 (everything before the
+  `## {VERSION}` auto-generated changelog heading). Store it as the **Python
+  reference notes** for use in Step 4.
+- If the release **does not exist** (exit code ≠ 0), proceed without reference.
+  This is expected when the Go SDK releases first.
+
+Do **not** display the Python notes to the user — they are an internal
+reference for wording alignment only.
+
 ### Step 3 — Check CI Status
 
 ```bash
 gh pr checks {N} --repo G-Core/gcore-go --json name,state,bucket
 ```
 
-Exit codes: `0` = all pass, `8` = pending, `1` = failure.
+**Ignore `detect-breaking-changes`** when evaluating CI status — it is
+informational only. Breaking API changes are expected in release PRs and
+documented in the changelog. If it fails, note it for the user but do not
+treat it as a blocker.
 
-| Status | Action |
-|---|---|
-| exit `0` / all checks pass | Report **CI green**, proceed |
-| exit `8` / pending | Warn user checks are running. Ask: wait or proceed? |
-| exit `1` / failure | Show failing checks. **Do not offer to merge.** |
+After excluding `detect-breaking-changes`:
+
+- **All checks pass** — report CI green, proceed.
+- **Some checks pending** — warn user, ask: wait or proceed?
+- **Any check fails** — show failing checks, do not offer to merge.
 
 ### Step 4 — Generate Human-Readable Release Notes
 
@@ -147,6 +172,12 @@ We're excited to announce version {VERSION}!
 - **Fixes**: `Fixed {what} — {detail}`
 - **Always use backtick-wrapped Go identifiers** for types, fields, methods.
 - **No commit hashes or links** in Part 1 (those are in Part 2).
+- **Cross-SDK alignment**: If Python reference notes were fetched in Step 2.5,
+  use them as a wording guide for overlapping API changes. For each change that
+  appears in both SDKs, match the Python description's phrasing and structure
+  while substituting Go identifiers (PascalCase types, Go method signatures,
+  `param.Opt[T]` instead of `Optional[T]`, etc.). Go-only changes (SDK
+  internals, Go-specific fixes) have no Python counterpart — write those fresh.
 - **Do not copy** the auto-generated changelog verbatim. Aggregate related
   changes. Skip noise.
 - **Omit `codegen metadata` and `aggregated API specs update`** entries unless
@@ -216,9 +247,11 @@ After merge, `stainless-app[bot]` auto-creates a GitHub Release.
 | Situation | Action |
 |---|---|
 | No open release PR | Inform user, stop |
-| CI failing | Show failures, do not merge |
+| `detect-breaking-changes` fails | Informational only. Report to user, proceed with merge |
+| CI failing (other checks) | Show failures, do not merge |
 | CI pending | Warn, ask user preference |
 | Merge conflict | Report, suggest manual resolution |
 | Merge fails | Report error, stop |
 | Release not found after merge | Retry once after 10s, then report |
+| Python SDK release not found | Proceed without cross-SDK reference |
 | `gh` CLI not authenticated | Report, suggest `gh auth login` |
