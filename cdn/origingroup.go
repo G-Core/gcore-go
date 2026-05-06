@@ -223,7 +223,8 @@ func (r *OriginGroupsNoneAuth) UnmarshalJSON(data []byte) error {
 }
 
 // OriginGroupsNoneAuthSourceUnion contains all possible properties and values from
-// [OriginGroupsNoneAuthSourceHostSource], [OriginGroupsNoneAuthSourceS3Source].
+// [OriginGroupsNoneAuthSourceHostSource], [OriginGroupsNoneAuthSourceS3Source],
+// [OriginGroupsNoneAuthSourceFastEdgeSource].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type OriginGroupsNoneAuthSourceUnion struct {
@@ -233,10 +234,10 @@ type OriginGroupsNoneAuthSourceUnion struct {
 	Enabled            bool   `json:"enabled"`
 	HostHeaderOverride string `json:"host_header_override"`
 	Tag                string `json:"tag"`
-	// This field is from variant [OriginGroupsNoneAuthSourceS3Source].
-	Config OriginGroupsNoneAuthSourceS3SourceConfig `json:"config"`
-	// This field is from variant [OriginGroupsNoneAuthSourceS3Source].
-	OriginType string `json:"origin_type"`
+	// This field is a union of [OriginGroupsNoneAuthSourceS3SourceConfig],
+	// [OriginGroupsNoneAuthSourceFastEdgeSourceConfig]
+	Config     OriginGroupsNoneAuthSourceUnionConfig `json:"config"`
+	OriginType string                                `json:"origin_type"`
 	JSON       struct {
 		Source             respjson.Field
 		Backup             respjson.Field
@@ -259,10 +260,55 @@ func (u OriginGroupsNoneAuthSourceUnion) AsS3Source() (v OriginGroupsNoneAuthSou
 	return
 }
 
+func (u OriginGroupsNoneAuthSourceUnion) AsFastEdgeSource() (v OriginGroupsNoneAuthSourceFastEdgeSource) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u OriginGroupsNoneAuthSourceUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *OriginGroupsNoneAuthSourceUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// OriginGroupsNoneAuthSourceUnionConfig is an implicit subunion of
+// [OriginGroupsNoneAuthSourceUnion]. OriginGroupsNoneAuthSourceUnionConfig
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [OriginGroupsNoneAuthSourceUnion].
+type OriginGroupsNoneAuthSourceUnionConfig struct {
+	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
+	S3AccessKeyID string `json:"s3_access_key_id"`
+	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
+	S3BucketName string `json:"s3_bucket_name"`
+	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
+	S3SecretAccessKey string `json:"s3_secret_access_key"`
+	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
+	S3Type string `json:"s3_type"`
+	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
+	S3AuthType string `json:"s3_auth_type"`
+	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
+	S3Region string `json:"s3_region"`
+	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
+	S3StorageHostname string `json:"s3_storage_hostname"`
+	// This field is from variant [OriginGroupsNoneAuthSourceFastEdgeSourceConfig].
+	AppID string `json:"app_id"`
+	JSON  struct {
+		S3AccessKeyID     respjson.Field
+		S3BucketName      respjson.Field
+		S3SecretAccessKey respjson.Field
+		S3Type            respjson.Field
+		S3AuthType        respjson.Field
+		S3Region          respjson.Field
+		S3StorageHostname respjson.Field
+		AppID             respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+func (r *OriginGroupsNoneAuthSourceUnionConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -314,14 +360,16 @@ func (r *OriginGroupsNoneAuthSourceHostSource) UnmarshalJSON(data []byte) error 
 type OriginGroupsNoneAuthSourceS3Source struct {
 	// S3 storage configuration. Required when `origin_type` is `s3`.
 	Config OriginGroupsNoneAuthSourceS3SourceConfig `json:"config" api:"required"`
-	// Origin type. Present in responses only for S3 sources.
+	// Origin type. Present in responses for S3 and FastEdge sources.
 	//
 	// Possible values:
 	//
-	// - **host** - A source server or endpoint from which content is fetched.
-	// - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//   - **host** - A source server or endpoint from which content is fetched.
+	//   - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//   - **fastedge** - A FastEdge application served directly from the local FastEdge
+	//     runtime on the edge node, identified by `app_id`.
 	//
-	// Any of "host", "s3".
+	// Any of "host", "s3", "fastedge".
 	OriginType string `json:"origin_type" api:"required"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
@@ -419,6 +467,83 @@ type OriginGroupsNoneAuthSourceS3SourceConfig struct {
 // Returns the unmodified JSON received from the API
 func (r OriginGroupsNoneAuthSourceS3SourceConfig) RawJSON() string { return r.JSON.raw }
 func (r *OriginGroupsNoneAuthSourceS3SourceConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A FastEdge application origin source.
+type OriginGroupsNoneAuthSourceFastEdgeSource struct {
+	// FastEdge application configuration. Required when `origin_type` is `fastedge`.
+	Config OriginGroupsNoneAuthSourceFastEdgeSourceConfig `json:"config" api:"required"`
+	// Origin type. Present in responses for S3 and FastEdge sources.
+	//
+	// Possible values:
+	//
+	//   - **host** - A source server or endpoint from which content is fetched.
+	//   - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//   - **fastedge** - A FastEdge application served directly from the local FastEdge
+	//     runtime on the edge node, identified by `app_id`.
+	//
+	// Any of "host", "s3", "fastedge".
+	OriginType string `json:"origin_type" api:"required"`
+	// Defines whether the origin is a backup, meaning that it will not be used until
+	// one of active origins become unavailable.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is a backup.
+	// - **false** - Origin is not a backup.
+	Backup bool `json:"backup"`
+	// Enables or disables an origin source in the origin group.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is enabled and the CDN uses it to pull content.
+	// - **false** - Origin is disabled and the CDN does not use it to pull content.
+	//
+	// Origin group must contain at least one enabled origin.
+	Enabled bool `json:"enabled"`
+	// Per-origin Host header override. When set, the CDN sends this value as the Host
+	// header when requesting content from this origin instead of the default.
+	HostHeaderOverride string `json:"host_header_override" api:"nullable"`
+	// Tag for the origin source.
+	Tag string `json:"tag"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Config             respjson.Field
+		OriginType         respjson.Field
+		Backup             respjson.Field
+		Enabled            respjson.Field
+		HostHeaderOverride respjson.Field
+		Tag                respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OriginGroupsNoneAuthSourceFastEdgeSource) RawJSON() string { return r.JSON.raw }
+func (r *OriginGroupsNoneAuthSourceFastEdgeSource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// FastEdge application configuration. Required when `origin_type` is `fastedge`.
+type OriginGroupsNoneAuthSourceFastEdgeSourceConfig struct {
+	// ID of the FastEdge application served as origin (string, matching the existing
+	// fastedge option's convention). The CDN dispatches requests to the local FastEdge
+	// runtime on the edge node using this identifier. The application must belong to
+	// the requesting client, be enabled, and have `wasi-http` API type.
+	AppID string `json:"app_id" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AppID       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OriginGroupsNoneAuthSourceFastEdgeSourceConfig) RawJSON() string { return r.JSON.raw }
+func (r *OriginGroupsNoneAuthSourceFastEdgeSourceConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -721,13 +846,14 @@ func (r *OriginGroupNewParamsBodyNoneAuth) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type OriginGroupNewParamsBodyNoneAuthSourceUnion struct {
-	OfHostSource *OriginGroupNewParamsBodyNoneAuthSourceHostSource `json:",omitzero,inline"`
-	OfS3Source   *OriginGroupNewParamsBodyNoneAuthSourceS3Source   `json:",omitzero,inline"`
+	OfHostSource     *OriginGroupNewParamsBodyNoneAuthSourceHostSource     `json:",omitzero,inline"`
+	OfS3Source       *OriginGroupNewParamsBodyNoneAuthSourceS3Source       `json:",omitzero,inline"`
+	OfFastEdgeSource *OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSource `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfHostSource, u.OfS3Source)
+	return param.MarshalUnion(u, u.OfHostSource, u.OfS3Source, u.OfFastEdgeSource)
 }
 func (u *OriginGroupNewParamsBodyNoneAuthSourceUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -738,6 +864,8 @@ func (u *OriginGroupNewParamsBodyNoneAuthSourceUnion) asAny() any {
 		return u.OfHostSource
 	} else if !param.IsOmitted(u.OfS3Source) {
 		return u.OfS3Source
+	} else if !param.IsOmitted(u.OfFastEdgeSource) {
+		return u.OfFastEdgeSource
 	}
 	return nil
 }
@@ -751,26 +879,12 @@ func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetSource() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetConfig() *OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig {
-	if vt := u.OfS3Source; vt != nil {
-		return &vt.Config
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetOriginType() *string {
-	if vt := u.OfS3Source; vt != nil {
-		return &vt.OriginType
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
 func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetBackup() *bool {
 	if vt := u.OfHostSource; vt != nil && vt.Backup.Valid() {
 		return &vt.Backup.Value
 	} else if vt := u.OfS3Source; vt != nil && vt.Backup.Valid() {
+		return &vt.Backup.Value
+	} else if vt := u.OfFastEdgeSource; vt != nil && vt.Backup.Valid() {
 		return &vt.Backup.Value
 	}
 	return nil
@@ -782,6 +896,8 @@ func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetEnabled() *bool {
 		return &vt.Enabled.Value
 	} else if vt := u.OfS3Source; vt != nil && vt.Enabled.Valid() {
 		return &vt.Enabled.Value
+	} else if vt := u.OfFastEdgeSource; vt != nil && vt.Enabled.Valid() {
+		return &vt.Enabled.Value
 	}
 	return nil
 }
@@ -791,6 +907,8 @@ func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetHostHeaderOverride() *st
 	if vt := u.OfHostSource; vt != nil && vt.HostHeaderOverride.Valid() {
 		return &vt.HostHeaderOverride.Value
 	} else if vt := u.OfS3Source; vt != nil && vt.HostHeaderOverride.Valid() {
+		return &vt.HostHeaderOverride.Value
+	} else if vt := u.OfFastEdgeSource; vt != nil && vt.HostHeaderOverride.Valid() {
 		return &vt.HostHeaderOverride.Value
 	}
 	return nil
@@ -802,9 +920,48 @@ func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetTag() *string {
 		return &vt.Tag.Value
 	} else if vt := u.OfS3Source; vt != nil && vt.Tag.Valid() {
 		return &vt.Tag.Value
+	} else if vt := u.OfFastEdgeSource; vt != nil && vt.Tag.Valid() {
+		return &vt.Tag.Value
 	}
 	return nil
 }
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetOriginType() *string {
+	if vt := u.OfS3Source; vt != nil {
+		return (*string)(&vt.OriginType)
+	} else if vt := u.OfFastEdgeSource; vt != nil {
+		return (*string)(&vt.OriginType)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetConfig() (res originGroupNewParamsBodyNoneAuthSourceUnionConfig) {
+	if vt := u.OfS3Source; vt != nil {
+		res.any = &vt.Config
+	} else if vt := u.OfFastEdgeSource; vt != nil {
+		res.any = &vt.Config
+	}
+	return
+}
+
+// Can have the runtime types
+// [*OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig],
+// [*OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSourceConfig]
+type originGroupNewParamsBodyNoneAuthSourceUnionConfig struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *cdn.OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig:
+//	case *cdn.OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSourceConfig:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u originGroupNewParamsBodyNoneAuthSourceUnionConfig) AsAny() any { return u.any }
 
 // The property Source is required.
 type OriginGroupNewParamsBodyNoneAuthSourceHostSource struct {
@@ -869,14 +1026,16 @@ type OriginGroupNewParamsBodyNoneAuthSourceS3Source struct {
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Tag for the origin source.
 	Tag param.Opt[string] `json:"tag,omitzero"`
-	// Origin type. Present in responses only for S3 sources.
+	// Origin type. Present in responses for S3 and FastEdge sources.
 	//
 	// Possible values:
 	//
-	// - **host** - A source server or endpoint from which content is fetched.
-	// - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//   - **host** - A source server or endpoint from which content is fetched.
+	//   - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//   - **fastedge** - A FastEdge application served directly from the local FastEdge
+	//     runtime on the edge node, identified by `app_id`.
 	//
-	// Any of "host", "s3".
+	// Any of "host", "s3", "fastedge".
 	OriginType string `json:"origin_type,omitzero"`
 	paramObj
 }
@@ -891,7 +1050,7 @@ func (r *OriginGroupNewParamsBodyNoneAuthSourceS3Source) UnmarshalJSON(data []by
 
 func init() {
 	apijson.RegisterFieldValidator[OriginGroupNewParamsBodyNoneAuthSourceS3Source](
-		"origin_type", "host", "s3",
+		"origin_type", "host", "s3", "fastedge",
 	)
 }
 
@@ -951,6 +1110,80 @@ func init() {
 	apijson.RegisterFieldValidator[OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig](
 		"s3_type", "amazon", "other",
 	)
+}
+
+// The properties Config, OriginType are required.
+type OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSource struct {
+	// FastEdge application configuration. Required when `origin_type` is `fastedge`.
+	Config OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSourceConfig `json:"config,omitzero" api:"required"`
+	// Origin type. Present in responses for S3 and FastEdge sources.
+	//
+	// Possible values:
+	//
+	//   - **host** - A source server or endpoint from which content is fetched.
+	//   - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//   - **fastedge** - A FastEdge application served directly from the local FastEdge
+	//     runtime on the edge node, identified by `app_id`.
+	//
+	// Any of "host", "s3", "fastedge".
+	OriginType string `json:"origin_type,omitzero" api:"required"`
+	// Per-origin Host header override. When set, the CDN sends this value as the Host
+	// header when requesting content from this origin instead of the default.
+	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
+	// Defines whether the origin is a backup, meaning that it will not be used until
+	// one of active origins become unavailable.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is a backup.
+	// - **false** - Origin is not a backup.
+	Backup param.Opt[bool] `json:"backup,omitzero"`
+	// Enables or disables an origin source in the origin group.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is enabled and the CDN uses it to pull content.
+	// - **false** - Origin is disabled and the CDN does not use it to pull content.
+	//
+	// Origin group must contain at least one enabled origin.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Tag for the origin source.
+	Tag param.Opt[string] `json:"tag,omitzero"`
+	paramObj
+}
+
+func (r OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSource) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSource
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSource](
+		"origin_type", "host", "s3", "fastedge",
+	)
+}
+
+// FastEdge application configuration. Required when `origin_type` is `fastedge`.
+//
+// The property AppID is required.
+type OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSourceConfig struct {
+	// ID of the FastEdge application served as origin (string, matching the existing
+	// fastedge option's convention). The CDN dispatches requests to the local FastEdge
+	// runtime on the edge node using this identifier. The application must belong to
+	// the requesting client, be enabled, and have `wasi-http` API type.
+	AppID string `json:"app_id" api:"required"`
+	paramObj
+}
+
+func (r OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSourceConfig) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSourceConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSourceConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // **Deprecated.** To create S3 origins, configure them directly in sources with
@@ -1156,13 +1389,14 @@ func (r *OriginGroupUpdateParamsBodyNoneAuth) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type OriginGroupUpdateParamsBodyNoneAuthSourceUnion struct {
-	OfHostSource *OriginGroupUpdateParamsBodyNoneAuthSourceHostSource `json:",omitzero,inline"`
-	OfS3Source   *OriginGroupUpdateParamsBodyNoneAuthSourceS3Source   `json:",omitzero,inline"`
+	OfHostSource     *OriginGroupUpdateParamsBodyNoneAuthSourceHostSource     `json:",omitzero,inline"`
+	OfS3Source       *OriginGroupUpdateParamsBodyNoneAuthSourceS3Source       `json:",omitzero,inline"`
+	OfFastEdgeSource *OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSource `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfHostSource, u.OfS3Source)
+	return param.MarshalUnion(u, u.OfHostSource, u.OfS3Source, u.OfFastEdgeSource)
 }
 func (u *OriginGroupUpdateParamsBodyNoneAuthSourceUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1173,6 +1407,8 @@ func (u *OriginGroupUpdateParamsBodyNoneAuthSourceUnion) asAny() any {
 		return u.OfHostSource
 	} else if !param.IsOmitted(u.OfS3Source) {
 		return u.OfS3Source
+	} else if !param.IsOmitted(u.OfFastEdgeSource) {
+		return u.OfFastEdgeSource
 	}
 	return nil
 }
@@ -1186,26 +1422,12 @@ func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetSource() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetConfig() *OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig {
-	if vt := u.OfS3Source; vt != nil {
-		return &vt.Config
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetOriginType() *string {
-	if vt := u.OfS3Source; vt != nil {
-		return &vt.OriginType
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
 func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetBackup() *bool {
 	if vt := u.OfHostSource; vt != nil && vt.Backup.Valid() {
 		return &vt.Backup.Value
 	} else if vt := u.OfS3Source; vt != nil && vt.Backup.Valid() {
+		return &vt.Backup.Value
+	} else if vt := u.OfFastEdgeSource; vt != nil && vt.Backup.Valid() {
 		return &vt.Backup.Value
 	}
 	return nil
@@ -1217,6 +1439,8 @@ func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetEnabled() *bool {
 		return &vt.Enabled.Value
 	} else if vt := u.OfS3Source; vt != nil && vt.Enabled.Valid() {
 		return &vt.Enabled.Value
+	} else if vt := u.OfFastEdgeSource; vt != nil && vt.Enabled.Valid() {
+		return &vt.Enabled.Value
 	}
 	return nil
 }
@@ -1226,6 +1450,8 @@ func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetHostHeaderOverride() 
 	if vt := u.OfHostSource; vt != nil && vt.HostHeaderOverride.Valid() {
 		return &vt.HostHeaderOverride.Value
 	} else if vt := u.OfS3Source; vt != nil && vt.HostHeaderOverride.Valid() {
+		return &vt.HostHeaderOverride.Value
+	} else if vt := u.OfFastEdgeSource; vt != nil && vt.HostHeaderOverride.Valid() {
 		return &vt.HostHeaderOverride.Value
 	}
 	return nil
@@ -1237,9 +1463,48 @@ func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetTag() *string {
 		return &vt.Tag.Value
 	} else if vt := u.OfS3Source; vt != nil && vt.Tag.Valid() {
 		return &vt.Tag.Value
+	} else if vt := u.OfFastEdgeSource; vt != nil && vt.Tag.Valid() {
+		return &vt.Tag.Value
 	}
 	return nil
 }
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetOriginType() *string {
+	if vt := u.OfS3Source; vt != nil {
+		return (*string)(&vt.OriginType)
+	} else if vt := u.OfFastEdgeSource; vt != nil {
+		return (*string)(&vt.OriginType)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetConfig() (res originGroupUpdateParamsBodyNoneAuthSourceUnionConfig) {
+	if vt := u.OfS3Source; vt != nil {
+		res.any = &vt.Config
+	} else if vt := u.OfFastEdgeSource; vt != nil {
+		res.any = &vt.Config
+	}
+	return
+}
+
+// Can have the runtime types
+// [*OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig],
+// [*OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSourceConfig]
+type originGroupUpdateParamsBodyNoneAuthSourceUnionConfig struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *cdn.OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig:
+//	case *cdn.OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSourceConfig:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u originGroupUpdateParamsBodyNoneAuthSourceUnionConfig) AsAny() any { return u.any }
 
 // The property Source is required.
 type OriginGroupUpdateParamsBodyNoneAuthSourceHostSource struct {
@@ -1304,14 +1569,16 @@ type OriginGroupUpdateParamsBodyNoneAuthSourceS3Source struct {
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Tag for the origin source.
 	Tag param.Opt[string] `json:"tag,omitzero"`
-	// Origin type. Present in responses only for S3 sources.
+	// Origin type. Present in responses for S3 and FastEdge sources.
 	//
 	// Possible values:
 	//
-	// - **host** - A source server or endpoint from which content is fetched.
-	// - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//   - **host** - A source server or endpoint from which content is fetched.
+	//   - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//   - **fastedge** - A FastEdge application served directly from the local FastEdge
+	//     runtime on the edge node, identified by `app_id`.
 	//
-	// Any of "host", "s3".
+	// Any of "host", "s3", "fastedge".
 	OriginType string `json:"origin_type,omitzero"`
 	paramObj
 }
@@ -1326,7 +1593,7 @@ func (r *OriginGroupUpdateParamsBodyNoneAuthSourceS3Source) UnmarshalJSON(data [
 
 func init() {
 	apijson.RegisterFieldValidator[OriginGroupUpdateParamsBodyNoneAuthSourceS3Source](
-		"origin_type", "host", "s3",
+		"origin_type", "host", "s3", "fastedge",
 	)
 }
 
@@ -1386,6 +1653,80 @@ func init() {
 	apijson.RegisterFieldValidator[OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig](
 		"s3_type", "amazon", "other",
 	)
+}
+
+// The properties Config, OriginType are required.
+type OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSource struct {
+	// FastEdge application configuration. Required when `origin_type` is `fastedge`.
+	Config OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSourceConfig `json:"config,omitzero" api:"required"`
+	// Origin type. Present in responses for S3 and FastEdge sources.
+	//
+	// Possible values:
+	//
+	//   - **host** - A source server or endpoint from which content is fetched.
+	//   - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//   - **fastedge** - A FastEdge application served directly from the local FastEdge
+	//     runtime on the edge node, identified by `app_id`.
+	//
+	// Any of "host", "s3", "fastedge".
+	OriginType string `json:"origin_type,omitzero" api:"required"`
+	// Per-origin Host header override. When set, the CDN sends this value as the Host
+	// header when requesting content from this origin instead of the default.
+	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
+	// Defines whether the origin is a backup, meaning that it will not be used until
+	// one of active origins become unavailable.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is a backup.
+	// - **false** - Origin is not a backup.
+	Backup param.Opt[bool] `json:"backup,omitzero"`
+	// Enables or disables an origin source in the origin group.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is enabled and the CDN uses it to pull content.
+	// - **false** - Origin is disabled and the CDN does not use it to pull content.
+	//
+	// Origin group must contain at least one enabled origin.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Tag for the origin source.
+	Tag param.Opt[string] `json:"tag,omitzero"`
+	paramObj
+}
+
+func (r OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSource) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSource
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSource](
+		"origin_type", "host", "s3", "fastedge",
+	)
+}
+
+// FastEdge application configuration. Required when `origin_type` is `fastedge`.
+//
+// The property AppID is required.
+type OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSourceConfig struct {
+	// ID of the FastEdge application served as origin (string, matching the existing
+	// fastedge option's convention). The CDN dispatches requests to the local FastEdge
+	// runtime on the edge node using this identifier. The application must belong to
+	// the requesting client, be enabled, and have `wasi-http` API type.
+	AppID string `json:"app_id" api:"required"`
+	paramObj
+}
+
+func (r OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSourceConfig) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSourceConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSourceConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // **Deprecated.** To create S3 origins, configure them directly in sources with
@@ -1623,13 +1964,14 @@ func (r *OriginGroupReplaceParamsBodyNoneAuth) UnmarshalJSON(data []byte) error 
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type OriginGroupReplaceParamsBodyNoneAuthSourceUnion struct {
-	OfHostSource *OriginGroupReplaceParamsBodyNoneAuthSourceHostSource `json:",omitzero,inline"`
-	OfS3Source   *OriginGroupReplaceParamsBodyNoneAuthSourceS3Source   `json:",omitzero,inline"`
+	OfHostSource     *OriginGroupReplaceParamsBodyNoneAuthSourceHostSource     `json:",omitzero,inline"`
+	OfS3Source       *OriginGroupReplaceParamsBodyNoneAuthSourceS3Source       `json:",omitzero,inline"`
+	OfFastEdgeSource *OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSource `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfHostSource, u.OfS3Source)
+	return param.MarshalUnion(u, u.OfHostSource, u.OfS3Source, u.OfFastEdgeSource)
 }
 func (u *OriginGroupReplaceParamsBodyNoneAuthSourceUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1640,6 +1982,8 @@ func (u *OriginGroupReplaceParamsBodyNoneAuthSourceUnion) asAny() any {
 		return u.OfHostSource
 	} else if !param.IsOmitted(u.OfS3Source) {
 		return u.OfS3Source
+	} else if !param.IsOmitted(u.OfFastEdgeSource) {
+		return u.OfFastEdgeSource
 	}
 	return nil
 }
@@ -1653,26 +1997,12 @@ func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetSource() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetConfig() *OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig {
-	if vt := u.OfS3Source; vt != nil {
-		return &vt.Config
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetOriginType() *string {
-	if vt := u.OfS3Source; vt != nil {
-		return &vt.OriginType
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
 func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetBackup() *bool {
 	if vt := u.OfHostSource; vt != nil && vt.Backup.Valid() {
 		return &vt.Backup.Value
 	} else if vt := u.OfS3Source; vt != nil && vt.Backup.Valid() {
+		return &vt.Backup.Value
+	} else if vt := u.OfFastEdgeSource; vt != nil && vt.Backup.Valid() {
 		return &vt.Backup.Value
 	}
 	return nil
@@ -1684,6 +2014,8 @@ func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetEnabled() *bool {
 		return &vt.Enabled.Value
 	} else if vt := u.OfS3Source; vt != nil && vt.Enabled.Valid() {
 		return &vt.Enabled.Value
+	} else if vt := u.OfFastEdgeSource; vt != nil && vt.Enabled.Valid() {
+		return &vt.Enabled.Value
 	}
 	return nil
 }
@@ -1693,6 +2025,8 @@ func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetHostHeaderOverride()
 	if vt := u.OfHostSource; vt != nil && vt.HostHeaderOverride.Valid() {
 		return &vt.HostHeaderOverride.Value
 	} else if vt := u.OfS3Source; vt != nil && vt.HostHeaderOverride.Valid() {
+		return &vt.HostHeaderOverride.Value
+	} else if vt := u.OfFastEdgeSource; vt != nil && vt.HostHeaderOverride.Valid() {
 		return &vt.HostHeaderOverride.Value
 	}
 	return nil
@@ -1704,9 +2038,48 @@ func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetTag() *string {
 		return &vt.Tag.Value
 	} else if vt := u.OfS3Source; vt != nil && vt.Tag.Valid() {
 		return &vt.Tag.Value
+	} else if vt := u.OfFastEdgeSource; vt != nil && vt.Tag.Valid() {
+		return &vt.Tag.Value
 	}
 	return nil
 }
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetOriginType() *string {
+	if vt := u.OfS3Source; vt != nil {
+		return (*string)(&vt.OriginType)
+	} else if vt := u.OfFastEdgeSource; vt != nil {
+		return (*string)(&vt.OriginType)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetConfig() (res originGroupReplaceParamsBodyNoneAuthSourceUnionConfig) {
+	if vt := u.OfS3Source; vt != nil {
+		res.any = &vt.Config
+	} else if vt := u.OfFastEdgeSource; vt != nil {
+		res.any = &vt.Config
+	}
+	return
+}
+
+// Can have the runtime types
+// [*OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig],
+// [*OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSourceConfig]
+type originGroupReplaceParamsBodyNoneAuthSourceUnionConfig struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *cdn.OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig:
+//	case *cdn.OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSourceConfig:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u originGroupReplaceParamsBodyNoneAuthSourceUnionConfig) AsAny() any { return u.any }
 
 // The property Source is required.
 type OriginGroupReplaceParamsBodyNoneAuthSourceHostSource struct {
@@ -1771,14 +2144,16 @@ type OriginGroupReplaceParamsBodyNoneAuthSourceS3Source struct {
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Tag for the origin source.
 	Tag param.Opt[string] `json:"tag,omitzero"`
-	// Origin type. Present in responses only for S3 sources.
+	// Origin type. Present in responses for S3 and FastEdge sources.
 	//
 	// Possible values:
 	//
-	// - **host** - A source server or endpoint from which content is fetched.
-	// - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//   - **host** - A source server or endpoint from which content is fetched.
+	//   - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//   - **fastedge** - A FastEdge application served directly from the local FastEdge
+	//     runtime on the edge node, identified by `app_id`.
 	//
-	// Any of "host", "s3".
+	// Any of "host", "s3", "fastedge".
 	OriginType string `json:"origin_type,omitzero"`
 	paramObj
 }
@@ -1793,7 +2168,7 @@ func (r *OriginGroupReplaceParamsBodyNoneAuthSourceS3Source) UnmarshalJSON(data 
 
 func init() {
 	apijson.RegisterFieldValidator[OriginGroupReplaceParamsBodyNoneAuthSourceS3Source](
-		"origin_type", "host", "s3",
+		"origin_type", "host", "s3", "fastedge",
 	)
 }
 
@@ -1853,6 +2228,80 @@ func init() {
 	apijson.RegisterFieldValidator[OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig](
 		"s3_type", "amazon", "other",
 	)
+}
+
+// The properties Config, OriginType are required.
+type OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSource struct {
+	// FastEdge application configuration. Required when `origin_type` is `fastedge`.
+	Config OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSourceConfig `json:"config,omitzero" api:"required"`
+	// Origin type. Present in responses for S3 and FastEdge sources.
+	//
+	// Possible values:
+	//
+	//   - **host** - A source server or endpoint from which content is fetched.
+	//   - **s3** - S3 storage with either AWS v4 authentication or public access.
+	//   - **fastedge** - A FastEdge application served directly from the local FastEdge
+	//     runtime on the edge node, identified by `app_id`.
+	//
+	// Any of "host", "s3", "fastedge".
+	OriginType string `json:"origin_type,omitzero" api:"required"`
+	// Per-origin Host header override. When set, the CDN sends this value as the Host
+	// header when requesting content from this origin instead of the default.
+	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
+	// Defines whether the origin is a backup, meaning that it will not be used until
+	// one of active origins become unavailable.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is a backup.
+	// - **false** - Origin is not a backup.
+	Backup param.Opt[bool] `json:"backup,omitzero"`
+	// Enables or disables an origin source in the origin group.
+	//
+	// Possible values:
+	//
+	// - **true** - Origin is enabled and the CDN uses it to pull content.
+	// - **false** - Origin is disabled and the CDN does not use it to pull content.
+	//
+	// Origin group must contain at least one enabled origin.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Tag for the origin source.
+	Tag param.Opt[string] `json:"tag,omitzero"`
+	paramObj
+}
+
+func (r OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSource) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSource
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSource](
+		"origin_type", "host", "s3", "fastedge",
+	)
+}
+
+// FastEdge application configuration. Required when `origin_type` is `fastedge`.
+//
+// The property AppID is required.
+type OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSourceConfig struct {
+	// ID of the FastEdge application served as origin (string, matching the existing
+	// fastedge option's convention). The CDN dispatches requests to the local FastEdge
+	// runtime on the edge node using this identifier. The application must belong to
+	// the requesting client, be enabled, and have `wasi-http` API type.
+	AppID string `json:"app_id" api:"required"`
+	paramObj
+}
+
+func (r OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSourceConfig) MarshalJSON() (data []byte, err error) {
+	type shadow OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSourceConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSourceConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // **Deprecated.** To create S3 origins, configure them directly in sources with
