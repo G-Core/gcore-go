@@ -37,7 +37,42 @@ func NewRestreamService(opts ...option.RequestOption) (r RestreamService) {
 	return
 }
 
-// Create restream
+// Creates a new restream for a specified live stream.
+//
+// Specify the target platform's URI (RTMP, RTMPS, or SRT) and the ID of the source
+// stream.
+//
+// Restreaming allows you to broadcast a single live stream to multiple platforms
+// or servers simultaneously (e.g., Facebook, YouTube, or a custom media server).
+//
+// **How it works:**
+//
+//  1. Get credentials (stream URL/key or SRT URL) from the target platform.
+//  2. Create a restream in the Gcore system by specifying the target URI and the
+//     source live stream.
+//  3. Start your live stream; it will be automatically pushed to the target
+//     destination.
+//
+// ```text
+//
+//	+-----------------------+
+//
+// RTMP/RTMPS      |                       | -------->  Facebook (RTMP)
+//
+//	or  ------> |    Gcore Streaming    | -------->  YouTube (RTMPS)
+//
+// SRT             |                       | -------->  Media server (SRT)
+//
+//	+-----------------------+ -------->  Other RTMP/SRT targets
+//
+// ```
+//
+// **Supported combinations:** RTMP → RTMP, RTMPS → RTMPS, RTMP → SRT, SRT → SRT,
+// SRT → RTMP. For SRT targets, only `mode=caller` is supported (Gcore initiates a
+// PUSH connection).
+//
+// Source stream parameters (bitrate, codecs, resolution) are sent "as is". Ensure
+// they match the destination requirements.
 func (r *RestreamService) New(ctx context.Context, body RestreamNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -46,7 +81,7 @@ func (r *RestreamService) New(ctx context.Context, body RestreamNewParams, opts 
 	return err
 }
 
-// Updates restream settings
+// Updates restream settings, such as the target URI or active status
 func (r *RestreamService) Update(ctx context.Context, restreamID int64, body RestreamUpdateParams, opts ...option.RequestOption) (res *Restream, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/restreams/%v", restreamID)
@@ -54,7 +89,7 @@ func (r *RestreamService) Update(ctx context.Context, restreamID int64, body Res
 	return res, err
 }
 
-// Returns a list of created restreams
+// Returns a list of all restreams created in your account
 func (r *RestreamService) List(ctx context.Context, query RestreamListParams, opts ...option.RequestOption) (res *pagination.PageStreaming[Restream], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -72,12 +107,12 @@ func (r *RestreamService) List(ctx context.Context, query RestreamListParams, op
 	return res, nil
 }
 
-// Returns a list of created restreams
+// Returns a list of all restreams created in your account
 func (r *RestreamService) ListAutoPaging(ctx context.Context, query RestreamListParams, opts ...option.RequestOption) *pagination.PageStreamingAutoPager[Restream] {
 	return pagination.NewPageStreamingAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete restream
+// Deletes a restream and stops the broadcast to the target destination
 func (r *RestreamService) Delete(ctx context.Context, restreamID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -86,7 +121,7 @@ func (r *RestreamService) Delete(ctx context.Context, restreamID int64, opts ...
 	return err
 }
 
-// Returns restream details
+// Returns configuration and status details for a specific restream
 func (r *RestreamService) Get(ctx context.Context, restreamID int64, opts ...option.RequestOption) (res *Restream, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/restreams/%v", restreamID)
@@ -113,7 +148,8 @@ type Restream struct {
 	Name string `json:"name"`
 	// ID of the stream to restream
 	StreamID int64 `json:"stream_id"`
-	// A URL to push the stream to
+	// A URL to push the stream to. Supported protocols: rtmp, rtmps, srt. For SRT
+	// target URLs, only `mode=caller` is supported.
 	Uri string `json:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -166,7 +202,8 @@ type RestreamNewParamsRestream struct {
 	Name param.Opt[string] `json:"name,omitzero"`
 	// ID of the stream to restream
 	StreamID param.Opt[int64] `json:"stream_id,omitzero"`
-	// A URL to push the stream to
+	// A URL to push the stream to. Supported protocols: rtmp, rtmps, srt. For SRT
+	// target URLs, only `mode=caller` is supported.
 	Uri param.Opt[string] `json:"uri,omitzero"`
 	paramObj
 }
@@ -211,7 +248,8 @@ type RestreamUpdateParamsRestream struct {
 	Name param.Opt[string] `json:"name,omitzero"`
 	// ID of the stream to restream
 	StreamID param.Opt[int64] `json:"stream_id,omitzero"`
-	// A URL to push the stream to
+	// A URL to push the stream to. Supported protocols: rtmp, rtmps, srt. For SRT
+	// target URLs, only `mode=caller` is supported.
 	Uri param.Opt[string] `json:"uri,omitzero"`
 	paramObj
 }
@@ -225,7 +263,7 @@ func (r *RestreamUpdateParamsRestream) UnmarshalJSON(data []byte) error {
 }
 
 type RestreamListParams struct {
-	// Query parameter. Use it to list the paginated content
+	// Use it to list the paginated content
 	Page param.Opt[int64] `query:"page,omitzero" json:"-"`
 	paramObj
 }
