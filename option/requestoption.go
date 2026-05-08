@@ -290,18 +290,18 @@ func WithCloudRegionID(value int64) RequestOption {
 	})
 }
 
-// WithCloudPollingIntervalSeconds returns a RequestOption that sets the client setting "cloud_polling_interval_seconds".
-func WithCloudPollingIntervalSeconds(value int64) RequestOption {
+// WithPollingIntervalSeconds returns a RequestOption that sets the client setting "polling_interval_seconds".
+func WithPollingIntervalSeconds(value int64) RequestOption {
 	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.CloudPollingIntervalSeconds = value
+		r.PollingIntervalSeconds = value
 		return nil
 	})
 }
 
-// WithCloudPollingTimeoutSeconds returns a RequestOption that sets the client setting "cloud_polling_timeout_seconds".
-func WithCloudPollingTimeoutSeconds(value int64) RequestOption {
+// WithPollingTimeoutSeconds returns a RequestOption that sets the client setting "polling_timeout_seconds".
+func WithPollingTimeoutSeconds(value int64) RequestOption {
 	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.CloudPollingTimeoutSeconds = value
+		r.PollingTimeoutSeconds = value
 		return nil
 	})
 }
