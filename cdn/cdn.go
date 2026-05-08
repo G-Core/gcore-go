@@ -70,6 +70,8 @@ type CDNService struct {
 	Metrics  MetricService
 	IPRanges IPRangeService
 	IPs      IPService
+	// Information about the current state of the CDN service in your account.
+	ClientConfig ClientConfigService
 }
 
 // NewCDNService generates a new service that applies the given options to each
@@ -92,6 +94,7 @@ func NewCDNService(opts ...option.RequestOption) (r CDNService) {
 	r.Metrics = NewMetricService(opts...)
 	r.IPRanges = NewIPRangeService(opts...)
 	r.IPs = NewIPService(opts...)
+	r.ClientConfig = NewClientConfigService(opts...)
 	return
 }
 

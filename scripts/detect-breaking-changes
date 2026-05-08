@@ -179,6 +179,7 @@ TEST_PATHS=(
 	cdn/metric_test.go
 	cdn/iprange_test.go
 	cdn/ip_test.go
+	cdn/clientconfig_test.go
 	usage_test.go
 	paginationauto_test.go
 	paginationmanual_test.go
