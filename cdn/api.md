@@ -286,3 +286,9 @@ Response Types:
 Methods:
 
 - <code title="get /cdn/public-ip-list">client.CDN.IPs.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#IPService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#IPListParams">IPListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#PublicIPList">PublicIPList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## ClientConfig
+
+Methods:
+
+- <code title="get /cdn/clients/me">client.CDN.ClientConfig.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#ClientConfigService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#CDNAccount">CDNAccount</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
