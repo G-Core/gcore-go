@@ -221,15 +221,15 @@ type RequestConfig struct {
 	BaseURL        *url.URL
 	// DefaultBaseURL will be used if BaseURL is not explicitly overridden using
 	// WithBaseURL.
-	DefaultBaseURL              *url.URL
-	CustomHTTPDoer              HTTPDoer
-	HTTPClient                  *http.Client
-	Middlewares                 []middleware
-	APIKey                      string
-	CloudPollingIntervalSeconds int64
-	CloudPollingTimeoutSeconds  int64
-	CloudProjectID              *int64
-	CloudRegionID               *int64
+	DefaultBaseURL         *url.URL
+	CustomHTTPDoer         HTTPDoer
+	HTTPClient             *http.Client
+	Middlewares            []middleware
+	APIKey                 string
+	PollingIntervalSeconds int64
+	PollingTimeoutSeconds  int64
+	CloudProjectID         *int64
+	CloudRegionID          *int64
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
 	// ResponseBodyInto. If Destination is a []byte, then it will return the body as
 	// is.
@@ -596,18 +596,18 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		return nil
 	}
 	new := &RequestConfig{
-		MaxRetries:                  cfg.MaxRetries,
-		RequestTimeout:              cfg.RequestTimeout,
-		Context:                     ctx,
-		Request:                     req,
-		BaseURL:                     cfg.BaseURL,
-		HTTPClient:                  cfg.HTTPClient,
-		Middlewares:                 cfg.Middlewares,
-		APIKey:                      cfg.APIKey,
-		CloudProjectID:              cfg.CloudProjectID,
-		CloudRegionID:               cfg.CloudRegionID,
-		CloudPollingIntervalSeconds: cfg.CloudPollingIntervalSeconds,
-		CloudPollingTimeoutSeconds:  cfg.CloudPollingTimeoutSeconds,
+		MaxRetries:             cfg.MaxRetries,
+		RequestTimeout:         cfg.RequestTimeout,
+		Context:                ctx,
+		Request:                req,
+		BaseURL:                cfg.BaseURL,
+		HTTPClient:             cfg.HTTPClient,
+		Middlewares:            cfg.Middlewares,
+		APIKey:                 cfg.APIKey,
+		CloudProjectID:         cfg.CloudProjectID,
+		CloudRegionID:          cfg.CloudRegionID,
+		PollingIntervalSeconds: cfg.PollingIntervalSeconds,
+		PollingTimeoutSeconds:  cfg.PollingTimeoutSeconds,
 	}
 
 	return new
