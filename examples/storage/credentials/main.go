@@ -23,7 +23,6 @@ func main() {
 
 	s3StorageID := createS3Storage(&client)
 	sftpStorageID := createSFTPStorage(&client)
-	waitForStorageProvisioning(&client, s3StorageID, sftpStorageID)
 	getStorageDetails(&client, s3StorageID, sftpStorageID)
 	newAccessKey := regenerateS3Credentials(&client, s3StorageID)
 	listS3AccessKeys(&client, s3StorageID)
@@ -46,7 +45,7 @@ func createS3Storage(client *gcore.Client) int64 {
 		LocationName: "s-ed1",
 	}
 
-	newStorage, err := client.Storage.ObjectStorages.New(context.Background(), params)
+	newStorage, err := client.Storage.ObjectStorages.NewAndPoll(context.Background(), params)
 	if err != nil {
 		fmt.Printf("Error creating S3 storage: %v\n", err)
 		log.Fatalf("Failed to create S3 storage")
@@ -77,7 +76,7 @@ func createSFTPStorage(client *gcore.Client) int64 {
 		PasswordMode: storage.SftpStorageNewParamsPasswordModeAuto,
 	}
 
-	newStorage, err := client.Storage.SftpStorages.New(context.Background(), params)
+	newStorage, err := client.Storage.SftpStorages.NewAndPoll(context.Background(), params)
 	if err != nil {
 		fmt.Printf("Error creating SFTP storage: %v\n", err)
 		log.Fatalf("Failed to create SFTP storage")
@@ -94,47 +93,6 @@ func createSFTPStorage(client *gcore.Client) int64 {
 
 	fmt.Println("==========================")
 	return newStorage.ID
-}
-
-func waitForStorageProvisioning(client *gcore.Client, s3StorageID, sftpStorageID int64) {
-	fmt.Println("\n=== WAIT FOR STORAGE PROVISIONING ===")
-
-	ctx := context.Background()
-	maxWait := 30 * time.Second
-
-	// Wait for S3 storage
-	start := time.Now()
-	for time.Since(start) < maxWait {
-		s, err := client.Storage.ObjectStorages.Get(ctx, s3StorageID)
-		if err != nil {
-			fmt.Printf("Error checking storage status: %v\n", err)
-			break
-		}
-		if s.ProvisioningStatus == storage.S3StorageProvisioningStatusActive {
-			fmt.Printf("Storage %d is ready\n", s3StorageID)
-			break
-		}
-		fmt.Printf("Storage %d status: %s, waiting...\n", s3StorageID, s.ProvisioningStatus)
-		time.Sleep(2 * time.Second)
-	}
-
-	// Wait for SFTP storage
-	start = time.Now()
-	for time.Since(start) < maxWait {
-		s, err := client.Storage.SftpStorages.Get(ctx, sftpStorageID)
-		if err != nil {
-			fmt.Printf("Error checking storage status: %v\n", err)
-			break
-		}
-		if s.ProvisioningStatus == storage.SftpStorageProvisioningStatusActive {
-			fmt.Printf("Storage %d is ready\n", sftpStorageID)
-			break
-		}
-		fmt.Printf("Storage %d status: %s, waiting...\n", sftpStorageID, s.ProvisioningStatus)
-		time.Sleep(2 * time.Second)
-	}
-
-	fmt.Println("=====================================")
 }
 
 func getStorageDetails(client *gcore.Client, s3StorageID, sftpStorageID int64) {
@@ -234,7 +192,7 @@ func regenerateSFTPPassword(client *gcore.Client, sftpStorageID int64) {
 		PasswordMode: storage.SftpStorageUpdateParamsPasswordModeAuto,
 	}
 
-	updatedStorage, err := client.Storage.SftpStorages.Update(context.Background(), sftpStorageID, params)
+	updatedStorage, err := client.Storage.SftpStorages.UpdateAndPoll(context.Background(), sftpStorageID, params)
 	if err != nil {
 		fmt.Printf("Error regenerating SFTP password: %v\n", err)
 		fmt.Println("===============================")
@@ -253,7 +211,7 @@ func removeSFTPPassword(client *gcore.Client, sftpStorageID int64) {
 		PasswordMode: storage.SftpStorageUpdateParamsPasswordModeNone,
 	}
 
-	updatedStorage, err := client.Storage.SftpStorages.Update(context.Background(), sftpStorageID, params)
+	updatedStorage, err := client.Storage.SftpStorages.UpdateAndPoll(context.Background(), sftpStorageID, params)
 	if err != nil {
 		fmt.Printf("Error removing SFTP password: %v\n", err)
 		fmt.Println("============================")
@@ -273,7 +231,7 @@ func reenableSFTPPassword(client *gcore.Client, sftpStorageID int64) {
 		PasswordMode: storage.SftpStorageUpdateParamsPasswordModeAuto,
 	}
 
-	updatedStorage, err := client.Storage.SftpStorages.Update(context.Background(), sftpStorageID, params)
+	updatedStorage, err := client.Storage.SftpStorages.UpdateAndPoll(context.Background(), sftpStorageID, params)
 	if err != nil {
 		fmt.Printf("Error re-enabling SFTP password: %v\n", err)
 		fmt.Println("==============================")
@@ -298,8 +256,8 @@ func cleanup(client *gcore.Client, s3StorageID, sftpStorageID int64) {
 		fmt.Printf("Storage %d deleted successfully\n", s3StorageID)
 	}
 
-	// Delete SFTP storage
-	err = client.Storage.SftpStorages.Delete(ctx, sftpStorageID)
+	// Delete SFTP storage and wait until it's fully removed
+	err = client.Storage.SftpStorages.DeleteAndPoll(ctx, sftpStorageID)
 	if err != nil {
 		fmt.Printf("Error deleting storage %d: %v\n", sftpStorageID, err)
 	} else {

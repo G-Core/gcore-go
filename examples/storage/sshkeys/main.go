@@ -6,14 +6,11 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/binary"
-	"errors"
 	"fmt"
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/G-Core/gcore-go"
-	"github.com/G-Core/gcore-go/internal/apierror"
 	"github.com/G-Core/gcore-go/storage"
 )
 
@@ -35,11 +32,10 @@ func main() {
 	listSSHKeys(&client)
 	getSSHKey(&client, key1ID)
 
-	// Create an SFTP storage associated with the SSH keys
+	// Create an SFTP storage associated with the SSH keys (polls until active)
 	sftpStorageID := createSFTPStorageWithKeys(&client, key1ID, key2ID)
-	waitForStorageProvisioning(&client, sftpStorageID)
 
-	// Update the storage to only use the first key
+	// Update the storage to only use the first key (polls until active)
 	updateStorageSSHKeys(&client, sftpStorageID, key1ID)
 
 	// Cleanup
@@ -117,45 +113,19 @@ func createSFTPStorageWithKeys(client *gcore.Client, keyIDs ...int64) int64 {
 		SSHKeyIDs:    keyIDs,
 	}
 
-	newStorage, err := client.Storage.SftpStorages.New(context.Background(), params)
+	newStorage, err := client.Storage.SftpStorages.NewAndPoll(context.Background(), params)
 	if err != nil {
 		fmt.Printf("Error creating SFTP storage: %v\n", err)
 		log.Fatalf("Failed to create SFTP storage")
 	}
 
-	fmt.Printf("Created Storage: ID=%d, Name=%s, Location=%s\n",
-		newStorage.ID, newStorage.Name, newStorage.LocationName)
+	fmt.Printf("Created Storage: ID=%d, Name=%s, Location=%s, Status=%s\n",
+		newStorage.ID, newStorage.Name, newStorage.LocationName, newStorage.ProvisioningStatus)
 	fmt.Printf("SSH Key IDs: %v\n", newStorage.SSHKeyIDs)
 	fmt.Printf("Has Password: %t (SSH-key-only access)\n", newStorage.HasPassword)
 
 	fmt.Println("=========================================")
 	return newStorage.ID
-}
-
-func waitForStorageProvisioning(client *gcore.Client, storageID int64) {
-	fmt.Println("\n=== WAIT FOR STORAGE PROVISIONING ===")
-
-	ctx := context.Background()
-	maxWait := 30 * time.Second
-	start := time.Now()
-
-	for time.Since(start) < maxWait {
-		s, err := client.Storage.SftpStorages.Get(ctx, storageID)
-		if err != nil {
-			fmt.Printf("Error checking storage status: %v\n", err)
-			break
-		}
-		if s.ProvisioningStatus == storage.SftpStorageProvisioningStatusActive {
-			fmt.Printf("Storage %d is ready\n", storageID)
-			fmt.Println("=====================================")
-			return
-		}
-		fmt.Printf("Storage %d status: %s, waiting...\n", storageID, s.ProvisioningStatus)
-		time.Sleep(2 * time.Second)
-	}
-
-	fmt.Printf("Storage %d not ready, proceeding anyway...\n", storageID)
-	fmt.Println("=====================================")
 }
 
 func updateStorageSSHKeys(client *gcore.Client, storageID int64, keyID int64) {
@@ -166,14 +136,14 @@ func updateStorageSSHKeys(client *gcore.Client, storageID int64, keyID int64) {
 		SSHKeyIDs: []int64{keyID},
 	}
 
-	updatedStorage, err := client.Storage.SftpStorages.Update(context.Background(), storageID, params)
+	updatedStorage, err := client.Storage.SftpStorages.UpdateAndPoll(context.Background(), storageID, params)
 	if err != nil {
 		fmt.Printf("Error updating storage SSH keys: %v\n", err)
 		fmt.Println("==============================")
 		return
 	}
 
-	fmt.Printf("Updated storage %d SSH keys: %v\n", storageID, updatedStorage.SSHKeyIDs)
+	fmt.Printf("Updated storage %d SSH keys: %v (status=%s)\n", storageID, updatedStorage.SSHKeyIDs, updatedStorage.ProvisioningStatus)
 
 	fmt.Println("==============================")
 }
@@ -210,25 +180,10 @@ func cleanup(client *gcore.Client, storageID int64, keyIDs ...int64) {
 	ctx := context.Background()
 
 	// Delete the SFTP storage and wait for it to be fully removed
-	err := client.Storage.SftpStorages.Delete(ctx, storageID)
-	if err != nil {
+	if err := client.Storage.SftpStorages.DeleteAndPoll(ctx, storageID); err != nil {
 		fmt.Printf("Error deleting storage %d: %v\n", storageID, err)
 	} else {
-		fmt.Printf("Storage %d delete requested, waiting for completion...\n", storageID)
-		// Poll until the storage is fully deleted
-		for range 30 {
-			time.Sleep(2 * time.Second)
-			_, getErr := client.Storage.SftpStorages.Get(ctx, storageID)
-			if getErr != nil {
-				var apiErr *apierror.Error
-				if errors.As(getErr, &apiErr) && apiErr.StatusCode == http.StatusNotFound {
-					fmt.Printf("Storage %d deleted successfully\n", storageID)
-					break
-				}
-				// Transient error — keep polling
-				fmt.Printf("Error checking storage %d status: %v\n", storageID, getErr)
-			}
-		}
+		fmt.Printf("Storage %d deleted successfully\n", storageID)
 	}
 
 	// Delete the SSH keys
