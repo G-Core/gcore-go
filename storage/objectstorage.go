@@ -51,6 +51,78 @@ func (r *ObjectStorageService) New(ctx context.Context, body ObjectStorageNewPar
 	return res, err
 }
 
+// NewAndPoll creates a new S3-compatible storage and polls until provisioning is
+// complete, returning the original create response (with one-time access keys
+// preserved) and the provisioning status promoted to "active". Polling reuses
+// the polling_interval_seconds and polling_timeout_seconds client options.
+//
+// JSON.raw on the returned value is the original POST body, so RawJSON() will
+// still report provisioning_status="creating". Use the typed fields for
+// post-provisioning state.
+func (r *ObjectStorageService) NewAndPoll(ctx context.Context, body ObjectStorageNewParams, opts ...option.RequestOption) (res *S3StorageCreated, err error) {
+	// Exclude WithResponseBodyInto for the action (New returns S3StorageCreated, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	created, err := r.New(ctx, body, actionOpts...)
+	if err != nil {
+		return nil, err
+	}
+
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
+	if err != nil {
+		return nil, err
+	}
+	pollingInterval := time.Duration(precfg.PollingIntervalSeconds) * time.Second
+	if pollingInterval < time.Second {
+		pollingInterval = time.Second
+	}
+
+	pollingCtx := ctx
+	var cancel context.CancelFunc
+	if precfg.PollingTimeoutSeconds > 0 {
+		pollingTimeout := time.Duration(precfg.PollingTimeoutSeconds) * time.Second
+		pollingCtx, cancel = context.WithTimeout(ctx, pollingTimeout)
+		defer cancel()
+	}
+
+	// Exclude WithResponseBodyInto and clear request body for intermediate Gets (S3Storage must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+
+	for {
+		s3, err := r.Get(pollingCtx, created.ID, pollOpts...)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get object storage status: %w", err)
+		}
+
+		if s3.ProvisioningStatus == S3StorageProvisioningStatusActive {
+			// Promote the polled status onto the create response (which still
+			// carries the one-time access keys). Defensively refresh the few
+			// fields that could conceivably be filled in asynchronously; ID,
+			// Name, LocationName, CreatedAt, AccessKeys are guaranteed-stable
+			// per the OAS.
+			created.Address = s3.Address
+			created.FullName = s3.FullName
+			created.ProvisioningStatus = S3StorageCreatedProvisioningStatus(s3.ProvisioningStatus)
+			return created, nil
+		}
+
+		if s3.ProvisioningStatus == S3StorageProvisioningStatusDeleting ||
+			s3.ProvisioningStatus == S3StorageProvisioningStatusDeleted {
+			return nil, fmt.Errorf("object storage %d entered terminal state %q during creation", created.ID, s3.ProvisioningStatus)
+		}
+
+		// check if the context is done before sleeping
+		select {
+		// handles both timeout and cancellation
+		case <-pollingCtx.Done():
+			return nil, pollingCtx.Err()
+		case <-time.After(pollingInterval):
+		}
+	}
+}
+
 // Returns a paginated list of S3-compatible storage instances for the
 // authenticated client.
 func (r *ObjectStorageService) List(ctx context.Context, query ObjectStorageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[S3Storage], err error) {

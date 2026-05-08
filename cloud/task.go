@@ -104,7 +104,7 @@ func (r *TaskService) Poll(ctx context.Context, taskID string, opts ...requestco
 	if err != nil {
 		return nil, err
 	}
-	pollingInterval := time.Duration(precfg.CloudPollingIntervalSeconds) * time.Second
+	pollingInterval := time.Duration(precfg.PollingIntervalSeconds) * time.Second
 	// ensure the polling interval is at least 1 second
 	if pollingInterval < time.Second {
 		pollingInterval = time.Second
@@ -113,8 +113,8 @@ func (r *TaskService) Poll(ctx context.Context, taskID string, opts ...requestco
 	// set up polling timeout if configured, otherwise use the provided context
 	pollingCtx := ctx
 	var cancel context.CancelFunc
-	if precfg.CloudPollingTimeoutSeconds > 0 {
-		pollingTimeout := time.Duration(precfg.CloudPollingTimeoutSeconds) * time.Second
+	if precfg.PollingTimeoutSeconds > 0 {
+		pollingTimeout := time.Duration(precfg.PollingTimeoutSeconds) * time.Second
 		pollingCtx, cancel = context.WithTimeout(ctx, pollingTimeout)
 		defer cancel()
 	}
