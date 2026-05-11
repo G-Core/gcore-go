@@ -192,9 +192,8 @@ func (r *ObjectStorageService) Delete(ctx context.Context, storageID int64, opts
 // gone — either Get returns 404 or provisioning_status reaches "deleted". Polling
 // reuses the polling_interval_seconds and polling_timeout_seconds client options.
 //
-// Returns nil on confirmed deletion. Returns an error if Delete itself fails, the
-// storage transitions back to a non-terminal state we don't expect, or polling
-// times out / is cancelled.
+// Returns nil on confirmed deletion. Returns an error if Delete itself fails or
+// polling times out / is cancelled.
 func (r *ObjectStorageService) DeleteAndPoll(ctx context.Context, storageID int64, opts ...option.RequestOption) error {
 	if err := r.Delete(ctx, storageID, opts...); err != nil {
 		return err
@@ -235,12 +234,6 @@ func (r *ObjectStorageService) DeleteAndPoll(ctx context.Context, storageID int6
 
 		if s3.ProvisioningStatus == S3StorageProvisioningStatusDeleted {
 			return nil
-		}
-
-		if s3.ProvisioningStatus == S3StorageProvisioningStatusActive ||
-			s3.ProvisioningStatus == S3StorageProvisioningStatusCreating ||
-			s3.ProvisioningStatus == S3StorageProvisioningStatusUpdating {
-			return fmt.Errorf("object storage %d entered terminal state %q during deletion", storageID, s3.ProvisioningStatus)
 		}
 
 		// check if the context is done before sleeping

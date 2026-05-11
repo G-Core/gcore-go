@@ -308,12 +308,6 @@ func (r *SftpStorageService) DeleteAndPoll(ctx context.Context, storageID int64,
 			return nil
 		}
 
-		if s.ProvisioningStatus == SftpStorageProvisioningStatusActive ||
-			s.ProvisioningStatus == SftpStorageProvisioningStatusCreating ||
-			s.ProvisioningStatus == SftpStorageProvisioningStatusUpdating {
-			return fmt.Errorf("sftp storage %d entered terminal state %q during deletion", storageID, s.ProvisioningStatus)
-		}
-
 		select {
 		case <-pollingCtx.Done():
 			return pollingCtx.Err()
