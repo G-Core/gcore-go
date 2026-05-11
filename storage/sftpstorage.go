@@ -3,9 +3,11 @@
 package storage
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"slices"
@@ -13,11 +15,13 @@ import (
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
+	"github.com/G-Core/gcore-go/internal/polling"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
+	"github.com/tidwall/sjson"
 )
 
 // SftpStorageService contains methods and other services that help with
@@ -58,11 +62,24 @@ func (r *SftpStorageService) New(ctx context.Context, body SftpStorageNewParams,
 // still report provisioning_status="creating". Use the typed fields for
 // post-provisioning state.
 func (r *SftpStorageService) NewAndPoll(ctx context.Context, body SftpStorageNewParams, opts ...option.RequestOption) (res *SftpStorage, err error) {
-	// Exclude WithResponseBodyInto for the action (New returns SftpStorage, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	var raw *http.Response
+	actionOpts := slices.Concat(opts, []option.RequestOption{option.WithResponseInto(&raw)})
+
 	created, err := r.New(ctx, body, actionOpts...)
 	if err != nil {
 		return nil, err
+	}
+
+	var rawBytes []byte
+	if created == nil {
+		// Caller's WithResponseBodyInto overrode the default deserialization
+		// target. Recover the typed struct from the raw response so polling can
+		// proceed; only viable when the body shape preserves it (**http.Response).
+		created = &SftpStorage{}
+		rawBytes, err = polling.RecoverActionBody(raw, created)
+		if err != nil {
+			return nil, fmt.Errorf("sftp NewAndPoll: %w", err)
+		}
 	}
 
 	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
@@ -100,6 +117,13 @@ func (r *SftpStorageService) NewAndPoll(ctx context.Context, body SftpStorageNew
 			// synchronously on the POST response and don't change during
 			// provisioning.
 			created.ProvisioningStatus = s.ProvisioningStatus
+			if rawBytes != nil && raw != nil {
+				enriched, sjErr := sjson.SetBytes(rawBytes, "provisioning_status", string(s.ProvisioningStatus))
+				if sjErr != nil {
+					return nil, fmt.Errorf("failed to enrich sftp create response with polled provisioning_status: %w", sjErr)
+				}
+				raw.Body = io.NopCloser(bytes.NewReader(enriched))
+			}
 			return created, nil
 		}
 
@@ -132,11 +156,21 @@ func (r *SftpStorageService) Update(ctx context.Context, storageID int64, body S
 // promoted to "active". Polling reuses the polling_interval_seconds and
 // polling_timeout_seconds client options.
 func (r *SftpStorageService) UpdateAndPoll(ctx context.Context, storageID int64, body SftpStorageUpdateParams, opts ...option.RequestOption) (res *SftpStorage, err error) {
-	// Exclude WithResponseBodyInto for the action (Update returns SftpStorage, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	var raw *http.Response
+	actionOpts := slices.Concat(opts, []option.RequestOption{option.WithResponseInto(&raw)})
+
 	updated, err := r.Update(ctx, storageID, body, actionOpts...)
 	if err != nil {
 		return nil, err
+	}
+
+	var rawBytes []byte
+	if updated == nil {
+		updated = &SftpStorage{}
+		rawBytes, err = polling.RecoverActionBody(raw, updated)
+		if err != nil {
+			return nil, fmt.Errorf("sftp UpdateAndPoll: %w", err)
+		}
 	}
 
 	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
@@ -173,6 +207,13 @@ func (r *SftpStorageService) UpdateAndPoll(ctx context.Context, storageID int64,
 			// carries any regenerated Password). All other fields are already
 			// authoritative on the PATCH response.
 			updated.ProvisioningStatus = s.ProvisioningStatus
+			if rawBytes != nil && raw != nil {
+				enriched, sjErr := sjson.SetBytes(rawBytes, "provisioning_status", string(s.ProvisioningStatus))
+				if sjErr != nil {
+					return nil, fmt.Errorf("failed to enrich sftp update response with polled provisioning_status: %w", sjErr)
+				}
+				raw.Body = io.NopCloser(bytes.NewReader(enriched))
+			}
 			return updated, nil
 		}
 
