@@ -3,9 +3,11 @@
 package storage
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"slices"
@@ -13,11 +15,13 @@ import (
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
+	"github.com/G-Core/gcore-go/internal/polling"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
+	"github.com/tidwall/sjson"
 )
 
 // ObjectStorageService contains methods and other services that help with
@@ -53,19 +57,36 @@ func (r *ObjectStorageService) New(ctx context.Context, body ObjectStorageNewPar
 }
 
 // NewAndPoll creates a new S3-compatible storage and polls until provisioning is
-// complete, returning the original create response (with one-time access keys
-// preserved) and the provisioning status promoted to "active". Polling reuses
-// the polling_interval_seconds and polling_timeout_seconds client options.
+// complete, returning the create response (with one-time access keys preserved)
+// and the provisioning status promoted to "active". Polling reuses the
+// polling_interval_seconds and polling_timeout_seconds client options.
 //
-// JSON.raw on the returned value is the original POST body, so RawJSON() will
-// still report provisioning_status="creating". Use the typed fields for
-// post-provisioning state.
+// Callers that capture the raw HTTP response via option.WithResponseBodyInto
+// (the gcore-terraform provider pattern) get a body whose provisioning_status
+// reflects the polled state, with every other byte — including access_keys —
+// preserved verbatim from the original POST. Callers that pass no extra
+// options see no behavioral change vs. plain New plus a manual wait.
 func (r *ObjectStorageService) NewAndPoll(ctx context.Context, body ObjectStorageNewParams, opts ...option.RequestOption) (res *S3StorageCreated, err error) {
-	// Exclude WithResponseBodyInto for the action (New returns S3StorageCreated, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	var raw *http.Response
+	actionOpts := slices.Concat(opts, []option.RequestOption{option.WithResponseInto(&raw)})
+
 	created, err := r.New(ctx, body, actionOpts...)
 	if err != nil {
 		return nil, err
+	}
+
+	var rawBytes []byte
+	if created == nil {
+		// Caller's WithResponseBodyInto overrode the default deserialization
+		// target (terraform provider pattern). Recover the typed struct from
+		// the raw response so polling can proceed; only viable when the body
+		// shape preserves it (**http.Response). The one-time AccessKeys are
+		// only present here — they are never replayed on subsequent Gets.
+		created = &S3StorageCreated{}
+		rawBytes, err = polling.RecoverActionBody(raw, created)
+		if err != nil {
+			return nil, fmt.Errorf("object storage NewAndPoll: %w", err)
+		}
 	}
 
 	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
@@ -98,14 +119,23 @@ func (r *ObjectStorageService) NewAndPoll(ctx context.Context, body ObjectStorag
 		}
 
 		if s3.ProvisioningStatus == S3StorageProvisioningStatusActive {
-			// Promote the polled status onto the create response (which still
-			// carries the one-time access keys). Defensively refresh the few
-			// fields that could conceivably be filled in asynchronously; ID,
-			// Name, LocationName, CreatedAt, AccessKeys are guaranteed-stable
-			// per the OAS.
-			created.Address = s3.Address
-			created.FullName = s3.FullName
+			// Only provisioning_status changes between the POST response and
+			// the active state. address / full_name are deterministic
+			// (location-derived hostname and {client_id}-{name}) and set
+			// synchronously on the create response; the rest (id, name,
+			// location_name, created_at, access_keys) is immutable per the
+			// OAS.
 			created.ProvisioningStatus = S3StorageCreatedProvisioningStatus(s3.ProvisioningStatus)
+			if rawBytes != nil && raw != nil {
+				// Caller captured the response via WithResponseBodyInto; rewrite the
+				// body so it reflects the polled provisioning_status while preserving
+				// every other byte, including the one-time access_keys.
+				enriched, sjErr := sjson.SetBytes(rawBytes, "provisioning_status", string(s3.ProvisioningStatus))
+				if sjErr != nil {
+					return nil, fmt.Errorf("failed to enrich object storage create response with polled provisioning_status: %w", sjErr)
+				}
+				raw.Body = io.NopCloser(bytes.NewReader(enriched))
+			}
 			return created, nil
 		}
 
@@ -283,7 +313,11 @@ func (r *ObjectStorageService) RestoreAndPoll(ctx context.Context, storageID int
 		}
 
 		if s3.ProvisioningStatus == S3StorageProvisioningStatusActive {
-			return s3, nil
+			// Restore returns no action body, so the caller's WithResponseBodyInto
+			// (terraform provider pattern) has nothing to capture from the POST.
+			// Replay the final Get with the caller's full opts so their captured
+			// response is populated with the active S3Storage payload.
+			return r.Get(pollingCtx, storageID, opts...)
 		}
 
 		if s3.ProvisioningStatus == S3StorageProvisioningStatusDeleting ||
