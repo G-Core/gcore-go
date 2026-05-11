@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.46.0 (2026-05-11)
+
+Full Changelog: [v0.45.0...v0.46.0](https://github.com/G-Core/gcore-go/compare/v0.45.0...v0.46.0)
+
+### Features
+
+* add cross-SDK sync and relax CI breaking-change check for /release skill ([635d0cc](https://github.com/G-Core/gcore-go/commit/635d0cc51047942f9aa422720a15d692caed2c5f))
+* **api:** aggregated API specs update ([4f854ef](https://github.com/G-Core/gcore-go/commit/4f854efe4886fdf4d6b79d2f88b4327dca2da3e6))
+* **api:** aggregated API specs update ([7b7583f](https://github.com/G-Core/gcore-go/commit/7b7583fbd6236ffe9fbb25271bcab2c67ebb5b1f))
+* **api:** aggregated API specs update ([32f77f4](https://github.com/G-Core/gcore-go/commit/32f77f4e04273e693f3d5b07085b2a50f72810d5))
+* **api:** aggregated API specs update ([2dd795a](https://github.com/G-Core/gcore-go/commit/2dd795abe5d5f9ee0c0677555201e84bc65506a7))
+* **cdn:** add client_config SDK subresource for /cdn/clients/me ([7764b4f](https://github.com/G-Core/gcore-go/commit/7764b4f4c1bd58afe278c4d8da668614491a76c7))
+* **storage:** add DeleteAndPoll and RestoreAndPoll for ObjectStorageService ([0f45f46](https://github.com/G-Core/gcore-go/commit/0f45f46d95ad88975a6b0f6f9c8ee260457cbdd6))
+* **storage:** add NewAndPoll for ObjectStorageService ([c23e4f8](https://github.com/G-Core/gcore-go/commit/c23e4f8c386de4ff00ea651f0e9dc7807a57c670))
+* **storage:** add polling methods for SftpStorageService ([3cf6e01](https://github.com/G-Core/gcore-go/commit/3cf6e01e1ed9a3b4a54b205a04c0b7e06a00f69e))
+* **storage:** demonstrate Terraform-style options on SftpStorage examples ([dbfc4ab](https://github.com/G-Core/gcore-go/commit/dbfc4abf4a952cc958b97184bcd3585c599e2a4e))
+* **storage:** use new SftpStorage polling methods in examples ([c251d5d](https://github.com/G-Core/gcore-go/commit/c251d5d66466cbed0d09bfb91fdd85e6be177007))
+
+
+### Bug Fixes
+
+* **go:** avoid panic when http.DefaultTransport is wrapped ([289138d](https://github.com/G-Core/gcore-go/commit/289138debbd9f91578212314639f5fb1910c9ece))
+* **storage:** honor WithResponseBodyInto in ObjectStorage *AndPoll ([7c5478e](https://github.com/G-Core/gcore-go/commit/7c5478e88fc6090c408c6dbfdcc3d0431c7f6f7d))
+* **storage:** honor WithResponseBodyInto in SftpStorage *AndPoll ([284c1ec](https://github.com/G-Core/gcore-go/commit/284c1ece34e9017e2e354e4b2632716a07b4ac6c))
+* **storage:** rename bucket path param {bucket_name} -&gt; {name} ([0385de7](https://github.com/G-Core/gcore-go/commit/0385de73f41b7778849b71a08a52a016a75d2e5b))
+
+
+### Chores
+
+* **client:** rename cloud_polling_* opts to polling_* ([e5bf6ca](https://github.com/G-Core/gcore-go/commit/e5bf6cab49da084baf7d04490a096af9e1e56bf0))
+* redact api-key headers in debug logs ([f12f2d1](https://github.com/G-Core/gcore-go/commit/f12f2d1166d13b54a01152f70b8afae6917e5749))
+
+
+### Refactors
+
+* **storage:** align SftpStorage DeleteAndPoll with ObjectStorageService ([885250f](https://github.com/G-Core/gcore-go/commit/885250ffa9a6d9f1e2124932f054a92102b2d2cc))
+
 ## 0.45.0 (2026-05-04)
 
 Full Changelog: [v0.44.0...v0.45.0](https://github.com/G-Core/gcore-go/compare/v0.44.0...v0.45.0)
