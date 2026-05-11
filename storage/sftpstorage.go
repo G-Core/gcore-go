@@ -11,7 +11,6 @@ import (
 	"slices"
 	"time"
 
-	"github.com/G-Core/gcore-go/internal/apierror"
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -257,7 +256,7 @@ func (r *SftpStorageService) DeleteAndPoll(ctx context.Context, storageID int64,
 	for {
 		s, err := r.Get(pollingCtx, storageID, pollOpts...)
 		if err != nil {
-			var apiErr *apierror.Error
+			var apiErr *Error
 			if errors.As(err, &apiErr) && apiErr.StatusCode == http.StatusNotFound {
 				return nil
 			}
@@ -266,6 +265,12 @@ func (r *SftpStorageService) DeleteAndPoll(ctx context.Context, storageID int64,
 
 		if s.ProvisioningStatus == SftpStorageProvisioningStatusDeleted {
 			return nil
+		}
+
+		if s.ProvisioningStatus == SftpStorageProvisioningStatusActive ||
+			s.ProvisioningStatus == SftpStorageProvisioningStatusCreating ||
+			s.ProvisioningStatus == SftpStorageProvisioningStatusUpdating {
+			return fmt.Errorf("sftp storage %d entered terminal state %q during deletion", storageID, s.ProvisioningStatus)
 		}
 
 		select {
