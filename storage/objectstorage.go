@@ -4,6 +4,7 @@ package storage
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -157,6 +158,71 @@ func (r *ObjectStorageService) Delete(ctx context.Context, storageID int64, opts
 	return err
 }
 
+// DeleteAndPoll deletes an S3-compatible storage and polls until the storage is
+// gone — either Get returns 404 or provisioning_status reaches "deleted". Polling
+// reuses the polling_interval_seconds and polling_timeout_seconds client options.
+//
+// Returns nil on confirmed deletion. Returns an error if Delete itself fails, the
+// storage transitions back to a non-terminal state we don't expect, or polling
+// times out / is cancelled.
+func (r *ObjectStorageService) DeleteAndPoll(ctx context.Context, storageID int64, opts ...option.RequestOption) error {
+	if err := r.Delete(ctx, storageID, opts...); err != nil {
+		return err
+	}
+
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
+	if err != nil {
+		return err
+	}
+	pollingInterval := time.Duration(precfg.PollingIntervalSeconds) * time.Second
+	if pollingInterval < time.Second {
+		pollingInterval = time.Second
+	}
+
+	pollingCtx := ctx
+	var cancel context.CancelFunc
+	if precfg.PollingTimeoutSeconds > 0 {
+		pollingTimeout := time.Duration(precfg.PollingTimeoutSeconds) * time.Second
+		pollingCtx, cancel = context.WithTimeout(ctx, pollingTimeout)
+		defer cancel()
+	}
+
+	// Exclude WithResponseBodyInto and clear request body for intermediate Gets (S3Storage must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+
+	for {
+		s3, err := r.Get(pollingCtx, storageID, pollOpts...)
+		if err != nil {
+			var apiErr *Error
+			if errors.As(err, &apiErr) && apiErr.StatusCode == http.StatusNotFound {
+				return nil
+			}
+			return fmt.Errorf("failed to get object storage status: %w", err)
+		}
+
+		if s3.ProvisioningStatus == S3StorageProvisioningStatusDeleted {
+			return nil
+		}
+
+		if s3.ProvisioningStatus == S3StorageProvisioningStatusActive ||
+			s3.ProvisioningStatus == S3StorageProvisioningStatusCreating ||
+			s3.ProvisioningStatus == S3StorageProvisioningStatusUpdating {
+			return fmt.Errorf("object storage %d entered terminal state %q during deletion", storageID, s3.ProvisioningStatus)
+		}
+
+		// check if the context is done before sleeping
+		select {
+		// handles both timeout and cancellation
+		case <-pollingCtx.Done():
+			return pollingCtx.Err()
+		case <-time.After(pollingInterval):
+		}
+	}
+}
+
 // Returns details of a specific S3-compatible storage instance.
 func (r *ObjectStorageService) Get(ctx context.Context, storageID int64, opts ...option.RequestOption) (res *S3Storage, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -173,6 +239,66 @@ func (r *ObjectStorageService) Restore(ctx context.Context, storageID int64, opt
 	path := fmt.Sprintf("storage/v4/object_storages/%v/restore", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return err
+}
+
+// RestoreAndPoll restores a previously deleted S3-compatible storage (within the
+// 2-week window) and polls until provisioning_status reaches "active". Polling
+// reuses the polling_interval_seconds and polling_timeout_seconds client options.
+//
+// Returns the final S3Storage on success, or an error if Restore itself fails,
+// the storage transitions to deleting/deleted during restore, or polling times
+// out / is cancelled.
+func (r *ObjectStorageService) RestoreAndPoll(ctx context.Context, storageID int64, opts ...option.RequestOption) (res *S3Storage, err error) {
+	if err := r.Restore(ctx, storageID, opts...); err != nil {
+		return nil, err
+	}
+
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
+	if err != nil {
+		return nil, err
+	}
+	pollingInterval := time.Duration(precfg.PollingIntervalSeconds) * time.Second
+	if pollingInterval < time.Second {
+		pollingInterval = time.Second
+	}
+
+	pollingCtx := ctx
+	var cancel context.CancelFunc
+	if precfg.PollingTimeoutSeconds > 0 {
+		pollingTimeout := time.Duration(precfg.PollingTimeoutSeconds) * time.Second
+		pollingCtx, cancel = context.WithTimeout(ctx, pollingTimeout)
+		defer cancel()
+	}
+
+	// Exclude WithResponseBodyInto and clear request body for intermediate Gets (S3Storage must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+
+	for {
+		s3, err := r.Get(pollingCtx, storageID, pollOpts...)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get object storage status: %w", err)
+		}
+
+		if s3.ProvisioningStatus == S3StorageProvisioningStatusActive {
+			return s3, nil
+		}
+
+		if s3.ProvisioningStatus == S3StorageProvisioningStatusDeleting ||
+			s3.ProvisioningStatus == S3StorageProvisioningStatusDeleted {
+			return nil, fmt.Errorf("object storage %d entered terminal state %q during restore", storageID, s3.ProvisioningStatus)
+		}
+
+		// check if the context is done before sleeping
+		select {
+		// handles both timeout and cancellation
+		case <-pollingCtx.Done():
+			return nil, pollingCtx.Err()
+		case <-time.After(pollingInterval):
+		}
+	}
 }
 
 type S3Storage struct {
