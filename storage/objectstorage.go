@@ -26,7 +26,9 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewObjectStorageService] method instead.
 type ObjectStorageService struct {
-	Options    []option.RequestOption
+	Options []option.RequestOption
+	// Object storage access keys provide secure credentials for API access to object
+	// storage resources.
 	AccessKeys ObjectStorageAccessKeyService
 	Buckets    ObjectStorageBucketService
 }
