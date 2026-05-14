@@ -39,7 +39,7 @@ func modifiesResponseBodyInto(opt RequestOption) bool {
 	}
 
 	// Create a minimally initialized test config
-	cfg := newMinimalConfig()
+	cfg := NewMinimalConfig()
 	originalResponseBodyInto := cfg.ResponseBodyInto
 
 	// Apply the option
@@ -49,8 +49,10 @@ func modifiesResponseBodyInto(opt RequestOption) bool {
 	return !reflect.DeepEqual(originalResponseBodyInto, cfg.ResponseBodyInto)
 }
 
-// newMinimalConfig creates a minimally initialized RequestConfig for option detection.
-func newMinimalConfig() *RequestConfig {
+// NewMinimalConfig creates a minimally initialized RequestConfig safe for
+// probing option effects without triggering nil-pointer panics in options that
+// touch headers, base URL, or request body.
+func NewMinimalConfig() *RequestConfig {
 	req, _ := http.NewRequest("GET", "http://localhost", nil)
 	baseURL, _ := url.Parse("http://localhost")
 	return &RequestConfig{

@@ -74,9 +74,9 @@ func (r *SftpStorageService) NewAndPoll(ctx context.Context, body SftpStorageNew
 	if created == nil {
 		// Caller's WithResponseBodyInto overrode the default deserialization
 		// target. Recover the typed struct from the raw response so polling can
-		// proceed; only viable when the body shape preserves it (**http.Response).
+		// proceed; supports **http.Response and *[]byte body shapes.
 		created = &SftpStorage{}
-		rawBytes, err = polling.RecoverActionBody(raw, created)
+		rawBytes, err = polling.RecoverActionBody(raw, created, opts...)
 		if err != nil {
 			return nil, fmt.Errorf("sftp NewAndPoll: %w", err)
 		}
@@ -123,6 +123,7 @@ func (r *SftpStorageService) NewAndPoll(ctx context.Context, body SftpStorageNew
 					return nil, fmt.Errorf("failed to enrich sftp create response with polled provisioning_status: %w", sjErr)
 				}
 				raw.Body = io.NopCloser(bytes.NewReader(enriched))
+				polling.WriteResponseBodyInto(opts, enriched)
 			}
 			return created, nil
 		}
@@ -167,7 +168,7 @@ func (r *SftpStorageService) UpdateAndPoll(ctx context.Context, storageID int64,
 	var rawBytes []byte
 	if updated == nil {
 		updated = &SftpStorage{}
-		rawBytes, err = polling.RecoverActionBody(raw, updated)
+		rawBytes, err = polling.RecoverActionBody(raw, updated, opts...)
 		if err != nil {
 			return nil, fmt.Errorf("sftp UpdateAndPoll: %w", err)
 		}
@@ -213,6 +214,7 @@ func (r *SftpStorageService) UpdateAndPoll(ctx context.Context, storageID int64,
 					return nil, fmt.Errorf("failed to enrich sftp update response with polled provisioning_status: %w", sjErr)
 				}
 				raw.Body = io.NopCloser(bytes.NewReader(enriched))
+				polling.WriteResponseBodyInto(opts, enriched)
 			}
 			return updated, nil
 		}
