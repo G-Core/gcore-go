@@ -19,6 +19,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Buckets are containers within object storage that hold files (objects) and
+// define their CORS, lifecycle, and access policy configuration.
+//
 // ObjectStorageBucketService contains methods and other services that help with
 // interacting with the gcore API.
 //

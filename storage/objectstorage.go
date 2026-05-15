@@ -35,7 +35,9 @@ type ObjectStorageService struct {
 	// Object storage access keys provide secure credentials for API access to object
 	// storage resources.
 	AccessKeys ObjectStorageAccessKeyService
-	Buckets    ObjectStorageBucketService
+	// Buckets are containers within object storage that hold files (objects) and
+	// define their CORS, lifecycle, and access policy configuration.
+	Buckets ObjectStorageBucketService
 }
 
 // NewObjectStorageService generates a new service that applies the given options
