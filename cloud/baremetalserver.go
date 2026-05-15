@@ -1530,8 +1530,11 @@ func (r *BaremetalServerService) NewAndPoll(ctx context.Context, params Baremeta
 	listParams.RegionID = params.RegionID
 	listParams.Uuid = param.NewOpt(resourceID)
 
-	// Clear request body for List
-	listOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	// Exclude WithResponseBodyInto and clear request body for List
+	listOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
 	servers, err := r.List(ctx, listParams, listOpts...)
 	if err != nil {
 		return
@@ -1539,6 +1542,10 @@ func (r *BaremetalServerService) NewAndPoll(ctx context.Context, params Baremeta
 
 	if len(servers.Results) == 0 {
 		return nil, errors.New("server not found after creation")
+	}
+
+	if err := requestconfig.WriteResponseBodyInto(opts, []byte(servers.Results[0].RawJSON())); err != nil {
+		return nil, err
 	}
 
 	return &servers.Results[0], nil
@@ -1581,8 +1588,11 @@ func (r *BaremetalServerService) RebuildAndPoll(ctx context.Context, serverID st
 	listParams.RegionID = params.RegionID
 	listParams.Uuid = param.NewOpt(serverID)
 
-	// Clear request body for List
-	listOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	// Exclude WithResponseBodyInto and clear request body for List
+	listOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
 	servers, err := r.List(ctx, listParams, listOpts...)
 	if err != nil {
 		return
@@ -1590,6 +1600,10 @@ func (r *BaremetalServerService) RebuildAndPoll(ctx context.Context, serverID st
 
 	if len(servers.Results) == 0 {
 		return nil, errors.New("server not found after rebuild")
+	}
+
+	if err := requestconfig.WriteResponseBodyInto(opts, []byte(servers.Results[0].RawJSON())); err != nil {
+		return nil, err
 	}
 
 	return &servers.Results[0], nil
