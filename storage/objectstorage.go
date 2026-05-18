@@ -19,6 +19,10 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// S3-compatible object storages provide scalable cloud storage with S3 API
+// compatibility. Each storage is provisioned in a specific location and exposes
+// one or more access keys for authentication.
+//
 // ObjectStorageService contains methods and other services that help with
 // interacting with the gcore API.
 //

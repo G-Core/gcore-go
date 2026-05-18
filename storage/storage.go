@@ -15,7 +15,10 @@ import (
 type StorageService struct {
 	Options []option.RequestOption
 	// Locations represent cloud regions where new storages can be created.
-	Locations      LocationService
+	Locations LocationService
+	// S3-compatible object storages provide scalable cloud storage with S3 API
+	// compatibility. Each storage is provisioned in a specific location and exposes
+	// one or more access keys for authentication.
 	ObjectStorages ObjectStorageService
 	SftpStorages   SftpStorageService
 	// SSH keys enable secure access to SFTP storage by associating public keys with
