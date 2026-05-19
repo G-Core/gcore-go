@@ -277,17 +277,20 @@ func (r *ObjectStorageService) Restore(ctx context.Context, storageID int64, opt
 // 2-week window) and polls until provisioning_status reaches "active". Polling
 // reuses the polling_interval_seconds and polling_timeout_seconds client options.
 //
-// Returns the final S3Storage on success, or an error if Restore itself fails,
+// Returns nil on confirmed restore. Returns an error if Restore itself fails,
 // the storage transitions to deleting/deleted during restore, or polling times
-// out / is cancelled.
-func (r *ObjectStorageService) RestoreAndPoll(ctx context.Context, storageID int64, opts ...option.RequestOption) (res *S3Storage, err error) {
+// out / is cancelled. The signature mirrors [ObjectStorageService.Restore] —
+// callers that need the active S3Storage afterwards can call
+// [ObjectStorageService.Get], or pass option.WithResponseBodyInto to capture it
+// from the final replay Get below.
+func (r *ObjectStorageService) RestoreAndPoll(ctx context.Context, storageID int64, opts ...option.RequestOption) error {
 	if err := r.Restore(ctx, storageID, opts...); err != nil {
-		return nil, err
+		return err
 	}
 
 	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	pollingInterval := time.Duration(precfg.PollingIntervalSeconds) * time.Second
 	if pollingInterval < time.Second {
@@ -311,7 +314,7 @@ func (r *ObjectStorageService) RestoreAndPoll(ctx context.Context, storageID int
 	for {
 		s3, err := r.Get(pollingCtx, storageID, pollOpts...)
 		if err != nil {
-			return nil, fmt.Errorf("failed to get object storage status: %w", err)
+			return fmt.Errorf("failed to get object storage status: %w", err)
 		}
 
 		if s3.ProvisioningStatus == S3StorageProvisioningStatusActive {
@@ -319,19 +322,20 @@ func (r *ObjectStorageService) RestoreAndPoll(ctx context.Context, storageID int
 			// (terraform provider pattern) has nothing to capture from the POST.
 			// Replay the final Get with the caller's full opts so their captured
 			// response is populated with the active S3Storage payload.
-			return r.Get(pollingCtx, storageID, opts...)
+			_, err := r.Get(pollingCtx, storageID, opts...)
+			return err
 		}
 
 		if s3.ProvisioningStatus == S3StorageProvisioningStatusDeleting ||
 			s3.ProvisioningStatus == S3StorageProvisioningStatusDeleted {
-			return nil, fmt.Errorf("object storage %d entered terminal state %q during restore", storageID, s3.ProvisioningStatus)
+			return fmt.Errorf("object storage %d entered terminal state %q during restore", storageID, s3.ProvisioningStatus)
 		}
 
 		// check if the context is done before sleeping
 		select {
 		// handles both timeout and cancellation
 		case <-pollingCtx.Done():
-			return nil, pollingCtx.Err()
+			return pollingCtx.Err()
 		case <-time.After(pollingInterval):
 		}
 	}
