@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.47.0 (2026-05-19)
+
+Full Changelog: [v0.46.0...v0.47.0](https://github.com/G-Core/gcore-go/compare/v0.46.0...v0.47.0)
+
+### Features
+
+* **api:** aggregated API specs update ([fd270e3](https://github.com/G-Core/gcore-go/commit/fd270e352cf3b3efd90d49480b59b3d329054ad9))
+* **client:** optimize json encoder for internal types ([107c4f8](https://github.com/G-Core/gcore-go/commit/107c4f81b0168c741535adf087697cf6cfc8949e))
+* **cloud:** add replace method for GPU baremetal cluster server ([a03e588](https://github.com/G-Core/gcore-go/commit/a03e5886c8aebe85cb43adfa94065473c12fde42))
+* **storage:** support storage access keys resource in Terraform ([01588d4](https://github.com/G-Core/gcore-go/commit/01588d477829eebacf034faca8e2d930245ae731))
+* **storage:** support TF for buckets ([e60f2aa](https://github.com/G-Core/gcore-go/commit/e60f2aa7ea94a276337f73816252292402d3d10b))
+* **storage:** support TF for object storages ([1cdd190](https://github.com/G-Core/gcore-go/commit/1cdd1906ae076f7a562e9ffa269d137c98a7e456))
+
+
+### Bug Fixes
+
+* **cloud:** honor WithResponseBodyInto in AndPoll methods that use List ([233f735](https://github.com/G-Core/gcore-go/commit/233f7354663cb1c51fa9f12bbdaa2311c6b00bf7))
+* **storage:** honor WithResponseBodyInto(*[]byte) in *AndPoll ([3ea4f03](https://github.com/G-Core/gcore-go/commit/3ea4f03cf284809e6fac23197e9f603ac6ac982e))
+* **storage:** keep polling on transient statuses in DeleteAndPoll ([7bdd4f7](https://github.com/G-Core/gcore-go/commit/7bdd4f7a0ad1db148b7331ec3e25e2051cc82972))
+
 ## 0.46.0 (2026-05-11)
 
 Full Changelog: [v0.45.0...v0.46.0](https://github.com/G-Core/gcore-go/compare/v0.45.0...v0.46.0)

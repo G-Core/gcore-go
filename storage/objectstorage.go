@@ -24,6 +24,10 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+// S3-compatible object storages provide scalable cloud storage with S3 API
+// compatibility. Each storage is provisioned in a specific location and exposes
+// one or more access keys for authentication.
+//
 // ObjectStorageService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -31,9 +35,13 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewObjectStorageService] method instead.
 type ObjectStorageService struct {
-	Options    []option.RequestOption
+	Options []option.RequestOption
+	// Object storage access keys provide secure credentials for API access to object
+	// storage resources.
 	AccessKeys ObjectStorageAccessKeyService
-	Buckets    ObjectStorageBucketService
+	// Buckets are containers within object storage that hold files (objects) and
+	// define their CORS, lifecycle, and access policy configuration.
+	Buckets ObjectStorageBucketService
 }
 
 // NewObjectStorageService generates a new service that applies the given options
@@ -79,11 +87,11 @@ func (r *ObjectStorageService) NewAndPoll(ctx context.Context, body ObjectStorag
 	if created == nil {
 		// Caller's WithResponseBodyInto overrode the default deserialization
 		// target (terraform provider pattern). Recover the typed struct from
-		// the raw response so polling can proceed; only viable when the body
-		// shape preserves it (**http.Response). The one-time AccessKeys are
-		// only present here — they are never replayed on subsequent Gets.
+		// the raw response so polling can proceed; supports **http.Response
+		// and *[]byte body shapes. The one-time AccessKeys are only present
+		// here — they are never replayed on subsequent Gets.
 		created = &S3StorageCreated{}
-		rawBytes, err = polling.RecoverActionBody(raw, created)
+		rawBytes, err = polling.RecoverActionBody(raw, created, opts...)
 		if err != nil {
 			return nil, fmt.Errorf("object storage NewAndPoll: %w", err)
 		}
@@ -135,6 +143,7 @@ func (r *ObjectStorageService) NewAndPoll(ctx context.Context, body ObjectStorag
 					return nil, fmt.Errorf("failed to enrich object storage create response with polled provisioning_status: %w", sjErr)
 				}
 				raw.Body = io.NopCloser(bytes.NewReader(enriched))
+				polling.WriteResponseBodyInto(opts, enriched)
 			}
 			return created, nil
 		}
@@ -192,9 +201,8 @@ func (r *ObjectStorageService) Delete(ctx context.Context, storageID int64, opts
 // gone — either Get returns 404 or provisioning_status reaches "deleted". Polling
 // reuses the polling_interval_seconds and polling_timeout_seconds client options.
 //
-// Returns nil on confirmed deletion. Returns an error if Delete itself fails, the
-// storage transitions back to a non-terminal state we don't expect, or polling
-// times out / is cancelled.
+// Returns nil on confirmed deletion. Returns an error if Delete itself fails or
+// polling times out / is cancelled.
 func (r *ObjectStorageService) DeleteAndPoll(ctx context.Context, storageID int64, opts ...option.RequestOption) error {
 	if err := r.Delete(ctx, storageID, opts...); err != nil {
 		return err
@@ -235,12 +243,6 @@ func (r *ObjectStorageService) DeleteAndPoll(ctx context.Context, storageID int6
 
 		if s3.ProvisioningStatus == S3StorageProvisioningStatusDeleted {
 			return nil
-		}
-
-		if s3.ProvisioningStatus == S3StorageProvisioningStatusActive ||
-			s3.ProvisioningStatus == S3StorageProvisioningStatusCreating ||
-			s3.ProvisioningStatus == S3StorageProvisioningStatusUpdating {
-			return fmt.Errorf("object storage %d entered terminal state %q during deletion", storageID, s3.ProvisioningStatus)
 		}
 
 		// check if the context is done before sleeping

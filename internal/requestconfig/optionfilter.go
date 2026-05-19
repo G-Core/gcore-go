@@ -1,6 +1,9 @@
 package requestconfig
 
 import (
+	"bytes"
+	"encoding/json"
+	"io"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -39,7 +42,7 @@ func modifiesResponseBodyInto(opt RequestOption) bool {
 	}
 
 	// Create a minimally initialized test config
-	cfg := newMinimalConfig()
+	cfg := NewMinimalConfig()
 	originalResponseBodyInto := cfg.ResponseBodyInto
 
 	// Apply the option
@@ -49,12 +52,45 @@ func modifiesResponseBodyInto(opt RequestOption) bool {
 	return !reflect.DeepEqual(originalResponseBodyInto, cfg.ResponseBodyInto)
 }
 
-// newMinimalConfig creates a minimally initialized RequestConfig for option detection.
-func newMinimalConfig() *RequestConfig {
+// NewMinimalConfig creates a minimally initialized RequestConfig safe for
+// probing option effects without triggering nil-pointer panics in options that
+// touch headers, base URL, or request body.
+func NewMinimalConfig() *RequestConfig {
 	req, _ := http.NewRequest("GET", "http://localhost", nil)
 	baseURL, _ := url.Parse("http://localhost")
 	return &RequestConfig{
 		Request: req,
 		BaseURL: baseURL,
 	}
+}
+
+// WriteResponseBodyInto writes raw JSON bytes into the WithResponseBodyInto destination
+// extracted from opts. This is used by AndPoll methods that fetch the final resource via
+// List (which requires WithResponseBodyInto to be excluded) and need to write the single
+// result back to the caller's destination afterward.
+//
+// If no WithResponseBodyInto option is present in opts, this is a no-op.
+func WriteResponseBodyInto(opts []RequestOption, raw []byte) error {
+	cfg := NewMinimalConfig()
+	for _, opt := range opts {
+		if modifiesResponseBodyInto(opt) {
+			_ = opt.Apply(cfg)
+		}
+	}
+	if cfg.ResponseBodyInto == nil {
+		return nil
+	}
+	switch dst := cfg.ResponseBodyInto.(type) {
+	case *[]byte:
+		*dst = raw
+	case **http.Response:
+		*dst = &http.Response{
+			StatusCode: http.StatusOK,
+			Header:     http.Header{"Content-Type": []string{"application/json"}},
+			Body:       io.NopCloser(bytes.NewReader(raw)),
+		}
+	default:
+		return json.NewDecoder(bytes.NewReader(raw)).Decode(dst)
+	}
+	return nil
 }

@@ -138,6 +138,8 @@ type WaapDetailedDomain struct {
 	//
 	// Any of "active", "bypass", "monitor", "locked".
 	Status WaapDetailedDomainStatus `json:"status" api:"required"`
+	// CNAME aliases pointing at this domain's CDN resource
+	Aliases []string `json:"aliases"`
 	// Domain level quotas
 	Quotas map[string]WaapDetailedDomainQuota `json:"quotas" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -147,6 +149,7 @@ type WaapDetailedDomain struct {
 		CustomPageSet respjson.Field
 		Name          respjson.Field
 		Status        respjson.Field
+		Aliases       respjson.Field
 		Quotas        respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
@@ -498,6 +501,8 @@ type WaapSummaryDomain struct {
 	//
 	// Any of "active", "bypass", "monitor", "locked".
 	Status WaapSummaryDomainStatus `json:"status" api:"required"`
+	// CNAME aliases pointing at this domain's CDN resource
+	Aliases []string `json:"aliases"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -505,6 +510,7 @@ type WaapSummaryDomain struct {
 		CustomPageSet respjson.Field
 		Name          respjson.Field
 		Status        respjson.Field
+		Aliases       respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`

@@ -122,9 +122,21 @@ func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID
 		return
 	}
 
-	// Clear request body for List
-	listOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.List(ctx, instanceID, listParams, listOpts...)
+	// Exclude WithResponseBodyInto and clear request body for List
+	listOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	result, err := r.List(ctx, instanceID, listParams, listOpts...)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := requestconfig.WriteResponseBodyInto(opts, []byte(result.RawJSON())); err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 // Detach interface from instance
@@ -187,9 +199,21 @@ func (r *InstanceInterfaceService) DetachAndPoll(ctx context.Context, instanceID
 		return
 	}
 
-	// Clear request body for List
-	listOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.List(ctx, instanceID, listParams, listOpts...)
+	// Exclude WithResponseBodyInto and clear request body for List
+	listOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	result, err := r.List(ctx, instanceID, listParams, listOpts...)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := requestconfig.WriteResponseBodyInto(opts, []byte(result.RawJSON())); err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 type InstanceInterfaceListParams struct {

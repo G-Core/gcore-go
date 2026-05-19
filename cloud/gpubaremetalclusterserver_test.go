@@ -200,3 +200,33 @@ func TestGPUBaremetalClusterServerRebuild(t *testing.T) {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }
+
+func TestGPUBaremetalClusterServerReplace(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.GPUBaremetal.Clusters.Servers.Replace(
+		context.TODO(),
+		"f1c1eeb6-1834-48c9-a7b0-daafce64872b",
+		cloud.GPUBaremetalClusterServerReplaceParams{
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
+			ClusterID: "1aaaab48-10d0-46d9-80cc-85209284ceb4",
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}

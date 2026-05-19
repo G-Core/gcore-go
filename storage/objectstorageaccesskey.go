@@ -20,6 +20,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Object storage access keys provide secure credentials for API access to object
+// storage resources.
+//
 // ObjectStorageAccessKeyService contains methods and other services that help with
 // interacting with the gcore API.
 //
