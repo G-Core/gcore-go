@@ -252,6 +252,64 @@ func (r *GPUBaremetalClusterServerService) Rebuild(ctx context.Context, serverID
 	return res, err
 }
 
+// RebuildAndPoll rebuilds a bare metal GPU cluster server and polls for completion of the first task. Use the
+// [TaskService.Poll] method if you need to poll for all tasks.
+func (r *GPUBaremetalClusterServerService) RebuildAndPoll(ctx context.Context, serverID string, body GPUBaremetalClusterServerRebuildParams, opts ...option.RequestOption) (v *GPUBaremetalClusterServer, err error) {
+	// Exclude WithResponseBodyInto for the action (Rebuild returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Rebuild(ctx, serverID, body, actionOpts...)
+	if err != nil {
+		return
+	}
+
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
+	if err != nil {
+		return
+	}
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
+	if err != nil {
+		return
+	}
+
+	// Use List to find the rebuilt server
+	var listParams GPUBaremetalClusterServerListParams
+	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
+	listParams.ProjectID = body.ProjectID
+	listParams.RegionID = body.RegionID
+	listParams.Uuids = []string{serverID}
+
+	// Exclude WithResponseBodyInto and clear request body for List
+	listOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	page, err := r.List(ctx, body.ClusterID, listParams, listOpts...)
+	if err != nil {
+		return
+	}
+
+	if len(page.Results) == 0 {
+		return nil, errors.New("server not found after rebuild")
+	}
+
+	if err := requestconfig.WriteResponseBodyInto(opts, []byte(page.Results[0].RawJSON())); err != nil {
+		return nil, err
+	}
+
+	return &page.Results[0], nil
+}
+
 // Delete a server from the cluster and provision a new one in its place,
 // maintaining the cluster size. Uses the current cluster configuration (image, SSH
 // key, network settings) for the new server.
@@ -282,6 +340,69 @@ func (r *GPUBaremetalClusterServerService) Replace(ctx context.Context, serverID
 	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/servers/%s/replace", body.ProjectID.Value, body.RegionID.Value, body.ClusterID, serverID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
+}
+
+// ReplaceAndPoll replaces a bare metal GPU cluster server and polls for completion of the first task. Use the
+// [TaskService.Poll] method if you need to poll for all tasks.
+func (r *GPUBaremetalClusterServerService) ReplaceAndPoll(ctx context.Context, serverID string, body GPUBaremetalClusterServerReplaceParams, opts ...option.RequestOption) (v *GPUBaremetalClusterServer, err error) {
+	// Exclude WithResponseBodyInto for the action (Replace returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Replace(ctx, serverID, body, actionOpts...)
+	if err != nil {
+		return
+	}
+
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
+	if err != nil {
+		return
+	}
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
+	if err != nil {
+		return
+	}
+
+	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Instances) != 1 {
+		return nil, errors.New("expected exactly one instance to be created in a task")
+	}
+	newServerID := task.CreatedResources.Instances[0]
+
+	// Use List to find the new server
+	var listParams GPUBaremetalClusterServerListParams
+	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
+	listParams.ProjectID = body.ProjectID
+	listParams.RegionID = body.RegionID
+	listParams.Uuids = []string{newServerID}
+
+	// Exclude WithResponseBodyInto and clear request body for List
+	listOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	page, err := r.List(ctx, body.ClusterID, listParams, listOpts...)
+	if err != nil {
+		return
+	}
+
+	if len(page.Results) == 0 {
+		return nil, errors.New("server not found after replace")
+	}
+
+	if err := requestconfig.WriteResponseBodyInto(opts, []byte(page.Results[0].RawJSON())); err != nil {
+		return nil, err
+	}
+
+	return &page.Results[0], nil
 }
 
 type GPUBaremetalClusterServer struct {
