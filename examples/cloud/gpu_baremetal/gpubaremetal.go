@@ -70,6 +70,10 @@ func main() {
 
 	// Server operations
 	serverID := listGPUBaremetalClusterServers(&client, clusterID)
+	if serverID != "" {
+		rebuildGPUBaremetalClusterServer(&client, clusterID, serverID)
+		serverID = replaceGPUBaremetalClusterServer(&client, clusterID, serverID)
+	}
 	rebootAllServers(&client, clusterID)
 	powercycleAllServers(&client, clusterID)
 

@@ -56,6 +56,41 @@ func getGPUBaremetalClusterServerConsole(client *gcore.Client, serverID string) 
 	fmt.Println("===============================")
 }
 
+func rebuildGPUBaremetalClusterServer(client *gcore.Client, clusterID string, serverID string) {
+	fmt.Println("\n=== REBUILD GPU BAREMETAL CLUSTER SERVER ===")
+
+	params := cloud.GPUBaremetalClusterServerRebuildParams{
+		ClusterID: clusterID,
+	}
+
+	server, err := client.Cloud.GPUBaremetal.Clusters.Servers.RebuildAndPoll(context.Background(), serverID, params)
+	if err != nil {
+		fmt.Printf("Error rebuilding GPU baremetal server: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Rebuilt GPU baremetal server: ID=%s, name=%s, status=%s\n", server.ID, server.Name, server.Status)
+	fmt.Println("===============================")
+}
+
+func replaceGPUBaremetalClusterServer(client *gcore.Client, clusterID string, serverID string) string {
+	fmt.Println("\n=== REPLACE GPU BAREMETAL CLUSTER SERVER ===")
+
+	params := cloud.GPUBaremetalClusterServerReplaceParams{
+		ClusterID: clusterID,
+	}
+
+	server, err := client.Cloud.GPUBaremetal.Clusters.Servers.ReplaceAndPoll(context.Background(), serverID, params)
+	if err != nil {
+		fmt.Printf("Error replacing GPU baremetal server: %v\n", err)
+		return ""
+	}
+
+	fmt.Printf("Replaced GPU baremetal server: old ID=%s, new ID=%s, name=%s, status=%s\n", serverID, server.ID, server.Name, server.Status)
+	fmt.Println("===============================")
+	return server.ID
+}
+
 func deleteGPUBaremetalClusterServer(client *gcore.Client, clusterID string, serverID string) {
 	fmt.Println("\n=== DELETE GPU BAREMETAL CLUSTER SERVER ===")
 
