@@ -24,6 +24,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+// SFTP storages provide file transfer protocol access for securely uploading,
+// downloading, and managing files over SSH.
+//
 // SftpStorageService contains methods and other services that help with
 // interacting with the gcore API.
 //

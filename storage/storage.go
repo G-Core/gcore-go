@@ -20,7 +20,9 @@ type StorageService struct {
 	// compatibility. Each storage is provisioned in a specific location and exposes
 	// one or more access keys for authentication.
 	ObjectStorages ObjectStorageService
-	SftpStorages   SftpStorageService
+	// SFTP storages provide file transfer protocol access for securely uploading,
+	// downloading, and managing files over SSH.
+	SftpStorages SftpStorageService
 	// SSH keys enable secure access to SFTP storage by associating public keys with
 	// user accounts for authentication.
 	SSHKeys    SSHKeyService
