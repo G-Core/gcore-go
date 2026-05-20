@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.48.0 (2026-05-20)
+
+Full Changelog: [v0.47.0...v0.48.0](https://github.com/G-Core/gcore-go/compare/v0.47.0...v0.48.0)
+
+### Features
+
+* **examples:** add CDN trusted CA certificate example ([61d7286](https://github.com/G-Core/gcore-go/commit/61d72866c26ceaebb62dddf895f311bf8efdaf74))
+* **storage:** support sftp storage in Terraform ([bc62c9d](https://github.com/G-Core/gcore-go/commit/bc62c9d88bf4b63587ccb4b5d8d5b3fd755d65a4))
+
 ## 0.47.0 (2026-05-19)
 
 Full Changelog: [v0.46.0...v0.47.0](https://github.com/G-Core/gcore-go/compare/v0.46.0...v0.47.0)
