@@ -66,7 +66,7 @@ func TestVideoSubtitleUpdateWithOptionalParams(t *testing.T) {
 		streaming.VideoSubtitleUpdateParams{
 			VideoID: 0,
 			SubtitleBase: streaming.SubtitleBaseParam{
-				Language: gcore.String("ltz"),
+				Language: gcore.String("language"),
 				Name:     gcore.String("name"),
 				Vtt:      gcore.String("vtt"),
 			},
