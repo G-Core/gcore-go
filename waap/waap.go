@@ -24,7 +24,7 @@ type WaapService struct {
 	Statistics StatisticService
 	Analytics  AnalyticsService
 	// WAAP domains enable Web Application and API Protection for monitoring and
-	// defending web applications against security threats.
+	// defending web applications against security threats
 	Domains        DomainService
 	CustomPageSets CustomPageSetService
 	AdvancedRules  AdvancedRuleService
