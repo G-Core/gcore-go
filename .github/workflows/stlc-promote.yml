@@ -28,13 +28,21 @@ jobs:
             "https://x-access-token:${GH_TOKEN}@github.com/${PRODUCTION_REPO}.git"
           git fetch production main
 
-      - name: Check if production is already in sync
+      - name: Check whether production already has staging's content
         id: diff
         run: |
-          STAGING_SHA=$(git rev-parse origin/main)
-          PRODUCTION_SHA=$(git rev-parse production/main)
-          if [ "$STAGING_SHA" = "$PRODUCTION_SHA" ]; then
-            echo "Production is already at $STAGING_SHA. Nothing to release."
+          # Compare by CONTENT, not commit SHA. After a release, production
+          # carries release-please's version/changelog commits that staging
+          # lacks, so the SHAs always differ — a SHA check would re-open a
+          # spurious release PR (and push staging's now-stale manifest) on
+          # every push. Instead, ask whether merging staging into production
+          # would change production's tree: if not, production already contains
+          # everything on staging (it's equal, or only ahead by release
+          # metadata) and there is nothing to release. Requires git >= 2.38.
+          MERGED=$(git merge-tree --write-tree production/main origin/main) || MERGED=conflict
+          PRODUCTION_TREE=$(git rev-parse 'production/main^{tree}')
+          if [ "$MERGED" = "$PRODUCTION_TREE" ]; then
+            echo "Production already contains staging's content. Nothing to release."
             echo "synced=true" >> "$GITHUB_OUTPUT"
           else
             echo "synced=false" >> "$GITHUB_OUTPUT"
