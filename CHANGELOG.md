@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.49.0](https://github.com/G-Core/gcore-go/compare/v0.48.0...v0.49.0) (2026-06-16)
+
+
+### Features
+
+* **go:** setup release for go ([0573540](https://github.com/G-Core/gcore-go/commit/0573540f2d7e7901b47691782e2243e1dd657080))
+* initial stlc build ([ebb0e89](https://github.com/G-Core/gcore-go/commit/ebb0e89848ab2f3b5c3e4891d1e22873d610ba5e))
+
+
+### Reverts
+
+* "chore: change description" ([941e793](https://github.com/G-Core/gcore-go/commit/941e79373077e75b4140a64aacd592429c5b15fc))
+* "chore: change description" ([6dc1888](https://github.com/G-Core/gcore-go/commit/6dc1888a50105d87c706fcd7ec179c075f37bfaa))
+
+
+### Chores
+
+* change description ([0d8993c](https://github.com/G-Core/gcore-go/commit/0d8993ca3cee2b2f46335cf8caabd21192d42eee))
+* change description ([6091a18](https://github.com/G-Core/gcore-go/commit/6091a186111a01d2aa00bd99ac50a9b7fab669ba))
+* reseal custom code from G-Core/gcore-go-staging@4cf4626ebf37368e3a06ffe461e4a70aba449ea2 ([b4a87c9](https://github.com/G-Core/gcore-go/commit/b4a87c9b36958b08647305e803f1a0ecfdd9d1fe))
+
 ## 0.48.0 (2026-05-20)
 
 Full Changelog: [v0.47.0...v0.48.0](https://github.com/G-Core/gcore-go/compare/v0.47.0...v0.48.0)
