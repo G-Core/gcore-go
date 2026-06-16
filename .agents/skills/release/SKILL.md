@@ -29,7 +29,11 @@ allowed-tools: >
   `G-Core/gcore-python` releases) and `Read`
 - **Never**: modify source code, force-push, delete branches, or merge without
   explicit user confirmation
-- **Release PRs** are created by `stainless-app[bot]` with title `release: {version}`
+- **Release PRs** are created by `release-please` (the stock
+  `googleapis/release-please-action` running in `.github/workflows/release-please.yml`,
+  authenticated with `RELEASE_PLEASE_TOKEN`), from the head branch
+  `release-please--branches--main`, with title `release: {version}`. The author is the
+  token's user, not `stainless-app[bot]` (the legacy Stainless App is no longer used).
 
 ## Workflow
 
@@ -38,11 +42,12 @@ Execute steps 1-6 in order. Present findings at each step before proceeding.
 ### Step 1 — Discover the Release PR
 
 ```bash
-gh pr list --repo G-Core/gcore-go --state open --app stainless-app \
+gh pr list --repo G-Core/gcore-go --state open --head release-please--branches--main \
   --json number,title,author,url,createdAt
 ```
 
-Find the PR whose title starts with `release: `.
+Find the PR whose title starts with `release: ` (release-please opens it from the
+`release-please--branches--main` branch).
 
 - If **no open release PR** exists, inform the user and stop.
 - If found, display: PR number, title (contains version), URL, creation date.
@@ -212,7 +217,7 @@ If merge fails, report the error and stop.
 
 ### Step 6 — Update the GitHub Release
 
-After merge, `stainless-app[bot]` auto-creates a GitHub Release.
+After merge, `release-please` (the stock action) auto-creates the tag and GitHub Release.
 
 1. Fetch the latest release. Verify `tagName` matches expected version
    `v{VERSION}`. If not found, `sleep 10` and retry once.
