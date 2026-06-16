@@ -67,7 +67,7 @@ jobs:
               --repo "${PRODUCTION_REPO}" \
               --base main \
               --head release \
-              --title "Release SDK updates" \
+              --title "chore: promote staging to production" \
               --body "$(git log --oneline production/main..origin/main)"
           else
             echo "Release PR #${EXISTING_PR} already exists. Force-push has updated it."
