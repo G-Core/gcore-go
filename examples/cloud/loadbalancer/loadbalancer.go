@@ -46,6 +46,13 @@ func main() {
 	resizeLoadBalancer(&client, loadBalancer.ID)
 	failoverLoadBalancer(&client, loadBalancer.ID)
 
+	// Pool and member operations
+	pool := createPool(&client, loadBalancer.ID)
+	listPools(&client)
+	member := createPoolMember(&client, pool.ID)
+	deletePoolMember(&client, member.ID, pool.ID)
+	deletePool(&client, pool.ID)
+
 	// Statuses
 	listLoadBalancerStatuses(&client)
 	getLoadBalancerByID(&client, loadBalancer.ID)

@@ -133,9 +133,12 @@ func (r *LoadBalancerPoolMemberService) NewAndPoll(ctx context.Context, poolID s
 	}
 	memberID := task.CreatedResources.Members[0]
 
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	poolService := NewLoadBalancerPoolService(getOpts...)
+	// Exclude WithResponseBodyInto and clear request body for Get
+	getOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	poolService := NewLoadBalancerPoolService(slices.Concat(r.Options, getOpts)...)
 	pool, err := poolService.Get(ctx, poolID, getParams, getOpts...)
 	if err != nil {
 		return
@@ -143,6 +146,9 @@ func (r *LoadBalancerPoolMemberService) NewAndPoll(ctx context.Context, poolID s
 
 	for _, member := range pool.Members {
 		if member.ID == memberID {
+			if err := requestconfig.WriteResponseBodyInto(opts, []byte(member.RawJSON())); err != nil {
+				return nil, err
+			}
 			return &member, nil
 		}
 	}
