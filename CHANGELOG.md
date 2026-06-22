@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.49.1](https://github.com/G-Core/gcore-go/compare/v0.49.0...v0.49.1) (2026-06-22)
+
+
+### Bug Fixes
+
+* **cloud:** pass service options when reading back pool member after creation ([0cd91a0](https://github.com/G-Core/gcore-go/commit/0cd91a09b611b634c569a3a6c9a47b74fbe1a533))
+
 ## [0.49.0](https://github.com/G-Core/gcore-go/compare/v0.48.0...v0.49.0) (2026-06-19)
 
 
