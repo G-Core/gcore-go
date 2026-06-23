@@ -18,15 +18,9 @@ import (
 // the [NewLogsUploaderService] method instead.
 type LogsUploaderService struct {
 	Options []option.RequestOption
-	// Logs uploader allows you to upload logs with desired format to desired storages.
-	//
-	// Consists of three main parts:
-	//
-	//   - **Policies** - rules that define which logs are uploaded and how they are
-	//     uploaded.
-	//   - **Targets** - destinations where logs are uploaded.
-	//   - **Configs** - combinations of logs uploader policies, targets and resources to
-	//     which they are applied.
+	// Logs uploader policies define how CDN logs are formatted and delivered,
+	// including field selection, field ordering, delimiters, delivery frequency, and
+	// file size limits.
 	Policies LogsUploaderPolicyService
 	// Logs uploader allows you to upload logs with desired format to desired storages.
 	//
