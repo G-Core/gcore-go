@@ -32,15 +32,9 @@ type LogsUploaderService struct {
 	//   - **Configs** - combinations of logs uploader policies, targets and resources to
 	//     which they are applied.
 	Targets LogsUploaderTargetService
-	// Logs uploader allows you to upload logs with desired format to desired storages.
-	//
-	// Consists of three main parts:
-	//
-	//   - **Policies** - rules that define which logs are uploaded and how they are
-	//     uploaded.
-	//   - **Targets** - destinations where logs are uploaded.
-	//   - **Configs** - combinations of logs uploader policies, targets and resources to
-	//     which they are applied.
+	// Logs uploader configs tie a logs uploader policy to one or more targets and a
+	// set of CDN resources, controlling which access logs are uploaded and where they
+	// are delivered.
 	Configs LogsUploaderConfigService
 }
 
