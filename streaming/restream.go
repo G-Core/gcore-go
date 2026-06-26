@@ -73,6 +73,26 @@ func NewRestreamService(opts ...option.RequestOption) (r RestreamService) {
 //
 // Source stream parameters (bitrate, codecs, resolution) are sent "as is". Ensure
 // they match the destination requirements.
+//
+// For **SRT restreams**, specify `&latency=N` explicitly in the SRT target URL
+// instead of relying on a default value. It helps size the recovery buffer for
+// round-trip time, jitter, and packet loss on the route to the target site.
+// Selecting the right latency is crucial for delivering a smooth live stream. It
+// depends on the geographic distance and network conditions between Gcore and your
+// target platform, especially if they located on different continents.
+//
+// ```text
+// | Network Conditions      | Recommended Latency |
+// |-------------------------|---------------------|
+// | Cross-region            | 1-2 seconds         |
+// | Public internet         | 2-5 seconds         |
+// ```
+//
+// Your target SRT server can accept latency format in seconds, milliseconds, or
+// microseconds. Find out what format your target SRT server accepts in its
+// documentation.
+//
+// Learn more about SRT latency in product documentation.
 func (r *RestreamService) New(ctx context.Context, body RestreamNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

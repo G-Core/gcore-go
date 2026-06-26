@@ -59,7 +59,7 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 //     from your local device or from a mobile app, then use this method. Keep
 //     `origin_url` empty and use TUS protocol ([tus.io](https://tus.io)) to upload
 //     file. More details are here
-//     ["Get TUS' upload"](/docs/api-reference/streaming/videos/get-tus-parameters-for-direct-upload)
+//     ["Get TUS' upload"](/api-reference/streaming/videos/get-tus-parameters-for-direct-upload)
 //
 // After getting the video, it is processed through the queue. There are 2 priority
 // criteria: global and local. Global is determined automatically by the system as
@@ -76,7 +76,7 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 // Read more:
 //
 //   - What is
-//     ["AI Speech Recognition"](/docs/api-reference/streaming/ai/create-ai-asr-task).
+//     ["AI Speech Recognition"](/api-reference/streaming/ai/create-ai-asr-task).
 //   - If the option is enabled via
 //     `auto_transcribe_audio_language: auto|<language_code>`, then immediately after
 //     successful transcoding, an AI task will be automatically created for
@@ -87,7 +87,7 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 //     that. Also you can point several languages to translate to, then a separate
 //     subtitle will be generated for each specified language.
 //   - How to
-//     ["add AI-generated subtitles to an exist video"](/docs/api-reference/streaming/subtitles/add-subtitle).
+//     ["add AI-generated subtitles to an exist video"](/api-reference/streaming/subtitles/add-subtitle).
 //
 // The created AI-task(s) will be automatically executed, and result will also be
 // automatically attached to this video as subtitle(s).
@@ -233,7 +233,7 @@ func (r *VideoService) Get(ctx context.Context, videoID int64, opts ...option.Re
 // The general sequence of actions for a direct upload of a video is as follows:
 //
 //   - Create video entity via POST method
-//     ["Create video"](/docs/api-reference/streaming/videos/create-video)
+//     ["Create video"](/api-reference/streaming/videos/create-video)
 //   - Get TUS' session parameters (you are here now)
 //   - Upload file via TUS client, choose your implementation on
 //     [tus.io](https://tus.io/implementations)
