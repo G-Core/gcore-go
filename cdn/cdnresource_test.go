@@ -91,6 +91,13 @@ func TestCDNResourceNewWithOptionalParams(t *testing.T) {
 					ExecuteOnShield:  gcore.Bool(false),
 					InterruptOnError: gcore.Bool(true),
 				},
+				OnRequestHeadersAfterCache: cdn.CDNResourceNewParamsOptionsFastedgeOnRequestHeadersAfterCache{
+					AppID:            "1001",
+					Enabled:          gcore.Bool(true),
+					ExecuteOnEdge:    gcore.Bool(true),
+					ExecuteOnShield:  gcore.Bool(false),
+					InterruptOnError: gcore.Bool(true),
+				},
 				OnResponseBody: cdn.CDNResourceNewParamsOptionsFastedgeOnResponseBody{
 					AppID:            "1001",
 					Enabled:          gcore.Bool(true),
@@ -169,6 +176,10 @@ func TestCDNResourceNewWithOptionalParams(t *testing.T) {
 				LimitType: "static",
 				Buffer:    gcore.Int(200),
 				Speed:     gcore.Int(100),
+			},
+			NetworkErrorLogging: cdn.CDNResourceNewParamsOptionsNetworkErrorLogging{
+				Enabled: true,
+				Value:   true,
 			},
 			ProxyCacheKey: cdn.CDNResourceNewParamsOptionsProxyCacheKey{
 				Enabled: true,
@@ -401,6 +412,13 @@ func TestCDNResourceUpdateWithOptionalParams(t *testing.T) {
 						ExecuteOnShield:  gcore.Bool(false),
 						InterruptOnError: gcore.Bool(true),
 					},
+					OnRequestHeadersAfterCache: cdn.CDNResourceUpdateParamsOptionsFastedgeOnRequestHeadersAfterCache{
+						AppID:            "1001",
+						Enabled:          gcore.Bool(true),
+						ExecuteOnEdge:    gcore.Bool(true),
+						ExecuteOnShield:  gcore.Bool(false),
+						InterruptOnError: gcore.Bool(true),
+					},
 					OnResponseBody: cdn.CDNResourceUpdateParamsOptionsFastedgeOnResponseBody{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
@@ -479,6 +497,10 @@ func TestCDNResourceUpdateWithOptionalParams(t *testing.T) {
 					LimitType: "static",
 					Buffer:    gcore.Int(200),
 					Speed:     gcore.Int(100),
+				},
+				NetworkErrorLogging: cdn.CDNResourceUpdateParamsOptionsNetworkErrorLogging{
+					Enabled: true,
+					Value:   true,
 				},
 				ProxyCacheKey: cdn.CDNResourceUpdateParamsOptionsProxyCacheKey{
 					Enabled: true,
@@ -874,6 +896,13 @@ func TestCDNResourceReplaceWithOptionalParams(t *testing.T) {
 						ExecuteOnShield:  gcore.Bool(false),
 						InterruptOnError: gcore.Bool(true),
 					},
+					OnRequestHeadersAfterCache: cdn.CDNResourceReplaceParamsOptionsFastedgeOnRequestHeadersAfterCache{
+						AppID:            "1001",
+						Enabled:          gcore.Bool(true),
+						ExecuteOnEdge:    gcore.Bool(true),
+						ExecuteOnShield:  gcore.Bool(false),
+						InterruptOnError: gcore.Bool(true),
+					},
 					OnResponseBody: cdn.CDNResourceReplaceParamsOptionsFastedgeOnResponseBody{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
@@ -952,6 +981,10 @@ func TestCDNResourceReplaceWithOptionalParams(t *testing.T) {
 					LimitType: "static",
 					Buffer:    gcore.Int(200),
 					Speed:     gcore.Int(100),
+				},
+				NetworkErrorLogging: cdn.CDNResourceReplaceParamsOptionsNetworkErrorLogging{
+					Enabled: true,
+					Value:   true,
 				},
 				ProxyCacheKey: cdn.CDNResourceReplaceParamsOptionsProxyCacheKey{
 					Enabled: true,

@@ -94,6 +94,13 @@ func TestCDNResourceRuleNewWithOptionalParams(t *testing.T) {
 						ExecuteOnShield:  gcore.Bool(false),
 						InterruptOnError: gcore.Bool(true),
 					},
+					OnRequestHeadersAfterCache: cdn.CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeadersAfterCache{
+						AppID:            "1001",
+						Enabled:          gcore.Bool(true),
+						ExecuteOnEdge:    gcore.Bool(true),
+						ExecuteOnShield:  gcore.Bool(false),
+						InterruptOnError: gcore.Bool(true),
+					},
 					OnResponseBody: cdn.CDNResourceRuleNewParamsOptionsFastedgeOnResponseBody{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
@@ -366,6 +373,13 @@ func TestCDNResourceRuleUpdateWithOptionalParams(t *testing.T) {
 						InterruptOnError: gcore.Bool(true),
 					},
 					OnRequestHeaders: cdn.CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders{
+						AppID:            "1001",
+						Enabled:          gcore.Bool(true),
+						ExecuteOnEdge:    gcore.Bool(true),
+						ExecuteOnShield:  gcore.Bool(false),
+						InterruptOnError: gcore.Bool(true),
+					},
+					OnRequestHeadersAfterCache: cdn.CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeadersAfterCache{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
 						ExecuteOnEdge:    gcore.Bool(true),
@@ -733,6 +747,13 @@ func TestCDNResourceRuleReplaceWithOptionalParams(t *testing.T) {
 						InterruptOnError: gcore.Bool(true),
 					},
 					OnRequestHeaders: cdn.CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders{
+						AppID:            "1001",
+						Enabled:          gcore.Bool(true),
+						ExecuteOnEdge:    gcore.Bool(true),
+						ExecuteOnShield:  gcore.Bool(false),
+						InterruptOnError: gcore.Bool(true),
+					},
+					OnRequestHeadersAfterCache: cdn.CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeadersAfterCache{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
 						ExecuteOnEdge:    gcore.Bool(true),

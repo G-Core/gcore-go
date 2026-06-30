@@ -523,6 +523,7 @@ type StatisticGetResourceUsageAggregatedParams struct {
 	//   - **vhost** – Data is grouped by resources CNAMEs.
 	//   - **`client_country`** - Data is grouped by countries, based on end-users'
 	//     location.
+	//   - **protocol** - Data is grouped by http protocol version.
 	//
 	// To request multiple values, use:
 	//
@@ -644,6 +645,7 @@ type StatisticGetResourceUsageSeriesParams struct {
 	//   - **vhost** – Data is grouped by resources CNAMEs.
 	//   - **`client_country`** - Data is grouped by countries, based on end-users'
 	//     location.
+	//   - **protocol** - Data is grouped by http protocol version.
 	//
 	// To request multiple values, use:
 	//

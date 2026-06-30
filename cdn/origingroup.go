@@ -233,7 +233,6 @@ type OriginGroupsNoneAuthSourceUnion struct {
 	Backup             bool   `json:"backup"`
 	Enabled            bool   `json:"enabled"`
 	HostHeaderOverride string `json:"host_header_override"`
-	Tag                string `json:"tag"`
 	// This field is a union of [OriginGroupsNoneAuthSourceS3SourceConfig],
 	// [OriginGroupsNoneAuthSourceFastEdgeSourceConfig]
 	Config     OriginGroupsNoneAuthSourceUnionConfig `json:"config"`
@@ -243,7 +242,6 @@ type OriginGroupsNoneAuthSourceUnion struct {
 		Backup             respjson.Field
 		Enabled            respjson.Field
 		HostHeaderOverride respjson.Field
-		Tag                respjson.Field
 		Config             respjson.Field
 		OriginType         respjson.Field
 		raw                string
@@ -336,15 +334,12 @@ type OriginGroupsNoneAuthSourceHostSource struct {
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
 	HostHeaderOverride string `json:"host_header_override" api:"nullable"`
-	// Tag for the origin source.
-	Tag string `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Source             respjson.Field
 		Backup             respjson.Field
 		Enabled            respjson.Field
 		HostHeaderOverride respjson.Field
-		Tag                respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -391,8 +386,6 @@ type OriginGroupsNoneAuthSourceS3Source struct {
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
 	HostHeaderOverride string `json:"host_header_override" api:"nullable"`
-	// Tag for the origin source.
-	Tag string `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Config             respjson.Field
@@ -400,7 +393,6 @@ type OriginGroupsNoneAuthSourceS3Source struct {
 		Backup             respjson.Field
 		Enabled            respjson.Field
 		HostHeaderOverride respjson.Field
-		Tag                respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -505,8 +497,6 @@ type OriginGroupsNoneAuthSourceFastEdgeSource struct {
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
 	HostHeaderOverride string `json:"host_header_override" api:"nullable"`
-	// Tag for the origin source.
-	Tag string `json:"tag"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Config             respjson.Field
@@ -514,7 +504,6 @@ type OriginGroupsNoneAuthSourceFastEdgeSource struct {
 		Backup             respjson.Field
 		Enabled            respjson.Field
 		HostHeaderOverride respjson.Field
-		Tag                respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -915,18 +904,6 @@ func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetHostHeaderOverride() *st
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetTag() *string {
-	if vt := u.OfHostSource; vt != nil && vt.Tag.Valid() {
-		return &vt.Tag.Value
-	} else if vt := u.OfS3Source; vt != nil && vt.Tag.Valid() {
-		return &vt.Tag.Value
-	} else if vt := u.OfFastEdgeSource; vt != nil && vt.Tag.Valid() {
-		return &vt.Tag.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
 func (u OriginGroupNewParamsBodyNoneAuthSourceUnion) GetOriginType() *string {
 	if vt := u.OfS3Source; vt != nil {
 		return (*string)(&vt.OriginType)
@@ -987,8 +964,6 @@ type OriginGroupNewParamsBodyNoneAuthSourceHostSource struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Tag for the origin source.
-	Tag param.Opt[string] `json:"tag,omitzero"`
 	paramObj
 }
 
@@ -1024,8 +999,6 @@ type OriginGroupNewParamsBodyNoneAuthSourceS3Source struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Tag for the origin source.
-	Tag param.Opt[string] `json:"tag,omitzero"`
 	// Origin type. Present in responses for S3 and FastEdge sources.
 	//
 	// Possible values:
@@ -1147,8 +1120,6 @@ type OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSource struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Tag for the origin source.
-	Tag param.Opt[string] `json:"tag,omitzero"`
 	paramObj
 }
 
@@ -1458,18 +1429,6 @@ func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetHostHeaderOverride() 
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetTag() *string {
-	if vt := u.OfHostSource; vt != nil && vt.Tag.Valid() {
-		return &vt.Tag.Value
-	} else if vt := u.OfS3Source; vt != nil && vt.Tag.Valid() {
-		return &vt.Tag.Value
-	} else if vt := u.OfFastEdgeSource; vt != nil && vt.Tag.Valid() {
-		return &vt.Tag.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
 func (u OriginGroupUpdateParamsBodyNoneAuthSourceUnion) GetOriginType() *string {
 	if vt := u.OfS3Source; vt != nil {
 		return (*string)(&vt.OriginType)
@@ -1530,8 +1489,6 @@ type OriginGroupUpdateParamsBodyNoneAuthSourceHostSource struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Tag for the origin source.
-	Tag param.Opt[string] `json:"tag,omitzero"`
 	paramObj
 }
 
@@ -1567,8 +1524,6 @@ type OriginGroupUpdateParamsBodyNoneAuthSourceS3Source struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Tag for the origin source.
-	Tag param.Opt[string] `json:"tag,omitzero"`
 	// Origin type. Present in responses for S3 and FastEdge sources.
 	//
 	// Possible values:
@@ -1690,8 +1645,6 @@ type OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSource struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Tag for the origin source.
-	Tag param.Opt[string] `json:"tag,omitzero"`
 	paramObj
 }
 
@@ -2033,18 +1986,6 @@ func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetHostHeaderOverride()
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetTag() *string {
-	if vt := u.OfHostSource; vt != nil && vt.Tag.Valid() {
-		return &vt.Tag.Value
-	} else if vt := u.OfS3Source; vt != nil && vt.Tag.Valid() {
-		return &vt.Tag.Value
-	} else if vt := u.OfFastEdgeSource; vt != nil && vt.Tag.Valid() {
-		return &vt.Tag.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
 func (u OriginGroupReplaceParamsBodyNoneAuthSourceUnion) GetOriginType() *string {
 	if vt := u.OfS3Source; vt != nil {
 		return (*string)(&vt.OriginType)
@@ -2105,8 +2046,6 @@ type OriginGroupReplaceParamsBodyNoneAuthSourceHostSource struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Tag for the origin source.
-	Tag param.Opt[string] `json:"tag,omitzero"`
 	paramObj
 }
 
@@ -2142,8 +2081,6 @@ type OriginGroupReplaceParamsBodyNoneAuthSourceS3Source struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Tag for the origin source.
-	Tag param.Opt[string] `json:"tag,omitzero"`
 	// Origin type. Present in responses for S3 and FastEdge sources.
 	//
 	// Possible values:
@@ -2265,8 +2202,6 @@ type OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSource struct {
 	//
 	// Origin group must contain at least one enabled origin.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	// Tag for the origin source.
-	Tag param.Opt[string] `json:"tag,omitzero"`
 	paramObj
 }
 

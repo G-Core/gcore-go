@@ -270,8 +270,9 @@ type CDNResourceRuleOptions struct {
 	// Allows to configure FastEdge app to be called on different request/response
 	// phases.
 	//
-	// Note: At least one of `on_request_headers`, `on_request_body`,
-	// `on_response_headers`, or `on_response_body` must be specified.
+	// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
+	// `on_request_body`, `on_response_headers`, or `on_response_body` must be
+	// specified.
 	Fastedge CDNResourceRuleOptionsFastedge `json:"fastedge" api:"nullable"`
 	// Makes the CDN request compressed content from the origin.
 	//
@@ -345,9 +346,14 @@ type CDNResourceRuleOptions struct {
 	//
 	// Combine the specified variables to create a key for caching.
 	//
-	// - **$`request_uri`**
-	// - **$scheme**
-	// - **$uri**
+	//   - **$`http_x_cdn_real_host`** — the original `Host` header sent by the client.
+	//     Useful for splitting cache across multiple aliases served by a single CDN
+	//     resource.
+	//   - **$`request_uri`** — the full original request URI including the query string
+	//     (e.g., `/path?id=1`).
+	//   - **$scheme** — the request scheme, either `http` or `https`.
+	//   - **$uri** — the normalized request URI without the query string (e.g.,
+	//     `/path`).
 	//
 	// **Warning**: Enabling and changing this option can invalidate your current cache
 	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
@@ -853,8 +859,9 @@ func (r *CDNResourceRuleOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) err
 // Allows to configure FastEdge app to be called on different request/response
 // phases.
 //
-// Note: At least one of `on_request_headers`, `on_request_body`,
-// `on_response_headers`, or `on_response_body` must be specified.
+// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
+// `on_request_body`, `on_response_headers`, or `on_response_body` must be
+// specified.
 type CDNResourceRuleOptionsFastedge struct {
 	// Controls the option state.
 	//
@@ -869,6 +876,9 @@ type CDNResourceRuleOptionsFastedge struct {
 	// Allows to configure FastEdge application that will be called to handle request
 	// headers as soon as CDN receives incoming HTTP request, **before cache**.
 	OnRequestHeaders CDNResourceRuleOptionsFastedgeOnRequestHeaders `json:"on_request_headers"`
+	// Allows to configure FastEdge application that will be called to handle request
+	// headers as soon as CDN receives incoming HTTP request, **after cache**.
+	OnRequestHeadersAfterCache CDNResourceRuleOptionsFastedgeOnRequestHeadersAfterCache `json:"on_request_headers_after_cache"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// body before CDN sends the HTTP response.
 	OnResponseBody CDNResourceRuleOptionsFastedgeOnResponseBody `json:"on_response_body"`
@@ -877,13 +887,14 @@ type CDNResourceRuleOptionsFastedge struct {
 	OnResponseHeaders CDNResourceRuleOptionsFastedgeOnResponseHeaders `json:"on_response_headers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Enabled           respjson.Field
-		OnRequestBody     respjson.Field
-		OnRequestHeaders  respjson.Field
-		OnResponseBody    respjson.Field
-		OnResponseHeaders respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		Enabled                    respjson.Field
+		OnRequestBody              respjson.Field
+		OnRequestHeaders           respjson.Field
+		OnRequestHeadersAfterCache respjson.Field
+		OnResponseBody             respjson.Field
+		OnResponseHeaders          respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
 	} `json:"-"`
 }
 
@@ -954,6 +965,38 @@ type CDNResourceRuleOptionsFastedgeOnRequestHeaders struct {
 // Returns the unmodified JSON received from the API
 func (r CDNResourceRuleOptionsFastedgeOnRequestHeaders) RawJSON() string { return r.JSON.raw }
 func (r *CDNResourceRuleOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge application that will be called to handle request
+// headers as soon as CDN receives incoming HTTP request, **after cache**.
+type CDNResourceRuleOptionsFastedgeOnRequestHeadersAfterCache struct {
+	// The ID of the application in FastEdge.
+	AppID string `json:"app_id" api:"required"`
+	// Determines if the FastEdge application should be called whenever HTTP request
+	// headers are received.
+	Enabled bool `json:"enabled"`
+	// Determines if the request should be executed at the edge nodes.
+	ExecuteOnEdge bool `json:"execute_on_edge"`
+	// Determines if the request should be executed at the shield nodes.
+	ExecuteOnShield bool `json:"execute_on_shield"`
+	// Determines if the request execution should be interrupted when an error occurs.
+	InterruptOnError bool `json:"interrupt_on_error"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AppID            respjson.Field
+		Enabled          respjson.Field
+		ExecuteOnEdge    respjson.Field
+		ExecuteOnShield  respjson.Field
+		InterruptOnError respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CDNResourceRuleOptionsFastedgeOnRequestHeadersAfterCache) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleOptionsFastedgeOnRequestHeadersAfterCache) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1466,9 +1509,14 @@ func (r *CDNResourceRuleOptionsLimitBandwidth) UnmarshalJSON(data []byte) error 
 //
 // Combine the specified variables to create a key for caching.
 //
-// - **$`request_uri`**
-// - **$scheme**
-// - **$uri**
+//   - **$`http_x_cdn_real_host`** — the original `Host` header sent by the client.
+//     Useful for splitting cache across multiple aliases served by a single CDN
+//     resource.
+//   - **$`request_uri`** — the full original request URI including the query string
+//     (e.g., `/path?id=1`).
+//   - **$scheme** — the request scheme, either `http` or `https`.
+//   - **$uri** — the normalized request URI without the query string (e.g.,
+//     `/path`).
 //
 // **Warning**: Enabling and changing this option can invalidate your current cache
 // and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
@@ -2558,8 +2606,9 @@ type CDNResourceRuleNewParamsOptions struct {
 	// Allows to configure FastEdge app to be called on different request/response
 	// phases.
 	//
-	// Note: At least one of `on_request_headers`, `on_request_body`,
-	// `on_response_headers`, or `on_response_body` must be specified.
+	// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
+	// `on_request_body`, `on_response_headers`, or `on_response_body` must be
+	// specified.
 	Fastedge CDNResourceRuleNewParamsOptionsFastedge `json:"fastedge,omitzero"`
 	// Makes the CDN request compressed content from the origin.
 	//
@@ -2633,9 +2682,14 @@ type CDNResourceRuleNewParamsOptions struct {
 	//
 	// Combine the specified variables to create a key for caching.
 	//
-	// - **$`request_uri`**
-	// - **$scheme**
-	// - **$uri**
+	//   - **$`http_x_cdn_real_host`** — the original `Host` header sent by the client.
+	//     Useful for splitting cache across multiple aliases served by a single CDN
+	//     resource.
+	//   - **$`request_uri`** — the full original request URI including the query string
+	//     (e.g., `/path?id=1`).
+	//   - **$scheme** — the request scheme, either `http` or `https`.
+	//   - **$uri** — the normalized request URI without the query string (e.g.,
+	//     `/path`).
 	//
 	// **Warning**: Enabling and changing this option can invalidate your current cache
 	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
@@ -3080,8 +3134,9 @@ func (r *CDNResourceRuleNewParamsOptionsEdgeCacheSettings) UnmarshalJSON(data []
 // Allows to configure FastEdge app to be called on different request/response
 // phases.
 //
-// Note: At least one of `on_request_headers`, `on_request_body`,
-// `on_response_headers`, or `on_response_body` must be specified.
+// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
+// `on_request_body`, `on_response_headers`, or `on_response_body` must be
+// specified.
 //
 // The property Enabled is required.
 type CDNResourceRuleNewParamsOptionsFastedge struct {
@@ -3098,6 +3153,9 @@ type CDNResourceRuleNewParamsOptionsFastedge struct {
 	// Allows to configure FastEdge application that will be called to handle request
 	// headers as soon as CDN receives incoming HTTP request, **before cache**.
 	OnRequestHeaders CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeaders `json:"on_request_headers,omitzero"`
+	// Allows to configure FastEdge application that will be called to handle request
+	// headers as soon as CDN receives incoming HTTP request, **after cache**.
+	OnRequestHeadersAfterCache CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeadersAfterCache `json:"on_request_headers_after_cache,omitzero"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// body before CDN sends the HTTP response.
 	OnResponseBody CDNResourceRuleNewParamsOptionsFastedgeOnResponseBody `json:"on_response_body,omitzero"`
@@ -3166,6 +3224,33 @@ func (r CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeaders) MarshalJSON() (
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge application that will be called to handle request
+// headers as soon as CDN receives incoming HTTP request, **after cache**.
+//
+// The property AppID is required.
+type CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeadersAfterCache struct {
+	// The ID of the application in FastEdge.
+	AppID string `json:"app_id" api:"required"`
+	// Determines if the FastEdge application should be called whenever HTTP request
+	// headers are received.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Determines if the request should be executed at the edge nodes.
+	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
+	// Determines if the request should be executed at the shield nodes.
+	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
+	// Determines if the request execution should be interrupted when an error occurs.
+	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeadersAfterCache) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeadersAfterCache
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeadersAfterCache) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3647,9 +3732,14 @@ func init() {
 //
 // Combine the specified variables to create a key for caching.
 //
-// - **$`request_uri`**
-// - **$scheme**
-// - **$uri**
+//   - **$`http_x_cdn_real_host`** — the original `Host` header sent by the client.
+//     Useful for splitting cache across multiple aliases served by a single CDN
+//     resource.
+//   - **$`request_uri`** — the full original request URI including the query string
+//     (e.g., `/path?id=1`).
+//   - **$scheme** — the request scheme, either `http` or `https`.
+//   - **$uri** — the normalized request URI without the query string (e.g.,
+//     `/path`).
 //
 // **Warning**: Enabling and changing this option can invalidate your current cache
 // and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
@@ -4631,8 +4721,9 @@ type CDNResourceRuleUpdateParamsOptions struct {
 	// Allows to configure FastEdge app to be called on different request/response
 	// phases.
 	//
-	// Note: At least one of `on_request_headers`, `on_request_body`,
-	// `on_response_headers`, or `on_response_body` must be specified.
+	// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
+	// `on_request_body`, `on_response_headers`, or `on_response_body` must be
+	// specified.
 	Fastedge CDNResourceRuleUpdateParamsOptionsFastedge `json:"fastedge,omitzero"`
 	// Makes the CDN request compressed content from the origin.
 	//
@@ -4706,9 +4797,14 @@ type CDNResourceRuleUpdateParamsOptions struct {
 	//
 	// Combine the specified variables to create a key for caching.
 	//
-	// - **$`request_uri`**
-	// - **$scheme**
-	// - **$uri**
+	//   - **$`http_x_cdn_real_host`** — the original `Host` header sent by the client.
+	//     Useful for splitting cache across multiple aliases served by a single CDN
+	//     resource.
+	//   - **$`request_uri`** — the full original request URI including the query string
+	//     (e.g., `/path?id=1`).
+	//   - **$scheme** — the request scheme, either `http` or `https`.
+	//   - **$uri** — the normalized request URI without the query string (e.g.,
+	//     `/path`).
 	//
 	// **Warning**: Enabling and changing this option can invalidate your current cache
 	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
@@ -5153,8 +5249,9 @@ func (r *CDNResourceRuleUpdateParamsOptionsEdgeCacheSettings) UnmarshalJSON(data
 // Allows to configure FastEdge app to be called on different request/response
 // phases.
 //
-// Note: At least one of `on_request_headers`, `on_request_body`,
-// `on_response_headers`, or `on_response_body` must be specified.
+// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
+// `on_request_body`, `on_response_headers`, or `on_response_body` must be
+// specified.
 //
 // The property Enabled is required.
 type CDNResourceRuleUpdateParamsOptionsFastedge struct {
@@ -5171,6 +5268,9 @@ type CDNResourceRuleUpdateParamsOptionsFastedge struct {
 	// Allows to configure FastEdge application that will be called to handle request
 	// headers as soon as CDN receives incoming HTTP request, **before cache**.
 	OnRequestHeaders CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders `json:"on_request_headers,omitzero"`
+	// Allows to configure FastEdge application that will be called to handle request
+	// headers as soon as CDN receives incoming HTTP request, **after cache**.
+	OnRequestHeadersAfterCache CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeadersAfterCache `json:"on_request_headers_after_cache,omitzero"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// body before CDN sends the HTTP response.
 	OnResponseBody CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseBody `json:"on_response_body,omitzero"`
@@ -5239,6 +5339,33 @@ func (r CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders) MarshalJSON(
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge application that will be called to handle request
+// headers as soon as CDN receives incoming HTTP request, **after cache**.
+//
+// The property AppID is required.
+type CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeadersAfterCache struct {
+	// The ID of the application in FastEdge.
+	AppID string `json:"app_id" api:"required"`
+	// Determines if the FastEdge application should be called whenever HTTP request
+	// headers are received.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Determines if the request should be executed at the edge nodes.
+	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
+	// Determines if the request should be executed at the shield nodes.
+	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
+	// Determines if the request execution should be interrupted when an error occurs.
+	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeadersAfterCache) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeadersAfterCache
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeadersAfterCache) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5720,9 +5847,14 @@ func init() {
 //
 // Combine the specified variables to create a key for caching.
 //
-// - **$`request_uri`**
-// - **$scheme**
-// - **$uri**
+//   - **$`http_x_cdn_real_host`** — the original `Host` header sent by the client.
+//     Useful for splitting cache across multiple aliases served by a single CDN
+//     resource.
+//   - **$`request_uri`** — the full original request URI including the query string
+//     (e.g., `/path?id=1`).
+//   - **$scheme** — the request scheme, either `http` or `https`.
+//   - **$uri** — the normalized request URI without the query string (e.g.,
+//     `/path`).
 //
 // **Warning**: Enabling and changing this option can invalidate your current cache
 // and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
@@ -6731,8 +6863,9 @@ type CDNResourceRuleReplaceParamsOptions struct {
 	// Allows to configure FastEdge app to be called on different request/response
 	// phases.
 	//
-	// Note: At least one of `on_request_headers`, `on_request_body`,
-	// `on_response_headers`, or `on_response_body` must be specified.
+	// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
+	// `on_request_body`, `on_response_headers`, or `on_response_body` must be
+	// specified.
 	Fastedge CDNResourceRuleReplaceParamsOptionsFastedge `json:"fastedge,omitzero"`
 	// Makes the CDN request compressed content from the origin.
 	//
@@ -6806,9 +6939,14 @@ type CDNResourceRuleReplaceParamsOptions struct {
 	//
 	// Combine the specified variables to create a key for caching.
 	//
-	// - **$`request_uri`**
-	// - **$scheme**
-	// - **$uri**
+	//   - **$`http_x_cdn_real_host`** — the original `Host` header sent by the client.
+	//     Useful for splitting cache across multiple aliases served by a single CDN
+	//     resource.
+	//   - **$`request_uri`** — the full original request URI including the query string
+	//     (e.g., `/path?id=1`).
+	//   - **$scheme** — the request scheme, either `http` or `https`.
+	//   - **$uri** — the normalized request URI without the query string (e.g.,
+	//     `/path`).
 	//
 	// **Warning**: Enabling and changing this option can invalidate your current cache
 	// and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will
@@ -7253,8 +7391,9 @@ func (r *CDNResourceRuleReplaceParamsOptionsEdgeCacheSettings) UnmarshalJSON(dat
 // Allows to configure FastEdge app to be called on different request/response
 // phases.
 //
-// Note: At least one of `on_request_headers`, `on_request_body`,
-// `on_response_headers`, or `on_response_body` must be specified.
+// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
+// `on_request_body`, `on_response_headers`, or `on_response_body` must be
+// specified.
 //
 // The property Enabled is required.
 type CDNResourceRuleReplaceParamsOptionsFastedge struct {
@@ -7271,6 +7410,9 @@ type CDNResourceRuleReplaceParamsOptionsFastedge struct {
 	// Allows to configure FastEdge application that will be called to handle request
 	// headers as soon as CDN receives incoming HTTP request, **before cache**.
 	OnRequestHeaders CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders `json:"on_request_headers,omitzero"`
+	// Allows to configure FastEdge application that will be called to handle request
+	// headers as soon as CDN receives incoming HTTP request, **after cache**.
+	OnRequestHeadersAfterCache CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeadersAfterCache `json:"on_request_headers_after_cache,omitzero"`
 	// Allows to configure FastEdge application that will be called to handle response
 	// body before CDN sends the HTTP response.
 	OnResponseBody CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseBody `json:"on_response_body,omitzero"`
@@ -7339,6 +7481,33 @@ func (r CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders) MarshalJSON
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Allows to configure FastEdge application that will be called to handle request
+// headers as soon as CDN receives incoming HTTP request, **after cache**.
+//
+// The property AppID is required.
+type CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeadersAfterCache struct {
+	// The ID of the application in FastEdge.
+	AppID string `json:"app_id" api:"required"`
+	// Determines if the FastEdge application should be called whenever HTTP request
+	// headers are received.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Determines if the request should be executed at the edge nodes.
+	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
+	// Determines if the request should be executed at the shield nodes.
+	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
+	// Determines if the request execution should be interrupted when an error occurs.
+	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
+	paramObj
+}
+
+func (r CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeadersAfterCache) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeadersAfterCache
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeadersAfterCache) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -7820,9 +7989,14 @@ func init() {
 //
 // Combine the specified variables to create a key for caching.
 //
-// - **$`request_uri`**
-// - **$scheme**
-// - **$uri**
+//   - **$`http_x_cdn_real_host`** — the original `Host` header sent by the client.
+//     Useful for splitting cache across multiple aliases served by a single CDN
+//     resource.
+//   - **$`request_uri`** — the full original request URI including the query string
+//     (e.g., `/path?id=1`).
+//   - **$scheme** — the request scheme, either `http` or `https`.
+//   - **$uri** — the normalized request URI without the query string (e.g.,
+//     `/path`).
 //
 // **Warning**: Enabling and changing this option can invalidate your current cache
 // and affect the cache hit ratio. Furthermore, the "Purge by pattern" option will

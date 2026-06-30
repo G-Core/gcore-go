@@ -130,7 +130,7 @@ type LogsUploaderTarget struct {
 	// Type of storage for logs.
 	//
 	// Any of "s3_gcore", "s3_amazon", "s3_oss", "s3_other", "s3_v1", "ftp", "sftp",
-	// "http", "azure_blob".
+	// "http", "azure_blob", "sls".
 	StorageType LogsUploaderTargetStorageType `json:"storage_type"`
 	// Time when logs uploader target was updated.
 	Updated time.Time `json:"updated" format:"date-time"`
@@ -163,7 +163,7 @@ func (r *LogsUploaderTarget) UnmarshalJSON(data []byte) error {
 // [LogsUploaderTargetConfigS3GcoreConfig2],
 // [LogsUploaderTargetConfigS3GcoreConfig3], [LogsUploaderTargetConfigFtpConfig],
 // [LogsUploaderTargetConfigSftpConfig], [LogsUploaderTargetConfigHTTPConfig],
-// [LogsUploaderTargetConfigAzureBlobConfig].
+// [LogsUploaderTargetConfigAzureBlobConfig], [LogsUploaderTargetConfigSlsConfig].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type LogsUploaderTargetConfigUnion struct {
@@ -185,7 +185,8 @@ type LogsUploaderTargetConfigUnion struct {
 	// This field is from variant [LogsUploaderTargetConfigHTTPConfig].
 	Append LogsUploaderTargetConfigHTTPConfigAppend `json:"append"`
 	// This field is a union of [LogsUploaderTargetConfigHTTPConfigAuth],
-	// [LogsUploaderTargetConfigAzureBlobConfigAuth]
+	// [LogsUploaderTargetConfigAzureBlobConfigAuth],
+	// [LogsUploaderTargetConfigSlsConfigAuth]
 	Auth LogsUploaderTargetConfigUnionAuth `json:"auth"`
 	// This field is from variant [LogsUploaderTargetConfigHTTPConfig].
 	ContentType string `json:"content_type"`
@@ -197,7 +198,13 @@ type LogsUploaderTargetConfigUnion struct {
 	AccountName string `json:"account_name"`
 	// This field is from variant [LogsUploaderTargetConfigAzureBlobConfig].
 	ContainerName string `json:"container_name"`
-	JSON          struct {
+	// This field is from variant [LogsUploaderTargetConfigSlsConfig].
+	LogStore string `json:"log_store"`
+	// This field is from variant [LogsUploaderTargetConfigSlsConfig].
+	Project string `json:"project"`
+	// This field is from variant [LogsUploaderTargetConfigSlsConfig].
+	Topic string `json:"topic"`
+	JSON  struct {
 		AccessKeyID    respjson.Field
 		BucketName     respjson.Field
 		Directory      respjson.Field
@@ -217,6 +224,9 @@ type LogsUploaderTargetConfigUnion struct {
 		Upload         respjson.Field
 		AccountName    respjson.Field
 		ContainerName  respjson.Field
+		LogStore       respjson.Field
+		Project        respjson.Field
+		Topic          respjson.Field
 		raw            string
 	} `json:"-"`
 }
@@ -266,6 +276,11 @@ func (u LogsUploaderTargetConfigUnion) AsAzureBlobConfig() (v LogsUploaderTarget
 	return
 }
 
+func (u LogsUploaderTargetConfigUnion) AsSlsConfig() (v LogsUploaderTargetConfigSlsConfig) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u LogsUploaderTargetConfigUnion) RawJSON() string { return u.JSON.raw }
 
@@ -281,7 +296,8 @@ func (r *LogsUploaderTargetConfigUnion) UnmarshalJSON(data []byte) error {
 // [LogsUploaderTargetConfigUnion].
 type LogsUploaderTargetConfigUnionAuth struct {
 	// This field is a union of [LogsUploaderTargetConfigHTTPConfigAuthConfig],
-	// [LogsUploaderTargetConfigAzureBlobConfigAuthConfigUnion]
+	// [LogsUploaderTargetConfigAzureBlobConfigAuthConfigUnion],
+	// [LogsUploaderTargetConfigSlsConfigAuthConfig]
 	Config LogsUploaderTargetConfigUnionAuthConfig `json:"config"`
 	Type   string                                  `json:"type"`
 	JSON   struct {
@@ -308,11 +324,17 @@ type LogsUploaderTargetConfigUnionAuthConfig struct {
 	// This field is from variant
 	// [LogsUploaderTargetConfigAzureBlobConfigAuthConfigUnion].
 	AccountKey string `json:"account_key"`
-	JSON       struct {
-		Token      respjson.Field
-		HeaderName respjson.Field
-		AccountKey respjson.Field
-		raw        string
+	// This field is from variant [LogsUploaderTargetConfigSlsConfigAuthConfig].
+	AccessKeyID string `json:"access_key_id"`
+	// This field is from variant [LogsUploaderTargetConfigSlsConfigAuthConfig].
+	SecretAccessKey string `json:"secret_access_key"`
+	JSON            struct {
+		Token           respjson.Field
+		HeaderName      respjson.Field
+		AccountKey      respjson.Field
+		AccessKeyID     respjson.Field
+		SecretAccessKey respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -829,6 +851,82 @@ func (r *LogsUploaderTargetConfigAzureBlobConfigAuthConfigToken) UnmarshalJSON(d
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type LogsUploaderTargetConfigSlsConfig struct {
+	Auth LogsUploaderTargetConfigSlsConfigAuth `json:"auth"`
+	// SLS endpoint. Optional — derived from the region as `{region}.log.aliyuncs.com`
+	// when omitted.
+	Endpoint string `json:"endpoint" api:"nullable"`
+	// SLS logstore name. 3-36 characters; lowercase letters, digits, hyphens, and
+	// underscores.
+	LogStore string `json:"log_store"`
+	// SLS project name. 3-63 characters; lowercase letters, digits, and hyphens.
+	Project string `json:"project"`
+	// SLS region (e.g. `eu-central-1`).
+	Region string `json:"region"`
+	// Optional SLS topic (0-128 characters).
+	Topic string `json:"topic" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Auth        respjson.Field
+		Endpoint    respjson.Field
+		LogStore    respjson.Field
+		Project     respjson.Field
+		Region      respjson.Field
+		Topic       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LogsUploaderTargetConfigSlsConfig) RawJSON() string { return r.JSON.raw }
+func (r *LogsUploaderTargetConfigSlsConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LogsUploaderTargetConfigSlsConfigAuth struct {
+	// Authentication credentials. Secret fields are masked with '**\***'.
+	Config LogsUploaderTargetConfigSlsConfigAuthConfig `json:"config" api:"required"`
+	// Authentication type.
+	//
+	// Any of "ak_sk".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Config      respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LogsUploaderTargetConfigSlsConfigAuth) RawJSON() string { return r.JSON.raw }
+func (r *LogsUploaderTargetConfigSlsConfigAuth) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Authentication credentials. Secret fields are masked with '**\***'.
+type LogsUploaderTargetConfigSlsConfigAuthConfig struct {
+	// Alibaba access key ID.
+	AccessKeyID string `json:"access_key_id"`
+	// Masked secret value.
+	SecretAccessKey string `json:"secret_access_key"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AccessKeyID     respjson.Field
+		SecretAccessKey respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LogsUploaderTargetConfigSlsConfigAuthConfig) RawJSON() string { return r.JSON.raw }
+func (r *LogsUploaderTargetConfigSlsConfigAuthConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Validation status of the logs uploader target. Informs if the specified target
 // is reachable.
 type LogsUploaderTargetStatus struct {
@@ -859,6 +957,7 @@ const (
 	LogsUploaderTargetStorageTypeSftp      LogsUploaderTargetStorageType = "sftp"
 	LogsUploaderTargetStorageTypeHTTP      LogsUploaderTargetStorageType = "http"
 	LogsUploaderTargetStorageTypeAzureBlob LogsUploaderTargetStorageType = "azure_blob"
+	LogsUploaderTargetStorageTypeSls       LogsUploaderTargetStorageType = "sls"
 )
 
 // LogsUploaderTargetListUnion contains all possible properties and values from
@@ -938,7 +1037,7 @@ type LogsUploaderTargetNewParams struct {
 	// Type of storage for logs.
 	//
 	// Any of "s3_gcore", "s3_amazon", "s3_oss", "s3_other", "s3_v1", "ftp", "sftp",
-	// "http", "azure_blob".
+	// "http", "azure_blob", "sls".
 	StorageType LogsUploaderTargetNewParamsStorageType `json:"storage_type,omitzero" api:"required"`
 	// Description of the target.
 	Description param.Opt[string] `json:"description,omitzero"`
@@ -968,6 +1067,7 @@ type LogsUploaderTargetNewParamsConfigUnion struct {
 	OfSftpConfig      *LogsUploaderTargetNewParamsConfigSftpConfig      `json:",omitzero,inline"`
 	OfHTTPConfig      *LogsUploaderTargetNewParamsConfigHTTPConfig      `json:",omitzero,inline"`
 	OfAzureBlobConfig *LogsUploaderTargetNewParamsConfigAzureBlobConfig `json:",omitzero,inline"`
+	OfSlsConfig       *LogsUploaderTargetNewParamsConfigSlsConfig       `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -980,7 +1080,8 @@ func (u LogsUploaderTargetNewParamsConfigUnion) MarshalJSON() ([]byte, error) {
 		u.OfFtpConfig,
 		u.OfSftpConfig,
 		u.OfHTTPConfig,
-		u.OfAzureBlobConfig)
+		u.OfAzureBlobConfig,
+		u.OfSlsConfig)
 }
 func (u *LogsUploaderTargetNewParamsConfigUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1005,6 +1106,8 @@ func (u *LogsUploaderTargetNewParamsConfigUnion) asAny() any {
 		return u.OfHTTPConfig
 	} else if !param.IsOmitted(u.OfAzureBlobConfig) {
 		return u.OfAzureBlobConfig
+	} else if !param.IsOmitted(u.OfSlsConfig) {
+		return u.OfSlsConfig
 	}
 	return nil
 }
@@ -1074,6 +1177,30 @@ func (u LogsUploaderTargetNewParamsConfigUnion) GetContainerName() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetNewParamsConfigUnion) GetLogStore() *string {
+	if vt := u.OfSlsConfig; vt != nil {
+		return &vt.LogStore
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetNewParamsConfigUnion) GetProject() *string {
+	if vt := u.OfSlsConfig; vt != nil {
+		return &vt.Project
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetNewParamsConfigUnion) GetTopic() *string {
+	if vt := u.OfSlsConfig; vt != nil && vt.Topic.Valid() {
+		return &vt.Topic.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetNewParamsConfigUnion) GetAccessKeyID() *string {
 	if vt := u.OfS3GcoreConfig; vt != nil {
 		return (*string)(&vt.AccessKeyID)
@@ -1117,6 +1244,8 @@ func (u LogsUploaderTargetNewParamsConfigUnion) GetEndpoint() *string {
 		return (*string)(&vt.Endpoint)
 	} else if vt := u.OfAzureBlobConfig; vt != nil && vt.Endpoint.Valid() {
 		return &vt.Endpoint.Value
+	} else if vt := u.OfSlsConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
 	}
 	return nil
 }
@@ -1132,6 +1261,8 @@ func (u LogsUploaderTargetNewParamsConfigUnion) GetRegion() *string {
 	} else if vt := u.OfS3OtherConfig; vt != nil {
 		return (*string)(&vt.Region)
 	} else if vt := u.OfS3V1Config; vt != nil {
+		return (*string)(&vt.Region)
+	} else if vt := u.OfSlsConfig; vt != nil {
 		return (*string)(&vt.Region)
 	}
 	return nil
@@ -1235,12 +1366,15 @@ func (u LogsUploaderTargetNewParamsConfigUnion) GetAuth() (res logsUploaderTarge
 		res.any = &vt.Auth
 	} else if vt := u.OfAzureBlobConfig; vt != nil {
 		res.any = &vt.Auth
+	} else if vt := u.OfSlsConfig; vt != nil {
+		res.any = &vt.Auth
 	}
 	return
 }
 
 // Can have the runtime types [*LogsUploaderTargetNewParamsConfigHTTPConfigAuth],
-// [*LogsUploaderTargetNewParamsConfigAzureBlobConfigAuth]
+// [*LogsUploaderTargetNewParamsConfigAzureBlobConfigAuth],
+// [*LogsUploaderTargetNewParamsConfigSlsConfigAuth]
 type logsUploaderTargetNewParamsConfigUnionAuth struct{ any }
 
 // Use the following switch statement to get the type of the union:
@@ -1248,6 +1382,7 @@ type logsUploaderTargetNewParamsConfigUnionAuth struct{ any }
 //	switch u.AsAny().(type) {
 //	case *cdn.LogsUploaderTargetNewParamsConfigHTTPConfigAuth:
 //	case *cdn.LogsUploaderTargetNewParamsConfigAzureBlobConfigAuth:
+//	case *cdn.LogsUploaderTargetNewParamsConfigSlsConfigAuth:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -1259,6 +1394,8 @@ func (u logsUploaderTargetNewParamsConfigUnionAuth) GetType() *string {
 	case *LogsUploaderTargetNewParamsConfigHTTPConfigAuth:
 		return (*string)(&vt.Type)
 	case *LogsUploaderTargetNewParamsConfigAzureBlobConfigAuth:
+		return (*string)(&vt.Type)
+	case *LogsUploaderTargetNewParamsConfigSlsConfigAuth:
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -1273,6 +1410,8 @@ func (u logsUploaderTargetNewParamsConfigUnionAuth) GetConfig() (res logsUploade
 		res.any = &vt.Config
 	case *LogsUploaderTargetNewParamsConfigAzureBlobConfigAuth:
 		res.any = vt.Config
+	case *LogsUploaderTargetNewParamsConfigSlsConfigAuth:
+		res.any = &vt.Config
 	}
 	return res
 }
@@ -1280,7 +1419,8 @@ func (u logsUploaderTargetNewParamsConfigUnionAuth) GetConfig() (res logsUploade
 // Can have the runtime types
 // [*LogsUploaderTargetNewParamsConfigHTTPConfigAuthConfig],
 // [*LogsUploaderTargetNewParamsConfigAzureBlobConfigAuthConfigAccountKey],
-// [*LogsUploaderTargetNewParamsConfigAzureBlobConfigAuthConfigToken]
+// [*LogsUploaderTargetNewParamsConfigAzureBlobConfigAuthConfigToken],
+// [*LogsUploaderTargetNewParamsConfigSlsConfigAuthConfig]
 type logsUploaderTargetNewParamsConfigUnionAuthConfig struct{ any }
 
 // Use the following switch statement to get the type of the union:
@@ -1289,6 +1429,7 @@ type logsUploaderTargetNewParamsConfigUnionAuthConfig struct{ any }
 //	case *cdn.LogsUploaderTargetNewParamsConfigHTTPConfigAuthConfig:
 //	case *cdn.LogsUploaderTargetNewParamsConfigAzureBlobConfigAuthConfigAccountKey:
 //	case *cdn.LogsUploaderTargetNewParamsConfigAzureBlobConfigAuthConfigToken:
+//	case *cdn.LogsUploaderTargetNewParamsConfigSlsConfigAuthConfig:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -1308,6 +1449,24 @@ func (u logsUploaderTargetNewParamsConfigUnionAuthConfig) GetAccountKey() *strin
 	switch vt := u.any.(type) {
 	case *LogsUploaderTargetNewParamsConfigAzureBlobConfigAuthConfigUnion:
 		return vt.GetAccountKey()
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u logsUploaderTargetNewParamsConfigUnionAuthConfig) GetAccessKeyID() *string {
+	switch vt := u.any.(type) {
+	case *LogsUploaderTargetNewParamsConfigSlsConfigAuthConfig:
+		return &vt.AccessKeyID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u logsUploaderTargetNewParamsConfigUnionAuthConfig) GetSecretAccessKey() *string {
+	switch vt := u.any.(type) {
+	case *LogsUploaderTargetNewParamsConfigSlsConfigAuthConfig:
+		return &vt.SecretAccessKey
 	}
 	return nil
 }
@@ -1791,6 +1950,76 @@ func (r *LogsUploaderTargetNewParamsConfigAzureBlobConfigAuthConfigToken) Unmars
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties Auth, LogStore, Project, Region are required.
+type LogsUploaderTargetNewParamsConfigSlsConfig struct {
+	Auth LogsUploaderTargetNewParamsConfigSlsConfigAuth `json:"auth,omitzero" api:"required"`
+	// SLS logstore name. 3-36 characters; lowercase letters, digits, hyphens, and
+	// underscores.
+	LogStore string `json:"log_store" api:"required"`
+	// SLS project name. 3-63 characters; lowercase letters, digits, and hyphens.
+	Project string `json:"project" api:"required"`
+	// SLS region (e.g. `eu-central-1`).
+	Region string `json:"region" api:"required"`
+	// SLS endpoint. Optional — derived from the region as `{region}.log.aliyuncs.com`
+	// when omitted.
+	Endpoint param.Opt[string] `json:"endpoint,omitzero"`
+	// Optional SLS topic (0-128 characters).
+	Topic param.Opt[string] `json:"topic,omitzero"`
+	paramObj
+}
+
+func (r LogsUploaderTargetNewParamsConfigSlsConfig) MarshalJSON() (data []byte, err error) {
+	type shadow LogsUploaderTargetNewParamsConfigSlsConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LogsUploaderTargetNewParamsConfigSlsConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Config, Type are required.
+type LogsUploaderTargetNewParamsConfigSlsConfigAuth struct {
+	// Authentication credentials.
+	Config LogsUploaderTargetNewParamsConfigSlsConfigAuthConfig `json:"config,omitzero" api:"required"`
+	// Authentication type.
+	//
+	// Any of "ak_sk".
+	Type string `json:"type,omitzero" api:"required"`
+	paramObj
+}
+
+func (r LogsUploaderTargetNewParamsConfigSlsConfigAuth) MarshalJSON() (data []byte, err error) {
+	type shadow LogsUploaderTargetNewParamsConfigSlsConfigAuth
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LogsUploaderTargetNewParamsConfigSlsConfigAuth) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[LogsUploaderTargetNewParamsConfigSlsConfigAuth](
+		"type", "ak_sk",
+	)
+}
+
+// Authentication credentials.
+//
+// The properties AccessKeyID, SecretAccessKey are required.
+type LogsUploaderTargetNewParamsConfigSlsConfigAuthConfig struct {
+	// Alibaba access key ID.
+	AccessKeyID string `json:"access_key_id" api:"required"`
+	// Alibaba secret access key.
+	SecretAccessKey string `json:"secret_access_key" api:"required"`
+	paramObj
+}
+
+func (r LogsUploaderTargetNewParamsConfigSlsConfigAuthConfig) MarshalJSON() (data []byte, err error) {
+	type shadow LogsUploaderTargetNewParamsConfigSlsConfigAuthConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LogsUploaderTargetNewParamsConfigSlsConfigAuthConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Type of storage for logs.
 type LogsUploaderTargetNewParamsStorageType string
 
@@ -1804,6 +2033,7 @@ const (
 	LogsUploaderTargetNewParamsStorageTypeSftp      LogsUploaderTargetNewParamsStorageType = "sftp"
 	LogsUploaderTargetNewParamsStorageTypeHTTP      LogsUploaderTargetNewParamsStorageType = "http"
 	LogsUploaderTargetNewParamsStorageTypeAzureBlob LogsUploaderTargetNewParamsStorageType = "azure_blob"
+	LogsUploaderTargetNewParamsStorageTypeSls       LogsUploaderTargetNewParamsStorageType = "sls"
 )
 
 type LogsUploaderTargetUpdateParams struct {
@@ -1816,7 +2046,7 @@ type LogsUploaderTargetUpdateParams struct {
 	// Type of storage for logs.
 	//
 	// Any of "s3_gcore", "s3_amazon", "s3_oss", "s3_other", "s3_v1", "ftp", "sftp",
-	// "http", "azure_blob".
+	// "http", "azure_blob", "sls".
 	StorageType LogsUploaderTargetUpdateParamsStorageType `json:"storage_type,omitzero"`
 	paramObj
 }
@@ -1842,6 +2072,7 @@ type LogsUploaderTargetUpdateParamsConfigUnion struct {
 	OfSftpConfig      *LogsUploaderTargetUpdateParamsConfigSftpConfig      `json:",omitzero,inline"`
 	OfHTTPConfig      *LogsUploaderTargetUpdateParamsConfigHTTPConfig      `json:",omitzero,inline"`
 	OfAzureBlobConfig *LogsUploaderTargetUpdateParamsConfigAzureBlobConfig `json:",omitzero,inline"`
+	OfSlsConfig       *LogsUploaderTargetUpdateParamsConfigSlsConfig       `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1854,7 +2085,8 @@ func (u LogsUploaderTargetUpdateParamsConfigUnion) MarshalJSON() ([]byte, error)
 		u.OfFtpConfig,
 		u.OfSftpConfig,
 		u.OfHTTPConfig,
-		u.OfAzureBlobConfig)
+		u.OfAzureBlobConfig,
+		u.OfSlsConfig)
 }
 func (u *LogsUploaderTargetUpdateParamsConfigUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1879,6 +2111,8 @@ func (u *LogsUploaderTargetUpdateParamsConfigUnion) asAny() any {
 		return u.OfHTTPConfig
 	} else if !param.IsOmitted(u.OfAzureBlobConfig) {
 		return u.OfAzureBlobConfig
+	} else if !param.IsOmitted(u.OfSlsConfig) {
+		return u.OfSlsConfig
 	}
 	return nil
 }
@@ -1948,6 +2182,30 @@ func (u LogsUploaderTargetUpdateParamsConfigUnion) GetContainerName() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetUpdateParamsConfigUnion) GetLogStore() *string {
+	if vt := u.OfSlsConfig; vt != nil {
+		return &vt.LogStore
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetUpdateParamsConfigUnion) GetProject() *string {
+	if vt := u.OfSlsConfig; vt != nil {
+		return &vt.Project
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetUpdateParamsConfigUnion) GetTopic() *string {
+	if vt := u.OfSlsConfig; vt != nil && vt.Topic.Valid() {
+		return &vt.Topic.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetUpdateParamsConfigUnion) GetAccessKeyID() *string {
 	if vt := u.OfS3GcoreConfig; vt != nil {
 		return (*string)(&vt.AccessKeyID)
@@ -1991,6 +2249,8 @@ func (u LogsUploaderTargetUpdateParamsConfigUnion) GetEndpoint() *string {
 		return (*string)(&vt.Endpoint)
 	} else if vt := u.OfAzureBlobConfig; vt != nil && vt.Endpoint.Valid() {
 		return &vt.Endpoint.Value
+	} else if vt := u.OfSlsConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
 	}
 	return nil
 }
@@ -2006,6 +2266,8 @@ func (u LogsUploaderTargetUpdateParamsConfigUnion) GetRegion() *string {
 	} else if vt := u.OfS3OtherConfig; vt != nil {
 		return (*string)(&vt.Region)
 	} else if vt := u.OfS3V1Config; vt != nil {
+		return (*string)(&vt.Region)
+	} else if vt := u.OfSlsConfig; vt != nil {
 		return (*string)(&vt.Region)
 	}
 	return nil
@@ -2109,13 +2371,16 @@ func (u LogsUploaderTargetUpdateParamsConfigUnion) GetAuth() (res logsUploaderTa
 		res.any = &vt.Auth
 	} else if vt := u.OfAzureBlobConfig; vt != nil {
 		res.any = &vt.Auth
+	} else if vt := u.OfSlsConfig; vt != nil {
+		res.any = &vt.Auth
 	}
 	return
 }
 
 // Can have the runtime types
 // [*LogsUploaderTargetUpdateParamsConfigHTTPConfigAuth],
-// [*LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuth]
+// [*LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuth],
+// [*LogsUploaderTargetUpdateParamsConfigSlsConfigAuth]
 type logsUploaderTargetUpdateParamsConfigUnionAuth struct{ any }
 
 // Use the following switch statement to get the type of the union:
@@ -2123,6 +2388,7 @@ type logsUploaderTargetUpdateParamsConfigUnionAuth struct{ any }
 //	switch u.AsAny().(type) {
 //	case *cdn.LogsUploaderTargetUpdateParamsConfigHTTPConfigAuth:
 //	case *cdn.LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuth:
+//	case *cdn.LogsUploaderTargetUpdateParamsConfigSlsConfigAuth:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -2134,6 +2400,8 @@ func (u logsUploaderTargetUpdateParamsConfigUnionAuth) GetType() *string {
 	case *LogsUploaderTargetUpdateParamsConfigHTTPConfigAuth:
 		return (*string)(&vt.Type)
 	case *LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuth:
+		return (*string)(&vt.Type)
+	case *LogsUploaderTargetUpdateParamsConfigSlsConfigAuth:
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -2148,6 +2416,8 @@ func (u logsUploaderTargetUpdateParamsConfigUnionAuth) GetConfig() (res logsUplo
 		res.any = &vt.Config
 	case *LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuth:
 		res.any = vt.Config
+	case *LogsUploaderTargetUpdateParamsConfigSlsConfigAuth:
+		res.any = &vt.Config
 	}
 	return res
 }
@@ -2155,7 +2425,8 @@ func (u logsUploaderTargetUpdateParamsConfigUnionAuth) GetConfig() (res logsUplo
 // Can have the runtime types
 // [*LogsUploaderTargetUpdateParamsConfigHTTPConfigAuthConfig],
 // [*LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuthConfigAccountKey],
-// [*LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuthConfigToken]
+// [*LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuthConfigToken],
+// [*LogsUploaderTargetUpdateParamsConfigSlsConfigAuthConfig]
 type logsUploaderTargetUpdateParamsConfigUnionAuthConfig struct{ any }
 
 // Use the following switch statement to get the type of the union:
@@ -2164,6 +2435,7 @@ type logsUploaderTargetUpdateParamsConfigUnionAuthConfig struct{ any }
 //	case *cdn.LogsUploaderTargetUpdateParamsConfigHTTPConfigAuthConfig:
 //	case *cdn.LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuthConfigAccountKey:
 //	case *cdn.LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuthConfigToken:
+//	case *cdn.LogsUploaderTargetUpdateParamsConfigSlsConfigAuthConfig:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -2183,6 +2455,24 @@ func (u logsUploaderTargetUpdateParamsConfigUnionAuthConfig) GetAccountKey() *st
 	switch vt := u.any.(type) {
 	case *LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuthConfigUnion:
 		return vt.GetAccountKey()
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u logsUploaderTargetUpdateParamsConfigUnionAuthConfig) GetAccessKeyID() *string {
+	switch vt := u.any.(type) {
+	case *LogsUploaderTargetUpdateParamsConfigSlsConfigAuthConfig:
+		return &vt.AccessKeyID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u logsUploaderTargetUpdateParamsConfigUnionAuthConfig) GetSecretAccessKey() *string {
+	switch vt := u.any.(type) {
+	case *LogsUploaderTargetUpdateParamsConfigSlsConfigAuthConfig:
+		return &vt.SecretAccessKey
 	}
 	return nil
 }
@@ -2666,6 +2956,76 @@ func (r *LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuthConfigToken) Unm
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties Auth, LogStore, Project, Region are required.
+type LogsUploaderTargetUpdateParamsConfigSlsConfig struct {
+	Auth LogsUploaderTargetUpdateParamsConfigSlsConfigAuth `json:"auth,omitzero" api:"required"`
+	// SLS logstore name. 3-36 characters; lowercase letters, digits, hyphens, and
+	// underscores.
+	LogStore string `json:"log_store" api:"required"`
+	// SLS project name. 3-63 characters; lowercase letters, digits, and hyphens.
+	Project string `json:"project" api:"required"`
+	// SLS region (e.g. `eu-central-1`).
+	Region string `json:"region" api:"required"`
+	// SLS endpoint. Optional — derived from the region as `{region}.log.aliyuncs.com`
+	// when omitted.
+	Endpoint param.Opt[string] `json:"endpoint,omitzero"`
+	// Optional SLS topic (0-128 characters).
+	Topic param.Opt[string] `json:"topic,omitzero"`
+	paramObj
+}
+
+func (r LogsUploaderTargetUpdateParamsConfigSlsConfig) MarshalJSON() (data []byte, err error) {
+	type shadow LogsUploaderTargetUpdateParamsConfigSlsConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LogsUploaderTargetUpdateParamsConfigSlsConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Config, Type are required.
+type LogsUploaderTargetUpdateParamsConfigSlsConfigAuth struct {
+	// Authentication credentials.
+	Config LogsUploaderTargetUpdateParamsConfigSlsConfigAuthConfig `json:"config,omitzero" api:"required"`
+	// Authentication type.
+	//
+	// Any of "ak_sk".
+	Type string `json:"type,omitzero" api:"required"`
+	paramObj
+}
+
+func (r LogsUploaderTargetUpdateParamsConfigSlsConfigAuth) MarshalJSON() (data []byte, err error) {
+	type shadow LogsUploaderTargetUpdateParamsConfigSlsConfigAuth
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LogsUploaderTargetUpdateParamsConfigSlsConfigAuth) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[LogsUploaderTargetUpdateParamsConfigSlsConfigAuth](
+		"type", "ak_sk",
+	)
+}
+
+// Authentication credentials.
+//
+// The properties AccessKeyID, SecretAccessKey are required.
+type LogsUploaderTargetUpdateParamsConfigSlsConfigAuthConfig struct {
+	// Alibaba access key ID.
+	AccessKeyID string `json:"access_key_id" api:"required"`
+	// Alibaba secret access key.
+	SecretAccessKey string `json:"secret_access_key" api:"required"`
+	paramObj
+}
+
+func (r LogsUploaderTargetUpdateParamsConfigSlsConfigAuthConfig) MarshalJSON() (data []byte, err error) {
+	type shadow LogsUploaderTargetUpdateParamsConfigSlsConfigAuthConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LogsUploaderTargetUpdateParamsConfigSlsConfigAuthConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Type of storage for logs.
 type LogsUploaderTargetUpdateParamsStorageType string
 
@@ -2679,6 +3039,7 @@ const (
 	LogsUploaderTargetUpdateParamsStorageTypeSftp      LogsUploaderTargetUpdateParamsStorageType = "sftp"
 	LogsUploaderTargetUpdateParamsStorageTypeHTTP      LogsUploaderTargetUpdateParamsStorageType = "http"
 	LogsUploaderTargetUpdateParamsStorageTypeAzureBlob LogsUploaderTargetUpdateParamsStorageType = "azure_blob"
+	LogsUploaderTargetUpdateParamsStorageTypeSls       LogsUploaderTargetUpdateParamsStorageType = "sls"
 )
 
 type LogsUploaderTargetListParams struct {
@@ -2708,7 +3069,7 @@ type LogsUploaderTargetReplaceParams struct {
 	// Type of storage for logs.
 	//
 	// Any of "s3_gcore", "s3_amazon", "s3_oss", "s3_other", "s3_v1", "ftp", "sftp",
-	// "http", "azure_blob".
+	// "http", "azure_blob", "sls".
 	StorageType LogsUploaderTargetReplaceParamsStorageType `json:"storage_type,omitzero" api:"required"`
 	// Description of the target.
 	Description param.Opt[string] `json:"description,omitzero"`
@@ -2738,6 +3099,7 @@ type LogsUploaderTargetReplaceParamsConfigUnion struct {
 	OfSftpConfig      *LogsUploaderTargetReplaceParamsConfigSftpConfig      `json:",omitzero,inline"`
 	OfHTTPConfig      *LogsUploaderTargetReplaceParamsConfigHTTPConfig      `json:",omitzero,inline"`
 	OfAzureBlobConfig *LogsUploaderTargetReplaceParamsConfigAzureBlobConfig `json:",omitzero,inline"`
+	OfSlsConfig       *LogsUploaderTargetReplaceParamsConfigSlsConfig       `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -2750,7 +3112,8 @@ func (u LogsUploaderTargetReplaceParamsConfigUnion) MarshalJSON() ([]byte, error
 		u.OfFtpConfig,
 		u.OfSftpConfig,
 		u.OfHTTPConfig,
-		u.OfAzureBlobConfig)
+		u.OfAzureBlobConfig,
+		u.OfSlsConfig)
 }
 func (u *LogsUploaderTargetReplaceParamsConfigUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -2775,6 +3138,8 @@ func (u *LogsUploaderTargetReplaceParamsConfigUnion) asAny() any {
 		return u.OfHTTPConfig
 	} else if !param.IsOmitted(u.OfAzureBlobConfig) {
 		return u.OfAzureBlobConfig
+	} else if !param.IsOmitted(u.OfSlsConfig) {
+		return u.OfSlsConfig
 	}
 	return nil
 }
@@ -2844,6 +3209,30 @@ func (u LogsUploaderTargetReplaceParamsConfigUnion) GetContainerName() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetReplaceParamsConfigUnion) GetLogStore() *string {
+	if vt := u.OfSlsConfig; vt != nil {
+		return &vt.LogStore
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetReplaceParamsConfigUnion) GetProject() *string {
+	if vt := u.OfSlsConfig; vt != nil {
+		return &vt.Project
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetReplaceParamsConfigUnion) GetTopic() *string {
+	if vt := u.OfSlsConfig; vt != nil && vt.Topic.Valid() {
+		return &vt.Topic.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetReplaceParamsConfigUnion) GetAccessKeyID() *string {
 	if vt := u.OfS3GcoreConfig; vt != nil {
 		return (*string)(&vt.AccessKeyID)
@@ -2887,6 +3276,8 @@ func (u LogsUploaderTargetReplaceParamsConfigUnion) GetEndpoint() *string {
 		return (*string)(&vt.Endpoint)
 	} else if vt := u.OfAzureBlobConfig; vt != nil && vt.Endpoint.Valid() {
 		return &vt.Endpoint.Value
+	} else if vt := u.OfSlsConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
 	}
 	return nil
 }
@@ -2902,6 +3293,8 @@ func (u LogsUploaderTargetReplaceParamsConfigUnion) GetRegion() *string {
 	} else if vt := u.OfS3OtherConfig; vt != nil {
 		return (*string)(&vt.Region)
 	} else if vt := u.OfS3V1Config; vt != nil {
+		return (*string)(&vt.Region)
+	} else if vt := u.OfSlsConfig; vt != nil {
 		return (*string)(&vt.Region)
 	}
 	return nil
@@ -3005,13 +3398,16 @@ func (u LogsUploaderTargetReplaceParamsConfigUnion) GetAuth() (res logsUploaderT
 		res.any = &vt.Auth
 	} else if vt := u.OfAzureBlobConfig; vt != nil {
 		res.any = &vt.Auth
+	} else if vt := u.OfSlsConfig; vt != nil {
+		res.any = &vt.Auth
 	}
 	return
 }
 
 // Can have the runtime types
 // [*LogsUploaderTargetReplaceParamsConfigHTTPConfigAuth],
-// [*LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuth]
+// [*LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuth],
+// [*LogsUploaderTargetReplaceParamsConfigSlsConfigAuth]
 type logsUploaderTargetReplaceParamsConfigUnionAuth struct{ any }
 
 // Use the following switch statement to get the type of the union:
@@ -3019,6 +3415,7 @@ type logsUploaderTargetReplaceParamsConfigUnionAuth struct{ any }
 //	switch u.AsAny().(type) {
 //	case *cdn.LogsUploaderTargetReplaceParamsConfigHTTPConfigAuth:
 //	case *cdn.LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuth:
+//	case *cdn.LogsUploaderTargetReplaceParamsConfigSlsConfigAuth:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -3030,6 +3427,8 @@ func (u logsUploaderTargetReplaceParamsConfigUnionAuth) GetType() *string {
 	case *LogsUploaderTargetReplaceParamsConfigHTTPConfigAuth:
 		return (*string)(&vt.Type)
 	case *LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuth:
+		return (*string)(&vt.Type)
+	case *LogsUploaderTargetReplaceParamsConfigSlsConfigAuth:
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -3044,6 +3443,8 @@ func (u logsUploaderTargetReplaceParamsConfigUnionAuth) GetConfig() (res logsUpl
 		res.any = &vt.Config
 	case *LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuth:
 		res.any = vt.Config
+	case *LogsUploaderTargetReplaceParamsConfigSlsConfigAuth:
+		res.any = &vt.Config
 	}
 	return res
 }
@@ -3051,7 +3452,8 @@ func (u logsUploaderTargetReplaceParamsConfigUnionAuth) GetConfig() (res logsUpl
 // Can have the runtime types
 // [*LogsUploaderTargetReplaceParamsConfigHTTPConfigAuthConfig],
 // [*LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuthConfigAccountKey],
-// [*LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuthConfigToken]
+// [*LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuthConfigToken],
+// [*LogsUploaderTargetReplaceParamsConfigSlsConfigAuthConfig]
 type logsUploaderTargetReplaceParamsConfigUnionAuthConfig struct{ any }
 
 // Use the following switch statement to get the type of the union:
@@ -3060,6 +3462,7 @@ type logsUploaderTargetReplaceParamsConfigUnionAuthConfig struct{ any }
 //	case *cdn.LogsUploaderTargetReplaceParamsConfigHTTPConfigAuthConfig:
 //	case *cdn.LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuthConfigAccountKey:
 //	case *cdn.LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuthConfigToken:
+//	case *cdn.LogsUploaderTargetReplaceParamsConfigSlsConfigAuthConfig:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -3079,6 +3482,24 @@ func (u logsUploaderTargetReplaceParamsConfigUnionAuthConfig) GetAccountKey() *s
 	switch vt := u.any.(type) {
 	case *LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuthConfigUnion:
 		return vt.GetAccountKey()
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u logsUploaderTargetReplaceParamsConfigUnionAuthConfig) GetAccessKeyID() *string {
+	switch vt := u.any.(type) {
+	case *LogsUploaderTargetReplaceParamsConfigSlsConfigAuthConfig:
+		return &vt.AccessKeyID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u logsUploaderTargetReplaceParamsConfigUnionAuthConfig) GetSecretAccessKey() *string {
+	switch vt := u.any.(type) {
+	case *LogsUploaderTargetReplaceParamsConfigSlsConfigAuthConfig:
+		return &vt.SecretAccessKey
 	}
 	return nil
 }
@@ -3562,6 +3983,76 @@ func (r *LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuthConfigToken) Un
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties Auth, LogStore, Project, Region are required.
+type LogsUploaderTargetReplaceParamsConfigSlsConfig struct {
+	Auth LogsUploaderTargetReplaceParamsConfigSlsConfigAuth `json:"auth,omitzero" api:"required"`
+	// SLS logstore name. 3-36 characters; lowercase letters, digits, hyphens, and
+	// underscores.
+	LogStore string `json:"log_store" api:"required"`
+	// SLS project name. 3-63 characters; lowercase letters, digits, and hyphens.
+	Project string `json:"project" api:"required"`
+	// SLS region (e.g. `eu-central-1`).
+	Region string `json:"region" api:"required"`
+	// SLS endpoint. Optional — derived from the region as `{region}.log.aliyuncs.com`
+	// when omitted.
+	Endpoint param.Opt[string] `json:"endpoint,omitzero"`
+	// Optional SLS topic (0-128 characters).
+	Topic param.Opt[string] `json:"topic,omitzero"`
+	paramObj
+}
+
+func (r LogsUploaderTargetReplaceParamsConfigSlsConfig) MarshalJSON() (data []byte, err error) {
+	type shadow LogsUploaderTargetReplaceParamsConfigSlsConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LogsUploaderTargetReplaceParamsConfigSlsConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Config, Type are required.
+type LogsUploaderTargetReplaceParamsConfigSlsConfigAuth struct {
+	// Authentication credentials.
+	Config LogsUploaderTargetReplaceParamsConfigSlsConfigAuthConfig `json:"config,omitzero" api:"required"`
+	// Authentication type.
+	//
+	// Any of "ak_sk".
+	Type string `json:"type,omitzero" api:"required"`
+	paramObj
+}
+
+func (r LogsUploaderTargetReplaceParamsConfigSlsConfigAuth) MarshalJSON() (data []byte, err error) {
+	type shadow LogsUploaderTargetReplaceParamsConfigSlsConfigAuth
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LogsUploaderTargetReplaceParamsConfigSlsConfigAuth) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[LogsUploaderTargetReplaceParamsConfigSlsConfigAuth](
+		"type", "ak_sk",
+	)
+}
+
+// Authentication credentials.
+//
+// The properties AccessKeyID, SecretAccessKey are required.
+type LogsUploaderTargetReplaceParamsConfigSlsConfigAuthConfig struct {
+	// Alibaba access key ID.
+	AccessKeyID string `json:"access_key_id" api:"required"`
+	// Alibaba secret access key.
+	SecretAccessKey string `json:"secret_access_key" api:"required"`
+	paramObj
+}
+
+func (r LogsUploaderTargetReplaceParamsConfigSlsConfigAuthConfig) MarshalJSON() (data []byte, err error) {
+	type shadow LogsUploaderTargetReplaceParamsConfigSlsConfigAuthConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LogsUploaderTargetReplaceParamsConfigSlsConfigAuthConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Type of storage for logs.
 type LogsUploaderTargetReplaceParamsStorageType string
 
@@ -3575,4 +4066,5 @@ const (
 	LogsUploaderTargetReplaceParamsStorageTypeSftp      LogsUploaderTargetReplaceParamsStorageType = "sftp"
 	LogsUploaderTargetReplaceParamsStorageTypeHTTP      LogsUploaderTargetReplaceParamsStorageType = "http"
 	LogsUploaderTargetReplaceParamsStorageTypeAzureBlob LogsUploaderTargetReplaceParamsStorageType = "azure_blob"
+	LogsUploaderTargetReplaceParamsStorageTypeSls       LogsUploaderTargetReplaceParamsStorageType = "sls"
 )

@@ -89,6 +89,13 @@ func TestRuleTemplateNewWithOptionalParams(t *testing.T) {
 					ExecuteOnShield:  gcore.Bool(false),
 					InterruptOnError: gcore.Bool(true),
 				},
+				OnRequestHeadersAfterCache: cdn.RuleTemplateNewParamsOptionsFastedgeOnRequestHeadersAfterCache{
+					AppID:            "1001",
+					Enabled:          gcore.Bool(true),
+					ExecuteOnEdge:    gcore.Bool(true),
+					ExecuteOnShield:  gcore.Bool(false),
+					InterruptOnError: gcore.Bool(true),
+				},
 				OnResponseBody: cdn.RuleTemplateNewParamsOptionsFastedgeOnResponseBody{
 					AppID:            "1001",
 					Enabled:          gcore.Bool(true),
@@ -357,6 +364,13 @@ func TestRuleTemplateUpdateWithOptionalParams(t *testing.T) {
 						InterruptOnError: gcore.Bool(true),
 					},
 					OnRequestHeaders: cdn.RuleTemplateUpdateParamsOptionsFastedgeOnRequestHeaders{
+						AppID:            "1001",
+						Enabled:          gcore.Bool(true),
+						ExecuteOnEdge:    gcore.Bool(true),
+						ExecuteOnShield:  gcore.Bool(false),
+						InterruptOnError: gcore.Bool(true),
+					},
+					OnRequestHeadersAfterCache: cdn.RuleTemplateUpdateParamsOptionsFastedgeOnRequestHeadersAfterCache{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
 						ExecuteOnEdge:    gcore.Bool(true),
@@ -705,6 +719,13 @@ func TestRuleTemplateReplaceWithOptionalParams(t *testing.T) {
 						InterruptOnError: gcore.Bool(true),
 					},
 					OnRequestHeaders: cdn.RuleTemplateReplaceParamsOptionsFastedgeOnRequestHeaders{
+						AppID:            "1001",
+						Enabled:          gcore.Bool(true),
+						ExecuteOnEdge:    gcore.Bool(true),
+						ExecuteOnShield:  gcore.Bool(false),
+						InterruptOnError: gcore.Bool(true),
+					},
+					OnRequestHeadersAfterCache: cdn.RuleTemplateReplaceParamsOptionsFastedgeOnRequestHeadersAfterCache{
 						AppID:            "1001",
 						Enabled:          gcore.Bool(true),
 						ExecuteOnEdge:    gcore.Bool(true),
