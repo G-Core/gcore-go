@@ -49,6 +49,41 @@ func (r *AnalyticsService) GetEventStatistics(ctx context.Context, dimension Ana
 	return res, err
 }
 
+// Retrieves autocomplete suggestions for specified filter parameter values
+// observed within the current client account during the requested time range. Use
+// the returned `value` in the filter parameters of an analytics data request
+// ([GET /v1/analytics/requests](/docs/api-reference/waap/analytics/get-request-log-data)
+// and
+// [GET /v1/analytics/traffic-filtered](/docs/api-reference/waap/analytics/get-filtered-traffic-data)).
+// `count` reports how many times the value was observed in the requested range.
+func (r *AnalyticsService) GetFilters(ctx context.Context, type_ AnalyticsGetFiltersParamsType, query AnalyticsGetFiltersParams, opts ...option.RequestOption) (res *pagination.OffsetPage[AnalyticsGetFiltersResponse], err error) {
+	var raw *http.Response
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := fmt.Sprintf("waap/v1/analytics/filters/%v", type_)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieves autocomplete suggestions for specified filter parameter values
+// observed within the current client account during the requested time range. Use
+// the returned `value` in the filter parameters of an analytics data request
+// ([GET /v1/analytics/requests](/docs/api-reference/waap/analytics/get-request-log-data)
+// and
+// [GET /v1/analytics/traffic-filtered](/docs/api-reference/waap/analytics/get-filtered-traffic-data)).
+// `count` reports how many times the value was observed in the requested range.
+func (r *AnalyticsService) GetFiltersAutoPaging(ctx context.Context, type_ AnalyticsGetFiltersParamsType, query AnalyticsGetFiltersParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[AnalyticsGetFiltersResponse] {
+	return pagination.NewOffsetPageAutoPager(r.GetFilters(ctx, type_, query, opts...))
+}
+
 // Retrieve request log data over account's domains. The log records every request
 // passing through WAAP towards the origin server.
 func (r *AnalyticsService) GetRequests(ctx context.Context, query AnalyticsGetRequestsParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapRequestSummary], err error) {
@@ -233,6 +268,27 @@ func (r *WaapSimpleEventStatisticsReferenceDomainReference) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A supported analytics filter value with its observed occurrence count.
+type AnalyticsGetFiltersResponse struct {
+	// Number of times this value was observed in the requested range.
+	Count int64 `json:"count" api:"required"`
+	// Value to use in an analytics query for the required filter parameter.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AnalyticsGetFiltersResponse) RawJSON() string { return r.JSON.raw }
+func (r *AnalyticsGetFiltersResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AnalyticsGetEventStatisticsParams struct {
 	// Filter data items starting from a specified date in ISO 8601 format
 	Start string `query:"start" api:"required" json:"-"`
@@ -270,29 +326,66 @@ const (
 	AnalyticsGetEventStatisticsParamsDimensionTarget    AnalyticsGetEventStatisticsParamsDimension = "target"
 )
 
+type AnalyticsGetFiltersParams struct {
+	// Filter data items starting from a specified date in ISO 8601 format
+	Start string `query:"start" api:"required" json:"-"`
+	// Filter data items up to a specified end date in ISO 8601 format. If not
+	// provided, defaults to the current date and time.
+	End param.Opt[string] `query:"end,omitzero" json:"-"`
+	// Case-insensitive partial autocomplete pattern matched against the value name by
+	// the value provider. Empty or omitted returns the available suggestions for the
+	// current account and time range.
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
+	// Number of items to return
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of items to skip
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// List of domain IDs. Empty list means all domains belonging to the current
+	// account.
+	Domains []int64 `query:"domains,omitzero" json:"-"`
+	// Suggestion ordering. `count` sorts by observed occurrence count descending (most
+	// frequent first) with value as a tie breaker; `value` sorts alphabetically by
+	// value ascending with count as a tie breaker.
+	//
+	// Any of "count", "value".
+	Ordering AnalyticsGetFiltersParamsOrdering `query:"ordering,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AnalyticsGetFiltersParams]'s query parameters as
+// `url.Values`.
+func (r AnalyticsGetFiltersParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Parsed user-agent field type.
+type AnalyticsGetFiltersParamsType string
+
+const (
+	AnalyticsGetFiltersParamsTypeUserAgentClients AnalyticsGetFiltersParamsType = "user-agent-clients"
+	AnalyticsGetFiltersParamsTypeUserAgentDevices AnalyticsGetFiltersParamsType = "user-agent-devices"
+	AnalyticsGetFiltersParamsTypeOrganizations    AnalyticsGetFiltersParamsType = "organizations"
+)
+
+// Suggestion ordering. `count` sorts by observed occurrence count descending (most
+// frequent first) with value as a tie breaker; `value` sorts alphabetically by
+// value ascending with count as a tie breaker.
+type AnalyticsGetFiltersParamsOrdering string
+
+const (
+	AnalyticsGetFiltersParamsOrderingCount AnalyticsGetFiltersParamsOrdering = "count"
+	AnalyticsGetFiltersParamsOrderingValue AnalyticsGetFiltersParamsOrdering = "value"
+)
+
 type AnalyticsGetRequestsParams struct {
 	// Filter data items starting from a specified date in ISO 8601 format
 	Start string `query:"start" api:"required" json:"-"`
 	// Filter data items up to a specified end date in ISO 8601 format. If not
 	// provided, defaults to the current date and time.
 	End param.Opt[string] `query:"end,omitzero" json:"-"`
-	// Exclude entries whose JA3 TLS client fingerprint equals the supplied value. Must
-	// be exactly 32 hexadecimal characters (mixed case allowed) and is case-folded to
-	// lowercase when the backend filter is built. Omit the parameter to apply no JA3
-	// exclusion.
-	ExcludeJa3 param.Opt[string] `query:"exclude_ja3,omitzero" json:"-"`
-	// Exclude entries whose user agent contains the supplied text, case-insensitive
-	// partial match. Omit the parameter to apply no user agent text exclusion.
-	ExcludeUserAgent param.Opt[string] `query:"exclude_user_agent,omitzero" json:"-"`
-	// Filter by JA3 TLS client fingerprint. When present, the value must be exactly 32
-	// hexadecimal characters (mixed case allowed) and is case-folded to lowercase when
-	// the backend filter is built. Omit the parameter entirely to apply no JA3 filter.
-	Ja3 param.Opt[string] `query:"ja3,omitzero" json:"-"`
-	// Filter by URL path with a glob-like pattern.
-	Path param.Opt[string] `query:"path,omitzero" json:"-"`
-	// Include entries whose user agent contains the supplied text, case-insensitive
-	// partial match. Omit the parameter to apply no user agent text filter.
-	UserAgent param.Opt[string] `query:"user_agent,omitzero" json:"-"`
 	// Number of items to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Number of items to skip
@@ -312,22 +405,56 @@ type AnalyticsGetRequestsParams struct {
 	// Exclude data by a country code of the originating IP address in ISO 3166-1
 	// alpha-2 format.
 	ExcludeCountries []string `query:"exclude_countries,omitzero" json:"-"`
+	// Exclude entries that match any of the given decisions.
+	//
+	// Any of "blocked", "monitored", "allowed", "passed".
+	ExcludeDecision []string `query:"exclude_decision,omitzero" json:"-"`
 	// Exclude data by domain ID.
 	ExcludeDomains []int64 `query:"exclude_domains,omitzero" json:"-"`
+	// Exclude entries with any of the given HTTP methods.
+	//
+	// Any of "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE".
+	ExcludeHTTPMethods []string `query:"exclude_http_methods,omitzero" json:"-"`
 	// Exclude traffic data by client IP.
 	ExcludeIPs []string `query:"exclude_ips,omitzero" format:"ipvanyaddress" json:"-"`
+	// Exclude entries whose JA3 TLS client fingerprint matches any of the supplied
+	// values. Each value must be exactly 32 hexadecimal characters (mixed case
+	// allowed) and is case-folded to lowercase when the backend filter is built.
+	// Supply multiple values to exclude any of them. Omit the parameter to apply no
+	// JA3 exclusion.
+	ExcludeJa3 []string `query:"exclude_ja3,omitzero" json:"-"`
+	// Exclude entries whose JA4 TLS client fingerprint equals any of the supplied
+	// values. An item must match the JA4 form `<ja4_a>_<ja4_b>_<ja4_c>` (a
+	// 10-character prefix and two 12-character hexadecimal hashes, mixed case allowed)
+	// and is case-folded to lowercase when the backend filter is built. Omit the
+	// parameter to apply no JA4 exclusion.
+	ExcludeJa4 []string `query:"exclude_ja4,omitzero" json:"-"`
+	// Exclude entries that match any of the given optional action values.
+	//
+	// Any of "captcha", "challenge".
+	ExcludeOptionalAction []string `query:"exclude_optional_action,omitzero" json:"-"`
 	// Exclude entries whose organization exactly equals any supplied value. Omit or
 	// provide an empty list to apply no organization exclusion.
 	ExcludeOrganizations []string `query:"exclude_organizations,omitzero" json:"-"`
+	// Exclude entries that match the given URL path pattern; '\*' is wildcard.
+	ExcludePath []string `query:"exclude_path,omitzero" json:"-"`
 	// Exclude data by reference IDs.
 	ExcludeReferenceIDs []string `query:"exclude_reference_ids,omitzero" json:"-"`
+	// Exclude data by request IDs.
+	ExcludeRequestIDs []string `query:"exclude_request_ids,omitzero" json:"-"`
 	// Exclude data by name of a security rule matched the request.
 	ExcludeSecurityRuleNames []string `query:"exclude_security_rule_names,omitzero" json:"-"`
 	// Exclude data by session IDs.
 	ExcludeSessionIDs []string `query:"exclude_session_ids,omitzero" json:"-"`
+	// Exclude entries with any of the given HTTP response status codes.
+	ExcludeStatusCodes []int64 `query:"exclude_status_codes,omitzero" json:"-"`
 	// Exclude entries whose tag exactly equals any supplied value. Omit or provide an
 	// empty list to apply no tag exclusion.
 	ExcludeTags []string `query:"exclude_tags,omitzero" json:"-"`
+	// Exclude entries whose user agent contains any of the supplied texts,
+	// case-insensitive partial match. Omit or provide an empty list to apply no user
+	// agent text exclusion.
+	ExcludeUserAgent []string `query:"exclude_user_agent,omitzero" json:"-"`
 	// Exclude entries whose parsed user agent client exactly equals any supplied
 	// value. Omit or provide an empty list to apply no user agent client exclusion.
 	ExcludeUserAgentClients []string `query:"exclude_user_agent_clients,omitzero" json:"-"`
@@ -340,6 +467,17 @@ type AnalyticsGetRequestsParams struct {
 	HTTPMethods []string `query:"http_methods,omitzero" json:"-"`
 	// Filter traffic data by client IP.
 	IPs []string `query:"ips,omitzero" format:"ipvanyaddress" json:"-"`
+	// Filter by JA3 TLS client fingerprint. Each value must be exactly 32 hexadecimal
+	// characters (mixed case allowed) and is case-folded to lowercase when the backend
+	// filter is built. Supply multiple values to match any of them. Omit the parameter
+	// to apply no JA3 filter.
+	Ja3 []string `query:"ja3,omitzero" json:"-"`
+	// Filter by JA4 TLS client fingerprint. When present, the value must match the JA4
+	// form `<ja4_a>_<ja4_b>_<ja4_c>` (a 10-character prefix and two 12-character
+	// hexadecimal hashes, mixed case allowed) and is case-folded to lowercase when the
+	// backend filter is built. Supply multiple values to match any of them. Omit the
+	// parameter entirely to apply no JA4 filter.
+	Ja4 []string `query:"ja4,omitzero" json:"-"`
 	// Filter data by optional action.
 	//
 	// Any of "captcha", "challenge".
@@ -347,6 +485,8 @@ type AnalyticsGetRequestsParams struct {
 	// Include entries whose organization exactly equals any supplied value. Omit or
 	// provide an empty list to apply no organization filter.
 	Organizations []string `query:"organizations,omitzero" json:"-"`
+	// Filter by URL path. '\*' is wildcard.
+	Path []string `query:"path,omitzero" json:"-"`
 	// Filter data by reference IDs.
 	ReferenceIDs []string `query:"reference_ids,omitzero" json:"-"`
 	// Filter data by request IDs.
@@ -360,6 +500,10 @@ type AnalyticsGetRequestsParams struct {
 	// Include entries whose tag exactly equals any supplied value. Omit or provide an
 	// empty list to apply no tag filter.
 	Tags []string `query:"tags,omitzero" json:"-"`
+	// Include entries whose user agent contains any of the supplied texts,
+	// case-insensitive partial match. Omit or provide an empty list to apply no user
+	// agent text filter.
+	UserAgent []string `query:"user_agent,omitzero" json:"-"`
 	// Include entries whose parsed user agent client exactly equals any supplied
 	// value. Omit or provide an empty list to apply no user agent client filter.
 	UserAgentClients []string `query:"user_agent_clients,omitzero" json:"-"`
@@ -427,23 +571,6 @@ type AnalyticsGetTrafficFilteredParams struct {
 	// Filter data items up to a specified end date in ISO 8601 format. If not
 	// provided, defaults to the current date and time.
 	End param.Opt[string] `query:"end,omitzero" json:"-"`
-	// Exclude entries whose JA3 TLS client fingerprint equals the supplied value. Must
-	// be exactly 32 hexadecimal characters (mixed case allowed) and is case-folded to
-	// lowercase when the backend filter is built. Omit the parameter to apply no JA3
-	// exclusion.
-	ExcludeJa3 param.Opt[string] `query:"exclude_ja3,omitzero" json:"-"`
-	// Exclude entries whose user agent contains the supplied text, case-insensitive
-	// partial match. Omit the parameter to apply no user agent text exclusion.
-	ExcludeUserAgent param.Opt[string] `query:"exclude_user_agent,omitzero" json:"-"`
-	// Filter by JA3 TLS client fingerprint. When present, the value must be exactly 32
-	// hexadecimal characters (mixed case allowed) and is case-folded to lowercase when
-	// the backend filter is built. Omit the parameter entirely to apply no JA3 filter.
-	Ja3 param.Opt[string] `query:"ja3,omitzero" json:"-"`
-	// Filter by URL path with a glob-like pattern.
-	Path param.Opt[string] `query:"path,omitzero" json:"-"`
-	// Include entries whose user agent contains the supplied text, case-insensitive
-	// partial match. Omit the parameter to apply no user agent text filter.
-	UserAgent param.Opt[string] `query:"user_agent,omitzero" json:"-"`
 	// Optional explicit aggregation bucket width in seconds. When supplied,
 	// `bucket_size` supersedes `resolution` for aggregation granularity.
 	//
@@ -462,22 +589,56 @@ type AnalyticsGetTrafficFilteredParams struct {
 	// Exclude data by a country code of the originating IP address in ISO 3166-1
 	// alpha-2 format.
 	ExcludeCountries []string `query:"exclude_countries,omitzero" json:"-"`
+	// Exclude entries that match any of the given decisions.
+	//
+	// Any of "blocked", "monitored", "allowed", "passed".
+	ExcludeDecision []string `query:"exclude_decision,omitzero" json:"-"`
 	// Exclude data by domain ID.
 	ExcludeDomains []int64 `query:"exclude_domains,omitzero" json:"-"`
+	// Exclude entries with any of the given HTTP methods.
+	//
+	// Any of "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE".
+	ExcludeHTTPMethods []string `query:"exclude_http_methods,omitzero" json:"-"`
 	// Exclude traffic data by client IP.
 	ExcludeIPs []string `query:"exclude_ips,omitzero" format:"ipvanyaddress" json:"-"`
+	// Exclude entries whose JA3 TLS client fingerprint matches any of the supplied
+	// values. Each value must be exactly 32 hexadecimal characters (mixed case
+	// allowed) and is case-folded to lowercase when the backend filter is built.
+	// Supply multiple values to exclude any of them. Omit the parameter to apply no
+	// JA3 exclusion.
+	ExcludeJa3 []string `query:"exclude_ja3,omitzero" json:"-"`
+	// Exclude entries whose JA4 TLS client fingerprint equals any of the supplied
+	// values. An item must match the JA4 form `<ja4_a>_<ja4_b>_<ja4_c>` (a
+	// 10-character prefix and two 12-character hexadecimal hashes, mixed case allowed)
+	// and is case-folded to lowercase when the backend filter is built. Omit the
+	// parameter to apply no JA4 exclusion.
+	ExcludeJa4 []string `query:"exclude_ja4,omitzero" json:"-"`
+	// Exclude entries that match any of the given optional action values.
+	//
+	// Any of "captcha", "challenge".
+	ExcludeOptionalAction []string `query:"exclude_optional_action,omitzero" json:"-"`
 	// Exclude entries whose organization exactly equals any supplied value. Omit or
 	// provide an empty list to apply no organization exclusion.
 	ExcludeOrganizations []string `query:"exclude_organizations,omitzero" json:"-"`
+	// Exclude entries that match the given URL path pattern; '\*' is wildcard.
+	ExcludePath []string `query:"exclude_path,omitzero" json:"-"`
 	// Exclude data by reference IDs.
 	ExcludeReferenceIDs []string `query:"exclude_reference_ids,omitzero" json:"-"`
+	// Exclude data by request IDs.
+	ExcludeRequestIDs []string `query:"exclude_request_ids,omitzero" json:"-"`
 	// Exclude data by name of a security rule matched the request.
 	ExcludeSecurityRuleNames []string `query:"exclude_security_rule_names,omitzero" json:"-"`
 	// Exclude data by session IDs.
 	ExcludeSessionIDs []string `query:"exclude_session_ids,omitzero" json:"-"`
+	// Exclude entries with any of the given HTTP response status codes.
+	ExcludeStatusCodes []int64 `query:"exclude_status_codes,omitzero" json:"-"`
 	// Exclude entries whose tag exactly equals any supplied value. Omit or provide an
 	// empty list to apply no tag exclusion.
 	ExcludeTags []string `query:"exclude_tags,omitzero" json:"-"`
+	// Exclude entries whose user agent contains any of the supplied texts,
+	// case-insensitive partial match. Omit or provide an empty list to apply no user
+	// agent text exclusion.
+	ExcludeUserAgent []string `query:"exclude_user_agent,omitzero" json:"-"`
 	// Exclude entries whose parsed user agent client exactly equals any supplied
 	// value. Omit or provide an empty list to apply no user agent client exclusion.
 	ExcludeUserAgentClients []string `query:"exclude_user_agent_clients,omitzero" json:"-"`
@@ -490,6 +651,17 @@ type AnalyticsGetTrafficFilteredParams struct {
 	HTTPMethods []string `query:"http_methods,omitzero" json:"-"`
 	// Filter traffic data by client IP.
 	IPs []string `query:"ips,omitzero" format:"ipvanyaddress" json:"-"`
+	// Filter by JA3 TLS client fingerprint. Each value must be exactly 32 hexadecimal
+	// characters (mixed case allowed) and is case-folded to lowercase when the backend
+	// filter is built. Supply multiple values to match any of them. Omit the parameter
+	// to apply no JA3 filter.
+	Ja3 []string `query:"ja3,omitzero" json:"-"`
+	// Filter by JA4 TLS client fingerprint. When present, the value must match the JA4
+	// form `<ja4_a>_<ja4_b>_<ja4_c>` (a 10-character prefix and two 12-character
+	// hexadecimal hashes, mixed case allowed) and is case-folded to lowercase when the
+	// backend filter is built. Supply multiple values to match any of them. Omit the
+	// parameter entirely to apply no JA4 filter.
+	Ja4 []string `query:"ja4,omitzero" json:"-"`
 	// Filter data by optional action.
 	//
 	// Any of "captcha", "challenge".
@@ -497,6 +669,8 @@ type AnalyticsGetTrafficFilteredParams struct {
 	// Include entries whose organization exactly equals any supplied value. Omit or
 	// provide an empty list to apply no organization filter.
 	Organizations []string `query:"organizations,omitzero" json:"-"`
+	// Filter by URL path. '\*' is wildcard.
+	Path []string `query:"path,omitzero" json:"-"`
 	// Filter data by reference IDs.
 	ReferenceIDs []string `query:"reference_ids,omitzero" json:"-"`
 	// Filter data by request IDs.
@@ -510,6 +684,10 @@ type AnalyticsGetTrafficFilteredParams struct {
 	// Include entries whose tag exactly equals any supplied value. Omit or provide an
 	// empty list to apply no tag filter.
 	Tags []string `query:"tags,omitzero" json:"-"`
+	// Include entries whose user agent contains any of the supplied texts,
+	// case-insensitive partial match. Omit or provide an empty list to apply no user
+	// agent text filter.
+	UserAgent []string `query:"user_agent,omitzero" json:"-"`
 	// Include entries whose parsed user agent client exactly equals any supplied
 	// value. Omit or provide an empty list to apply no user agent client filter.
 	UserAgentClients []string `query:"user_agent_clients,omitzero" json:"-"`

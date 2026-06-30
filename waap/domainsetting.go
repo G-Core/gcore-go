@@ -72,8 +72,11 @@ type DomainSettingUpdateParamsAPI struct {
 	// treated as API requests. If this is set to true then the `api_urls` field is
 	// ignored.
 	IsAPI param.Opt[bool] `json:"is_api,omitzero"`
-	// The API URLs for a domain. If your domain has a common base URL for all API
-	// paths, it can be set here
+	// The API base paths for a domain. If your domain has a common base path for all
+	// API endpoints, it can be set here. When set or updated, each entry must contain
+	// at least one letter or digit; a value that would match the whole domain (such as
+	// "/") is rejected - to treat the entire domain as an API domain, use the `is_api`
+	// field instead.
 	APIURLs []string `json:"api_urls,omitzero"`
 	paramObj
 }

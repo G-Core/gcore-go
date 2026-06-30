@@ -87,6 +87,14 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 					UpperBound: "upper_bound",
 					Negation:   gcore.Bool(true),
 				},
+				Ja3: waap.DomainCustomRuleNewParamsConditionJa3{
+					Ja3Fingerprints: []string{"e7d705a3286e19ea42f587b344ee6865"},
+					Negation:        gcore.Bool(true),
+				},
+				Ja4: waap.DomainCustomRuleNewParamsConditionJa4{
+					Ja4Fingerprints: []string{"t13d3113h2_e8f1e7e78f70_ce5650b735ce"},
+					Negation:        gcore.Bool(true),
+				},
 				Organization: waap.DomainCustomRuleNewParamsConditionOrganization{
 					Organization: "UptimeRobot s.r.o",
 					Negation:     gcore.Bool(true),
@@ -223,6 +231,14 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 					LowerBound: "lower_bound",
 					UpperBound: "upper_bound",
 					Negation:   gcore.Bool(true),
+				},
+				Ja3: waap.DomainCustomRuleUpdateParamsConditionJa3{
+					Ja3Fingerprints: []string{"e7d705a3286e19ea42f587b344ee6865"},
+					Negation:        gcore.Bool(true),
+				},
+				Ja4: waap.DomainCustomRuleUpdateParamsConditionJa4{
+					Ja4Fingerprints: []string{"t13d3113h2_e8f1e7e78f70_ce5650b735ce"},
+					Negation:        gcore.Bool(true),
 				},
 				Organization: waap.DomainCustomRuleUpdateParamsConditionOrganization{
 					Organization: "UptimeRobot s.r.o",

@@ -248,6 +248,10 @@ type WaapCustomRuleCondition struct {
 	IP WaapCustomRuleConditionIP `json:"ip"`
 	// Match the incoming request against an IP range
 	IPRange WaapCustomRuleConditionIPRange `json:"ip_range"`
+	// Match the JA3 TLS client fingerprint of the request
+	Ja3 WaapCustomRuleConditionJa3 `json:"ja3"`
+	// Match the JA4 TLS client fingerprint of the request
+	Ja4 WaapCustomRuleConditionJa4 `json:"ja4"`
 	// Match the organization the request originated from, as determined by a WHOIS
 	// lookup of the requesting IP
 	Organization WaapCustomRuleConditionOrganization `json:"organization"`
@@ -280,6 +284,8 @@ type WaapCustomRuleCondition struct {
 		HTTPMethod           respjson.Field
 		IP                   respjson.Field
 		IPRange              respjson.Field
+		Ja3                  respjson.Field
+		Ja4                  respjson.Field
 		Organization         respjson.Field
 		OwnerTypes           respjson.Field
 		RequestRate          respjson.Field
@@ -481,6 +487,48 @@ type WaapCustomRuleConditionIPRange struct {
 // Returns the unmodified JSON received from the API
 func (r WaapCustomRuleConditionIPRange) RawJSON() string { return r.JSON.raw }
 func (r *WaapCustomRuleConditionIPRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the JA3 TLS client fingerprint of the request
+type WaapCustomRuleConditionJa3 struct {
+	// A list of JA3 TLS client fingerprints to match against the request
+	Ja3Fingerprints []string `json:"ja3_fingerprints" api:"required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Ja3Fingerprints respjson.Field
+		Negation        respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionJa3) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionJa3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the JA4 TLS client fingerprint of the request
+type WaapCustomRuleConditionJa4 struct {
+	// A list of JA4 TLS client fingerprints to match against the request
+	Ja4Fingerprints []string `json:"ja4_fingerprints" api:"required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Ja4Fingerprints respjson.Field
+		Negation        respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionJa4) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionJa4) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -858,6 +906,10 @@ type DomainCustomRuleNewParamsCondition struct {
 	IP DomainCustomRuleNewParamsConditionIP `json:"ip,omitzero"`
 	// Match the incoming request against an IP range
 	IPRange DomainCustomRuleNewParamsConditionIPRange `json:"ip_range,omitzero"`
+	// Match the JA3 TLS client fingerprint of the request
+	Ja3 DomainCustomRuleNewParamsConditionJa3 `json:"ja3,omitzero"`
+	// Match the JA4 TLS client fingerprint of the request
+	Ja4 DomainCustomRuleNewParamsConditionJa4 `json:"ja4,omitzero"`
 	// Match the organization the request originated from, as determined by a WHOIS
 	// lookup of the requesting IP
 	Organization DomainCustomRuleNewParamsConditionOrganization `json:"organization,omitzero"`
@@ -1064,6 +1116,44 @@ func (r DomainCustomRuleNewParamsConditionIPRange) MarshalJSON() (data []byte, e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *DomainCustomRuleNewParamsConditionIPRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the JA3 TLS client fingerprint of the request
+//
+// The property Ja3Fingerprints is required.
+type DomainCustomRuleNewParamsConditionJa3 struct {
+	// A list of JA3 TLS client fingerprints to match against the request
+	Ja3Fingerprints []string `json:"ja3_fingerprints,omitzero" api:"required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionJa3) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionJa3
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionJa3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the JA4 TLS client fingerprint of the request
+//
+// The property Ja4Fingerprints is required.
+type DomainCustomRuleNewParamsConditionJa4 struct {
+	// A list of JA4 TLS client fingerprints to match against the request
+	Ja4Fingerprints []string `json:"ja4_fingerprints,omitzero" api:"required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionJa4) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionJa4
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionJa4) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1429,6 +1519,10 @@ type DomainCustomRuleUpdateParamsCondition struct {
 	IP DomainCustomRuleUpdateParamsConditionIP `json:"ip,omitzero"`
 	// Match the incoming request against an IP range
 	IPRange DomainCustomRuleUpdateParamsConditionIPRange `json:"ip_range,omitzero"`
+	// Match the JA3 TLS client fingerprint of the request
+	Ja3 DomainCustomRuleUpdateParamsConditionJa3 `json:"ja3,omitzero"`
+	// Match the JA4 TLS client fingerprint of the request
+	Ja4 DomainCustomRuleUpdateParamsConditionJa4 `json:"ja4,omitzero"`
 	// Match the organization the request originated from, as determined by a WHOIS
 	// lookup of the requesting IP
 	Organization DomainCustomRuleUpdateParamsConditionOrganization `json:"organization,omitzero"`
@@ -1635,6 +1729,44 @@ func (r DomainCustomRuleUpdateParamsConditionIPRange) MarshalJSON() (data []byte
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *DomainCustomRuleUpdateParamsConditionIPRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the JA3 TLS client fingerprint of the request
+//
+// The property Ja3Fingerprints is required.
+type DomainCustomRuleUpdateParamsConditionJa3 struct {
+	// A list of JA3 TLS client fingerprints to match against the request
+	Ja3Fingerprints []string `json:"ja3_fingerprints,omitzero" api:"required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionJa3) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionJa3
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionJa3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the JA4 TLS client fingerprint of the request
+//
+// The property Ja4Fingerprints is required.
+type DomainCustomRuleUpdateParamsConditionJa4 struct {
+	// A list of JA4 TLS client fingerprints to match against the request
+	Ja4Fingerprints []string `json:"ja4_fingerprints,omitzero" api:"required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionJa4) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionJa4
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionJa4) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

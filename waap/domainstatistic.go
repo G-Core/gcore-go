@@ -593,9 +593,15 @@ type WaapRequestDetails struct {
 	//
 	// Any of "passed", "allowed", "monitored", "blocked", "".
 	Decision WaapRequestDetailsDecision `json:"decision"`
+	// Rules that matched the request and triggered the event decision.
+	Detector []WaapRequestDetailsDetector `json:"detector"`
 	// JA3 TLS client fingerprint as a 32-character lowercase hexadecimal MD5 hash, or
 	// an empty string when the record has no JA3 value.
 	Ja3 string `json:"ja3"`
+	// JA4 TLS client fingerprint in the form `<ja4_a>_<ja4_b>_<ja4_c>` (a 10-character
+	// prefix and two 12-character lowercase hexadecimal hashes), or an empty string
+	// when the record has no JA4 value.
+	Ja4 string `json:"ja4"`
 	// An optional action that may be applied in addition to the primary decision.
 	//
 	// Any of "captcha", "challenge", "".
@@ -630,7 +636,9 @@ type WaapRequestDetails struct {
 		TrafficTypes        respjson.Field
 		UserAgent           respjson.Field
 		Decision            respjson.Field
+		Detector            respjson.Field
 		Ja3                 respjson.Field
+		Ja4                 respjson.Field
 		OptionalAction      respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
@@ -821,6 +829,37 @@ const (
 	WaapRequestDetailsDecisionBlocked   WaapRequestDetailsDecision = "blocked"
 	WaapRequestDetailsDecisionEmpty     WaapRequestDetailsDecision = ""
 )
+
+// A rule that matched the request, with the matched subject and content.
+type WaapRequestDetailsDetector struct {
+	// The content that matched the rule
+	MatchedContent string `json:"matched_content" api:"required"`
+	// ID of the rule that matched
+	RuleID string `json:"rule_id" api:"required"`
+	// Name of the rule that matched
+	RuleName string `json:"rule_name" api:"required"`
+	// The name of the variable whose value triggered the rule
+	SubjectField string `json:"subject_field" api:"required"`
+	// The entity to which the matched variable belongs (e.g. `request_headers`, uri,
+	// cookies)
+	SubjectType string `json:"subject_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MatchedContent respjson.Field
+		RuleID         respjson.Field
+		RuleName       respjson.Field
+		SubjectField   respjson.Field
+		SubjectType    respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapRequestDetailsDetector) RawJSON() string { return r.JSON.raw }
+func (r *WaapRequestDetailsDetector) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // An optional action that may be applied in addition to the primary decision.
 type WaapRequestDetailsOptionalAction string
