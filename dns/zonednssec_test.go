@@ -30,7 +30,8 @@ func TestZoneDnssecUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"name",
 		dns.ZoneDnssecUpdateParams{
-			Enabled: gcore.Bool(true),
+			Enabled:      gcore.Bool(true),
+			ForceDisable: gcore.Bool(true),
 		},
 	)
 	if err != nil {

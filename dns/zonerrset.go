@@ -286,7 +286,8 @@ type DNSOutputRrset struct {
 	ResourceRecords []DNSOutputRrsetResourceRecord `json:"resource_records" api:"required"`
 	// RRSet type
 	//
-	// Any of "A", "AAAA", "NS", "CNAME", "MX", "TXT", "SRV", "SOA".
+	// Any of "A", "AAAA", "NS", "CNAME", "MX", "TXT", "SRV", "SOA", "PTR", "SVCB",
+	// "HTTPS", "CAA", "DS".
 	Type        DNSOutputRrsetType `json:"type" api:"required"`
 	FilterSetID int64              `json:"filter_set_id"`
 	// Meta information for rrset. Map with string key and any valid json as value,
@@ -397,6 +398,11 @@ const (
 	DNSOutputRrsetTypeTxt   DNSOutputRrsetType = "TXT"
 	DNSOutputRrsetTypeSrv   DNSOutputRrsetType = "SRV"
 	DNSOutputRrsetTypeSoa   DNSOutputRrsetType = "SOA"
+	DNSOutputRrsetTypePtr   DNSOutputRrsetType = "PTR"
+	DNSOutputRrsetTypeSvcb  DNSOutputRrsetType = "SVCB"
+	DNSOutputRrsetTypeHTTPS DNSOutputRrsetType = "HTTPS"
+	DNSOutputRrsetTypeCaa   DNSOutputRrsetType = "CAA"
+	DNSOutputRrsetTypeDs    DNSOutputRrsetType = "DS"
 )
 
 type DNSOutputRrsetPicker struct {

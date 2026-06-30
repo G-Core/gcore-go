@@ -250,7 +250,15 @@ type ZoneListResponseZone struct {
 	// describe dnssec status true means dnssec is enabled for the zone false means
 	// dnssec is disabled for the zone
 	DnssecEnabled bool `json:"dnssec_enabled"`
-	Enabled       bool `json:"enabled"`
+	// `dnssec_status` is the four-state lifecycle status of DNSSEC for the zone,
+	// driven by the parent-DS scan against the registrar. One of: pending, active,
+	// pending-disabled, disabled. Empty when DNSSEC has never been enabled for the
+	// zone.
+	DnssecStatus string `json:"dnssec_status"`
+	// `dnssec_status_modified_on` is the RFC3339 timestamp of the last `dnssec_status`
+	// change.
+	DnssecStatusModifiedOn string `json:"dnssec_status_modified_on"`
+	Enabled                bool   `json:"enabled"`
 	// number of seconds after which secondary name servers should stop answering
 	// request for this zone
 	Expiry int64 `json:"expiry"`
@@ -278,24 +286,26 @@ type ZoneListResponseZone struct {
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID            respjson.Field
-		ClientID      respjson.Field
-		Contact       respjson.Field
-		DnssecEnabled respjson.Field
-		Enabled       respjson.Field
-		Expiry        respjson.Field
-		Meta          respjson.Field
-		Name          respjson.Field
-		NxTtl         respjson.Field
-		PrimaryServer respjson.Field
-		Records       respjson.Field
-		Refresh       respjson.Field
-		Retry         respjson.Field
-		RrsetsAmount  respjson.Field
-		Serial        respjson.Field
-		Status        respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		ID                     respjson.Field
+		ClientID               respjson.Field
+		Contact                respjson.Field
+		DnssecEnabled          respjson.Field
+		DnssecStatus           respjson.Field
+		DnssecStatusModifiedOn respjson.Field
+		Enabled                respjson.Field
+		Expiry                 respjson.Field
+		Meta                   respjson.Field
+		Name                   respjson.Field
+		NxTtl                  respjson.Field
+		PrimaryServer          respjson.Field
+		Records                respjson.Field
+		Refresh                respjson.Field
+		Retry                  respjson.Field
+		RrsetsAmount           respjson.Field
+		Serial                 respjson.Field
+		Status                 respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -428,7 +438,15 @@ type ZoneGetResponse struct {
 	// describe dnssec status true means dnssec is enabled for the zone false means
 	// dnssec is disabled for the zone
 	DnssecEnabled bool `json:"dnssec_enabled"`
-	Enabled       bool `json:"enabled"`
+	// `dnssec_status` is the four-state lifecycle status of DNSSEC for the zone,
+	// driven by the parent-DS scan against the registrar. One of: pending, active,
+	// pending-disabled, disabled. Empty when DNSSEC has never been enabled for the
+	// zone.
+	DnssecStatus string `json:"dnssec_status"`
+	// `dnssec_status_modified_on` is the RFC3339 timestamp of the last `dnssec_status`
+	// change.
+	DnssecStatusModifiedOn string `json:"dnssec_status_modified_on"`
+	Enabled                bool   `json:"enabled"`
 	// number of seconds after which secondary name servers should stop answering
 	// request for this zone
 	Expiry int64 `json:"expiry"`
@@ -456,23 +474,25 @@ type ZoneGetResponse struct {
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID            respjson.Field
-		Contact       respjson.Field
-		DnssecEnabled respjson.Field
-		Enabled       respjson.Field
-		Expiry        respjson.Field
-		Meta          respjson.Field
-		Name          respjson.Field
-		NxTtl         respjson.Field
-		PrimaryServer respjson.Field
-		Records       respjson.Field
-		Refresh       respjson.Field
-		Retry         respjson.Field
-		RrsetsAmount  respjson.Field
-		Serial        respjson.Field
-		Status        respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		ID                     respjson.Field
+		Contact                respjson.Field
+		DnssecEnabled          respjson.Field
+		DnssecStatus           respjson.Field
+		DnssecStatusModifiedOn respjson.Field
+		Enabled                respjson.Field
+		Expiry                 respjson.Field
+		Meta                   respjson.Field
+		Name                   respjson.Field
+		NxTtl                  respjson.Field
+		PrimaryServer          respjson.Field
+		Records                respjson.Field
+		Refresh                respjson.Field
+		Retry                  respjson.Field
+		RrsetsAmount           respjson.Field
+		Serial                 respjson.Field
+		Status                 respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 

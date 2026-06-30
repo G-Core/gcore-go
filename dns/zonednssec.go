@@ -148,7 +148,8 @@ func (r *ZoneDnssecGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ZoneDnssecUpdateParams struct {
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	Enabled      param.Opt[bool] `json:"enabled,omitzero"`
+	ForceDisable param.Opt[bool] `json:"force_disable,omitzero"`
 	paramObj
 }
 
