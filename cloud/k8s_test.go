@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestK8SListVersions(t *testing.T) {
+func TestK8SListVersionsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -29,6 +29,8 @@ func TestK8SListVersions(t *testing.T) {
 	_, err := client.Cloud.K8S.ListVersions(context.TODO(), cloud.K8SListVersionsParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(7),
+		Limit:     gcore.Int(1000),
+		Offset:    gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error

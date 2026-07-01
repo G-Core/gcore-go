@@ -68,6 +68,8 @@ func TestInstanceImageListWithOptionalParams(t *testing.T) {
 		ProjectID:     gcore.Int(1),
 		RegionID:      gcore.Int(7),
 		IncludePrices: gcore.Bool(true),
+		Limit:         gcore.Int(1000),
+		Offset:        gcore.Int(0),
 		Private:       gcore.String("private"),
 		TagKey:        []string{"key1", "key2"},
 		TagKeyValue:   gcore.String("tag_key_value"),

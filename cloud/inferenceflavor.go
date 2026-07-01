@@ -89,7 +89,9 @@ type InferenceFlavor struct {
 	GPUMemory float64 `json:"gpu_memory" api:"required"`
 	// Inference flavor gpu model.
 	GPUModel string `json:"gpu_model" api:"required"`
-	// Inference flavor is gpu shared.
+	// Inference flavor is gpu shared (always false, deprecated).
+	//
+	// Deprecated: deprecated
 	IsGPUShared bool `json:"is_gpu_shared" api:"required"`
 	// Inference flavor memory in Gi.
 	Memory float64 `json:"memory" api:"required"`

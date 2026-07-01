@@ -33,6 +33,8 @@ func TestK8SClusterPoolNodeListWithOptionalParams(t *testing.T) {
 			ProjectID:   gcore.Int(1),
 			RegionID:    gcore.Int(7),
 			ClusterName: "my-cluster",
+			Limit:       gcore.Int(1000),
+			Offset:      gcore.Int(0),
 			WithDDOS:    gcore.Bool(false),
 		},
 	)

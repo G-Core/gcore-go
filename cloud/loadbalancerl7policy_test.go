@@ -34,7 +34,7 @@ func TestLoadBalancerL7PolicyNewWithOptionalParams(t *testing.T) {
 			RedirectURL:      "https://www.example.com",
 			Name:             gcore.String("redirect-example.com"),
 			Position:         gcore.Int(1),
-			RedirectHTTPCode: gcore.Int(301),
+			RedirectHTTPCode: 301,
 			Tags:             []string{"test_tag"},
 		},
 	})
@@ -69,7 +69,7 @@ func TestLoadBalancerL7PolicyUpdateWithOptionalParams(t *testing.T) {
 				RedirectURL:      "https://www.example.com",
 				Name:             gcore.String("redirect-example.com"),
 				Position:         gcore.Int(1),
-				RedirectHTTPCode: gcore.Int(301),
+				RedirectHTTPCode: 301,
 				Tags:             []string{"test_tag"},
 			},
 		},

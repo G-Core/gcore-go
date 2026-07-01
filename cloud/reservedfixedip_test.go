@@ -27,8 +27,8 @@ func TestReservedFixedIPNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.ReservedFixedIPs.New(context.TODO(), cloud.ReservedFixedIPNewParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(4),
 		OfExternal: &cloud.ReservedFixedIPNewParamsBodyExternal{
 			IPFamily: cloud.InterfaceIPFamilyDual,
 			IsVip:    gcore.Bool(false),
@@ -57,10 +57,10 @@ func TestReservedFixedIPUpdate(t *testing.T) {
 	)
 	_, err := client.Cloud.ReservedFixedIPs.Update(
 		context.TODO(),
-		"port_id",
+		"ac177f1f-eb04-42c4-9864-e7d6486813af",
 		cloud.ReservedFixedIPUpdateParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(4),
 			IsVip:     true,
 		},
 	)
@@ -86,16 +86,16 @@ func TestReservedFixedIPListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.ReservedFixedIPs.List(context.TODO(), cloud.ReservedFixedIPListParams{
-		ProjectID:     gcore.Int(0),
-		RegionID:      gcore.Int(0),
+		ProjectID:     gcore.Int(1),
+		RegionID:      gcore.Int(4),
 		AvailableOnly: gcore.Bool(true),
 		DeviceID:      gcore.String("device_id"),
 		ExternalOnly:  gcore.Bool(true),
 		InternalOnly:  gcore.Bool(true),
 		IPAddress:     gcore.String("ip_address"),
-		Limit:         gcore.Int(0),
+		Limit:         gcore.Int(1000),
 		Offset:        gcore.Int(0),
-		OrderBy:       gcore.String("order_by"),
+		OrderBy:       cloud.ReservedFixedIPListParamsOrderByCreatedAtAsc,
 		VipOnly:       gcore.Bool(true),
 	})
 	if err != nil {
@@ -121,10 +121,10 @@ func TestReservedFixedIPDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.ReservedFixedIPs.Delete(
 		context.TODO(),
-		"port_id",
+		"ac177f1f-eb04-42c4-9864-e7d6486813af",
 		cloud.ReservedFixedIPDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(4),
 		},
 	)
 	if err != nil {
@@ -150,10 +150,10 @@ func TestReservedFixedIPGet(t *testing.T) {
 	)
 	_, err := client.Cloud.ReservedFixedIPs.Get(
 		context.TODO(),
-		"port_id",
+		"ac177f1f-eb04-42c4-9864-e7d6486813af",
 		cloud.ReservedFixedIPGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(4),
 		},
 	)
 	if err != nil {

@@ -374,8 +374,10 @@ func (r *ReservedFixedIPReservation) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 
 	//
 	// Request body variants
@@ -519,8 +521,10 @@ func (r *ReservedFixedIPNewParamsBodyPort) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPUpdateParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// If reserved fixed IP should be a VIP
 	IsVip bool `json:"is_vip" api:"required"`
 	paramObj
@@ -535,10 +539,12 @@ func (r *ReservedFixedIPUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Set to true if the response should only list IP addresses that are not attached
-	// to any instance
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Set True if response should only list IP addresses that are not attached to any
+	// instance
 	AvailableOnly param.Opt[bool] `query:"available_only,omitzero" json:"-"`
 	// Filter IPs by device ID it is attached to
 	DeviceID param.Opt[string] `query:"device_id,omitzero" json:"-"`
@@ -546,18 +552,23 @@ type ReservedFixedIPListParams struct {
 	ExternalOnly param.Opt[bool] `query:"external_only,omitzero" json:"-"`
 	// Set to true if the response should only list private IP addresses
 	InternalOnly param.Opt[bool] `query:"internal_only,omitzero" json:"-"`
-	// An IPv4 address to filter results by. Regular expression allowed
+	// Optional. An IPv4 address to filter results by. Regular expression allowed
 	IPAddress param.Opt[string] `query:"ip_address,omitzero" json:"-"`
-	// Limit the number of returned IPs
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Ordering reserved fixed IP list result by name, status, `updated_at`,
-	// `created_at` or `fixed_ip_address` fields and directions (status.asc), default
-	// is "fixed_ip_address.asc"
-	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
 	// Set to true if the response should only list VIPs
 	VipOnly param.Opt[bool] `query:"vip_only,omitzero" json:"-"`
+	// Optional. Ordering reserved fixed IP list result by name, status, `updated_at`,
+	// `fixed_ip_address` or `created_at` fields of the reserved fixed IP and
+	// directions (status.asc).
+	//
+	// Any of "created_at.asc", "created_at.desc", "fixed_ip_address.asc",
+	// "fixed_ip_address.desc", "name.asc", "name.desc", "status.asc", "status.desc",
+	// "updated_at.asc", "updated_at.desc".
+	OrderBy ReservedFixedIPListParamsOrderBy `query:"order_by,omitzero" json:"-"`
 	paramObj
 }
 
@@ -570,14 +581,36 @@ func (r ReservedFixedIPListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Optional. Ordering reserved fixed IP list result by name, status, `updated_at`,
+// `fixed_ip_address` or `created_at` fields of the reserved fixed IP and
+// directions (status.asc).
+type ReservedFixedIPListParamsOrderBy string
+
+const (
+	ReservedFixedIPListParamsOrderByCreatedAtAsc       ReservedFixedIPListParamsOrderBy = "created_at.asc"
+	ReservedFixedIPListParamsOrderByCreatedAtDesc      ReservedFixedIPListParamsOrderBy = "created_at.desc"
+	ReservedFixedIPListParamsOrderByFixedIPAddressAsc  ReservedFixedIPListParamsOrderBy = "fixed_ip_address.asc"
+	ReservedFixedIPListParamsOrderByFixedIPAddressDesc ReservedFixedIPListParamsOrderBy = "fixed_ip_address.desc"
+	ReservedFixedIPListParamsOrderByNameAsc            ReservedFixedIPListParamsOrderBy = "name.asc"
+	ReservedFixedIPListParamsOrderByNameDesc           ReservedFixedIPListParamsOrderBy = "name.desc"
+	ReservedFixedIPListParamsOrderByStatusAsc          ReservedFixedIPListParamsOrderBy = "status.asc"
+	ReservedFixedIPListParamsOrderByStatusDesc         ReservedFixedIPListParamsOrderBy = "status.desc"
+	ReservedFixedIPListParamsOrderByUpdatedAtAsc       ReservedFixedIPListParamsOrderBy = "updated_at.asc"
+	ReservedFixedIPListParamsOrderByUpdatedAtDesc      ReservedFixedIPListParamsOrderBy = "updated_at.desc"
+)
+
 type ReservedFixedIPDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type ReservedFixedIPGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

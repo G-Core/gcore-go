@@ -131,8 +131,8 @@ func printImageDetails(image cloud.BaremetalImage, index int) {
 		fmt.Printf("     OS Version: %s\n", image.OsVersion)
 	}
 
-	if len(image.Tags) > 0 {
-		fmt.Printf("     Tags: %v\n", image.Tags)
+	if len(image.TagsV2) > 0 {
+		fmt.Printf("     Tags: %v\n", image.TagsV2)
 	}
 
 	fmt.Println()

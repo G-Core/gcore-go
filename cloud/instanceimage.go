@@ -378,7 +378,7 @@ type Image struct {
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags" api:"required"`
+	TagsV2 []Tag `json:"tags_v2" api:"required"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
@@ -418,7 +418,7 @@ type Image struct {
 		Size             respjson.Field
 		SSHKey           respjson.Field
 		Status           respjson.Field
-		Tags             respjson.Field
+		TagsV2           respjson.Field
 		TaskID           respjson.Field
 		UpdatedAt        respjson.Field
 		Visibility       respjson.Field
@@ -586,6 +586,11 @@ type InstanceImageListParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Show price.
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Any value to show private images
 	Private param.Opt[string] `query:"private,omitzero" json:"-"`
 	// Optional. Filter by tag key-value pairs.

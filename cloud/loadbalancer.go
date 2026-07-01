@@ -1950,7 +1950,7 @@ type LoadBalancerNewParamsListener struct {
 	// Add headers X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto to requests.
 	// Only used with HTTP or `TERMINATED_HTTPS` protocols.
 	InsertXForwarded param.Opt[bool] `json:"insert_x_forwarded,omitzero"`
-	// Network CIDRs from which service will be accessible
+	// Network CIDRs from which service will be accessible. Order-insensitive.
 	AllowedCidrs []string `json:"allowed_cidrs,omitzero" format:"ipvanynetwork"`
 	// Member pools
 	Pools []LoadBalancerNewParamsListenerPool `json:"pools,omitzero"`
@@ -2292,6 +2292,10 @@ type LoadBalancerListParams struct {
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
 	// Show Advanced DDoS protection profile, if exists
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
+	// Filter by operating status
+	//
+	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
+	OperatingStatus LoadBalancerOperatingStatus `query:"operating_status,omitzero" json:"-"`
 	// Order by field and direction.
 	//
 	// Any of "created_at.asc", "created_at.desc", "flavor.asc", "flavor.desc",
@@ -2300,6 +2304,11 @@ type LoadBalancerListParams struct {
 	// "updated_at.desc", "vip_address.asc", "vip_address.desc", "vip_ip_family.asc",
 	// "vip_ip_family.desc".
 	OrderBy LoadBalancerListParamsOrderBy `query:"order_by,omitzero" json:"-"`
+	// Filter by provisioning (lifecycle) status
+	//
+	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
+	// "PENDING_UPDATE".
+	ProvisioningStatus ProvisioningStatus `query:"provisioning_status,omitzero" json:"-"`
 	// Optional. Filter by tag keys. ?`tag_key`=key1&`tag_key`=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	paramObj

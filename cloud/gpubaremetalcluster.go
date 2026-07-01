@@ -74,11 +74,18 @@ func (r *GPUBaremetalClusterService) New(ctx context.Context, params GPUBaremeta
 	return res, err
 }
 
-// Update the name of an existing bare metal GPU cluster.
+// Update the name, tags, and/or server settings of an existing bare metal GPU
+// cluster.
 //
-// Update tags for a bare metal GPU cluster (and apply to all its nodes) using JSON
-// Merge Patch semantics (RFC 7386). To add or update tags, provide key-value
-// pairs. To remove a tag, set its value to null.
+// Update tags using JSON Merge Patch semantics (RFC 7396). To add or update tags,
+// provide key-value pairs. To remove a tag, set its value to null.
+//
+// Updating server settings (`servers_settings`, `image_id`) only modifies the
+// cluster template. **It does NOT modify or rebuild any existing servers in the
+// cluster.** Tags and name will be applied immediately. To apply the rest changes
+// to running servers, use the
+// `/cloud/v3/gpu/baremetal/{project_id}/{region_id}/clusters/{cluster_id}/apply_settings`
+// endpoint.
 func (r *GPUBaremetalClusterService) Update(ctx context.Context, clusterID string, params GPUBaremetalClusterUpdateParams, opts ...option.RequestOption) (res *GPUBaremetalCluster, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -253,12 +260,18 @@ func (r *GPUBaremetalClusterService) RebootAllServers(ctx context.Context, clust
 	return res, err
 }
 
+// Use
+// `POST /v3/gpu/baremetal/{project_id}/{region_id}/clusters/{cluster_id}/apply_settings`
+// instead.
+//
 // Perform a rebuild operation on a bare metal GPU cluster. During the rebuild
 // process, the servers in cluster receive a new image, SSH key, and user data.
 // Important: Before triggering a rebuild, the cluster must have updated server
 // settings to apply. These cluster settings must be patched using the following
 // endpoint: PATCH
-// '/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters/{`cluster_id`}/servers_settings'
+// '/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters/{`cluster_id`}'
+//
+// Deprecated: deprecated
 func (r *GPUBaremetalClusterService) Rebuild(ctx context.Context, clusterID string, body GPUBaremetalClusterRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -435,10 +448,15 @@ func (r *GPUBaremetalClusterService) ResizeAndPoll(ctx context.Context, clusterI
 
 // This operation only modifies cluster settings such as SSH key, image, and user
 // data. **It does NOT modify or rebuild any existing servers in the cluster.**
+// Use `PATCH /v3/gpu/baremetal/{project_id}/{region_id}/clusters/{cluster_id}`
+// instead, which now accepts `servers_settings` and `image_id` fields alongside
+// `name` and `tags`.
 //
 // To apply these configuration changes to running servers, use the
-// `/cloud/v3/gpu/baremetal/{project_id}/{region_id}/clusters/{cluster_id}/rebuild`
+// `/cloud/v3/gpu/baremetal/{project_id}/{region_id}/clusters/{cluster_id}/apply_settings`
 // endpoint.
+//
+// Deprecated: deprecated
 func (r *GPUBaremetalClusterService) UpdateServersSettings(ctx context.Context, clusterID string, params GPUBaremetalClusterUpdateServersSettingsParams, opts ...option.RequestOption) (res *GPUBaremetalCluster, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -560,7 +578,11 @@ type GPUBaremetalClusterServersSettings struct {
 	// List of file shares mounted across the cluster.
 	FileShares []GPUBaremetalClusterServersSettingsFileShare      `json:"file_shares" api:"required"`
 	Interfaces []GPUBaremetalClusterServersSettingsInterfaceUnion `json:"interfaces" api:"required"`
-	// Security groups
+	// Deprecated. Deduplicated union of security groups across all interfaces; the
+	// actual assignment may differ per interface. Use `interfaces[].security_groups`
+	// for the authoritative per-interface list.
+	//
+	// Deprecated: deprecated
 	SecurityGroups []GPUBaremetalClusterServersSettingsSecurityGroup `json:"security_groups" api:"required"`
 	// SSH key name
 	SSHKeyName string `json:"ssh_key_name" api:"required"`
@@ -617,6 +639,11 @@ func (r *GPUBaremetalClusterServersSettingsFileShare) UnmarshalJSON(data []byte)
 type GPUBaremetalClusterServersSettingsInterfaceUnion struct {
 	IPFamily string `json:"ip_family"`
 	Name     string `json:"name"`
+	// This field is a union of
+	// [[]GPUBaremetalClusterServersSettingsInterfaceExternalSecurityGroup],
+	// [[]GPUBaremetalClusterServersSettingsInterfaceSubnetSecurityGroup],
+	// [[]GPUBaremetalClusterServersSettingsInterfaceAnySubnetSecurityGroup]
+	SecurityGroups GPUBaremetalClusterServersSettingsInterfaceUnionSecurityGroups `json:"security_groups"`
 	// Any of "external", "subnet", "any_subnet".
 	Type string `json:"type"`
 	// This field is a union of
@@ -630,14 +657,15 @@ type GPUBaremetalClusterServersSettingsInterfaceUnion struct {
 	// [GPUBaremetalClusterServersSettingsInterfaceAnySubnet].
 	IPAddress string `json:"ip_address"`
 	JSON      struct {
-		IPFamily   respjson.Field
-		Name       respjson.Field
-		Type       respjson.Field
-		FloatingIP respjson.Field
-		NetworkID  respjson.Field
-		SubnetID   respjson.Field
-		IPAddress  respjson.Field
-		raw        string
+		IPFamily       respjson.Field
+		Name           respjson.Field
+		SecurityGroups respjson.Field
+		Type           respjson.Field
+		FloatingIP     respjson.Field
+		NetworkID      respjson.Field
+		SubnetID       respjson.Field
+		IPAddress      respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -698,6 +726,31 @@ func (r *GPUBaremetalClusterServersSettingsInterfaceUnion) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// GPUBaremetalClusterServersSettingsInterfaceUnionSecurityGroups is an implicit
+// subunion of [GPUBaremetalClusterServersSettingsInterfaceUnion].
+// GPUBaremetalClusterServersSettingsInterfaceUnionSecurityGroups provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [GPUBaremetalClusterServersSettingsInterfaceUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfSecurityGroups]
+type GPUBaremetalClusterServersSettingsInterfaceUnionSecurityGroups struct {
+	// This field will be present if the value is a
+	// [[]GPUBaremetalClusterServersSettingsInterfaceExternalSecurityGroup] instead of
+	// an object.
+	OfSecurityGroups []GPUBaremetalClusterServersSettingsInterfaceExternalSecurityGroup `json:",inline"`
+	JSON             struct {
+		OfSecurityGroups respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+func (r *GPUBaremetalClusterServersSettingsInterfaceUnionSecurityGroups) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // GPUBaremetalClusterServersSettingsInterfaceUnionFloatingIP is an implicit
 // subunion of [GPUBaremetalClusterServersSettingsInterfaceUnion].
 // GPUBaremetalClusterServersSettingsInterfaceUnionFloatingIP provides convenient
@@ -725,21 +778,46 @@ type GPUBaremetalClusterServersSettingsInterfaceExternal struct {
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family" api:"required"`
 	// Interface name
-	Name string            `json:"name" api:"required"`
-	Type constant.External `json:"type" default:"external"`
+	Name string `json:"name" api:"required"`
+	// Resolved security groups applied to this interface.
+	SecurityGroups []GPUBaremetalClusterServersSettingsInterfaceExternalSecurityGroup `json:"security_groups" api:"required"`
+	Type           constant.External                                                  `json:"type" default:"external"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		IPFamily    respjson.Field
-		Name        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		IPFamily       respjson.Field
+		Name           respjson.Field
+		SecurityGroups respjson.Field
+		Type           respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r GPUBaremetalClusterServersSettingsInterfaceExternal) RawJSON() string { return r.JSON.raw }
 func (r *GPUBaremetalClusterServersSettingsInterfaceExternal) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GPUBaremetalClusterServersSettingsInterfaceExternalSecurityGroup struct {
+	// Security group ID
+	ID string `json:"id" api:"required"`
+	// Security group name
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalClusterServersSettingsInterfaceExternalSecurityGroup) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *GPUBaremetalClusterServersSettingsInterfaceExternalSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -750,18 +828,21 @@ type GPUBaremetalClusterServersSettingsInterfaceSubnet struct {
 	Name string `json:"name" api:"required"`
 	// Network ID the subnet belongs to. Port will be plugged in this network
 	NetworkID string `json:"network_id" api:"required"`
+	// Resolved security groups applied to this interface.
+	SecurityGroups []GPUBaremetalClusterServersSettingsInterfaceSubnetSecurityGroup `json:"security_groups" api:"required"`
 	// Port is assigned an IP address from this subnet
 	SubnetID string          `json:"subnet_id" api:"required" format:"uuid4"`
 	Type     constant.Subnet `json:"type" default:"subnet"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FloatingIP  respjson.Field
-		Name        respjson.Field
-		NetworkID   respjson.Field
-		SubnetID    respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		FloatingIP     respjson.Field
+		Name           respjson.Field
+		NetworkID      respjson.Field
+		SecurityGroups respjson.Field
+		SubnetID       respjson.Field
+		Type           respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -790,6 +871,28 @@ func (r *GPUBaremetalClusterServersSettingsInterfaceSubnetFloatingIP) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type GPUBaremetalClusterServersSettingsInterfaceSubnetSecurityGroup struct {
+	// Security group ID
+	ID string `json:"id" api:"required"`
+	// Security group name
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalClusterServersSettingsInterfaceSubnetSecurityGroup) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *GPUBaremetalClusterServersSettingsInterfaceSubnetSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type GPUBaremetalClusterServersSettingsInterfaceAnySubnet struct {
 	// Floating IP config for this subnet attachment
 	FloatingIP GPUBaremetalClusterServersSettingsInterfaceAnySubnetFloatingIP `json:"floating_ip" api:"required"`
@@ -802,18 +905,21 @@ type GPUBaremetalClusterServersSettingsInterfaceAnySubnet struct {
 	// Interface name
 	Name string `json:"name" api:"required"`
 	// Network ID the subnet belongs to. Port will be plugged in this network
-	NetworkID string             `json:"network_id" api:"required"`
-	Type      constant.AnySubnet `json:"type" default:"any_subnet"`
+	NetworkID string `json:"network_id" api:"required"`
+	// Resolved security groups applied to this interface.
+	SecurityGroups []GPUBaremetalClusterServersSettingsInterfaceAnySubnetSecurityGroup `json:"security_groups" api:"required"`
+	Type           constant.AnySubnet                                                  `json:"type" default:"any_subnet"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FloatingIP  respjson.Field
-		IPAddress   respjson.Field
-		IPFamily    respjson.Field
-		Name        respjson.Field
-		NetworkID   respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		FloatingIP     respjson.Field
+		IPAddress      respjson.Field
+		IPFamily       respjson.Field
+		Name           respjson.Field
+		NetworkID      respjson.Field
+		SecurityGroups respjson.Field
+		Type           respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -839,6 +945,28 @@ func (r GPUBaremetalClusterServersSettingsInterfaceAnySubnetFloatingIP) RawJSON(
 	return r.JSON.raw
 }
 func (r *GPUBaremetalClusterServersSettingsInterfaceAnySubnetFloatingIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GPUBaremetalClusterServersSettingsInterfaceAnySubnetSecurityGroup struct {
+	// Security group ID
+	ID string `json:"id" api:"required"`
+	// Security group name
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalClusterServersSettingsInterfaceAnySubnetSecurityGroup) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *GPUBaremetalClusterServersSettingsInterfaceAnySubnetSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -922,8 +1050,11 @@ type GPUBaremetalClusterNewParamsServersSettings struct {
 	Credentials GPUBaremetalClusterNewParamsServersSettingsCredentials `json:"credentials,omitzero"`
 	// List of file shares to be mounted across the cluster.
 	FileShares []GPUBaremetalClusterNewParamsServersSettingsFileShare `json:"file_shares,omitzero"`
-	// List of security group UUIDs. If omitted or an empty list, the default security
-	// group will be used.
+	// Deprecated. Use per-interface `security_groups` inside `interfaces[]` instead.
+	// Cannot be combined with per-interface `security_groups`. If omitted everywhere,
+	// the project's default security group is applied.
+	//
+	// Deprecated: deprecated
 	SecurityGroups []GPUBaremetalClusterNewParamsServersSettingsSecurityGroup `json:"security_groups,omitzero"`
 	paramObj
 }
@@ -1007,6 +1138,18 @@ func (u GPUBaremetalClusterNewParamsServersSettingsInterfaceUnion) GetName() *st
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u GPUBaremetalClusterNewParamsServersSettingsInterfaceUnion) GetPortSecurityEnabled() *bool {
+	if vt := u.OfExternal; vt != nil && vt.PortSecurityEnabled.Valid() {
+		return &vt.PortSecurityEnabled.Value
+	} else if vt := u.OfSubnet; vt != nil && vt.PortSecurityEnabled.Valid() {
+		return &vt.PortSecurityEnabled.Value
+	} else if vt := u.OfAnySubnet; vt != nil && vt.PortSecurityEnabled.Valid() {
+		return &vt.PortSecurityEnabled.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u GPUBaremetalClusterNewParamsServersSettingsInterfaceUnion) GetNetworkID() *string {
 	if vt := u.OfSubnet; vt != nil {
 		return (*string)(&vt.NetworkID)
@@ -1014,6 +1157,39 @@ func (u GPUBaremetalClusterNewParamsServersSettingsInterfaceUnion) GetNetworkID(
 		return (*string)(&vt.NetworkID)
 	}
 	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u GPUBaremetalClusterNewParamsServersSettingsInterfaceUnion) GetSecurityGroups() (res gpuBaremetalClusterNewParamsServersSettingsInterfaceUnionSecurityGroups) {
+	if vt := u.OfExternal; vt != nil {
+		res.any = &vt.SecurityGroups
+	} else if vt := u.OfSubnet; vt != nil {
+		res.any = &vt.SecurityGroups
+	} else if vt := u.OfAnySubnet; vt != nil {
+		res.any = &vt.SecurityGroups
+	}
+	return
+}
+
+// Can have the runtime types
+// [_[]GPUBaremetalClusterNewParamsServersSettingsInterfaceExternalSecurityGroup],
+// [_[]GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup],
+// [\*[]GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup]
+type gpuBaremetalClusterNewParamsServersSettingsInterfaceUnionSecurityGroups struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *[]cloud.GPUBaremetalClusterNewParamsServersSettingsInterfaceExternalSecurityGroup:
+//	case *[]cloud.GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup:
+//	case *[]cloud.GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u gpuBaremetalClusterNewParamsServersSettingsInterfaceUnionSecurityGroups) AsAny() any {
+	return u.any
 }
 
 // Returns a subunion which exports methods to access subproperties
@@ -1081,10 +1257,21 @@ func init() {
 type GPUBaremetalClusterNewParamsServersSettingsInterfaceExternal struct {
 	// Interface name
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Controls port security for this interface. When omitted, the default applies
+	// (port security enabled, default security group attached). When false, the port
+	// is created with port security off and no security group attached;
+	// `security_groups` must not be set in that case. Not allowed for interfaces on a
+	// public network, nor for bare metal servers without a DPU (their ports cannot
+	// enforce port security).
+	PortSecurityEnabled param.Opt[bool] `json:"port_security_enabled,omitzero"`
 	// Which subnets should be selected: IPv4, IPv6, or use dual stack.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
+	// Security group UUIDs applied to this interface. If omitted (or empty), the
+	// top-level `security_groups` value applies; if both are omitted, the project's
+	// default security group is applied.
+	SecurityGroups []GPUBaremetalClusterNewParamsServersSettingsInterfaceExternalSecurityGroup `json:"security_groups,omitzero"`
 	// This field can be elided, and will marshal its zero value as "external".
 	Type constant.External `json:"type" default:"external"`
 	paramObj
@@ -1098,6 +1285,27 @@ func (r *GPUBaremetalClusterNewParamsServersSettingsInterfaceExternal) Unmarshal
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[GPUBaremetalClusterNewParamsServersSettingsInterfaceExternal](
+		"ip_family", "dual", "ipv4", "ipv6",
+	)
+}
+
+// The property ID is required.
+type GPUBaremetalClusterNewParamsServersSettingsInterfaceExternalSecurityGroup struct {
+	// Resource ID
+	ID string `json:"id" api:"required" format:"uuid4"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterNewParamsServersSettingsInterfaceExternalSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsServersSettingsInterfaceExternalSecurityGroup
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterNewParamsServersSettingsInterfaceExternalSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties NetworkID, SubnetID, Type are required.
 type GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnet struct {
 	// Network ID the subnet belongs to. Port will be plugged in this network
@@ -1106,8 +1314,19 @@ type GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnet struct {
 	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// Interface name
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Controls port security for this interface. When omitted, the default applies
+	// (port security enabled, default security group attached). When false, the port
+	// is created with port security off and no security group attached;
+	// `security_groups` must not be set in that case. Not allowed for interfaces on a
+	// public network, nor for bare metal servers without a DPU (their ports cannot
+	// enforce port security).
+	PortSecurityEnabled param.Opt[bool] `json:"port_security_enabled,omitzero"`
 	// Floating IP config for this subnet attachment
 	FloatingIP GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetFloatingIP `json:"floating_ip,omitzero"`
+	// Security group UUIDs applied to this interface. If omitted (or empty), the
+	// top-level `security_groups` value applies; if both are omitted, the project's
+	// default security group is applied.
+	SecurityGroups []GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup `json:"security_groups,omitzero"`
 	// This field can be elided, and will marshal its zero value as "subnet".
 	Type constant.Subnet `json:"type" default:"subnet"`
 	paramObj
@@ -1144,18 +1363,44 @@ func (r *GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetFloatingIP) U
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property ID is required.
+type GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup struct {
+	// Resource ID
+	ID string `json:"id" api:"required" format:"uuid4"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties NetworkID, Type are required.
 type GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnet struct {
 	// Network ID the subnet belongs to. Port will be plugged in this network
 	NetworkID string `json:"network_id" api:"required"`
 	// Interface name
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Controls port security for this interface. When omitted, the default applies
+	// (port security enabled, default security group attached). When false, the port
+	// is created with port security off and no security group attached;
+	// `security_groups` must not be set in that case. Not allowed for interfaces on a
+	// public network, nor for bare metal servers without a DPU (their ports cannot
+	// enforce port security).
+	PortSecurityEnabled param.Opt[bool] `json:"port_security_enabled,omitzero"`
 	// Floating IP config for this subnet attachment
 	FloatingIP GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP `json:"floating_ip,omitzero"`
 	// Which subnets should be selected: IPv4, IPv6, or use dual stack
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
+	// Security group UUIDs applied to this interface. If omitted (or empty), the
+	// top-level `security_groups` value applies; if both are omitted, the project's
+	// default security group is applied.
+	SecurityGroups []GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup `json:"security_groups,omitzero"`
 	// This field can be elided, and will marshal its zero value as "any_subnet".
 	Type constant.AnySubnet `json:"type" default:"any_subnet"`
 	paramObj
@@ -1189,6 +1434,21 @@ func (r GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property ID is required.
+type GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup struct {
+	// Resource ID
+	ID string `json:"id" api:"required" format:"uuid4"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1251,8 +1511,14 @@ type GPUBaremetalClusterUpdateParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Image ID of the OS image to apply to the cluster template. Use GET
+	// /v1/images/{`project_id`}/{`region_id`} to discover available images. Takes
+	// effect on existing servers only after a successful POST /`apply_settings` call.
+	ImageID param.Opt[string] `json:"image_id,omitzero" format:"uuid4"`
 	// Cluster name
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Configuration settings for the servers in the cluster
+	ServersSettings GPUBaremetalClusterUpdateParamsServersSettings `json:"servers_settings,omitzero"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
@@ -1286,6 +1552,39 @@ func (r *GPUBaremetalClusterUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Configuration settings for the servers in the cluster
+type GPUBaremetalClusterUpdateParamsServersSettings struct {
+	// Optional custom user data (Base64-encoded)
+	UserData param.Opt[string] `json:"user_data,omitzero"`
+	// Optional server access credentials
+	Credentials GPUBaremetalClusterUpdateParamsServersSettingsCredentials `json:"credentials,omitzero"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterUpdateParamsServersSettings) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterUpdateParamsServersSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterUpdateParamsServersSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional server access credentials
+type GPUBaremetalClusterUpdateParamsServersSettingsCredentials struct {
+	// Specifies the name of the SSH keypair, created via the
+	// [/v1/`ssh_keys` endpoint](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
+	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterUpdateParamsServersSettingsCredentials) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterUpdateParamsServersSettingsCredentials
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterUpdateParamsServersSettingsCredentials) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type GPUBaremetalClusterListParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
@@ -1295,20 +1594,215 @@ type GPUBaremetalClusterListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Offset in results list
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Specifies the entity responsible for managing the resource.
-	//
-	//   - `user`: The resource (cluster) is created and maintained directly by the user.
-	//   - `k8s`: The resource is created and maintained automatically by Managed
-	//     Kubernetes service
+	// Filter by creation time (UTC), e.g. `created_at[gte]=2026-01-01T00:00:00Z`.
+	CreatedAt GPUBaremetalClusterListParamsCreatedAt `query:"created_at,omitzero" json:"-"`
+	// Filter by flavor (case-insensitive), e.g. `flavor[prefix]=bm3-`,
+	// `flavor[exact]=bm3-ai-1xlarge-h100-80-8`.
+	Flavor GPUBaremetalClusterListParamsFlavor `query:"flavor,omitzero" json:"-"`
+	// Return only clusters with these IDs, e.g. `ids=<id1>&ids=<id2>`.
+	IDs []string `query:"ids,omitzero" format:"uuid4" json:"-"`
+	// Return only clusters built from these source image IDs, e.g.
+	// `image_ids=<id1>&image_ids=<id2>`.
+	ImageIDs []string `query:"image_ids,omitzero" format:"uuid4" json:"-"`
+	// Filter by who manages the cluster: `user` (default) or `k8s` (Managed
+	// Kubernetes). Pass both to include all, e.g. `managed_by=user&managed_by=k8s`.
 	//
 	// Any of "k8s", "user".
 	ManagedBy []string `query:"managed_by,omitzero" json:"-"`
+	// Filter by name (case-insensitive), e.g. `name[contains]=gpu`,
+	// `name[prefix]=prod-`.
+	Name GPUBaremetalClusterListParamsName `query:"name,omitzero" json:"-"`
+	// Filter by node count, e.g. `servers_count[gte]=2`,
+	// `servers_count[gte]=2&servers_count[lt]=8`.
+	ServersCount GPUBaremetalClusterListParamsServersCount `query:"servers_count,omitzero" json:"-"`
+	// Filter by tag key regardless of value, e.g. `tag_key[contains]=team`.
+	TagKey GPUBaremetalClusterListParamsTagKey `query:"tag_key,omitzero" json:"-"`
+	// Filter by tag value regardless of key, e.g. `tag_value[prefix]=prod`.
+	TagValue GPUBaremetalClusterListParamsTagValue `query:"tag_value,omitzero" json:"-"`
+	// Filter by exact tag key-value pairs, e.g. `tags[env]=prod&tags[team]=core`.
+	// Pairs are ANDed; values match case-insensitively.
+	Tags map[string]string `query:"tags,omitzero" json:"-"`
+	// Filter by last-change time (UTC), e.g. `updated_at[gte]=2026-06-01T00:00:00Z`.
+	UpdatedAt GPUBaremetalClusterListParamsUpdatedAt `query:"updated_at,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [GPUBaremetalClusterListParams]'s query parameters as
 // `url.Values`.
 func (r GPUBaremetalClusterListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by creation time (UTC), e.g. `created_at[gte]=2026-01-01T00:00:00Z`.
+type GPUBaremetalClusterListParamsCreatedAt struct {
+	// Strictly after this timestamp, e.g. `[gt]=2026-01-01T00:00:00Z`.
+	Gt param.Opt[time.Time] `query:"gt,omitzero" format:"date-time" json:"-"`
+	// At or after this timestamp (inclusive), e.g. `[gte]=2026-01-01T00:00:00Z`.
+	Gte param.Opt[time.Time] `query:"gte,omitzero" format:"date-time" json:"-"`
+	// Strictly before this timestamp, e.g. `[lt]=2026-02-01T00:00:00Z`.
+	Lt param.Opt[time.Time] `query:"lt,omitzero" format:"date-time" json:"-"`
+	// At or before this timestamp (inclusive), e.g. `[lte]=2026-02-01T00:00:00Z`.
+	Lte param.Opt[time.Time] `query:"lte,omitzero" format:"date-time" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUBaremetalClusterListParamsCreatedAt]'s query parameters
+// as `url.Values`.
+func (r GPUBaremetalClusterListParamsCreatedAt) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by flavor (case-insensitive), e.g. `flavor[prefix]=bm3-`,
+// `flavor[exact]=bm3-ai-1xlarge-h100-80-8`.
+type GPUBaremetalClusterListParamsFlavor struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUBaremetalClusterListParamsFlavor]'s query parameters as
+// `url.Values`.
+func (r GPUBaremetalClusterListParamsFlavor) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by name (case-insensitive), e.g. `name[contains]=gpu`,
+// `name[prefix]=prod-`.
+type GPUBaremetalClusterListParamsName struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUBaremetalClusterListParamsName]'s query parameters as
+// `url.Values`.
+func (r GPUBaremetalClusterListParamsName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by node count, e.g. `servers_count[gte]=2`,
+// `servers_count[gte]=2&servers_count[lt]=8`.
+type GPUBaremetalClusterListParamsServersCount struct {
+	// Strictly greater than, e.g. `[gt]=1`.
+	Gt param.Opt[int64] `query:"gt,omitzero" json:"-"`
+	// Greater than or equal, e.g. `[gte]=2`.
+	Gte param.Opt[int64] `query:"gte,omitzero" json:"-"`
+	// Strictly less than, e.g. `[lt]=8`.
+	Lt param.Opt[int64] `query:"lt,omitzero" json:"-"`
+	// Less than or equal, e.g. `[lte]=4`.
+	Lte param.Opt[int64] `query:"lte,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUBaremetalClusterListParamsServersCount]'s query
+// parameters as `url.Values`.
+func (r GPUBaremetalClusterListParamsServersCount) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by tag key regardless of value, e.g. `tag_key[contains]=team`.
+type GPUBaremetalClusterListParamsTagKey struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUBaremetalClusterListParamsTagKey]'s query parameters as
+// `url.Values`.
+func (r GPUBaremetalClusterListParamsTagKey) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by tag value regardless of key, e.g. `tag_value[prefix]=prod`.
+type GPUBaremetalClusterListParamsTagValue struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUBaremetalClusterListParamsTagValue]'s query parameters
+// as `url.Values`.
+func (r GPUBaremetalClusterListParamsTagValue) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by last-change time (UTC), e.g. `updated_at[gte]=2026-06-01T00:00:00Z`.
+type GPUBaremetalClusterListParamsUpdatedAt struct {
+	// Strictly after this timestamp, e.g. `[gt]=2026-01-01T00:00:00Z`.
+	Gt param.Opt[time.Time] `query:"gt,omitzero" format:"date-time" json:"-"`
+	// At or after this timestamp (inclusive), e.g. `[gte]=2026-01-01T00:00:00Z`.
+	Gte param.Opt[time.Time] `query:"gte,omitzero" format:"date-time" json:"-"`
+	// Strictly before this timestamp, e.g. `[lt]=2026-02-01T00:00:00Z`.
+	Lt param.Opt[time.Time] `query:"lt,omitzero" format:"date-time" json:"-"`
+	// At or before this timestamp (inclusive), e.g. `[lte]=2026-02-01T00:00:00Z`.
+	Lte param.Opt[time.Time] `query:"lte,omitzero" format:"date-time" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUBaremetalClusterListParamsUpdatedAt]'s query parameters
+// as `url.Values`.
+func (r GPUBaremetalClusterListParamsUpdatedAt) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,

@@ -7,9 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -161,6 +163,11 @@ type InstanceMetricListParams struct {
 	//
 	// Any of "day", "hour".
 	TimeUnit InstanceMetricsTimeUnit `json:"time_unit,omitzero" api:"required"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
 
@@ -170,4 +177,13 @@ func (r InstanceMetricListParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *InstanceMetricListParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// URLQuery serializes [InstanceMetricListParams]'s query parameters as
+// `url.Values`.
+func (r InstanceMetricListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }

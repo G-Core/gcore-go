@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
@@ -35,8 +36,12 @@ func TestGPUVirtualClusterNewWithOptionalParams(t *testing.T) {
 		ServersSettings: cloud.GPUVirtualClusterNewParamsServersSettings{
 			Interfaces: []cloud.GPUVirtualClusterNewParamsServersSettingsInterfaceUnion{{
 				OfExternal: &cloud.GPUVirtualClusterNewParamsServersSettingsInterfaceExternal{
-					IPFamily: "ipv4",
-					Name:     gcore.String("eth0"),
+					IPFamily:            "ipv4",
+					Name:                gcore.String("eth0"),
+					PortSecurityEnabled: gcore.Bool(true),
+					SecurityGroups: []cloud.GPUVirtualClusterNewParamsServersSettingsInterfaceExternalSecurityGroup{{
+						ID: "b4849ffa-89f2-45a1-951f-0ae5b7809d98",
+					}},
 				},
 			}},
 			Volumes: []cloud.GPUVirtualClusterNewParamsServersSettingsVolumeUnion{{
@@ -97,6 +102,24 @@ func TestGPUVirtualClusterUpdateWithOptionalParams(t *testing.T) {
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(7),
 			Name:      gcore.String("gpu-cluster-1"),
+			ServersSettings: cloud.GPUVirtualClusterUpdateParamsServersSettings{
+				Credentials: cloud.GPUVirtualClusterUpdateParamsServersSettingsCredentials{
+					SSHKeyName: gcore.String("my-key"),
+				},
+				UserData: gcore.String("eyJ0ZXN0IjogImRhdGEifQ=="),
+				Volumes: []cloud.GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion{{
+					OfNew: &cloud.GPUVirtualClusterUpdateParamsServersSettingsVolumeNew{
+						BootIndex:           1,
+						Name:                "my-data-disk",
+						Size:                100,
+						Type:                "cold",
+						DeleteOnTermination: gcore.Bool(true),
+						Tags: map[string]string{
+							"key1": "value1",
+						},
+					},
+				}},
+			},
 			Tags: cloud.TagUpdateMap{
 				"my-tag":           gcore.Ptr("my-tag-value"),
 				"my-tag-to-remove": nil,
@@ -127,8 +150,54 @@ func TestGPUVirtualClusterListWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.GPUVirtual.Clusters.List(context.TODO(), cloud.GPUVirtualClusterListParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(7),
-		Limit:     gcore.Int(10),
-		Offset:    gcore.Int(0),
+		CreatedAt: cloud.GPUVirtualClusterListParamsCreatedAt{
+			Gt:  gcore.Time(time.Now()),
+			Gte: gcore.Time(time.Now()),
+			Lt:  gcore.Time(time.Now()),
+			Lte: gcore.Time(time.Now()),
+		},
+		Flavor: cloud.GPUVirtualClusterListParamsFlavor{
+			Contains: []string{"string"},
+			Exact:    []string{"string"},
+			Prefix:   []string{"string"},
+			Suffix:   []string{"string"},
+		},
+		IDs:   []string{"1aaaab48-10d0-46d9-80cc-85209284ceb4"},
+		Limit: gcore.Int(10),
+		Name: cloud.GPUVirtualClusterListParamsName{
+			Contains: []string{"string"},
+			Exact:    []string{"string"},
+			Prefix:   []string{"string"},
+			Suffix:   []string{"string"},
+		},
+		Offset: gcore.Int(0),
+		ServersCount: cloud.GPUVirtualClusterListParamsServersCount{
+			Gt:  gcore.Int(0),
+			Gte: gcore.Int(0),
+			Lt:  gcore.Int(0),
+			Lte: gcore.Int(0),
+		},
+		TagKey: cloud.GPUVirtualClusterListParamsTagKey{
+			Contains: []string{"string"},
+			Exact:    []string{"string"},
+			Prefix:   []string{"string"},
+			Suffix:   []string{"string"},
+		},
+		TagValue: cloud.GPUVirtualClusterListParamsTagValue{
+			Contains: []string{"string"},
+			Exact:    []string{"string"},
+			Prefix:   []string{"string"},
+			Suffix:   []string{"string"},
+		},
+		Tags: map[string]string{
+			"env": "prod",
+		},
+		UpdatedAt: cloud.GPUVirtualClusterListParamsUpdatedAt{
+			Gt:  gcore.Time(time.Now()),
+			Gte: gcore.Time(time.Now()),
+			Lt:  gcore.Time(time.Now()),
+			Lte: gcore.Time(time.Now()),
+		},
 	})
 	if err != nil {
 		var apierr *gcore.Error

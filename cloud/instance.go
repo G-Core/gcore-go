@@ -416,7 +416,10 @@ func (r *InstanceService) AssignSecurityGroup(ctx context.Context, instanceID st
 	return err
 }
 
-// Disable port security for instance interface
+// Deprecated. Use PATCH /v1/ports/{`project_id`}/{`region_id`}/{`port_id`}
+// instead.
+//
+// Deprecated: deprecated
 func (r *InstanceService) DisablePortSecurity(ctx context.Context, portID string, body InstanceDisablePortSecurityParams, opts ...option.RequestOption) (res *InstanceInterface, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -442,7 +445,10 @@ func (r *InstanceService) DisablePortSecurity(ctx context.Context, portID string
 	return res, err
 }
 
-// Enable port security for instance interface
+// Deprecated. Use PATCH /v1/ports/{`project_id`}/{`region_id`}/{`port_id`}
+// instead.
+//
+// Deprecated: deprecated
 func (r *InstanceService) EnablePortSecurity(ctx context.Context, portID string, body InstanceEnablePortSecurityParams, opts ...option.RequestOption) (res *InstanceInterface, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -785,7 +791,9 @@ type InstanceNewParams struct {
 	// Parameters for the application template if creating the instance from an
 	// `apptemplate`.
 	Configuration map[string]any `json:"configuration,omitzero"`
-	// Specifies security group UUIDs to be applied to all instance network interfaces.
+	// Deprecated. Use per-interface `security_groups` inside `interfaces[]` instead.
+	// Cannot be combined with per-interface `security_groups`. If omitted everywhere,
+	// the project's default security group is applied.
 	SecurityGroups []InstanceNewParamsSecurityGroup `json:"security_groups,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
@@ -1090,7 +1098,9 @@ type InstanceNewParamsInterfaceExternal struct {
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// Specifies security group UUIDs to be applied to the instance network interface.
+	// Security group UUIDs applied to this interface. If omitted (or empty), the
+	// top-level `security_groups` value applies; if both are omitted, the project's
+	// default security group is applied.
 	SecurityGroups []InstanceNewParamsInterfaceExternalSecurityGroup `json:"security_groups,omitzero"`
 	// A public IP address will be assigned to the instance.
 	//
@@ -1137,7 +1147,9 @@ type InstanceNewParamsInterfaceSubnet struct {
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
 	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP InstanceNewParamsInterfaceSubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// Specifies security group UUIDs to be applied to the instance network interface.
+	// Security group UUIDs applied to this interface. If omitted (or empty), the
+	// top-level `security_groups` value applies; if both are omitted, the project's
+	// default security group is applied.
 	SecurityGroups []InstanceNewParamsInterfaceSubnetSecurityGroup `json:"security_groups,omitzero"`
 	// The instance will get an IP address from the selected network. If you choose to
 	// add a floating IP, the instance will be reachable from the internet. Otherwise,
@@ -1277,7 +1289,9 @@ type InstanceNewParamsInterfaceAnySubnet struct {
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// Specifies security group UUIDs to be applied to the instance network interface.
+	// Security group UUIDs applied to this interface. If omitted (or empty), the
+	// top-level `security_groups` value applies; if both are omitted, the project's
+	// default security group is applied.
 	SecurityGroups []InstanceNewParamsInterfaceAnySubnetSecurityGroup `json:"security_groups,omitzero"`
 	// Instance will be attached to a subnet with the largest count of free IPs.
 	//
@@ -1409,7 +1423,9 @@ type InstanceNewParamsInterfaceReservedFixedIP struct {
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
 	// Allows the instance to have a public IP that can be reached from the internet.
 	FloatingIP InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion `json:"floating_ip,omitzero"`
-	// Specifies security group UUIDs to be applied to the instance network interface.
+	// Security group UUIDs applied to this interface. If omitted (or empty), the
+	// top-level `security_groups` value applies; if both are omitted, the project's
+	// default security group is applied.
 	SecurityGroups []InstanceNewParamsInterfaceReservedFixedIPSecurityGroup `json:"security_groups,omitzero"`
 	// An existing available reserved fixed IP will be attached to the instance. If the
 	// reserved IP is not public and you choose to add a floating IP, the instance will
@@ -2296,14 +2312,18 @@ func (r *InstanceAssignSecurityGroupParamsPortsSecurityGroupName) UnmarshalJSON(
 }
 
 type InstanceDisablePortSecurityParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type InstanceEnablePortSecurityParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 

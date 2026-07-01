@@ -7,10 +7,12 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -37,19 +39,19 @@ func NewRegistryArtifactService(opts ...option.RequestOption) (r RegistryArtifac
 }
 
 // List all artifacts in a specific repository.
-func (r *RegistryArtifactService) List(ctx context.Context, repositoryName string, query RegistryArtifactListParams, opts ...option.RequestOption) (res *RegistryArtifactList, err error) {
+func (r *RegistryArtifactService) List(ctx context.Context, repositoryName string, params RegistryArtifactListParams, opts ...option.RequestOption) (res *RegistryArtifactList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !query.RegionID.Valid() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
@@ -57,8 +59,8 @@ func (r *RegistryArtifactService) List(ctx context.Context, repositoryName strin
 		err = errors.New("missing required repository_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories/%s/artifacts", query.ProjectID.Value, query.RegionID.Value, query.RegistryID, repositoryName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories/%s/artifacts", params.ProjectID.Value, params.RegionID.Value, params.RegistryID, repositoryName)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
 
@@ -155,7 +157,20 @@ type RegistryArtifactListParams struct {
 	ProjectID  param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	RegionID   param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	RegistryID int64            `path:"registry_id" api:"required" json:"-"`
+	// Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Offset value is used to exclude the first set of records from the result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
+}
+
+// URLQuery serializes [RegistryArtifactListParams]'s query parameters as
+// `url.Values`.
+func (r RegistryArtifactListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }
 
 type RegistryArtifactDeleteParams struct {

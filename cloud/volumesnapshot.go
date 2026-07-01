@@ -285,8 +285,10 @@ const (
 )
 
 type VolumeSnapshotNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Snapshot name
 	Name string `json:"name" api:"required"`
 	// Volume ID to make snapshot of

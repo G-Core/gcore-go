@@ -29,8 +29,7 @@ func TestVolumeNewWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.Volumes.New(context.TODO(), cloud.VolumeNewParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(1),
-		OfImage: &cloud.VolumeNewParamsBodyImage{
-			ImageID:              "169942e0-9b53-42df-95ef-1a8b6525c2bd",
+		OfNewVolume: &cloud.VolumeNewParamsBodyNewVolume{
 			Name:                 "volume-1",
 			Size:                 10,
 			AttachmentTag:        gcore.String("device-tag"),
@@ -39,7 +38,7 @@ func TestVolumeNewWithOptionalParams(t *testing.T) {
 			Tags: map[string]string{
 				"my-tag": "my-tag-value",
 			},
-			TypeName: "standard",
+			TypeName: "ssd_hiiops",
 		},
 	})
 	if err != nil {

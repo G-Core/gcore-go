@@ -31,13 +31,14 @@ func TestQuotaRequestNewWithOptionalParams(t *testing.T) {
 		Description: "Scale up mysql cluster",
 		RequestedLimits: cloud.QuotaRequestNewParamsRequestedLimits{
 			GlobalLimits: cloud.QuotaRequestNewParamsRequestedLimitsGlobalLimits{
-				InferenceCPUMillicoreCountLimit: gcore.Int(0),
-				InferenceGPUA100CountLimit:      gcore.Int(0),
-				InferenceGPUH100CountLimit:      gcore.Int(0),
-				InferenceGPUL40sCountLimit:      gcore.Int(0),
-				InferenceInstanceCountLimit:     gcore.Int(0),
-				KeypairCountLimit:               gcore.Int(100),
-				ProjectCountLimit:               gcore.Int(2),
+				InferenceCPUMillicoreCountLimit:      gcore.Int(0),
+				InferenceGPUA100CountLimit:           gcore.Int(0),
+				InferenceGPUH100CountLimit:           gcore.Int(0),
+				InferenceGPUL40sCountLimit:           gcore.Int(0),
+				InferenceInstanceCountLimit:          gcore.Int(0),
+				InferencePublicModelAPIKeyCountLimit: gcore.Int(0),
+				KeypairCountLimit:                    gcore.Int(100),
+				ProjectCountLimit:                    gcore.Int(2),
 			},
 			RegionalLimits: []cloud.QuotaRequestNewParamsRequestedLimitsRegionalLimit{{
 				BaremetalBasicCountLimit:          gcore.Int(0),

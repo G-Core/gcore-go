@@ -135,10 +135,10 @@ func TestNetworkRouterDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.Networks.Routers.Delete(
 		context.TODO(),
-		"router_id",
+		"ccd5b925-e35c-4611-a511-67ab503104c8",
 		cloud.NetworkRouterDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -195,10 +195,10 @@ func TestNetworkRouterDetachSubnet(t *testing.T) {
 	)
 	_, err := client.Cloud.Networks.Routers.DetachSubnet(
 		context.TODO(),
-		"router_id",
+		"ccd5b925-e35c-4611-a511-67ab503104c8",
 		cloud.NetworkRouterDetachSubnetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			SubnetID: cloud.SubnetIDParam{
 				SubnetID: "subnet_id",
 			},
@@ -227,10 +227,10 @@ func TestNetworkRouterGet(t *testing.T) {
 	)
 	_, err := client.Cloud.Networks.Routers.Get(
 		context.TODO(),
-		"router_id",
+		"ccd5b925-e35c-4611-a511-67ab503104c8",
 		cloud.NetworkRouterGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {

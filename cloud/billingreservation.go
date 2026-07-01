@@ -204,8 +204,20 @@ type BillingReservationListParams struct {
 	MetricName param.Opt[string] `query:"metric_name,omitzero" json:"-"`
 	// Region for reservation
 	RegionID param.Opt[int64] `query:"region_id,omitzero" json:"-"`
-	// Include inactive commits in the response
+	// Include inactive commits in the response. Only applies when no period is given;
+	// ignored when 'time_from'/'time_to' are supplied, since the period defines the
+	// window.
 	ShowInactive param.Opt[bool] `query:"show_inactive,omitzero" json:"-"`
+	// Start of the reservation period (ISO 8601). Must be supplied together with
+	// 'time_to'. When both are given, period-matched monthly pricing is returned and
+	// the period must be at most one month (31 days). When both are omitted, current
+	// pricing is returned.
+	TimeFrom param.Opt[time.Time] `query:"time_from,omitzero" format:"date-time" json:"-"`
+	// End of the reservation period (ISO 8601). Must be supplied together with
+	// 'time_from'. When both are given, period-matched monthly pricing is returned and
+	// the period must be at most one month (31 days). When both are omitted, current
+	// pricing is returned.
+	TimeTo param.Opt[time.Time] `query:"time_to,omitzero" format:"date-time" json:"-"`
 	// Order by field and direction.
 	//
 	// Any of "active_from.asc", "active_from.desc", "active_to.asc", "active_to.desc".

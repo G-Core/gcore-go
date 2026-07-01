@@ -75,6 +75,14 @@ func TestQuotaNotificationThresholdUpdateWithOptionalParams(t *testing.T) {
 						Limit: 10,
 						Usage: 8,
 					},
+					InferencePublicModelAPIKeyCountLimit: cloud.QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountLimit{
+						Limit: 10,
+						Usage: 8,
+					},
+					InferencePublicModelAPIKeyCountUsage: cloud.QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountUsage{
+						Limit: 10,
+						Usage: 8,
+					},
 					KeypairCountLimit: cloud.QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasKeypairCountLimit{
 						Limit: 10,
 						Usage: 8,

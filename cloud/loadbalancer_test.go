@@ -187,18 +187,20 @@ func TestLoadBalancerListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.LoadBalancers.List(context.TODO(), cloud.LoadBalancerListParams{
-		ProjectID:        gcore.Int(1),
-		RegionID:         gcore.Int(7),
-		AssignedFloating: gcore.Bool(true),
-		Limit:            gcore.Int(1000),
-		LoggingEnabled:   gcore.Bool(true),
-		Name:             gcore.String("lb_name"),
-		Offset:           gcore.Int(0),
-		OrderBy:          cloud.LoadBalancerListParamsOrderByNameAsc,
-		ShowStats:        gcore.Bool(true),
-		TagKey:           []string{"key1", "key2"},
-		TagKeyValue:      gcore.String("tag_key_value"),
-		WithDDOS:         gcore.Bool(true),
+		ProjectID:          gcore.Int(1),
+		RegionID:           gcore.Int(7),
+		AssignedFloating:   gcore.Bool(true),
+		Limit:              gcore.Int(1000),
+		LoggingEnabled:     gcore.Bool(true),
+		Name:               gcore.String("lb_name"),
+		Offset:             gcore.Int(0),
+		OperatingStatus:    cloud.LoadBalancerOperatingStatusDegraded,
+		OrderBy:            cloud.LoadBalancerListParamsOrderByNameAsc,
+		ProvisioningStatus: cloud.ProvisioningStatusActive,
+		ShowStats:          gcore.Bool(true),
+		TagKey:             []string{"key1", "key2"},
+		TagKeyValue:        gcore.String("tag_key_value"),
+		WithDDOS:           gcore.Bool(true),
 	})
 	if err != nil {
 		var apierr *gcore.Error

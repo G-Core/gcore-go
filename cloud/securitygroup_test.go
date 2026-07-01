@@ -75,8 +75,8 @@ func TestSecurityGroupUpdateWithOptionalParams(t *testing.T) {
 			Description: gcore.String("Some description"),
 			Name:        gcore.String("some_name"),
 			Rules: []cloud.SecurityGroupUpdateParamsRule{{
+				Direction:      "ingress",
 				Description:    gcore.String("Some description"),
-				Direction:      "egress",
 				Ethertype:      "IPv4",
 				PortRangeMax:   gcore.Int(80),
 				PortRangeMin:   gcore.Int(80),

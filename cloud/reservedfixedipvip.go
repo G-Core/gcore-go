@@ -89,8 +89,10 @@ func (r *IPWithSubnet) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPVipToggleParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// If reserved fixed IP should be a VIP
 	IsVip bool `json:"is_vip" api:"required"`
 	paramObj

@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestGPUVirtualClusterImageList(t *testing.T) {
+func TestGPUVirtualClusterImageListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -29,6 +29,8 @@ func TestGPUVirtualClusterImageList(t *testing.T) {
 	_, err := client.Cloud.GPUVirtual.Clusters.Images.List(context.TODO(), cloud.GPUVirtualClusterImageListParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(7),
+		Limit:     gcore.Int(1000),
+		Offset:    gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error

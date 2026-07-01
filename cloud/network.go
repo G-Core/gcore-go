@@ -117,6 +117,11 @@ func (r *NetworkService) NewAndPoll(ctx context.Context, params NetworkNewParams
 // Rename network and/or update network tags. The request will only process the
 // fields that are provided in the request body. Any fields that are not included
 // will remain unchanged.
+//
+// **Deprecated**: Use `PATCH /v2/networks/{project_id}/{region_id}/{network_id}`
+// instead.
+//
+// Deprecated: deprecated
 func (r *NetworkService) Update(ctx context.Context, networkID string, params NetworkUpdateParams, opts ...option.RequestOption) (res *Network, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

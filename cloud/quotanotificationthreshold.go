@@ -134,6 +134,10 @@ type NotificationThresholdLastMessageGlobalQuotas struct {
 	InferenceInstanceCountLimit NotificationThresholdLastMessageGlobalQuotasInferenceInstanceCountLimit `json:"inference_instance_count_limit"`
 	// Inference instance count usage
 	InferenceInstanceCountUsage NotificationThresholdLastMessageGlobalQuotasInferenceInstanceCountUsage `json:"inference_instance_count_usage"`
+	// Public model API keys count limit
+	InferencePublicModelAPIKeyCountLimit NotificationThresholdLastMessageGlobalQuotasInferencePublicModelAPIKeyCountLimit `json:"inference_public_model_api_key_count_limit"`
+	// Public model API keys count usage
+	InferencePublicModelAPIKeyCountUsage NotificationThresholdLastMessageGlobalQuotasInferencePublicModelAPIKeyCountUsage `json:"inference_public_model_api_key_count_usage"`
 	// SSH Keys Count limit
 	KeypairCountLimit NotificationThresholdLastMessageGlobalQuotasKeypairCountLimit `json:"keypair_count_limit"`
 	// SSH Keys Count usage
@@ -144,22 +148,24 @@ type NotificationThresholdLastMessageGlobalQuotas struct {
 	ProjectCountUsage NotificationThresholdLastMessageGlobalQuotasProjectCountUsage `json:"project_count_usage"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InferenceCPUMillicoreCountLimit respjson.Field
-		InferenceCPUMillicoreCountUsage respjson.Field
-		InferenceGPUA100CountLimit      respjson.Field
-		InferenceGPUA100CountUsage      respjson.Field
-		InferenceGPUH100CountLimit      respjson.Field
-		InferenceGPUH100CountUsage      respjson.Field
-		InferenceGPUL40sCountLimit      respjson.Field
-		InferenceGPUL40sCountUsage      respjson.Field
-		InferenceInstanceCountLimit     respjson.Field
-		InferenceInstanceCountUsage     respjson.Field
-		KeypairCountLimit               respjson.Field
-		KeypairCountUsage               respjson.Field
-		ProjectCountLimit               respjson.Field
-		ProjectCountUsage               respjson.Field
-		ExtraFields                     map[string]respjson.Field
-		raw                             string
+		InferenceCPUMillicoreCountLimit      respjson.Field
+		InferenceCPUMillicoreCountUsage      respjson.Field
+		InferenceGPUA100CountLimit           respjson.Field
+		InferenceGPUA100CountUsage           respjson.Field
+		InferenceGPUH100CountLimit           respjson.Field
+		InferenceGPUH100CountUsage           respjson.Field
+		InferenceGPUL40sCountLimit           respjson.Field
+		InferenceGPUL40sCountUsage           respjson.Field
+		InferenceInstanceCountLimit          respjson.Field
+		InferenceInstanceCountUsage          respjson.Field
+		InferencePublicModelAPIKeyCountLimit respjson.Field
+		InferencePublicModelAPIKeyCountUsage respjson.Field
+		KeypairCountLimit                    respjson.Field
+		KeypairCountUsage                    respjson.Field
+		ProjectCountLimit                    respjson.Field
+		ProjectCountUsage                    respjson.Field
+		ExtraFields                          map[string]respjson.Field
+		raw                                  string
 	} `json:"-"`
 }
 
@@ -396,6 +402,52 @@ func (r NotificationThresholdLastMessageGlobalQuotasInferenceInstanceCountUsage)
 	return r.JSON.raw
 }
 func (r *NotificationThresholdLastMessageGlobalQuotasInferenceInstanceCountUsage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Public model API keys count limit
+type NotificationThresholdLastMessageGlobalQuotasInferencePublicModelAPIKeyCountLimit struct {
+	// Сurrent quota limit
+	Limit int64 `json:"limit" api:"required"`
+	// Сurrent amount of resource used
+	Usage int64 `json:"usage" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Limit       respjson.Field
+		Usage       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NotificationThresholdLastMessageGlobalQuotasInferencePublicModelAPIKeyCountLimit) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *NotificationThresholdLastMessageGlobalQuotasInferencePublicModelAPIKeyCountLimit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Public model API keys count usage
+type NotificationThresholdLastMessageGlobalQuotasInferencePublicModelAPIKeyCountUsage struct {
+	// Сurrent quota limit
+	Limit int64 `json:"limit" api:"required"`
+	// Сurrent amount of resource used
+	Usage int64 `json:"usage" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Limit       respjson.Field
+		Usage       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NotificationThresholdLastMessageGlobalQuotasInferencePublicModelAPIKeyCountUsage) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *NotificationThresholdLastMessageGlobalQuotasInferencePublicModelAPIKeyCountUsage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3166,6 +3218,10 @@ type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotas struct {
 	InferenceInstanceCountLimit QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceInstanceCountLimit `json:"inference_instance_count_limit,omitzero"`
 	// Inference instance count usage
 	InferenceInstanceCountUsage QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceInstanceCountUsage `json:"inference_instance_count_usage,omitzero"`
+	// Public model API keys count limit
+	InferencePublicModelAPIKeyCountLimit QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountLimit `json:"inference_public_model_api_key_count_limit,omitzero"`
+	// Public model API keys count usage
+	InferencePublicModelAPIKeyCountUsage QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountUsage `json:"inference_public_model_api_key_count_usage,omitzero"`
 	// SSH Keys Count limit
 	KeypairCountLimit QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasKeypairCountLimit `json:"keypair_count_limit,omitzero"`
 	// SSH Keys Count usage
@@ -3372,6 +3428,44 @@ func (r QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceIn
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceInstanceCountUsage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Public model API keys count limit
+//
+// The properties Limit, Usage are required.
+type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountLimit struct {
+	// Сurrent quota limit
+	Limit int64 `json:"limit" api:"required"`
+	// Сurrent amount of resource used
+	Usage int64 `json:"usage" api:"required"`
+	paramObj
+}
+
+func (r QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountLimit) MarshalJSON() (data []byte, err error) {
+	type shadow QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountLimit
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountLimit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Public model API keys count usage
+//
+// The properties Limit, Usage are required.
+type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountUsage struct {
+	// Сurrent quota limit
+	Limit int64 `json:"limit" api:"required"`
+	// Сurrent amount of resource used
+	Usage int64 `json:"usage" api:"required"`
+	paramObj
+}
+
+func (r QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountUsage) MarshalJSON() (data []byte, err error) {
+	type shadow QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountUsage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountUsage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

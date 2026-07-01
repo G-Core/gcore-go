@@ -76,6 +76,11 @@ type BaremetalFlavorListParams struct {
 	// Optional. Set to true if flavor listing should include count of reserved
 	// resources in stock.
 	IncludeReservationStock param.Opt[bool] `query:"include_reservation_stock,omitzero" json:"-"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
 

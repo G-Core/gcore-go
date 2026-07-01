@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
@@ -36,8 +37,12 @@ func TestGPUBaremetalClusterNewWithOptionalParams(t *testing.T) {
 		ServersSettings: cloud.GPUBaremetalClusterNewParamsServersSettings{
 			Interfaces: []cloud.GPUBaremetalClusterNewParamsServersSettingsInterfaceUnion{{
 				OfExternal: &cloud.GPUBaremetalClusterNewParamsServersSettingsInterfaceExternal{
-					IPFamily: "ipv4",
-					Name:     gcore.String("eth0"),
+					IPFamily:            "ipv4",
+					Name:                gcore.String("eth0"),
+					PortSecurityEnabled: gcore.Bool(true),
+					SecurityGroups: []cloud.GPUBaremetalClusterNewParamsServersSettingsInterfaceExternalSecurityGroup{{
+						ID: "b4849ffa-89f2-45a1-951f-0ae5b7809d98",
+					}},
 				},
 			}},
 			Credentials: cloud.GPUBaremetalClusterNewParamsServersSettingsCredentials{
@@ -85,7 +90,14 @@ func TestGPUBaremetalClusterUpdateWithOptionalParams(t *testing.T) {
 		cloud.GPUBaremetalClusterUpdateParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(7),
+			ImageID:   gcore.String("3793c250-0b3b-4678-bab3-e11afbc29657"),
 			Name:      gcore.String("gpu-cluster-1"),
+			ServersSettings: cloud.GPUBaremetalClusterUpdateParamsServersSettings{
+				Credentials: cloud.GPUBaremetalClusterUpdateParamsServersSettingsCredentials{
+					SSHKeyName: gcore.String("my-key"),
+				},
+				UserData: gcore.String("eyJ0ZXN0IjogImRhdGEifQ=="),
+			},
 			Tags: cloud.TagUpdateMap{
 				"my-tag":           gcore.Ptr("my-tag-value"),
 				"my-tag-to-remove": nil,
@@ -116,9 +128,56 @@ func TestGPUBaremetalClusterListWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.GPUBaremetal.Clusters.List(context.TODO(), cloud.GPUBaremetalClusterListParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(7),
+		CreatedAt: cloud.GPUBaremetalClusterListParamsCreatedAt{
+			Gt:  gcore.Time(time.Now()),
+			Gte: gcore.Time(time.Now()),
+			Lt:  gcore.Time(time.Now()),
+			Lte: gcore.Time(time.Now()),
+		},
+		Flavor: cloud.GPUBaremetalClusterListParamsFlavor{
+			Contains: []string{"string"},
+			Exact:    []string{"string"},
+			Prefix:   []string{"string"},
+			Suffix:   []string{"string"},
+		},
+		IDs:       []string{"1aaaab48-10d0-46d9-80cc-85209284ceb4"},
+		ImageIDs:  []string{"8363acee-eb5d-475a-89b5-bd011d1e3c28"},
 		Limit:     gcore.Int(10),
-		ManagedBy: []string{"k8s"},
-		Offset:    gcore.Int(0),
+		ManagedBy: []string{"user"},
+		Name: cloud.GPUBaremetalClusterListParamsName{
+			Contains: []string{"string"},
+			Exact:    []string{"string"},
+			Prefix:   []string{"string"},
+			Suffix:   []string{"string"},
+		},
+		Offset: gcore.Int(0),
+		ServersCount: cloud.GPUBaremetalClusterListParamsServersCount{
+			Gt:  gcore.Int(0),
+			Gte: gcore.Int(0),
+			Lt:  gcore.Int(0),
+			Lte: gcore.Int(0),
+		},
+		TagKey: cloud.GPUBaremetalClusterListParamsTagKey{
+			Contains: []string{"string"},
+			Exact:    []string{"string"},
+			Prefix:   []string{"string"},
+			Suffix:   []string{"string"},
+		},
+		TagValue: cloud.GPUBaremetalClusterListParamsTagValue{
+			Contains: []string{"string"},
+			Exact:    []string{"string"},
+			Prefix:   []string{"string"},
+			Suffix:   []string{"string"},
+		},
+		Tags: map[string]string{
+			"env": "prod",
+		},
+		UpdatedAt: cloud.GPUBaremetalClusterListParamsUpdatedAt{
+			Gt:  gcore.Time(time.Now()),
+			Gte: gcore.Time(time.Now()),
+			Lt:  gcore.Time(time.Now()),
+			Lte: gcore.Time(time.Now()),
+		},
 	})
 	if err != nil {
 		var apierr *gcore.Error

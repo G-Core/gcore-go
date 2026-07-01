@@ -32,6 +32,8 @@ func TestK8SClusterNodeListWithOptionalParams(t *testing.T) {
 		cloud.K8SClusterNodeListParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(7),
+			Limit:     gcore.Int(1000),
+			Offset:    gcore.Int(0),
 			WithDDOS:  gcore.Bool(false),
 		},
 	)

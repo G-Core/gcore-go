@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestGPUBaremetalClusterImageList(t *testing.T) {
+func TestGPUBaremetalClusterImageListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -29,6 +29,8 @@ func TestGPUBaremetalClusterImageList(t *testing.T) {
 	_, err := client.Cloud.GPUBaremetal.Clusters.Images.List(context.TODO(), cloud.GPUBaremetalClusterImageListParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(7),
+		Limit:     gcore.Int(1000),
+		Offset:    gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error

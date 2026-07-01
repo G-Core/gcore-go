@@ -35,6 +35,8 @@ func TestBaremetalFlavorListWithOptionalParams(t *testing.T) {
 		IncludeCapacity:         gcore.Bool(true),
 		IncludePrices:           gcore.Bool(true),
 		IncludeReservationStock: gcore.Bool(true),
+		Limit:                   gcore.Int(0),
+		Offset:                  gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error

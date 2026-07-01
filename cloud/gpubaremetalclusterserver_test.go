@@ -201,7 +201,7 @@ func TestGPUBaremetalClusterServerRebuild(t *testing.T) {
 	}
 }
 
-func TestGPUBaremetalClusterServerReplace(t *testing.T) {
+func TestGPUBaremetalClusterServerReplaceWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -217,9 +217,10 @@ func TestGPUBaremetalClusterServerReplace(t *testing.T) {
 		context.TODO(),
 		"f1c1eeb6-1834-48c9-a7b0-daafce64872b",
 		cloud.GPUBaremetalClusterServerReplaceParams{
-			ProjectID: gcore.Int(1),
-			RegionID:  gcore.Int(7),
-			ClusterID: "1aaaab48-10d0-46d9-80cc-85209284ceb4",
+			ProjectID:       gcore.Int(1),
+			RegionID:        gcore.Int(7),
+			ClusterID:       "1aaaab48-10d0-46d9-80cc-85209284ceb4",
+			KeepIPAddresses: gcore.Bool(true),
 		},
 	)
 	if err != nil {

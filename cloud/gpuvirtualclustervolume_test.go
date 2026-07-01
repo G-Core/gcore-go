@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestGPUVirtualClusterVolumeList(t *testing.T) {
+func TestGPUVirtualClusterVolumeListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -32,6 +32,8 @@ func TestGPUVirtualClusterVolumeList(t *testing.T) {
 		cloud.GPUVirtualClusterVolumeListParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(7),
+			Limit:     gcore.Int(1000),
+			Offset:    gcore.Int(0),
 		},
 	)
 	if err != nil {

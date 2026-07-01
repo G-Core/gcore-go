@@ -236,10 +236,11 @@ type BlackholePort struct {
 	AlarmStart time.Time `json:"AlarmStart" api:"required" format:"date-time"`
 	// Current state of alarm
 	//
-	// Any of "ACK_REQ", "ALARM", "ARCHIVED", "CLEAR", "CLEARING", "CLEARING_FAIL",
-	// "END_GRACE", "END_WAIT", "MANUAL_CLEAR", "MANUAL_CLEARING",
-	// "MANUAL_CLEARING_FAIL", "MANUAL_MITIGATING", "MANUAL_STARTING",
-	// "MANUAL_STARTING_FAIL", "MITIGATING", "STARTING", "STARTING_FAIL", "START_WAIT",
+	// Any of "ACK_REQ", "ALARM", "ALARM_FAIL", "ARCHIVED", "CLEAR", "CLEARING",
+	// "CLEARING_FAIL", "CLEAR_FAIL", "END_GRACE", "END_WAIT", "MANUAL_CLEAR",
+	// "MANUAL_CLEARING", "MANUAL_CLEARING_FAIL", "MANUAL_CLEAR_FAIL",
+	// "MANUAL_MITIGATING", "MANUAL_START", "MANUAL_STARTING", "MANUAL_STARTING_FAIL",
+	// "MANUAL_START_FAIL", "MITIGATING", "STARTING", "STARTING_FAIL", "START_WAIT",
 	// "ack_req", "alarm", "archived", "clear", "clearing", "clearing_fail",
 	// "end_grace", "end_wait", "manual_clear", "manual_clearing",
 	// "manual_clearing_fail", "manual_mitigating", "manual_starting",
@@ -275,18 +276,23 @@ type BlackholePortAlarmState string
 const (
 	BlackholePortAlarmStateAckReqUppercase             BlackholePortAlarmState = "ACK_REQ"
 	BlackholePortAlarmStateAlarmUppercase              BlackholePortAlarmState = "ALARM"
+	BlackholePortAlarmStateAlarmFail                   BlackholePortAlarmState = "ALARM_FAIL"
 	BlackholePortAlarmStateArchivedUppercase           BlackholePortAlarmState = "ARCHIVED"
 	BlackholePortAlarmStateClearUppercase              BlackholePortAlarmState = "CLEAR"
 	BlackholePortAlarmStateClearingUppercase           BlackholePortAlarmState = "CLEARING"
 	BlackholePortAlarmStateClearingFailUppercase       BlackholePortAlarmState = "CLEARING_FAIL"
+	BlackholePortAlarmStateClearFail                   BlackholePortAlarmState = "CLEAR_FAIL"
 	BlackholePortAlarmStateEndGraceUppercase           BlackholePortAlarmState = "END_GRACE"
 	BlackholePortAlarmStateEndWaitUppercase            BlackholePortAlarmState = "END_WAIT"
 	BlackholePortAlarmStateManualClearUppercase        BlackholePortAlarmState = "MANUAL_CLEAR"
 	BlackholePortAlarmStateManualClearingUppercase     BlackholePortAlarmState = "MANUAL_CLEARING"
 	BlackholePortAlarmStateManualClearingFailUppercase BlackholePortAlarmState = "MANUAL_CLEARING_FAIL"
+	BlackholePortAlarmStateManualClearFail             BlackholePortAlarmState = "MANUAL_CLEAR_FAIL"
 	BlackholePortAlarmStateManualMitigatingUppercase   BlackholePortAlarmState = "MANUAL_MITIGATING"
+	BlackholePortAlarmStateManualStart                 BlackholePortAlarmState = "MANUAL_START"
 	BlackholePortAlarmStateManualStartingUppercase     BlackholePortAlarmState = "MANUAL_STARTING"
 	BlackholePortAlarmStateManualStartingFailUppercase BlackholePortAlarmState = "MANUAL_STARTING_FAIL"
+	BlackholePortAlarmStateManualStartFail             BlackholePortAlarmState = "MANUAL_START_FAIL"
 	BlackholePortAlarmStateMitigatingUppercase         BlackholePortAlarmState = "MITIGATING"
 	BlackholePortAlarmStateStartingUppercase           BlackholePortAlarmState = "STARTING"
 	BlackholePortAlarmStateStartingFailUppercase       BlackholePortAlarmState = "STARTING_FAIL"
@@ -716,6 +722,11 @@ type GPUImage struct {
 	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the image was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Version of the installed CUDA toolkit
+	CudaToolkitVersion string `json:"cuda_toolkit_version" api:"required"`
+	// Disk format of the stored image (e.g. `raw`, `qcow2`). `cow_format=true` ->
+	// `raw`, `cow_format=false` -> `qcow2`.
+	DiskFormat string `json:"disk_format" api:"required"`
 	// Minimal boot volume required
 	MinDisk int64 `json:"min_disk" api:"required"`
 	// Minimal VM RAM required
@@ -742,6 +753,10 @@ type GPUImage struct {
 	GPUDriverType string `json:"gpu_driver_type" api:"nullable"`
 	// Version of the installed GPU driver
 	GPUDriverVersion string `json:"gpu_driver_version" api:"nullable"`
+	// Specifies the type of firmware with which to boot the guest.
+	//
+	// Any of "bios", "uefi".
+	HwFirmwareType GPUImageHwFirmwareType `json:"hw_firmware_type" api:"nullable"`
 	// OS Distribution
 	OsDistro string `json:"os_distro" api:"nullable"`
 	// The operating system installed on the image
@@ -758,27 +773,30 @@ type GPUImage struct {
 	TaskID string `json:"task_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID               respjson.Field
-		CreatedAt        respjson.Field
-		MinDisk          respjson.Field
-		MinRam           respjson.Field
-		Name             respjson.Field
-		Status           respjson.Field
-		Tags             respjson.Field
-		UpdatedAt        respjson.Field
-		Visibility       respjson.Field
-		Architecture     respjson.Field
-		GPUDriver        respjson.Field
-		GPUDriverType    respjson.Field
-		GPUDriverVersion respjson.Field
-		OsDistro         respjson.Field
-		OsType           respjson.Field
-		OsVersion        respjson.Field
-		Size             respjson.Field
-		SSHKey           respjson.Field
-		TaskID           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		ID                 respjson.Field
+		CreatedAt          respjson.Field
+		CudaToolkitVersion respjson.Field
+		DiskFormat         respjson.Field
+		MinDisk            respjson.Field
+		MinRam             respjson.Field
+		Name               respjson.Field
+		Status             respjson.Field
+		Tags               respjson.Field
+		UpdatedAt          respjson.Field
+		Visibility         respjson.Field
+		Architecture       respjson.Field
+		GPUDriver          respjson.Field
+		GPUDriverType      respjson.Field
+		GPUDriverVersion   respjson.Field
+		HwFirmwareType     respjson.Field
+		OsDistro           respjson.Field
+		OsType             respjson.Field
+		OsVersion          respjson.Field
+		Size               respjson.Field
+		SSHKey             respjson.Field
+		TaskID             respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
@@ -787,6 +805,14 @@ func (r GPUImage) RawJSON() string { return r.JSON.raw }
 func (r *GPUImage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Specifies the type of firmware with which to boot the guest.
+type GPUImageHwFirmwareType string
+
+const (
+	GPUImageHwFirmwareTypeBios GPUImageHwFirmwareType = "bios"
+	GPUImageHwFirmwareTypeUefi GPUImageHwFirmwareType = "uefi"
+)
 
 type GPUImageList struct {
 	// Number of objects
@@ -2042,6 +2068,8 @@ func (r *Route) UnmarshalJSON(data []byte) error {
 }
 
 type Subnet struct {
+	// Subnet id.
+	ID string `json:"id" api:"required" format:"uuid4"`
 	// CIDR
 	Cidr string `json:"cidr" api:"required" format:"ipvanynetwork"`
 	// Datetime when the subnet was created
@@ -2070,8 +2098,6 @@ type Subnet struct {
 	Tags []Tag `json:"tags" api:"required"`
 	// Datetime when the subnet was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// Subnet id.
-	ID string `json:"id" api:"nullable" format:"uuid4"`
 	// Number of available ips in subnet
 	AvailableIPs int64 `json:"available_ips" api:"nullable"`
 	// Task that created this entity
@@ -2095,6 +2121,7 @@ type Subnet struct {
 	TotalIPs int64 `json:"total_ips" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID             respjson.Field
 		Cidr           respjson.Field
 		CreatedAt      respjson.Field
 		EnableDhcp     respjson.Field
@@ -2106,7 +2133,6 @@ type Subnet struct {
 		RegionID       respjson.Field
 		Tags           respjson.Field
 		UpdatedAt      respjson.Field
-		ID             respjson.Field
 		AvailableIPs   respjson.Field
 		CreatorTaskID  respjson.Field
 		DNSNameservers respjson.Field

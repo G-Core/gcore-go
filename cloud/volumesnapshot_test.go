@@ -27,8 +27,8 @@ func TestVolumeSnapshotNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.VolumeSnapshots.New(context.TODO(), cloud.VolumeSnapshotNewParams{
-		ProjectID:   gcore.Int(0),
-		RegionID:    gcore.Int(0),
+		ProjectID:   gcore.Int(1),
+		RegionID:    gcore.Int(1),
 		Name:        "my-snapshot",
 		VolumeID:    "67baa7d1-08ea-4fc5-bef2-6b2465b7d227",
 		Description: gcore.String("Snapshot description"),

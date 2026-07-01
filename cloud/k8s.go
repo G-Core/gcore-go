@@ -7,9 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -42,24 +44,24 @@ func NewK8SService(opts ...option.RequestOption) (r K8SService) {
 }
 
 // List available k8s cluster versions for creation
-func (r *K8SService) ListVersions(ctx context.Context, query K8SListVersionsParams, opts ...option.RequestOption) (res *K8SClusterVersionList, err error) {
+func (r *K8SService) ListVersions(ctx context.Context, params K8SListVersionsParams, opts ...option.RequestOption) (res *K8SClusterVersionList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !query.RegionID.Valid() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v2/k8s/%v/%v/create_versions", query.ProjectID.Value, query.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	path := fmt.Sprintf("cloud/v2/k8s/%v/%v/create_versions", params.ProjectID.Value, params.RegionID.Value)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
 
@@ -105,5 +107,18 @@ type K8SListVersionsParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
+}
+
+// URLQuery serializes [K8SListVersionsParams]'s query parameters as `url.Values`.
+func (r K8SListVersionsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }

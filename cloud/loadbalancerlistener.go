@@ -322,7 +322,7 @@ type LoadBalancerListenerNewParams struct {
 	// Add headers X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto to requests.
 	// Only used with HTTP or `TERMINATED_HTTPS` protocols.
 	InsertXForwarded param.Opt[bool] `json:"insert_x_forwarded,omitzero"`
-	// Network CIDRs from which service will be accessible
+	// Network CIDRs from which service will be accessible. Order-insensitive.
 	AllowedCidrs []string `json:"allowed_cidrs,omitzero" format:"ipvanynetwork"`
 	// ID of the secret where PKCS12 file is stored for `TERMINATED_HTTPS` or
 	// PROMETHEUS listener
@@ -395,7 +395,7 @@ type LoadBalancerListenerUpdateParams struct {
 	ConnectionLimit param.Opt[int64] `json:"connection_limit,omitzero"`
 	// Load balancer listener name
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Network CIDRs from which service will be accessible
+	// Network CIDRs from which service will be accessible. Order-insensitive.
 	AllowedCidrs []string `json:"allowed_cidrs,omitzero" format:"ipvanynetwork"`
 	// List of secret's ID containing PKCS12 format certificate/key bundfles for
 	// `TERMINATED_HTTPS` or PROMETHEUS listeners

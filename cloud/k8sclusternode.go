@@ -98,6 +98,11 @@ type K8SClusterNodeListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Include DDoS profile information if set to true. Default is false.
 	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
 	paramObj

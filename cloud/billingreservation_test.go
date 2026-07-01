@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
@@ -31,6 +32,8 @@ func TestBillingReservationListWithOptionalParams(t *testing.T) {
 		OrderBy:      cloud.BillingReservationListParamsOrderByActiveFromAsc,
 		RegionID:     gcore.Int(0),
 		ShowInactive: gcore.Bool(true),
+		TimeFrom:     gcore.Time(time.Now()),
+		TimeTo:       gcore.Time(time.Now()),
 	})
 	if err != nil {
 		var apierr *gcore.Error

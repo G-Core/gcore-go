@@ -28,10 +28,10 @@ func TestReservedFixedIPVipToggle(t *testing.T) {
 	)
 	_, err := client.Cloud.ReservedFixedIPs.Vip.Toggle(
 		context.TODO(),
-		"port_id",
+		"ac177f1f-eb04-42c4-9864-e7d6486813af",
 		cloud.ReservedFixedIPVipToggleParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(4),
 			IsVip:     true,
 		},
 	)

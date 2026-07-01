@@ -181,24 +181,24 @@ func (r *K8SClusterService) UpdateAndPoll(ctx context.Context, clusterName strin
 }
 
 // List k8s clusters
-func (r *K8SClusterService) List(ctx context.Context, query K8SClusterListParams, opts ...option.RequestOption) (res *K8SClusterList, err error) {
+func (r *K8SClusterService) List(ctx context.Context, params K8SClusterListParams, opts ...option.RequestOption) (res *K8SClusterList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !query.RegionID.Valid() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v", query.ProjectID.Value, query.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v", params.ProjectID.Value, params.RegionID.Value)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
 
@@ -304,19 +304,19 @@ func (r *K8SClusterService) GetCertificate(ctx context.Context, clusterName stri
 }
 
 // List available k8s cluster versions for upgrade
-func (r *K8SClusterService) ListVersionsForUpgrade(ctx context.Context, clusterName string, query K8SClusterListVersionsForUpgradeParams, opts ...option.RequestOption) (res *K8SClusterVersionList, err error) {
+func (r *K8SClusterService) ListVersionsForUpgrade(ctx context.Context, clusterName string, params K8SClusterListVersionsForUpgradeParams, opts ...option.RequestOption) (res *K8SClusterVersionList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !query.RegionID.Valid() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
@@ -324,8 +324,8 @@ func (r *K8SClusterService) ListVersionsForUpgrade(ctx context.Context, clusterN
 		err = errors.New("missing required cluster_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/upgrade_versions", query.ProjectID.Value, query.RegionID.Value, clusterName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/upgrade_versions", params.ProjectID.Value, params.RegionID.Value, clusterName)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
 
@@ -680,6 +680,9 @@ func (r *K8SClusterCni) UnmarshalJSON(data []byte) error {
 
 // Cilium settings
 type K8SClusterCniCilium struct {
+	// Whether Cilium manages networking exclusively. Set to `false` to allow other CNI
+	// components to coexist with Cilium.
+	CniExclusive bool `json:"cni_exclusive"`
 	// Wireguard encryption
 	Encryption bool `json:"encryption"`
 	// Hubble Relay
@@ -706,6 +709,7 @@ type K8SClusterCniCilium struct {
 	Tunnel string `json:"tunnel"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		CniExclusive   respjson.Field
 		Encryption     respjson.Field
 		HubbleRelay    respjson.Field
 		HubbleUi       respjson.Field
@@ -987,6 +991,8 @@ type K8SClusterNewParamsPool struct {
 	ServergroupPolicy string `json:"servergroup_policy,omitzero"`
 	// Taints applied to the cluster pool
 	Taints map[string]string `json:"taints,omitzero"`
+	// Security group IDs applied to the cluster pool nodes
+	SecurityGroupIDs []string `json:"security_group_ids,omitzero" format:"uuid4"`
 	paramObj
 }
 
@@ -1191,6 +1197,9 @@ func (r *K8SClusterNewParamsCni) UnmarshalJSON(data []byte) error {
 
 // Cilium settings
 type K8SClusterNewParamsCniCilium struct {
+	// Whether Cilium manages networking exclusively. Set to `false` to allow other CNI
+	// components to coexist with Cilium.
+	CniExclusive param.Opt[bool] `json:"cni_exclusive,omitzero"`
 	// Wireguard encryption
 	Encryption param.Opt[bool] `json:"encryption,omitzero"`
 	// Hubble Relay
@@ -1605,6 +1614,9 @@ func (r *K8SClusterUpdateParamsCni) UnmarshalJSON(data []byte) error {
 
 // Cilium settings
 type K8SClusterUpdateParamsCniCilium struct {
+	// Whether Cilium manages networking exclusively. Set to `false` to allow other CNI
+	// components to coexist with Cilium.
+	CniExclusive param.Opt[bool] `json:"cni_exclusive,omitzero"`
 	// Wireguard encryption
 	Encryption param.Opt[bool] `json:"encryption,omitzero"`
 	// Hubble Relay
@@ -1705,7 +1717,20 @@ type K8SClusterListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
+}
+
+// URLQuery serializes [K8SClusterListParams]'s query parameters as `url.Values`.
+func (r K8SClusterListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }
 
 type K8SClusterDeleteParams struct {
@@ -1747,7 +1772,21 @@ type K8SClusterListVersionsForUpgradeParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
+}
+
+// URLQuery serializes [K8SClusterListVersionsForUpgradeParams]'s query parameters
+// as `url.Values`.
+func (r K8SClusterListVersionsForUpgradeParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }
 
 type K8SClusterUpgradeParams struct {

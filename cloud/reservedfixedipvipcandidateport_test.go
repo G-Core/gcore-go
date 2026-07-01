@@ -28,10 +28,10 @@ func TestReservedFixedIPVipCandidatePortList(t *testing.T) {
 	)
 	_, err := client.Cloud.ReservedFixedIPs.Vip.CandidatePorts.List(
 		context.TODO(),
-		"port_id",
+		"ac177f1f-eb04-42c4-9864-e7d6486813af",
 		cloud.ReservedFixedIPVipCandidatePortListParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(4),
 		},
 	)
 	if err != nil {

@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestRegistryArtifactList(t *testing.T) {
+func TestRegistryArtifactListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -33,6 +33,8 @@ func TestRegistryArtifactList(t *testing.T) {
 			ProjectID:  gcore.Int(0),
 			RegionID:   gcore.Int(0),
 			RegistryID: 0,
+			Limit:      gcore.Int(0),
+			Offset:     gcore.Int(0),
 		},
 	)
 	if err != nil {

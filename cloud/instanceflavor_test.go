@@ -27,12 +27,14 @@ func TestInstanceFlavorListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Instances.Flavors.List(context.TODO(), cloud.InstanceFlavorListParams{
-		ProjectID:      gcore.Int(0),
-		RegionID:       gcore.Int(0),
+		ProjectID:      gcore.Int(1),
+		RegionID:       gcore.Int(7),
 		Disabled:       gcore.Bool(true),
 		ExcludeLinux:   gcore.Bool(true),
 		ExcludeWindows: gcore.Bool(true),
 		IncludePrices:  gcore.Bool(true),
+		Limit:          gcore.Int(1000),
+		Offset:         gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error

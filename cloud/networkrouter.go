@@ -760,8 +760,10 @@ func (r NetworkRouterListParams) URLQuery() (v url.Values, err error) {
 }
 
 type NetworkRouterDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
@@ -787,9 +789,11 @@ func (r *NetworkRouterAttachSubnetParams) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkRouterDetachSubnetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	SubnetID  SubnetIDParam
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	SubnetID SubnetIDParam
 	paramObj
 }
 
@@ -801,7 +805,9 @@ func (r *NetworkRouterDetachSubnetParams) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkRouterGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

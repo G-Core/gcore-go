@@ -7,10 +7,12 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -37,19 +39,19 @@ func NewGPUVirtualClusterInterfaceService(opts ...option.RequestOption) (r GPUVi
 }
 
 // List all network interfaces for servers in a virtual GPU cluster.
-func (r *GPUVirtualClusterInterfaceService) List(ctx context.Context, clusterID string, query GPUVirtualClusterInterfaceListParams, opts ...option.RequestOption) (res *GPUVirtualInterfaceList, err error) {
+func (r *GPUVirtualClusterInterfaceService) List(ctx context.Context, clusterID string, params GPUVirtualClusterInterfaceListParams, opts ...option.RequestOption) (res *GPUVirtualInterfaceList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !query.RegionID.Valid() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
@@ -57,8 +59,8 @@ func (r *GPUVirtualClusterInterfaceService) List(ctx context.Context, clusterID 
 		err = errors.New("missing required cluster_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s/interfaces", query.ProjectID.Value, query.RegionID.Value, clusterID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s/interfaces", params.ProjectID.Value, params.RegionID.Value, clusterID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
 
@@ -315,5 +317,19 @@ type GPUVirtualClusterInterfaceListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
+}
+
+// URLQuery serializes [GPUVirtualClusterInterfaceListParams]'s query parameters as
+// `url.Values`.
+func (r GPUVirtualClusterInterfaceListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }

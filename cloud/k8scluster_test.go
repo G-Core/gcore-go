@@ -49,6 +49,7 @@ func TestK8SClusterNewWithOptionalParams(t *testing.T) {
 				"my-label": "foo",
 			},
 			MaxNodeCount:      gcore.Int(5),
+			SecurityGroupIDs:  []string{"e6ea8f35-82ce-4fb2-b51c-6a24a3a23bce"},
 			ServergroupPolicy: "affinity",
 			Taints: map[string]string{
 				"my-taint": "bar:NoSchedule",
@@ -82,6 +83,7 @@ func TestK8SClusterNewWithOptionalParams(t *testing.T) {
 		},
 		Cni: cloud.K8SClusterNewParamsCni{
 			Cilium: cloud.K8SClusterNewParamsCniCilium{
+				CniExclusive:   gcore.Bool(true),
 				Encryption:     gcore.Bool(true),
 				HubbleRelay:    gcore.Bool(true),
 				HubbleUi:       gcore.Bool(true),
@@ -183,6 +185,7 @@ func TestK8SClusterUpdateWithOptionalParams(t *testing.T) {
 			},
 			Cni: cloud.K8SClusterUpdateParamsCni{
 				Cilium: cloud.K8SClusterUpdateParamsCniCilium{
+					CniExclusive:   gcore.Bool(true),
 					Encryption:     gcore.Bool(true),
 					HubbleRelay:    gcore.Bool(true),
 					HubbleUi:       gcore.Bool(true),
@@ -226,7 +229,7 @@ func TestK8SClusterUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestK8SClusterList(t *testing.T) {
+func TestK8SClusterListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -241,6 +244,8 @@ func TestK8SClusterList(t *testing.T) {
 	_, err := client.Cloud.K8S.Clusters.List(context.TODO(), cloud.K8SClusterListParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(7),
+		Limit:     gcore.Int(1000),
+		Offset:    gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -339,7 +344,7 @@ func TestK8SClusterGetCertificate(t *testing.T) {
 	}
 }
 
-func TestK8SClusterListVersionsForUpgrade(t *testing.T) {
+func TestK8SClusterListVersionsForUpgradeWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -357,6 +362,8 @@ func TestK8SClusterListVersionsForUpgrade(t *testing.T) {
 		cloud.K8SClusterListVersionsForUpgradeParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(7),
+			Limit:     gcore.Int(1000),
+			Offset:    gcore.Int(0),
 		},
 	)
 	if err != nil {

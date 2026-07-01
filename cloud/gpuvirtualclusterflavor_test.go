@@ -31,6 +31,8 @@ func TestGPUVirtualClusterFlavorListWithOptionalParams(t *testing.T) {
 		RegionID:      gcore.Int(7),
 		HideDisabled:  gcore.Bool(true),
 		IncludePrices: gcore.Bool(true),
+		Limit:         gcore.Int(1000),
+		Offset:        gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error

@@ -311,7 +311,9 @@ type LoadBalancerL7PolicyNewParamsBodyRedirectToURL struct {
 	// Requests matching this policy will be redirected to the specified URL or Prefix
 	// URL with the HTTP response code. Valid options are 301, 302, 303, 307, or 308.
 	// Default is 302.
-	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
+	//
+	// Any of 301, 302, 303, 307, 308.
+	RedirectHTTPCode int64 `json:"redirect_http_code,omitzero"`
 	// A list of simple strings assigned to the resource.
 	Tags []string `json:"tags,omitzero"`
 	// Action
@@ -329,6 +331,12 @@ func (r *LoadBalancerL7PolicyNewParamsBodyRedirectToURL) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[LoadBalancerL7PolicyNewParamsBodyRedirectToURL](
+		"redirect_http_code", 301, 302, 303, 307, 308,
+	)
+}
+
 // The properties Action, ListenerID, RedirectPrefix are required.
 type LoadBalancerL7PolicyNewParamsBodyRedirectPrefix struct {
 	// Listener ID
@@ -342,7 +350,9 @@ type LoadBalancerL7PolicyNewParamsBodyRedirectPrefix struct {
 	// Requests matching this policy will be redirected to the specified URL or Prefix
 	// URL with the HTTP response code. Valid options are 301, 302, 303, 307, or 308.
 	// Default is 302.
-	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
+	//
+	// Any of 301, 302, 303, 307, 308.
+	RedirectHTTPCode int64 `json:"redirect_http_code,omitzero"`
 	// A list of simple strings assigned to the resource.
 	Tags []string `json:"tags,omitzero"`
 	// Action
@@ -358,6 +368,12 @@ func (r LoadBalancerL7PolicyNewParamsBodyRedirectPrefix) MarshalJSON() (data []b
 }
 func (r *LoadBalancerL7PolicyNewParamsBodyRedirectPrefix) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[LoadBalancerL7PolicyNewParamsBodyRedirectPrefix](
+		"redirect_http_code", 301, 302, 303, 307, 308,
+	)
 }
 
 // The properties Action, ListenerID, RedirectPoolID are required.
@@ -453,7 +469,9 @@ type LoadBalancerL7PolicyUpdateParamsBodyRedirectToURL struct {
 	// Requests matching this policy will be redirected to the specified URL or Prefix
 	// URL with the HTTP response code. Valid if action is `REDIRECT_TO_URL` or
 	// `REDIRECT_PREFIX`. Valid options are 301, 302, 303, 307, or 308. Default is 302.
-	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
+	//
+	// Any of 301, 302, 303, 307, 308.
+	RedirectHTTPCode int64 `json:"redirect_http_code,omitzero"`
 	// A list of simple strings assigned to the resource.
 	Tags []string `json:"tags,omitzero"`
 	// Action
@@ -471,6 +489,12 @@ func (r *LoadBalancerL7PolicyUpdateParamsBodyRedirectToURL) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[LoadBalancerL7PolicyUpdateParamsBodyRedirectToURL](
+		"redirect_http_code", 301, 302, 303, 307, 308,
+	)
+}
+
 // The properties Action, RedirectPrefix are required.
 type LoadBalancerL7PolicyUpdateParamsBodyRedirectPrefix struct {
 	// Requests matching this policy will be redirected to this Prefix URL.
@@ -482,7 +506,9 @@ type LoadBalancerL7PolicyUpdateParamsBodyRedirectPrefix struct {
 	// Requests matching this policy will be redirected to the specified URL or Prefix
 	// URL with the HTTP response code. Valid options are 301, 302, 303, 307, or 308.
 	// Default is 302.
-	RedirectHTTPCode param.Opt[int64] `json:"redirect_http_code,omitzero"`
+	//
+	// Any of 301, 302, 303, 307, 308.
+	RedirectHTTPCode int64 `json:"redirect_http_code,omitzero"`
 	// A list of simple strings assigned to the resource.
 	Tags []string `json:"tags,omitzero"`
 	// Action
@@ -498,6 +524,12 @@ func (r LoadBalancerL7PolicyUpdateParamsBodyRedirectPrefix) MarshalJSON() (data 
 }
 func (r *LoadBalancerL7PolicyUpdateParamsBodyRedirectPrefix) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[LoadBalancerL7PolicyUpdateParamsBodyRedirectPrefix](
+		"redirect_http_code", 301, 302, 303, 307, 308,
+	)
 }
 
 // The properties Action, RedirectPoolID are required.

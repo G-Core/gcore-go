@@ -70,6 +70,11 @@ type K8SFlavorListParams struct {
 	IncludeCapacity param.Opt[bool] `query:"include_capacity,omitzero" json:"-"`
 	// Set to true to include flavor prices. Default is False.
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
 

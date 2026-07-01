@@ -7,9 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
@@ -138,19 +140,19 @@ func (r *K8SClusterPoolService) Update(ctx context.Context, poolName string, par
 }
 
 // List k8s cluster pools
-func (r *K8SClusterPoolService) List(ctx context.Context, clusterName string, query K8SClusterPoolListParams, opts ...option.RequestOption) (res *K8SClusterPoolList, err error) {
+func (r *K8SClusterPoolService) List(ctx context.Context, clusterName string, params K8SClusterPoolListParams, opts ...option.RequestOption) (res *K8SClusterPoolList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !query.RegionID.Valid() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
@@ -158,8 +160,8 @@ func (r *K8SClusterPoolService) List(ctx context.Context, clusterName string, qu
 		err = errors.New("missing required cluster_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/pools", query.ProjectID.Value, query.RegionID.Value, clusterName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/pools", params.ProjectID.Value, params.RegionID.Value, clusterName)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
 
@@ -371,6 +373,8 @@ type K8SClusterPool struct {
 	Name string `json:"name" api:"required"`
 	// Node count in the cluster pool
 	NodeCount int64 `json:"node_count" api:"required"`
+	// Security group IDs applied to the cluster pool nodes
+	SecurityGroupIDs []string `json:"security_group_ids" api:"required"`
 	// Status of the cluster pool
 	Status string `json:"status" api:"required"`
 	// Taints applied to the cluster pool
@@ -397,6 +401,7 @@ type K8SClusterPool struct {
 		MinNodeCount       respjson.Field
 		Name               respjson.Field
 		NodeCount          respjson.Field
+		SecurityGroupIDs   respjson.Field
 		Status             respjson.Field
 		Taints             respjson.Field
 		ServergroupID      respjson.Field
@@ -675,6 +680,8 @@ type K8SClusterPoolNewParams struct {
 	ServergroupPolicy K8SClusterPoolNewParamsServergroupPolicy `json:"servergroup_policy,omitzero"`
 	// Taints applied to the cluster pool
 	Taints map[string]string `json:"taints,omitzero"`
+	// Security group IDs applied to the cluster pool nodes
+	SecurityGroupIDs []string `json:"security_group_ids,omitzero" format:"uuid4"`
 	paramObj
 }
 
@@ -726,6 +733,9 @@ type K8SClusterPoolUpdateParams struct {
 	Labels map[string]string `json:"labels,omitzero"`
 	// Taints applied to the cluster pool
 	Taints map[string]string `json:"taints,omitzero"`
+	// Security group IDs applied to the cluster pool nodes. Omit the field to leave
+	// unchanged; pass an empty list to clear.
+	SecurityGroupIDs []string `json:"security_group_ids,omitzero" format:"uuid4"`
 	paramObj
 }
 
@@ -742,7 +752,21 @@ type K8SClusterPoolListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
+}
+
+// URLQuery serializes [K8SClusterPoolListParams]'s query parameters as
+// `url.Values`.
+func (r K8SClusterPoolListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }
 
 type K8SClusterPoolDeleteParams struct {

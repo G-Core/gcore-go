@@ -155,21 +155,24 @@ type QuotaRequestListResponseRequestedLimitsGlobalLimits struct {
 	InferenceGPUL40sCountLimit int64 `json:"inference_gpu_l40s_count_limit"`
 	// Inference instance count limit
 	InferenceInstanceCountLimit int64 `json:"inference_instance_count_limit"`
+	// Public model API keys count limit
+	InferencePublicModelAPIKeyCountLimit int64 `json:"inference_public_model_api_key_count_limit"`
 	// SSH Keys Count limit
 	KeypairCountLimit int64 `json:"keypair_count_limit"`
 	// Projects Count limit
 	ProjectCountLimit int64 `json:"project_count_limit"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InferenceCPUMillicoreCountLimit respjson.Field
-		InferenceGPUA100CountLimit      respjson.Field
-		InferenceGPUH100CountLimit      respjson.Field
-		InferenceGPUL40sCountLimit      respjson.Field
-		InferenceInstanceCountLimit     respjson.Field
-		KeypairCountLimit               respjson.Field
-		ProjectCountLimit               respjson.Field
-		ExtraFields                     map[string]respjson.Field
-		raw                             string
+		InferenceCPUMillicoreCountLimit      respjson.Field
+		InferenceGPUA100CountLimit           respjson.Field
+		InferenceGPUH100CountLimit           respjson.Field
+		InferenceGPUL40sCountLimit           respjson.Field
+		InferenceInstanceCountLimit          respjson.Field
+		InferencePublicModelAPIKeyCountLimit respjson.Field
+		KeypairCountLimit                    respjson.Field
+		ProjectCountLimit                    respjson.Field
+		ExtraFields                          map[string]respjson.Field
+		raw                                  string
 	} `json:"-"`
 }
 
@@ -422,21 +425,24 @@ type QuotaRequestGetResponseRequestedLimitsGlobalLimits struct {
 	InferenceGPUL40sCountLimit int64 `json:"inference_gpu_l40s_count_limit"`
 	// Inference instance count limit
 	InferenceInstanceCountLimit int64 `json:"inference_instance_count_limit"`
+	// Public model API keys count limit
+	InferencePublicModelAPIKeyCountLimit int64 `json:"inference_public_model_api_key_count_limit"`
 	// SSH Keys Count limit
 	KeypairCountLimit int64 `json:"keypair_count_limit"`
 	// Projects Count limit
 	ProjectCountLimit int64 `json:"project_count_limit"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InferenceCPUMillicoreCountLimit respjson.Field
-		InferenceGPUA100CountLimit      respjson.Field
-		InferenceGPUH100CountLimit      respjson.Field
-		InferenceGPUL40sCountLimit      respjson.Field
-		InferenceInstanceCountLimit     respjson.Field
-		KeypairCountLimit               respjson.Field
-		ProjectCountLimit               respjson.Field
-		ExtraFields                     map[string]respjson.Field
-		raw                             string
+		InferenceCPUMillicoreCountLimit      respjson.Field
+		InferenceGPUA100CountLimit           respjson.Field
+		InferenceGPUH100CountLimit           respjson.Field
+		InferenceGPUL40sCountLimit           respjson.Field
+		InferenceInstanceCountLimit          respjson.Field
+		InferencePublicModelAPIKeyCountLimit respjson.Field
+		KeypairCountLimit                    respjson.Field
+		ProjectCountLimit                    respjson.Field
+		ExtraFields                          map[string]respjson.Field
+		raw                                  string
 	} `json:"-"`
 }
 
@@ -666,6 +672,8 @@ type QuotaRequestNewParamsRequestedLimitsGlobalLimits struct {
 	InferenceGPUL40sCountLimit param.Opt[int64] `json:"inference_gpu_l40s_count_limit,omitzero"`
 	// Inference instance count limit
 	InferenceInstanceCountLimit param.Opt[int64] `json:"inference_instance_count_limit,omitzero"`
+	// Public model API keys count limit
+	InferencePublicModelAPIKeyCountLimit param.Opt[int64] `json:"inference_public_model_api_key_count_limit,omitzero"`
 	// SSH Keys Count limit
 	KeypairCountLimit param.Opt[int64] `json:"keypair_count_limit,omitzero"`
 	// Projects Count limit

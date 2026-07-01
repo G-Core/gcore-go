@@ -348,6 +348,8 @@ type SecurityGroup struct {
 	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the security group was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Security group description
+	Description string `json:"description" api:"required"`
 	// Security group name
 	Name string `json:"name" api:"required"`
 	// Project ID
@@ -366,14 +368,13 @@ type SecurityGroup struct {
 	TagsV2 []Tag `json:"tags_v2" api:"required"`
 	// Datetime when the security group was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// Security group description
-	Description string `json:"description" api:"nullable"`
 	// Security group rules
 	SecurityGroupRules []SecurityGroupRule `json:"security_group_rules"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
 		CreatedAt          respjson.Field
+		Description        respjson.Field
 		Name               respjson.Field
 		ProjectID          respjson.Field
 		Region             respjson.Field
@@ -381,7 +382,6 @@ type SecurityGroup struct {
 		RevisionNumber     respjson.Field
 		TagsV2             respjson.Field
 		UpdatedAt          respjson.Field
-		Description        respjson.Field
 		SecurityGroupRules respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
@@ -544,12 +544,12 @@ type SecurityGroupNewParamsRule struct {
 	PortRangeMax param.Opt[int64] `json:"port_range_max,omitzero"`
 	// The minimum port number in the range that is matched by the security group rule
 	PortRangeMin param.Opt[int64] `json:"port_range_min,omitzero"`
+	// The remote group UUID to associate with this security group
+	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
 	// The remote IP prefix that is matched by this security group rule
 	RemoteIPPrefix param.Opt[string] `json:"remote_ip_prefix,omitzero" format:"ipvanynetwork"`
 	// Rule description
 	Description param.Opt[string] `json:"description,omitzero"`
-	// The remote group UUID to associate with this security group
-	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
 	// V2 protocol enum without 'any'. Use null for all protocols instead.
 	//
 	// Any of "ah", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip",
@@ -639,30 +639,29 @@ func (r *SecurityGroupUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property Direction is required.
 type SecurityGroupUpdateParamsRule struct {
-	// Security grpup rule description
-	Description param.Opt[string] `json:"description,omitzero"`
+	// Ingress or egress, which is the direction in which the security group is applied
+	//
+	// Any of "egress", "ingress".
+	Direction string `json:"direction,omitzero" api:"required"`
 	// The maximum port number in the range that is matched by the security group rule
 	PortRangeMax param.Opt[int64] `json:"port_range_max,omitzero"`
 	// The minimum port number in the range that is matched by the security group rule
 	PortRangeMin param.Opt[int64] `json:"port_range_min,omitzero"`
-	// The remote group UUID to associate with this security group rule
+	// The remote group UUID to associate with this security group
 	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
 	// The remote IP prefix that is matched by this security group rule
 	RemoteIPPrefix param.Opt[string] `json:"remote_ip_prefix,omitzero" format:"ipvanynetwork"`
+	// Rule description
+	Description param.Opt[string] `json:"description,omitzero"`
 	// V2 protocol enum without 'any'. Use null for all protocols instead.
 	//
 	// Any of "ah", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip",
 	// "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route",
 	// "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp".
 	Protocol string `json:"protocol,omitzero"`
-	// Ingress or egress, which is the direction in which the security group rule is
-	// applied
-	//
-	// Any of "egress", "ingress".
-	Direction string `json:"direction,omitzero"`
-	// Must be IPv4 or IPv6, and addresses represented in CIDR must match the ingress
-	// or egress rules.
+	// Ether type
 	//
 	// Any of "IPv4", "IPv6".
 	Ethertype string `json:"ethertype,omitzero"`

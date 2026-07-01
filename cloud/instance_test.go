@@ -313,10 +313,10 @@ func TestInstanceDisablePortSecurity(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.DisablePortSecurity(
 		context.TODO(),
-		"port_id",
+		"1f0ca628-a73b-42c0-bdac-7b10d023e097",
 		cloud.InstanceDisablePortSecurityParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -342,10 +342,10 @@ func TestInstanceEnablePortSecurity(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.EnablePortSecurity(
 		context.TODO(),
-		"port_id",
+		"1f0ca628-a73b-42c0-bdac-7b10d023e097",
 		cloud.InstanceEnablePortSecurityParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {

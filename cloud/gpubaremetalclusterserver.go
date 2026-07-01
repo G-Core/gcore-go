@@ -217,12 +217,18 @@ func (r *GPUBaremetalClusterServerService) Reboot(ctx context.Context, instanceI
 	return res, err
 }
 
+// Use
+// `POST /v3/gpu/baremetal/{project_id}/{region_id}/clusters/{cluster_id}/servers/{server_id}/apply_settings`
+// instead.
+//
 // Perform a rebuild operation on a bare metal GPU cluster server. During the
 // rebuild process, the server receive a new image, SSH key, and user data.
 // Important: Before triggering a rebuild, the cluster must have updated server
 // settings to apply. These cluster settings must be patched using the following
 // endpoint: PATCH
-// '/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters/{`cluster_id`}/servers_settings'
+// '/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters/{`cluster_id`}'
+//
+// Deprecated: deprecated
 func (r *GPUBaremetalClusterServerService) Rebuild(ctx context.Context, serverID string, body GPUBaremetalClusterServerRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -313,23 +319,26 @@ func (r *GPUBaremetalClusterServerService) RebuildAndPoll(ctx context.Context, s
 // Delete a server from the cluster and provision a new one in its place,
 // maintaining the cluster size. Uses the current cluster configuration (image, SSH
 // key, network settings) for the new server.
-func (r *GPUBaremetalClusterServerService) Replace(ctx context.Context, serverID string, body GPUBaremetalClusterServerReplaceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+//
+// By default the replacement keeps the original Public/Private IPs (ethernet
+// only). Set `keep_ip_addresses=false` for fresh IPs.
+func (r *GPUBaremetalClusterServerService) Replace(ctx context.Context, serverID string, params GPUBaremetalClusterServerReplaceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
-	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !body.RegionID.Valid() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
-	if body.ClusterID == "" {
+	if params.ClusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
 		return nil, err
 	}
@@ -337,8 +346,8 @@ func (r *GPUBaremetalClusterServerService) Replace(ctx context.Context, serverID
 		err = errors.New("missing required server_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/servers/%s/replace", body.ProjectID.Value, body.RegionID.Value, body.ClusterID, serverID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/servers/%s/replace", params.ProjectID.Value, params.RegionID.Value, params.ClusterID, serverID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -408,6 +417,10 @@ func (r *GPUBaremetalClusterServerService) ReplaceAndPoll(ctx context.Context, s
 type GPUBaremetalClusterServer struct {
 	// Server unique identifier
 	ID string `json:"id" api:"required" format:"uuid4"`
+	// Snapshot of cluster spec (`image_id` and `servers_settings`) applied when this
+	// server was last created or rebuilt. Compare with the cluster current spec to see
+	// what changed.
+	AppliedServersSettings GPUBaremetalClusterServerAppliedServersSettings `json:"applied_servers_settings" api:"required"`
 	// Server creation date and time
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Unique flavor identifier
@@ -439,27 +452,49 @@ type GPUBaremetalClusterServer struct {
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                respjson.Field
-		CreatedAt         respjson.Field
-		Flavor            respjson.Field
-		HasPendingChanges respjson.Field
-		ImageID           respjson.Field
-		IPAddresses       respjson.Field
-		Name              respjson.Field
-		SecurityGroups    respjson.Field
-		SSHKeyName        respjson.Field
-		Status            respjson.Field
-		Tags              respjson.Field
-		TaskID            respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		ID                     respjson.Field
+		AppliedServersSettings respjson.Field
+		CreatedAt              respjson.Field
+		Flavor                 respjson.Field
+		HasPendingChanges      respjson.Field
+		ImageID                respjson.Field
+		IPAddresses            respjson.Field
+		Name                   respjson.Field
+		SecurityGroups         respjson.Field
+		SSHKeyName             respjson.Field
+		Status                 respjson.Field
+		Tags                   respjson.Field
+		TaskID                 respjson.Field
+		UpdatedAt              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r GPUBaremetalClusterServer) RawJSON() string { return r.JSON.raw }
 func (r *GPUBaremetalClusterServer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Snapshot of cluster spec (`image_id` and `servers_settings`) applied when this
+// server was last created or rebuilt. Compare with the cluster current spec to see
+// what changed.
+type GPUBaremetalClusterServerAppliedServersSettings struct {
+	ImageID         string         `json:"image_id" api:"required"`
+	ServersSettings map[string]any `json:"servers_settings" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ImageID         respjson.Field
+		ServersSettings respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalClusterServerAppliedServersSettings) RawJSON() string { return r.JSON.raw }
+func (r *GPUBaremetalClusterServerAppliedServersSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -952,5 +987,16 @@ type GPUBaremetalClusterServerReplaceParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster unique identifier
 	ClusterID string `path:"cluster_id" api:"required" format:"uuid4" json:"-"`
+	// Retain the original Public/Private IPs on the replacement node (ethernet only).
+	// When false, new IPs are assigned. No effect on InfiniBand interfaces.
+	KeepIPAddresses param.Opt[bool] `json:"keep_ip_addresses,omitzero"`
 	paramObj
+}
+
+func (r GPUBaremetalClusterServerReplaceParams) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterServerReplaceParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterServerReplaceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

@@ -114,6 +114,10 @@ type QuotaGetAllResponseGlobalQuotas struct {
 	InferenceInstanceCountLimit int64 `json:"inference_instance_count_limit"`
 	// Inference instance count usage
 	InferenceInstanceCountUsage int64 `json:"inference_instance_count_usage"`
+	// Public model API keys count limit
+	InferencePublicModelAPIKeyCountLimit int64 `json:"inference_public_model_api_key_count_limit"`
+	// Public model API keys count usage
+	InferencePublicModelAPIKeyCountUsage int64 `json:"inference_public_model_api_key_count_usage"`
 	// SSH Keys Count limit
 	KeypairCountLimit int64 `json:"keypair_count_limit"`
 	// SSH Keys Count usage
@@ -124,22 +128,24 @@ type QuotaGetAllResponseGlobalQuotas struct {
 	ProjectCountUsage int64 `json:"project_count_usage"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InferenceCPUMillicoreCountLimit respjson.Field
-		InferenceCPUMillicoreCountUsage respjson.Field
-		InferenceGPUA100CountLimit      respjson.Field
-		InferenceGPUA100CountUsage      respjson.Field
-		InferenceGPUH100CountLimit      respjson.Field
-		InferenceGPUH100CountUsage      respjson.Field
-		InferenceGPUL40sCountLimit      respjson.Field
-		InferenceGPUL40sCountUsage      respjson.Field
-		InferenceInstanceCountLimit     respjson.Field
-		InferenceInstanceCountUsage     respjson.Field
-		KeypairCountLimit               respjson.Field
-		KeypairCountUsage               respjson.Field
-		ProjectCountLimit               respjson.Field
-		ProjectCountUsage               respjson.Field
-		ExtraFields                     map[string]respjson.Field
-		raw                             string
+		InferenceCPUMillicoreCountLimit      respjson.Field
+		InferenceCPUMillicoreCountUsage      respjson.Field
+		InferenceGPUA100CountLimit           respjson.Field
+		InferenceGPUA100CountUsage           respjson.Field
+		InferenceGPUH100CountLimit           respjson.Field
+		InferenceGPUH100CountUsage           respjson.Field
+		InferenceGPUL40sCountLimit           respjson.Field
+		InferenceGPUL40sCountUsage           respjson.Field
+		InferenceInstanceCountLimit          respjson.Field
+		InferenceInstanceCountUsage          respjson.Field
+		InferencePublicModelAPIKeyCountLimit respjson.Field
+		InferencePublicModelAPIKeyCountUsage respjson.Field
+		KeypairCountLimit                    respjson.Field
+		KeypairCountUsage                    respjson.Field
+		ProjectCountLimit                    respjson.Field
+		ProjectCountUsage                    respjson.Field
+		ExtraFields                          map[string]respjson.Field
+		raw                                  string
 	} `json:"-"`
 }
 
@@ -836,6 +842,10 @@ type QuotaGetGlobalResponse struct {
 	InferenceInstanceCountLimit int64 `json:"inference_instance_count_limit"`
 	// Inference instance count usage
 	InferenceInstanceCountUsage int64 `json:"inference_instance_count_usage"`
+	// Public model API keys count limit
+	InferencePublicModelAPIKeyCountLimit int64 `json:"inference_public_model_api_key_count_limit"`
+	// Public model API keys count usage
+	InferencePublicModelAPIKeyCountUsage int64 `json:"inference_public_model_api_key_count_usage"`
 	// SSH Keys Count limit
 	KeypairCountLimit int64 `json:"keypair_count_limit"`
 	// SSH Keys Count usage
@@ -846,22 +856,24 @@ type QuotaGetGlobalResponse struct {
 	ProjectCountUsage int64 `json:"project_count_usage"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		InferenceCPUMillicoreCountLimit respjson.Field
-		InferenceCPUMillicoreCountUsage respjson.Field
-		InferenceGPUA100CountLimit      respjson.Field
-		InferenceGPUA100CountUsage      respjson.Field
-		InferenceGPUH100CountLimit      respjson.Field
-		InferenceGPUH100CountUsage      respjson.Field
-		InferenceGPUL40sCountLimit      respjson.Field
-		InferenceGPUL40sCountUsage      respjson.Field
-		InferenceInstanceCountLimit     respjson.Field
-		InferenceInstanceCountUsage     respjson.Field
-		KeypairCountLimit               respjson.Field
-		KeypairCountUsage               respjson.Field
-		ProjectCountLimit               respjson.Field
-		ProjectCountUsage               respjson.Field
-		ExtraFields                     map[string]respjson.Field
-		raw                             string
+		InferenceCPUMillicoreCountLimit      respjson.Field
+		InferenceCPUMillicoreCountUsage      respjson.Field
+		InferenceGPUA100CountLimit           respjson.Field
+		InferenceGPUA100CountUsage           respjson.Field
+		InferenceGPUH100CountLimit           respjson.Field
+		InferenceGPUH100CountUsage           respjson.Field
+		InferenceGPUL40sCountLimit           respjson.Field
+		InferenceGPUL40sCountUsage           respjson.Field
+		InferenceInstanceCountLimit          respjson.Field
+		InferenceInstanceCountUsage          respjson.Field
+		InferencePublicModelAPIKeyCountLimit respjson.Field
+		InferencePublicModelAPIKeyCountUsage respjson.Field
+		KeypairCountLimit                    respjson.Field
+		KeypairCountUsage                    respjson.Field
+		ProjectCountLimit                    respjson.Field
+		ProjectCountUsage                    respjson.Field
+		ExtraFields                          map[string]respjson.Field
+		raw                                  string
 	} `json:"-"`
 }
 

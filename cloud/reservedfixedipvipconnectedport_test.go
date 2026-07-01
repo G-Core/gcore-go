@@ -28,10 +28,10 @@ func TestReservedFixedIPVipConnectedPortList(t *testing.T) {
 	)
 	_, err := client.Cloud.ReservedFixedIPs.Vip.ConnectedPorts.List(
 		context.TODO(),
-		"port_id",
+		"ac177f1f-eb04-42c4-9864-e7d6486813af",
 		cloud.ReservedFixedIPVipConnectedPortListParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(4),
 		},
 	)
 	if err != nil {
@@ -57,10 +57,10 @@ func TestReservedFixedIPVipConnectedPortAddWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.ReservedFixedIPs.Vip.ConnectedPorts.Add(
 		context.TODO(),
-		"port_id",
+		"ac177f1f-eb04-42c4-9864-e7d6486813af",
 		cloud.ReservedFixedIPVipConnectedPortAddParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(4),
 			PortIDs:   []string{"351b0dd7-ca09-431c-be53-935db3785067", "bc688791-f1b0-44eb-97d4-07697294b1e1"},
 		},
 	)
@@ -87,10 +87,10 @@ func TestReservedFixedIPVipConnectedPortReplaceWithOptionalParams(t *testing.T) 
 	)
 	_, err := client.Cloud.ReservedFixedIPs.Vip.ConnectedPorts.Replace(
 		context.TODO(),
-		"port_id",
+		"ac177f1f-eb04-42c4-9864-e7d6486813af",
 		cloud.ReservedFixedIPVipConnectedPortReplaceParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(4),
 			PortIDs:   []string{"351b0dd7-ca09-431c-be53-935db3785067", "bc688791-f1b0-44eb-97d4-07697294b1e1"},
 		},
 	)

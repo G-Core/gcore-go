@@ -122,6 +122,10 @@ func (r *GPUVirtualClusterServerService) DeleteAndPoll(ctx context.Context, serv
 type GPUVirtualClusterServer struct {
 	// Server unique identifier
 	ID string `json:"id" api:"required" format:"uuid4"`
+	// Snapshot of cluster spec (`image_id` and `servers_settings`) applied when this
+	// server was last created or rebuilt. Compare with the cluster current spec to see
+	// what changed.
+	AppliedServersSettings GPUVirtualClusterServerAppliedServersSettings `json:"applied_servers_settings" api:"required"`
 	// Server creation date and time
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Unique flavor identifier
@@ -153,27 +157,49 @@ type GPUVirtualClusterServer struct {
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                respjson.Field
-		CreatedAt         respjson.Field
-		Flavor            respjson.Field
-		HasPendingChanges respjson.Field
-		ImageID           respjson.Field
-		IPAddresses       respjson.Field
-		Name              respjson.Field
-		SecurityGroups    respjson.Field
-		SSHKeyName        respjson.Field
-		Status            respjson.Field
-		Tags              respjson.Field
-		TaskID            respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		ID                     respjson.Field
+		AppliedServersSettings respjson.Field
+		CreatedAt              respjson.Field
+		Flavor                 respjson.Field
+		HasPendingChanges      respjson.Field
+		ImageID                respjson.Field
+		IPAddresses            respjson.Field
+		Name                   respjson.Field
+		SecurityGroups         respjson.Field
+		SSHKeyName             respjson.Field
+		Status                 respjson.Field
+		Tags                   respjson.Field
+		TaskID                 respjson.Field
+		UpdatedAt              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r GPUVirtualClusterServer) RawJSON() string { return r.JSON.raw }
 func (r *GPUVirtualClusterServer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Snapshot of cluster spec (`image_id` and `servers_settings`) applied when this
+// server was last created or rebuilt. Compare with the cluster current spec to see
+// what changed.
+type GPUVirtualClusterServerAppliedServersSettings struct {
+	ImageID         string         `json:"image_id" api:"required"`
+	ServersSettings map[string]any `json:"servers_settings" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ImageID         respjson.Field
+		ServersSettings respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUVirtualClusterServerAppliedServersSettings) RawJSON() string { return r.JSON.raw }
+func (r *GPUVirtualClusterServerAppliedServersSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

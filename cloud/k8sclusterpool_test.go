@@ -49,6 +49,7 @@ func TestK8SClusterPoolNewWithOptionalParams(t *testing.T) {
 				"my-label": "foo",
 			},
 			MaxNodeCount:      gcore.Int(5),
+			SecurityGroupIDs:  []string{"e6ea8f35-82ce-4fb2-b51c-6a24a3a23bce"},
 			ServergroupPolicy: cloud.K8SClusterPoolNewParamsServergroupPolicyAffinity,
 			Taints: map[string]string{
 				"my-taint": "bar:NoSchedule",
@@ -87,9 +88,10 @@ func TestK8SClusterPoolUpdateWithOptionalParams(t *testing.T) {
 			Labels: map[string]string{
 				"my-label": "foo",
 			},
-			MaxNodeCount: gcore.Int(3),
-			MinNodeCount: gcore.Int(1),
-			NodeCount:    gcore.Int(2),
+			MaxNodeCount:     gcore.Int(3),
+			MinNodeCount:     gcore.Int(1),
+			NodeCount:        gcore.Int(2),
+			SecurityGroupIDs: []string{"e6ea8f35-82ce-4fb2-b51c-6a24a3a23bce"},
 			Taints: map[string]string{
 				"my-taint": "bar:NoSchedule",
 			},
@@ -104,7 +106,7 @@ func TestK8SClusterPoolUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestK8SClusterPoolList(t *testing.T) {
+func TestK8SClusterPoolListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -122,6 +124,8 @@ func TestK8SClusterPoolList(t *testing.T) {
 		cloud.K8SClusterPoolListParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(7),
+			Limit:     gcore.Int(1000),
+			Offset:    gcore.Int(0),
 		},
 	)
 	if err != nil {

@@ -39,7 +39,7 @@ type GPUVirtualClusterService struct {
 	Flavors    GPUVirtualClusterFlavorService
 	// GPU virtual images are custom boot images for virtual GPU cluster instances.
 	Images GPUVirtualClusterImageService
-	tasks      TaskService
+	tasks  TaskService
 }
 
 // NewGPUVirtualClusterService generates a new service that applies the given
@@ -79,11 +79,14 @@ func (r *GPUVirtualClusterService) New(ctx context.Context, params GPUVirtualClu
 	return res, err
 }
 
-// Update the name of an existing virtual GPU cluster.
+// Update the name, tags, and/or server settings of an existing virtual GPU
+// cluster.
 //
-// Update tags for a virtual GPU cluster (and apply to all its nodes) using JSON
-// Merge Patch semantics (RFC 7386). To add or update tags, provide key-value
-// pairs. To remove a tag, set its value to null.
+// Update tags using JSON Merge Patch semantics (RFC 7396). To add or update tags,
+// provide key-value pairs. To remove a tag, set its value to null.
+//
+// Updating server settings (`servers_settings`) only modifies the cluster
+// template. **It does NOT modify or rebuild any existing servers in the cluster.**
 func (r *GPUVirtualClusterService) Update(ctx context.Context, clusterID string, params GPUVirtualClusterUpdateParams, opts ...option.RequestOption) (res *GPUVirtualCluster, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -388,7 +391,11 @@ type GPUVirtualClusterServersSettings struct {
 	// List of file shares mounted across the cluster.
 	FileShares []GPUVirtualClusterServersSettingsFileShare      `json:"file_shares" api:"required"`
 	Interfaces []GPUVirtualClusterServersSettingsInterfaceUnion `json:"interfaces" api:"required"`
-	// Security groups
+	// Deprecated. Deduplicated union of security groups across all interfaces; the
+	// actual assignment may differ per interface. Use `interfaces[].security_groups`
+	// for the authoritative per-interface list.
+	//
+	// Deprecated: deprecated
 	SecurityGroups []GPUVirtualClusterServersSettingsSecurityGroup `json:"security_groups" api:"required"`
 	// SSH key name
 	SSHKeyName string `json:"ssh_key_name" api:"required"`
@@ -447,6 +454,11 @@ func (r *GPUVirtualClusterServersSettingsFileShare) UnmarshalJSON(data []byte) e
 type GPUVirtualClusterServersSettingsInterfaceUnion struct {
 	IPFamily string `json:"ip_family"`
 	Name     string `json:"name"`
+	// This field is a union of
+	// [[]GPUVirtualClusterServersSettingsInterfaceExternalSecurityGroup],
+	// [[]GPUVirtualClusterServersSettingsInterfaceSubnetSecurityGroup],
+	// [[]GPUVirtualClusterServersSettingsInterfaceAnySubnetSecurityGroup]
+	SecurityGroups GPUVirtualClusterServersSettingsInterfaceUnionSecurityGroups `json:"security_groups"`
 	// Any of "external", "subnet", "any_subnet".
 	Type string `json:"type"`
 	// This field is a union of
@@ -459,14 +471,15 @@ type GPUVirtualClusterServersSettingsInterfaceUnion struct {
 	// This field is from variant [GPUVirtualClusterServersSettingsInterfaceAnySubnet].
 	IPAddress string `json:"ip_address"`
 	JSON      struct {
-		IPFamily   respjson.Field
-		Name       respjson.Field
-		Type       respjson.Field
-		FloatingIP respjson.Field
-		NetworkID  respjson.Field
-		SubnetID   respjson.Field
-		IPAddress  respjson.Field
-		raw        string
+		IPFamily       respjson.Field
+		Name           respjson.Field
+		SecurityGroups respjson.Field
+		Type           respjson.Field
+		FloatingIP     respjson.Field
+		NetworkID      respjson.Field
+		SubnetID       respjson.Field
+		IPAddress      respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -527,6 +540,31 @@ func (r *GPUVirtualClusterServersSettingsInterfaceUnion) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// GPUVirtualClusterServersSettingsInterfaceUnionSecurityGroups is an implicit
+// subunion of [GPUVirtualClusterServersSettingsInterfaceUnion].
+// GPUVirtualClusterServersSettingsInterfaceUnionSecurityGroups provides convenient
+// access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [GPUVirtualClusterServersSettingsInterfaceUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfSecurityGroups]
+type GPUVirtualClusterServersSettingsInterfaceUnionSecurityGroups struct {
+	// This field will be present if the value is a
+	// [[]GPUVirtualClusterServersSettingsInterfaceExternalSecurityGroup] instead of an
+	// object.
+	OfSecurityGroups []GPUVirtualClusterServersSettingsInterfaceExternalSecurityGroup `json:",inline"`
+	JSON             struct {
+		OfSecurityGroups respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+func (r *GPUVirtualClusterServersSettingsInterfaceUnionSecurityGroups) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // GPUVirtualClusterServersSettingsInterfaceUnionFloatingIP is an implicit subunion
 // of [GPUVirtualClusterServersSettingsInterfaceUnion].
 // GPUVirtualClusterServersSettingsInterfaceUnionFloatingIP provides convenient
@@ -554,21 +592,46 @@ type GPUVirtualClusterServersSettingsInterfaceExternal struct {
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family" api:"required"`
 	// Interface name
-	Name string            `json:"name" api:"required"`
-	Type constant.External `json:"type" default:"external"`
+	Name string `json:"name" api:"required"`
+	// Resolved security groups applied to this interface.
+	SecurityGroups []GPUVirtualClusterServersSettingsInterfaceExternalSecurityGroup `json:"security_groups" api:"required"`
+	Type           constant.External                                                `json:"type" default:"external"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		IPFamily    respjson.Field
-		Name        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		IPFamily       respjson.Field
+		Name           respjson.Field
+		SecurityGroups respjson.Field
+		Type           respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r GPUVirtualClusterServersSettingsInterfaceExternal) RawJSON() string { return r.JSON.raw }
 func (r *GPUVirtualClusterServersSettingsInterfaceExternal) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GPUVirtualClusterServersSettingsInterfaceExternalSecurityGroup struct {
+	// Security group ID
+	ID string `json:"id" api:"required"`
+	// Security group name
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUVirtualClusterServersSettingsInterfaceExternalSecurityGroup) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *GPUVirtualClusterServersSettingsInterfaceExternalSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -579,18 +642,21 @@ type GPUVirtualClusterServersSettingsInterfaceSubnet struct {
 	Name string `json:"name" api:"required"`
 	// Network ID the subnet belongs to. Port will be plugged in this network
 	NetworkID string `json:"network_id" api:"required"`
+	// Resolved security groups applied to this interface.
+	SecurityGroups []GPUVirtualClusterServersSettingsInterfaceSubnetSecurityGroup `json:"security_groups" api:"required"`
 	// Port is assigned an IP address from this subnet
 	SubnetID string          `json:"subnet_id" api:"required" format:"uuid4"`
 	Type     constant.Subnet `json:"type" default:"subnet"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FloatingIP  respjson.Field
-		Name        respjson.Field
-		NetworkID   respjson.Field
-		SubnetID    respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		FloatingIP     respjson.Field
+		Name           respjson.Field
+		NetworkID      respjson.Field
+		SecurityGroups respjson.Field
+		SubnetID       respjson.Field
+		Type           respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -619,6 +685,28 @@ func (r *GPUVirtualClusterServersSettingsInterfaceSubnetFloatingIP) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type GPUVirtualClusterServersSettingsInterfaceSubnetSecurityGroup struct {
+	// Security group ID
+	ID string `json:"id" api:"required"`
+	// Security group name
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUVirtualClusterServersSettingsInterfaceSubnetSecurityGroup) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *GPUVirtualClusterServersSettingsInterfaceSubnetSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type GPUVirtualClusterServersSettingsInterfaceAnySubnet struct {
 	// Floating IP config for this subnet attachment
 	FloatingIP GPUVirtualClusterServersSettingsInterfaceAnySubnetFloatingIP `json:"floating_ip" api:"required"`
@@ -631,18 +719,21 @@ type GPUVirtualClusterServersSettingsInterfaceAnySubnet struct {
 	// Interface name
 	Name string `json:"name" api:"required"`
 	// Network ID the subnet belongs to. Port will be plugged in this network
-	NetworkID string             `json:"network_id" api:"required"`
-	Type      constant.AnySubnet `json:"type" default:"any_subnet"`
+	NetworkID string `json:"network_id" api:"required"`
+	// Resolved security groups applied to this interface.
+	SecurityGroups []GPUVirtualClusterServersSettingsInterfaceAnySubnetSecurityGroup `json:"security_groups" api:"required"`
+	Type           constant.AnySubnet                                                `json:"type" default:"any_subnet"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FloatingIP  respjson.Field
-		IPAddress   respjson.Field
-		IPFamily    respjson.Field
-		Name        respjson.Field
-		NetworkID   respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		FloatingIP     respjson.Field
+		IPAddress      respjson.Field
+		IPFamily       respjson.Field
+		Name           respjson.Field
+		NetworkID      respjson.Field
+		SecurityGroups respjson.Field
+		Type           respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -668,6 +759,28 @@ func (r GPUVirtualClusterServersSettingsInterfaceAnySubnetFloatingIP) RawJSON() 
 	return r.JSON.raw
 }
 func (r *GPUVirtualClusterServersSettingsInterfaceAnySubnetFloatingIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GPUVirtualClusterServersSettingsInterfaceAnySubnetSecurityGroup struct {
+	// Security group ID
+	ID string `json:"id" api:"required"`
+	// Security group name
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUVirtualClusterServersSettingsInterfaceAnySubnetSecurityGroup) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *GPUVirtualClusterServersSettingsInterfaceAnySubnetSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -792,8 +905,11 @@ type GPUVirtualClusterNewParamsServersSettings struct {
 	Credentials GPUVirtualClusterNewParamsServersSettingsCredentials `json:"credentials,omitzero"`
 	// List of file shares to be mounted across the cluster.
 	FileShares []GPUVirtualClusterNewParamsServersSettingsFileShare `json:"file_shares,omitzero"`
-	// List of security group UUIDs. If omitted or an empty list, the default security
-	// group will be used.
+	// Deprecated. Use per-interface `security_groups` inside `interfaces[]` instead.
+	// Cannot be combined with per-interface `security_groups`. If omitted everywhere,
+	// the project's default security group is applied.
+	//
+	// Deprecated: deprecated
 	SecurityGroups []GPUVirtualClusterNewParamsServersSettingsSecurityGroup `json:"security_groups,omitzero"`
 	paramObj
 }
@@ -877,6 +993,18 @@ func (u GPUVirtualClusterNewParamsServersSettingsInterfaceUnion) GetName() *stri
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u GPUVirtualClusterNewParamsServersSettingsInterfaceUnion) GetPortSecurityEnabled() *bool {
+	if vt := u.OfExternal; vt != nil && vt.PortSecurityEnabled.Valid() {
+		return &vt.PortSecurityEnabled.Value
+	} else if vt := u.OfSubnet; vt != nil && vt.PortSecurityEnabled.Valid() {
+		return &vt.PortSecurityEnabled.Value
+	} else if vt := u.OfAnySubnet; vt != nil && vt.PortSecurityEnabled.Valid() {
+		return &vt.PortSecurityEnabled.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u GPUVirtualClusterNewParamsServersSettingsInterfaceUnion) GetNetworkID() *string {
 	if vt := u.OfSubnet; vt != nil {
 		return (*string)(&vt.NetworkID)
@@ -884,6 +1012,39 @@ func (u GPUVirtualClusterNewParamsServersSettingsInterfaceUnion) GetNetworkID() 
 		return (*string)(&vt.NetworkID)
 	}
 	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u GPUVirtualClusterNewParamsServersSettingsInterfaceUnion) GetSecurityGroups() (res gpuVirtualClusterNewParamsServersSettingsInterfaceUnionSecurityGroups) {
+	if vt := u.OfExternal; vt != nil {
+		res.any = &vt.SecurityGroups
+	} else if vt := u.OfSubnet; vt != nil {
+		res.any = &vt.SecurityGroups
+	} else if vt := u.OfAnySubnet; vt != nil {
+		res.any = &vt.SecurityGroups
+	}
+	return
+}
+
+// Can have the runtime types
+// [_[]GPUVirtualClusterNewParamsServersSettingsInterfaceExternalSecurityGroup],
+// [_[]GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup],
+// [\*[]GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup]
+type gpuVirtualClusterNewParamsServersSettingsInterfaceUnionSecurityGroups struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *[]cloud.GPUVirtualClusterNewParamsServersSettingsInterfaceExternalSecurityGroup:
+//	case *[]cloud.GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup:
+//	case *[]cloud.GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u gpuVirtualClusterNewParamsServersSettingsInterfaceUnionSecurityGroups) AsAny() any {
+	return u.any
 }
 
 // Returns a subunion which exports methods to access subproperties
@@ -969,10 +1130,21 @@ func init() {
 type GPUVirtualClusterNewParamsServersSettingsInterfaceExternal struct {
 	// Interface name
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Controls port security for this interface. When omitted, the default applies
+	// (port security enabled, default security group attached). When false, the port
+	// is created with port security off and no security group attached;
+	// `security_groups` must not be set in that case. Not allowed for interfaces on a
+	// public network, nor for bare metal servers without a DPU (their ports cannot
+	// enforce port security).
+	PortSecurityEnabled param.Opt[bool] `json:"port_security_enabled,omitzero"`
 	// Which subnets should be selected: IPv4, IPv6, or use dual stack.
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
+	// Security group UUIDs applied to this interface. If omitted (or empty), the
+	// top-level `security_groups` value applies; if both are omitted, the project's
+	// default security group is applied.
+	SecurityGroups []GPUVirtualClusterNewParamsServersSettingsInterfaceExternalSecurityGroup `json:"security_groups,omitzero"`
 	// This field can be elided, and will marshal its zero value as "external".
 	Type constant.External `json:"type" default:"external"`
 	paramObj
@@ -986,6 +1158,27 @@ func (r *GPUVirtualClusterNewParamsServersSettingsInterfaceExternal) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[GPUVirtualClusterNewParamsServersSettingsInterfaceExternal](
+		"ip_family", "dual", "ipv4", "ipv6",
+	)
+}
+
+// The property ID is required.
+type GPUVirtualClusterNewParamsServersSettingsInterfaceExternalSecurityGroup struct {
+	// Resource ID
+	ID string `json:"id" api:"required" format:"uuid4"`
+	paramObj
+}
+
+func (r GPUVirtualClusterNewParamsServersSettingsInterfaceExternalSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUVirtualClusterNewParamsServersSettingsInterfaceExternalSecurityGroup
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUVirtualClusterNewParamsServersSettingsInterfaceExternalSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties NetworkID, SubnetID, Type are required.
 type GPUVirtualClusterNewParamsServersSettingsInterfaceSubnet struct {
 	// Network ID the subnet belongs to. Port will be plugged in this network
@@ -994,8 +1187,19 @@ type GPUVirtualClusterNewParamsServersSettingsInterfaceSubnet struct {
 	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// Interface name
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Controls port security for this interface. When omitted, the default applies
+	// (port security enabled, default security group attached). When false, the port
+	// is created with port security off and no security group attached;
+	// `security_groups` must not be set in that case. Not allowed for interfaces on a
+	// public network, nor for bare metal servers without a DPU (their ports cannot
+	// enforce port security).
+	PortSecurityEnabled param.Opt[bool] `json:"port_security_enabled,omitzero"`
 	// Floating IP config for this subnet attachment
 	FloatingIP GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetFloatingIP `json:"floating_ip,omitzero"`
+	// Security group UUIDs applied to this interface. If omitted (or empty), the
+	// top-level `security_groups` value applies; if both are omitted, the project's
+	// default security group is applied.
+	SecurityGroups []GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup `json:"security_groups,omitzero"`
 	// This field can be elided, and will marshal its zero value as "subnet".
 	Type constant.Subnet `json:"type" default:"subnet"`
 	paramObj
@@ -1032,18 +1236,44 @@ func (r *GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetFloatingIP) Unm
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property ID is required.
+type GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup struct {
+	// Resource ID
+	ID string `json:"id" api:"required" format:"uuid4"`
+	paramObj
+}
+
+func (r GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties NetworkID, Type are required.
 type GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnet struct {
 	// Network ID the subnet belongs to. Port will be plugged in this network
 	NetworkID string `json:"network_id" api:"required"`
 	// Interface name
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Controls port security for this interface. When omitted, the default applies
+	// (port security enabled, default security group attached). When false, the port
+	// is created with port security off and no security group attached;
+	// `security_groups` must not be set in that case. Not allowed for interfaces on a
+	// public network, nor for bare metal servers without a DPU (their ports cannot
+	// enforce port security).
+	PortSecurityEnabled param.Opt[bool] `json:"port_security_enabled,omitzero"`
 	// Floating IP config for this subnet attachment
 	FloatingIP GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP `json:"floating_ip,omitzero"`
 	// Which subnets should be selected: IPv4, IPv6, or use dual stack
 	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily string `json:"ip_family,omitzero"`
+	// Security group UUIDs applied to this interface. If omitted (or empty), the
+	// top-level `security_groups` value applies; if both are omitted, the project's
+	// default security group is applied.
+	SecurityGroups []GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup `json:"security_groups,omitzero"`
 	// This field can be elided, and will marshal its zero value as "any_subnet".
 	Type constant.AnySubnet `json:"type" default:"any_subnet"`
 	paramObj
@@ -1077,6 +1307,21 @@ func (r GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP) M
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property ID is required.
+type GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup struct {
+	// Resource ID
+	ID string `json:"id" api:"required" format:"uuid4"`
+	paramObj
+}
+
+func (r GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1304,6 +1549,8 @@ type GPUVirtualClusterUpdateParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster name
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Configuration settings for the servers in the cluster
+	ServersSettings GPUVirtualClusterUpdateParamsServersSettings `json:"servers_settings,omitzero"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
@@ -1337,6 +1584,224 @@ func (r *GPUVirtualClusterUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Configuration settings for the servers in the cluster
+type GPUVirtualClusterUpdateParamsServersSettings struct {
+	// Optional custom user data (Base64-encoded)
+	UserData param.Opt[string] `json:"user_data,omitzero"`
+	// Optional server access credentials
+	Credentials GPUVirtualClusterUpdateParamsServersSettingsCredentials `json:"credentials,omitzero"`
+	// List of volumes
+	Volumes []GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion `json:"volumes,omitzero"`
+	paramObj
+}
+
+func (r GPUVirtualClusterUpdateParamsServersSettings) MarshalJSON() (data []byte, err error) {
+	type shadow GPUVirtualClusterUpdateParamsServersSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUVirtualClusterUpdateParamsServersSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional server access credentials
+type GPUVirtualClusterUpdateParamsServersSettingsCredentials struct {
+	// Specifies the name of the SSH keypair, created via the
+	// [/v1/`ssh_keys` endpoint](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
+	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
+	paramObj
+}
+
+func (r GPUVirtualClusterUpdateParamsServersSettingsCredentials) MarshalJSON() (data []byte, err error) {
+	type shadow GPUVirtualClusterUpdateParamsServersSettingsCredentials
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUVirtualClusterUpdateParamsServersSettingsCredentials) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion struct {
+	OfNew   *GPUVirtualClusterUpdateParamsServersSettingsVolumeNew   `json:",omitzero,inline"`
+	OfImage *GPUVirtualClusterUpdateParamsServersSettingsVolumeImage `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfNew, u.OfImage)
+}
+func (u *GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion) asAny() any {
+	if !param.IsOmitted(u.OfNew) {
+		return u.OfNew
+	} else if !param.IsOmitted(u.OfImage) {
+		return u.OfImage
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion) GetImageID() *string {
+	if vt := u.OfImage; vt != nil {
+		return &vt.ImageID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion) GetBootIndex() *int64 {
+	if vt := u.OfNew; vt != nil {
+		return (*int64)(&vt.BootIndex)
+	} else if vt := u.OfImage; vt != nil {
+		return (*int64)(&vt.BootIndex)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion) GetName() *string {
+	if vt := u.OfNew; vt != nil {
+		return (*string)(&vt.Name)
+	} else if vt := u.OfImage; vt != nil {
+		return (*string)(&vt.Name)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion) GetSize() *int64 {
+	if vt := u.OfNew; vt != nil {
+		return (*int64)(&vt.Size)
+	} else if vt := u.OfImage; vt != nil {
+		return (*int64)(&vt.Size)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion) GetSource() *string {
+	if vt := u.OfNew; vt != nil {
+		return (*string)(&vt.Source)
+	} else if vt := u.OfImage; vt != nil {
+		return (*string)(&vt.Source)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion) GetType() *string {
+	if vt := u.OfNew; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfImage; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion) GetDeleteOnTermination() *bool {
+	if vt := u.OfNew; vt != nil && vt.DeleteOnTermination.Valid() {
+		return &vt.DeleteOnTermination.Value
+	} else if vt := u.OfImage; vt != nil && vt.DeleteOnTermination.Valid() {
+		return &vt.DeleteOnTermination.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's Tags property, if present.
+func (u GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion) GetTags() map[string]string {
+	if vt := u.OfNew; vt != nil {
+		return vt.Tags
+	} else if vt := u.OfImage; vt != nil {
+		return vt.Tags
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion](
+		"source",
+		apijson.Discriminator[GPUVirtualClusterUpdateParamsServersSettingsVolumeNew]("new"),
+		apijson.Discriminator[GPUVirtualClusterUpdateParamsServersSettingsVolumeImage]("image"),
+	)
+}
+
+// The properties BootIndex, Name, Size, Source, Type are required.
+type GPUVirtualClusterUpdateParamsServersSettingsVolumeNew struct {
+	// Boot index of the volume
+	BootIndex int64 `json:"boot_index" api:"required"`
+	// Volume name
+	Name string `json:"name" api:"required"`
+	// Volume size in GiB
+	Size int64 `json:"size" api:"required"`
+	// Volume type
+	//
+	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
+	Type string `json:"type,omitzero" api:"required"`
+	// Flag indicating whether the volume is deleted on instance termination
+	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
+	// Tags associated with the volume
+	Tags map[string]string `json:"tags,omitzero"`
+	// This field can be elided, and will marshal its zero value as "new".
+	Source constant.New `json:"source" default:"new"`
+	paramObj
+}
+
+func (r GPUVirtualClusterUpdateParamsServersSettingsVolumeNew) MarshalJSON() (data []byte, err error) {
+	type shadow GPUVirtualClusterUpdateParamsServersSettingsVolumeNew
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUVirtualClusterUpdateParamsServersSettingsVolumeNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[GPUVirtualClusterUpdateParamsServersSettingsVolumeNew](
+		"type", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+	)
+}
+
+// The properties BootIndex, ImageID, Name, Size, Source, Type are required.
+type GPUVirtualClusterUpdateParamsServersSettingsVolumeImage struct {
+	// Boot index of the volume
+	BootIndex int64 `json:"boot_index" api:"required"`
+	// Image ID for the volume
+	ImageID string `json:"image_id" api:"required" format:"uuid4"`
+	// Volume name
+	Name string `json:"name" api:"required"`
+	// Volume size in GiB
+	Size int64 `json:"size" api:"required"`
+	// Volume type
+	//
+	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
+	Type string `json:"type,omitzero" api:"required"`
+	// Flag indicating whether the volume is deleted on instance termination
+	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
+	// Tags associated with the volume
+	Tags map[string]string `json:"tags,omitzero"`
+	// This field can be elided, and will marshal its zero value as "image".
+	Source constant.Image `json:"source" default:"image"`
+	paramObj
+}
+
+func (r GPUVirtualClusterUpdateParamsServersSettingsVolumeImage) MarshalJSON() (data []byte, err error) {
+	type shadow GPUVirtualClusterUpdateParamsServersSettingsVolumeImage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUVirtualClusterUpdateParamsServersSettingsVolumeImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[GPUVirtualClusterUpdateParamsServersSettingsVolumeImage](
+		"type", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+	)
+}
+
 type GPUVirtualClusterListParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
@@ -1346,12 +1811,207 @@ type GPUVirtualClusterListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Offset in results list
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Filter by creation time (UTC), e.g. `created_at[gte]=2026-01-01T00:00:00Z`.
+	CreatedAt GPUVirtualClusterListParamsCreatedAt `query:"created_at,omitzero" json:"-"`
+	// Filter by flavor (case-insensitive), e.g. `flavor[prefix]=g3-`,
+	// `flavor[exact]=g3-ai-32-192-1500-l40s-48-1`.
+	Flavor GPUVirtualClusterListParamsFlavor `query:"flavor,omitzero" json:"-"`
+	// Return only clusters with these IDs, e.g. `ids=<id1>&ids=<id2>`.
+	IDs []string `query:"ids,omitzero" format:"uuid4" json:"-"`
+	// Filter by name (case-insensitive), e.g. `name[contains]=gpu`,
+	// `name[prefix]=prod-`.
+	Name GPUVirtualClusterListParamsName `query:"name,omitzero" json:"-"`
+	// Filter by node count, e.g. `servers_count[gte]=2`,
+	// `servers_count[gte]=2&servers_count[lt]=8`.
+	ServersCount GPUVirtualClusterListParamsServersCount `query:"servers_count,omitzero" json:"-"`
+	// Filter by tag key regardless of value, e.g. `tag_key[contains]=team`.
+	TagKey GPUVirtualClusterListParamsTagKey `query:"tag_key,omitzero" json:"-"`
+	// Filter by tag value regardless of key, e.g. `tag_value[prefix]=prod`.
+	TagValue GPUVirtualClusterListParamsTagValue `query:"tag_value,omitzero" json:"-"`
+	// Filter by exact tag key-value pairs, e.g. `tags[env]=prod&tags[team]=core`.
+	// Pairs are ANDed; values match case-insensitively.
+	Tags map[string]string `query:"tags,omitzero" json:"-"`
+	// Filter by last-change time (UTC), e.g. `updated_at[gte]=2026-06-01T00:00:00Z`.
+	UpdatedAt GPUVirtualClusterListParamsUpdatedAt `query:"updated_at,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [GPUVirtualClusterListParams]'s query parameters as
 // `url.Values`.
 func (r GPUVirtualClusterListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by creation time (UTC), e.g. `created_at[gte]=2026-01-01T00:00:00Z`.
+type GPUVirtualClusterListParamsCreatedAt struct {
+	// Strictly after this timestamp, e.g. `[gt]=2026-01-01T00:00:00Z`.
+	Gt param.Opt[time.Time] `query:"gt,omitzero" format:"date-time" json:"-"`
+	// At or after this timestamp (inclusive), e.g. `[gte]=2026-01-01T00:00:00Z`.
+	Gte param.Opt[time.Time] `query:"gte,omitzero" format:"date-time" json:"-"`
+	// Strictly before this timestamp, e.g. `[lt]=2026-02-01T00:00:00Z`.
+	Lt param.Opt[time.Time] `query:"lt,omitzero" format:"date-time" json:"-"`
+	// At or before this timestamp (inclusive), e.g. `[lte]=2026-02-01T00:00:00Z`.
+	Lte param.Opt[time.Time] `query:"lte,omitzero" format:"date-time" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUVirtualClusterListParamsCreatedAt]'s query parameters as
+// `url.Values`.
+func (r GPUVirtualClusterListParamsCreatedAt) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by flavor (case-insensitive), e.g. `flavor[prefix]=g3-`,
+// `flavor[exact]=g3-ai-32-192-1500-l40s-48-1`.
+type GPUVirtualClusterListParamsFlavor struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUVirtualClusterListParamsFlavor]'s query parameters as
+// `url.Values`.
+func (r GPUVirtualClusterListParamsFlavor) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by name (case-insensitive), e.g. `name[contains]=gpu`,
+// `name[prefix]=prod-`.
+type GPUVirtualClusterListParamsName struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUVirtualClusterListParamsName]'s query parameters as
+// `url.Values`.
+func (r GPUVirtualClusterListParamsName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by node count, e.g. `servers_count[gte]=2`,
+// `servers_count[gte]=2&servers_count[lt]=8`.
+type GPUVirtualClusterListParamsServersCount struct {
+	// Strictly greater than, e.g. `[gt]=1`.
+	Gt param.Opt[int64] `query:"gt,omitzero" json:"-"`
+	// Greater than or equal, e.g. `[gte]=2`.
+	Gte param.Opt[int64] `query:"gte,omitzero" json:"-"`
+	// Strictly less than, e.g. `[lt]=8`.
+	Lt param.Opt[int64] `query:"lt,omitzero" json:"-"`
+	// Less than or equal, e.g. `[lte]=4`.
+	Lte param.Opt[int64] `query:"lte,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUVirtualClusterListParamsServersCount]'s query parameters
+// as `url.Values`.
+func (r GPUVirtualClusterListParamsServersCount) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by tag key regardless of value, e.g. `tag_key[contains]=team`.
+type GPUVirtualClusterListParamsTagKey struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUVirtualClusterListParamsTagKey]'s query parameters as
+// `url.Values`.
+func (r GPUVirtualClusterListParamsTagKey) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by tag value regardless of key, e.g. `tag_value[prefix]=prod`.
+type GPUVirtualClusterListParamsTagValue struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUVirtualClusterListParamsTagValue]'s query parameters as
+// `url.Values`.
+func (r GPUVirtualClusterListParamsTagValue) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Filter by last-change time (UTC), e.g. `updated_at[gte]=2026-06-01T00:00:00Z`.
+type GPUVirtualClusterListParamsUpdatedAt struct {
+	// Strictly after this timestamp, e.g. `[gt]=2026-01-01T00:00:00Z`.
+	Gt param.Opt[time.Time] `query:"gt,omitzero" format:"date-time" json:"-"`
+	// At or after this timestamp (inclusive), e.g. `[gte]=2026-01-01T00:00:00Z`.
+	Gte param.Opt[time.Time] `query:"gte,omitzero" format:"date-time" json:"-"`
+	// Strictly before this timestamp, e.g. `[lt]=2026-02-01T00:00:00Z`.
+	Lt param.Opt[time.Time] `query:"lt,omitzero" format:"date-time" json:"-"`
+	// At or before this timestamp (inclusive), e.g. `[lte]=2026-02-01T00:00:00Z`.
+	Lte param.Opt[time.Time] `query:"lte,omitzero" format:"date-time" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GPUVirtualClusterListParamsUpdatedAt]'s query parameters as
+// `url.Values`.
+func (r GPUVirtualClusterListParamsUpdatedAt) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,

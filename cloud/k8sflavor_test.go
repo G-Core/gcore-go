@@ -32,6 +32,8 @@ func TestK8SFlavorListWithOptionalParams(t *testing.T) {
 		ExcludeGPU:      gcore.Bool(false),
 		IncludeCapacity: gcore.Bool(false),
 		IncludePrices:   gcore.Bool(false),
+		Limit:           gcore.Int(1000),
+		Offset:          gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error

@@ -223,12 +223,12 @@ type SecurityGroupRuleNewParams struct {
 	PortRangeMax param.Opt[int64] `json:"port_range_max,omitzero"`
 	// The minimum port number in the range that is matched by the security group rule
 	PortRangeMin param.Opt[int64] `json:"port_range_min,omitzero"`
+	// The remote group UUID to associate with this security group
+	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
 	// The remote IP prefix that is matched by this security group rule
 	RemoteIPPrefix param.Opt[string] `json:"remote_ip_prefix,omitzero" format:"ipvanynetwork"`
 	// Rule description
 	Description param.Opt[string] `json:"description,omitzero"`
-	// The remote group UUID to associate with this security group
-	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
 	// V2 protocol enum without 'any'. Use null for all protocols instead.
 	//
 	// Any of "ah", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip",
