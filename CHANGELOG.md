@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.50.0](https://github.com/G-Core/gcore-go/compare/v0.49.1...v0.50.0) (2026-07-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* **cdn:** update cdn OpenAPI spec
+* **waap:** JA4 support, multi-value analytics filters, exclusion filters
+
+### Features
+
+* **cdn:** support logs uploader configs in Terraform ([72c13b0](https://github.com/G-Core/gcore-go/commit/72c13b031dd1a12252dc46dc620cf09d15e8479c))
+* **cdn:** support logs uploader policies in Terraform ([4bb584a](https://github.com/G-Core/gcore-go/commit/4bb584ad55e459d8313f3c03bb324e44ddf3e239))
+* **cdn:** update cdn OpenAPI spec ([336282f](https://github.com/G-Core/gcore-go/commit/336282f3c2e7a2ce547ac80fac2b2cab26f6b235))
+* **dns:** DNSSEC status fields + PTR/SVCB/HTTPS/CAA/DS rrset types ([e79f69a](https://github.com/G-Core/gcore-go/commit/e79f69a2ab563aee5f2bcfb0f8a83dd6f0394b02))
+* **streaming:** add srt_passphrase for encrypted SRT PUSH ingest ([e27bfe2](https://github.com/G-Core/gcore-go/commit/e27bfe2a79d3fa9c41cb7503001df63a4f27ebfe))
+* **waap:** JA4 support, multi-value analytics filters, exclusion filters ([b3f9c14](https://github.com/G-Core/gcore-go/commit/b3f9c14b4ea11c2e0be7a17d21459d7e3dbca14c))
+
+
+### Bug Fixes
+
+* **cloud:** wait for instance image to become active in UploadAndPoll ([166ba7c](https://github.com/G-Core/gcore-go/commit/166ba7c12b14dea2d1b4d45b77f109894be0d16f))
+
+
+### Chores
+
+* bootstrap product specs and reformat openapi.yml ([bb57054](https://github.com/G-Core/gcore-go/commit/bb57054c27dc23cf352cb8080a533455328f9fa6))
+
 ## [0.49.1](https://github.com/G-Core/gcore-go/compare/v0.49.0...v0.49.1) (2026-06-22)
 
 
