@@ -26,7 +26,9 @@ import (
 // the [NewCDNResourceService] method instead.
 type CDNResourceService struct {
 	Options []option.RequestOption
-	Shield  CDNResourceShieldService
+	// Origin shielding protects your origin server from being overloaded by routing
+	// all CDN requests through a single shield (precache) server for a CDN resource.
+	Shield CDNResourceShieldService
 	// CDN resource rules set custom caching, delivery, and security options for
 	// specific URL patterns or file types.
 	Rules CDNResourceRuleService

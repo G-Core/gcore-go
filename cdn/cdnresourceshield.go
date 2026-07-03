@@ -17,6 +17,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Origin shielding protects your origin server from being overloaded by routing
+// all CDN requests through a single shield (precache) server for a CDN resource.
+//
 // CDNResourceShieldService contains methods and other services that help with
 // interacting with the gcore API.
 //
