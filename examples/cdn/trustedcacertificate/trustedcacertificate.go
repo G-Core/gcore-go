@@ -83,7 +83,7 @@ func listTrustedCACertificates(client *gcore.Client) {
 		log.Fatalf("Error listing trusted CA certificates: %v", err)
 	}
 
-	certificates := result.AsPlainList()
+	certificates := result.Results
 	for i, certificate := range certificates {
 		fmt.Printf("  %d. Trusted CA Certificate: ID=%d, Name=%s\n",
 			i+1, certificate.ID, certificate.Name)
