@@ -12,6 +12,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -36,39 +37,29 @@ func NewShieldService(opts ...option.RequestOption) (r ShieldService) {
 }
 
 // Get information about all origin shielding locations available in the account.
-func (r *ShieldService) List(ctx context.Context, query ShieldListParams, opts ...option.RequestOption) (res *ShieldListResponse, err error) {
+func (r *ShieldService) List(ctx context.Context, query ShieldListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[ShieldListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cdn/shieldingpop_v2"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get information about all origin shielding locations available in the account.
+func (r *ShieldService) ListAutoPaging(ctx context.Context, query ShieldListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[ShieldListResponse] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 type ShieldListResponse struct {
-	// Total number of items.
-	Count int64 `json:"count" api:"required"`
-	// URL to the next page of results. Null if current page is the last one.
-	Next string `json:"next" api:"required"`
-	// URL to the previous page of results. Null if current page is the first one.
-	Previous string                     `json:"previous" api:"required"`
-	Results  []ShieldListResponseResult `json:"results" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Next        respjson.Field
-		Previous    respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ShieldListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ShieldListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ShieldListResponseResult struct {
 	// Origin shielding location ID.
 	ID int64 `json:"id"`
 	// City of origin shielding location.
@@ -89,8 +80,8 @@ type ShieldListResponseResult struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ShieldListResponseResult) RawJSON() string { return r.JSON.raw }
-func (r *ShieldListResponseResult) UnmarshalJSON(data []byte) error {
+func (r ShieldListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ShieldListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

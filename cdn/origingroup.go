@@ -14,6 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -57,11 +58,26 @@ func (r *OriginGroupService) Update(ctx context.Context, originGroupID int64, bo
 }
 
 // Get all origin groups and related origin sources.
-func (r *OriginGroupService) List(ctx context.Context, query OriginGroupListParams, opts ...option.RequestOption) (res *OriginGroupsList, err error) {
+func (r *OriginGroupService) List(ctx context.Context, query OriginGroupListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[OriginGroupsUnion], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cdn/origin_groups"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get all origin groups and related origin sources.
+func (r *OriginGroupService) ListAutoPaging(ctx context.Context, query OriginGroupListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[OriginGroupsUnion] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete origin group

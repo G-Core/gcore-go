@@ -16,6 +16,7 @@ import (
 	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -97,11 +98,35 @@ func (r *NetworkMappingService) New(ctx context.Context, body NetworkMappingNewP
 //	--header 'Authorization: Bearer ...'
 //
 // ```
-func (r *NetworkMappingService) List(ctx context.Context, query NetworkMappingListParams, opts ...option.RequestOption) (res *NetworkMappingListResponse, err error) {
+func (r *NetworkMappingService) List(ctx context.Context, query NetworkMappingListParams, opts ...option.RequestOption) (res *pagination.OffsetPageDNSNetworkMappings[DNSNetworkMapping], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "dns/v2/network-mappings"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List of network mappings.
+//
+// Example of request:
+//
+// ```
+//
+//	curl --location --request GET 'https://api.gcore.com/dns/v2/network-mappings' \
+//	--header 'Authorization: Bearer ...'
+//
+// ```
+func (r *NetworkMappingService) ListAutoPaging(ctx context.Context, query NetworkMappingListParams, opts ...option.RequestOption) *pagination.OffsetPageDNSNetworkMappingsAutoPager[DNSNetworkMapping] {
+	return pagination.NewOffsetPageDNSNetworkMappingsAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete network mapping.
@@ -374,24 +399,6 @@ type NetworkMappingNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r NetworkMappingNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *NetworkMappingNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type NetworkMappingListResponse struct {
-	NetworkMappings []DNSNetworkMapping `json:"network_mappings"`
-	TotalAmount     int64               `json:"total_amount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		NetworkMappings respjson.Field
-		TotalAmount     respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkMappingListResponse) RawJSON() string { return r.JSON.raw }
-func (r *NetworkMappingListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

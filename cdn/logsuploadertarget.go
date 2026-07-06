@@ -15,6 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -65,11 +66,26 @@ func (r *LogsUploaderTargetService) Update(ctx context.Context, id int64, body L
 }
 
 // Get list of logs uploader targets.
-func (r *LogsUploaderTargetService) List(ctx context.Context, query LogsUploaderTargetListParams, opts ...option.RequestOption) (res *LogsUploaderTargetList, err error) {
+func (r *LogsUploaderTargetService) List(ctx context.Context, query LogsUploaderTargetListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[LogsUploaderTarget], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cdn/logs_uploader/targets"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get list of logs uploader targets.
+func (r *LogsUploaderTargetService) ListAutoPaging(ctx context.Context, query LogsUploaderTargetListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[LogsUploaderTarget] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete the logs uploader target from the system permanently.

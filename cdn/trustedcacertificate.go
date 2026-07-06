@@ -13,6 +13,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -51,11 +52,26 @@ func (r *TrustedCaCertificateService) New(ctx context.Context, body TrustedCaCer
 }
 
 // Get list of trusted CA certificates used to verify an origin.
-func (r *TrustedCaCertificateService) List(ctx context.Context, query TrustedCaCertificateListParams, opts ...option.RequestOption) (res *CaCertificateList, err error) {
+func (r *TrustedCaCertificateService) List(ctx context.Context, query TrustedCaCertificateListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[CaCertificate], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cdn/sslCertificates"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get list of trusted CA certificates used to verify an origin.
+func (r *TrustedCaCertificateService) ListAutoPaging(ctx context.Context, query TrustedCaCertificateListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[CaCertificate] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete trusted CA certificate

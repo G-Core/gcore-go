@@ -16,6 +16,7 @@ import (
 	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -58,11 +59,27 @@ func (r *ZoneService) New(ctx context.Context, body ZoneNewParams, opts ...optio
 
 // Show created zones with pagination managed by limit and offset params. All query
 // params are optional.
-func (r *ZoneService) List(ctx context.Context, query ZoneListParams, opts ...option.RequestOption) (res *ZoneListResponse, err error) {
+func (r *ZoneService) List(ctx context.Context, query ZoneListParams, opts ...option.RequestOption) (res *pagination.OffsetPageDNSZones[ZoneListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "dns/v2/zones"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Show created zones with pagination managed by limit and offset params. All query
+// params are optional.
+func (r *ZoneService) ListAutoPaging(ctx context.Context, query ZoneListParams, opts ...option.RequestOption) *pagination.OffsetPageDNSZonesAutoPager[ZoneListResponse] {
+	return pagination.NewOffsetPageDNSZonesAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete DNS zone and its records and raws.
@@ -221,26 +238,8 @@ func (r *ZoneNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ZoneListResponse struct {
-	TotalAmount int64                  `json:"total_amount"`
-	Zones       []ZoneListResponseZone `json:"zones"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		TotalAmount respjson.Field
-		Zones       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ZoneListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ZoneListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // OutputZone
-type ZoneListResponseZone struct {
+type ZoneListResponse struct {
 	// ID of zone. This field usually is omitted in response and available only in case
 	// of getting deleted zones by admin.
 	ID       int64 `json:"id"`
@@ -269,15 +268,15 @@ type ZoneListResponseZone struct {
 	// Time To Live of cache
 	NxTtl int64 `json:"nx_ttl"`
 	// primary master name server for zone
-	PrimaryServer string                       `json:"primary_server"`
-	Records       []ZoneListResponseZoneRecord `json:"records"`
+	PrimaryServer string                   `json:"primary_server"`
+	Records       []ZoneListResponseRecord `json:"records"`
 	// number of seconds after which secondary name servers should query the master for
 	// the SOA record, to detect zone changes.
 	Refresh int64 `json:"refresh"`
 	// number of seconds after which secondary name servers should retry to request the
 	// serial number
-	Retry        int64                            `json:"retry"`
-	RrsetsAmount ZoneListResponseZoneRrsetsAmount `json:"rrsets_amount"`
+	Retry        int64                        `json:"retry"`
+	RrsetsAmount ZoneListResponseRrsetsAmount `json:"rrsets_amount"`
 	// Serial number for this zone or Timestamp of zone modification moment. If a
 	// secondary name server slaved to this one observes an increase in this number,
 	// the slave will assume that the zone has been updated and initiate a zone
@@ -310,13 +309,13 @@ type ZoneListResponseZone struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ZoneListResponseZone) RawJSON() string { return r.JSON.raw }
-func (r *ZoneListResponseZone) UnmarshalJSON(data []byte) error {
+func (r ZoneListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ZoneListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Record - readonly short version of rrset
-type ZoneListResponseZoneRecord struct {
+type ZoneListResponseRecord struct {
 	Name         string   `json:"name"`
 	ShortAnswers []string `json:"short_answers"`
 	Ttl          int64    `json:"ttl"`
@@ -333,14 +332,14 @@ type ZoneListResponseZoneRecord struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ZoneListResponseZoneRecord) RawJSON() string { return r.JSON.raw }
-func (r *ZoneListResponseZoneRecord) UnmarshalJSON(data []byte) error {
+func (r ZoneListResponseRecord) RawJSON() string { return r.JSON.raw }
+func (r *ZoneListResponseRecord) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ZoneListResponseZoneRrsetsAmount struct {
+type ZoneListResponseRrsetsAmount struct {
 	// Amount of dynamic RRsets in zone
-	Dynamic ZoneListResponseZoneRrsetsAmountDynamic `json:"dynamic"`
+	Dynamic ZoneListResponseRrsetsAmountDynamic `json:"dynamic"`
 	// Amount of static RRsets in zone
 	Static int64 `json:"static"`
 	// Total amount of RRsets in zone
@@ -356,13 +355,13 @@ type ZoneListResponseZoneRrsetsAmount struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ZoneListResponseZoneRrsetsAmount) RawJSON() string { return r.JSON.raw }
-func (r *ZoneListResponseZoneRrsetsAmount) UnmarshalJSON(data []byte) error {
+func (r ZoneListResponseRrsetsAmount) RawJSON() string { return r.JSON.raw }
+func (r *ZoneListResponseRrsetsAmount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Amount of dynamic RRsets in zone
-type ZoneListResponseZoneRrsetsAmountDynamic struct {
+type ZoneListResponseRrsetsAmountDynamic struct {
 	// Amount of RRsets with enabled healthchecks
 	Healthcheck int64 `json:"healthcheck"`
 	// Total amount of dynamic RRsets in zone
@@ -377,8 +376,8 @@ type ZoneListResponseZoneRrsetsAmountDynamic struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ZoneListResponseZoneRrsetsAmountDynamic) RawJSON() string { return r.JSON.raw }
-func (r *ZoneListResponseZoneRrsetsAmountDynamic) UnmarshalJSON(data []byte) error {
+func (r ZoneListResponseRrsetsAmountDynamic) RawJSON() string { return r.JSON.raw }
+func (r *ZoneListResponseRrsetsAmountDynamic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

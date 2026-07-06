@@ -15,6 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -166,15 +167,30 @@ func (r *ZoneRrsetService) New(ctx context.Context, rrsetType string, params Zon
 }
 
 // List of RRset.
-func (r *ZoneRrsetService) List(ctx context.Context, zoneName string, query ZoneRrsetListParams, opts ...option.RequestOption) (res *ZoneRrsetListResponse, err error) {
+func (r *ZoneRrsetService) List(ctx context.Context, zoneName string, query ZoneRrsetListParams, opts ...option.RequestOption) (res *pagination.OffsetPageDNSRrsets[DNSOutputRrset], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if zoneName == "" {
 		err = errors.New("missing required zoneName parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("dns/v2/zones/%s/rrsets", zoneName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List of RRset.
+func (r *ZoneRrsetService) ListAutoPaging(ctx context.Context, zoneName string, query ZoneRrsetListParams, opts ...option.RequestOption) *pagination.OffsetPageDNSRrsetsAutoPager[DNSOutputRrset] {
+	return pagination.NewOffsetPageDNSRrsetsAutoPager(r.List(ctx, zoneName, query, opts...))
 }
 
 // Delete RRset.
@@ -448,24 +464,6 @@ type DNSOutputRrsetWarning struct {
 // Returns the unmodified JSON received from the API
 func (r DNSOutputRrsetWarning) RawJSON() string { return r.JSON.raw }
 func (r *DNSOutputRrsetWarning) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ZoneRrsetListResponse struct {
-	Rrsets      []DNSOutputRrset `json:"rrsets"`
-	TotalAmount int64            `json:"total_amount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Rrsets      respjson.Field
-		TotalAmount respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ZoneRrsetListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ZoneRrsetListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -16,6 +16,7 @@ import (
 	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -52,11 +53,27 @@ func (r *KvStoreService) New(ctx context.Context, body KvStoreNewParams, opts ..
 
 // Retrieve key-value storage stores available to the authenticated client. Stores
 // can contain KV pairs, sorted sets, or bloom filters for edge application data.
-func (r *KvStoreService) List(ctx context.Context, query KvStoreListParams, opts ...option.RequestOption) (res *KvStoreListResponse, err error) {
+func (r *KvStoreService) List(ctx context.Context, query KvStoreListParams, opts ...option.RequestOption) (res *pagination.OffsetPageFastedgeKvStores[KvStoreShort], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "fastedge/v1/kv"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve key-value storage stores available to the authenticated client. Stores
+// can contain KV pairs, sorted sets, or bloom filters for edge application data.
+func (r *KvStoreService) ListAutoPaging(ctx context.Context, query KvStoreListParams, opts ...option.RequestOption) *pagination.OffsetPageFastedgeKvStoresAutoPager[KvStoreShort] {
+	return pagination.NewOffsetPageFastedgeKvStoresAutoPager(r.List(ctx, query, opts...))
 }
 
 // Permanently delete an edge storage store and all its data. This action cannot be
@@ -234,25 +251,6 @@ type KvStoreNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r KvStoreNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *KvStoreNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type KvStoreListResponse struct {
-	// Total number of stores
-	Count  int64          `json:"count" api:"required"`
-	Stores []KvStoreShort `json:"stores" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Stores      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r KvStoreListResponse) RawJSON() string { return r.JSON.raw }
-func (r *KvStoreListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

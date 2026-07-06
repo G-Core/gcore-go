@@ -12,6 +12,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -122,27 +123,72 @@ func (r *CDNService) GetAvailableFeatures(ctx context.Context, opts ...option.Re
 }
 
 // Get the list of Alibaba Cloud regions.
-func (r *CDNService) ListAlibabaRegions(ctx context.Context, query CDNListAlibabaRegionsParams, opts ...option.RequestOption) (res *AlibabaRegions, err error) {
+func (r *CDNService) ListAlibabaRegions(ctx context.Context, query CDNListAlibabaRegionsParams, opts ...option.RequestOption) (res *pagination.OffsetPage[AlibabaRegionsResult], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cdn/alibaba_regions"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get the list of Alibaba Cloud regions.
+func (r *CDNService) ListAlibabaRegionsAutoPaging(ctx context.Context, query CDNListAlibabaRegionsParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[AlibabaRegionsResult] {
+	return pagination.NewOffsetPageAutoPager(r.ListAlibabaRegions(ctx, query, opts...))
 }
 
 // Get the list of Amazon AWS regions.
-func (r *CDNService) ListAwsRegions(ctx context.Context, query CDNListAwsRegionsParams, opts ...option.RequestOption) (res *AwsRegions, err error) {
+func (r *CDNService) ListAwsRegions(ctx context.Context, query CDNListAwsRegionsParams, opts ...option.RequestOption) (res *pagination.OffsetPage[AwsRegionsResult], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cdn/aws_regions"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get the list of Amazon AWS regions.
+func (r *CDNService) ListAwsRegionsAutoPaging(ctx context.Context, query CDNListAwsRegionsParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[AwsRegionsResult] {
+	return pagination.NewOffsetPageAutoPager(r.ListAwsRegions(ctx, query, opts...))
 }
 
 // Get purges history.
-func (r *CDNService) ListPurgeStatuses(ctx context.Context, query CDNListPurgeStatusesParams, opts ...option.RequestOption) (res *CDNListPurgeStatusesResponse, err error) {
+func (r *CDNService) ListPurgeStatuses(ctx context.Context, query CDNListPurgeStatusesParams, opts ...option.RequestOption) (res *pagination.OffsetPage[PurgeStatus], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cdn/purge_statuses"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get purges history.
+func (r *CDNService) ListPurgeStatusesAutoPaging(ctx context.Context, query CDNListPurgeStatusesParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[PurgeStatus] {
+	return pagination.NewOffsetPageAutoPager(r.ListPurgeStatuses(ctx, query, opts...))
 }
 
 // Change information about CDN service.
@@ -552,31 +598,6 @@ const (
 	PurgeStatusStatusSuccessful PurgeStatusStatus = "Successful"
 	PurgeStatusStatusFailed     PurgeStatusStatus = "Failed"
 )
-
-type CDNListPurgeStatusesResponse struct {
-	// Total number of items.
-	Count int64 `json:"count" api:"required"`
-	// URL to the next page of results. Null if current page is the last one.
-	Next string `json:"next" api:"required"`
-	// URL to the previous page of results. Null if current page is the first one.
-	Previous string        `json:"previous" api:"required"`
-	Results  []PurgeStatus `json:"results" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Next        respjson.Field
-		Previous    respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CDNListPurgeStatusesResponse) RawJSON() string { return r.JSON.raw }
-func (r *CDNListPurgeStatusesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type CDNListAlibabaRegionsParams struct {
 	// Maximum number of items to return in the response. Cannot exceed 1000.

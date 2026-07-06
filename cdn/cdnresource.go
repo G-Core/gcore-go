@@ -13,6 +13,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -61,11 +62,26 @@ func (r *CDNResourceService) Update(ctx context.Context, resourceID int64, body 
 }
 
 // Get information about all CDN resources in your account.
-func (r *CDNResourceService) List(ctx context.Context, query CDNResourceListParams, opts ...option.RequestOption) (res *CDNResourceList, err error) {
+func (r *CDNResourceService) List(ctx context.Context, query CDNResourceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[CDNResource], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cdn/resources"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get information about all CDN resources in your account.
+func (r *CDNResourceService) ListAutoPaging(ctx context.Context, query CDNResourceListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[CDNResource] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete the CDN resource from the system permanently.

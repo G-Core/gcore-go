@@ -13,6 +13,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -57,11 +58,26 @@ func (r *CertificateService) New(ctx context.Context, body CertificateNewParams,
 }
 
 // Get information about SSL certificates.
-func (r *CertificateService) List(ctx context.Context, query CertificateListParams, opts ...option.RequestOption) (res *SslDetailList, err error) {
+func (r *CertificateService) List(ctx context.Context, query CertificateListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[SslDetail], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cdn/sslData"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get information about SSL certificates.
+func (r *CertificateService) ListAutoPaging(ctx context.Context, query CertificateListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[SslDetail] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete SSL certificate

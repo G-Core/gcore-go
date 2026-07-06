@@ -14,6 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
@@ -65,8 +66,10 @@ func (r *LoadBalancerL7PolicyRuleService) New(ctx context.Context, l7policyID st
 }
 
 // List load balancer L7 policy rules
-func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyRuleListParams, opts ...option.RequestOption) (res *LoadBalancerL7RuleList, err error) {
+func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyRuleListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[LoadBalancerL7Rule], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -86,8 +89,21 @@ func (r *LoadBalancerL7PolicyRuleService) List(ctx context.Context, l7policyID s
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s/rules", params.ProjectID.Value, params.RegionID.Value, l7policyID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List load balancer L7 policy rules
+func (r *LoadBalancerL7PolicyRuleService) ListAutoPaging(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyRuleListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[LoadBalancerL7Rule] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, l7policyID, params, opts...))
 }
 
 // Delete load balancer L7 rule
