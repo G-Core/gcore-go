@@ -4,7 +4,6 @@ package cdn
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -59,7 +58,7 @@ func (r *LogsUploaderPolicyService) Update(ctx context.Context, id int64, body L
 }
 
 // Get list of logs uploader policies.
-func (r *LogsUploaderPolicyService) List(ctx context.Context, query LogsUploaderPolicyListParams, opts ...option.RequestOption) (res *LogsUploaderPolicyListUnion, err error) {
+func (r *LogsUploaderPolicyService) List(ctx context.Context, query LogsUploaderPolicyListParams, opts ...option.RequestOption) (res *LogsUploaderPolicyList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/logs_uploader/policies"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -222,53 +221,7 @@ const (
 	LogsUploaderPolicyFormatTypeEmpty LogsUploaderPolicyFormatType = ""
 )
 
-// LogsUploaderPolicyListUnion contains all possible properties and values from
-// [[]LogsUploaderPolicy], [LogsUploaderPolicyListPaginatedList].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfPlainList]
-type LogsUploaderPolicyListUnion struct {
-	// This field will be present if the value is a [[]LogsUploaderPolicy] instead of
-	// an object.
-	OfPlainList []LogsUploaderPolicy `json:",inline"`
-	// This field is from variant [LogsUploaderPolicyListPaginatedList].
-	Count int64 `json:"count"`
-	// This field is from variant [LogsUploaderPolicyListPaginatedList].
-	Next string `json:"next"`
-	// This field is from variant [LogsUploaderPolicyListPaginatedList].
-	Previous string `json:"previous"`
-	// This field is from variant [LogsUploaderPolicyListPaginatedList].
-	Results []LogsUploaderPolicy `json:"results"`
-	JSON    struct {
-		OfPlainList respjson.Field
-		Count       respjson.Field
-		Next        respjson.Field
-		Previous    respjson.Field
-		Results     respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-func (u LogsUploaderPolicyListUnion) AsPlainList() (v []LogsUploaderPolicy) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u LogsUploaderPolicyListUnion) AsPaginatedList() (v LogsUploaderPolicyListPaginatedList) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u LogsUploaderPolicyListUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *LogsUploaderPolicyListUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LogsUploaderPolicyListPaginatedList struct {
+type LogsUploaderPolicyList struct {
 	// Total number of items.
 	Count int64 `json:"count" api:"required"`
 	// URL to the next page of results. Null if current page is the last one.
@@ -288,8 +241,8 @@ type LogsUploaderPolicyListPaginatedList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r LogsUploaderPolicyListPaginatedList) RawJSON() string { return r.JSON.raw }
-func (r *LogsUploaderPolicyListPaginatedList) UnmarshalJSON(data []byte) error {
+func (r LogsUploaderPolicyList) RawJSON() string { return r.JSON.raw }
+func (r *LogsUploaderPolicyList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

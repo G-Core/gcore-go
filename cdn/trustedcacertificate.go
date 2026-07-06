@@ -4,7 +4,6 @@ package cdn
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -52,7 +51,7 @@ func (r *TrustedCaCertificateService) New(ctx context.Context, body TrustedCaCer
 }
 
 // Get list of trusted CA certificates used to verify an origin.
-func (r *TrustedCaCertificateService) List(ctx context.Context, query TrustedCaCertificateListParams, opts ...option.RequestOption) (res *CaCertificateListUnion, err error) {
+func (r *TrustedCaCertificateService) List(ctx context.Context, query TrustedCaCertificateListParams, opts ...option.RequestOption) (res *CaCertificateList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/sslCertificates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -138,53 +137,7 @@ func (r *CaCertificate) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// CaCertificateListUnion contains all possible properties and values from
-// [[]CaCertificate], [CaCertificateListPaginatedList].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfPlainList]
-type CaCertificateListUnion struct {
-	// This field will be present if the value is a [[]CaCertificate] instead of an
-	// object.
-	OfPlainList []CaCertificate `json:",inline"`
-	// This field is from variant [CaCertificateListPaginatedList].
-	Count int64 `json:"count"`
-	// This field is from variant [CaCertificateListPaginatedList].
-	Next string `json:"next"`
-	// This field is from variant [CaCertificateListPaginatedList].
-	Previous string `json:"previous"`
-	// This field is from variant [CaCertificateListPaginatedList].
-	Results []CaCertificate `json:"results"`
-	JSON    struct {
-		OfPlainList respjson.Field
-		Count       respjson.Field
-		Next        respjson.Field
-		Previous    respjson.Field
-		Results     respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-func (u CaCertificateListUnion) AsPlainList() (v []CaCertificate) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CaCertificateListUnion) AsPaginatedList() (v CaCertificateListPaginatedList) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CaCertificateListUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CaCertificateListUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CaCertificateListPaginatedList struct {
+type CaCertificateList struct {
 	// Total number of items.
 	Count int64 `json:"count" api:"required"`
 	// URL to the next page of results. Null if current page is the last one.
@@ -204,8 +157,8 @@ type CaCertificateListPaginatedList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CaCertificateListPaginatedList) RawJSON() string { return r.JSON.raw }
-func (r *CaCertificateListPaginatedList) UnmarshalJSON(data []byte) error {
+func (r CaCertificateList) RawJSON() string { return r.JSON.raw }
+func (r *CaCertificateList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

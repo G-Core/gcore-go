@@ -57,7 +57,7 @@ func (r *OriginGroupService) Update(ctx context.Context, originGroupID int64, bo
 }
 
 // Get all origin groups and related origin sources.
-func (r *OriginGroupService) List(ctx context.Context, query OriginGroupListParams, opts ...option.RequestOption) (res *OriginGroupsListUnion, err error) {
+func (r *OriginGroupService) List(ctx context.Context, query OriginGroupListParams, opts ...option.RequestOption) (res *OriginGroupsList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/origin_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -681,53 +681,7 @@ func (r *OriginGroupsAwsSignatureV4Auth) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// OriginGroupsListUnion contains all possible properties and values from
-// [[]OriginGroupsUnion], [OriginGroupsListPaginatedList].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfPlainList]
-type OriginGroupsListUnion struct {
-	// This field will be present if the value is a [[]OriginGroupsUnion] instead of an
-	// object.
-	OfPlainList []OriginGroupsUnion `json:",inline"`
-	// This field is from variant [OriginGroupsListPaginatedList].
-	Count int64 `json:"count"`
-	// This field is from variant [OriginGroupsListPaginatedList].
-	Next string `json:"next"`
-	// This field is from variant [OriginGroupsListPaginatedList].
-	Previous string `json:"previous"`
-	// This field is from variant [OriginGroupsListPaginatedList].
-	Results []OriginGroupsUnion `json:"results"`
-	JSON    struct {
-		OfPlainList respjson.Field
-		Count       respjson.Field
-		Next        respjson.Field
-		Previous    respjson.Field
-		Results     respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-func (u OriginGroupsListUnion) AsPlainList() (v []OriginGroupsUnion) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u OriginGroupsListUnion) AsPaginatedList() (v OriginGroupsListPaginatedList) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u OriginGroupsListUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *OriginGroupsListUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type OriginGroupsListPaginatedList struct {
+type OriginGroupsList struct {
 	// Total number of items.
 	Count int64 `json:"count" api:"required"`
 	// URL to the next page of results. Null if current page is the last one.
@@ -747,8 +701,8 @@ type OriginGroupsListPaginatedList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OriginGroupsListPaginatedList) RawJSON() string { return r.JSON.raw }
-func (r *OriginGroupsListPaginatedList) UnmarshalJSON(data []byte) error {
+func (r OriginGroupsList) RawJSON() string { return r.JSON.raw }
+func (r *OriginGroupsList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

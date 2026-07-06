@@ -4,7 +4,6 @@ package cdn
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -58,7 +57,7 @@ func (r *RuleTemplateService) Update(ctx context.Context, ruleTemplateID int64, 
 }
 
 // Get rule templates list
-func (r *RuleTemplateService) List(ctx context.Context, query RuleTemplateListParams, opts ...option.RequestOption) (res *RuleTemplateListUnion, err error) {
+func (r *RuleTemplateService) List(ctx context.Context, query RuleTemplateListParams, opts ...option.RequestOption) (res *RuleTemplateList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/resources/rule_templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -2360,53 +2359,7 @@ const (
 	RuleTemplateOverrideOriginProtocolMatch RuleTemplateOverrideOriginProtocol = "MATCH"
 )
 
-// RuleTemplateListUnion contains all possible properties and values from
-// [[]RuleTemplate], [RuleTemplateListPaginatedList].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfPlainList]
-type RuleTemplateListUnion struct {
-	// This field will be present if the value is a [[]RuleTemplate] instead of an
-	// object.
-	OfPlainList []RuleTemplate `json:",inline"`
-	// This field is from variant [RuleTemplateListPaginatedList].
-	Count int64 `json:"count"`
-	// This field is from variant [RuleTemplateListPaginatedList].
-	Next string `json:"next"`
-	// This field is from variant [RuleTemplateListPaginatedList].
-	Previous string `json:"previous"`
-	// This field is from variant [RuleTemplateListPaginatedList].
-	Results []RuleTemplate `json:"results"`
-	JSON    struct {
-		OfPlainList respjson.Field
-		Count       respjson.Field
-		Next        respjson.Field
-		Previous    respjson.Field
-		Results     respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-func (u RuleTemplateListUnion) AsPlainList() (v []RuleTemplate) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u RuleTemplateListUnion) AsPaginatedList() (v RuleTemplateListPaginatedList) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u RuleTemplateListUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *RuleTemplateListUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type RuleTemplateListPaginatedList struct {
+type RuleTemplateList struct {
 	// Total number of items.
 	Count int64 `json:"count" api:"required"`
 	// URL to the next page of results. Null if current page is the last one.
@@ -2426,8 +2379,8 @@ type RuleTemplateListPaginatedList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RuleTemplateListPaginatedList) RawJSON() string { return r.JSON.raw }
-func (r *RuleTemplateListPaginatedList) UnmarshalJSON(data []byte) error {
+func (r RuleTemplateList) RawJSON() string { return r.JSON.raw }
+func (r *RuleTemplateList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

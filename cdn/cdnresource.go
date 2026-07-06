@@ -4,7 +4,6 @@ package cdn
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -62,7 +61,7 @@ func (r *CDNResourceService) Update(ctx context.Context, resourceID int64, body 
 }
 
 // Get information about all CDN resources in your account.
-func (r *CDNResourceService) List(ctx context.Context, query CDNResourceListParams, opts ...option.RequestOption) (res *CDNResourceListUnion, err error) {
+func (r *CDNResourceService) List(ctx context.Context, query CDNResourceListParams, opts ...option.RequestOption) (res *CDNResourceList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/resources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -2875,53 +2874,7 @@ const (
 	CDNResourceStatusDeleted   CDNResourceStatus = "deleted"
 )
 
-// CDNResourceListUnion contains all possible properties and values from
-// [[]CDNResource], [CDNResourceListPaginatedList].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfPlainList]
-type CDNResourceListUnion struct {
-	// This field will be present if the value is a [[]CDNResource] instead of an
-	// object.
-	OfPlainList []CDNResource `json:",inline"`
-	// This field is from variant [CDNResourceListPaginatedList].
-	Count int64 `json:"count"`
-	// This field is from variant [CDNResourceListPaginatedList].
-	Next string `json:"next"`
-	// This field is from variant [CDNResourceListPaginatedList].
-	Previous string `json:"previous"`
-	// This field is from variant [CDNResourceListPaginatedList].
-	Results []CDNResource `json:"results"`
-	JSON    struct {
-		OfPlainList respjson.Field
-		Count       respjson.Field
-		Next        respjson.Field
-		Previous    respjson.Field
-		Results     respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-func (u CDNResourceListUnion) AsPlainList() (v []CDNResource) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CDNResourceListUnion) AsPaginatedList() (v CDNResourceListPaginatedList) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CDNResourceListUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CDNResourceListUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CDNResourceListPaginatedList struct {
+type CDNResourceList struct {
 	// Total number of items.
 	Count int64 `json:"count" api:"required"`
 	// URL to the next page of results. Null if current page is the last one.
@@ -2941,8 +2894,8 @@ type CDNResourceListPaginatedList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceListPaginatedList) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceListPaginatedList) UnmarshalJSON(data []byte) error {
+func (r CDNResourceList) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -7687,6 +7640,13 @@ const (
 )
 
 type CDNResourceListParams struct {
+	// Defines whether a CDN resource is activated.
+	//
+	// Possible values:
+	//
+	// - **true** - CDN resource is activated.
+	// - **false** - CDN resource is deactivated.
+	Active param.Opt[bool] `query:"active,omitzero" json:"-"`
 	// Delivery domain (CNAME) of the CDN resource.
 	Cname param.Opt[string] `query:"cname,omitzero" json:"-"`
 	// Defines whether a CDN resource has been deleted.
@@ -7703,14 +7663,33 @@ type CDNResourceListParams struct {
 	// - **true** - CDN resource is enabled.
 	// - **false** - CDN resource is disabled.
 	Enabled param.Opt[bool] `query:"enabled,omitzero" json:"-"`
+	// Filters CDN resources by their primary/alternate relationship. Standalone
+	// resources — those not linked to another resource, which is the default — match
+	// neither value and are returned by neither `true` nor `false`.
+	//
+	// Possible values:
+	//
+	//   - **true** - CDN resource is a primary resource for one or more alternate
+	//     resources.
+	//   - **false** - CDN resource is an alternate resource linked to a primary
+	//     resource.
+	IsPrimary param.Opt[bool] `query:"is_primary,omitzero" json:"-"`
 	// Maximum number of items to return in the response. Cannot exceed 1000.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Most recent date of CDN resource creation for which CDN resources should be
 	// returned (ISO 8601/RFC 3339 format, UTC.)
 	MaxCreated param.Opt[string] `query:"max_created,omitzero" json:"-"`
+	// Most recent date of CDN resource update for which CDN resources should be
+	// returned (ISO 8601/RFC 3339 format, UTC.)
+	MaxUpdated param.Opt[string] `query:"max_updated,omitzero" json:"-"`
 	// Earliest date of CDN resource creation for which CDN resources should be
 	// returned (ISO 8601/RFC 3339 format, UTC.)
 	MinCreated param.Opt[string] `query:"min_created,omitzero" json:"-"`
+	// Earliest date of CDN resource update for which CDN resources should be returned
+	// (ISO 8601/RFC 3339 format, UTC.)
+	MinUpdated param.Opt[string] `query:"min_updated,omitzero" json:"-"`
+	// Name of the CDN resource. Matches partially and is case-insensitive.
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Number of items to skip from the beginning of the list.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Origin group ID.
@@ -7751,6 +7730,15 @@ type CDNResourceListParams struct {
 	//     days.
 	//   - **false** - CDN resource is not selected for automatic suspension.
 	Suspend param.Opt[bool] `query:"suspend,omitzero" json:"-"`
+	// Defines whether a CDN resource is currently suspended. This reflects the
+	// resource's suspended state, unlike the `suspend` parameter, which selects
+	// resources that have a scheduled automatic suspension date.
+	//
+	// Possible values:
+	//
+	// - **true** - CDN resource is currently suspended.
+	// - **false** - CDN resource is not suspended.
+	Suspended param.Opt[bool] `query:"suspended,omitzero" json:"-"`
 	// Defines whether the CDN resource is integrated with the Streaming platform.
 	//
 	// Possible values:
@@ -7758,6 +7746,10 @@ type CDNResourceListParams struct {
 	// - **true** - CDN resource is used for Streaming platform.
 	// - **false** - CDN resource is not used for Streaming platform.
 	VpEnabled param.Opt[bool] `query:"vp_enabled,omitzero" json:"-"`
+	// Protocol used by CDN servers to request content from an origin source.
+	//
+	// Any of "HTTP", "HTTPS", "MATCH".
+	OriginProtocol CDNResourceListParamsOriginProtocol `query:"originProtocol,omitzero" json:"-"`
 	// CDN resource status.
 	//
 	// Any of "active", "processed", "suspended", "deleted".
@@ -7772,6 +7764,15 @@ func (r CDNResourceListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Protocol used by CDN servers to request content from an origin source.
+type CDNResourceListParamsOriginProtocol string
+
+const (
+	CDNResourceListParamsOriginProtocolHTTP  CDNResourceListParamsOriginProtocol = "HTTP"
+	CDNResourceListParamsOriginProtocolHTTPS CDNResourceListParamsOriginProtocol = "HTTPS"
+	CDNResourceListParamsOriginProtocolMatch CDNResourceListParamsOriginProtocol = "MATCH"
+)
 
 // CDN resource status.
 type CDNResourceListParamsStatus string

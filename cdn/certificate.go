@@ -4,7 +4,6 @@ package cdn
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -58,7 +57,7 @@ func (r *CertificateService) New(ctx context.Context, body CertificateNewParams,
 }
 
 // Get information about SSL certificates.
-func (r *CertificateService) List(ctx context.Context, query CertificateListParams, opts ...option.RequestOption) (res *SslDetailListUnion, err error) {
+func (r *CertificateService) List(ctx context.Context, query CertificateListParams, opts ...option.RequestOption) (res *SslDetailList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cdn/sslData"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -181,52 +180,7 @@ func (r *SslDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// SslDetailListUnion contains all possible properties and values from
-// [[]SslDetail], [SslDetailListPaginatedList].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfPlainList]
-type SslDetailListUnion struct {
-	// This field will be present if the value is a [[]SslDetail] instead of an object.
-	OfPlainList []SslDetail `json:",inline"`
-	// This field is from variant [SslDetailListPaginatedList].
-	Count int64 `json:"count"`
-	// This field is from variant [SslDetailListPaginatedList].
-	Next string `json:"next"`
-	// This field is from variant [SslDetailListPaginatedList].
-	Previous string `json:"previous"`
-	// This field is from variant [SslDetailListPaginatedList].
-	Results []SslDetail `json:"results"`
-	JSON    struct {
-		OfPlainList respjson.Field
-		Count       respjson.Field
-		Next        respjson.Field
-		Previous    respjson.Field
-		Results     respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-func (u SslDetailListUnion) AsPlainList() (v []SslDetail) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u SslDetailListUnion) AsPaginatedList() (v SslDetailListPaginatedList) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u SslDetailListUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *SslDetailListUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SslDetailListPaginatedList struct {
+type SslDetailList struct {
 	// Total number of items.
 	Count int64 `json:"count" api:"required"`
 	// URL to the next page of results. Null if current page is the last one.
@@ -246,8 +200,8 @@ type SslDetailListPaginatedList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r SslDetailListPaginatedList) RawJSON() string { return r.JSON.raw }
-func (r *SslDetailListPaginatedList) UnmarshalJSON(data []byte) error {
+func (r SslDetailList) RawJSON() string { return r.JSON.raw }
+func (r *SslDetailList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

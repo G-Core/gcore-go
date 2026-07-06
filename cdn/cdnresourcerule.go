@@ -4,7 +4,6 @@ package cdn
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -57,7 +56,7 @@ func (r *CDNResourceRuleService) Update(ctx context.Context, ruleID int64, param
 }
 
 // Get rules list
-func (r *CDNResourceRuleService) List(ctx context.Context, resourceID int64, query CDNResourceRuleListParams, opts ...option.RequestOption) (res *CDNResourceRuleListUnion, err error) {
+func (r *CDNResourceRuleService) List(ctx context.Context, resourceID int64, query CDNResourceRuleListParams, opts ...option.RequestOption) (res *CDNResourceRuleList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/resources/%v/rules", resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -2410,53 +2409,7 @@ const (
 	CDNResourceRuleOverrideOriginProtocolMatch CDNResourceRuleOverrideOriginProtocol = "MATCH"
 )
 
-// CDNResourceRuleListUnion contains all possible properties and values from
-// [[]CDNResourceRule], [CDNResourceRuleListPaginatedList].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfPlainList]
-type CDNResourceRuleListUnion struct {
-	// This field will be present if the value is a [[]CDNResourceRule] instead of an
-	// object.
-	OfPlainList []CDNResourceRule `json:",inline"`
-	// This field is from variant [CDNResourceRuleListPaginatedList].
-	Count int64 `json:"count"`
-	// This field is from variant [CDNResourceRuleListPaginatedList].
-	Next string `json:"next"`
-	// This field is from variant [CDNResourceRuleListPaginatedList].
-	Previous string `json:"previous"`
-	// This field is from variant [CDNResourceRuleListPaginatedList].
-	Results []CDNResourceRule `json:"results"`
-	JSON    struct {
-		OfPlainList respjson.Field
-		Count       respjson.Field
-		Next        respjson.Field
-		Previous    respjson.Field
-		Results     respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-func (u CDNResourceRuleListUnion) AsPlainList() (v []CDNResourceRule) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CDNResourceRuleListUnion) AsPaginatedList() (v CDNResourceRuleListPaginatedList) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CDNResourceRuleListUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CDNResourceRuleListUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CDNResourceRuleListPaginatedList struct {
+type CDNResourceRuleList struct {
 	// Total number of items.
 	Count int64 `json:"count" api:"required"`
 	// URL to the next page of results. Null if current page is the last one.
@@ -2476,8 +2429,8 @@ type CDNResourceRuleListPaginatedList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CDNResourceRuleListPaginatedList) RawJSON() string { return r.JSON.raw }
-func (r *CDNResourceRuleListPaginatedList) UnmarshalJSON(data []byte) error {
+func (r CDNResourceRuleList) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceRuleList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

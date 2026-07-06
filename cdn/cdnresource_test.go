@@ -665,14 +665,20 @@ func TestCDNResourceListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.CDN.CDNResources.List(context.TODO(), cdn.CDNResourceListParams{
+		Active:             gcore.Bool(true),
 		Cname:              gcore.String("cname"),
 		Deleted:            gcore.Bool(true),
 		Enabled:            gcore.Bool(true),
+		IsPrimary:          gcore.Bool(true),
 		Limit:              gcore.Int(1),
 		MaxCreated:         gcore.String("max_created"),
+		MaxUpdated:         gcore.String("max_updated"),
 		MinCreated:         gcore.String("min_created"),
+		MinUpdated:         gcore.String("min_updated"),
+		Name:               gcore.String("name"),
 		Offset:             gcore.Int(0),
 		OriginGroup:        gcore.Int(0),
+		OriginProtocol:     cdn.CDNResourceListParamsOriginProtocolHTTP,
 		Rules:              gcore.String("rules"),
 		SecondaryHostnames: gcore.String("secondaryHostnames"),
 		ShieldDc:           gcore.String("shield_dc"),
@@ -682,6 +688,7 @@ func TestCDNResourceListWithOptionalParams(t *testing.T) {
 		SslEnabled:         gcore.Bool(true),
 		Status:             cdn.CDNResourceListParamsStatusActive,
 		Suspend:            gcore.Bool(true),
+		Suspended:          gcore.Bool(true),
 		VpEnabled:          gcore.Bool(true),
 	})
 	if err != nil {
