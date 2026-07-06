@@ -136,6 +136,7 @@ func TestGPUVirtualClusterUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestGPUVirtualClusterListWithOptionalParams(t *testing.T) {
+	t.Skip("GCLOUD2-27612: mock rejects single-element array filters as scalars")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
