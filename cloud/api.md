@@ -99,13 +99,13 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaGetAllResponse">QuotaGetAllResponse</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#Quota">Quota</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaGetByRegionResponse">QuotaGetByRegionResponse</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaGetGlobalResponse">QuotaGetGlobalResponse</a>
 
 Methods:
 
-- <code title="get /cloud/v2/client_quotas">client.Cloud.Quotas.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaService.GetAll">GetAll</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaGetAllResponse">QuotaGetAllResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /cloud/v2/client_quotas">client.Cloud.Quotas.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaService.GetAll">GetAll</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#Quota">Quota</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /cloud/v2/regional_quotas/{client_id}/{region_id}">client.Cloud.Quotas.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaService.GetByRegion">GetByRegion</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaGetByRegionParams">QuotaGetByRegionParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaGetByRegionResponse">QuotaGetByRegionResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /cloud/v2/global_quotas/{client_id}">client.Cloud.Quotas.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaService.GetGlobal">GetGlobal</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, clientID <a href="https://pkg.go.dev/builtin#int64">int64</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#QuotaGetGlobalResponse">QuotaGetGlobalResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 

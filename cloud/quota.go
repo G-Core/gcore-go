@@ -16,6 +16,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Quotas define the maximum amount of cloud resources (compute, storage,
+// networking, GPU, and more) available to a client, both globally and per region.
+//
 // QuotaService contains methods and other services that help with interacting with
 // the gcore API.
 //
@@ -40,7 +43,7 @@ func NewQuotaService(opts ...option.RequestOption) (r QuotaService) {
 }
 
 // Get combined client quotas, including both regional and global quotas.
-func (r *QuotaService) GetAll(ctx context.Context, opts ...option.RequestOption) (res *QuotaGetAllResponse, err error) {
+func (r *QuotaService) GetAll(ctx context.Context, opts ...option.RequestOption) (res *Quota, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v2/client_quotas"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -72,11 +75,11 @@ func (r *QuotaService) GetGlobal(ctx context.Context, clientID int64, opts ...op
 	return res, err
 }
 
-type QuotaGetAllResponse struct {
+type Quota struct {
 	// Global entity quotas
-	GlobalQuotas QuotaGetAllResponseGlobalQuotas `json:"global_quotas"`
+	GlobalQuotas QuotaGlobalQuotas `json:"global_quotas"`
 	// Regional entity quotas. Only contains initialized quotas.
-	RegionalQuotas []QuotaGetAllResponseRegionalQuota `json:"regional_quotas"`
+	RegionalQuotas []QuotaRegionalQuota `json:"regional_quotas"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		GlobalQuotas   respjson.Field
@@ -87,13 +90,13 @@ type QuotaGetAllResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r QuotaGetAllResponse) RawJSON() string { return r.JSON.raw }
-func (r *QuotaGetAllResponse) UnmarshalJSON(data []byte) error {
+func (r Quota) RawJSON() string { return r.JSON.raw }
+func (r *Quota) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Global entity quotas
-type QuotaGetAllResponseGlobalQuotas struct {
+type QuotaGlobalQuotas struct {
 	// Inference CPU millicore count limit
 	InferenceCPUMillicoreCountLimit int64 `json:"inference_cpu_millicore_count_limit"`
 	// Inference CPU millicore count usage
@@ -150,12 +153,12 @@ type QuotaGetAllResponseGlobalQuotas struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r QuotaGetAllResponseGlobalQuotas) RawJSON() string { return r.JSON.raw }
-func (r *QuotaGetAllResponseGlobalQuotas) UnmarshalJSON(data []byte) error {
+func (r QuotaGlobalQuotas) RawJSON() string { return r.JSON.raw }
+func (r *QuotaGlobalQuotas) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type QuotaGetAllResponseRegionalQuota struct {
+type QuotaRegionalQuota struct {
 	// Basic bare metal servers count limit
 	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
 	// Basic bare metal servers count usage
@@ -483,8 +486,8 @@ type QuotaGetAllResponseRegionalQuota struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r QuotaGetAllResponseRegionalQuota) RawJSON() string { return r.JSON.raw }
-func (r *QuotaGetAllResponseRegionalQuota) UnmarshalJSON(data []byte) error {
+func (r QuotaRegionalQuota) RawJSON() string { return r.JSON.raw }
+func (r *QuotaRegionalQuota) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

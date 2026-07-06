@@ -28,7 +28,9 @@ type CloudService struct {
 	// Regions represent available Gcore cloud data centers with information about
 	// supported services and volume types.
 	Regions RegionService
-	Quotas  QuotaService
+	// Quotas define the maximum amount of cloud resources (compute, storage,
+	// networking, GPU, and more) available to a client, both globally and per region.
+	Quotas QuotaService
 	// Secrets store sensitive data such as TLS certificates and private keys in
 	// encrypted form within a cloud region.
 	Secrets SecretService
