@@ -64,7 +64,7 @@ func getGlobalQuota(client *gcore.Client, clientID int64) {
 	}
 
 	fmt.Printf("Global quota for client_id=%d:\n", clientID)
-	globalQuota := cloud.QuotaGetAllResponseGlobalQuotas(*quota)
+	globalQuota := cloud.QuotaGlobalQuotas(*quota)
 	printGlobalQuotas(globalQuota)
 
 	fmt.Println("========================")
@@ -88,7 +88,7 @@ func getRegionQuota(client *gcore.Client, clientID int64, regionID int64) {
 	fmt.Println("========================")
 }
 
-func printGlobalQuotas(globalQuotas cloud.QuotaGetAllResponseGlobalQuotas) {
+func printGlobalQuotas(globalQuotas cloud.QuotaGlobalQuotas) {
 	fmt.Println("\n--- Global Quotas ---")
 	fmt.Printf("  inference_cpu_millicore_count_limit: %d (usage: %d)\n",
 		globalQuotas.InferenceCPUMillicoreCountLimit, globalQuotas.InferenceCPUMillicoreCountUsage)
@@ -106,7 +106,7 @@ func printGlobalQuotas(globalQuotas cloud.QuotaGetAllResponseGlobalQuotas) {
 		globalQuotas.ProjectCountLimit, globalQuotas.ProjectCountUsage)
 }
 
-func printRegionalQuotas(regionalQuotas []cloud.QuotaGetAllResponseRegionalQuota) {
+func printRegionalQuotas(regionalQuotas []cloud.QuotaRegionalQuota) {
 	fmt.Println("\n--- Regional Quotas ---")
 	for idx, region := range regionalQuotas {
 		fmt.Printf("  Region #%d: region_id=%d\n", idx+1, region.RegionID)
