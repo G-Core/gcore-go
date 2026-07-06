@@ -300,6 +300,12 @@ type AnalyticsGetEventStatisticsParams struct {
 	Domains []int64 `query:"domains,omitzero" json:"-"`
 	// Filter statistics by client IP addresses (max 10).
 	IPs []string `query:"ips,omitzero" format:"ipvanyaddress" json:"-"`
+	// Ordering applied to the ranked points within the dimension. `total.desc` ranks
+	// by total event count descending; `threats.desc` ranks by threat (blocked and
+	// monitored) event count descending.
+	//
+	// Any of "total.desc", "threats.desc".
+	OrderBy AnalyticsGetEventStatisticsParamsOrderBy `query:"order_by,omitzero" json:"-"`
 	// Filter data by name of a security rule matched the request.
 	SecurityRuleNames []string `query:"security_rule_names,omitzero" json:"-"`
 	paramObj
@@ -326,6 +332,16 @@ const (
 	AnalyticsGetEventStatisticsParamsDimensionTarget    AnalyticsGetEventStatisticsParamsDimension = "target"
 )
 
+// Ordering applied to the ranked points within the dimension. `total.desc` ranks
+// by total event count descending; `threats.desc` ranks by threat (blocked and
+// monitored) event count descending.
+type AnalyticsGetEventStatisticsParamsOrderBy string
+
+const (
+	AnalyticsGetEventStatisticsParamsOrderByTotalDesc   AnalyticsGetEventStatisticsParamsOrderBy = "total.desc"
+	AnalyticsGetEventStatisticsParamsOrderByThreatsDesc AnalyticsGetEventStatisticsParamsOrderBy = "threats.desc"
+)
+
 type AnalyticsGetFiltersParams struct {
 	// Filter data items starting from a specified date in ISO 8601 format
 	Start string `query:"start" api:"required" json:"-"`
@@ -333,8 +349,8 @@ type AnalyticsGetFiltersParams struct {
 	// provided, defaults to the current date and time.
 	End param.Opt[string] `query:"end,omitzero" json:"-"`
 	// Case-insensitive partial autocomplete pattern matched against the value name by
-	// the value provider. Empty or omitted returns the available suggestions for the
-	// current account and time range.
+	// the value provider. Must be between 2 and 100 characters; empty or omitted
+	// returns the available suggestions for the current account and time range.
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Number of items to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`

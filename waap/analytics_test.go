@@ -34,6 +34,7 @@ func TestAnalyticsGetEventStatisticsWithOptionalParams(t *testing.T) {
 			Domains:           []int64{1, 2, 3},
 			End:               gcore.String("2024-04-14T12:00:00Z"),
 			IPs:               []string{"1.2.3.4", "2001:678:194::3c25:ddad"},
+			OrderBy:           waap.AnalyticsGetEventStatisticsParamsOrderByTotalDesc,
 			SecurityRuleNames: []string{"SQL injection"},
 		},
 	)
@@ -66,7 +67,7 @@ func TestAnalyticsGetFiltersWithOptionalParams(t *testing.T) {
 			Domains:  []int64{1, 2, 3},
 			End:      gcore.String("2024-04-14T12:00:00Z"),
 			Limit:    gcore.Int(50),
-			Name:     gcore.String("name"),
+			Name:     gcore.String("xx"),
 			Offset:   gcore.Int(0),
 			Ordering: waap.AnalyticsGetFiltersParamsOrderingCount,
 		},
