@@ -28,14 +28,14 @@ func TestVideoNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Streaming.Videos.New(context.TODO(), streaming.VideoNewParams{
 		Video: streaming.CreateVideoParam{
-			Name:                           "IBC 2025 - International Broadcasting Convention",
+			Name:                           "IBC 2026 - International Broadcasting Convention",
 			AutoTranscribeAudioLanguage:    streaming.CreateVideoAutoTranscribeAudioLanguageAuto,
 			AutoTranslateSubtitlesLanguage: streaming.CreateVideoAutoTranslateSubtitlesLanguageDisable,
 			ClientUserID:                   gcore.Int(10),
 			ClipDurationSeconds:            gcore.Int(60),
 			ClipStartSeconds:               gcore.Int(137),
 			CustomIframeURL:                gcore.String("custom_iframe_url"),
-			Description:                    gcore.String("We look forward to welcoming you at IBC2025, which will take place 12-15 September 2025."),
+			Description:                    gcore.String("We look forward to welcoming you at IBC2026, which will take place 11-14 September 2026."),
 			DirectoryID:                    gcore.Int(800),
 			OriginHTTPHeaders:              gcore.String("Authorization: Bearer ..."),
 			OriginURL:                      gcore.String("https://www.googleapis.com/drive/v3/files/...?alt=media"),
@@ -76,14 +76,14 @@ func TestVideoUpdateWithOptionalParams(t *testing.T) {
 		0,
 		streaming.VideoUpdateParams{
 			CreateVideo: streaming.CreateVideoParam{
-				Name:                           "IBC 2025 - International Broadcasting Convention",
+				Name:                           "IBC 2026 - International Broadcasting Convention",
 				AutoTranscribeAudioLanguage:    streaming.CreateVideoAutoTranscribeAudioLanguageAuto,
 				AutoTranslateSubtitlesLanguage: streaming.CreateVideoAutoTranslateSubtitlesLanguageDisable,
 				ClientUserID:                   gcore.Int(10),
 				ClipDurationSeconds:            gcore.Int(60),
 				ClipStartSeconds:               gcore.Int(137),
 				CustomIframeURL:                gcore.String("custom_iframe_url"),
-				Description:                    gcore.String("We look forward to welcoming you at IBC2025, which will take place 12-15 September 2025."),
+				Description:                    gcore.String("We look forward to welcoming you at IBC2026, which will take place 11-14 September 2026."),
 				DirectoryID:                    gcore.Int(800),
 				OriginHTTPHeaders:              gcore.String("Authorization: Bearer ..."),
 				OriginURL:                      gcore.String("https://www.googleapis.com/drive/v3/files/...?alt=media"),
@@ -177,14 +177,14 @@ func TestVideoNewMultipleWithOptionalParams(t *testing.T) {
 		Fields: gcore.String("fields"),
 		Videos: []streaming.VideoNewMultipleParamsVideo{{
 			CreateVideoParam: streaming.CreateVideoParam{
-				Name:                           "IBC 2025 - International Broadcasting Convention",
+				Name:                           "IBC 2026 - International Broadcasting Convention",
 				AutoTranscribeAudioLanguage:    streaming.CreateVideoAutoTranscribeAudioLanguageAuto,
 				AutoTranslateSubtitlesLanguage: streaming.CreateVideoAutoTranslateSubtitlesLanguageDisable,
 				ClientUserID:                   gcore.Int(10),
 				ClipDurationSeconds:            gcore.Int(60),
 				ClipStartSeconds:               gcore.Int(137),
 				CustomIframeURL:                gcore.String("custom_iframe_url"),
-				Description:                    gcore.String("We look forward to welcoming you at IBC2025, which will take place 12-15 September 2025."),
+				Description:                    gcore.String("We look forward to welcoming you at IBC2026, which will take place 11-14 September 2026."),
 				DirectoryID:                    gcore.Int(800),
 				OriginHTTPHeaders:              gcore.String("Authorization: Bearer ..."),
 				OriginURL:                      gcore.String("https://www.googleapis.com/drive/v3/files/...?alt=media"),

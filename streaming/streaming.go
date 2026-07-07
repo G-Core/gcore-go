@@ -59,7 +59,7 @@ type CreateVideoParam struct {
 	// Transcoding duration is a number in seconds.
 	ClipDurationSeconds param.Opt[int64] `json:"clip_duration_seconds,omitzero"`
 	// If you want to transcode only a trimmed segment of a video instead of entire
-	// length if the video, then you can provide timecodes of starting point and
+	// length if the video, then you can provide time codes of starting point and
 	// duration of a segment to process. Start encoding from is a number in seconds.
 	ClipStartSeconds param.Opt[int64] `json:"clip_start_seconds,omitzero"`
 	// Deprecated.
@@ -105,7 +105,7 @@ type CreateVideoParam struct {
 	// screenshots (they will be stored in "screenshots" attribute) from which you can
 	// select an default screenshot. This "poster" field is for uploading your own
 	// image. Also use attribute "screenshot_id" to select poster as a default
-	// screnshot.
+	// screenshot.
 	//
 	// Attribute accepts single image as base64-encoded string
 	// [(RFC 2397 – The "data" URL scheme)](https://www.rfc-editor.org/rfc/rfc2397). In
@@ -334,7 +334,7 @@ type Video struct {
 	// Video ID
 	ID int64 `json:"id"`
 	// ID of ad that should be shown. If empty the default ad is show. If there is no
-	// default ad, no ad is shownю
+	// default ad, no ad is shown.
 	AdID int64 `json:"ad_id"`
 	// Total number of video views. It is calculated based on the analysis of all
 	// views, no matter in which player.
@@ -346,6 +346,8 @@ type Video struct {
 	ClientUserID int64 `json:"client_user_id"`
 	// Array of data about each transcoded quality
 	ConvertedVideos []VideoConvertedVideo `json:"converted_videos"`
+	// Time of creation. Datetime in ISO 8601 format.
+	CreatedAt string `json:"created_at"`
 	// Custom URL of Iframe for video player to be used in share panel in player. Auto
 	// generated Iframe URL provided by default.
 	CustomIframeURL string `json:"custom_iframe_url"`
@@ -383,6 +385,8 @@ type Video struct {
 	DashURL string `json:"dash_url"`
 	// Additional text field for video description
 	Description string `json:"description"`
+	// ID of the directory where the video is stored.
+	DirectoryID int64 `json:"directory_id"`
 	// Video duration in milliseconds. May differ from "origin_video_duration" value if
 	// the video was uploaded with clipping through the parameters "clip_start_seconds"
 	// and "clip_duration_seconds"
@@ -462,7 +466,7 @@ type Video struct {
 	//
 	// <iframe width="100%" height="100%" src="https://player.gvideo.co/videos/2675_FnlHXwA16ZMxmUr" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 	//
-	// There are some link modificators you can specify and add manually:
+	// There are some link modifiers you can specify and add manually:
 	//
 	//   - ?`no_low_latency` – player is forced to use non-low-latency streams HLS
 	//     MPEG-TS, instead of MPEG-DASH CMAF or HLS/LL-HLS CMAF.
@@ -533,6 +537,10 @@ type Video struct {
 	// Field contains a link to minimized poster image. Original "poster" image is
 	// proportionally scaled to a size of 200 pixels in height.
 	PosterThumb string `json:"poster_thumb"`
+	// This value indicates the priority with which the transcoding task was assigned.
+	// After transcoding is complete, this value no longer has any effect and simply
+	// displays historical data.
+	Priority int64 `json:"priority"`
 	// Regulates the video format:
 	//
 	// - **regular** — plays the video as usual
@@ -542,6 +550,21 @@ type Video struct {
 	//
 	// Default is regular
 	Projection string `json:"projection"`
+	// Custom quality set ID used for transcoding.
+	QualitySetID int64 `json:"quality_set_id"`
+	// Method of recording a stream. Specifies the source from which the stream will be
+	// recorded: original or transcoded.
+	//
+	// Types:
+	//
+	//   - null – indicates that the video was uploaded in the standard way (and not
+	//     recorded from a stream).
+	//   - "origin" – To record RMTP/SRT/etc original clean media source.
+	//   - "transcoded" – To record the output transcoded version of the stream,
+	//     including overlays, texts, logos, etc. additional media layers.
+	//
+	// Any of "origin", "transcoded".
+	RecordType VideoRecordType `json:"record_type" api:"nullable"`
 	// If the video was saved from a stream, then start time of the stream recording is
 	// saved here. Format is date time in ISO 8601
 	RecordingStartedAt string `json:"recording_started_at"`
@@ -609,6 +632,8 @@ type Video struct {
 	Status VideoStatus `json:"status"`
 	// If the video was saved from a stream, then ID of that stream is saved here
 	StreamID int64 `json:"stream_id"`
+	// Time of last update of the video entity. Datetime in ISO 8601 format.
+	UpdatedAt string `json:"updated_at"`
 	// Number of video views through the built-in HTML video player of the Streaming
 	// Platform only. This attribute does not count views from other external players
 	// and native OS players, so here may be less number of views than in "cdn_views".
@@ -621,9 +646,11 @@ type Video struct {
 		ClientID            respjson.Field
 		ClientUserID        respjson.Field
 		ConvertedVideos     respjson.Field
+		CreatedAt           respjson.Field
 		CustomIframeURL     respjson.Field
 		DashURL             respjson.Field
 		Description         respjson.Field
+		DirectoryID         respjson.Field
 		Duration            respjson.Field
 		Error               respjson.Field
 		HlsCmafURL          respjson.Field
@@ -635,7 +662,10 @@ type Video struct {
 		OriginVideoDuration respjson.Field
 		Poster              respjson.Field
 		PosterThumb         respjson.Field
+		Priority            respjson.Field
 		Projection          respjson.Field
+		QualitySetID        respjson.Field
+		RecordType          respjson.Field
 		RecordingStartedAt  respjson.Field
 		Screenshot          respjson.Field
 		ScreenshotID        respjson.Field
@@ -646,6 +676,7 @@ type Video struct {
 		SpriteVtt           respjson.Field
 		Status              respjson.Field
 		StreamID            respjson.Field
+		UpdatedAt           respjson.Field
 		Views               respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
@@ -672,7 +703,7 @@ type VideoConvertedVideo struct {
 	// **Download methods**
 	//
 	// For each converted video, additional download endpoints are available under
-	// `converted_videos`/`mp4_urls`. An MP4 download enpoints:
+	// `converted_videos`/`mp4_urls`. An MP4 download endpoints:
 	//
 	// 1. `/videos/{client_id}_{slug}/{filename}.mp4`
 	// 2. `/videos/{client_id}_{slug}/{filename}.mp4/download`
@@ -815,6 +846,23 @@ func (r VideoConvertedVideo) RawJSON() string { return r.JSON.raw }
 func (r *VideoConvertedVideo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Method of recording a stream. Specifies the source from which the stream will be
+// recorded: original or transcoded.
+//
+// Types:
+//
+//   - null – indicates that the video was uploaded in the standard way (and not
+//     recorded from a stream).
+//   - "origin" – To record RMTP/SRT/etc original clean media source.
+//   - "transcoded" – To record the output transcoded version of the stream,
+//     including overlays, texts, logos, etc. additional media layers.
+type VideoRecordType string
+
+const (
+	VideoRecordTypeOrigin     VideoRecordType = "origin"
+	VideoRecordTypeTranscoded VideoRecordType = "transcoded"
+)
 
 // Video processing status:
 //

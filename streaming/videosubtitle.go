@@ -42,7 +42,7 @@ func NewVideoSubtitleService(opts ...option.RequestOption) (r VideoSubtitleServi
 //
 //   - SRT – SubRip Text is described on
 //     [wikipedia.org](https://en.wikipedia.org/wiki/SubRip#SubRip_file_format). Must
-//     start from integer for sequence number. Use calidators to check the subtitles,
+//     start from integer for sequence number. Use validators to check the subtitles,
 //     like
 //     [srt-validator](https://taoning2014.github.io/srt-validator-website/index.html).
 //   - WebVTT – Web Video Text Tracks Format is described on

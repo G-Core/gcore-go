@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -55,11 +56,11 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //
 // How to use:
 //
-// - Create an AI task, specify algoritm to use
+// - Create an AI task, specify algorithm to use
 // - Get `task_id`
 // - Check a result using `.../ai/tasks/{task_id}` method
 //
-// For more detailed information, see the description of each method separately.
+// For more detailed information, see the algorithm-specific sections below.
 //
 // **AI Automatic Speech Recognition (ASR)**
 //
@@ -72,7 +73,7 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //
 //   - `transcription` – to create subtitles/captions from audio in the original
 //     language.
-//   - `translation` – to transate subtitles/captions from the original language to
+//   - `translation` – to translate subtitles/captions from the original language to
 //     99+ other languages.
 //
 // AI subtitle transcription and translation tools are highly efficient, processing
@@ -118,7 +119,7 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //
 //   - `nsfw`: Quick algorithm to detect pornographic material, ensuring content is
 //     "not-safe-for-work" or normal.
-//   - `hard_nudity`: Detailed analisys of video which detects explicit nudity
+//   - `hard_nudity`: Detailed analysis of video which detects explicit nudity
 //     involving genitalia.
 //   - `soft_nudity`: Detailed video analysis that reveals both explicit and partial
 //     nudity, including the presence of male and female faces and other uncovered
@@ -132,7 +133,7 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //
 // Important notes:
 //
-//   - It's allowed to analyse still images too (where applicable). Format of image:
+//   - It's allowed to analyze still images too (where applicable). Format of image:
 //     JPEG, PNG. In that case one image is the same as video of 1 second duration.
 //   - Not all frames in the video are used for analysis, but only key frames
 //     (Iframe). For example, if a key frame in a video is set every ±2 seconds, then
@@ -175,6 +176,503 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 //
 // Read more detailed information about our solution, and architecture, and
 // benefits in the knowledge base and blog.
+//
+// **Algorithm-specific details**
+//
+// # Create AI ASR task
+//
+// Transcribing is the process of writing down the words you hear in an audio. Our
+// solution allows you to transcribe audio from your video and get subtitles
+// automatically. To do this, we use modern AI models.
+//
+// The result:
+//
+//   - Transcription – subtitles in the original language. I.e. audio is in English –
+//     subtitles are in English too, audio is in German – subtitles are in German
+//     too.
+//   - Translation – subtitles is translated from the original language to any other
+//     language.
+//
+// **How to use?**
+//
+//   - Explicit call to this AI method. Applicable for any file stored with us or
+//     located on the Internet.
+//   - Standard video upload but with automatic subtitle generation. Look at
+//     ["VOD uploading"](/api-reference/streaming/videos/create-video).
+//
+// **What language will the subtitles be in?**
+//
+// You can specify the language explicitly, then it will be used to create
+// subtitles: the source language in the audio, the resulting subtitle language. If
+// this is not set, the system will run auto language identification and the
+// subtitles will be in the detected language. The method also works based on AI
+// analysis.
+//
+// Additionally, when this is not set, we also support recognition of alternate
+// languages in the video (code-switching). For example, when in a video different
+// speakers speak several languages, or when they switch from their native language
+// to English and back. Thus when you have multiple languages in the video it is
+// better to not specify an "audio_language" otherwise AI may force the system to
+// recognize gibberish.
+//
+// **What can be transcribed?**
+//
+// Service uses additional methods to detect presence of speech in audio track,
+// thus improving the detection of any human conversations:
+//
+// - Speech of one speaker,
+// - Speech of several speakers,
+// - Speech in different languages,
+// - etc
+//
+// Restriction on music, lyrics most likely will not be created.
+//
+// **What about translation?**
+//
+// It is also possible to automatically translate from the original language to
+// another you need.
+//
+// To create a translation, specify the desired language explicitly in
+// "subtitles_language" parameter. Otherwise, the subtitles will be in the original
+// language. Translation into different languages should be done by creating
+// separate tasks.
+//
+// ![Auto generated subtitles example](https://demo-files.gvideo.io/apidocs/captions.gif)
+//
+// Use MP4 videos to process. This method is not tied to videos that are stored
+// only in our video hosting (look at how get a link to MP4 rendition), so you can
+// use links to any other external file with HTTP/HTTPS access.
+//
+// For now, only the first audio track can be processed; later this functionality
+// will be improved to allow to use any. Also, not all language pairs are currently
+// supported. If a language pair is not supported for automatic translation, the
+// task status will be FAILURE with description of the reason. Example:
+// `eng => uzb`. You can request to add the language pair you need for automatic
+// translation. Contact our support.
+//
+// Example of modes to transcribe and/or translate:
+//
+//   - Auto language detection: `{ "url":"..." }`
+//   - From German language explicitly : `{ "url":"...", "audio_language":"ger" }`
+//   - From any auto-detected to English language explicitly:
+//     `{ "url":"...", "subtitles_language":"eng" }`
+//   - From German language to English language explicitly:
+//     `{ "url":"...", "audio_language":"ger", "subtitles_language":"eng" }`
+//
+// Example of setting a task to process MP4 file (animated gif from above):
+//
+// ```
+// curl -L 'https://api.gcore.com/streaming/ai/tasks' \
+// -H 'Content-Type: application/json' \
+// -H 'Authorization: APIKey 1234$abcd...' \
+//
+//	-d '{
+//	    "url": "https://demo-files.gvideo.io/apidocs/spritefright-blender-cut30sec.mp4"
+//	}'
+//
+// ```
+//
+// As described above, transcription is done automatically using AI. Therefore, the
+// quality may differ from a manual transcription by a professional person. If this
+// happens to you, then you can download subtitles and change them in an external
+// editor.
+//
+// Transcription and translation are 2 different AI tasks:
+//
+// - Transcription is set only for transcription.
+// - Translation, if non-original languages are set for translation.
+//
+// Billing takes into account the duration of the analyzed original video.
+//
+// The heart for transcribing is the AI model Whisper from OpenAI, with additional
+// optimizations and services. The AI models run on our own infrastructure, so the
+// files/data are not transferred anywhere to external services. After processing,
+// original files are also deleted from local storage of AI.
+//
+// Read more detailed information about our solution, and architecture, and
+// benefits in the knowledge base and blog.
+//
+// Create AI CM:nsfw task
+//
+// This algorithm allows to quickly detect inappropriate content, determining that
+// the content is NSFW ("Not Safe For Work") or normal. Generic info about all
+// capabilities and limits see in the generic
+// ["Content Moderation"](/api-reference/streaming/ai/create-ai-task) method.
+//
+// **What is "Not Safe For Work"?**
+//
+// The algorithm has recognized inappropriate content in a video and it might not
+// be suitable to view in public places. The solution provides its confidence level
+// (in percentage) of how sure it is that the content is NSFW, or it most likely
+// does not contain any sexual or similar content.
+//
+// Different to soft-nudity-detection and hard-nudity-detection, this model will
+// only check for sensitive material that can be considered not-safe-for-work.
+//
+// ![AI Content Moderation: NSFW detection visual example](https://demo-files.gvideo.io/apidocs/nsfw-detection.gif)
+//
+// **How to use?**
+//
+// Frames within the specified video are analyzed.
+//
+// Response will contain only frames for which the class nsfw is detected with a
+// confidence of more than 50%.
+//
+// Example of detected NSFW:
+//
+// ```
+//
+//	{
+//	  "nsfw_detected": true,
+//	  "detection_results": [ "nsfw" ],
+//	  "frames": [
+//	      {
+//	          "label": "nsfw",
+//	          "confidence": 0.93,
+//	          "frame_number": 1
+//	      },..
+//	  ]
+//	}
+//
+// ```
+//
+// Example of a response without detecting inappropriate content:
+//
+// ```
+//
+//	{
+//	  "nsfw_detected": false,
+//	  "detection_results": [],
+//	  "frames": []
+//	}
+//
+// ```
+//
+// Please note that the API only provides a set of data (json) about the objects
+// found, so no video is generated. The demo video video (above ^) was specially
+// created based on json from the API for visual demonstration and better
+// perception of the possibilities.
+//
+// Create AI CM:`hard_nudity` task
+//
+// This algorithm allows to detect explicit nudity of the human body (involving
+// genitals) in a video. Generic info about all capabilities and limits see in the
+// generic ["Content Moderation"](/api-reference/streaming/ai/create-ai-task)
+// method.
+//
+// **What is Hard nudity detection?**
+//
+// This method is often used to analyze UGC to determine whether videos can be
+// published to all users, or to prohibit publication due to offensive and
+// inappropriate content.
+//
+// Objects that can be detected:
+//
+// - `ANUS_EXPOSED`
+// - `BUTTOCKS_EXPOSED`
+// - `FEMALE_BREAST_EXPOSED`
+// - `FEMALE_GENITALIA_EXPOSED`
+// - `MALE_BREAST_EXPOSED`
+// - `MALE_GENITALIA_EXPOSED`
+//
+// Please note that the number of objects is less than in the
+// soft-nudity-detection. This method works faster and better if only exposed body
+// parts detection is required.
+//
+// ![AI Content Moderation: hard nudity detection visual example](https://demo-files.gvideo.io/apidocs/nudity_detection.gif)
+//
+// **How to use?**
+//
+// The information is returned with the video frame number where it was found and
+// probability of the detected object. Nudity detection is done using AI, so for
+// each object a probability percentage is applied; objects with a probability of
+// at least 30% are included in the response.
+//
+// Video processing speed is approximately 1:5.
+//
+// Example of detected nudity or body parts:
+//
+// ```
+//
+//	{
+//	  "nudity_detected": true,
+//	  "detection_results": [ "MALE_GENITALIA_EXPOSED" ]
+//	  "frames": [
+//	      {
+//	          "confidence": 0.75,
+//	          "frame_number": 35,
+//	          "label": "MALE_GENITALIA_EXPOSED"
+//	      },...
+//	  ]
+//	}
+//
+// ```
+//
+// Example response when nudity or body parts were not found:
+//
+// ```
+//
+//	{
+//	  "nudity_detected": false,
+//	  "detection_results": []
+//	  "frames": []
+//	}
+//
+// ```
+//
+// There is no universal recipe under which a video can be considered unacceptable,
+// since different services host different types of videos for different audiences:
+// adult content, children's content, educational content, etc. You can determine
+// the probability threshold at which you consider a video inappropriate. The
+// easiest option is to run several of your videos and analyze the resulting
+// probability coefficient.
+//
+// Sometimes a detected object at the beginning of the video immediately makes it
+// clear that there is no need to further analyze the video. For such cases, you
+// can use stop tags. Use parameter "stop_objects" to specify comma separated stop
+// tags. It is also possible to specify % probability threshold value, above which
+// the stop tag will be triggered.
+//
+// ```
+//
+//	{
+//	    "url": "...",
+//	    "stop_objects": "MALE_GENITALIA_EXPOSED:0.8,FEMALE_GENITALIA_EXPOSED"
+//	}
+//
+// ```
+//
+// Please note that the API only provides a set of data (json) about the objects
+// found, so no video is generated. The demo video video (above ^) was specially
+// created based on json from the API for visual demonstration and better
+// perception of the possibilities.
+//
+// Create AI CM:`soft_nudity` task
+//
+// This algorithm allows to identify explicit nudity and partial nudity too
+// (including the presence of male and female faces and other uncovered body parts)
+// in a video. Generic info about all capabilities and limits see in the generic
+// ["Content Moderation"](/api-reference/streaming/ai/create-ai-task) method.
+//
+// **What is Soft nudity detection?**
+//
+// This method is often used to analyze UGC to determine whether videos can be
+// published to all users, or to prohibit publication due to offensive and
+// inappropriate content.
+//
+// Objects that can be detected:
+//
+// - `ANUS_COVERED`
+// - `ANUS_EXPOSED`
+// - `ARMPITS_COVERED`
+// - `ARMPITS_EXPOSED`
+// - `BELLY_COVERED`
+// - `BELLY_EXPOSED`
+// - `BUTTOCKS_COVERED`
+// - `BUTTOCKS_EXPOSED`
+// - `FACE_FEMALE`
+// - `FACE_MALE`
+// - `FEET_COVERED`
+// - `FEET_EXPOSED`
+// - `FEMALE_BREAST_COVERED`
+// - `FEMALE_BREAST_EXPOSED`
+// - `FEMALE_GENITALIA_COVERED`
+// - `FEMALE_GENITALIA_EXPOSED`
+// - `MALE_BREAST_EXPOSED`
+// - `MALE_GENITALIA_EXPOSED`
+//
+// This method allows you to identify faces and other body parts. Used to find
+// complex combinations of what is happening in a video. Please note that the
+// number of objects is more than in the hard-nudity-detection. The method is
+// slower.
+//
+// ![AI Content Moderation: hard nudity detection visual example](https://demo-files.gvideo.io/apidocs/soft_nudity_detection.gif)
+//
+// **How to use?**
+//
+// The information is returned with the video frame number where it was found and
+// probability of the detected object. Nudity detection is done using AI, so for
+// each object a probability percentage is applied; objects with a probability of
+// at least 30% are included in the response.
+//
+// Video processing speed is approximately 1:5.
+//
+// Example of detected nudity or body parts:
+//
+// ```
+//
+//	{
+//	  "nudity_detected": true,
+//	  "detection_results": [ "FACE_FEMALE", "BELLY_COVERED" ]
+//	  "frames": [
+//	      {
+//	          "confidence": 0.82,
+//	          "frame_number": 1,
+//	          "label": "BELLY_COVERED"
+//	      },...
+//	  ]
+//	}
+//
+// ```
+//
+// Example response when nudity or body parts were not found:
+//
+// ```
+//
+//	{
+//	  "nudity_detected": false,
+//	  "detection_results": []
+//	  "frames": []
+//	}
+//
+// ```
+//
+// There is no universal recipe under which a video can be considered unacceptable,
+// since different services host different types of videos for different audiences:
+// adult content, children's content, educational content, etc. You can determine
+// the probability threshold at which you consider a video inappropriate. The
+// easiest option is to run several of your videos and analyze the resulting
+// probability coefficient.
+//
+// Sometimes a detected object at the beginning of the video immediately makes it
+// clear that there is no need to further analyze the video. For such cases, you
+// can use stop tags. Use parameter "stop_objects" to specify comma separated stop
+// tags. It is also possible to specify % probability threshold value, above which
+// the stop tag will be triggered.
+//
+// ```
+//
+//	{
+//	    "url": "...",
+//	    "stop_objects": "BELLY_COVERED:0.9,FEMALE_GENITALIA_COVERED"
+//	}
+//
+// ```
+//
+// Please note that the API only provides a set of data (json) about the objects
+// found, so no video is generated. The demo video video (above ^) was specially
+// created based on json from the API for visual demonstration and better
+// perception of the possibilities.
+//
+// Create AI CM:sport task
+//
+// This algorithm allows to identify various sporting activities in a video.
+// Generic info about all capabilities and limits see in the generic
+// ["Content Moderation"](/api-reference/streaming/ai/create-ai-task) method.
+//
+// **What is Sports activity detection?**
+//
+// Sports activity detection by AI involves using machine learning and computer
+// vision technologies to automatically identify, analyze, and interpret various
+// activities within sports and generic videos. This can include detecting specific
+// types, actions, events, and moments.
+//
+// This model operates on a video sequence (and not on images as most of the used
+// computer vision models). Make sure your video is at least 10-15 seconds long.
+//
+// Sports activities can be detected:
+//
+// - archery
+// - arm wrestling
+// - playing badminton
+// - playing baseball
+// - basketball dunk
+// - bowling
+// - boxing punch
+// - boxing speed bag
+// - catching or throwing baseball
+// - catching or throwing softball
+// - cricket
+// - curling
+// - disc golfing
+// - dodgeball
+// - fencing
+// - football
+// - golf chipping
+// - golf driving
+// - golf putting
+// - hitting baseball
+// - hockey stop
+// - ice skating
+// - javelin throw
+// - juggling soccer ball
+// - kayaking
+// - kicking field goal
+// - kicking soccer ball
+// - playing cricket
+// - playing field hockey
+// - playing ice hockey
+// - playing kickball
+// - playing lacrosse
+// - playing ping pong
+// - playing polo
+// - playing squash or racquetball
+// - playing tennis
+// - playing volleyball
+// - pole vault
+// - riding a bike
+// - riding or walking with horse
+// - roller skating
+// - rowing
+// - sailing
+// - shooting goal (soccer)
+// - skateboarding
+// - skiing
+//
+// Use cases:
+//
+//   - Sports leagues and content creators can use AI to monitor UGC for unauthorized
+//     publications of their content. This can include detecting specific sporting
+//     events or activities that are part of copyrighted content.
+//   - Sports fans often miss live games and rely on highlight reels. AI can
+//     automatically detect key moments like goals, touchdowns, or game-winning shots
+//     in uploaded UGC videos and compile them into personalized highlight reels.
+//
+// ![AI Content Moderation: sports activity detection visual example](https://demo-files.gvideo.io/apidocs/sports_football_detection.gif)
+//
+// **How to use?**
+//
+// The information is returned with the video frame number where it was found and
+// probability of the detected activity. Identification is done using AI, so for
+// each activity a probability percentage is applied; activities with a probability
+// of at least 30% are included in the response.
+//
+// Video processing speed is approximately 1:5.
+//
+// Example of detected sports activity:
+//
+// ```
+//
+//	{
+//	  "sport_detected": true,
+//	  "detection_results": [ "shooting goal (soccer)" ],
+//	  "frames": [
+//	      {
+//	          "label": "shooting goal (soccer)",
+//	          "frame_number": 98,
+//	          "confidence": 0.99
+//	      },...
+//	  ]
+//	}
+//
+// ```
+//
+// Example response when sports activities were not found:
+//
+// ```
+//
+//	{
+//	  "sport_detected": false,
+//	  "detection_results": []
+//	  "frames": []
+//	}
+//
+// ```
+//
+// Please note that the API only provides a set of data (json) about the objects
+// found, so no video is generated. The demo video video (above ^) was specially
+// created based on json from the API for visual demonstration and better
+// perception of the possibilities.
 func (r *AITaskService) New(ctx context.Context, body AITaskNewParams, opts ...option.RequestOption) (res *AITaskNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/ai/tasks"
@@ -246,6 +744,7 @@ func (r *AITaskService) Cancel(ctx context.Context, taskID string, opts ...optio
 //
 // Statuses:
 //
+//   - RECEIVED – the task is accepted by the system
 //   - PENDING – the task is received and it is pending for available resources
 //   - STARTED – processing has started
 //   - SUCCESS – processing has completed successfully
@@ -323,13 +822,13 @@ func (r *AITaskService) GetAISettings(ctx context.Context, query AITaskGetAISett
 type AIContentmoderationHardnudity struct {
 	// AI content moderation with "hard_nudity" algorithm
 	//
-	// Any of "hard_nudity", "sport", "nsfw", "soft_nudity".
+	// Any of "hard_nudity".
 	Category AIContentmoderationHardnudityCategory `json:"category" api:"required"`
 	// Name of the task to be performed
 	//
 	// Any of "content-moderation".
 	TaskName AIContentmoderationHardnudityTaskName `json:"task_name" api:"required"`
-	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
+	// URL to the MP4 file to analyze. File must be publicly accessible via HTTP/HTTPS.
 	URL string `json:"url" api:"required"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
@@ -340,12 +839,14 @@ type AIContentmoderationHardnudity struct {
 	// associated video for which the task was performed will be explicitly indicated
 	// here.
 	ClientEntityData string `json:"client_entity_data"`
+	// Client ID associated with the task.
+	ClientID int64 `json:"client_id"`
 	// Meta parameter, designed to store your own identifier. Can be used by you to tag
 	// requests from different end-users. It is not used in any way in video
 	// processing.
 	ClientUserID string `json:"client_user_id"`
 	// Comma separated objects, and probabilities, that will cause the processing to
-	// stop immediatelly after finding.
+	// stop immediately after finding.
 	//
 	// Any of "ANUS_EXPOSED", "BUTTOCKS_EXPOSED", "FEMALE_BREAST_EXPOSED",
 	// "FEMALE_GENITALIA_EXPOSED", "MALE_BREAST_EXPOSED", "MALE_GENITALIA_EXPOSED".
@@ -356,6 +857,7 @@ type AIContentmoderationHardnudity struct {
 		TaskName         respjson.Field
 		URL              respjson.Field
 		ClientEntityData respjson.Field
+		ClientID         respjson.Field
 		ClientUserID     respjson.Field
 		StopObjects      respjson.Field
 		ExtraFields      map[string]respjson.Field
@@ -369,14 +871,21 @@ func (r *AIContentmoderationHardnudity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// ToParam converts this AIContentmoderationHardnudity to a
+// AIContentmoderationHardnudityParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// AIContentmoderationHardnudityParam.Overrides()
+func (r AIContentmoderationHardnudity) ToParam() AIContentmoderationHardnudityParam {
+	return param.Override[AIContentmoderationHardnudityParam](json.RawMessage(r.RawJSON()))
+}
+
 // AI content moderation with "hard_nudity" algorithm
 type AIContentmoderationHardnudityCategory string
 
 const (
 	AIContentmoderationHardnudityCategoryHardNudity AIContentmoderationHardnudityCategory = "hard_nudity"
-	AIContentmoderationHardnudityCategorySport      AIContentmoderationHardnudityCategory = "sport"
-	AIContentmoderationHardnudityCategoryNsfw       AIContentmoderationHardnudityCategory = "nsfw"
-	AIContentmoderationHardnudityCategorySoftNudity AIContentmoderationHardnudityCategory = "soft_nudity"
 )
 
 // Name of the task to be performed
@@ -387,7 +896,7 @@ const (
 )
 
 // Comma separated objects, and probabilities, that will cause the processing to
-// stop immediatelly after finding.
+// stop immediately after finding.
 type AIContentmoderationHardnudityStopObjects string
 
 const (
@@ -399,16 +908,58 @@ const (
 	AIContentmoderationHardnudityStopObjectsMaleGenitaliaExposed   AIContentmoderationHardnudityStopObjects = "MALE_GENITALIA_EXPOSED"
 )
 
+// The properties Category, TaskName, URL are required.
+type AIContentmoderationHardnudityParam struct {
+	// AI content moderation with "hard_nudity" algorithm
+	//
+	// Any of "hard_nudity".
+	Category AIContentmoderationHardnudityCategory `json:"category,omitzero" api:"required"`
+	// Name of the task to be performed
+	//
+	// Any of "content-moderation".
+	TaskName AIContentmoderationHardnudityTaskName `json:"task_name,omitzero" api:"required"`
+	// URL to the MP4 file to analyze. File must be publicly accessible via HTTP/HTTPS.
+	URL string `json:"url" api:"required"`
+	// Meta parameter, designed to store your own extra information about a video
+	// entity: video source, video id, etc. It is not used in any way in video
+	// processing.
+	//
+	// For example, if an AI-task was created automatically when you uploaded a video
+	// with the AI auto-processing option (nudity detection, etc), then the ID of the
+	// associated video for which the task was performed will be explicitly indicated
+	// here.
+	ClientEntityData param.Opt[string] `json:"client_entity_data,omitzero"`
+	// Meta parameter, designed to store your own identifier. Can be used by you to tag
+	// requests from different end-users. It is not used in any way in video
+	// processing.
+	ClientUserID param.Opt[string] `json:"client_user_id,omitzero"`
+	// Comma separated objects, and probabilities, that will cause the processing to
+	// stop immediately after finding.
+	//
+	// Any of "ANUS_EXPOSED", "BUTTOCKS_EXPOSED", "FEMALE_BREAST_EXPOSED",
+	// "FEMALE_GENITALIA_EXPOSED", "MALE_BREAST_EXPOSED", "MALE_GENITALIA_EXPOSED".
+	StopObjects AIContentmoderationHardnudityStopObjects `json:"stop_objects,omitzero"`
+	paramObj
+}
+
+func (r AIContentmoderationHardnudityParam) MarshalJSON() (data []byte, err error) {
+	type shadow AIContentmoderationHardnudityParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIContentmoderationHardnudityParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AIContentmoderationNsfw struct {
 	// AI content moderation with NSFW detection algorithm
 	//
-	// Any of "nsfw", "sport", "hard_nudity", "soft_nudity".
+	// Any of "nsfw".
 	Category AIContentmoderationNsfwCategory `json:"category" api:"required"`
 	// Name of the task to be performed
 	//
 	// Any of "content-moderation".
 	TaskName AIContentmoderationNsfwTaskName `json:"task_name" api:"required"`
-	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
+	// URL to the MP4 file to analyze. File must be publicly accessible via HTTP/HTTPS.
 	URL string `json:"url" api:"required"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
@@ -419,6 +970,8 @@ type AIContentmoderationNsfw struct {
 	// associated video for which the task was performed will be explicitly indicated
 	// here.
 	ClientEntityData string `json:"client_entity_data"`
+	// Client ID associated with the task.
+	ClientID int64 `json:"client_id"`
 	// Meta parameter, designed to store your own identifier. Can be used by you to tag
 	// requests from different end-users. It is not used in any way in video
 	// processing.
@@ -429,6 +982,7 @@ type AIContentmoderationNsfw struct {
 		TaskName         respjson.Field
 		URL              respjson.Field
 		ClientEntityData respjson.Field
+		ClientID         respjson.Field
 		ClientUserID     respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
@@ -441,14 +995,20 @@ func (r *AIContentmoderationNsfw) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// ToParam converts this AIContentmoderationNsfw to a AIContentmoderationNsfwParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// AIContentmoderationNsfwParam.Overrides()
+func (r AIContentmoderationNsfw) ToParam() AIContentmoderationNsfwParam {
+	return param.Override[AIContentmoderationNsfwParam](json.RawMessage(r.RawJSON()))
+}
+
 // AI content moderation with NSFW detection algorithm
 type AIContentmoderationNsfwCategory string
 
 const (
-	AIContentmoderationNsfwCategoryNsfw       AIContentmoderationNsfwCategory = "nsfw"
-	AIContentmoderationNsfwCategorySport      AIContentmoderationNsfwCategory = "sport"
-	AIContentmoderationNsfwCategoryHardNudity AIContentmoderationNsfwCategory = "hard_nudity"
-	AIContentmoderationNsfwCategorySoftNudity AIContentmoderationNsfwCategory = "soft_nudity"
+	AIContentmoderationNsfwCategoryNsfw AIContentmoderationNsfwCategory = "nsfw"
 )
 
 // Name of the task to be performed
@@ -458,16 +1018,52 @@ const (
 	AIContentmoderationNsfwTaskNameContentModeration AIContentmoderationNsfwTaskName = "content-moderation"
 )
 
+// The properties Category, TaskName, URL are required.
+type AIContentmoderationNsfwParam struct {
+	// AI content moderation with NSFW detection algorithm
+	//
+	// Any of "nsfw".
+	Category AIContentmoderationNsfwCategory `json:"category,omitzero" api:"required"`
+	// Name of the task to be performed
+	//
+	// Any of "content-moderation".
+	TaskName AIContentmoderationNsfwTaskName `json:"task_name,omitzero" api:"required"`
+	// URL to the MP4 file to analyze. File must be publicly accessible via HTTP/HTTPS.
+	URL string `json:"url" api:"required"`
+	// Meta parameter, designed to store your own extra information about a video
+	// entity: video source, video id, etc. It is not used in any way in video
+	// processing.
+	//
+	// For example, if an AI-task was created automatically when you uploaded a video
+	// with the AI auto-processing option (nudity detection, etc), then the ID of the
+	// associated video for which the task was performed will be explicitly indicated
+	// here.
+	ClientEntityData param.Opt[string] `json:"client_entity_data,omitzero"`
+	// Meta parameter, designed to store your own identifier. Can be used by you to tag
+	// requests from different end-users. It is not used in any way in video
+	// processing.
+	ClientUserID param.Opt[string] `json:"client_user_id,omitzero"`
+	paramObj
+}
+
+func (r AIContentmoderationNsfwParam) MarshalJSON() (data []byte, err error) {
+	type shadow AIContentmoderationNsfwParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIContentmoderationNsfwParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AIContentmoderationSoftnudity struct {
 	// AI content moderation with "soft_nudity" algorithm
 	//
-	// Any of "soft_nudity", "sport", "nsfw", "hard_nudity".
+	// Any of "soft_nudity".
 	Category AIContentmoderationSoftnudityCategory `json:"category" api:"required"`
 	// Name of the task to be performed
 	//
 	// Any of "content-moderation".
 	TaskName AIContentmoderationSoftnudityTaskName `json:"task_name" api:"required"`
-	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
+	// URL to the MP4 file to analyze. File must be publicly accessible via HTTP/HTTPS.
 	URL string `json:"url" api:"required"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
@@ -478,12 +1074,14 @@ type AIContentmoderationSoftnudity struct {
 	// associated video for which the task was performed will be explicitly indicated
 	// here.
 	ClientEntityData string `json:"client_entity_data"`
+	// Client ID associated with the task.
+	ClientID int64 `json:"client_id"`
 	// Meta parameter, designed to store your own identifier. Can be used by you to tag
 	// requests from different end-users. It is not used in any way in video
 	// processing.
 	ClientUserID string `json:"client_user_id"`
 	// Comma separated objects, and probabilities, that will cause the processing to
-	// stop immediatelly after finding.
+	// stop immediately after finding.
 	//
 	// Any of "ANUS_COVERED", "ANUS_EXPOSED", "ARMPITS_COVERED", "ARMPITS_EXPOSED",
 	// "BELLY_COVERED", "BELLY_EXPOSED", "BUTTOCKS_COVERED", "BUTTOCKS_EXPOSED",
@@ -497,6 +1095,7 @@ type AIContentmoderationSoftnudity struct {
 		TaskName         respjson.Field
 		URL              respjson.Field
 		ClientEntityData respjson.Field
+		ClientID         respjson.Field
 		ClientUserID     respjson.Field
 		StopObjects      respjson.Field
 		ExtraFields      map[string]respjson.Field
@@ -510,14 +1109,21 @@ func (r *AIContentmoderationSoftnudity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// ToParam converts this AIContentmoderationSoftnudity to a
+// AIContentmoderationSoftnudityParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// AIContentmoderationSoftnudityParam.Overrides()
+func (r AIContentmoderationSoftnudity) ToParam() AIContentmoderationSoftnudityParam {
+	return param.Override[AIContentmoderationSoftnudityParam](json.RawMessage(r.RawJSON()))
+}
+
 // AI content moderation with "soft_nudity" algorithm
 type AIContentmoderationSoftnudityCategory string
 
 const (
 	AIContentmoderationSoftnudityCategorySoftNudity AIContentmoderationSoftnudityCategory = "soft_nudity"
-	AIContentmoderationSoftnudityCategorySport      AIContentmoderationSoftnudityCategory = "sport"
-	AIContentmoderationSoftnudityCategoryNsfw       AIContentmoderationSoftnudityCategory = "nsfw"
-	AIContentmoderationSoftnudityCategoryHardNudity AIContentmoderationSoftnudityCategory = "hard_nudity"
 )
 
 // Name of the task to be performed
@@ -528,7 +1134,7 @@ const (
 )
 
 // Comma separated objects, and probabilities, that will cause the processing to
-// stop immediatelly after finding.
+// stop immediately after finding.
 type AIContentmoderationSoftnudityStopObjects string
 
 const (
@@ -552,16 +1158,61 @@ const (
 	AIContentmoderationSoftnudityStopObjectsMaleGenitaliaExposed   AIContentmoderationSoftnudityStopObjects = "MALE_GENITALIA_EXPOSED"
 )
 
+// The properties Category, TaskName, URL are required.
+type AIContentmoderationSoftnudityParam struct {
+	// AI content moderation with "soft_nudity" algorithm
+	//
+	// Any of "soft_nudity".
+	Category AIContentmoderationSoftnudityCategory `json:"category,omitzero" api:"required"`
+	// Name of the task to be performed
+	//
+	// Any of "content-moderation".
+	TaskName AIContentmoderationSoftnudityTaskName `json:"task_name,omitzero" api:"required"`
+	// URL to the MP4 file to analyze. File must be publicly accessible via HTTP/HTTPS.
+	URL string `json:"url" api:"required"`
+	// Meta parameter, designed to store your own extra information about a video
+	// entity: video source, video id, etc. It is not used in any way in video
+	// processing.
+	//
+	// For example, if an AI-task was created automatically when you uploaded a video
+	// with the AI auto-processing option (nudity detection, etc), then the ID of the
+	// associated video for which the task was performed will be explicitly indicated
+	// here.
+	ClientEntityData param.Opt[string] `json:"client_entity_data,omitzero"`
+	// Meta parameter, designed to store your own identifier. Can be used by you to tag
+	// requests from different end-users. It is not used in any way in video
+	// processing.
+	ClientUserID param.Opt[string] `json:"client_user_id,omitzero"`
+	// Comma separated objects, and probabilities, that will cause the processing to
+	// stop immediately after finding.
+	//
+	// Any of "ANUS_COVERED", "ANUS_EXPOSED", "ARMPITS_COVERED", "ARMPITS_EXPOSED",
+	// "BELLY_COVERED", "BELLY_EXPOSED", "BUTTOCKS_COVERED", "BUTTOCKS_EXPOSED",
+	// "FACE_FEMALE", "FACE_MALE", "FEET_COVERED", "FEET_EXPOSED",
+	// "FEMALE_BREAST_COVERED", "FEMALE_BREAST_EXPOSED", "FEMALE_GENITALIA_COVERED",
+	// "FEMALE_GENITALIA_EXPOSED", "MALE_BREAST_EXPOSED", "MALE_GENITALIA_EXPOSED".
+	StopObjects AIContentmoderationSoftnudityStopObjects `json:"stop_objects,omitzero"`
+	paramObj
+}
+
+func (r AIContentmoderationSoftnudityParam) MarshalJSON() (data []byte, err error) {
+	type shadow AIContentmoderationSoftnudityParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIContentmoderationSoftnudityParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AIContentmoderationSport struct {
 	// AI content moderation with types of sports activity detection
 	//
-	// Any of "sport", "nsfw", "hard_nudity", "soft_nudity".
+	// Any of "sport".
 	Category AIContentmoderationSportCategory `json:"category" api:"required"`
 	// Name of the task to be performed
 	//
 	// Any of "content-moderation".
 	TaskName AIContentmoderationSportTaskName `json:"task_name" api:"required"`
-	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
+	// URL to the MP4 file to analyze. File must be publicly accessible via HTTP/HTTPS.
 	URL string `json:"url" api:"required"`
 	// Meta parameter, designed to store your own extra information about a video
 	// entity: video source, video id, etc. It is not used in any way in video
@@ -572,6 +1223,8 @@ type AIContentmoderationSport struct {
 	// associated video for which the task was performed will be explicitly indicated
 	// here.
 	ClientEntityData string `json:"client_entity_data"`
+	// Client ID associated with the task.
+	ClientID int64 `json:"client_id"`
 	// Meta parameter, designed to store your own identifier. Can be used by you to tag
 	// requests from different end-users. It is not used in any way in video
 	// processing.
@@ -582,6 +1235,7 @@ type AIContentmoderationSport struct {
 		TaskName         respjson.Field
 		URL              respjson.Field
 		ClientEntityData respjson.Field
+		ClientID         respjson.Field
 		ClientUserID     respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
@@ -594,14 +1248,21 @@ func (r *AIContentmoderationSport) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// ToParam converts this AIContentmoderationSport to a
+// AIContentmoderationSportParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// AIContentmoderationSportParam.Overrides()
+func (r AIContentmoderationSport) ToParam() AIContentmoderationSportParam {
+	return param.Override[AIContentmoderationSportParam](json.RawMessage(r.RawJSON()))
+}
+
 // AI content moderation with types of sports activity detection
 type AIContentmoderationSportCategory string
 
 const (
-	AIContentmoderationSportCategorySport      AIContentmoderationSportCategory = "sport"
-	AIContentmoderationSportCategoryNsfw       AIContentmoderationSportCategory = "nsfw"
-	AIContentmoderationSportCategoryHardNudity AIContentmoderationSportCategory = "hard_nudity"
-	AIContentmoderationSportCategorySoftNudity AIContentmoderationSportCategory = "soft_nudity"
+	AIContentmoderationSportCategorySport AIContentmoderationSportCategory = "sport"
 )
 
 // Name of the task to be performed
@@ -611,33 +1272,68 @@ const (
 	AIContentmoderationSportTaskNameContentModeration AIContentmoderationSportTaskName = "content-moderation"
 )
 
+// The properties Category, TaskName, URL are required.
+type AIContentmoderationSportParam struct {
+	// AI content moderation with types of sports activity detection
+	//
+	// Any of "sport".
+	Category AIContentmoderationSportCategory `json:"category,omitzero" api:"required"`
+	// Name of the task to be performed
+	//
+	// Any of "content-moderation".
+	TaskName AIContentmoderationSportTaskName `json:"task_name,omitzero" api:"required"`
+	// URL to the MP4 file to analyze. File must be publicly accessible via HTTP/HTTPS.
+	URL string `json:"url" api:"required"`
+	// Meta parameter, designed to store your own extra information about a video
+	// entity: video source, video id, etc. It is not used in any way in video
+	// processing.
+	//
+	// For example, if an AI-task was created automatically when you uploaded a video
+	// with the AI auto-processing option (nudity detection, etc), then the ID of the
+	// associated video for which the task was performed will be explicitly indicated
+	// here.
+	ClientEntityData param.Opt[string] `json:"client_entity_data,omitzero"`
+	// Meta parameter, designed to store your own identifier. Can be used by you to tag
+	// requests from different end-users. It is not used in any way in video
+	// processing.
+	ClientUserID param.Opt[string] `json:"client_user_id,omitzero"`
+	paramObj
+}
+
+func (r AIContentmoderationSportParam) MarshalJSON() (data []byte, err error) {
+	type shadow AIContentmoderationSportParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIContentmoderationSportParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AITask struct {
+	ProcessingTime AITaskProcessingTime `json:"processing_time" api:"required"`
 	// Percentage of task completed. A value greater than 0 means that it has been
 	// taken into operation and is being processed.
-	Progress int64 `json:"progress"`
-	// Status of processing the AI task. See GET /ai/results method for description.
+	Progress int64 `json:"progress" api:"required"`
+	// Status of processing the AI task. See GET /ai/tasks/{`task_id`} method for
+	// description.
 	//
-	// Any of "PENDING", "STARTED", "SUCCESS", "FAILURE", "REVOKED", "RETRY".
-	Status AITaskStatus `json:"status"`
+	// Any of "PENDING", "STARTED", "SUCCESS", "FAILURE", "RECEIVED", "REVOKED",
+	// "RETRY".
+	Status AITaskStatus `json:"status" api:"required"`
 	// The object will correspond to the task type that was specified in the original
 	// request. There will be one object for transcription, another for searching for
 	// nudity, and so on.
-	TaskData AITaskTaskDataUnion `json:"task_data"`
+	TaskData AITaskTaskDataUnion `json:"task_data" api:"required"`
 	// ID of the AI task
-	TaskID string `json:"task_id" format:"uuid"`
-	// Type of AI task
-	//
-	// Any of "content-moderation", "transcription".
-	TaskName AITaskTaskName `json:"task_name"`
+	TaskID string `json:"task_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Progress    respjson.Field
-		Status      respjson.Field
-		TaskData    respjson.Field
-		TaskID      respjson.Field
-		TaskName    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ProcessingTime respjson.Field
+		Progress       respjson.Field
+		Status         respjson.Field
+		TaskData       respjson.Field
+		TaskID         respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -647,20 +1343,45 @@ func (r *AITask) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Status of processing the AI task. See GET /ai/results method for description.
+type AITaskProcessingTime struct {
+	// Video processing end time. Format is date time in ISO 8601
+	CompletedAt time.Time `json:"completed_at" api:"nullable" format:"date-time"`
+	// Video processing start time. Format is date time in ISO 8601
+	StartedAt time.Time `json:"started_at" format:"date-time"`
+	// Duration of video processing in seconds
+	TotalTimeSec float64 `json:"total_time_sec" api:"nullable" format:"decimal"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CompletedAt  respjson.Field
+		StartedAt    respjson.Field
+		TotalTimeSec respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AITaskProcessingTime) RawJSON() string { return r.JSON.raw }
+func (r *AITaskProcessingTime) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Status of processing the AI task. See GET /ai/tasks/{`task_id`} method for
+// description.
 type AITaskStatus string
 
 const (
-	AITaskStatusPending AITaskStatus = "PENDING"
-	AITaskStatusStarted AITaskStatus = "STARTED"
-	AITaskStatusSuccess AITaskStatus = "SUCCESS"
-	AITaskStatusFailure AITaskStatus = "FAILURE"
-	AITaskStatusRevoked AITaskStatus = "REVOKED"
-	AITaskStatusRetry   AITaskStatus = "RETRY"
+	AITaskStatusPending  AITaskStatus = "PENDING"
+	AITaskStatusStarted  AITaskStatus = "STARTED"
+	AITaskStatusSuccess  AITaskStatus = "SUCCESS"
+	AITaskStatusFailure  AITaskStatus = "FAILURE"
+	AITaskStatusReceived AITaskStatus = "RECEIVED"
+	AITaskStatusRevoked  AITaskStatus = "REVOKED"
+	AITaskStatusRetry    AITaskStatus = "RETRY"
 )
 
 // AITaskTaskDataUnion contains all possible properties and values from
-// [AITaskTaskDataAITranscribe], [AIContentmoderationNsfw],
+// [AITaskTaskDataAITranscriptionTaskData], [AIContentmoderationNsfw],
 // [AIContentmoderationHardnudity], [AIContentmoderationSoftnudity],
 // [AIContentmoderationSport].
 //
@@ -668,11 +1389,12 @@ const (
 type AITaskTaskDataUnion struct {
 	TaskName string `json:"task_name"`
 	URL      string `json:"url"`
-	// This field is from variant [AITaskTaskDataAITranscribe].
+	// This field is from variant [AITaskTaskDataAITranscriptionTaskData].
 	AudioLanguage    string `json:"audio_language"`
 	ClientEntityData string `json:"client_entity_data"`
+	ClientID         int64  `json:"client_id"`
 	ClientUserID     string `json:"client_user_id"`
-	// This field is from variant [AITaskTaskDataAITranscribe].
+	// This field is from variant [AITaskTaskDataAITranscriptionTaskData].
 	SubtitlesLanguage string `json:"subtitles_language"`
 	Category          string `json:"category"`
 	StopObjects       string `json:"stop_objects"`
@@ -681,6 +1403,7 @@ type AITaskTaskDataUnion struct {
 		URL               respjson.Field
 		AudioLanguage     respjson.Field
 		ClientEntityData  respjson.Field
+		ClientID          respjson.Field
 		ClientUserID      respjson.Field
 		SubtitlesLanguage respjson.Field
 		Category          respjson.Field
@@ -689,27 +1412,27 @@ type AITaskTaskDataUnion struct {
 	} `json:"-"`
 }
 
-func (u AITaskTaskDataUnion) AsAITaskTaskDataAITranscribe() (v AITaskTaskDataAITranscribe) {
+func (u AITaskTaskDataUnion) AsAITranscriptionTaskData() (v AITaskTaskDataAITranscriptionTaskData) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AITaskTaskDataUnion) AsAIContentmoderationNsfw() (v AIContentmoderationNsfw) {
+func (u AITaskTaskDataUnion) AsAIContentModerationNsfwTaskData() (v AIContentmoderationNsfw) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AITaskTaskDataUnion) AsAIContentmoderationHardnudity() (v AIContentmoderationHardnudity) {
+func (u AITaskTaskDataUnion) AsAIContentModerationHardNudityTaskData() (v AIContentmoderationHardnudity) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AITaskTaskDataUnion) AsAIContentmoderationSoftnudity() (v AIContentmoderationSoftnudity) {
+func (u AITaskTaskDataUnion) AsAIContentModerationSoftNudityTaskData() (v AIContentmoderationSoftnudity) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AITaskTaskDataUnion) AsAIContentmoderationSport() (v AIContentmoderationSport) {
+func (u AITaskTaskDataUnion) AsAIContentModerationSportTaskData() (v AIContentmoderationSport) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -721,12 +1444,12 @@ func (r *AITaskTaskDataUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AITaskTaskDataAITranscribe struct {
+type AITaskTaskDataAITranscriptionTaskData struct {
 	// Name of the task to be performed
 	//
 	// Any of "transcription".
 	TaskName string `json:"task_name" api:"required"`
-	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
+	// URL to the MP4 file to analyze. File must be publicly accessible via HTTP/HTTPS.
 	URL string `json:"url" api:"required"`
 	// Language in original audio (transcription only). This value is used to determine
 	// the language from which to transcribe.
@@ -849,10 +1572,12 @@ type AITaskTaskDataAITranscribe struct {
 	// processing.
 	//
 	// For example, if an AI-task was created automatically when you uploaded a video
-	// with the AI auto-processing option (transcribing, translationing), then the ID
-	// of the associated video for which the task was performed will be explicitly
+	// with the AI auto-processing option (transcribing, translation), then the ID of
+	// the associated video for which the task was performed will be explicitly
 	// indicated here.
 	ClientEntityData string `json:"client_entity_data"`
+	// Client ID associated with the task.
+	ClientID int64 `json:"client_id"`
 	// Meta parameter, designed to store your own identifier. Can be used by you to tag
 	// requests from different end-users. It is not used in any way in video
 	// processing.
@@ -865,7 +1590,7 @@ type AITaskTaskDataAITranscribe struct {
 	//   - transcription into the original language is a free procedure,
 	//   - and translation from the original language into any other languages is a
 	//     "translation" procedure and is paid. More details in
-	//     [POST /streaming/ai/tasks#transcribe](/api-reference/streaming/ai/create-ai-asr-task).
+	//     [POST /streaming/ai/tasks](/api-reference/streaming/ai/create-ai-task).
 	//     Language is set by 3-letter language code according to ISO-639-2
 	//     (bibliographic code).
 	SubtitlesLanguage string `json:"subtitles_language"`
@@ -875,6 +1600,7 @@ type AITaskTaskDataAITranscribe struct {
 		URL               respjson.Field
 		AudioLanguage     respjson.Field
 		ClientEntityData  respjson.Field
+		ClientID          respjson.Field
 		ClientUserID      respjson.Field
 		SubtitlesLanguage respjson.Field
 		ExtraFields       map[string]respjson.Field
@@ -883,18 +1609,10 @@ type AITaskTaskDataAITranscribe struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AITaskTaskDataAITranscribe) RawJSON() string { return r.JSON.raw }
-func (r *AITaskTaskDataAITranscribe) UnmarshalJSON(data []byte) error {
+func (r AITaskTaskDataAITranscriptionTaskData) RawJSON() string { return r.JSON.raw }
+func (r *AITaskTaskDataAITranscriptionTaskData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Type of AI task
-type AITaskTaskName string
-
-const (
-	AITaskTaskNameContentModeration AITaskTaskName = "content-moderation"
-	AITaskTaskNameTranscription     AITaskTaskName = "transcription"
-)
 
 type AITaskNewResponse struct {
 	// ID of the created AI task, from which you can get the execution result
@@ -931,14 +1649,12 @@ func (r *AITaskCancelResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AITaskGetResponse struct {
-	ProcessingTime AITaskGetResponseProcessingTime `json:"processing_time"`
-	Result         AITaskGetResponseResultUnion    `json:"result"`
+	Result AITaskGetResponseResultUnion `json:"result" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ProcessingTime respjson.Field
-		Result         respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		Result      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 	AITask
 }
@@ -946,29 +1662,6 @@ type AITaskGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AITaskGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *AITaskGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AITaskGetResponseProcessingTime struct {
-	// Video processing end time. Format is date time in ISO 8601
-	CompletedAt string `json:"completed_at"`
-	// Video processing start time. Format is date time in ISO 8601
-	StartedAt string `json:"started_at"`
-	// Duration of video processing in seconds
-	TotalTimeSec float64 `json:"total_time_sec" format:"decimal"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CompletedAt  respjson.Field
-		StartedAt    respjson.Field
-		TotalTimeSec respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AITaskGetResponseProcessingTime) RawJSON() string { return r.JSON.raw }
-func (r *AITaskGetResponseProcessingTime) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -983,11 +1676,11 @@ func (r *AITaskGetResponseProcessingTime) UnmarshalJSON(data []byte) error {
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AITaskGetResponseResultUnion struct {
 	// This field is from variant [AITaskGetResponseResultAIResultsTranscribe].
+	SpeechDetected bool `json:"speech_detected"`
+	// This field is from variant [AITaskGetResponseResultAIResultsTranscribe].
 	ConcatenatedText string `json:"concatenated_text"`
 	// This field is from variant [AITaskGetResponseResultAIResultsTranscribe].
 	Languages []string `json:"languages"`
-	// This field is from variant [AITaskGetResponseResultAIResultsTranscribe].
-	SpeechDetected bool `json:"speech_detected"`
 	// This field is from variant [AITaskGetResponseResultAIResultsTranscribe].
 	Subtitles []AITaskGetResponseResultAIResultsTranscribeSubtitle `json:"subtitles"`
 	// This field is from variant [AITaskGetResponseResultAIResultsTranscribe].
@@ -1004,21 +1697,21 @@ type AITaskGetResponseResultUnion struct {
 	SportDetected bool `json:"sport_detected"`
 	// This field is from variant
 	// [AITaskGetResponseResultAIResultsContentmoderationNsfw].
-	NsfwDetected bool `json:"nsfw_detected"`
-	PornDetected bool `json:"porn_detected"`
+	NsfwDetected   bool `json:"nsfw_detected"`
+	NudityDetected bool `json:"nudity_detected"`
 	// This field is from variant [AITaskGetResponseResultAIResultsFailure].
 	Error string `json:"error"`
 	JSON  struct {
+		SpeechDetected   respjson.Field
 		ConcatenatedText respjson.Field
 		Languages        respjson.Field
-		SpeechDetected   respjson.Field
 		Subtitles        respjson.Field
 		VttContent       respjson.Field
 		DetectionResults respjson.Field
 		Frames           respjson.Field
 		SportDetected    respjson.Field
 		NsfwDetected     respjson.Field
-		PornDetected     respjson.Field
+		NudityDetected   respjson.Field
 		Error            respjson.Field
 		raw              string
 	} `json:"-"`
@@ -1104,6 +1797,12 @@ func (r *AITaskGetResponseResultUnionFrames) UnmarshalJSON(data []byte) error {
 }
 
 type AITaskGetResponseResultAIResultsTranscribe struct {
+	// Determines whether speech was detected or not.
+	//
+	// Please note: If the task is in "SUCCESS" status and speech was not found in the
+	// entire file, then "false" will be indicated here and the `subtitles` field will
+	// be empty.
+	SpeechDetected bool `json:"speech_detected" api:"required"`
 	// Full text of the analyzed video. The value is unstructured, unformatted text.
 	ConcatenatedText string `json:"concatenated_text"`
 	// An array of language codes that were discovered and/or used in transcription. If
@@ -1112,12 +1811,6 @@ type AITaskGetResponseResultAIResultsTranscribe struct {
 	// languages will be displayed here. Also please note that for multilingual audio,
 	// the first 5 languages are displayed in order of frequency of use.
 	Languages []string `json:"languages"`
-	// Determines whether speech was detected or not.
-	//
-	// Please note: If the task is in "SUCCESS" status and speech was not found in the
-	// entire file, then "false" will be indicated here and the `subtitles` field will
-	// be empty.
-	SpeechDetected bool `json:"speech_detected"`
 	// An array of phrases divided into time intervals, in the format "json". Suitable
 	// when you need to display the result in chronometric form, or transfer the text
 	// for further processing.
@@ -1126,9 +1819,9 @@ type AITaskGetResponseResultAIResultsTranscribe struct {
 	VttContent string `json:"vttContent"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		SpeechDetected   respjson.Field
 		ConcatenatedText respjson.Field
 		Languages        respjson.Field
-		SpeechDetected   respjson.Field
 		Subtitles        respjson.Field
 		VttContent       respjson.Field
 		ExtraFields      map[string]respjson.Field
@@ -1178,10 +1871,10 @@ type AITaskGetResponseResultAIResultsContentmoderationSport struct {
 	// "playing squash or racquetball", "playing tennis", "playing volleyball", "pole
 	// vault", "riding a bike", "riding or walking with horse", "roller skating",
 	// "rowing", "sailing", "shooting goal (soccer)", "skateboarding", "skiing".
-	DetectionResults []string                                                      `json:"detection_results"`
-	Frames           []AITaskGetResponseResultAIResultsContentmoderationSportFrame `json:"frames"`
+	DetectionResults []string                                                      `json:"detection_results" api:"required"`
+	Frames           []AITaskGetResponseResultAIResultsContentmoderationSportFrame `json:"frames" api:"required"`
 	// A boolean value whether any sports were detected
-	SportDetected bool `json:"sport_detected"`
+	SportDetected bool `json:"sport_detected" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DetectionResults respjson.Field
@@ -1199,12 +1892,12 @@ func (r *AITaskGetResponseResultAIResultsContentmoderationSport) UnmarshalJSON(d
 }
 
 type AITaskGetResponseResultAIResultsContentmoderationSportFrame struct {
-	// Percentage of probability of identifying the activity
-	Confidence float64 `json:"confidence" format:"decimal"`
-	// Video frame number where activity was found
-	FrameNumber int64 `json:"frame-number"`
-	// Type of detected activity
-	Label string `json:"label"`
+	// Probability of identifying the object or activity
+	Confidence float64 `json:"confidence" api:"required" format:"decimal"`
+	// Video frame number where object or activity was found
+	FrameNumber int64 `json:"frame_number" api:"required"`
+	// Type of detected object or activity
+	Label string `json:"label" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Confidence  respjson.Field
@@ -1225,10 +1918,10 @@ func (r *AITaskGetResponseResultAIResultsContentmoderationSportFrame) UnmarshalJ
 
 type AITaskGetResponseResultAIResultsContentmoderationNsfw struct {
 	// Any of "nsfw".
-	DetectionResults []string                                                     `json:"detection_results"`
-	Frames           []AITaskGetResponseResultAIResultsContentmoderationNsfwFrame `json:"frames"`
+	DetectionResults []string                                                     `json:"detection_results" api:"required"`
+	Frames           []AITaskGetResponseResultAIResultsContentmoderationNsfwFrame `json:"frames" api:"required"`
 	// A boolean value whether any Not Safe For Work content was detected
-	NsfwDetected bool `json:"nsfw_detected"`
+	NsfwDetected bool `json:"nsfw_detected" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DetectionResults respjson.Field
@@ -1246,12 +1939,12 @@ func (r *AITaskGetResponseResultAIResultsContentmoderationNsfw) UnmarshalJSON(da
 }
 
 type AITaskGetResponseResultAIResultsContentmoderationNsfwFrame struct {
-	// Percentage of probability of identifying the object
-	Confidence float64 `json:"confidence" format:"decimal"`
-	// Video frame number where object was found
-	FrameNumber int64 `json:"frame-number"`
-	// Type of detected object
-	Label string `json:"label"`
+	// Probability of identifying the object or activity
+	Confidence float64 `json:"confidence" api:"required" format:"decimal"`
+	// Video frame number where object or activity was found
+	FrameNumber int64 `json:"frame_number" api:"required"`
+	// Type of detected object or activity
+	Label string `json:"label" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Confidence  respjson.Field
@@ -1273,15 +1966,15 @@ func (r *AITaskGetResponseResultAIResultsContentmoderationNsfwFrame) UnmarshalJS
 type AITaskGetResponseResultAIResultsContentmoderationHardnudity struct {
 	// Any of "ANUS_EXPOSED", "BUTTOCKS_EXPOSED", "FEMALE_BREAST_EXPOSED",
 	// "FEMALE_GENITALIA_EXPOSED", "MALE_BREAST_EXPOSED", "MALE_GENITALIA_EXPOSED".
-	DetectionResults []string                                                           `json:"detection_results"`
-	Frames           []AITaskGetResponseResultAIResultsContentmoderationHardnudityFrame `json:"frames"`
+	DetectionResults []string                                                           `json:"detection_results" api:"required"`
+	Frames           []AITaskGetResponseResultAIResultsContentmoderationHardnudityFrame `json:"frames" api:"required"`
 	// A boolean value whether any nudity was detected
-	PornDetected bool `json:"porn_detected"`
+	NudityDetected bool `json:"nudity_detected" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DetectionResults respjson.Field
 		Frames           respjson.Field
-		PornDetected     respjson.Field
+		NudityDetected   respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -1296,12 +1989,12 @@ func (r *AITaskGetResponseResultAIResultsContentmoderationHardnudity) UnmarshalJ
 }
 
 type AITaskGetResponseResultAIResultsContentmoderationHardnudityFrame struct {
-	// Percentage of probability of identifying the object
-	Confidence float64 `json:"confidence" format:"decimal"`
-	// Video frame number where object was found
-	FrameNumber int64 `json:"frame-number"`
-	// Type of detected object
-	Label string `json:"label"`
+	// Probability of identifying the object or activity
+	Confidence float64 `json:"confidence" api:"required" format:"decimal"`
+	// Video frame number where object or activity was found
+	FrameNumber int64 `json:"frame_number" api:"required"`
+	// Type of detected object or activity
+	Label string `json:"label" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Confidence  respjson.Field
@@ -1326,15 +2019,15 @@ type AITaskGetResponseResultAIResultsContentmoderationSoftnudity struct {
 	// "FACE_FEMALE", "FACE_MALE", "FEET_COVERED", "FEET_EXPOSED",
 	// "FEMALE_BREAST_COVERED", "FEMALE_BREAST_EXPOSED", "FEMALE_GENITALIA_COVERED",
 	// "FEMALE_GENITALIA_EXPOSED", "MALE_BREAST_EXPOSED", "MALE_GENITALIA_EXPOSED".
-	DetectionResults []string                                                           `json:"detection_results"`
-	Frames           []AITaskGetResponseResultAIResultsContentmoderationSoftnudityFrame `json:"frames"`
+	DetectionResults []string                                                           `json:"detection_results" api:"required"`
+	Frames           []AITaskGetResponseResultAIResultsContentmoderationSoftnudityFrame `json:"frames" api:"required"`
 	// A boolean value whether any nudity and other body part was detected
-	PornDetected bool `json:"porn_detected"`
+	NudityDetected bool `json:"nudity_detected" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DetectionResults respjson.Field
 		Frames           respjson.Field
-		PornDetected     respjson.Field
+		NudityDetected   respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -1349,12 +2042,12 @@ func (r *AITaskGetResponseResultAIResultsContentmoderationSoftnudity) UnmarshalJ
 }
 
 type AITaskGetResponseResultAIResultsContentmoderationSoftnudityFrame struct {
-	// Percentage of probability of identifying the object
-	Confidence float64 `json:"confidence" format:"decimal"`
-	// Video frame number where object was found
-	FrameNumber int64 `json:"frame-number"`
-	// Type of detected object
-	Label string `json:"label"`
+	// Probability of identifying the object or activity
+	Confidence float64 `json:"confidence" api:"required" format:"decimal"`
+	// Video frame number where object or activity was found
+	FrameNumber int64 `json:"frame_number" api:"required"`
+	// Type of detected object or activity
+	Label string `json:"label" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Confidence  respjson.Field
@@ -1407,11 +2100,43 @@ func (r *AITaskGetAISettingsResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AITaskNewParams struct {
+
+	//
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	OfAITranscriptionTaskData *AITaskNewParamsBodyAITranscriptionTaskData `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfAIContentModerationNsfwTaskData *AIContentmoderationNsfwParam `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfAIContentModerationHardNudityTaskData *AIContentmoderationHardnudityParam `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfAIContentModerationSoftNudityTaskData *AIContentmoderationSoftnudityParam `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfAIContentModerationSportTaskData *AIContentmoderationSportParam `json:",inline"`
+
+	paramObj
+}
+
+func (u AITaskNewParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfAITranscriptionTaskData,
+		u.OfAIContentModerationNsfwTaskData,
+		u.OfAIContentModerationHardNudityTaskData,
+		u.OfAIContentModerationSoftNudityTaskData,
+		u.OfAIContentModerationSportTaskData)
+}
+func (r *AITaskNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties TaskName, URL are required.
+type AITaskNewParamsBodyAITranscriptionTaskData struct {
 	// Name of the task to be performed
 	//
-	// Any of "transcription", "content-moderation".
-	TaskName AITaskNewParamsTaskName `json:"task_name,omitzero" api:"required"`
-	// URL to the MP4 file to analyse. File must be publicly accessible via HTTP/HTTPS.
+	// Any of "transcription".
+	TaskName string `json:"task_name,omitzero" api:"required"`
+	// URL to the MP4 file to analyze. File must be publicly accessible via HTTP/HTTPS.
 	URL string `json:"url" api:"required"`
 	// Language in original audio (transcription only). This value is used to determine
 	// the language from which to transcribe.
@@ -1534,9 +2259,9 @@ type AITaskNewParams struct {
 	// processing.
 	//
 	// For example, if an AI-task was created automatically when you uploaded a video
-	// with the AI auto-processing option (nudity detection, etc), then the ID of the
-	// associated video for which the task was performed will be explicitly indicated
-	// here.
+	// with the AI auto-processing option (transcribing, translation), then the ID of
+	// the associated video for which the task was performed will be explicitly
+	// indicated here.
 	ClientEntityData param.Opt[string] `json:"client_entity_data,omitzero"`
 	// Meta parameter, designed to store your own identifier. Can be used by you to tag
 	// requests from different end-users. It is not used in any way in video
@@ -1550,44 +2275,26 @@ type AITaskNewParams struct {
 	//   - transcription into the original language is a free procedure,
 	//   - and translation from the original language into any other languages is a
 	//     "translation" procedure and is paid. More details in
-	//     [POST /streaming/ai/tasks#transcribe](/api-reference/streaming/ai/create-ai-asr-task).
+	//     [POST /streaming/ai/tasks](/api-reference/streaming/ai/create-ai-task).
 	//     Language is set by 3-letter language code according to ISO-639-2
 	//     (bibliographic code).
 	SubtitlesLanguage param.Opt[string] `json:"subtitles_language,omitzero"`
-	// Model for analysis (content-moderation only). Determines what exactly needs to
-	// be found in the video.
-	//
-	// Any of "sport", "nsfw", "hard_nudity", "soft_nudity".
-	Category AITaskNewParamsCategory `json:"category,omitzero"`
 	paramObj
 }
 
-func (r AITaskNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow AITaskNewParams
+func (r AITaskNewParamsBodyAITranscriptionTaskData) MarshalJSON() (data []byte, err error) {
+	type shadow AITaskNewParamsBodyAITranscriptionTaskData
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AITaskNewParams) UnmarshalJSON(data []byte) error {
+func (r *AITaskNewParamsBodyAITranscriptionTaskData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Name of the task to be performed
-type AITaskNewParamsTaskName string
-
-const (
-	AITaskNewParamsTaskNameTranscription     AITaskNewParamsTaskName = "transcription"
-	AITaskNewParamsTaskNameContentModeration AITaskNewParamsTaskName = "content-moderation"
-)
-
-// Model for analysis (content-moderation only). Determines what exactly needs to
-// be found in the video.
-type AITaskNewParamsCategory string
-
-const (
-	AITaskNewParamsCategorySport      AITaskNewParamsCategory = "sport"
-	AITaskNewParamsCategoryNsfw       AITaskNewParamsCategory = "nsfw"
-	AITaskNewParamsCategoryHardNudity AITaskNewParamsCategory = "hard_nudity"
-	AITaskNewParamsCategorySoftNudity AITaskNewParamsCategory = "soft_nudity"
-)
+func init() {
+	apijson.RegisterFieldValidator[AITaskNewParamsBodyAITranscriptionTaskData](
+		"task_name", "transcription",
+	)
+}
 
 type AITaskListParams struct {
 	// Time when task was created. Datetime in ISO 8601 format.
@@ -1610,7 +2317,7 @@ type AITaskListParams struct {
 	//   - To filter tasks of processing video from a specific origin:
 	//     `GET /streaming/ai/tasks?search=s3.eu-west-1.amazonaws.com`
 	Search param.Opt[string] `query:"search,omitzero" json:"-"`
-	// The task unique identifier to fiund
+	// The task unique identifier to find
 	TaskID param.Opt[string] `query:"task_id,omitzero" format:"uuid" json:"-"`
 	// Which field to use when ordering the results: `task_id`, status, and
 	// `task_name`. Sorting is done in ascending (ASC) order.

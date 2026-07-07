@@ -139,7 +139,7 @@ type Clip struct {
 	//     last key frames of already stored fragment in DVR, this way -1 and +1 chunks
 	//     can be added to left and right.
 	//
-	// Duration of cutted segment cannot be greater than DVR duration for this stream.
+	// Duration of cut segment cannot be greater than DVR duration for this stream.
 	// Therefore, to change the maximum, use "dvr_duration" parameter of this stream.
 	Duration int64 `json:"duration" api:"required"`
 	// Creation date and time. Format is date time in ISO 8601
@@ -225,7 +225,7 @@ type StreamClipNewParams struct {
 	//     last key frames of already stored fragment in DVR, this way -1 and +1 chunks
 	//     can be added to left and right.
 	//
-	// Duration of cutted segment cannot be greater than DVR duration for this stream.
+	// Duration of cut segment cannot be greater than DVR duration for this stream.
 	// Therefore, to change the maximum, use "dvr_duration" parameter of this stream.
 	Duration int64 `json:"duration" api:"required"`
 	// Expire time of the clip via a public link.

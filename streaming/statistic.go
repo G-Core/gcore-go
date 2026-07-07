@@ -155,7 +155,7 @@ func (r *StatisticService) GetUniqueViewers(ctx context.Context, query Statistic
 	return res, err
 }
 
-// Сounts the number of unique viewers of a video entity over CDN. It doesn't
+// Counts the number of unique viewers of a video entity over CDN. It doesn't
 // matter what player you used.
 //
 // All unique viewers for the specified period of time are counted.
@@ -248,7 +248,7 @@ func (r *StatisticService) GetViewsByCountry(ctx context.Context, query Statisti
 }
 
 // Aggregates the number of views, grouping them by "host" domain name the built-in
-// player was embeded to.
+// player was embedded to.
 //
 // Note. This method operates only on data collected by the built-in HTML player.
 // It will not show statistics if you are using another player or viewing in native
@@ -277,8 +277,8 @@ func (r *StatisticService) GetViewsByOperatingSystem(ctx context.Context, query 
 	return res, err
 }
 
-// Aggregates the number of views, grouping them by "referer" URL of pages the
-// built-in player was embeded to.
+// Aggregates the number of views, grouping them by "referrer" URL of pages the
+// built-in player was embedded to.
 //
 // Note. This method operates only on data collected by the built-in HTML player.
 // It will not show statistics if you are using another player or viewing in native

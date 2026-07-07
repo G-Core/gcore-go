@@ -47,7 +47,7 @@ func NewQualitySetService(opts ...option.RequestOption) (r QualitySetService) {
 // These values are the default for everyone. There is no need to configure
 // anything additional.
 //
-// Read more about qiality in our blog
+// Read more about quality in our blog
 // [How we lowered the bitrate for live and VOD streaming by 32.5% without sacrificing quality](https://gcore.com/blog/how-we-lowered-the-bitrate-for-live-and-vod-streaming-by-32-5-without-sacrificing-quality).
 //
 // ![Quality ladder](https://demo-files.gvideo.io/apidocs/encoding_ladder.png)

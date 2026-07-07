@@ -28,13 +28,13 @@ func TestAITaskNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Streaming.AITasks.New(context.TODO(), streaming.AITaskNewParams{
-		TaskName:          streaming.AITaskNewParamsTaskNameTranscription,
-		URL:               "url",
-		AudioLanguage:     gcore.String("audio_language"),
-		Category:          streaming.AITaskNewParamsCategorySport,
-		ClientEntityData:  gcore.String("client_entity_data"),
-		ClientUserID:      gcore.String("client_user_id"),
-		SubtitlesLanguage: gcore.String("subtitles_language"),
+		OfAIContentModerationNsfwTaskData: &streaming.AIContentmoderationNsfwParam{
+			Category:         streaming.AIContentmoderationNsfwCategoryNsfw,
+			TaskName:         streaming.AIContentmoderationNsfwTaskNameContentModeration,
+			URL:              "https://demo-files.gvideo.io/ai_demo_subtitles_nudity_detection.mp4",
+			ClientEntityData: gcore.String("client_entity_data"),
+			ClientUserID:     gcore.String("client_user_id"),
+		},
 	})
 	if err != nil {
 		var apierr *gcore.Error

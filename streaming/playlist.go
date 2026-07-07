@@ -72,7 +72,7 @@ func NewPlaylistService(opts ...option.RequestOption) (r PlaylistService) {
 //
 // **Looped video playback**
 //
-// It can be used to simulate TV channel pre-programmed behaviour.
+// It can be used to simulate TV channel pre-programmed behavior.
 //
 //   - Selection: Choose a series of videos, such as TV show episodes, movies,
 //     tutorials, or any other relevant content.
@@ -172,7 +172,7 @@ type Playlist struct {
 	// Enables/Disables playlist. Has two possible values:
 	//
 	// - true – Playlist can be played.
-	// - false – Playlist is disabled. No broadcast while it's desabled.
+	// - false – Playlist is disabled. No broadcast while it's disabled.
 	Active bool `json:"active"`
 	// The advertisement ID that will be inserted into the video
 	AdID int64 `json:"ad_id"`
@@ -291,7 +291,7 @@ type PlaylistParam struct {
 	// Enables/Disables playlist. Has two possible values:
 	//
 	// - true – Playlist can be played.
-	// - false – Playlist is disabled. No broadcast while it's desabled.
+	// - false – Playlist is disabled. No broadcast while it's disabled.
 	Active param.Opt[bool] `json:"active,omitzero"`
 	// The advertisement ID that will be inserted into the video
 	AdID param.Opt[int64] `json:"ad_id,omitzero"`
@@ -458,7 +458,7 @@ type PlaylistVideo struct {
 	// Transcoding duration is a number in seconds.
 	ClipDurationSeconds int64 `json:"clip_duration_seconds"`
 	// If you want to transcode only a trimmed segment of a video instead of entire
-	// length if the video, then you can provide timecodes of starting point and
+	// length if the video, then you can provide time codes of starting point and
 	// duration of a segment to process. Start encoding from is a number in seconds.
 	ClipStartSeconds int64 `json:"clip_start_seconds"`
 	// Deprecated.
@@ -504,7 +504,7 @@ type PlaylistVideo struct {
 	// screenshots (they will be stored in "screenshots" attribute) from which you can
 	// select an default screenshot. This "poster" field is for uploading your own
 	// image. Also use attribute "screenshot_id" to select poster as a default
-	// screnshot.
+	// screenshot.
 	//
 	// Attribute accepts single image as base64-encoded string
 	// [(RFC 2397 – The "data" URL scheme)](https://www.rfc-editor.org/rfc/rfc2397). In
